@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
@@ -100,13 +101,7 @@ class MellomlagringService(
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         // oppdater SoknadUnderArbeid etter suksessfull opplasting
-        // TODO - midlertidig try/catch-fix
-        try {
-            oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
-        } catch (e: SamtidigOppdateringException) {
-            mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = filId)
-            log.warn("Feil ved oppdatering av Søknad under arbeid. Sletter vedlegg i FIKS.")
-        }
+        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
 
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
@@ -130,7 +125,11 @@ class MellomlagringService(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Mellomlagring - oppdaterSoknadUnderArbeid")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
@@ -161,7 +160,11 @@ class MellomlagringService(
             jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
         }
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Mellomlagring - deleteVedleggAndUpdateVedleggstatus")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 

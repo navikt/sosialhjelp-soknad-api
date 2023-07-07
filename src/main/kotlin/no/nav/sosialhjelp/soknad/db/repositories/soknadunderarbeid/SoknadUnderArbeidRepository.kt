@@ -6,7 +6,7 @@ interface SoknadUnderArbeidRepository {
     fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid
     fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid?
     fun hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId: String, eier: String): SoknadUnderArbeid?
-    fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String, caller: String? = null) // TODO - fjerne 3 parameter
+    fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String)
     fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String)
     fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String)
 }

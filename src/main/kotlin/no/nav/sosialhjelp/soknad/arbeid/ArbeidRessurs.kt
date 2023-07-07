@@ -6,8 +6,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Companion.log
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.apache.commons.lang3.StringUtils
 import org.springframework.http.MediaType
@@ -58,7 +60,12 @@ class ArbeidRessurs(
         } else {
             arbeid.kommentarTilArbeidsforhold = null
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateArbeid")
+
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            log.error("${this::class.java.name} - ${e.message}")
+        }
     }
 
     private fun mapToArbeidsforholdFrontend(arbeidsforhold: JsonArbeidsforhold): ArbeidsforholdFrontend {

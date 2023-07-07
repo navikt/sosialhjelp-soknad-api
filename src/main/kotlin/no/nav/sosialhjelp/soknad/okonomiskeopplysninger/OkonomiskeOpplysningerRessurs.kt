@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -32,6 +33,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.ma
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
@@ -79,7 +81,11 @@ class OkonomiskeOpplysningerRessurs(
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknad.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "hentBasertPåOpplastedeVedlegg")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
 
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map { mapToVedleggFrontend(it, jsonOkonomi, opplastedeVedlegg) },
@@ -117,7 +123,11 @@ class OkonomiskeOpplysningerRessurs(
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "hentBasertPåMellomlagredeVedlegg")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
 
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map {
@@ -155,7 +165,11 @@ class OkonomiskeOpplysningerRessurs(
 
         setVedleggStatus(vedleggFrontend, soknad)
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateOkonomiskOpplysning")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
     }
 
     private fun removeIkkePaakrevdeVedlegg(

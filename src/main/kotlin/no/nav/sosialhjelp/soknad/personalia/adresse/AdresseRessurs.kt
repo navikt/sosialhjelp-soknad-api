@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -13,6 +14,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -55,7 +57,11 @@ class AdresseRessurs(
             null
         }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "hentAdresser")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
 
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
@@ -93,14 +99,22 @@ class AdresseRessurs(
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateAdresse")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
         val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )?.also {
             setNavEnhetAsMottaker(soknad, it, eier)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateAdresse")
+            try {
+                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            } catch (e: SamtidigOppdateringException) {
+                NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+            }
         }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }

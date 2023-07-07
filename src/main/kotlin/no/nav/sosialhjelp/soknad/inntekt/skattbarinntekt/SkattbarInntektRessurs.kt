@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeBekreftelserIfPresent
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -15,6 +16,7 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Organisasjon
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektFrontend
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektOgForskuddstrekk
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Utbetaling
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
@@ -81,7 +83,11 @@ class SkattbarInntektRessurs(
         }
         if (skalLagre) {
             skatteetatenSystemdata.updateSystemdataIn(soknad)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateSamtykke (SkattbareInntektRessurs")
+            try {
+                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            } catch (e: SamtidigOppdateringException) {
+                NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+            }
         }
     }
 

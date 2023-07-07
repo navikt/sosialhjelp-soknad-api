@@ -87,7 +87,7 @@ class BoutgiftRessurs(
             textService.getJsonOkonomiTittel("utgifter.boutgift")
         )
         setBoutgifter(okonomi, boutgifterFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateBoutgifter")
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun setBoutgifter(okonomi: JsonOkonomi, boutgifterFrontend: BoutgifterFrontend) {

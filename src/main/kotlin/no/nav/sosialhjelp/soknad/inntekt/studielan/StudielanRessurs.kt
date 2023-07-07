@@ -3,10 +3,12 @@ package no.nav.sosialhjelp.soknad.inntekt.studielan
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
@@ -80,7 +82,11 @@ class StudielanRessurs(
                 studielanFrontend.bekreftelse
             )
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateStudielån")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
     }
 
     data class StudielanFrontend(

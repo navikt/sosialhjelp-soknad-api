@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -23,6 +24,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -114,7 +116,11 @@ class SoknadActions(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
             isSoknad = !soknadUnderArbeid.erEttersendelse
         )
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "sendSøknad")
+        try {
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        } catch (e: SamtidigOppdateringException) {
+            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+        }
     }
 
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {

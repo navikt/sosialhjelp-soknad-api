@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
@@ -16,6 +17,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
@@ -80,7 +82,11 @@ class SoknadRessurs(
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
             false
         } else {
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "sjekkOmSystemdataErEndret")
+            try {
+                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+            } catch (e: SamtidigOppdateringException) {
+                NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
+            }
             true
         }
     }

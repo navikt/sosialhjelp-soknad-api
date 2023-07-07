@@ -94,7 +94,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String, caller: String?) {
+    override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
         val opprinneligVersjon = soknadUnderArbeid.versjon
@@ -119,13 +119,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
-            val logString = "$caller - Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId " +
-                "${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon"
-
-            throw SamtidigOppdateringException(logString)
-
-            // TODO orginal feilmelding
-//            throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
+            throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
         }
         soknadUnderArbeid.versjon = oppdatertVersjon
         soknadUnderArbeid.sistEndretDato = sistEndretDato
