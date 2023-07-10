@@ -102,6 +102,8 @@ class SoknadUnderArbeidRepositoryJdbc(
         val sistEndretDato = LocalDateTime.now()
         val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
 
+        val eksisterendeSoknadUA = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
+
         val antallOppdaterteRader = jdbcTemplate.update(
             "update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
             oppdatertVersjon,
@@ -119,6 +121,13 @@ class SoknadUnderArbeidRepositoryJdbc(
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
+
+            val logString = "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                "*** Eksisterende Søknad fra Db - Versjon: ${eksisterendeSoknadUA?.versjon} " +
+                "*** Oppdatert sønad - Versjon: ${soknadUnderArbeid.versjon} (+1) "
+
+            log.error(logString)
+
             throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
         }
         soknadUnderArbeid.versjon = oppdatertVersjon
