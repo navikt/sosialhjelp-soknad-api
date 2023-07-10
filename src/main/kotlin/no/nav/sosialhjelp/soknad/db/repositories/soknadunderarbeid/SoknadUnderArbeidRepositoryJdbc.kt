@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.nio.charset.StandardCharsets
@@ -33,6 +34,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
+    @Transactional
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val soknadUnderArbeidId = jdbcTemplate.queryForObject(
@@ -54,6 +56,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         return soknadUnderArbeidId
     }
 
+    @Transactional(readOnly = true)
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
@@ -63,6 +66,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Transactional(readOnly = true)
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -72,6 +76,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
+    @Transactional(readOnly = true)
     override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -81,6 +86,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Transactional(readOnly = true)
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
         eier: String,
@@ -94,6 +100,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Transactional
     override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -134,6 +141,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         soknadUnderArbeid.sistEndretDato = sistEndretDato
     }
 
+    @Transactional
     override fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
@@ -149,6 +157,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
+    @Transactional
     override fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
