@@ -102,6 +102,11 @@ class SoknadUnderArbeidRepositoryJdbc(
         val sistEndretDato = LocalDateTime.now()
         val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
 
+        // TODO - utvidet logging
+        // ******
+        val eksisterendeSoknad: SoknadUnderArbeid? = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
+        // ********
+
         val antallOppdaterteRader = jdbcTemplate.update(
             "update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
             oppdatertVersjon,
@@ -119,6 +124,26 @@ class SoknadUnderArbeidRepositoryJdbc(
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
+
+            // TODO - UTVIDET LOGGING
+            // **********
+            eksisterendeSoknad?.let { eksSoknad ->
+
+                val eksisterendeJsonSoknad = eksSoknad.jsonInternalSoknad
+                    ?: log.error("Finnes ingen søknad for ${soknadUnderArbeid.behandlingsId}")
+
+                val logString = "BehandlingsId: ${eksSoknad.behandlingsId} " +
+                    "*** Eksisterende Søknad - " +
+                    "Versjon: ${eksSoknad.versjon}, " +
+                    "$eksisterendeJsonSoknad " +
+                    "*** Ny søknad - " +
+                    "Versjon: $oppdatertVersjon (+1), " +
+                    "${soknadUnderArbeid.jsonInternalSoknad}"
+
+                log.info(logString)
+            } ?: log.warn("Soknad ${soknadUnderArbeid.behandlingsId} finnes ikke")
+            // ***********
+
             throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
         }
         soknadUnderArbeid.versjon = oppdatertVersjon
