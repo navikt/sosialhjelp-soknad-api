@@ -82,7 +82,19 @@ class OkonomiskeOpplysningerRessurs(
 
         soknad.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         try {
+            // TODO EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            // TODO *** EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
         }
@@ -124,7 +136,19 @@ class OkonomiskeOpplysningerRessurs(
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         try {
+            // TODO EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
+                    "Versjon: ${soknadUnderArbeid.versjon}, " +
+                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+            // TODO *** EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
+                    "Versjon: ${soknadUnderArbeid.versjon}, " +
+                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
         }
@@ -166,7 +190,19 @@ class OkonomiskeOpplysningerRessurs(
         setVedleggStatus(vedleggFrontend, soknad)
 
         try {
+            // TODO EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            // TODO *** EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
         }

@@ -33,7 +33,19 @@ class SoknadUnderArbeidService(
         }
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
         try {
+            // TODO EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
+                    "Versjon: ${soknadUnderArbeid.versjon}, " +
+                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
+            // TODO *** EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
+                    "Versjon: ${soknadUnderArbeid.versjon}, " +
+                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
         }

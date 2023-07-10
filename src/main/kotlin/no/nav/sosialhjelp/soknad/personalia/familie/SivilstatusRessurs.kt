@@ -67,7 +67,19 @@ class SivilstatusRessurs(
         sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
         try {
+            // TODO EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            // TODO *** EKSTRA LOGGING
+            NavMessageSource.log.info(
+                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
         }

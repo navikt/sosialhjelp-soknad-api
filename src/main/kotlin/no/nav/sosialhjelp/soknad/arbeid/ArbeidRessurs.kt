@@ -61,8 +61,19 @@ class ArbeidRessurs(
             arbeid.kommentarTilArbeidsforhold = null
         }
 
-        try {
+        try { // TODO *** EKSTRA LOGGING
+            log.info(
+                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            // TODO *** EKSTRA LOGGING
+            log.info(
+                "\"${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
+                    "Versjon: ${soknad.versjon}, " +
+                    "Sist endret: ${soknad.sistEndretDato}"
+            )
         } catch (e: SamtidigOppdateringException) {
             log.error("${this::class.java.name} - ${e.message}")
         }

@@ -104,13 +104,6 @@ class SoknadUnderArbeidRepositoryJdbc(
 
         val eksisterendeSoknadUA = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
 
-        // TODO *** EKSTRA LOGGING
-        log.info(
-            "Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                "Versjon: ${soknadUnderArbeid.versjon}, " +
-                "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-        )
-
         val antallOppdaterteRader = jdbcTemplate.update(
             "update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
             oppdatertVersjon,
@@ -139,13 +132,6 @@ class SoknadUnderArbeidRepositoryJdbc(
 
             throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
         }
-
-        // TODO *** EKSTRA LOGGING
-        log.info(
-            "Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                "Versjon: ${soknadUnderArbeid.versjon}, " +
-                "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-        )
 
         soknadUnderArbeid.versjon = oppdatertVersjon
         soknadUnderArbeid.sistEndretDato = sistEndretDato
