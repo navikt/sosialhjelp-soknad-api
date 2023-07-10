@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.google.gson.Gson
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -135,10 +136,10 @@ class SoknadUnderArbeidRepositoryJdbc(
                 val logString = "BehandlingsId: ${eksSoknad.behandlingsId} " +
                     "*** Eksisterende Søknad - " +
                     "Versjon: ${eksSoknad.versjon}, " +
-                    "$eksisterendeJsonSoknad " +
+                    "${Gson().toJson(eksisterendeJsonSoknad)} " +
                     "*** Ny søknad - " +
                     "Versjon: $oppdatertVersjon (+1), " +
-                    "${soknadUnderArbeid.jsonInternalSoknad}"
+                    Gson().toJson(soknadUnderArbeid.jsonInternalSoknad)
 
                 log.info(logString)
             } ?: log.warn("Soknad ${soknadUnderArbeid.behandlingsId} finnes ikke")
