@@ -142,7 +142,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
         // TODO *** EKSTRA LOGGING
         log.info(
-            "Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId}" +
+            "Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
                 "Versjon: ${soknadUnderArbeid.versjon}, " +
                 "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
         )
