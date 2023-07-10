@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.google.gson.Gson
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -19,7 +18,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
@@ -136,10 +135,10 @@ class SoknadUnderArbeidRepositoryJdbc(
                 val logString = "BehandlingsId: ${eksSoknad.behandlingsId} " +
                     "*** Eksisterende Søknad - " +
                     "Versjon: ${eksSoknad.versjon}, " +
-                    "${Gson().toJson(eksisterendeJsonSoknad)} " +
+                    "$eksisterendeJsonSoknad " +
                     "*** Ny søknad - " +
                     "Versjon: $oppdatertVersjon (+1), " +
-                    Gson().toJson(soknadUnderArbeid.jsonInternalSoknad)
+                    "${soknadUnderArbeid.jsonInternalSoknad}"
 
                 log.info(logString)
             } ?: log.warn("Soknad ${soknadUnderArbeid.behandlingsId} finnes ikke")
