@@ -92,18 +92,11 @@ class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
-
-        // TODO: Ny midlertidig logikk for å bli kvitt feilmeldingene
-        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.filer.isNotEmpty() }) {
+        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
             mellomlagringService.getAllVedlegg(behandlingsId)
         } else {
             emptyList()
         }
-//        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
-//            mellomlagringService.getAllVedlegg(behandlingsId)
-//        } else {
-//            emptyList()
-//        }
 
         val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
         if (opplastedeVedleggFraJson.isNotEmpty() &&
