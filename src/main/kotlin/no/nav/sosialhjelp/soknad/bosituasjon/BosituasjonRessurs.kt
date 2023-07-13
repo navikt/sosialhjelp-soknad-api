@@ -4,10 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Companion.log
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -50,23 +48,8 @@ class BosituasjonRessurs(
             bosituasjon.botype = bosituasjonFrontend.botype
         }
         bosituasjon.antallPersoner = bosituasjonFrontend.antallPersoner
-        try {
-            // TODO EKSTRA LOGGING
-            log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
-                    "Versjon: ${soknad.versjon}, " +
-                    "Sist endret: ${soknad.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-            // TODO *** EKSTRA LOGGING
-            log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
-                    "Versjon: ${soknad.versjon}, " +
-                    "Sist endret: ${soknad.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            log.error("${this::class.java.name} - ${e.message}")
-        }
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     data class BosituasjonFrontend(

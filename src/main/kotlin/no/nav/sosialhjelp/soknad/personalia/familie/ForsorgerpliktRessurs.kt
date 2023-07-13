@@ -15,7 +15,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOversikt
@@ -29,7 +28,6 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
@@ -76,23 +74,7 @@ class ForsorgerpliktRessurs(
         updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
         updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
-        try {
-            // TODO EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknad.behandlingsId} - " +
-                    "Versjon: ${soknad.versjon}, " +
-                    "Sist endret: ${soknad.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknad.behandlingsId} " +
-                    "Versjon: ${soknad.versjon}, " +
-                    "Sist endret: ${soknad.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun updateBarnebidrag(

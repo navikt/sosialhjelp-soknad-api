@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.oppsummering
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -21,7 +20,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedle
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
@@ -100,23 +98,7 @@ class OppsummeringService(
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        try {
-            // TODO EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
     private fun fjernIkkePaakrevdeVedlegg(

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -14,7 +13,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -32,23 +30,7 @@ class SoknadUnderArbeidService(
             return
         }
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
-        try {
-            // TODO EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 
     fun sortArbeid(arbeid: JsonArbeid) {

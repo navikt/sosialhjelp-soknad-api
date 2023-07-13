@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -24,7 +23,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -116,22 +114,7 @@ class SoknadActions(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
             isSoknad = !soknadUnderArbeid.erEttersendelse
         )
-        try {
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {

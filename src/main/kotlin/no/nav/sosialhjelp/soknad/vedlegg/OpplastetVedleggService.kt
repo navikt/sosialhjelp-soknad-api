@@ -1,14 +1,12 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
-import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
@@ -62,23 +60,7 @@ class OpplastetVedleggService(
         jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
-
-        try {
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return opplastetVedlegg
     }
@@ -118,23 +100,7 @@ class OpplastetVedleggService(
         if (jsonVedlegg.filer.isEmpty()) {
             jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
         }
-
-        try {
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Oppdaterer søknad under arbeid for ${soknadUnderArbeid.behandlingsId} - " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-            // TODO *** EKSTRA LOGGING
-            NavMessageSource.log.info(
-                "${this::class.java.name} - Søknad under arbeid er oppdatert for ${soknadUnderArbeid.behandlingsId} " +
-                    "Versjon: ${soknadUnderArbeid.versjon}, " +
-                    "Sist endret: ${soknadUnderArbeid.sistEndretDato}"
-            )
-        } catch (e: SamtidigOppdateringException) {
-            NavMessageSource.log.error("${this::class.java.name} - ${e.message}")
-        }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
         opplastetVedleggRepository.slettVedlegg(vedleggId, eier)
     }
 

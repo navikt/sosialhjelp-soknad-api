@@ -121,15 +121,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
-
-            // TODO *** ekstra logging
-            val logString = "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
-                "*** Eksisterende Søknad fra Db - Versjon: ${eksisterendeSoknadUA?.versjon} " +
-                "*** Oppdatert søknad - Versjon: ${soknadUnderArbeid.versjon} (+1) "
-
-            log.error(logString)
-            // ***
-
             throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
         }
 
