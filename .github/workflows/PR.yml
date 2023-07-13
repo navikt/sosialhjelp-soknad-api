@@ -26,4 +26,4 @@ jobs:
       - name: Post to Slack if Dependabot
         uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
         with:
-          slack-workflow-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack-workflow-webhook-url: ${{ secrets.DEPENDABOT_SLACK_WEBHOOK_URL }}
