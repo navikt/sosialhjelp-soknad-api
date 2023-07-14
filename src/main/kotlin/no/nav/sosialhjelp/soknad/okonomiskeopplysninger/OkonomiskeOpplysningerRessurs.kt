@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
@@ -234,6 +235,10 @@ class OkonomiskeOpplysningerRessurs(
         jsonVedleggs
             .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
             ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
+
+        if (vedleggFrontend.vedleggStatus == VedleggStatus.VedleggKreves && jsonVedleggs.any { it.filer.isNotEmpty() }) {
+            log.warn("BehandlingsId: ${soknad.behandlingsId} - Vedlegg type: ${vedleggFrontend.type} har filer, men status settes til: ${vedleggFrontend.vedleggStatus}")
+        }
     }
 
     data class VedleggFrontends(
