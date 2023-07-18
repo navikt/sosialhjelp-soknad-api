@@ -58,6 +58,7 @@ object Versions {
     const val snakeyaml = "2.0"
     const val springWebMvc = "6.0.9"
     const val nettyHandler = "4.1.94.Final"
+    const val bouncyCastle = "1.74"
 }
 
 plugins {
@@ -250,6 +251,9 @@ dependencies {
         }
         implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
             because("https://github.com/advisories/GHSA-6mjq-h674-j845")
+        }
+        implementation("org.bouncycastle:bcprov-jdk18on") {
+            version { strictly(Versions.bouncyCastle) }
         }
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
