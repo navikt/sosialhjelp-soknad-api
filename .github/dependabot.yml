@@ -25,6 +25,13 @@ updates:
       interval: daily
     commit-message:
       prefix: "gradle"
+    groups:
+      dependency-group:
+        patterns:
+          - "*"
+        # eventuelle patterns man ønsker utelukke
+#        exlude-patterns:
+
       
   - package-ecosystem: "github-actions"
     directory: "/"
