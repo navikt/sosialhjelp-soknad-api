@@ -24,9 +24,11 @@ jobs:
 
       - name: Create and release tag
         id: artifact-version
+        if: github.ref_name == 'master'
         uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
 
       - name: Build and push Docker Image
+        if: github.ref_name == 'master'
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
         with:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
