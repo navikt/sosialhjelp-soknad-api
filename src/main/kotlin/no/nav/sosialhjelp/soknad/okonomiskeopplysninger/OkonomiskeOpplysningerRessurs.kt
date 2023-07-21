@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 
 import com.google.common.annotations.VisibleForTesting
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
@@ -248,7 +249,7 @@ class OkonomiskeOpplysningerRessurs(
      * Utleder vedleggsstatus på en bakoverkompatibel måte.
      *
      * @param alleredeLevert Bruker indikerer at vedlegget allerede er levert (ny API-revisjon).
-     * @param vedleggStatus Status-felt fra gammel API-revisjon (ignoreres om ikke VedleggAlleredeSendt).
+     * @param vedleggStatus Status-felt fra gammel API-revisjon (ignoreres om != VedleggAlleredeSendt).
      * @param hasFiles om filer er lastet opp til vedlegget.
      * @return VedleggAlleredeSendt hvis alleredeLevert == true eller vedleggStatus == VedleggAlleredeSendt.
      *         Ellers VedleggKreves hvis hasFiles == false, og LastetOpp hvis hasFiles == true.
@@ -273,9 +274,7 @@ class OkonomiskeOpplysningerRessurs(
     }
 
     private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
-        val vedlegg =
-            JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
-                .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
+        val vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type).firstOrNull()
 
         requireNotNull(vedlegg) { "Vedlegget finnes ikke" }
 
@@ -289,6 +288,7 @@ class OkonomiskeOpplysningerRessurs(
     data class VedleggFrontends(
         var okonomiskeOpplysninger: List<VedleggFrontend>?,
         var slettedeVedlegg: List<VedleggFrontend>?,
+        @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
         var isOkonomiskeOpplysningerBekreftet: Boolean
     )
 
