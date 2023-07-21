@@ -7,7 +7,7 @@ data class VedleggFrontend(
     val type: VedleggType,
     val gruppe: VedleggGruppe,
     val rader: List<VedleggRadFrontend>? = null,
-    @Schema(description = "Ignoreres dersom alleredeLevert !== null", readOnly = true, deprecated = true)
+    @Schema(description = "Ignoreres dersom alleredeLevert === true", readOnly = true, deprecated = true)
     val vedleggStatus: VedleggStatus? = null,
     @Schema(description = "Vedlegg er levert inn utenom denne søknaden (f. eks. levert til NAV-kontor)")
     val alleredeLevert: Boolean? = null,
