@@ -248,13 +248,10 @@ class OkonomiskeOpplysningerRessurs(
      * Utleder vedleggsstatus på en bakoverkompatibel måte.
      *
      * @param alleredeLevert Bruker indikerer at vedlegget allerede er levert (ny API-revisjon).
-     *        Returnerer VedleggAlleredeSendt dersom denne er true.
-     * @param vedleggStatus Status-felt fra gammel API-revisjon.
-     *        Returnerer VedleggAlleredeSendt dersom denne er VedleggAlleredeSendt.
+     * @param vedleggStatus Status-felt fra gammel API-revisjon (ignoreres om ikke VedleggAlleredeSendt).
      * @param hasFiles om filer er lastet opp til vedlegget.
-     *        Om alleredeLevert er False og vedleggStatus ikke er VedleggAlleredeSendt,
-     *        returnerer VedleggKreves dersom hasFiles er false, og LastetOpp dersom hasFiles er true.
-     * @return Status på vedlegget
+     * @return VedleggAlleredeSendt hvis alleredeLevert == true eller vedleggStatus == VedleggAlleredeSendt.
+     *         Ellers VedleggKreves hvis hasFiles == false, og LastetOpp hvis hasFiles == true.
      */
     @VisibleForTesting
     internal fun determineVedleggStatus(
@@ -263,17 +260,11 @@ class OkonomiskeOpplysningerRessurs(
         hasFiles: Boolean
     ): VedleggStatus {
         return when {
-            /*
-                Dersom alleredeLevert er satt til true, da er allerede sendt indikert vha. ny frontend-kode
-            */
+            /* Bruker indikerer at vedlegg allerede er sendt vha. ny frontend-kode */
             alleredeLevert == true -> VedleggStatus.VedleggAlleredeSendt
-            /*
-                Om vedleggStatus er VedleggAlleredeSendt, da er allerede sendt indikert vha. gammel frontend-kode
-            */
+            /* Bruker indikerer at vedlegg er allerede sendt vha. gammel frontend-kode */
             vedleggStatus == VedleggStatus.VedleggAlleredeSendt -> VedleggStatus.VedleggAlleredeSendt
-            /*
-                Bruker har ikke indikert at vedlegg allerede er sendt.
-            */
+            /* Bruker har ikke indikert at vedlegg allerede er sendt. */
             else -> {
                 if (hasFiles) VedleggStatus.LastetOpp
                 else VedleggStatus.VedleggKreves
