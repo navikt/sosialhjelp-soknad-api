@@ -24,6 +24,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -197,5 +198,30 @@ class OkonomiskeOpplysningerRessursTest {
 
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy { okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId) }
+    }
+
+    @Test
+    fun `should return VedleggAlleredeSendt when alleredeLevert is true`() {
+        val result = okonomiskeOpplysningerRessurs.determineVedleggStatus(true, VedleggStatus.LastetOpp, true)
+        Assertions.assertEquals(VedleggStatus.VedleggAlleredeSendt, result)
+    }
+
+    @Test
+    fun `should return VedleggAlleredeSendt when vedleggStatus is VedleggAlleredeSendt and alleredeLevert is not true`() {
+        val result =
+            okonomiskeOpplysningerRessurs.determineVedleggStatus(false, VedleggStatus.VedleggAlleredeSendt, true)
+        Assertions.assertEquals(VedleggStatus.VedleggAlleredeSendt, result)
+    }
+
+    @Test
+    fun `should return LastetOpp when alleredeLevert is false, vedleggStatus is not VedleggAlleredeSendt and hasFiles is true`() {
+        val result = okonomiskeOpplysningerRessurs.determineVedleggStatus(false, VedleggStatus.LastetOpp, true)
+        Assertions.assertEquals(VedleggStatus.LastetOpp, result)
+    }
+
+    @Test
+    fun `should return VedleggKreves when alleredeLevert is false, vedleggStatus is not VedleggAlleredeSendt and hasFiles is false`() {
+        val result = okonomiskeOpplysningerRessurs.determineVedleggStatus(false, VedleggStatus.LastetOpp, false)
+        Assertions.assertEquals(VedleggStatus.VedleggKreves, result)
     }
 }

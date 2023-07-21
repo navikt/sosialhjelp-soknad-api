@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 
+import com.google.common.annotations.VisibleForTesting
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
@@ -88,7 +89,11 @@ class OkonomiskeOpplysningerRessurs(
         )
     }
 
-    private fun hentBasertPaaMellomlagredeVedlegg(behandlingsId: String, eier: String, soknadUnderArbeid: SoknadUnderArbeid): VedleggFrontends {
+    private fun hentBasertPaaMellomlagredeVedlegg(
+        behandlingsId: String,
+        eier: String,
+        soknadUnderArbeid: SoknadUnderArbeid
+    ): VedleggFrontends {
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
@@ -98,7 +103,8 @@ class OkonomiskeOpplysningerRessurs(
             emptyList()
         }
 
-        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
+        val opplastedeVedleggFraJson =
+            jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
         if (opplastedeVedleggFraJson.isNotEmpty() &&
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
@@ -106,14 +112,21 @@ class OkonomiskeOpplysningerRessurs(
             log.info("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
         }
 
-        val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
+        val slettedeVedlegg =
+            removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg) },
+            okonomiskeOpplysninger = jsonVedleggs.map {
+                mapMellomlagredeVedleggToVedleggFrontend(
+                    it,
+                    jsonOkonomi,
+                    mellomlagredeVedlegg
+                )
+            },
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
         )
@@ -137,6 +150,7 @@ class OkonomiskeOpplysningerRessurs(
                 } else {
                     addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 }
+
                 "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
@@ -230,15 +244,55 @@ class OkonomiskeOpplysningerRessurs(
         return jsonVedleggs.none { it.type == vedlegg.type && it.tilleggsinfo == vedlegg.tilleggsinfo }
     }
 
-    private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
-        val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
-        jsonVedleggs
-            .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
-            ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
-
-        if (vedleggFrontend.vedleggStatus == VedleggStatus.VedleggKreves && jsonVedleggs.any { it.filer.isNotEmpty() }) {
-            log.warn("BehandlingsId: ${soknad.behandlingsId} - Vedlegg type: ${vedleggFrontend.type} har filer, men status settes til: ${vedleggFrontend.vedleggStatus}")
+    /**
+     * Utleder vedleggsstatus på en bakoverkompatibel måte.
+     *
+     * @param alleredeLevert Bruker indikerer at vedlegget allerede er levert (ny API-revisjon).
+     *        Returnerer VedleggAlleredeSendt dersom denne er true.
+     * @param vedleggStatus Status-felt fra gammel API-revisjon.
+     *        Returnerer VedleggAlleredeSendt dersom denne er VedleggAlleredeSendt.
+     * @param hasFiles om filer er lastet opp til vedlegget.
+     *        Om alleredeLevert er False og vedleggStatus ikke er VedleggAlleredeSendt,
+     *        returnerer VedleggKreves dersom hasFiles er false, og LastetOpp dersom hasFiles er true.
+     * @return Status på vedlegget
+     */
+    @VisibleForTesting
+    internal fun determineVedleggStatus(
+        alleredeLevert: Boolean,
+        vedleggStatus: VedleggStatus?,
+        hasFiles: Boolean
+    ): VedleggStatus {
+        return when {
+            /*
+                Dersom alleredeLevert er satt til true, da er allerede sendt indikert vha. ny frontend-kode
+            */
+            alleredeLevert == true -> VedleggStatus.VedleggAlleredeSendt
+            /*
+                Om vedleggStatus er VedleggAlleredeSendt, da er allerede sendt indikert vha. gammel frontend-kode
+            */
+            vedleggStatus == VedleggStatus.VedleggAlleredeSendt -> VedleggStatus.VedleggAlleredeSendt
+            /*
+                Bruker har ikke indikert at vedlegg allerede er sendt.
+            */
+            else -> {
+                if (hasFiles) VedleggStatus.LastetOpp
+                else VedleggStatus.VedleggKreves
+            }
         }
+    }
+
+    private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
+        val vedlegg =
+            JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
+                .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
+
+        requireNotNull(vedlegg) { "Vedlegget finnes ikke" }
+
+        vedlegg.status = determineVedleggStatus(
+            alleredeLevert = vedleggFrontend.alleredeLevert == true,
+            vedleggStatus = vedleggFrontend.vedleggStatus,
+            hasFiles = vedlegg.filer?.isNotEmpty() ?: false
+        ).name
     }
 
     data class VedleggFrontends(
