@@ -12,7 +12,7 @@ runs:
     - name: "Write master-version to branch"
       if: github.ref_name == 'master'
       run: |
-        echo "VERSION=${{ steps.version-master.outputs.artifact-version }}" >> $GITHUB_ENV
+        echo "VERSION=${{ steps.version-master.outputs.version }}" >> $GITHUB_ENV
       shell: bash
 
     - name: "Version for branch"
