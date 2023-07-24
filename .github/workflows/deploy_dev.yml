@@ -27,7 +27,7 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
       - name: Get (master) or create tag (feature branch)
-        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@test_dev_deploy
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@master
 
       - name: Build and push Docker Image
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
