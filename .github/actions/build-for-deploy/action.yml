@@ -12,7 +12,7 @@ runs:
     - name: Build kotlin, and run tests/lint
       uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
       with:
-        task-type: "assemble"
+        task-type: 'assemble'
 
     - name: Create and release tag
       id: artifact-version
