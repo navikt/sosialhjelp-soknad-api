@@ -23,18 +23,10 @@ jobs:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Build kotlin, and run tests/lint
-        uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
-
-      - name: Get (master) or create tag (feature branch)
-        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@master
-
-      - name: Build and push Docker Image
-        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+      - name: Tag and Build Image for Deploy
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@master
         with:
-          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-version: ${{ env.VERSION }}
+          prefix: ${{ github.ref_name }}_
 
       - name: Utled cluster fra valgt config
         run: |

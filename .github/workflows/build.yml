@@ -1,4 +1,4 @@
-name: Build kotlin and docker image
+name: Build Kotlin
 on:
   push:
     branches:
@@ -7,10 +7,9 @@ on:
       - '**' # Don't build any tags
   workflow_dispatch:
 
-# FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
   build:
-    name: Build with gradle
+    name: Build With Gradle
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -19,18 +18,5 @@ jobs:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Build kotlin, and run tests/lint
+      - name: Build Kotlin, ktlint and Tests
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
-
-      - name: Create and release tag
-        id: artifact-version
-        if: github.ref_name == 'master'
-        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-
-      - name: Build and push Docker Image
-        if: github.ref_name == 'master'
-        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
-        with:
-          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}

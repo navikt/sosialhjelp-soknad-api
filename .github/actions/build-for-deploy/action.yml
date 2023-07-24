@@ -1,0 +1,28 @@
+name: "Create tag and build image for deploy"
+description: "Create tag and build image for branch depending on deploy"
+
+inputs:
+  prefix:
+    description: "Prefix for feature branches"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build kotlin, and run tests/lint
+      uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
+      with:
+        task-type: "assemble"
+
+    - name: Create and release tag
+      id: artifact-version
+      uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+      with:
+        prefix: ${{ inputs.prefix }}
+
+    - name: Build and push Docker Image
+      uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+      with:
+        image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
