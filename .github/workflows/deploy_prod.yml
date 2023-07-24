@@ -21,10 +21,21 @@ jobs:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Tag and Build Image for Deploy
-        uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@master
+      - name: Build kotlin, and run tests/lint
+        uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
         with:
+          task-type: 'assemble'
+
+      - name: Create and release tag
+        id: artifact-version
+        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+
+      - name: Build and push Docker Image
+        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+        with:
+          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
 
       - name: deploy til prod-fss
         uses: nais/deploy/actions/deploy@v1
