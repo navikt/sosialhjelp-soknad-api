@@ -1,0 +1,36 @@
+  name: "Build for Deploy"
+  description: "Build Tag and Image for Deploy"
+
+  inputs:
+    github-token:
+      required: true
+      description: "GitHub token"
+    prefix:
+      required: false
+      description: "Prefix for artifact version"
+
+  outputs:
+    image-version:
+      description: "Created Artifact version"
+      value: ${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}
+
+  runs:
+    using: "composite"
+    steps:
+      - name: Build kotlin, and run tests/lint
+        uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
+        with:
+          task-type: 'assemble'
+
+      - name: Create and release tag
+        id: artifact-version
+        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+        with:
+          prefix: ${{ inputs.prefix }}
+
+      - name: Build and push Docker Image
+        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+        with:
+          image-name: ${{ env.DOCKER_IMAGE }}
+          github-token: ${{ inputs.github-token }}
+          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
