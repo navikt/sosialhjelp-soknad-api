@@ -1,5 +1,5 @@
-name: "Determine tag version"
-description: "Determine tag version based on branch"
+name: "Get or create tag"
+description: "Get or create tag based on branch"
 
 runs:
   using: "composite"

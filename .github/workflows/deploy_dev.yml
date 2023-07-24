@@ -26,7 +26,7 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
-      - name: Determine tag version based on branch
+      - name: Get (master) or create tag (feature branch)
         uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@test_dev_deploy
 
       - name: Build and push Docker Image
