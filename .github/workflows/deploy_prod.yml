@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Tag and Build Image for Deploy
         uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: deploy til prod-fss
         uses: nais/deploy/actions/deploy@v1

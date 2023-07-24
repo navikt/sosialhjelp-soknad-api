@@ -2,6 +2,9 @@ name: "Create tag and build image for deploy"
 description: "Create tag and build image for branch depending on deploy"
 
 inputs:
+  github-token:
+    required: true
+    description: "GitBub token"
   prefix:
     description: "Prefix for feature branches"
     required: false
@@ -24,5 +27,5 @@ runs:
       uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
       with:
         image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
         artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}

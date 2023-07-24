@@ -26,6 +26,7 @@ jobs:
       - name: Tag and Build Image for Deploy
         uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@master
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           prefix: ${{ github.ref_name }}_
 
       - name: Utled cluster fra valgt config
