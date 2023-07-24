@@ -7,6 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 @SpringBootApplication
 class Application {
 
+    // TODO bortkasta todo
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
