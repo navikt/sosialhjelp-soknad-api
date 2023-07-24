@@ -1,0 +1,22 @@
+name: "Determine tag version"
+description: "Determine tag version based on branch"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Version for master"
+      if: github.ref_name == 'master'
+      id: artifact-version
+      uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
+
+    - name: "Write to env"
+      if: github.ref_name == 'master'
+      run: |
+        echo "VERSION=${{ steps.artifact-version.outputs.artifact-version }}"
+      shell: bash
+
+    - name: "Version for branch"
+      if: github.ref_name != 'master'
+      uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+      with:
+        prefix: ${{ github.ref_name }}

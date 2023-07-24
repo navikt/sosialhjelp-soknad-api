@@ -26,12 +26,8 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
-      - name: Create and release tag
-        id: artifact-version
-        if: github.ref_name == 'master'
-        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-        with:
-          prefix: ${{ github.ref_name }}
+      - name: Determine tag version based on branch
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@master
 
       - name: Build and push Docker Image
         if: github.ref_name == 'master'
@@ -39,7 +35,7 @@ jobs:
         with:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
+          artifact-version: ${{ env.VERSION }}
 
       - name: Utled cluster fra valgt config
         run: |
