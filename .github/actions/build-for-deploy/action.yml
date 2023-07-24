@@ -11,8 +11,8 @@
 
   outputs:
     image-version:
-      description: "Created Artifact version"
-      value: ${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}
+      description: "Image version"
+      value: ${{ steps.image-version.outputs.image-version }}
 
   runs:
     using: "composite"
@@ -34,3 +34,7 @@
           image-name: ${{ env.DOCKER_IMAGE }}
           github-token: ${{ inputs.github-token }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
+
+      - id: image-version
+        run: echo "image-version=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs }}" >> $GITHUB_OUTPUT
+        shell: bash
