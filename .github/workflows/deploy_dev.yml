@@ -30,7 +30,6 @@ jobs:
         uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@test_dev_deploy
 
       - name: Build and push Docker Image
-        if: github.ref_name == 'master'
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
         with:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}

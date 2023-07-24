@@ -19,4 +19,4 @@ runs:
       if: github.ref_name != 'master'
       uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
       with:
-        prefix: ${{ github.ref_name }}
+        prefix: ${{ github.ref_name }}_
