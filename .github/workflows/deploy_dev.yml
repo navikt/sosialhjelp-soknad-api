@@ -27,7 +27,7 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
       - name: Determine tag version based on branch
-        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@master
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/determine-version@test_dev_deploy
 
       - name: Build and push Docker Image
         if: github.ref_name == 'master'
