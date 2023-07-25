@@ -29,13 +29,15 @@ jobs:
         uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@ikke_image_fb
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          prefix: ${{ github.ref_name }}_
+          prefix: ${{ github.ref_name }}-
 
   deploy-to-dev:
     name: Deploy to dev - ${{ github.event.inputs.config }}
     needs: build-for-deploy
     runs-on: ubuntu-latest
     steps:
+      - run: echo "${{ needs.build-for-deploy.outputs.image-tag }}"
+
       - uses: actions/checkout@v3
 
       - name: Utled cluster fra valgt config
