@@ -22,7 +22,7 @@ jobs:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      image-tag: ${{ steps.build-and-release.outputs.image-tag }}
+      docker-image-tag: ${{ steps.build-and-release.outputs.image-tag }}
     steps:
       - name: Build and Tag for Deploy
         id: build-and-release
@@ -36,7 +36,7 @@ jobs:
     needs: build-for-deploy
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ needs.build-for-deploy.outputs.image-tag }}"
+      - run: echo ${{ needs.build-for-deploy.outputs.docker-image-tag }}
 
       - uses: actions/checkout@v3
 
@@ -57,4 +57,4 @@ jobs:
           CLUSTER: ${{ env.CLUSTER_NAME }}
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
-          IMAGE: ${{ needs.build-for-deploy.outputs.image-tag }}
+          IMAGE: ${{ needs.build-for-deploy.outputs.docker-image-tag }}
