@@ -1,4 +1,4 @@
-name: Build kotlin and docker image
+name: 'Build Kotlin, Run Lint and Test'
 on:
   push:
     branches:
@@ -21,16 +21,3 @@ jobs:
     steps:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
-
-      - name: Create and release tag
-        id: artifact-version
-        if: github.ref_name == 'master'
-        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-
-      - name: Build and push Docker Image
-        if: github.ref_name == 'master'
-        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
-        with:
-          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
