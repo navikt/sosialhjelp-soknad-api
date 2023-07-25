@@ -1,0 +1,45 @@
+name: 'Build for Deploy'
+description: 'Build Kotlin, Tag and Release, Build Docker Image and Deploy'
+
+inputs:
+  github-token:
+    required: true
+    description: 'GitHub Token'
+  prefix:
+    required: false
+    description: 'Prefix for Artifact Version'
+
+outputs:
+  image-tag:
+    description: 'The current image tag for the created image'
+    value: ${{ steps.image-tag.outputs.image-tag }}
+
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+        echo "DOCKER_IMAGE=ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Build kotlin, and run tests/lint
+      uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
+      with:
+        task-type: 'assemble'
+
+    - name: Create and release tag
+      id: artifact-version
+      uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+      with:
+        prefix: ${{ github.ref_name }}
+
+    - name: Build and push Docker Image
+      uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+      with:
+        image-name: ${{ env.DOCKER_IMAGE }}
+        github-token: ${{ inputs.github-token }}
+        artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
+
+    - id: current-image-tag
+      run: |
+        echo "image-tag=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.artifact-version }}" >> $GITHUB_OUTPUT
+      shell: bash
