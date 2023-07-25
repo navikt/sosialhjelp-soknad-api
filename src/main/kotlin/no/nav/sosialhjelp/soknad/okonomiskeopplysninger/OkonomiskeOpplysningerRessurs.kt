@@ -266,10 +266,8 @@ class OkonomiskeOpplysningerRessurs(
             /* Bruker indikerer at vedlegg er allerede sendt vha. gammel frontend-kode */
             vedleggStatus == VedleggStatus.VedleggAlleredeSendt -> VedleggStatus.VedleggAlleredeSendt
             /* Bruker har ikke indikert at vedlegg allerede er sendt. */
-            else -> {
-                if (hasFiles) VedleggStatus.LastetOpp
-                else VedleggStatus.VedleggKreves
-            }
+            hasFiles -> VedleggStatus.LastetOpp
+            else -> VedleggStatus.VedleggKreves
         }
     }
 
@@ -279,9 +277,9 @@ class OkonomiskeOpplysningerRessurs(
         requireNotNull(vedlegg) { "Vedlegget finnes ikke" }
 
         vedlegg.status = determineVedleggStatus(
-            alleredeLevert = vedleggFrontend.alleredeLevert == true,
+            alleredeLevert = vedleggFrontend.alleredeLevert ?: false,
             vedleggStatus = vedleggFrontend.vedleggStatus,
-            hasFiles = vedlegg.filer?.isNotEmpty() ?: false
+            hasFiles = vedlegg.filer.isNotEmpty()
         ).name
     }
 
