@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Build and Tag for Deploy
         id: build-and-release
-        uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@ikke_image_fb
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dev-build: ${{ github.ref_name }}
