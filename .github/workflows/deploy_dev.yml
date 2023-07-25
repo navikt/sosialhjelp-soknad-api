@@ -1,5 +1,5 @@
 name: Deploy to Development
-run-name: Deploy of ${{ github.ref_name }} to ${{ github.event.inputs.config }}
+run-name: Deploy branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
 on:
   workflow_dispatch:
     inputs:
@@ -33,7 +33,7 @@ jobs:
           dev-build: ${{ github.ref_name }}
 
   deploy-to-dev:
-    name: Deploying ${{ github.ref_name }} to ${{ github.event.inputs.config }}
+    name: Deploying branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
     needs: build-for-deploy
     runs-on: ubuntu-latest
     steps:
