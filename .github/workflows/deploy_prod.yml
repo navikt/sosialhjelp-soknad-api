@@ -1,4 +1,4 @@
-name: Deploy til prod
+name: Deploy to Production
 on:
   workflow_run:
     workflows: ['Build Kotlin, Run Lint and Test']    # Venter på at bygg på master har kjørt uten feil
@@ -28,7 +28,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-fss:
-    name: 'Deploy to Prod-fss'
+    name: 'Deploy to prod-fss'
     needs: build-for-deploy
     runs-on: ubuntu-latest
     steps:
