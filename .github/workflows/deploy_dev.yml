@@ -1,4 +1,5 @@
-name: Deploy of ${{ github.ref_name }} to ${{ github.event.inputs.config }}
+name: Deploy to Development
+run-name: Deploy of ${{ github.ref_name }} to ${{ github.event.inputs.config }}
 on:
   workflow_dispatch:
     inputs:
