@@ -5,9 +5,10 @@ inputs:
   github-token:
     required: true
     description: 'GitHub Token'
-  prefix:
+  dev-build:
+    description: 'Build image for branch'
     required: false
-    description: 'Prefix for Artifact Version'
+    default: 'true'
 
 outputs:
   image-tag:
@@ -21,18 +22,17 @@ runs:
         echo "DOCKER_IMAGE=ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
       shell: bash
 
-    - name: Build kotlin, and run tests/lint
+    - name: 'Build Kotlin, ktlint and run Tests'
       uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
       with:
         task-type: 'assemble'
 
-    - name: Create and release tag
+    - name: 'Create and release tag'
       id: artifact-version
       uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-      with:
-        prefix: ${{ inputs.prefix }}
 
-    - name: Build and push Docker Image
+    - name: 'Build and push Docker Image'
+      if: inputs.dev-build != 'master'
       uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
       with:
         image-name: ${{ env.DOCKER_IMAGE }}

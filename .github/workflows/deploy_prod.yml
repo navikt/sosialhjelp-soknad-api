@@ -1,7 +1,7 @@
 name: Deploy til prod
 on:
   workflow_run:
-    workflows: ["Build kotlin and docker image"]    # Venter på at bygg av image er ferdig
+    workflows: ['Build Kotlin, Run Lint and Test']    # Venter på at bygg på master har kjørt uten feil
     branches: [master]
     types:
       - completed
@@ -9,20 +9,31 @@ on:
     types: [deploy_prod_tag]
 
 jobs:
-  deploy-fss:
-    name: Deploy to prod-fss
-    if: ${{ github.event_name == 'repository_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+  build-for-deploy:
+    name: 'Build for Deploy to Production'
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
     env:
-      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      docker-image-tag: ${{ steps.build-and-release.outputs.image-tag }}
+    steps:
+      - name: 'Build and Tag for Deploy'
+        id: build-and-release
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/build-for-deploy@ikke_image_fb
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-fss:
+    name: 'Deploy to Prod-fss'
+    needs: build-for-deploy
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Create artifact version
-        id: artifact-version
-        uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
-      - name: Create docker image tags
-        run: |
-          echo "DOCKER_TAG=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}" >> $GITHUB_ENV
+
       - name: deploy til prod-fss
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -31,4 +42,4 @@ jobs:
           CLUSTER: prod-fss
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
-          IMAGE: ${{ env.DOCKER_TAG }}
+          IMAGE: ${{ needs.build-for-deploy.outputs.docker-image-tag }}
