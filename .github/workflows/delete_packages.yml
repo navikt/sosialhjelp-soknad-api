@@ -1,0 +1,19 @@
+name: 'Remove old packages'
+on:
+  workflow_dispatch:
+  schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
+    - cron: '0 5 * * 1-5'
+
+# FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
+jobs:
+  remove-packages:
+    name: 'Remove old packages'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with:
+          package-name: 'sosialhjelp-soknad-api'
+          package-type: 'docker'
+          min-versions-to-keep: 100
