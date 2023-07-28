@@ -14,6 +14,6 @@ jobs:
     steps:
       - uses: actions/delete-package-versions@v4
         with:
-          package-name: 'sosialhjelp-soknad-api'
+          package-name: 'sosialhjelp-soknad-api/sosialhjelp-soknad-api'
           package-type: 'container'
           min-versions-to-keep: 50
