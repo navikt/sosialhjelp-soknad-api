@@ -15,7 +15,5 @@ jobs:
       - uses: actions/delete-package-versions@v4
         with:
           package-name: 'sosialhjelp-soknad-api'
-          package-type: 'docker'
-          min-versions-to-keep: 100
-          num-old-versions-to-delete: 100
-          token: ${{ secrets.GITHUB_TOKEN }}
+          package-type: 'container'
+          min-versions-to-keep: 50
