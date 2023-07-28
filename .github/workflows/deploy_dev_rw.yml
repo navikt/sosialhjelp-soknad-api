@@ -1,0 +1,38 @@
+name: Deploy to Development
+run-name: Deploy branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: 'Hvilken config skal deployes?'
+        required: true
+        default: 'dev-fss'
+        type: choice
+        options:
+          - 'mock'
+          - 'dev-fss'
+
+jobs:
+  need-image-job:
+    name: 'Image exists?'
+    runs-on: ubuntu-latest
+    outputs:
+      need-image: ${{ steps.need-build-image.outputs.need-image }}
+    steps:
+      - id: need-build-image
+        run: if [[ ${{ github.ref_name }} = 'master' ]]; then
+          echo "need-image=false" >> $GITHUB_OUTPUT
+          else
+          echo "need-image=true" >> $GITHUB_OUTPUT
+          fi
+
+  deploy-to-dev:
+    name: 'Deploy to dev'
+    needs: need-image-job
+    permissions:
+      packages: write
+      contents: write
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app_workflow.yml@master
+    with:
+      cluster-name: ${{ inputs.config }}
+      build-image: ${{ needs.need-image-job.outputs.need-image }}
