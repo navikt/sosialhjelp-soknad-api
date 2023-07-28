@@ -16,4 +16,5 @@ jobs:
         with:
           package-name: 'sosialhjelp-soknad-api/sosialhjelp-soknad-api'
           package-type: 'container'
-          min-versions-to-keep: 50
+#          min-versions-to-keep: 50
+          num-old-versions-to-delete: 5000

@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '.github/**'
   schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
     - cron: '0 5 * * 1-5'
 
