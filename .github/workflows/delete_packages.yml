@@ -1,8 +1,8 @@
 name: 'Remove old packages'
 on:
   schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
-    - cron: '* * * * *'
-      #kjør hvert minutt til det gjenstår 20
+    - cron: '0-59 * * * *'
+
 jobs:
   remove-packages:
     name: 'Remove old packages'
