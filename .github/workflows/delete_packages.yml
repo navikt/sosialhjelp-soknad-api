@@ -1,6 +1,5 @@
 name: 'Remove old packages'
 on:
-  workflow_dispatch:
   schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
     - cron: '* * * * *'
       #kjør hvert minutt til det gjenstår 20
