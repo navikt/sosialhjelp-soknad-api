@@ -17,3 +17,5 @@ jobs:
           package-name: 'sosialhjelp-soknad-api'
           package-type: 'docker'
           min-versions-to-keep: 100
+          num-old-versions-to-delete: 100
+          token: ${{ secrets.GITHUB_TOKEN }}
