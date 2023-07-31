@@ -14,7 +14,7 @@ on:
 
 jobs:
   need-image-job:
-    name: 'Image exists?'
+    name: 'Determine if image should be built (master = false)'
     runs-on: ubuntu-latest
     outputs:
       need-image: ${{ steps.need-build-image.outputs.need-image }}
@@ -33,7 +33,7 @@ jobs:
     permissions:
       packages: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app_workflow.yml@master
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_dev.yml@reusable_workflow
     with:
       cluster-name: ${{ inputs.config }}
       build-image: ${{ needs.need-image-job.outputs.need-image }}
