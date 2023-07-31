@@ -22,14 +22,14 @@ jobs:
     outputs:
       docker-image-tag: ${{ steps.current-image-tag.outputs.image-tag }}
     steps:
-      - name: 'Create and release tag'
-        id: artifact-version
-        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-
       - name: 'Assemble code'
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
         with:
           task-type: 'assemble'
+
+      - name: 'Create and release tag'
+        id: artifact-version
+        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
 
       - name: 'Build and push Docker Image'
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
