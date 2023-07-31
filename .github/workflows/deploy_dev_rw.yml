@@ -11,29 +11,22 @@ on:
         options:
           - 'mock'
           - 'dev-fss'
+      build-image:
+        description: "Skal image bygges? (Kan finnes allerede på master)"
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
-  need-image-job:
-    name: 'Determine if image should be built (master = false)'
-    runs-on: ubuntu-latest
-    outputs:
-      need-image: ${{ steps.need-build-image.outputs.need-image }}
-    steps:
-      - id: need-build-image
-        run: | 
-          if [[ ${{ github.ref_name }} = 'master' ]]; then
-            echo "need-image=false" >> $GITHUB_OUTPUT
-          else
-            echo "need-image=true" >> $GITHUB_OUTPUT
-          fi
-
   deploy-to-dev:
     name: 'Deploy to dev'
-    needs: need-image-job
     permissions:
       packages: write
       contents: write
     uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_dev.yml@reusable_workflows
     with:
       cluster-name: ${{ inputs.config }}
-      build-image: ${{ needs.need-image-job.outputs.need-image }}
+      build-image: ${{ inputs.build-image }}
