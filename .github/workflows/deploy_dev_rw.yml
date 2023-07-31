@@ -1,15 +1,15 @@
 name: NEW - Deploy to Development
-run-name: Deploy branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
+run-name: Deploy branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - (build image = ${{ inputs.build-image }}
 on:
   workflow_dispatch:
     inputs:
       config:
-        description: 'Hvilken config skal deployes?'
+        description: 'Deploye til dev-gcp (mock) eller dev-fss?'
         required: true
         default: 'dev-fss'
         type: choice
         options:
-          - 'mock'
+          - 'dev-gcp'
           - 'dev-fss'
       build-image:
         description: "Skal image bygges? (Kan finnes allerede på master)"
