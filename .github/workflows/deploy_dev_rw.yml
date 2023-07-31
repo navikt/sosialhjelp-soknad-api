@@ -26,7 +26,7 @@ jobs:
     permissions:
       packages: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_dev.yml@master
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@master
     with:
       cluster-name: ${{ inputs.config }}
       build-image: ${{ inputs.build-image }}

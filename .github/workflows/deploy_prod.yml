@@ -1,10 +1,10 @@
 name: Deploy to Production
 on:
-  workflow_run:
-    workflows: ['Build Kotlin, Run Lint and Test']    # Venter på at bygg på master har kjørt uten feil
-    branches: [master]
-    types:
-      - completed
+#  workflow_run:
+#    workflows: ['Build Kotlin, Run Lint and Test']    # Venter på at bygg på master har kjørt uten feil
+#    branches: [master]
+#    types:
+#      - completed
   repository_dispatch:
     types: [deploy_prod_tag]
 
