@@ -19,7 +19,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 * Redis (cache)
 
 ### Krav
-* Java (JDK) 17
+* Java (JDK) 17.
 
 ### Kjøring lokalt mot mock-alt
 Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
