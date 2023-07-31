@@ -35,7 +35,7 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
         with:
           image-name: ${{ env.DOCKER_IMAGE }}
-          github-token: ${{ inputs.github-token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
 
       - id: current-image-tag
