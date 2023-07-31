@@ -1,5 +1,5 @@
 name: NEW - Deploy to Development
-run-name: Deploy branch '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - (build image = ${{ inputs.build-image }}
+run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - build image = ${{ inputs.build-image }}
 on:
   workflow_dispatch:
     inputs:
@@ -26,7 +26,7 @@ jobs:
     permissions:
       packages: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_dev.yml@reusable_workflows
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_to_dev.yml@master
     with:
       cluster-name: ${{ inputs.config }}
       build-image: ${{ inputs.build-image }}
