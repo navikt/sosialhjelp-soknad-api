@@ -30,3 +30,4 @@ jobs:
     with:
       cluster-name: ${{ inputs.config }}
       build-image: ${{ inputs.build-image }}
+    secrets: inherit
