@@ -1,5 +1,5 @@
 name: NEW - Deploy to Production
-run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - build image = ${{ inputs.build-image }}
+run-name: Deploy to 'prod-fss'
 on:
   workflow_run:
     workflows: [ 'Build Kotlin, Run Lint and Test' ]    # Venter på at bygg på master har kjørt uten feil
