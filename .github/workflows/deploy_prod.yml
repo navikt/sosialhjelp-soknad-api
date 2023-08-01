@@ -1,4 +1,4 @@
-name: NEW - Deploy to Production
+name: Deploy to Production
 run-name: Deploy to 'prod-fss'
 on:
   workflow_run:
