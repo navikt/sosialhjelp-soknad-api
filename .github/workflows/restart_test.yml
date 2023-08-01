@@ -1,4 +1,4 @@
-name: 'Deploy av master-branch til testmiljøer'
+name: 'Restart test-miljø (mock og dev-fss)'
 on:
   schedule:
     - cron: '0 2 * * *'
