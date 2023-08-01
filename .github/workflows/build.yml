@@ -9,7 +9,6 @@ on:
       - '.github/**'
   workflow_dispatch:
 
-# FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
   build:
     name: Build with gradle

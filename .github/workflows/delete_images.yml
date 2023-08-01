@@ -1,11 +1,11 @@
-name: 'Remove old packages'
+name: 'Remove old images'
 on:
-  schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
+  schedule: ## Kjører kl. 05:00 mandag (schedule kjører bare for Default branch)
     - cron: '0 5 * * 1'
 
 jobs:
-  remove-packages:
-    name: 'Remove old packages'
+  remove-images:
+    name: 'Remove old images job except 50 most recent'
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -14,4 +14,4 @@ jobs:
         with:
           package-name: 'sosialhjelp-soknad-api/sosialhjelp-soknad-api'
           package-type: 'container'
-          min-versions-to-keep: 20
+          min-versions-to-keep: 50
