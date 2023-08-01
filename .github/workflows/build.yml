@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Build with gradle
+    name: 'Build with Gradle'
     runs-on: ubuntu-latest
     permissions:
       packages: write
