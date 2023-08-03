@@ -1,4 +1,4 @@
-name: NEW - Deploy to Development
+name: 'NEW - Deploy to Development'
 run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - build image = ${{ inputs.build-image }}
 on:
   workflow_dispatch:
