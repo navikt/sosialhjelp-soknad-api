@@ -1,5 +1,5 @@
 name: Deploy to Development
-run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}' - build image = ${{ inputs.build-image }}
+run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
 on:
   workflow_dispatch:
     inputs:
@@ -11,14 +11,6 @@ on:
         options:
           - 'dev-gcp'
           - 'dev-fss'
-      build-image:
-        description: "Skal image bygges? (Kan finnes allerede på master)"
-        required: false
-        default: 'true'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 jobs:
   deploy-to-dev:
@@ -26,8 +18,7 @@ jobs:
     permissions:
       packages: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@master
+    uses: navikt/sosialhjelp-ci/.github/workflows/new_deploy_app.yml@v2
     with:
       cluster-name: ${{ inputs.config }}
-      build-image: ${{ inputs.build-image }}
     secrets: inherit

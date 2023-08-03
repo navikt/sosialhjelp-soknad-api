@@ -5,8 +5,6 @@ on:
       - '**' # Build all branches
     tags-ignore:
       - '**' # Don't build any tags
-    paths-ignore:
-      - '.github/**'
   workflow_dispatch:
 
 jobs:
