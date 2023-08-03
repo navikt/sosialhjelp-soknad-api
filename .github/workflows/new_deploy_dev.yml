@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       config:
-        description: 'Deploye til dev-gcp (mock) eller dev-fss?'
+        description: 'Deploye til mock(=dev-gcp) eller dev-fss?'
         required: true
         default: 'dev-fss'
         type: choice
