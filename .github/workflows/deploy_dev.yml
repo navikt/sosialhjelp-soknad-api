@@ -21,4 +21,5 @@ jobs:
     uses: navikt/sosialhjelp-ci/.github/workflows/new_deploy_app.yml@v2
     with:
       cluster-name: ${{ inputs.config }}
+      resource-name: ${{ inputs.config }}
     secrets: inherit
