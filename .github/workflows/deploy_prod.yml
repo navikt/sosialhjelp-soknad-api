@@ -12,7 +12,7 @@ jobs:
     permissions:
       packages: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/new_deploy_app.yml@v2
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v2
     with:
       cluster-name: 'prod-fss'
       resource-folder: 'prod'
