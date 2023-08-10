@@ -18,5 +18,6 @@ jobs:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@v3
       - name: Build kotlin, and run tests/lint
-        uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
+        uses: navikt/sosialhjelp-ci/actions/build-kotlin@v2
