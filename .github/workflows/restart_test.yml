@@ -7,5 +7,5 @@ on:
 jobs:
   restart-testenvs:
     name: 'Restart test-envs'
-    uses: navikt/sosialhjelp-ci/.github/workflows/restart_test-envs.yml@master
+    uses: navikt/sosialhjelp-ci/.github/workflows/restart_test-envs.yml@v2
     secrets: inherit
