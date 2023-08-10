@@ -9,6 +9,7 @@ on:
 jobs:
   deploy-to-prod:
     name: 'Deploy to prod-fss'
+    if: ${{ github.event_name == 'repository_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       packages: write
       contents: write
