@@ -1,9 +1,9 @@
 name: Deploy to Development
-run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config }}'
+run-name: Deploy '${{ github.ref_name }}' to '${{ github.event.inputs.config-file-name }}'
 on:
   workflow_dispatch:
     inputs:
-      config:
+      config-file-name:
         description: 'Deploye til dev-gcp (mock) eller dev-fss?'
         required: true
         default: 'dev-fss'
@@ -13,13 +13,26 @@ on:
           - 'dev-fss'
 
 jobs:
+  set-cluster:
+    name: 'Sett cluster basert på config-file'
+    runs-on: ubuntu-latest
+    outputs:
+      cluster-name: ${{ steps.set-cluster-name.outputs.cluster-name }}
+    steps:
+      - name: Sett cluster basert på config-file
+        id: set-cluster-name
+        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v2
+        with:
+          resource-name: ${{ inputs.config-file-name }}
+
   deploy-to-dev:
     name: 'Deploy to dev'
+    needs: set-cluster
     permissions:
       packages: write
       contents: write
     uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v2
     with:
-      cluster-name: ${{ inputs.config }}
-      resource-name: ${{ inputs.config }}
+      cluster-name: ${{ needs.set-cluster.outputs.cluster-name }}
+      resource-name: ${{ inputs.config-file-name }}
     secrets: inherit
