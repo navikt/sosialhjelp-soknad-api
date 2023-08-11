@@ -9,36 +9,12 @@ on:
       - 'master'
     tags-ignore:
       - "**" # Don't build any tags
-permissions:
-  contents: read
 
 jobs:
-  deploy-dev-fss:
-    name: Auto-deploy redis to dev-fss
-    runs-on: ubuntu-latest
-    steps:
-      - name: Sjekk ut kode
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLUSTER: dev-fss
-          TEAM: teamdigisos
-          RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
-
-  deploy-dev-gcp:
-    name: Auto-deploy redis to dev-gcp
-    runs-on: ubuntu-latest
-    steps:
-      - name: Hente kode
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLUSTER: dev-gcp
-          TEAM: teamdigisos
-          RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
+  deploy-redis:
+    name: 'Deploy Redis to Dev'
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_redis.yml@v2
+    secrets: inherit
+    with:
+      to-dev-fss: true
+      to-dev-gcp: true
