@@ -16,11 +16,17 @@ data class VedleggFrontend(
 )
 
 data class VedleggRadFrontend(
+    @Schema(nullable = true)
     val beskrivelse: String? = null,
+    @Schema(nullable = true)
     val belop: Int? = null,
+    @Schema(nullable = true)
     val brutto: Int? = null,
+    @Schema(nullable = true)
     val netto: Int? = null,
+    @Schema(nullable = true)
     val avdrag: Int? = null,
+    @Schema(nullable = true)
     var renter: Int? = null
 )
 
