@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 /**
- * Klassen håndterer rest kall for å hente informasjon
+ * Håndterer informasjon om bruker og nylig innsendte/ufullstendige søknader,
+ * samt adressesøk.
  */
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
@@ -45,6 +47,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/fornavn")
+    @Deprecated("Bruk getSession")
     fun hentFornavn(): Map<String, String> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
@@ -54,6 +57,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @Deprecated("Bruk getSession")
     fun getUtslagskriterier(): Utslagskriterier {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
@@ -90,6 +94,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/harNyligInnsendteSoknader")
+    @Deprecated("Bruk getSession")
     fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
@@ -98,10 +103,43 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/pabegynteSoknader")
+    @Deprecated("Bruk getSession")
     fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         log.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
+    }
+
+    @GetMapping("/session")
+    fun getSession(): SessionResponse {
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+
+        log.debug("Henter søknadsinfo for bruker")
+
+        val person = personService.hentPerson(fnr)
+
+        // Bør dette ikke egentlig lede til en 500?
+        if (person === null) log.error("Fant ikke person for bruker")
+
+        val beskyttelse = personService.hentAdressebeskyttelse(fnr)
+
+        val userBlocked = beskyttelse in listOf(FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
+
+        val pabegynte = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
+
+        val antallNyligInnsendte =
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
+                fnr,
+                LocalDateTime.now().minusDays(FJORTEN_DAGER)
+            ).size
+
+        return SessionResponse(
+            userBlocked = userBlocked,
+            fornavn = person?.fornavn,
+            daysBeforeDeletion = FJORTEN_DAGER,
+            pabegynte = pabegynte,
+            antallNyligInnsendte = antallNyligInnsendte
+        )
     }
 
     enum class Sperrekode {
@@ -111,5 +149,19 @@ class InformasjonRessurs(
     data class Utslagskriterier(
         val harTilgang: Boolean,
         val sperrekode: Sperrekode?,
+    )
+
+    @Schema(description = "Informasjon om en brukers økt")
+    data class SessionResponse(
+        @Schema(description = "Brukeren har gradert adresse (ihht kap. 6/7)")
+        val userBlocked: Boolean,
+        @Schema(description = "Brukerens fornavn")
+        val fornavn: String?,
+        @Schema(description = "Antall dager etter siste endring før søknader slettes")
+        val daysBeforeDeletion: Long,
+        @Schema(description = "Påbegynte men ikke innleverte søknader")
+        val pabegynte: List<PabegyntSoknad>,
+        @Schema(description = "Antall nylig innsendte søknader")
+        val antallNyligInnsendte: Int,
     )
 }
