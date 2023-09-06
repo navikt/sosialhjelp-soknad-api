@@ -47,7 +47,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/fornavn")
-    @Deprecated("Bruk getSession")
+    @Deprecated("Bruk getSessionInfo")
     fun hentFornavn(): Map<String, String> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
@@ -57,7 +57,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @Deprecated("Bruk getSession")
+    @Deprecated("Bruk getSessionInfo")
     fun getUtslagskriterier(): Utslagskriterier {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
@@ -94,7 +94,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/harNyligInnsendteSoknader")
-    @Deprecated("Bruk getSession")
+    @Deprecated("Bruk getSessionInfo")
     fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
@@ -103,7 +103,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/pabegynteSoknader")
-    @Deprecated("Bruk getSession")
+    @Deprecated("Bruk getSessionInfo")
     fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         log.debug("Henter pabegynte soknader for bruker")
@@ -111,7 +111,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSession(): SessionResponse {
+    fun getSessionInfo(): SessionResponse {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
 
         log.debug("Henter søknadsinfo for bruker")
