@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
+@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
