@@ -29,7 +29,7 @@ import java.time.LocalDateTime
  * Klassen håndterer rest kall for å hente informasjon
  */
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
+@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/informasjon")
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
