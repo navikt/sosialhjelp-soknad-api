@@ -75,14 +75,17 @@ internal class VedleggUtilsTest {
     }
 
     @Test
-    fun `FinnVedleggEllerKastException finner `() {
+    fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
+
+        val vedleggType = OpplastetVedleggType("hei|på deg")
+
         val soknadUnderArbeid = createSoknadUnderArbeid(
             JsonInternalSoknad().withVedlegg(
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType("hei|på deg").type)
-                            .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
+                            .withType(vedleggType.type)
+                            .withTilleggsinfo(vedleggType.tilleggsinfo)
                             .withStatus("VedleggKreves")
                     )
                 )
