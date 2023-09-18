@@ -266,7 +266,6 @@ dependencies {
             because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
         }
 
-
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
         testImplementation("junit:junit:${Versions.junit}")
         testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
