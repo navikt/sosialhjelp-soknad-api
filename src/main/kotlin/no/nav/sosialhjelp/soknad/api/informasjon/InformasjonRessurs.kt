@@ -10,9 +10,10 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
@@ -49,8 +50,7 @@ class InformasjonRessurs(
     @GetMapping("/fornavn")
     @Deprecated("Bruk getSessionInfo")
     fun hentFornavn(): Map<String, String> {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
+        val (fornavn1) = personService.hentPerson(getUser()) ?: return emptyMap()
         val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
         return fornavnMap
@@ -59,8 +59,7 @@ class InformasjonRessurs(
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
     @Deprecated("Bruk getSessionInfo")
     fun getUtslagskriterier(): Utslagskriterier {
-        val uid = SubjectHandlerUtils.getUserIdFromToken()
-        val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
+        val adressebeskyttelse = personService.hentAdressebeskyttelse(getUser())
 
         val (harTilgang, sperrekode) =
             if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
@@ -96,49 +95,48 @@ class InformasjonRessurs(
     @GetMapping("/harNyligInnsendteSoknader")
     @Deprecated("Bruk getSessionInfo")
     fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
-        val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
-        return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
+        val nylige =
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(getUser(), grense)
+        return NyligInnsendteSoknaderResponse(nylige.size)
     }
 
     @GetMapping("/pabegynteSoknader")
     @Deprecated("Bruk getSessionInfo")
     fun hentPabegynteSoknader(): List<PabegyntSoknad> {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         log.debug("Henter pabegynte soknader for bruker")
-        return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
+        return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(getUser())
     }
 
     @GetMapping("/session")
     fun getSessionInfo(): SessionResponse {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = getUser()
 
         log.debug("Henter søknadsinfo for bruker")
 
-        val person = personService.hentPerson(fnr)
+        val person = personService.hentPerson(eier)
 
-        // Bør dette ikke egentlig lede til en 500?
+        // Egentlig bør vel hentPerson kaste en exception dersom en bruker ikke finnes
+        // for en gitt ID. I første omgang nøyer vi oss med å logge en feilmelding
+        // men hentPerson bør nok bli noe mer deterministisk.
         if (person === null) log.error("Fant ikke person for bruker")
 
-        val beskyttelse = personService.hentAdressebeskyttelse(fnr)
+        val beskyttelse = personService.hentAdressebeskyttelse(eier)
 
-        val userBlocked = beskyttelse in listOf(FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND)
+        val open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier)
 
-        val pabegynte = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
-
-        val antallNyligInnsendte =
+        val recentlySentCount =
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
-                fnr,
+                eier,
                 LocalDateTime.now().minusDays(FJORTEN_DAGER)
             ).size
 
         return SessionResponse(
-            userBlocked = userBlocked,
+            userBlocked = beskyttelse != UGRADERT,
             fornavn = person?.fornavn,
             daysBeforeDeletion = FJORTEN_DAGER,
-            pabegynte = pabegynte,
-            antallNyligInnsendte = antallNyligInnsendte
+            open = open,
+            recentlySentCount = recentlySentCount
         )
     }
 
@@ -151,17 +149,17 @@ class InformasjonRessurs(
         val sperrekode: Sperrekode?,
     )
 
-    @Schema(description = "Informasjon om en brukers økt")
+    @Schema(description = "Informasjon om brukerøkt")
     data class SessionResponse(
-        @Schema(description = "Brukeren har gradert adresse (ihht kap. 6/7)")
+        @Schema(description = "Bruker har adressebeskyttelse og kan ikke bruke digital søknad")
         val userBlocked: Boolean,
         @Schema(description = "Brukerens fornavn")
         val fornavn: String?,
         @Schema(description = "Antall dager etter siste endring før søknader slettes")
         val daysBeforeDeletion: Long,
         @Schema(description = "Påbegynte men ikke innleverte søknader")
-        val pabegynte: List<PabegyntSoknad>,
+        val open: List<PabegyntSoknad>,
         @Schema(description = "Antall nylig innsendte søknader")
-        val antallNyligInnsendte: Int,
+        val recentlySentCount: Int,
     )
 }
