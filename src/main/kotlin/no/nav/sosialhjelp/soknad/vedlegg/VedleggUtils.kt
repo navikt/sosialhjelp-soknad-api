@@ -9,21 +9,36 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
+import org.apache.commons.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
+import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.Locale
+import java.util.*
 
 object VedleggUtils {
 
     private val log by logger()
+
+    fun behandleFilOgReturnerFildata(orginaltFilnavn: String, orginalData: ByteArray): Pair<String, ByteArray> {
+
+        val uuidFromBytes = UUID.nameUUIDFromBytes(orginalData)
+
+        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginaltFilnavn, orginalData)
+        val fileType = validerFil(data, filnavn)
+
+        val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidFromBytes)
+
+        return Pair(filnavnMedUuid, data)
+    }
 
     fun getSha512FromByteArray(bytes: ByteArray?): String {
         if (bytes == null) {
@@ -34,7 +49,7 @@ object VedleggUtils {
         return Hex.toHexString(sha512.digest())
     }
 
-    fun lagFilnavn(opplastetNavn: String, fileType: TikaFileType, uuid: String): String {
+    fun lagFilnavn(opplastetNavn: String, fileType: TikaFileType, uuid: UUID): String {
         var filnavn = opplastetNavn
         val fileExtension = findFileExtension(opplastetNavn)
 
@@ -64,7 +79,7 @@ object VedleggUtils {
             filnavn = filnavn.substring(0, 50)
         }
 
-        filnavn += "-" + uuid.split("-").toTypedArray()[0]
+        filnavn += "-" + uuid.toString().split("-").toTypedArray()[0]
         filnavn += if (!fileExtension.isNullOrEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             fileExtension
         } else {
@@ -94,6 +109,12 @@ object VedleggUtils {
             sjekkOmPdfErGyldig(data)
         }
         return fileType
+    }
+
+    fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
+        return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+            .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 
     private fun findFileExtension(filnavn: String): String? {
@@ -166,9 +187,13 @@ object VedleggUtils {
         } else false
     }
 
-    fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
-        return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-            .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+    fun getByteArray(file: MultipartFile): ByteArray {
+        return try {
+            file.inputStream.use {
+                IOUtils.toByteArray(it)
+            }
+        } catch (e: IOException) {
+            throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
+        }
     }
 }

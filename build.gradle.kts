@@ -6,7 +6,7 @@ object Versions {
     const val springBoot = "3.1.0" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
-    const val sosialhjelpCommon = "1.20230209.0920-45d9782"
+    const val sosialhjelpCommon = "1.20230629.1406-6be87f3"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
@@ -62,11 +62,11 @@ object Versions {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.spring") version "1.9.0"
-    id("org.springframework.boot") version "3.1.2"
-    id("org.flywaydb.flyway") version "9.21.2"
-    id("com.github.ben-manes.versions") version "0.47.0" // ./gradlew dependencyUpdates
+    kotlin("jvm") version "1.9.10"
+    kotlin("plugin.spring") version "1.9.10"
+    id("org.springframework.boot") version "3.1.3"
+    id("org.flywaydb.flyway") version "9.22.1"
+    id("com.github.ben-manes.versions") version "0.48.0" // ./gradlew dependencyUpdates
     id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
 }
 
@@ -134,6 +134,7 @@ dependencies {
     // sosialhjelp-common
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
+    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:${Versions.sosialhjelpCommon}")
 
     // KS / Fiks
     implementation("no.ks.fiks.svarut:svarut-rest-klient:${Versions.fiksSvarUt}")
@@ -182,6 +183,7 @@ dependencies {
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.9.0")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")

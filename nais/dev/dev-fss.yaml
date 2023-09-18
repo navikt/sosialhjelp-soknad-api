@@ -7,6 +7,7 @@ metadata:
     team: teamdigisos
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
+    nais.io/run-as-user: "1001"
 spec:
   image: {{image}}
   port: 8080
@@ -98,7 +99,7 @@ spec:
     - name: KRR_URL
       value: "https://digdir-krr-proxy.dev.intern.nav.no"
     - name: LOGINSERVICE_URL
-      value: "https://loginservice.dev.nav.no/login"
+      value: "https://login.ekstern.dev.nav.no/oauth2/login"
     - name: NORG_URL
       value: "https://norg2.dev.intern.nav.no/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE
@@ -138,6 +139,6 @@ spec:
     - name: UNLEASH_INSTANCE_ID
       value: "dev-fss"
     - name: MASKINPORTEN_WELL_KNOWN_URL
-      value: "https://ver2.maskinporten.no/.well-known/oauth-authorization-server"
+      value: "https://test.maskinporten.no/.well-known/oauth-authorization-server"
     - name: SWAGGER_ENABLED
       value: "true"
