@@ -125,22 +125,22 @@ class InformasjonRessurs(
         // men hentPerson bør nok bli noe mer deterministisk.
         if (person === null) log.error("Fant ikke person for bruker")
 
-        val beskyttelse = personService.hentAdressebeskyttelse(eier)
+        val beskyttelsesgrad = personService.hentAdressebeskyttelse(eier) ?: UGRADERT
 
         val open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier)
 
-        val recentlySentCount =
+        val numRecentlySent =
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
                 eier,
                 LocalDateTime.now().minusDays(FJORTEN_DAGER)
             ).size
 
         return SessionResponse(
-            userBlocked = beskyttelse != UGRADERT,
+            userBlocked = beskyttelsesgrad != UGRADERT,
             fornavn = person?.fornavn,
             daysBeforeDeletion = FJORTEN_DAGER,
             open = open,
-            recentlySentCount = recentlySentCount
+            numRecentlySent = numRecentlySent
         )
     }
 
@@ -164,6 +164,6 @@ class InformasjonRessurs(
         @Schema(description = "Påbegynte men ikke innleverte søknader")
         val open: List<PabegyntSoknad>,
         @Schema(description = "Antall nylig innsendte søknader")
-        val recentlySentCount: Int,
+        val numRecentlySent: Int,
     )
 }
