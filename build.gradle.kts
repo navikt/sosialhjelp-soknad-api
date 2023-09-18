@@ -60,6 +60,7 @@ object Versions {
     const val nettyHandler = "4.1.94.Final"
     const val bouncyCastle = "1.74"
     const val jettyHttp = "11.0.16"
+    const val commonsCompress = "1.24.0"
 }
 
 plugins {
@@ -261,6 +262,10 @@ dependencies {
         implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
             because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
         }
+        implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
+            because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
+        }
+
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
         testImplementation("junit:junit:${Versions.junit}")
