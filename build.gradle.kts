@@ -3,10 +3,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
-    const val springBoot = "3.1.0" // Husk å oppdatere plugin også
+    const val springBoot = "3.1.3" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
-    const val sosialhjelpCommon = "1.20230629.1406-6be87f3"
+    const val sosialhjelpCommon = "1.20230918.1754-8d4249c"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
@@ -59,6 +59,7 @@ object Versions {
     const val springWebMvc = "6.0.9"
     const val nettyHandler = "4.1.94.Final"
     const val bouncyCastle = "1.74"
+    const val jettyHttp = "11.0.16"
 }
 
 plugins {
@@ -256,6 +257,9 @@ dependencies {
         }
         implementation("org.bouncycastle:bcprov-jdk18on") {
             version { strictly(Versions.bouncyCastle) }
+        }
+        implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
+            because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
         }
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
