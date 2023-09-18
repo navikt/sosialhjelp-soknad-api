@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
@@ -9,12 +10,12 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
+import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,12 +25,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
 
 /**
- * Klassen håndterer rest kall for å hente informasjon
+ * Håndterer informasjon om bruker og nylig innsendte/ufullstendige søknader,
+ * samt adressesøk.
  */
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true
+)
 @RequestMapping("/informasjon")
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
@@ -45,18 +52,18 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/fornavn")
+    @Deprecated("Bruk getSessionInfo")
     fun hentFornavn(): Map<String, String> {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
+        val (fornavn1) = personService.hentPerson(getUser()) ?: return emptyMap()
         val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
         return fornavnMap
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @Deprecated("Bruk getSessionInfo")
     fun getUtslagskriterier(): Utslagskriterier {
-        val uid = SubjectHandlerUtils.getUserIdFromToken()
-        val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
+        val adressebeskyttelse = personService.hentAdressebeskyttelse(getUser())
 
         val (harTilgang, sperrekode) =
             if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
@@ -90,18 +97,51 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/harNyligInnsendteSoknader")
+    @Deprecated("Bruk getSessionInfo")
     fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
-        val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
-        return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
+        val nylige =
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(getUser(), grense)
+        return NyligInnsendteSoknaderResponse(nylige.size)
     }
 
     @GetMapping("/pabegynteSoknader")
+    @Deprecated("Bruk getSessionInfo")
     fun hentPabegynteSoknader(): List<PabegyntSoknad> {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         log.debug("Henter pabegynte soknader for bruker")
-        return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
+        return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(getUser())
+    }
+
+    @GetMapping("/session")
+    fun getSessionInfo(): SessionResponse {
+        val eier = getUser()
+
+        log.debug("Henter søknadsinfo for bruker")
+
+        val person = personService.hentPerson(eier)
+
+        // Egentlig bør vel hentPerson kaste en exception dersom en bruker ikke finnes
+        // for en gitt ID. I første omgang nøyer vi oss med å logge en feilmelding
+        // men hentPerson bør nok bli noe mer deterministisk.
+        if (person === null) log.error("Fant ikke person for bruker")
+
+        val beskyttelsesgrad = personService.hentAdressebeskyttelse(eier) ?: UGRADERT
+
+        val open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier)
+
+        val numRecentlySent =
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
+                eier,
+                LocalDateTime.now().minusDays(FJORTEN_DAGER)
+            ).size
+
+        return SessionResponse(
+            userBlocked = beskyttelsesgrad != UGRADERT,
+            fornavn = person?.fornavn,
+            daysBeforeDeletion = FJORTEN_DAGER,
+            open = open,
+            numRecentlySent = numRecentlySent
+        )
     }
 
     enum class Sperrekode {
@@ -111,5 +151,19 @@ class InformasjonRessurs(
     data class Utslagskriterier(
         val harTilgang: Boolean,
         val sperrekode: Sperrekode?,
+    )
+
+    @Schema(description = "Informasjon om brukerøkt")
+    data class SessionResponse(
+        @Schema(description = "Bruker har adressebeskyttelse og kan ikke bruke digital søknad")
+        val userBlocked: Boolean,
+        @Schema(description = "Brukerens fornavn")
+        val fornavn: String?,
+        @Schema(description = "Antall dager etter siste endring før søknader slettes")
+        val daysBeforeDeletion: Long,
+        @Schema(description = "Påbegynte men ikke innleverte søknader")
+        val open: List<PabegyntSoknad>,
+        @Schema(description = "Antall nylig innsendte søknader")
+        val numRecentlySent: Int,
     )
 }
