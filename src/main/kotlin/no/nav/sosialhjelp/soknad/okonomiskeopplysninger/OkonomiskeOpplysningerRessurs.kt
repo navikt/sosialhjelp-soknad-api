@@ -63,7 +63,7 @@ class OkonomiskeOpplysningerRessurs(
     fun hentOkonomiskeOpplysninger(
         @PathVariable("behandlingsId") behandlingsId: String
     ): VedleggFrontends {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
