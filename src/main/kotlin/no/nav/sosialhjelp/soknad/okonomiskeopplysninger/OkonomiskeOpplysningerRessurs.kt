@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -44,6 +43,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
 
 @RestController
 @ProtectedWithClaims(
@@ -64,7 +64,7 @@ class OkonomiskeOpplysningerRessurs(
         @PathVariable("behandlingsId") behandlingsId: String
     ): VedleggFrontends {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = getUser()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         return if (soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)) {
@@ -142,7 +142,7 @@ class OkonomiskeOpplysningerRessurs(
         @RequestBody vedleggFrontend: VedleggFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = getUser()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
