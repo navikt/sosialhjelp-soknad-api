@@ -7,14 +7,14 @@ object Versions {
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
     const val sosialhjelpCommon = "1.20230918.1754-8d4249c"
-    const val fiksSvarUt = "1.2.0"
-    const val fiksKryptering = "1.3.1"
+    const val fiksSvarUt = "2.0.0"
+    const val fiksKryptering = "2.0.2"
     const val springdoc = "2.1.0"
     const val flyway = "9.16.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.1.0"
+    const val tokenValidation = "3.1.6"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
@@ -58,8 +58,8 @@ object Versions {
     const val snakeyaml = "2.0"
     const val springWebMvc = "6.0.9"
     const val nettyHandler = "4.1.94.Final"
-    const val bouncyCastle = "1.74"
     const val jettyHttp = "11.0.16"
+    const val jettyServlets = "11.0.16"
     const val commonsCompress = "1.24.0"
 }
 
@@ -256,11 +256,11 @@ dependencies {
         implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
             because("https://github.com/advisories/GHSA-6mjq-h674-j845")
         }
-        implementation("org.bouncycastle:bcprov-jdk18on") {
-            version { strictly(Versions.bouncyCastle) }
-        }
         implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
             because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
+        }
+        implementation("org.eclipse.jetty:jetty-servlets:${Versions.jettyServlets}") {
+            because("https://github.com/advisories/GHSA-3gh6-v5v9-6v9j")
         }
         implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
             because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
