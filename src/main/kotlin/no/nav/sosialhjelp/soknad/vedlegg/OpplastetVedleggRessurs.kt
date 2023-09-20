@@ -4,16 +4,12 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
-import org.apache.commons.io.IOUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -25,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
-import java.io.IOException
+import java.util.*
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
@@ -34,7 +31,6 @@ class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
@@ -45,9 +41,8 @@ class OpplastetVedleggRessurs(
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
 
-        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
+        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier())
             ?.let {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = detectMimeType(it.data)
@@ -63,18 +58,18 @@ class OpplastetVedleggRessurs(
         response: HttpServletResponse
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
+        opplastetVedleggRepository.hentVedlegg(vedleggId, eier())?.let {
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
             val mimeType = detectMimeType(it.data)
             return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
         }
 
-        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
-        if (skalBrukeMellomlagring) {
+        val erMellomlagret = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)
+
+        if (erMellomlagret) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
+
             mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = detectMimeType(it.data)
@@ -92,21 +87,24 @@ class OpplastetVedleggRessurs(
         @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val filnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
-        val data = getByteArray(fil)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
 
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
+        val orginalData = VedleggUtils.getByteArray(fil)
 
-        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
-        return if (skalBrukeMellomlagring) {
-            val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
-            FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
-        } else {
-            opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data)
-            val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn)
-            FilFrontend(opplastetVedlegg.filnavn, opplastetVedlegg.uuid)
-        }
+        val sendesMedDigisosApi = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)
+
+        val (filnavn, uuid) =
+            if (sendesMedDigisosApi) {
+                mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, orginalData, orginaltFilnavn).let {
+                    Pair(it.filnavn, it.filId)
+                }
+            } else {
+                opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, fil.bytes)
+                opplastetVedleggService.lastOppVedlegg(behandlingsId, vedleggstype, orginalData, orginaltFilnavn).let {
+                    Pair(it.filnavn, it.uuid)
+                }
+            }
+        return FilFrontend(filnavn, uuid)
     }
 
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
@@ -115,10 +113,9 @@ class OpplastetVedleggRessurs(
         @PathVariable("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
-        if (skalBrukeMellomlagring) {
+        val erMellomlagret = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)
+
+        if (erMellomlagret) {
             log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
             mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         } else {
@@ -128,15 +125,5 @@ class OpplastetVedleggRessurs(
 
     companion object {
         private val log by logger()
-
-        private fun getByteArray(file: MultipartFile): ByteArray {
-            return try {
-                file.inputStream.use {
-                    IOUtils.toByteArray(it)
-                }
-            } catch (e: IOException) {
-                throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
-            }
-        }
     }
 }
