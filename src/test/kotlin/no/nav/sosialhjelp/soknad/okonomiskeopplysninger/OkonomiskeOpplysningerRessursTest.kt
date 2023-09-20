@@ -147,7 +147,7 @@ class OkonomiskeOpplysningerRessursTest {
                 )
         )
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId) } just runs
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
