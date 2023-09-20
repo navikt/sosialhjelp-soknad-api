@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
+import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])
@@ -35,9 +37,14 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
     @Test
     fun slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER)
+        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(
+            lagOpplastetVedlegg(EIER, TYPE, SOKNADID),
+            EIER
+        )
         val uuidSammeEierOgAnnenSoknad =
-            opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
+            opprettOpplastetVedleggOgLagreIDb(
+                lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER
+            )
         batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID)
         assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
         assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isNull()
@@ -53,9 +60,10 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
             eier = eier,
             vedleggType = OpplastetVedleggType(type),
             data = DATA,
+            uuid = UUID.nameUUIDFromBytes(DATA).toString(),
             soknadId = soknadId,
             filnavn = FILNAVN,
-            sha512 = SHA512
+            sha512 = getSha512FromByteArray(DATA)
         )
     }
 
@@ -65,8 +73,7 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
 
     companion object {
         private const val EIER = "12345678901"
-        private val DATA = byteArrayOf(1, 2, 3, 4)
-        private val SHA512 = getSha512FromByteArray(DATA)
+        private val DATA = RandomUtils.nextBytes(10)
         private const val TYPE = "bostotte|annetboutgift"
         private const val TYPE2 = "dokumentasjon|aksjer"
         private const val SOKNADID = 1L
