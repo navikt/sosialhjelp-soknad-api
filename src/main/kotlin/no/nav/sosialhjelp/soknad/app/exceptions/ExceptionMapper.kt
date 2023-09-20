@@ -7,7 +7,11 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.*
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
