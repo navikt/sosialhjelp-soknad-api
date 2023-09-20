@@ -73,7 +73,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereBekreftelseLikNullOgAlleUnderverdierLikFalse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID)
@@ -88,7 +88,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereBekreftelserLikTrue() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBoutgifter(
                 true,
@@ -115,7 +115,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereSkalViseInfoLikTrueDersomManHverkenHarBostotteSakerEllerUtbetalinger() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID)
@@ -124,7 +124,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereSkalViseInfoLikFalseDersomManHarBostotteSakerEllerUtbetalinger() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte = JsonBostotte()
             .withSaker(listOf(JsonBostotteSak().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)))
@@ -144,7 +144,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereSkalViseInfoLikTrueDersomHusbankenErNedeOgManSvarerNeiTilBostotte() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
         setBekreftelse(
@@ -163,7 +163,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalReturnereSkalViseInfoLikTrueDersomViMAnglerSamtykkeOgManSvarerNeiTilBostotte() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(
@@ -178,7 +178,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun putBoutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBoutgifter() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBoutgifter(
                 true,
@@ -203,7 +203,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun putBoutgifterSkalSetteNoenBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -239,7 +239,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun putBoutgifterSkalSetteAlleBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -275,7 +275,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun boutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { boutgiftRessurs.hentBoutgifter(BEHANDLINGSID) }
@@ -285,7 +285,7 @@ internal class BoutgiftRessursTest {
 
     @Test
     fun putBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val boutgifterFrontend = BoutgifterFrontend(null)
         assertThatExceptionOfType(AuthorizationException::class.java)

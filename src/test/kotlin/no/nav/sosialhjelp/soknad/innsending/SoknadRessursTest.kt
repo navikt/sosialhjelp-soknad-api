@@ -77,7 +77,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun skalSetteXsrfToken() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(BEHANDLINGSID) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } returns EIER
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
@@ -89,7 +89,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettingAvSoknadSkalSetteXsrfToken() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
@@ -102,7 +102,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every { soknadService.startSoknad(any()) } returns "null"
@@ -143,9 +143,8 @@ internal class SoknadRessursTest {
 
     @Test
     fun oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-
         val samtykkeListe = emptyList<BekreftelseRessurs>()
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
@@ -155,7 +154,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
@@ -169,7 +168,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
@@ -183,7 +182,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns createSoknadUnderArbeid(EIER)
 
@@ -195,7 +194,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
@@ -219,7 +218,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
@@ -239,7 +238,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun xsrfCookieSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.hentXsrfCookie(BEHANDLINGSID, mockk()) }
@@ -249,7 +248,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun erSystemdataEndretSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.sjekkOmSystemdataErEndret(BEHANDLINGSID, "token") }

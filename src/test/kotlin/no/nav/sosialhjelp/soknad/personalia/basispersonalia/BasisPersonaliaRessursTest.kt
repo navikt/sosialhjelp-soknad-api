@@ -3,10 +3,8 @@ package no.nav.sosialhjelp.soknad.personalia.basispersonalia
 import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
@@ -58,7 +56,7 @@ internal class BasisPersonaliaRessursTest {
 
     @Test
     fun basisPersonaliaSkalReturnereSystemBasisPersonalia() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBasisPersonalia(withStatsborgerskap = true)
         every { kodeverkService.getLand("NOR") } returns "Norge"
@@ -69,7 +67,7 @@ internal class BasisPersonaliaRessursTest {
 
     @Test
     fun basisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskap() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBasisPersonalia(withStatsborgerskap = false)
 

@@ -50,7 +50,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(null, null)
 
@@ -61,7 +61,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalReturnereUtdanningMedErIkkeStudent() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(java.lang.Boolean.FALSE, null)
 
@@ -72,7 +72,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalReturnereUtdanningMedErStudent() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(java.lang.Boolean.TRUE, null)
 
@@ -83,7 +83,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(java.lang.Boolean.TRUE, Studentgrad.HELTID)
 
@@ -94,7 +94,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(true, Studentgrad.DELTID)
 
@@ -105,7 +105,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun putUtdanningSkalSetteUtdanningMedErStudent() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(null, null)
 
@@ -124,7 +124,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(null, null)
 
@@ -143,7 +143,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithUtdanning(true, Studentgrad.DELTID)
 
@@ -162,7 +162,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun utdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { utdanningRessurs.hentUtdanning(BEHANDLINGSID) }
@@ -172,7 +172,7 @@ internal class UtdanningRessursTest {
 
     @Test
     fun putUtdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val utdanningFrontend = UtdanningFrontend(null, null)
         assertThatExceptionOfType(AuthorizationException::class.java)

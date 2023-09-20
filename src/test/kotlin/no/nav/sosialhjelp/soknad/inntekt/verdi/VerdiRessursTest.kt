@@ -66,7 +66,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun getVerdierSkalReturnereBekreftelseLikNullOgAltFalse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID)
@@ -81,7 +81,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun getVerdierSkalReturnereBekreftelserLikTrue() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(
                 true,
@@ -101,7 +101,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun getVerdierSkalReturnereBeskrivelseAvAnnet() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         val beskrivelse = "Bestefars klokke"
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(true, listOf(VERDI_ANNET), beskrivelse)
@@ -114,7 +114,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(
                 true,
@@ -139,7 +139,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalSetteAlleBekreftelserLikFalse() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(
                 true,
@@ -158,7 +158,8 @@ internal class VerdiRessursTest {
         val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
         val verdier = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
         assertThat(verdiBekreftelse.verdi).isFalse
         assertThat(verdier.isEmpty()).isTrue
         assertThat(beskrivelse).isBlank
@@ -166,7 +167,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalSetteNoenBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -199,7 +200,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalSetteAlleBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -232,7 +233,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(true, listOf(VERDI_ANNET), "Vinylplater")
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -246,7 +247,8 @@ internal class VerdiRessursTest {
         val soknadUnderArbeid = slot.captured
         val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
         assertThat(verdiBekreftelse.verdi).isFalse
         assertThat(beskrivelse).isBlank
     }
@@ -263,7 +265,7 @@ internal class VerdiRessursTest {
 
     @Test
     fun putVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
         val verdierFrontend = VerdierFrontend()
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend) }

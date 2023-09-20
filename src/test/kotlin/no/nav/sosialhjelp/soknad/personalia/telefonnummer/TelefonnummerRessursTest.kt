@@ -50,7 +50,7 @@ internal class TelefonnummerRessursTest {
 
     @Test
     fun telefonnummerSkalReturnereSystemTelefonnummer() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM)
 
@@ -63,7 +63,7 @@ internal class TelefonnummerRessursTest {
 
     @Test
     fun telefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(null, null)
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns null
@@ -77,7 +77,7 @@ internal class TelefonnummerRessursTest {
 
     @Test
     fun telefonnummerSkalReturnereBrukerutfyltTelefonnummer() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
@@ -93,7 +93,7 @@ internal class TelefonnummerRessursTest {
     fun putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(null, null)
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -114,7 +114,7 @@ internal class TelefonnummerRessursTest {
     fun putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(null, null)
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -136,7 +136,7 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { telefonnummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -153,7 +153,7 @@ internal class TelefonnummerRessursTest {
 
     @Test
     fun telefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID) }
@@ -163,7 +163,7 @@ internal class TelefonnummerRessursTest {
 
     @Test
     fun putTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val telefonnummerFrontend = TelefonnummerFrontend()
 

@@ -38,8 +38,7 @@ class BegrunnelseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody begrunnelseFrontend: BegrunnelseFrontend
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")

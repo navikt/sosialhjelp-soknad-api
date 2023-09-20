@@ -71,7 +71,7 @@ internal class SoknadActionsTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         EIER = SubjectHandlerUtils.getUserIdFromToken()
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { nedetidService.isInnenforNedetid } returns false
     }
 
@@ -220,7 +220,12 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+        every {
+            kommuneInfoService.getKommuneStatus(
+                any(),
+                true
+            )
+        } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, token) }
@@ -245,7 +250,7 @@ internal class SoknadActionsTest {
 
     @Test
     fun sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { actions.sendSoknad("behandlingsId", token) }

@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import org.slf4j.LoggerFactory
@@ -19,25 +18,30 @@ import java.util.Objects
 @Component
 class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val personService: PersonService,
 ) {
-    fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
-        val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
-        XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId, MiljoUtils.isMockAltProfil())
-        verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-    }
+    /**
+     * Sjekker at bruker er eier av søknad med gitt behandlingsId.
+     * @param behandlingsId behandlingsId til søknad
+     * @return fnr/dnr for brukerøkt
+     */
+    fun verifiserBrukerForSoknad(behandlingsId: String): String {
+        val user = getUserIdFromToken()
 
-    fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
-        if (FERDIG == metadata?.status || SENDT_MED_DIGISOS_API == metadata?.status) {
+
+        if (metadata?.status in listOf(FERDIG, SENDT_MED_DIGISOS_API))
             throw SoknadAlleredeSendtException("Søknad $behandlingsId har allerede blitt sendt inn.")
-        }
 
-        val soknadEier = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
-            ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
-        verifiserAtInnloggetBrukerErEierAvSoknad(soknadEier)
+        if (metadata?.fnr != user) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+
+
+        verifyXsrfIfRequestUnsafe(behandlingsId)
+
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(user)
+
+        return user
     }
 
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
@@ -59,18 +63,52 @@ class Tilgangskontroll(
         verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
     }
 
-    fun verifiserAtBrukerHarTilgang() {
+    fun verifiserAtBrukerHarTilgang(): String {
         val fnr = getUserIdFromToken()
         if (Objects.isNull(fnr)) {
             throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
         }
         verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
+        return fnr
     }
 
     private fun verifiserAtBrukerIkkeHarAdressebeskyttelse(ident: String) {
-        val adressebeskyttelse = personService.hentAdressebeskyttelse(ident)
-        if (Gradering.FORTROLIG == adressebeskyttelse || Gradering.STRENGT_FORTROLIG == adressebeskyttelse || Gradering.STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
+        if (personService.hentAdressebeskyttelse(ident) in listOf(
+                Gradering.FORTROLIG,
+                Gradering.STRENGT_FORTROLIG,
+                Gradering.STRENGT_FORTROLIG_UTLAND
+            )
+        ) {
             throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+        }
+    }
+
+    /**
+     * Sjekker XSRF-token dersom forespørselen ikke er safe (GET, HEAD, OPTIONS).
+     *
+     * @see XsrfGenerator.sjekkXsrfToken
+     * @param behandlingsId behandlingsId for søknad
+     * @throws AuthorizationException dersom XSRF-token ikke stemmer
+     * @todo Fjern behandlingsId; XSRF-token skal være for brukerøkt, ikke behandlingsId
+     */
+    private fun verifyXsrfIfRequestUnsafe(behandlingsId: String) {
+        // Check whether we have an active request. If not, we are probably running a test.
+        try {
+            RequestContextHolder.currentRequestAttributes()
+        } catch (e: IllegalStateException) {
+            logger.warn("Ingen request, antas å være en test.")
+            return
+        }
+
+        val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
+
+        when (request.method) {
+            "GET", "HEAD", "OPTIONS" -> return
+            else -> XsrfGenerator.sjekkXsrfToken(
+                request.getHeader("X-XSRF-TOKEN"),
+                behandlingsId,
+                MiljoUtils.isMockAltProfil()
+            )
         }
     }
 

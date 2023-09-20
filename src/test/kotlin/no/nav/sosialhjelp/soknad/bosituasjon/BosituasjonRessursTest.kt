@@ -49,7 +49,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun bosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBosituasjon(null, null)
 
@@ -60,7 +60,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun bosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBosituasjon(Botype.EIER, 2)
 
@@ -71,7 +71,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun putBosituasjonSkalSetteBosituasjon() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBosituasjon(Botype.LEIER, 2)
 
@@ -90,7 +90,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun putBosituasjonSkalSetteAntallPersonerLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBosituasjon(null, 2)
 
@@ -110,7 +110,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun bosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID) }
@@ -120,7 +120,7 @@ internal class BosituasjonRessursTest {
 
     @Test
     fun putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val bosituasjonFrontend = BosituasjonFrontend(null, null)
         assertThatExceptionOfType(AuthorizationException::class.java)

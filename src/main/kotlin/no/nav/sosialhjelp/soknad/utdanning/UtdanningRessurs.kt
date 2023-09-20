@@ -29,8 +29,7 @@ class UtdanningRessurs(
     fun hentUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String
     ): UtdanningFrontend {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val utdanning = soknad.soknad.data.utdanning
@@ -42,7 +41,7 @@ class UtdanningRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody utdanningFrontend: UtdanningFrontend
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad

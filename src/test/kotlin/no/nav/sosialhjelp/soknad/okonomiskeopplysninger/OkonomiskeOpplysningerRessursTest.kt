@@ -46,12 +46,13 @@ class OkonomiskeOpplysningerRessursTest {
     )
 
     private val behandlingsId = "123"
+    private val EIER = "12345678910"
 
     private val soknadUnderArbeid = SoknadUnderArbeid(
         versjon = 1L,
         behandlingsId = behandlingsId,
-        eier = "eier",
-        jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
+        eier = EIER,
+        jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
         status = SoknadUnderArbeidStatus.UNDER_ARBEID,
         opprettetDato = LocalDateTime.now(),
         sistEndretDato = LocalDateTime.now()
@@ -70,7 +71,7 @@ class OkonomiskeOpplysningerRessursTest {
     @Test
     fun `hentOkonomiskeOpplysninger happy path med 1 mellomlagret vedlegg`() {
         val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
                 .withVedlegg(
                     JsonVedleggSpesifikasjon()
                         .withVedlegg(
@@ -91,7 +92,7 @@ class OkonomiskeOpplysningerRessursTest {
                 )
         )
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(behandlingsId) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
@@ -123,7 +124,7 @@ class OkonomiskeOpplysningerRessursTest {
     @Test
     fun `hentOkonomiskeOpplysninger kaster IllegalStateException`() {
         val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
                 .withVedlegg(
                     JsonVedleggSpesifikasjon()
                         .withVedlegg(
@@ -147,7 +148,7 @@ class OkonomiskeOpplysningerRessursTest {
                 )
         )
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(behandlingsId) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
@@ -165,7 +166,7 @@ class OkonomiskeOpplysningerRessursTest {
     @Test
     fun `hentOkonomiskeOpplysninger JsonVedlegg med VedleggKreves og filer - kaster IllegalStateException`() {
         val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
                 .withVedlegg(
                     JsonVedleggSpesifikasjon()
                         .withVedlegg(
@@ -186,7 +187,7 @@ class OkonomiskeOpplysningerRessursTest {
                 )
         )
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(behandlingsId) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 

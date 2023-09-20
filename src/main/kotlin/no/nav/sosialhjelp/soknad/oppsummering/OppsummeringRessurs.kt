@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.oppsummering
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
@@ -21,9 +20,8 @@ class OppsummeringRessurs(
     @GetMapping
     fun getOppsummering(
         @PathVariable("behandlingsId") behandlingsId: String
-    ): Oppsummering {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        return oppsummeringService.hentOppsummering(eier, behandlingsId)
-    }
+    ): Oppsummering = oppsummeringService.hentOppsummering(
+        tilgangskontroll.verifiserBrukerForSoknad(behandlingsId),
+        behandlingsId
+    )
 }

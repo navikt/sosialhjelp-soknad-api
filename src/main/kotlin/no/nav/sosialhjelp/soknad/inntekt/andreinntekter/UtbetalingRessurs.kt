@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -35,8 +34,7 @@ class UtbetalingRessurs(
 ) {
     @GetMapping
     fun hentUtbetalinger(@PathVariable("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserAtBrukerHarTilgang()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
@@ -60,8 +58,7 @@ class UtbetalingRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody utbetalingerFrontend: UtbetalingerFrontend
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -112,7 +109,10 @@ class UtbetalingRessurs(
         )
     }
 
-    private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
+    private fun setBeskrivelseAvAnnet(
+        opplysninger: JsonOkonomiopplysninger,
+        utbetalingerFrontend: UtbetalingerFrontend
+    ) {
         if (opplysninger.beskrivelseAvAnnet == null) {
             opplysninger.withBeskrivelseAvAnnet(
                 JsonOkonomibeskrivelserAvAnnet()

@@ -34,9 +34,12 @@ object XsrfGenerator {
         }
     }
 
-    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockProfil: Boolean) {
+    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String, isMockProfil: Boolean) {
         val xsrfToken = generateXsrfToken(behandlingsId)
-        val xsrfTokenYesterday = generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+        val xsrfTokenYesterday = generateXsrfToken(
+            behandlingsId,
+            ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        )
         val valid = xsrfToken == givenToken || xsrfTokenYesterday == givenToken
         if (!valid && !isMockProfil) {
             throw AuthorizationException("Feil token")

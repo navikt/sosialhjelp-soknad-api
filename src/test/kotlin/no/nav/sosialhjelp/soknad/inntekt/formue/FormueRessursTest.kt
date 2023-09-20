@@ -60,7 +60,7 @@ internal class FormueRessursTest {
 
     @Test
     fun getFormueSkalReturnereBekreftelserLikFalse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         val formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID)
         assertThat(formueFrontend.brukskonto).isFalse
@@ -74,7 +74,7 @@ internal class FormueRessursTest {
 
     @Test
     fun getFormueSkalReturnereBekreftelserLikTrue() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithFormue(
@@ -101,7 +101,7 @@ internal class FormueRessursTest {
 
     @Test
     fun getFormueSkalReturnereBeskrivelseAvAnnet() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         val beskrivelse = "Vinylplater"
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
@@ -114,7 +114,7 @@ internal class FormueRessursTest {
 
     @Test
     fun putFormueSkalSetteAlleBekreftelserLikFalse() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithFormue(
                 listOf(
@@ -148,7 +148,7 @@ internal class FormueRessursTest {
 
     @Test
     fun putFormueSkalSetteNoenBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -183,7 +183,7 @@ internal class FormueRessursTest {
 
     @Test
     fun putFormueSkalSetteAlleBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -218,7 +218,7 @@ internal class FormueRessursTest {
 
     @Test
     fun putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithFormue(listOf(SoknadJsonTyper.FORMUE_ANNET), "Vinylplater")
@@ -249,7 +249,7 @@ internal class FormueRessursTest {
 
     @Test
     fun putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val formueFrontend = FormueFrontend(beskrivelseAvAnnet = null)
         assertThatExceptionOfType(AuthorizationException::class.java)

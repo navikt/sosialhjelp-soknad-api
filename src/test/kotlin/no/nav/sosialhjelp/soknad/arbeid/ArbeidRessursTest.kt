@@ -56,8 +56,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun arbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
         val arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold
@@ -71,8 +76,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun arbeidSkalReturnereArbeidsforholdLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, null)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
         assertThat(arbeidFrontend.arbeidsforhold).isEmpty()
@@ -80,8 +90,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun arbeidSkalReturnereKommentarTilArbeidsforholdLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, null)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
         assertThat(arbeidFrontend.kommentarTilArbeidsforhold).isNull()
@@ -89,8 +104,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun arbeidSkalReturnereKommentarTilArbeidsforhold() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, KOMMENTAR)
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, KOMMENTAR)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
         assertThat(arbeidFrontend.kommentarTilArbeidsforhold).isEqualTo(KOMMENTAR)
@@ -98,8 +118,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun `putArbeid skal lage ny JsonKommentarTilArbeidsforhold dersom den var null`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, null)
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
@@ -133,7 +158,7 @@ internal class ArbeidRessursTest {
         // skal ikke være mulig:
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -155,8 +180,13 @@ internal class ArbeidRessursTest {
 
     @Test
     fun putArbeidSkalOppdatereKommentarTilArbeidsforhold() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
@@ -164,15 +194,21 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
     }
 
     @Test
     fun putArbeidSkalSetteLikNullDersomKommentarenErTom() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
@@ -180,13 +216,14 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold).isNull()
     }
 
     @Test
     fun arbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatCode { arbeidRessurs.hentArbeid(BEHANDLINGSID) }.isInstanceOf(AuthorizationException::class.java)
 
@@ -195,11 +232,16 @@ internal class ArbeidRessursTest {
 
     @Test
     fun putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         val arbeidFrontend = ArbeidFrontend(null, "")
 
-        assertThatCode { arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend) }.isInstanceOf(AuthorizationException::class.java)
+        assertThatCode {
+            arbeidRessurs.updateArbeid(
+                BEHANDLINGSID,
+                arbeidFrontend
+            )
+        }.isInstanceOf(AuthorizationException::class.java)
 
         verify(exactly = 0) { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) }
     }

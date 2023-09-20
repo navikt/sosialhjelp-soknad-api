@@ -96,7 +96,7 @@ internal class NavEnhetRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
     }
 
     @AfterEach
@@ -211,7 +211,7 @@ internal class NavEnhetRessursTest {
     fun `putNavEnhet - skal kalle adresseRessurs for oppdatering av mottaker`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
 
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -223,7 +223,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun `hentNavEnheter skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { navEnhetRessurs.getNavEnheter(BEHANDLINGSID) }
@@ -233,7 +233,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun `hentValgtNavEnhet skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID) }
@@ -243,7 +243,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun `updateNavEnhet skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val navEnhetFrontend = mockk<NavEnhetFrontend>()
 

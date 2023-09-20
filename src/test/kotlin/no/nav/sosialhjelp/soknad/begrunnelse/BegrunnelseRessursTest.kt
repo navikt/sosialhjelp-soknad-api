@@ -48,8 +48,13 @@ internal class BegrunnelseRessursTest {
 
     @Test
     fun begrunnelseSkalReturnereBegrunnelseMedTommeStrenger() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithBegrunnelse("", "")
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithBegrunnelse("", "")
         val begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID)
         assertThat(begrunnelseFrontend.hvaSokesOm).isBlank
         assertThat(begrunnelseFrontend.hvorforSoke).isBlank
@@ -57,7 +62,7 @@ internal class BegrunnelseRessursTest {
 
     @Test
     fun begrunnelseSkalReturnereBegrunnelse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI)
 
@@ -68,7 +73,7 @@ internal class BegrunnelseRessursTest {
 
     @Test
     fun putBegrunnelseSkalSetteBegrunnelse() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBegrunnelse("", "")
 
@@ -97,7 +102,7 @@ internal class BegrunnelseRessursTest {
 
     @Test
     fun putBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val begrunnelseFrontend = BegrunnelseFrontend(SOKER_OM, SOKER_FORDI)
         assertThatExceptionOfType(AuthorizationException::class.java)

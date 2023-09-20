@@ -66,7 +66,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun barneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
@@ -81,7 +81,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun barneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = false,
@@ -101,7 +101,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun barneutgifterSkalReturnereBekreftelserLikTrue() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = true,
@@ -127,7 +127,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = true,
@@ -158,7 +158,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun putBarneutgifterSkalSetteNoenBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -192,7 +192,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun putBarneutgifterSkalSetteAlleBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -236,7 +236,7 @@ internal class BarneutgiftRessursTest {
 
     @Test
     fun putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val barneutgifterFrontend = BarneutgifterFrontend()
         assertThatExceptionOfType(AuthorizationException::class.java)

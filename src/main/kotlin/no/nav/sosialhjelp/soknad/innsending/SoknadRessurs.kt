@@ -47,7 +47,7 @@ class SoknadRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         response: HttpServletResponse
     ): Boolean {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
+        tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         response.addCookie(xsrfCookie(behandlingsId))
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId))
         soknadService.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
@@ -59,8 +59,7 @@ class SoknadRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Boolean {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         systemdata.update(soknadUnderArbeid)
 
@@ -161,7 +160,7 @@ class SoknadRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
         soknadService.avbrytSoknad(behandlingsId, steg)
     }

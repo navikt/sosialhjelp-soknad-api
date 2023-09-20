@@ -68,7 +68,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `hentAdresser skal returnere adresser riktig konvertert`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
@@ -87,7 +87,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `hentAdresser skal returnere oppholdsAdresse lik folkeregistrertAdresse`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
@@ -106,7 +106,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `hentAdresser skal returnere oppholdsAdresse lik midlertidigAdresse`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
@@ -125,7 +125,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `hentAdresser skal returnere adresser lik null ved ingen adresser`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(null)
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -136,9 +136,10 @@ internal class AdresseRessursTest {
 
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik folkeregistrertAdresse og returnere tilhorendeNavenhet`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknadUnderArbeidIRepo = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
-        soknadUnderArbeidIRepo.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeidIRepo.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse =
+            JSON_SYS_MATRIKKELADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeidIRepo
         every {
@@ -157,7 +158,10 @@ internal class AdresseRessursTest {
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
-        assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+        assertThat(oppholdsadresse).isEqualTo(
+            adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!
+                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+        )
 
         val navEnhetFrontend = navEnheter.first()
         val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
@@ -176,7 +180,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik midlertidigAdresse og returnere tilhorendeNavenhet`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every {
@@ -206,7 +210,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik soknadsadresse og returnere tilhorendeNavenhet`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
@@ -237,7 +241,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `hentAdresser skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         Assertions.assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { adresseRessurs.hentAdresser(BEHANDLINGSID) }
@@ -247,7 +251,7 @@ internal class AdresseRessursTest {
 
     @Test
     fun `putAdresse skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
         val adresserFrontendInput = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
         Assertions.assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput) }
@@ -276,14 +280,17 @@ internal class AdresseRessursTest {
                 adresseFrontend.gateadresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.MATRIKKELADRESSE -> assertThatMatrikkeladresseIsCorrectlyConverted(
                 adresseFrontend.matrikkeladresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.USTRUKTURERT -> assertThatUstrukturertAdresseIsCorrectlyConverted(
                 adresseFrontend.ustrukturert!!,
                 jsonAdresse
             )
+
             else -> {
                 assertThat(jsonAdresse).isNull()
                 assertThat(adresseFrontend.gateadresse).isNull()

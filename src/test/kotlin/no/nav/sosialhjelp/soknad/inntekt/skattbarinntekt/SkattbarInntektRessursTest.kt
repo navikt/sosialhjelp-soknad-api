@@ -57,7 +57,7 @@ internal class SkattbarInntektRessursTest {
 
     @Test
     fun skattbarInntektSkalReturnereTomListe() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID)
@@ -66,7 +66,7 @@ internal class SkattbarInntektRessursTest {
 
     @Test
     fun skattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithSkattbarInntekt(true)
@@ -77,7 +77,7 @@ internal class SkattbarInntektRessursTest {
 
     @Test
     fun skattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithSkattbarInntekt(false)
@@ -91,7 +91,7 @@ internal class SkattbarInntektRessursTest {
         val soknad = createJsonInternalSoknadWithSkattbarInntekt(false)
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -124,7 +124,7 @@ internal class SkattbarInntektRessursTest {
         OkonomiMapper.setBekreftelse(opplysninger, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, true, "")
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -157,7 +157,7 @@ internal class SkattbarInntektRessursTest {
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns soknad
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til skattbarInntektSystemdata
@@ -182,7 +182,7 @@ internal class SkattbarInntektRessursTest {
 
     @Test
     fun putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token") }

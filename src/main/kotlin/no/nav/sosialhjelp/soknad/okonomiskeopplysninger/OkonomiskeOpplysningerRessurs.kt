@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -59,15 +58,12 @@ class OkonomiskeOpplysningerRessurs(
     fun hentOkonomiskeOpplysninger(
         @PathVariable("behandlingsId") behandlingsId: String
     ): VedleggFrontends {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
-        return if (skalBrukeMellomlagring) {
-            hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
-        } else {
-            hentBasertPaaOpplastedeVedlegg(soknadUnderArbeid, eier)
+        return when (soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)) {
+            true -> hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
+            false -> hentBasertPaaOpplastedeVedlegg(soknadUnderArbeid, eier)
         }
     }
 
@@ -138,8 +134,7 @@ class OkonomiskeOpplysningerRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody vedleggFrontend: VedleggFrontend
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 

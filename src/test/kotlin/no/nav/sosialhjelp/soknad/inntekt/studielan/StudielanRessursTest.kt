@@ -55,7 +55,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalReturnereNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, null)
@@ -67,7 +67,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalReturnereBekreftetStudielan() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, true)
@@ -79,7 +79,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalReturnereHarIkkeStudielan() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, false)
@@ -91,7 +91,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalReturnereSkalIkkeVisesHvisIkkeStudent() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithErStudentStudielanBekreftelse(false, null)
@@ -103,7 +103,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithErStudentStudielanBekreftelse(null, null)
@@ -115,7 +115,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun putStudielanSkalSetteStudielanOgLeggeTilInntektstypen() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -140,7 +140,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknad = createSoknadUnderArbeid()
         val inntekt = ArrayList<JsonOkonomioversiktInntekt>()
         inntekt.add(JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.STUDIELAN))
@@ -167,7 +167,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun studielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID) }
         verify(exactly = 0) { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) }
@@ -175,7 +175,7 @@ internal class StudielanRessursTest {
 
     @Test
     fun putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
         val studielanFrontend = StudielanFrontend(false, null)
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend) }

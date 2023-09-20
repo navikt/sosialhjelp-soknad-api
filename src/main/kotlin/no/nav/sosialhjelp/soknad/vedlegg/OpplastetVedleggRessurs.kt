@@ -44,8 +44,7 @@ class OpplastetVedleggRessurs(
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserAtBrukerHarTilgang()
 
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
             ?.let {
@@ -62,8 +61,7 @@ class OpplastetVedleggRessurs(
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse
     ): ResponseEntity<ByteArray> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserAtBrukerHarTilgang()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
@@ -91,10 +89,9 @@ class OpplastetVedleggRessurs(
         @PathVariable("type") vedleggstype: String,
         @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val filnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
         val data = getByteArray(fil)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
@@ -103,8 +100,12 @@ class OpplastetVedleggRessurs(
             val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
             FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
         } else {
-            opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data)
-            val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn)
+            opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(
+                behandlingsId,
+                data
+            )
+            val opplastetVedlegg =
+                opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn)
             FilFrontend(opplastetVedlegg.filnavn, opplastetVedlegg.uuid)
         }
     }
@@ -114,7 +115,7 @@ class OpplastetVedleggRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)

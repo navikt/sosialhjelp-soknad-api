@@ -51,7 +51,8 @@ internal class ForsorgerpliktRessursTest {
     private val textService: TextService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
 
-    private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository)
+    private val forsorgerpliktRessurs =
+        ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository)
 
     @BeforeEach
     fun setUp() {
@@ -72,7 +73,7 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun forsorgerpliktSkalReturnereTomForsorgerplikt() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(null, null, null)
 
@@ -89,7 +90,7 @@ internal class ForsorgerpliktRessursTest {
                 JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true)
             )
             .withHarDeltBosted(JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true))
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
 
@@ -107,7 +108,7 @@ internal class ForsorgerpliktRessursTest {
                 JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false)
             )
             .withSamvarsgrad(JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30))
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
 
@@ -122,7 +123,7 @@ internal class ForsorgerpliktRessursTest {
     fun forsorgerpliktSkalReturnereToBarn() {
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
         val jsonansvar2 = JsonAnsvar().withBarn(JSON_BARN_2)
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonansvar2))
 
@@ -137,7 +138,7 @@ internal class ForsorgerpliktRessursTest {
     @Test
     fun forsorgerpliktSkalReturnereEtBarnOgBarnebidrag() {
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, Verdi.BEGGE, listOf(jsonAnsvar))
 
@@ -150,7 +151,7 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun putForsorgerpliktSkalSetteBarnebidrag() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(null, null, null)
 
@@ -169,7 +170,7 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun putForsorgerpliktSkalFjerneBarnebidragOgInntektOgUtgiftKnyttetTilBarnebidrag() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val soknad = createJsonInternalSoknadWithForsorgerplikt(null, Verdi.BEGGE, null)
         val inntekt: MutableList<JsonOkonomioversiktInntekt> = ArrayList()
@@ -197,7 +198,7 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
         val jsonansvar2 = JsonAnsvar().withBarn(JSON_BARN_2)
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
@@ -206,7 +207,8 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()))
+        val forsorgerpliktFrontend =
+            ForsorgerpliktFrontend(null, null, listOf(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()))
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -229,7 +231,7 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun putForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(createBarnMedSamvarsgrad()))
 

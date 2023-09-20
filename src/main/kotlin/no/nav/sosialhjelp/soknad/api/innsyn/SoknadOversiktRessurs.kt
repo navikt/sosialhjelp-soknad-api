@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -20,10 +19,9 @@ class SoknadOversiktRessurs(
 ) {
     @GetMapping("/soknader")
     fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserAtBrukerHarTilgang()
         logger.debug("Henter alle søknader")
-        val soknader: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor(fnr)
+        val soknader = service.hentSvarUtSoknaderFor(eier)
         logger.debug("Hentet ${soknader.size} søknader for bruker")
         return soknader
     }

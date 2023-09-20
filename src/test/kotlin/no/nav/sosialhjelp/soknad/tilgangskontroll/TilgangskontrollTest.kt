@@ -30,8 +30,7 @@ internal class TilgangskontrollTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val personService: PersonService = mockk()
-
-    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService)
+    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, personService)
 
     @BeforeEach
     fun setUp() {
@@ -62,11 +61,12 @@ internal class TilgangskontrollTest {
         )
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
+        every { soknadMetadataRepository.hent(any())?.fnr } returns userId
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
         assertThatNoException()
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerForSoknad("123") }
     }
 
     @Test
@@ -83,30 +83,32 @@ internal class TilgangskontrollTest {
         )
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
+        every { soknadMetadataRepository.hent(any())?.fnr } returns "other_user"
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerForSoknad("XXX") }
     }
 
     @Test
     fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis soknad ikke er innsendt men soknadUnderArbeid ikke finnes`() {
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
+        every { soknadMetadataRepository.hent(any())?.fnr } returns "other_user"
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerForSoknad("123") }
     }
 
     @Test
     fun `skal kaste SoknadAlleredeSendtException hvis soknad allerede er innsendt`() {
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.FERDIG
         assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerForSoknad("123") }
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
         assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerForSoknad("123") }
     }
 
     @Test

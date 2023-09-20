@@ -61,7 +61,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotteSkalReturnereNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         val (bekreftelse) = bostotteRessurs.hentBostotte(BEHANDLINGSID)
         assertThat(bekreftelse).isNull()
@@ -69,7 +69,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotteSkalReturnereBekreftetBostotte() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithBostotte(true)
@@ -79,7 +79,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotteSkalReturnereHarIkkeBostotte() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithBostotte(false)
@@ -89,7 +89,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -112,7 +112,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknad = createSoknadUnderArbeid()
         val inntekt = ArrayList<JsonOkonomioversiktInntekt>()
         inntekt.add(JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.BOSTOTTE))
@@ -139,7 +139,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalBareHaUtRiktigUtbetaling() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithBostotteUtbetalinger(true, listOf("tilfeldig", "salg", "lonn"))
@@ -150,7 +150,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalIkkeHaUtbetaling() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithBostotteUtbetalinger(false, listOf("tilfeldig", "salg", "lonn"))
@@ -160,7 +160,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalBareHaUtRiktigSak() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithSaker(true, listOf("tilfeldig", "salg", "lonn"))
@@ -170,7 +170,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalIkkeHaSak() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
@@ -180,7 +180,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalGiSamtykke() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -208,7 +208,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalTaBortSamtykke() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
         val opplysninger = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true, "")
@@ -240,7 +240,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotte_skalIkkeForandreSamtykke() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
@@ -257,7 +257,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun bostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { bostotteRessurs.hentBostotte(BEHANDLINGSID) }
@@ -267,7 +267,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
         val bostotteFrontend = BostotteFrontend(true, null, null, null, null, null)
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy {
@@ -282,7 +282,7 @@ internal class BostotteRessursTest {
 
     @Test
     fun putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy {
                 bostotteRessurs.updateSamtykke(

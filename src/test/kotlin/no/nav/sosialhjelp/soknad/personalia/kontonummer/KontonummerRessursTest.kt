@@ -32,7 +32,8 @@ internal class KontonummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kontonummerSystemdata: KontonummerSystemdata = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val kontonummerRessurs = KontonummerRessurs(tilgangskontroll, soknadUnderArbeidRepository, kontonummerSystemdata)
+    private val kontonummerRessurs =
+        KontonummerRessurs(tilgangskontroll, soknadUnderArbeidRepository, kontonummerSystemdata)
 
     @BeforeEach
     fun setUp() {
@@ -51,7 +52,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun kontonummerSkalReturnereSystemKontonummer() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM)
 
@@ -64,7 +65,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun kontonummerSkalReturnereBrukerutfyltKontonummer() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)
         every { kontonummerSystemdata.innhentSystemverdiKontonummer(any()) } returns KONTONUMMER_SYSTEM
@@ -78,7 +79,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun kontonummerSkalReturnereKontonummerLikNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null)
         every { kontonummerSystemdata.innhentSystemverdiKontonummer(any()) } returns null
@@ -93,7 +94,7 @@ internal class KontonummerRessursTest {
     @Test
     fun putKontonummerSkalSetteBrukerutfyltKontonummer() {
         startWithEmptyKontonummerAndNoSystemKontonummer()
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -112,7 +113,7 @@ internal class KontonummerRessursTest {
     @Test
     fun putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
         startWithBrukerKontonummerAndSystemKontonummerInTPS()
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { kontonummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val slot = slot<SoknadUnderArbeid>()
@@ -131,7 +132,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun kontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { kontonummerRessurs.hentKontonummer(BEHANDLINGSID) }
@@ -141,7 +142,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val kontonummerFrontend = KontonummerFrontend()
         assertThatExceptionOfType(AuthorizationException::class.java)

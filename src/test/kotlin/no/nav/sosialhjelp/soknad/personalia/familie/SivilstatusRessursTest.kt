@@ -58,7 +58,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalReturnereNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
@@ -68,7 +68,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalReturnereKunBrukerdefinertStatus() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 true,
@@ -89,7 +89,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 true,
@@ -111,7 +111,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 false,
@@ -133,7 +133,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 false,
@@ -154,7 +154,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
@@ -168,7 +168,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun putSivilstatusSkalSetteStatusGiftOgEktefelle() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
@@ -194,7 +194,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun sivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) }
@@ -204,7 +204,7 @@ internal class SivilstatusRessursTest {
 
     @Test
     fun putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val sivilstatusFrontend = SivilstatusFrontend(
             false,

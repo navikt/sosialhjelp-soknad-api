@@ -67,7 +67,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun getUtbetalingerSkalReturnereBekreftelseLikNullOgAltFalse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createSoknadUnderArbeid()
@@ -83,7 +83,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun getUtbetalingerSkalReturnereBekreftelserLikTrue() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
@@ -103,7 +103,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun getUtbetalingerSkalReturnereBeskrivelseAvAnnet() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } returns EIER
         val beskrivelse = "Lottogevinst"
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
@@ -117,7 +117,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalSetteAltFalseDersomManVelgerHarIkkeUtbetalinger() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
@@ -142,7 +142,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalSetteAlleBekreftelserLikFalse() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
@@ -161,7 +161,8 @@ internal class UtbetalingRessursTest {
         val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
         assertThat(utbetalingBekreftelse.verdi).isFalse
         assertThat(utbetalinger).isEmpty()
         assertThat(beskrivelse).isBlank
@@ -169,7 +170,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalSetteNoenBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createSoknadUnderArbeid()
@@ -201,7 +202,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalSetteAlleBekreftelser() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createSoknadUnderArbeid()
@@ -233,7 +234,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } returns EIER
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(true, listOf(UTBETALING_ANNET), "Lottogevinst")
@@ -247,7 +248,8 @@ internal class UtbetalingRessursTest {
         val soknadUnderArbeid = slot.captured
         val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
         assertThat(utbetalingBekreftelse.verdi).isFalse
         assertThat(beskrivelse).isBlank
     }
@@ -264,7 +266,7 @@ internal class UtbetalingRessursTest {
 
     @Test
     fun putUtbetalingerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerForSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val utbetalingerFrontend = UtbetalingerFrontend()
         assertThatExceptionOfType(AuthorizationException::class.java)

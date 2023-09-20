@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
@@ -27,8 +26,7 @@ class KontonummerRessurs(
     fun hentKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String
     ): KontonummerFrontend {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -51,8 +49,7 @@ class KontonummerRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody kontonummerFrontend: KontonummerFrontend
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = tilgangskontroll.verifiserBrukerForSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -60,7 +57,8 @@ class KontonummerRessurs(
         val kontonummer = personalia.kontonummer
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.kilde = JsonKilde.BRUKER
-            kontonummer.verdi = if (kontonummerFrontend.brukerutfyltVerdi == "") null else kontonummerFrontend.brukerutfyltVerdi
+            kontonummer.verdi =
+                if (kontonummerFrontend.brukerutfyltVerdi == "") null else kontonummerFrontend.brukerutfyltVerdi
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto)
         } else if (kontonummer.kilde == JsonKilde.BRUKER) {
             kontonummer.kilde = JsonKilde.SYSTEM

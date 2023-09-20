@@ -105,6 +105,11 @@ configurations {
         exclude(group = "com.google.code.findbugs", module = "jsr305")
     }
     testImplementation {
+        // Lagt til 2023-09-20 av Tore
+        // Ved å tvinge bruk av Java NIO som Netty-transport forhindrer vi
+        // at det blir brukt native transport som fryser for MacOS
+        exclude(group = "io.netty", module = "netty-transport-native-kqueue")
+
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
         exclude(group = "org.hamcrest")
