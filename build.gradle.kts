@@ -136,6 +136,7 @@ dependencies {
     // sosialhjelp-common
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
+    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:${Versions.sosialhjelpCommon}")
 
     // KS / Fiks
     implementation("no.ks.fiks.svarut:svarut-rest-klient:${Versions.fiksSvarUt}")
@@ -184,6 +185,7 @@ dependencies {
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
