@@ -33,12 +33,9 @@ class Tilgangskontroll(
         if (metadata?.status in listOf(FERDIG, SENDT_MED_DIGISOS_API))
             throw SoknadAlleredeSendtException("Søknad $behandlingsId har allerede blitt sendt inn.")
 
-
         if (metadata?.fnr != user) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
-
         verifyXsrfIfRequestUnsafe(behandlingsId)
-
         verifiserAtBrukerIkkeHarAdressebeskyttelse(user)
 
         return user
