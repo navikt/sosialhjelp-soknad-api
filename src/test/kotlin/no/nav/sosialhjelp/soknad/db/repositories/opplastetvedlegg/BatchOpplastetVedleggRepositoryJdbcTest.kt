@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])
@@ -60,7 +59,6 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
             eier = eier,
             vedleggType = OpplastetVedleggType(type),
             data = DATA,
-            uuid = UUID.nameUUIDFromBytes(DATA).toString(),
             soknadId = soknadId,
             filnavn = FILNAVN,
             sha512 = getSha512FromByteArray(DATA)
