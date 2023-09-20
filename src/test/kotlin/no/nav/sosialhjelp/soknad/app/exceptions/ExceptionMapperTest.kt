@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import no.nav.sosialhjelp.kotlin.utils.pdf.filkonvertering.exception.ExcelKonverteringException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import org.assertj.core.api.Assertions.assertThat
@@ -76,5 +79,21 @@ class ExceptionMapperTest {
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
         assertThat(responseEntity.headers.getFirst(Feilmelding.NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
+    }
+
+    @Test
+    fun `Skal gi 406 Not Acceptable hvis fil er lastet opp allerede`() {
+        val responseEntity = exceptionMapper.handleSoknadApiException(
+            DuplikatFilException(message = "feil")
+        )
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.NOT_ACCEPTABLE)
+    }
+
+    @Test
+    fun `Skal gi 500 Internal Server Error hvis konvertering av akseptert fil feiler`() {
+        val responseEntity = exceptionMapper.handleSoknadApiException(
+            KonverteringTilPdfException(message = "feil", cause = ExcelKonverteringException("feil", null))
+        )
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }
