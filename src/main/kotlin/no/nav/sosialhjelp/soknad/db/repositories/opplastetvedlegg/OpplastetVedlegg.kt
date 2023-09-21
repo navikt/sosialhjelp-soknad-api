@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import java.util.UUID
 
 data class OpplastetVedlegg(
@@ -9,7 +10,7 @@ data class OpplastetVedlegg(
     var data: ByteArray,
     var soknadId: Long,
     var filnavn: String,
-    var sha512: String
+    var sha512: String = VedleggUtils.getSha512FromByteArray(data)
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
