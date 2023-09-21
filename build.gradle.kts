@@ -69,7 +69,7 @@ plugins {
     id("org.springframework.boot") version "3.1.3"
     id("org.flywaydb.flyway") version "9.22.1"
     id("com.github.ben-manes.versions") version "0.48.0" // ./gradlew dependencyUpdates
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 }
 
 java {
@@ -185,7 +185,7 @@ dependencies {
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
-    implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.9.0")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
