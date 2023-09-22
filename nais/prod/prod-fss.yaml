@@ -68,7 +68,7 @@ spec:
       memory: 4Gi
     requests:
       cpu: 100m
-      memory: 1250Mi
+      memory: 2Gi
   envFrom:
     - configmap: loginservice-idporten
     - secret: redis-password-soknad-api
