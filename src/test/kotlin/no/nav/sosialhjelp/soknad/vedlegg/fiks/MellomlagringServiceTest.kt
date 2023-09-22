@@ -78,19 +78,25 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    internal fun getAllVedlegg() {
-        // client returnerer null
+    internal fun `skal returnere tom liste når det ikke finnes innslag for behandlingsid i mellomlager`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
+    }
 
-        // mellomlagringMetadataList er null
+    @Test
+    internal fun `skal returnere tom liste når det ikke finnes vedlegg for gitt behandlingsid`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = null
         )
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
+    }
 
-        // mellomlagringMetadataList har innhold
+    @Test
+    internal fun `skal returnere liste med vedlegg når det finnes mellomlagrede vedlegg`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -103,21 +109,27 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    internal fun getVedlegg() {
-        // client returnerer null
+    internal fun `skal ikke finne vedlegg for id dersom behandlingsid ikke finnes i mellomlager`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
+    }
 
-        // mellomlagringMetadataList er null
+    @Test
+    internal fun `skal returnere 0 vedlegg dersom det ikke ligger vedlegg for behandlingsid i mellomlager`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = null
         )
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
+    }
 
-        // mellomlagringMetadataList har innhold, men finner ikke samme vedleggId
+    @Test
+    internal fun `skal returnere 0 vedlegg dersom vedleggid ikke finnes i liste over vedlegg`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -126,8 +138,11 @@ internal class MellomlagringServiceTest {
         )
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
+    }
 
-        // mellomlagringMetadataList har innhold og vedleggId finnes
+    @Test
+    internal fun `skal returnere riktig vedlegg dersom vedleggsid finnes for behandlingsid i mellomlager`() {
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -147,7 +162,10 @@ internal class MellomlagringServiceTest {
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 
         every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
-        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(eksternId, emptyList())
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
+            eksternId,
+            emptyList()
+        )
 
         assertThatThrownBy {
             mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", EXCEL_FILE_OLD.readBytes(), EXCEL_FILE.name)
@@ -268,7 +286,10 @@ internal class MellomlagringServiceTest {
         )
     }
 
-    private fun createSoknadUnderArbeid(behandligsId: String, jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
+    private fun createSoknadUnderArbeid(
+        behandligsId: String,
+        jsonInternalSoknad: JsonInternalSoknad
+    ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandligsId,
