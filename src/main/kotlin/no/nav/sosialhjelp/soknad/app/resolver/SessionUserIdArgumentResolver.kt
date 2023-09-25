@@ -20,5 +20,5 @@ class SessionUserIdArgumentResolver(private val tilgangskontroll: Tilgangskontro
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ): String = tilgangskontroll.verifiserAtBrukerHarTilgang()
+    ): String = tilgangskontroll.verifiserBrukerId()
 }
