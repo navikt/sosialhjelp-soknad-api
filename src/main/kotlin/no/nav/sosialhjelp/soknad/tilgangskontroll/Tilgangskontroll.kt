@@ -72,6 +72,7 @@ class Tilgangskontroll(
         if (Objects.isNull(eier)) {
             throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
         }
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(eier)
         return eier
     }
 
