@@ -59,12 +59,13 @@ class Tilgangskontroll(
         verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
     }
 
-    fun verifiserAtBrukerHarTilgang() {
+    fun verifiserAtBrukerHarTilgang(): String {
         val fnr = getUserIdFromToken()
         if (Objects.isNull(fnr)) {
             throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
         }
         verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
+        return fnr
     }
 
     private fun verifiserAtBrukerIkkeHarAdressebeskyttelse(ident: String) {
