@@ -119,7 +119,7 @@ object UtgifterOgGjeld {
         pdf.addBlankLine()
 
         if (!utvidetSoknad) return
-        
+
         pdfUtils.skrivSvaralternativer(pdf, listOf("utgifter.barn.true", "utgifter.barn.false"))
         pdf.skrivTekst("Under: " + pdfUtils.getTekst("utgifter.barn.true"))
 
