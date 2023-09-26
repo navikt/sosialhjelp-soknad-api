@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -67,7 +68,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
     }
 
     @Test
-    internal fun `skal oppdatere soknad_under_arbeid med vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
+    internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
 
         every { mellomlagringClient.postVedlegg(any(), any()) } just runs
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
@@ -92,12 +93,12 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         ).firstOrNull()
 
         assertThat(retur?.behandlingsId).isEqualTo(BEHANDLINGSID)
-        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.size).isEqualTo(1)
-        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.type).isEqualTo("annet")
+        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(1)
+        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.get(0)?.filnavn).isEqualTo(FILNAVN)
     }
 
     @Test
-    internal fun `skal ikke oppdatere soknad_under_arbeid med vedlegg hvis feil kaller mot FIKS`() {
+    internal fun `skal ikke oppdatere soknad_under_arbeid med filer i vedlegg hvis feil kaller mot FIKS`() {
 
         every { mellomlagringClient.postVedlegg(any(), any()) } throws (IllegalStateException("feil"))
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
@@ -108,12 +109,14 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         )
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
 
-        mellomlagringService.uploadVedlegg(
-            BEHANDLINGSID,
-            VEDLEGGSTYPE.stringName,
-            PDF_FILE.readBytes(),
-            ORIGINALT_FILNAVN
-        )
+        assertThatThrownBy {
+            mellomlagringService.uploadVedlegg(
+                BEHANDLINGSID,
+                VEDLEGGSTYPE.stringName,
+                PDF_FILE.readBytes(),
+                ORIGINALT_FILNAVN
+            )
+        }
 
         val retur = jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
@@ -122,7 +125,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         ).firstOrNull()
 
         assertThat(retur?.behandlingsId).isEqualTo(BEHANDLINGSID)
-        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.size).isEqualTo(0)
+        assertThat(retur?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(0)
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {
