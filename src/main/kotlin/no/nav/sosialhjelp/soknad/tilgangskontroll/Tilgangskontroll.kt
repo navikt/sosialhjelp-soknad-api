@@ -36,6 +36,7 @@ class Tilgangskontroll(
             ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
         verifiserAtInnloggetBrukerErEierAvSoknad(soknadEier)
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
     }
 
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
@@ -47,6 +48,7 @@ class Tilgangskontroll(
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId $behandlingsId -> Ikke tilgang.", e)
         }
         verifiserAtInnloggetBrukerErEierAvSoknad(eier)
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
     }
 
     private fun verifiserAtInnloggetBrukerErEierAvSoknad(eier: String) {
@@ -54,7 +56,6 @@ class Tilgangskontroll(
         if (fnr != eier) {
             throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
         }
-        verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
     }
 
     fun verifiserAtBrukerHarTilgang() {
