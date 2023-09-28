@@ -101,7 +101,6 @@ class MellomlagringService(
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
         val navEksternId = getNavEksternId(behandlingsId)
 
-        // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg =
             mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
