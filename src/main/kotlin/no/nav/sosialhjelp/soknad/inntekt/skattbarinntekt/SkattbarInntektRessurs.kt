@@ -9,7 +9,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeBekreftelserIfPresent
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Organisasjon
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektFrontend
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getBrukerPid
 
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
@@ -39,19 +40,18 @@ class SkattbarInntektRessurs(
     @GetMapping
     fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
+
+        val soknad = internalFraSoknad(fetchSoknad(behandlingsId))
+
+        val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
         val skatteopplysninger = utbetalinger
-            .filter { it.tittel != null }
-            .filter { it.type != null && it.type == UTBETALING_SKATTEETATEN }
+            .filter { it.tittel != null && it.type != null && it.type == UTBETALING_SKATTEETATEN }
+
         return SkattbarInntektFrontend(
             inntektFraSkatteetaten = organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger),
             inntektFraSkatteetatenFeilet = soknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
-            samtykke = hentSamtykkeBooleanFraSoknad(soknad),
-            samtykkeTidspunkt = hentSamtykkeDatoFraSoknad(soknad)
+            samtykke = samtykkeFraSoknad(soknad),
+            samtykkeTidspunkt = samtykkeDatoFraSoknad(soknad)
         )
     }
 
@@ -62,41 +62,43 @@ class SkattbarInntektRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = hentSamtykkeBooleanFraSoknad(jsonInternalSoknad)
-        var skalLagre = samtykke
-        if (lagretSamtykke != samtykke) {
-            skalLagre = true
-            removeBekreftelserIfPresent(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
-            setBekreftelse(
-                opplysninger,
-                UTBETALING_SKATTEETATEN_SAMTYKKE,
-                samtykke,
-                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
-            )
-        }
-        if (skalLagre) {
+        val soknad = fetchSoknad(behandlingsId)
+        val jsonInternalSoknad = internalFraSoknad(soknad)
+
+        if (samtykkeFraSoknad(jsonInternalSoknad) != samtykke) {
+            overwriteSamtykke(jsonInternalSoknad, samtykke)
             skatteetatenSystemdata.updateSystemdataIn(soknad)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, getBrukerPid())
         }
     }
 
-    private fun hentSamtykkeBooleanFraSoknad(soknad: JsonInternalSoknad): Boolean {
-        return soknad.soknad.data.okonomi.opplysninger.bekreftelse
-            .filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-            .any { it.verdi }
+    private fun overwriteSamtykke(
+        jsonInternalSoknad: JsonInternalSoknad,
+        samtykke: Boolean
+    ) {
+        removeBekreftelserIfPresent(jsonInternalSoknad.soknad.data.okonomi.opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
+        setBekreftelse(
+            jsonInternalSoknad.soknad.data.okonomi.opplysninger,
+            UTBETALING_SKATTEETATEN_SAMTYKKE,
+            samtykke,
+            textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
+        )
     }
 
-    private fun hentSamtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? {
-        return soknad.soknad.data.okonomi.opplysninger.bekreftelse
-            .filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-            .firstOrNull { it.verdi }
+    private fun fetchSoknad(behandlingsId: String): SoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getBrukerPid())
+
+    private fun internalFraSoknad(soknad: SoknadUnderArbeid): JsonInternalSoknad = soknad.jsonInternalSoknad
+        ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+
+    private fun samtykkeFraSoknad(soknad: JsonInternalSoknad): Boolean? =
+        soknad.soknad.data.okonomi.opplysninger.bekreftelse
+            .firstOrNull { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
+            ?.verdi
+
+    private fun samtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? =
+        soknad.soknad.data.okonomi.opplysninger.bekreftelse
+            .firstOrNull { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE && it.verdi }
             ?.bekreftelsesDato
-    }
 
     private fun organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(
         skatteopplysninger: List<JsonOkonomiOpplysningUtbetaling>
@@ -122,25 +124,22 @@ class SkattbarInntektRessurs(
         return skattbarInntektOgForskuddstrekkListe
     }
 
-    private fun mapTilUtbetaling(jsonOkonomiOpplysningUtbetaling: JsonOkonomiOpplysningUtbetaling): Utbetaling {
-        return Utbetaling(
-            jsonOkonomiOpplysningUtbetaling.brutto,
-            jsonOkonomiOpplysningUtbetaling.skattetrekk,
-            jsonOkonomiOpplysningUtbetaling.tittel
+    private fun mapTilUtbetaling(utbetaling: JsonOkonomiOpplysningUtbetaling): Utbetaling =
+        Utbetaling(
+            utbetaling.brutto,
+            utbetaling.skattetrekk,
+            utbetaling.tittel
         )
-    }
 
     private fun mapTilOrganisasjon(
-        utbetalingListe: List<Utbetaling>,
-        jsonOrganisasjon: JsonOrganisasjon,
+        utbetalinger: List<Utbetaling>,
+        organisasjon: JsonOrganisasjon,
         utbetaling: JsonOkonomiOpplysningUtbetaling
-    ): Organisasjon {
-        return Organisasjon(
-            utbetalingListe,
-            jsonOrganisasjon.navn,
-            jsonOrganisasjon.organisasjonsnummer,
-            utbetaling.periodeFom,
-            utbetaling.periodeTom
-        )
-    }
+    ) = Organisasjon(
+        utbetalinger,
+        organisasjon.navn,
+        organisasjon.organisasjonsnummer,
+        utbetaling.periodeFom,
+        utbetaling.periodeTom
+    )
 }
