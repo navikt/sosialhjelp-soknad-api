@@ -61,23 +61,23 @@ class MellomlagringService(
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
         val (filnavn, data) = VedleggUtils.behandleFilOgReturnerFildata(orginaltFilnavn, orginalData)
-
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
         soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
-        val filOpplasting = opprettFilOpplasting(filnavn, data)
-
-        val navEksternId = getNavEksternId(behandlingsId)
         soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
             VedleggUtils.getSha512FromByteArray(data),
             behandlingsId,
             vedleggstype,
             filnavn
         )
+
+        val filOpplasting = opprettFilOpplasting(filnavn, data)
+        val navEksternId = getNavEksternId(behandlingsId)
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
         val mellomlagredeVedlegg =
             mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
         val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
