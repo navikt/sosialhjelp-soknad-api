@@ -49,6 +49,10 @@ class Tilgangskontroll(
         verifiserAtBrukerIkkeHarAdressebeskyttelse(personId)
     }
 
+    /**
+     * Verifiserer at bruker ikke har adressebeskyttelse.
+     * Merk: Selve autentiseringen sjekkes allerede på RestController-nivå.
+     */
     fun verifiserAtBrukerHarTilgang() = verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
 
     fun verifiserBrukerId(): String {
