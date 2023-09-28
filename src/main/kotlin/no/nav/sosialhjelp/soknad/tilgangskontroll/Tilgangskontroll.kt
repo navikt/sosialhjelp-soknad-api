@@ -27,44 +27,29 @@ class Tilgangskontroll(
     }
 
     fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
-        val metadata = soknadMetadataRepository.hent(behandlingsId)
-        if (FERDIG == metadata?.status || SENDT_MED_DIGISOS_API == metadata?.status) {
+        val personId = getUserIdFromToken()
+        val soknadStatus = soknadMetadataRepository.hent(behandlingsId)?.status
+
+        if (soknadStatus in listOf(FERDIG, SENDT_MED_DIGISOS_API))
             throw SoknadAlleredeSendtException("Søknad $behandlingsId har allerede blitt sendt inn.")
-        }
 
         val soknadEier = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
             ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
-        verifiserAtInnloggetBrukerErEierAvSoknad(soknadEier)
-        verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
+        if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
+
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(personId)
     }
 
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
-        var eier = "undefined"
-        try {
-            val metadata = soknadMetadataRepository.hent(behandlingsId)
-            metadata?.fnr?.let { eier = it }
-        } catch (e: Exception) {
-            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId $behandlingsId -> Ikke tilgang.", e)
-        }
-        verifiserAtInnloggetBrukerErEierAvSoknad(eier)
-        verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
+        val personId = getUserIdFromToken()
+        val soknadEier =
+            soknadMetadataRepository.hent(behandlingsId)?.fnr ?: AuthorizationException("henting av eier for søknad $behandlingsId feilet, nekter adgang")
+        if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(personId)
     }
 
-    private fun verifiserAtInnloggetBrukerErEierAvSoknad(eier: String) {
-        val fnr = getUserIdFromToken()
-        if (fnr != eier) {
-            throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
-        }
-    }
-
-    fun verifiserAtBrukerHarTilgang() {
-        val fnr = getUserIdFromToken()
-        if (Objects.isNull(fnr)) {
-            throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
-        }
-        verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr)
-    }
+    fun verifiserAtBrukerHarTilgang() = verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
 
     fun verifiserBrukerId(): String {
         val eier = getUserIdFromToken()
