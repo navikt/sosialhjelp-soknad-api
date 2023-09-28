@@ -107,6 +107,10 @@ configurations {
         exclude(group = "com.google.code.findbugs", module = "jsr305")
     }
     testImplementation {
+        // Ved å ekskludere kqueue som Netty-transport tvinger vi en fallback
+        // til java NIO, som forhindrer fryser tester på MacOS. Koster noe
+        // ytelse, så kan være verdt å besøke igjen senere.
+        exclude(group = "io.netty", module = "netty-transport-native-kqueue")
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
         exclude(group = "org.hamcrest")
