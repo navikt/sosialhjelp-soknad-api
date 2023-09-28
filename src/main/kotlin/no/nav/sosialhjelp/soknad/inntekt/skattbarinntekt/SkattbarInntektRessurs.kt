@@ -43,8 +43,7 @@ class SkattbarInntektRessurs(
 
         val soknad = internalFraSoknad(fetchSoknad(behandlingsId))
 
-        val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
-        val skatteopplysninger = utbetalinger
+        val skatteopplysninger = soknad.soknad.data.okonomi.opplysninger.utbetaling
             .filter { it.tittel != null && it.type != null && it.type == UTBETALING_SKATTEETATEN }
 
         return SkattbarInntektFrontend(
