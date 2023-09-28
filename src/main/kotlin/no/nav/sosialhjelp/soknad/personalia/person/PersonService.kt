@@ -76,6 +76,9 @@ class PersonService(
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }
 
+    fun harAdressebeskyttelse(ident: String): Boolean =
+        hentAdressebeskyttelse(ident) in listOf(Gradering.FORTROLIG, Gradering.STRENGT_FORTROLIG, Gradering.STRENGT_FORTROLIG_UTLAND)
+
     private fun erFDAT(ident: String): Boolean {
         return ident.length == 11 && ident.substring(6).equals("00000", ignoreCase = true)
     }
