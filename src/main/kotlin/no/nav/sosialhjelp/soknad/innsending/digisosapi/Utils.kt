@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
+import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import org.springframework.http.ContentDisposition
@@ -11,6 +12,7 @@ import java.util.regex.Pattern
 object Utils {
     val digisosObjectMapper = JsonSosialhjelpObjectMapper
         .createObjectMapper()
+        .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
         .registerKotlinModule()
 
     fun getDigisosIdFromResponse(errorResponse: String, behandlingsId: String): String? {

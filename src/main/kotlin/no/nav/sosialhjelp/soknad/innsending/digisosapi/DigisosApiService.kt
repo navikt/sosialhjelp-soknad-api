@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -35,7 +36,7 @@ class DigisosApiService(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock
 ) {
-    private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
 
     fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId

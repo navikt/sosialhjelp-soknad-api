@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
+import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import org.slf4j.LoggerFactory
@@ -9,7 +10,7 @@ import java.sql.ResultSet
 
 class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
 
-    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
 
     override fun mapRow(rs: ResultSet, rowNum: Int): SoknadUnderArbeid {
         return SoknadUnderArbeid(

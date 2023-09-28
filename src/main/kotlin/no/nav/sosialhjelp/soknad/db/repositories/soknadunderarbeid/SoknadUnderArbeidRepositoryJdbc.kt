@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -28,7 +29,7 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
 
-    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
     private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
