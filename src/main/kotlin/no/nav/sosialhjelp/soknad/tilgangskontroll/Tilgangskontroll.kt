@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -63,9 +62,5 @@ class Tilgangskontroll(
 
     private fun verifiserAtBrukerIkkeHarAdressebeskyttelse(ident: String) {
         if (personService.harAdressebeskyttelse(ident)) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(Tilgangskontroll::class.java)
     }
 }
