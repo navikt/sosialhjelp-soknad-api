@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.annotation.SessionUserId
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
@@ -114,9 +113,8 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSessionInfo(
-        @SessionUserId eier: String
-    ): SessionResponse {
+    fun getSessionInfo(): SessionResponse {
+        val eier = getUser()
         log.debug("Henter søknadsinfo for bruker")
 
         val person = personService.hentPerson(eier)
