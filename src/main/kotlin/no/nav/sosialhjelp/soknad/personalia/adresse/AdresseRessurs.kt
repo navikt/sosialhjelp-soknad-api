@@ -115,8 +115,7 @@ class AdresseRessurs(
             JsonAdresseValg.SOKNAD -> soknadIntern.soknad.data.personalia.oppholdsadresse
         }
 
-    private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? = when {
-        oppholdsadresse == null -> null
+    private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse): JsonAdresse? = when {
         oppholdsadresse.type == JsonAdresse.Type.MATRIKKELADRESSE -> null
         else -> adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
     }
