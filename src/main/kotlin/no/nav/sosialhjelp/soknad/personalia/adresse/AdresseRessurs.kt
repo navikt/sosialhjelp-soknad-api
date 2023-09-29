@@ -62,7 +62,7 @@ class AdresseRessurs(
         updatePersonalia(internalSoknad.soknad.data.personalia, adresserFrontend.valg, adresserFrontend.soknad)
 
         val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad.data.personalia)
-        setSoknadMottaker(soknad, navEnhetFrontend)
+        setSoknadMottaker(internalSoknad, navEnhetFrontend)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
@@ -84,15 +84,15 @@ class AdresseRessurs(
     }
 
     fun setSoknadMottaker(
-        soknad: SoknadUnderArbeid,
+        soknadIntern: JsonInternalSoknad,
         navEnhetFrontend: NavEnhetFrontend?
     ) {
         if (navEnhetFrontend == null) return
-        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+        soknadIntern.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
 
-        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
+        soknadIntern.soknad?.mottaker = JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
             .withKommunenummer(navEnhetFrontend.kommuneNr)
