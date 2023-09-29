@@ -99,7 +99,7 @@ internal class SkattbarInntektRessursTest {
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true)
 
         // Sjekker kaller til skatteetatenSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
@@ -132,7 +132,7 @@ internal class SkattbarInntektRessursTest {
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false)
 
         // Sjekker kaller til skattbarInntektSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
@@ -166,7 +166,7 @@ internal class SkattbarInntektRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token") }
+            .isThrownBy { skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true) }
 
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
