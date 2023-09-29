@@ -106,47 +106,6 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun `getNavEnheter - skal returnere NavEnhetFrontend-liste`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns navEnhetFrontend
-
-        val response = navEnhetRessurs.getNavEnheter(BEHANDLINGSID)
-
-        assertThat(response).hasSize(1)
-        assertThat(response[0].valgt).isTrue
-    }
-
-    @Test
-    fun `getNavEnheter - skal returnere tom liste`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns null
-
-        val response = navEnhetRessurs.getNavEnheter(BEHANDLINGSID)
-
-        assertThat(response).isEmpty()
-    }
-
-    @Test
-    fun `getNavEnheter - skal kaste feil`() {
-        val soknadUnderArbeid: SoknadUnderArbeid = mockk()
-        every { soknadUnderArbeid.jsonInternalSoknad?.soknad } returns null
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { navEnhetRessurs.getNavEnheter(BEHANDLINGSID) }
-
-        verify { navEnhetService wasNot called }
-    }
-
-    @Test
     fun `getValgtNavEnhet - skal hente NavEnhetFrontend`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
@@ -219,16 +178,6 @@ internal class NavEnhetRessursTest {
         navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend)
 
         verify(exactly = 1) { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) }
-    }
-
-    @Test
-    internal fun `hentNavEnheter skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { navEnhetRessurs.getNavEnheter(BEHANDLINGSID) }
-
-        verify { soknadUnderArbeidRepository wasNot Called }
     }
 
     @Test

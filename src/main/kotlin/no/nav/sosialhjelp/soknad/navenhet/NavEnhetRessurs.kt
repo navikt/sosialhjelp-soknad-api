@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -25,22 +24,6 @@ class NavEnhetRessurs(
     private val navEnhetService: NavEnhetService,
     private val adresseRessurs: AdresseRessurs
 ) {
-
-    @GetMapping("/navEnheter")
-    fun getNavEnheter(
-        @PathVariable("behandlingsId") behandlingsId: String
-    ): List<NavEnhetFrontend> {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
-            ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val valgtEnhetNr = soknad.mottaker.enhetsnummer // todo trenger kanskje ikke denne?
-        val oppholdsadresse = soknad.data.personalia.oppholdsadresse
-        val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
-        val navEnhetFrontend = navEnhetService.getNavEnhet(eier, soknad, adresseValg)
-        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
-    }
-
     @GetMapping("/navEnhet")
     fun getValgtNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String
