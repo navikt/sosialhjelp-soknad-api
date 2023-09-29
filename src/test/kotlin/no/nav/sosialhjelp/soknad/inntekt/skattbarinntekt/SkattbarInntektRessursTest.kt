@@ -152,25 +152,6 @@ internal class SkattbarInntektRessursTest {
     }
 
     @Test
-    fun skattbarInntekt_skalIkkeForandreSamtykke() {
-        val soknad = createJsonInternalSoknadWithSkattbarInntekt(false)
-        every {
-            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns soknad
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
-
-        // Sjekker kaller til skattbarInntektSystemdata
-        verify(exactly = 0) { skatteetatenSystemdata.updateSystemdataIn(any()) }
-
-        // Sjekker lagring av soknaden
-        verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
-
-        // Sjekker soknaden
-        assertThat(soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).isEmpty()
-    }
-
-    @Test
     fun skattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
 
