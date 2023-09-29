@@ -68,10 +68,14 @@ class SkattbarInntektRessurs(
         val soknad = internalFraSoknad(fetchSoknad(behandlingsId))
 
         val inntektFraSkatteetaten = skatteetatUtbetalingerFraSoknad(soknad)
-            .sortedByDescending { it.periodeFom } // Sort by periodeFom (String); newest first. groupBy retains ordering.
-            .groupBy { it.periodeFom }            // Group transactions as Map<periodeFom, List<JsonOkonomiOpplysningUtbetaling>>
-            .values                               // Collection<List<JsonOkonomiOpplysningUtbetaling>>
-            .map { it.transformToFrontend() }     // List<SkattbarInntektOgForskuddstrekk>
+            // Sort by periodeFom (String); newest first. groupBy retains ordering.
+            .sortedByDescending { it.periodeFom }
+            // Group transactions as Map<periodeFom, List<JsonOkonomiOpplysningUtbetaling>>
+            .groupBy { it.periodeFom }
+            // Collection<List<JsonOkonomiOpplysningUtbetaling>>
+            .values
+            // List<SkattbarInntektOgForskuddstrekk>
+            .map { it.transformToFrontend() }
 
         return SkattbarInntektFrontend(
             inntektFraSkatteetaten = inntektFraSkatteetaten,
@@ -83,13 +87,15 @@ class SkattbarInntektRessurs(
 
     /** Mapper JsonOkonomiOpplysningUtbetaling til SkattbarInntektOgForskuddstrekk for frontend. */
     private fun List<JsonOkonomiOpplysningUtbetaling>.transformToFrontend() =
-        SkattbarInntektOgForskuddstrekk(organisasjoner = this
-            .groupBy { it.organisasjon }
-            .map { (organisasjon, utbetalinger) ->
-                mapTilOrganisasjon(
-                    mapTilUtbetalinger(utbetalinger), organisasjon, utbetalinger.first().periode()
-                )
-            })
+        SkattbarInntektOgForskuddstrekk(
+            organisasjoner = this
+                .groupBy { it.organisasjon }
+                .map { (organisasjon, utbetalinger) ->
+                    mapTilOrganisasjon(
+                        mapTilUtbetalinger(utbetalinger), organisasjon, utbetalinger.first().periode()
+                    )
+                }
+        )
 
     private fun JsonOkonomiOpplysningUtbetaling.periode(): Pair<String, String> = Pair(periodeFom, periodeTom)
 
@@ -148,7 +154,9 @@ class SkattbarInntektRessurs(
     ) = utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
 
     private fun mapTilOrganisasjon(
-        utbetalinger: List<Utbetaling>, organisasjon: JsonOrganisasjon?, periode: Pair<String, String>
+        utbetalinger: List<Utbetaling>,
+        organisasjon: JsonOrganisasjon?,
+        periode: Pair<String, String>
     ) = Organisasjon(
         utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer, periode.first, periode.second
     )
