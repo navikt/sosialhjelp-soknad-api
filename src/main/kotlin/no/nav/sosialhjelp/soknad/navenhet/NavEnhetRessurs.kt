@@ -26,22 +26,6 @@ class NavEnhetRessurs(
     private val navEnhetService: NavEnhetService,
     private val adresseRessurs: AdresseRessurs
 ) {
-    @GetMapping("/navEnhet")
-    fun getValgtNavEnhet(
-        @PathVariable("behandlingsId") behandlingsId: String
-    ): NavEnhetFrontend? {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = eier()
-        val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
-            ?: throw IllegalStateException("Kan ikke hente valgtNavEnhet hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-
-        return if (soknadsmottaker.kommunenummer.isNullOrEmpty() || soknadsmottaker.navEnhetsnavn.isNullOrEmpty()) {
-            null
-        } else {
-            navEnhetService.getValgtNavEnhet(soknadsmottaker)
-        }
-    }
-
     @PutMapping("/navEnheter")
     fun putNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
