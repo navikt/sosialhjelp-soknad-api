@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
 
 @Component
@@ -34,7 +35,8 @@ class MellomlagringService(
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
         val navEksternId = getNavEksternId(behandlingsId)
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        val mellomlagredeVedlegg =
+            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
         }
@@ -49,6 +51,7 @@ class MellomlagringService(
             }
     }
 
+    @Transactional
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
@@ -58,30 +61,30 @@ class MellomlagringService(
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
         val (filnavn, data) = VedleggUtils.behandleFilOgReturnerFildata(orginaltFilnavn, orginalData)
-
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
         soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
-        val filOpplasting = opprettFilOpplasting(filnavn, data)
+        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+            VedleggUtils.getSha512FromByteArray(data),
+            behandlingsId,
+            vedleggstype,
+            filnavn
+        )
 
+        val filOpplasting = opprettFilOpplasting(filnavn, data)
         val navEksternId = getNavEksternId(behandlingsId)
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        val mellomlagredeVedlegg =
+            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
         val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
             filId = filId
-        ).also {
-            soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
-                VedleggUtils.getSha512FromByteArray(data),
-                behandlingsId,
-                vedleggstype,
-                filnavn
-            )
-        }
+        )
     }
 
     private fun opprettFilOpplasting(filnavn: String, data: ByteArray): FilOpplasting {
@@ -98,8 +101,8 @@ class MellomlagringService(
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
         val navEksternId = getNavEksternId(behandlingsId)
 
-        // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        val mellomlagredeVedlegg =
+            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
             return
@@ -120,7 +123,8 @@ class MellomlagringService(
 
     fun deleteAllVedlegg(behandlingsId: String) {
         val navEksternId = getNavEksternId(behandlingsId)
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        val mellomlagredeVedlegg =
+            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
         } else {
