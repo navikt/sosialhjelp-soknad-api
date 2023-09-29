@@ -1,13 +1,8 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_HIGH
-import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LOA_SUBSTANTIAL
-import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -16,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL])
+@ProtectionTokenXSubstantial
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
     private val mineSakerMetadataService: MineSakerMetadataService
