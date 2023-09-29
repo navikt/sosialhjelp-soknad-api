@@ -20,41 +20,64 @@ object AdresseMapper {
         sysMidlertidig: JsonAdresse?,
         jsonOpphold: JsonAdresse?,
         navEnhet: NavEnhetFrontend?
-    ): AdresserFrontend {
-        return AdresserFrontend(
-            valg = jsonOpphold?.adresseValg,
-            folkeregistrert = mapToAdresseFrontend(sysFolkeregistrert),
-            midlertidig = mapToAdresseFrontend(sysMidlertidig),
-            soknad = mapToAdresseFrontend(jsonOpphold),
-            navEnhet = navEnhet
-        )
+    ) = AdresserFrontend(
+        valg = jsonOpphold?.adresseValg,
+        folkeregistrert = mapToAdresseFrontend(sysFolkeregistrert),
+        midlertidig = mapToAdresseFrontend(sysMidlertidig),
+        soknad = mapToAdresseFrontend(jsonOpphold),
+        navEnhet = navEnhet
+    )
+
+    fun mapToJsonAdresse(adresseFrontend: AdresseFrontend) = when (adresseFrontend.type) {
+        JsonAdresse.Type.GATEADRESSE -> {
+            val gateadresse = adresseFrontend.gateadresse
+            JsonGateAdresse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withLandkode(StringUtils.defaultIfBlank(gateadresse?.landkode, "NOR"))
+                .withKommunenummer(StringUtils.defaultIfBlank(gateadresse?.kommunenummer, null))
+                .withAdresselinjer(gateadresse?.adresselinjer)
+                .withBolignummer(StringUtils.defaultIfBlank(gateadresse?.bolignummer, null))
+                .withPostnummer(StringUtils.defaultIfBlank(gateadresse?.postnummer, null))
+                .withPoststed(StringUtils.defaultIfBlank(gateadresse?.poststed, null))
+                .withGatenavn(StringUtils.defaultIfBlank(gateadresse?.gatenavn, null))
+                .withHusnummer(StringUtils.defaultIfBlank(gateadresse?.husnummer, null))
+                .withHusbokstav(StringUtils.defaultIfBlank(gateadresse?.husbokstav, null))
+        }
+
+        JsonAdresse.Type.MATRIKKELADRESSE -> {
+            val matrikkeladresse = adresseFrontend.matrikkeladresse
+            JsonMatrikkelAdresse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(JsonAdresse.Type.MATRIKKELADRESSE)
+                .withKommunenummer(StringUtils.defaultIfBlank(matrikkeladresse?.kommunenummer, null))
+                .withGaardsnummer(StringUtils.defaultIfBlank(matrikkeladresse?.gaardsnummer, null))
+                .withBruksnummer(StringUtils.defaultIfBlank(matrikkeladresse?.bruksnummer, null))
+                .withFestenummer(StringUtils.defaultIfBlank(matrikkeladresse?.festenummer, null))
+                .withSeksjonsnummer(StringUtils.defaultIfBlank(matrikkeladresse?.seksjonsnummer, null))
+                .withUndernummer(StringUtils.defaultIfBlank(matrikkeladresse?.undernummer, null))
+        }
+
+        else -> error("ukjent adressetype [${adresseFrontend.type}]")
     }
 
-    private fun mapToAdresseFrontend(adresse: JsonAdresse?): AdresseFrontend? {
-        if (adresse == null) {
-            return null
-        }
-        return when (adresse.type) {
-            JsonAdresse.Type.GATEADRESSE -> {
-                AdresseFrontend(
-                    type = JsonAdresse.Type.GATEADRESSE,
-                    gateadresse = mapToGateadresseFrontend(adresse)
-                )
-            }
-            JsonAdresse.Type.MATRIKKELADRESSE -> {
-                AdresseFrontend(
-                    type = JsonAdresse.Type.MATRIKKELADRESSE,
-                    matrikkeladresse = mapToMatrikkeladresseFrontend(adresse)
-                )
-            }
-            JsonAdresse.Type.USTRUKTURERT -> {
-                AdresseFrontend(
-                    type = JsonAdresse.Type.USTRUKTURERT,
-                    ustrukturert = mapToUstrukturertAdresseFrontend(adresse)
-                )
-            }
-            else -> null
-        }
+    private fun mapToAdresseFrontend(adresse: JsonAdresse?): AdresseFrontend? = when (adresse?.type) {
+        JsonAdresse.Type.GATEADRESSE -> AdresseFrontend(
+            type = JsonAdresse.Type.GATEADRESSE,
+            gateadresse = mapToGateadresseFrontend(adresse)
+        )
+
+        JsonAdresse.Type.MATRIKKELADRESSE -> AdresseFrontend(
+            type = JsonAdresse.Type.MATRIKKELADRESSE,
+            matrikkeladresse = mapToMatrikkeladresseFrontend(adresse)
+        )
+
+        JsonAdresse.Type.USTRUKTURERT -> AdresseFrontend(
+            type = JsonAdresse.Type.USTRUKTURERT,
+            ustrukturert = mapToUstrukturertAdresseFrontend(adresse)
+        )
+
+        else -> null
     }
 
     private fun mapToGateadresseFrontend(adresse: JsonAdresse): GateadresseFrontend {
@@ -87,39 +110,5 @@ object AdresseMapper {
     private fun mapToUstrukturertAdresseFrontend(adresse: JsonAdresse): UstrukturertAdresseFrontend {
         val ustrukturertAdresse = adresse as JsonUstrukturertAdresse
         return UstrukturertAdresseFrontend(adresse = ustrukturertAdresse.adresse)
-    }
-
-    fun mapToJsonAdresse(adresseFrontend: AdresseFrontend): JsonAdresse {
-        val adresse: JsonAdresse = when (adresseFrontend.type) {
-            JsonAdresse.Type.GATEADRESSE -> {
-                val gateadresse = adresseFrontend.gateadresse
-                JsonGateAdresse()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(JsonAdresse.Type.GATEADRESSE)
-                    .withLandkode(StringUtils.defaultIfBlank(gateadresse?.landkode, "NOR"))
-                    .withKommunenummer(StringUtils.defaultIfBlank(gateadresse?.kommunenummer, null))
-                    .withAdresselinjer(gateadresse?.adresselinjer)
-                    .withBolignummer(StringUtils.defaultIfBlank(gateadresse?.bolignummer, null))
-                    .withPostnummer(StringUtils.defaultIfBlank(gateadresse?.postnummer, null))
-                    .withPoststed(StringUtils.defaultIfBlank(gateadresse?.poststed, null))
-                    .withGatenavn(StringUtils.defaultIfBlank(gateadresse?.gatenavn, null))
-                    .withHusnummer(StringUtils.defaultIfBlank(gateadresse?.husnummer, null))
-                    .withHusbokstav(StringUtils.defaultIfBlank(gateadresse?.husbokstav, null))
-            }
-            JsonAdresse.Type.MATRIKKELADRESSE -> {
-                val matrikkeladresse = adresseFrontend.matrikkeladresse
-                JsonMatrikkelAdresse()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-                    .withKommunenummer(StringUtils.defaultIfBlank(matrikkeladresse?.kommunenummer, null))
-                    .withGaardsnummer(StringUtils.defaultIfBlank(matrikkeladresse?.gaardsnummer, null))
-                    .withBruksnummer(StringUtils.defaultIfBlank(matrikkeladresse?.bruksnummer, null))
-                    .withFestenummer(StringUtils.defaultIfBlank(matrikkeladresse?.festenummer, null))
-                    .withSeksjonsnummer(StringUtils.defaultIfBlank(matrikkeladresse?.seksjonsnummer, null))
-                    .withUndernummer(StringUtils.defaultIfBlank(matrikkeladresse?.undernummer, null))
-            }
-            else -> throw IllegalStateException("Ukjent adressetype: \"" + adresseFrontend.type + "\".")
-        }
-        return adresse
     }
 }

@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.getEnhetsnavnFromNavEnhetsnavn
@@ -35,19 +36,18 @@ class NavEnhetService(
 ) {
 
     fun getNavEnhet(
-        eier: String,
-        soknad: JsonSoknad,
-        valg: JsonAdresseValg?,
+        soknad: JsonSoknad
     ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
-        return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
+        val adresseValg = personalia.oppholdsadresse.adresseValg
+        return if (JsonAdresseValg.FOLKEREGISTRERT == adresseValg) {
             try {
-                finnNavEnhetFraGT(eier, personalia)
+                finnNavEnhetFraGT(personalia)
             } catch (e: Exception) {
                 log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
-                finnNavEnhetFraAdresse(personalia, valg)
+                finnNavEnhetFraAdresse(personalia, adresseValg)
             }
-        } else finnNavEnhetFraAdresse(personalia, valg)
+        } else finnNavEnhetFraAdresse(personalia, adresseValg)
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -64,12 +64,23 @@ class NavEnhetService(
         )
     }
 
-    private fun finnNavEnhetFraGT(
-        ident: String,
-        personalia: JsonPersonalia
-    ): NavEnhetFrontend? {
+    private fun finnNavEnhetFraGT(personalia: JsonPersonalia): NavEnhetFrontend? {
         val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val personIdFraSoknad = personalia.personIdentifikator.verdi
+
+        // Skrevet i sammenheng med en refaktor hvor eier blir fjernet som argument.
+        // Vi _bør_ være garantert å ha en personId her. Men for å være på den sikre siden,
+        // faller jeg tilbake på token, siden denne aldri brukes utenfor REST-context.
+        // Om denne ikke er blitt logget kan sikringen fint fjernes.
+        val personId: String = when {
+            personIdFraSoknad.matches(Regex("\\d{11}")) -> personIdFraSoknad
+            else -> {
+                log.warn("PersonIdentifikator var null, henter fra token")
+                getUserIdFromToken()
+            }
+        }
+
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(personId)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
     }

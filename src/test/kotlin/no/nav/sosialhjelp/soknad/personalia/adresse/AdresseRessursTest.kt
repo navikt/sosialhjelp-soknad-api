@@ -82,7 +82,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_BRUKER_GATE_ADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -101,7 +100,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_MATRIKKELADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -120,7 +118,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -137,12 +134,14 @@ internal class AdresseRessursTest {
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik folkeregistrertAdresse og returnere tilhorendeNavenhet`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+
         val soknadUnderArbeidIRepo = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         soknadUnderArbeidIRepo.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeidIRepo
         every {
-            navEnhetService.getNavEnhet(any(), any(), any())
+            navEnhetService.getNavEnhet(any())
         } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -157,7 +156,9 @@ internal class AdresseRessursTest {
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
-        assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+        assertThat(oppholdsadresse).isEqualTo(
+            adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+        )
 
         val navEnhetFrontend = navEnheter.first()
         val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
@@ -183,7 +184,7 @@ internal class AdresseRessursTest {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         every {
-            navEnhetService.getNavEnhet(any(), any(), any())
+            navEnhetService.getNavEnhet(any())
         } returns NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -207,11 +208,12 @@ internal class AdresseRessursTest {
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik soknadsadresse og returnere tilhorendeNavenhet`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         every {
-            navEnhetService.getNavEnhet(any(), any(), any())
+            navEnhetService.getNavEnhet(any())
         } returns NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -276,14 +278,17 @@ internal class AdresseRessursTest {
                 adresseFrontend.gateadresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.MATRIKKELADRESSE -> assertThatMatrikkeladresseIsCorrectlyConverted(
                 adresseFrontend.matrikkeladresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.USTRUKTURERT -> assertThatUstrukturertAdresseIsCorrectlyConverted(
                 adresseFrontend.ustrukturert!!,
                 jsonAdresse
             )
+
             else -> {
                 assertThat(jsonAdresse).isNull()
                 assertThat(adresseFrontend.gateadresse).isNull()

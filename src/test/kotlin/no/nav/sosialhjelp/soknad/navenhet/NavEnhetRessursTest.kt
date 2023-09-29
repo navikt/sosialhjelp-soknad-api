@@ -172,12 +172,12 @@ internal class NavEnhetRessursTest {
 
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) } just runs
+        every { adresseRessurs.setSoknadMottaker(any(), any()) } just runs
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
         navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend)
 
-        verify(exactly = 1) { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) }
+        verify(exactly = 1) { adresseRessurs.setSoknadMottaker(any(), any()) }
     }
 
     @Test

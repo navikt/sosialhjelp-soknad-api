@@ -48,7 +48,7 @@ class NavEnhetRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
+        adresseRessurs.setSoknadMottaker(soknad, navEnhetFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 }
