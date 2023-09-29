@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import no.finn.unleash.Unleash
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
@@ -36,18 +35,17 @@ class NavEnhetService(
 ) {
 
     fun getNavEnhet(
-        soknad: JsonSoknad
-    ): NavEnhetFrontend? {
-        val personalia = soknad.data.personalia
-        val adresseValg = personalia.oppholdsadresse.adresseValg
-        return if (JsonAdresseValg.FOLKEREGISTRERT == adresseValg) {
+        personalia: JsonPersonalia
+    ): NavEnhetFrontend? = when (personalia.oppholdsadresse.adresseValg) {
+        JsonAdresseValg.FOLKEREGISTRERT ->
             try {
                 finnNavEnhetFraGT(personalia)
             } catch (e: Exception) {
                 log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
-                finnNavEnhetFraAdresse(personalia, adresseValg)
+                finnNavEnhetFraAdresse(personalia)
             }
-        } else finnNavEnhetFraAdresse(personalia, adresseValg)
+
+        else -> finnNavEnhetFraAdresse(personalia)
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -87,8 +85,8 @@ class NavEnhetService(
 
     private fun finnNavEnhetFraAdresse(
         personalia: JsonPersonalia,
-        valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
+        val valg = personalia.oppholdsadresse.adresseValg
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
         val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)

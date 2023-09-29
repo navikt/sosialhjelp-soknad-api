@@ -84,7 +84,7 @@ class NavEnhetServiceTest {
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
         every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(navEnhetFrontend).isNotNull
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, SOKNADSMOTTAKER)
@@ -104,7 +104,7 @@ class NavEnhetServiceTest {
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
         every { kodeverkService.getKommunenavn(KOMMUNENR_2) } returns KOMMUNENAVN_2
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(navEnhetFrontend).isNotNull
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, SOKNADSMOTTAKER_2)
@@ -120,7 +120,7 @@ class NavEnhetServiceTest {
         every { finnAdresseService.finnAdresseFraSoknad(any(), JsonAdresseValg.SOKNAD) } returns SOKNADSMOTTAKER_FORSLAG
         every { norgService.getEnhetForGt(KOMMUNENR) } returns null
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(navEnhetFrontend).isNull()
     }
@@ -140,7 +140,7 @@ class NavEnhetServiceTest {
 
         every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns null
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
         assertThat(navEnhetFrontend).isNull()
     }
 
@@ -158,7 +158,7 @@ class NavEnhetServiceTest {
         every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
         every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
@@ -179,7 +179,7 @@ class NavEnhetServiceTest {
         every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
         every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
@@ -198,7 +198,7 @@ class NavEnhetServiceTest {
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
         every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad)
+        val response = navEnhetService.getNavEnhet(soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia)
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(KOMMUNENR)

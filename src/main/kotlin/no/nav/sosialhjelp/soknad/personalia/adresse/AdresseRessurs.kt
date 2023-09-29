@@ -45,7 +45,7 @@ class AdresseRessurs(
             sysFolkeregistrert = valgtAdresse(internSoknad, JsonAdresseValg.FOLKEREGISTRERT),
             sysMidlertidig = adresseSystemdata.innhentMidlertidigAdresse(eier()),
             jsonOpphold = valgtAdresse(internSoknad, JsonAdresseValg.SOKNAD),
-            navEnhet = runCatching { navEnhetService.getNavEnhet(internSoknad.soknad) }.getOrNull()
+            navEnhet = runCatching { navEnhetService.getNavEnhet(internSoknad.soknad.data.personalia) }.getOrNull()
         )
     }
 
@@ -61,7 +61,7 @@ class AdresseRessurs(
         internalSoknad.midlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(eier())
         updatePersonalia(internalSoknad.soknad.data.personalia, adresserFrontend.valg, adresserFrontend.soknad)
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad.data.personalia)
         setSoknadMottaker(soknad, navEnhetFrontend)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
