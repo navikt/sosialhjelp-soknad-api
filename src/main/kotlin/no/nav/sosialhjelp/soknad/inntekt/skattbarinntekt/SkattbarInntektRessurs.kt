@@ -87,13 +87,15 @@ class SkattbarInntektRessurs(
 
     /** Mapper JsonOkonomiOpplysningUtbetaling til SkattbarInntektOgForskuddstrekk for frontend. */
     private fun List<JsonOkonomiOpplysningUtbetaling>.transformToFrontend() =
-        SkattbarInntektOgForskuddstrekk(organisasjoner = this.groupBy { it.organisasjon }.map { (organisasjon, utbetalinger) ->
-            mapTilOrganisasjon(
-                utbetalinger = mapTilUtbetalinger(utbetalinger),
-                organisasjon = organisasjon,
-                periode = utbetalinger.first().periode()
-            )
-        })
+        SkattbarInntektOgForskuddstrekk(
+            organisasjoner = this.groupBy { it.organisasjon }.map { (organisasjon, utbetalinger) ->
+                mapTilOrganisasjon(
+                    utbetalinger = mapTilUtbetalinger(utbetalinger),
+                    organisasjon = organisasjon,
+                    periode = utbetalinger.first().periode()
+                )
+            }
+        )
 
     private fun JsonOkonomiOpplysningUtbetaling.periode(): Pair<String, String> = Pair(periodeFom, periodeTom)
 
@@ -149,7 +151,9 @@ class SkattbarInntektRessurs(
     ) = utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
 
     private fun mapTilOrganisasjon(
-        utbetalinger: List<Utbetaling>, organisasjon: JsonOrganisasjon?, periode: Pair<String, String>
+        utbetalinger: List<Utbetaling>,
+        organisasjon: JsonOrganisasjon?,
+        periode: Pair<String, String>
     ) = Organisasjon(
         utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer, periode.first, periode.second
     )
