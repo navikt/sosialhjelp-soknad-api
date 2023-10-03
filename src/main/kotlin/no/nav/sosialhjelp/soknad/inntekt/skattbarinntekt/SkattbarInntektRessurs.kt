@@ -54,7 +54,7 @@ class SkattbarInntektRessurs(
     }
 
     @PutMapping
-    fun putSamtykke(
+    fun putSkatteetatenSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody @Valid input: SkattbarInntektInputDTO,
     ): SkattbarInntektFrontend {
