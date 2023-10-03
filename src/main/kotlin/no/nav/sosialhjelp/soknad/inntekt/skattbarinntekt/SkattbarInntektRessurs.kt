@@ -87,15 +87,13 @@ class SkattbarInntektRessurs(
 
     /** Mapper JsonOkonomiOpplysningUtbetaling til SkattbarInntektOgForskuddstrekk for frontend. */
     private fun List<JsonOkonomiOpplysningUtbetaling>.transformToFrontend() =
-        SkattbarInntektOgForskuddstrekk(
-            organisasjoner = this
-                .groupBy { it.organisasjon }
-                .map { (organisasjon, utbetalinger) ->
-                    mapTilOrganisasjon(
-                        mapTilUtbetalinger(utbetalinger), organisasjon, utbetalinger.first().periode()
-                    )
-                }
-        )
+        SkattbarInntektOgForskuddstrekk(organisasjoner = this.groupBy { it.organisasjon }.map { (organisasjon, utbetalinger) ->
+            mapTilOrganisasjon(
+                utbetalinger = mapTilUtbetalinger(utbetalinger),
+                organisasjon = organisasjon,
+                periode = utbetalinger.first().periode()
+            )
+        })
 
     private fun JsonOkonomiOpplysningUtbetaling.periode(): Pair<String, String> = Pair(periodeFom, periodeTom)
 
@@ -143,20 +141,15 @@ class SkattbarInntektRessurs(
      * Henter dato for sist samtykke ble gitt for å hente fra Skatteetaten
      */
     private fun samtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? =
-        soknad.soknad.data.okonomi.opplysninger.bekreftelse
-            .filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE && it.verdi }
-            .map { it.bekreftelsesDato }
-            .sortedByDescending { it }
-            .firstOrNull()
+        soknad.soknad.data.okonomi.opplysninger.bekreftelse.filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE && it.verdi }.map { it.bekreftelsesDato }
+            .sortedByDescending { it }.firstOrNull()
 
     private fun mapTilUtbetalinger(
         utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
     ) = utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
 
     private fun mapTilOrganisasjon(
-        utbetalinger: List<Utbetaling>,
-        organisasjon: JsonOrganisasjon?,
-        periode: Pair<String, String>
+        utbetalinger: List<Utbetaling>, organisasjon: JsonOrganisasjon?, periode: Pair<String, String>
     ) = Organisasjon(
         utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer, periode.first, periode.second
     )
