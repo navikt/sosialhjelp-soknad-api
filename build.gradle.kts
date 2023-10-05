@@ -103,20 +103,20 @@ repositories {
 
 configurations {
     implementation {
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-        exclude(group = "com.google.code.findbugs", module = "jsr305")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+//        exclude(group = "com.google.code.findbugs", module = "jsr305")
     }
     testImplementation {
         // Ved å ekskludere kqueue som Netty-transport tvinger vi en fallback
         // til java NIO, som forhindrer fryser tester på MacOS. Koster noe
         // ytelse, så kan være verdt å besøke igjen senere.
         exclude(group = "io.netty", module = "netty-transport-native-kqueue")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-        exclude(group = "org.hamcrest")
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-        exclude(group = "org.mockito")
-        exclude(group = "org.skyscreamer", module = "jsonassert")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+//        exclude(group = "org.hamcrest")
+//        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+//        exclude(group = "org.mockito")
+//        exclude(group = "org.skyscreamer", module = "jsonassert")
     }
 }
 
@@ -129,7 +129,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}")
 //    implementation("org.springframework.boot:spring-boot-starter-jdbc:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc:${Versions.springBoot}")
-
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
@@ -256,25 +255,25 @@ dependencies {
         implementation("org.yaml:snakeyaml:${Versions.snakeyaml}") {
             because("https://security.snyk.io/vuln/SNYK-JAVA-ORGYAML-3152153")
         }
-        implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
-            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
-        }
-        implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
-            because("https://github.com/advisories/GHSA-6mjq-h674-j845")
-        }
+//        implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
+//            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
+//        }
+//        implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
+//            because("https://github.com/advisories/GHSA-6mjq-h674-j845")
+//        }
         implementation("org.bouncycastle:bcprov-jdk18on") {
             version { strictly(Versions.bouncyCastle) }
         }
-        implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
-            because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
-        }
-        implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
-            because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
-        }
+//        implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
+//            because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
+//        }
+//        implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
+//            because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
+//        }
 
-        testImplementation("org.assertj:assertj-core:${Versions.assertj}")
-        testImplementation("junit:junit:${Versions.junit}")
-        testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
+//        testImplementation("org.assertj:assertj-core:${Versions.assertj}")
+//        testImplementation("junit:junit:${Versions.junit}")
+//        testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
     }
 }
 

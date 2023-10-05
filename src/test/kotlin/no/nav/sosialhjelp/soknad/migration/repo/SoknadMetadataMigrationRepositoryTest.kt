@@ -1,47 +1,43 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
-@SpringBootTest(classes = [Application::class])
-@ActiveProfiles(profiles = ["no-redis", "test"])
 internal class SoknadMetadataMigrationRepositoryTest : RepositoryTest() {
 
-    @Inject
-    private lateinit var soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository
+    private var soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository? = null
+    private var soknadMetadataRepository: SoknadMetadataRepository? = null
 
-    @Inject
-    private lateinit var soknadMetadataRepository: SoknadMetadataRepository
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from SOKNADMETADATA")
+    @BeforeEach
+    fun setup() {
+        if (soknadMetadataMigrationRepository == null) {
+            soknadMetadataMigrationRepository = SoknadMetadataMigrationRepository(jdbcTemplate)
+        }
+        if (soknadMetadataRepository == null) {
+            soknadMetadataRepository = SoknadMetadataRepositoryJdbc(jdbcTemplate)
+        }
     }
 
     @Test
     internal fun `skal hente eldste soknadMetadata etter sistEndretTidspunkt`() {
         val soknadMetadataForGammel = createSoknadMetadata(behandlingsId = "xyz", dagerSiden = 11)
-        soknadMetadataRepository.opprett(soknadMetadataForGammel)
+        soknadMetadataRepository!!.opprett(soknadMetadataForGammel)
 
         val soknadMetadataNeste = createSoknadMetadata(behandlingsId = "123", dagerSiden = 2)
-        soknadMetadataRepository.opprett(soknadMetadataNeste)
+        soknadMetadataRepository!!.opprett(soknadMetadataNeste)
 
         val soknadMetadataForNy = createSoknadMetadata(behandlingsId = "abc", dagerSiden = 1)
-        soknadMetadataRepository.opprett(soknadMetadataForNy)
+        soknadMetadataRepository!!.opprett(soknadMetadataForNy)
 
-        val result = soknadMetadataMigrationRepository.getNextSoknadMetadataAfter(LocalDateTime.now().minusDays(10))
+        val result = soknadMetadataMigrationRepository!!.getNextSoknadMetadataAfter(LocalDateTime.now().minusDays(10))
 
         assertThat(result).isNotNull
         assertThat(result?.behandlingsId).isEqualTo("123")
@@ -50,29 +46,29 @@ internal class SoknadMetadataMigrationRepositoryTest : RepositoryTest() {
     @Test
     internal fun `skal returnere null`() {
         val soknadMetadata = createSoknadMetadata(behandlingsId = "123", dagerSiden = 2)
-        soknadMetadataRepository.opprett(soknadMetadata)
+        soknadMetadataRepository!!.opprett(soknadMetadata)
 
-        val result = soknadMetadataMigrationRepository.getNextSoknadMetadataAfter(LocalDateTime.now().minusDays(1))
+        val result = soknadMetadataMigrationRepository!!.getNextSoknadMetadataAfter(LocalDateTime.now().minusDays(1))
 
         assertThat(result).isNull()
     }
 
     @Test
     internal fun `count skal returnere antall`() {
-        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(0)
+        assertThat(soknadMetadataMigrationRepository!!.count()).isEqualTo(0)
 
         val soknadMetadata = createSoknadMetadata(behandlingsId = "123", dagerSiden = 2)
-        soknadMetadataRepository.opprett(soknadMetadata)
-        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(1)
+        soknadMetadataRepository!!.opprett(soknadMetadata)
+        assertThat(soknadMetadataMigrationRepository!!.count()).isEqualTo(1)
 
         val soknadMetadata2 = createSoknadMetadata(behandlingsId = "456", dagerSiden = 1)
-        soknadMetadataRepository.opprett(soknadMetadata2)
-        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(2)
+        soknadMetadataRepository!!.opprett(soknadMetadata2)
+        assertThat(soknadMetadataMigrationRepository!!.count()).isEqualTo(2)
     }
 
     private fun createSoknadMetadata(behandlingsId: String, dagerSiden: Long): SoknadMetadata {
         return SoknadMetadata(
-            id = soknadMetadataRepository.hentNesteId(),
+            id = soknadMetadataRepository!!.hentNesteId(),
             behandlingsId = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

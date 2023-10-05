@@ -5,7 +5,6 @@ import io.mockk.just
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkObject
-import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
@@ -23,33 +22,34 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [MellomLagringServiceTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Import(MellomLagringServiceTestConfig::class)
+@ActiveProfiles("no-redis", "test")
 internal class MellomLagringServiceUtenMocketRepositoryTest {
 
-    @Inject
+    @Autowired
     private lateinit var mellomlagringClient: MellomlagringClient
 
-    @Inject
+    @Autowired
     private lateinit var mellomlagringService: MellomlagringService
 
-    @Inject
-    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
-
-    @Inject
+    @Autowired
     private lateinit var virusScanner: VirusScanner
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
+
+    @Autowired
+    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
