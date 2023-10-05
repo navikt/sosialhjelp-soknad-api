@@ -15,7 +15,7 @@ import java.util.*
 internal class OpplastetVedleggRepositoryJdbcTest : RepositoryTest() {
 
     private var opplastetVedleggRepository: OpplastetVedleggRepository? = null
- 
+
     @BeforeEach
     fun setup() {
         if (opplastetVedleggRepository == null) {

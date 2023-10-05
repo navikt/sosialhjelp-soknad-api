@@ -22,7 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest : RepositoryTest() {
-    
+
     private var soknadUnderArbeidRepository: SoknadUnderArbeidRepository? = null
     private var opplastetVedleggRepository: OpplastetVedleggRepository? = null
     private var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository? = null
@@ -46,7 +46,8 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest : RepositoryTest() {
         }
         if (batchSoknadUnderArbeidRepository == null) {
             batchSoknadUnderArbeidRepository = BatchSoknadUnderArbeidRepositoryJdbc(
-                jdbcTemplate,transactionTemplate, batchOpplastetVedleggRepository!!)
+                jdbcTemplate, transactionTemplate, batchOpplastetVedleggRepository!!
+            )
         }
     }
 

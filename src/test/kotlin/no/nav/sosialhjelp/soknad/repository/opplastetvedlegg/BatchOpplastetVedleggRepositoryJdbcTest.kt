@@ -17,7 +17,7 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest : RepositoryTest() {
 
     private var opplastetVedleggRepository: OpplastetVedleggRepository? = null
     private var batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository? = null
-    
+
     @BeforeEach
     fun setup() {
         if (opplastetVedleggRepository == null) {
