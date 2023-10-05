@@ -155,6 +155,6 @@ class SkattbarInntektRessurs(
         organisasjon: JsonOrganisasjon?,
         periode: Pair<String, String>
     ) = Organisasjon(
-        utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer, periode.first, periode.second
+        utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer ?: "", periode.first, periode.second
     )
 }
