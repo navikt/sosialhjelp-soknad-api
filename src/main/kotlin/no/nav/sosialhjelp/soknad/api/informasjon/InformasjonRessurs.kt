@@ -115,7 +115,6 @@ class InformasjonRessurs(
     @GetMapping("/session")
     fun getSessionInfo(): SessionResponse {
         val eier = getUser()
-
         log.debug("Henter søknadsinfo for bruker")
 
         val person = personService.hentPerson(eier)
