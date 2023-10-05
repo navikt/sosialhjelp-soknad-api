@@ -11,6 +11,7 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
@@ -178,7 +179,14 @@ internal class SkattbarInntektRessursTest {
                 .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
                 .withKilde(JsonKilde.SYSTEM)
                 .withTittel("Utbetalingen!")
+                .withOrganisasjon(
+                    JsonOrganisasjon()
+                        .withNavn("Arbeidsgiver")
+                        .withOrganisasjonsnummer("123456789")
+                )
                 .withBelop(123456)
+                .withPeriodeFom("2020-01-01")
+                .withPeriodeTom("2020-02-01")
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
         }
         return soknadUnderArbeid
