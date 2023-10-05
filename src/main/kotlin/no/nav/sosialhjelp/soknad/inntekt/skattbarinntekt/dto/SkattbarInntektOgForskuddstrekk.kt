@@ -15,8 +15,8 @@ data class Organisasjon(
     val utbetalinger: List<Utbetaling>?,
     val organisasjonsnavn: String?,
     val orgnr: String?,
-    val fom: String?,
-    val tom: String?
+    val fom: String,
+    val tom: String
 )
 
 data class Utbetaling(

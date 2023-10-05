@@ -11,6 +11,7 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
@@ -99,7 +100,7 @@ internal class SkattbarInntektRessursTest {
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true)
 
         // Sjekker kaller til skatteetatenSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
@@ -132,7 +133,7 @@ internal class SkattbarInntektRessursTest {
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false)
 
         // Sjekker kaller til skattbarInntektSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
@@ -152,25 +153,6 @@ internal class SkattbarInntektRessursTest {
     }
 
     @Test
-    fun skattbarInntekt_skalIkkeForandreSamtykke() {
-        val soknad = createJsonInternalSoknadWithSkattbarInntekt(false)
-        every {
-            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns soknad
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
-
-        // Sjekker kaller til skattbarInntektSystemdata
-        verify(exactly = 0) { skatteetatenSystemdata.updateSystemdataIn(any()) }
-
-        // Sjekker lagring av soknaden
-        verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
-
-        // Sjekker soknaden
-        assertThat(soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).isEmpty()
-    }
-
-    @Test
     fun skattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
 
@@ -185,7 +167,7 @@ internal class SkattbarInntektRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token") }
+            .isThrownBy { skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true) }
 
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -197,7 +179,14 @@ internal class SkattbarInntektRessursTest {
                 .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
                 .withKilde(JsonKilde.SYSTEM)
                 .withTittel("Utbetalingen!")
+                .withOrganisasjon(
+                    JsonOrganisasjon()
+                        .withNavn("Arbeidsgiver")
+                        .withOrganisasjonsnummer("123456789")
+                )
                 .withBelop(123456)
+                .withPeriodeFom("2020-01-01")
+                .withPeriodeTom("2020-02-01")
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
         }
         return soknadUnderArbeid
