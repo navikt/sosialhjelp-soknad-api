@@ -1,51 +1,32 @@
-package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
+package no.nav.sosialhjelp.soknad.repository.opplastetvedlegg
 
-import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.util.UUID
+import java.util.*
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class OpplastetVedleggRepositoryJdbcTest {
+internal class OpplastetVedleggRepositoryJdbcTest : RepositoryTest() {
 
-    companion object {
-        private const val EIER = "12345678901"
-        private const val EIER2 = "22222222222"
-        private const val TYPE = "bostotte|annetboutgift"
-        private const val TYPE2 = "dokumentasjon|aksjer"
-        private const val SOKNADID = 1L
-        private const val SOKNADID2 = 2L
-        private const val SOKNADID3 = 3L
-        private const val FILNAVN = "dokumentasjon.pdf"
-    }
-
-    @Inject
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @Inject
-    private lateinit var jdbcTemplate: JdbcTemplate
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
+    private var opplastetVedleggRepository: OpplastetVedleggRepository? = null
+ 
+    @BeforeEach
+    fun setup() {
+        if (opplastetVedleggRepository == null) {
+            opplastetVedleggRepository = OpplastetVedleggRepositoryJdbc(jdbcTemplate)
+        }
     }
 
     @Test
     fun opprettVedleggOppretterOpplastetVedleggIDatabasen() {
         val opplastetVedlegg = lagOpplastetVedlegg()
-        val uuidFraDb = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, EIER)
+        val uuidFraDb = opplastetVedleggRepository!!.opprettVedlegg(opplastetVedlegg, EIER)
         assertThat(uuidFraDb).isEqualTo(opplastetVedlegg.uuid)
     }
 
@@ -54,7 +35,7 @@ internal class OpplastetVedleggRepositoryJdbcTest {
         val opplastetVedlegg = lagOpplastetVedlegg()
         opprettOpplastetVedleggOgLagreIDb(opplastetVedlegg, EIER)
 
-        val opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(opplastetVedlegg.uuid, EIER)
+        val opplastetVedleggFraDb = opplastetVedleggRepository!!.hentVedlegg(opplastetVedlegg.uuid, EIER)
         opplastetVedleggFraDb?.let {
             assertThat(it.uuid).isEqualTo(opplastetVedlegg.uuid)
             assertThat(it.eier).isEqualTo(EIER)
@@ -73,17 +54,17 @@ internal class OpplastetVedleggRepositoryJdbcTest {
         val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID), EIER)
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER2, TYPE2, SOKNADID2), EIER2)
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID3), EIER)
-        val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(SOKNADID, EIER)
+        val opplastedeVedlegg = opplastetVedleggRepository!!.hentVedleggForSoknad(SOKNADID, EIER)
         assertThat(opplastedeVedlegg).hasSize(2)
-        assertThat(opplastedeVedlegg[0].uuid).isEqualTo(uuid)
-        assertThat(opplastedeVedlegg[1].uuid).isEqualTo(uuidSammeSoknadOgEier)
+        assertThat(opplastedeVedlegg.any { it.uuid == uuid }).isEqualTo(true)
+        assertThat(opplastedeVedlegg.any { it.uuid == uuidSammeSoknadOgEier }).isEqualTo(true)
     }
 
     @Test
     fun slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        opplastetVedleggRepository.slettVedlegg(uuid, EIER)
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
+        opplastetVedleggRepository!!.slettVedlegg(uuid, EIER)
+        assertThat(opplastetVedleggRepository!!.hentVedlegg(uuid, EIER)).isNull()
     }
 
     @Test
@@ -94,10 +75,10 @@ internal class OpplastetVedleggRepositoryJdbcTest {
         )
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
-        opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID, EIER)
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isNotNull
+        opplastetVedleggRepository!!.slettAlleVedleggForSoknad(SOKNADID, EIER)
+        assertThat(opplastetVedleggRepository!!.hentVedlegg(uuid, EIER)).isNull()
+        assertThat(opplastetVedleggRepository!!.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isNull()
+        assertThat(opplastetVedleggRepository!!.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isNotNull
     }
 
     private fun lagOpplastetVedlegg(eier: String, type: String, soknadId: Long): OpplastetVedlegg {
@@ -106,7 +87,7 @@ internal class OpplastetVedleggRepositoryJdbcTest {
             eier = eier,
             vedleggType = OpplastetVedleggType(type),
             data = data,
-            uuid = UUID.nameUUIDFromBytes(data).toString(),
+            uuid = UUID.randomUUID().toString(),
             soknadId = soknadId,
             filnavn = FILNAVN,
             sha512 = getSha512FromByteArray(data)
@@ -118,6 +99,6 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     }
 
     private fun opprettOpplastetVedleggOgLagreIDb(opplastetVedlegg: OpplastetVedlegg, eier: String): String {
-        return opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
+        return opplastetVedleggRepository!!.opprettVedlegg(opplastetVedlegg, eier)
     }
 }

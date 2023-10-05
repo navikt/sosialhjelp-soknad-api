@@ -1,20 +1,17 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
-@Import(value = [DbTestConfig::class])
 @EnableTransactionManagement
 @Profile("test")
 class MellomLagringServiceTestConfig {

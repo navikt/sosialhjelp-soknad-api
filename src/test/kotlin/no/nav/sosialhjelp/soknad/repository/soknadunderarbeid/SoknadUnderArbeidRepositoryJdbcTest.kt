@@ -1,48 +1,49 @@
-package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
+package no.nav.sosialhjelp.soknad.repository.soknadunderarbeid
 
-import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class SoknadUnderArbeidRepositoryJdbcTest {
+internal class SoknadUnderArbeidRepositoryJdbcTest : RepositoryTest() {
 
-    @Inject
-    private lateinit var jdbcTemplate: JdbcTemplate
+    private var soknadUnderArbeidRepository: SoknadUnderArbeidRepository? = null
+    private var opplastetVedleggRepository: OpplastetVedleggRepository? = null
 
-    @Inject
-    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    @Autowired
+    private lateinit var transactionTemplate: TransactionTemplate
 
-    @Inject
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
+    @BeforeEach
+    fun setup() {
+        if (opplastetVedleggRepository == null) {
+            opplastetVedleggRepository = OpplastetVedleggRepositoryJdbc(jdbcTemplate)
+        }
+        if (soknadUnderArbeidRepository == null) {
+            soknadUnderArbeidRepository = SoknadUnderArbeidRepositoryJdbc(
+                jdbcTemplate, transactionTemplate, opplastetVedleggRepository!!
+            )
+        }
     }
 
     @Test
     fun opprettSoknadOppretterSoknadUnderArbeidIDatabasen() {
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
         assertThat(soknadUnderArbeidId).isNotNull
     }
 
@@ -50,8 +51,8 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     fun hentSoknadHenterSoknadUnderArbeidGittRiktigEierOgSoknadId() {
         val lagSoknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
         lagSoknadUnderArbeid.jsonInternalSoknad = JsonInternalSoknad()
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid, EIER)
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId!!, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(lagSoknadUnderArbeid, EIER)
+        val soknadUnderArbeid = soknadUnderArbeidRepository!!.hentSoknad(soknadUnderArbeidId!!, EIER)
         assertThat(soknadUnderArbeid?.soknadId).isNotNull
         assertThat(soknadUnderArbeid?.versjon).isEqualTo(1L)
         assertThat(soknadUnderArbeid?.behandlingsId).isEqualTo(BEHANDLINGSID)
@@ -65,15 +66,15 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Test
     fun hentSoknadHenterIngenSoknadUnderArbeidHvisEiesAvAnnenBruker() {
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId!!, EIER2)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
+        val soknadUnderArbeid = soknadUnderArbeidRepository!!.hentSoknad(soknadUnderArbeidId!!, EIER2)
         assertThat(soknadUnderArbeid).isNull()
     }
 
     @Test
     fun hentSoknadHenterSoknadUnderArbeidGittRiktigEierOgBehandlingsId() {
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
+        val soknadUnderArbeid = soknadUnderArbeidRepository!!.hentSoknad(BEHANDLINGSID, EIER)
         assertThat(soknadUnderArbeid.soknadId).isEqualTo(soknadUnderArbeidId)
         assertThat(soknadUnderArbeid.behandlingsId).isEqualTo(BEHANDLINGSID)
         assertThat(soknadUnderArbeid.eier).isEqualTo(EIER)
@@ -82,10 +83,10 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun oppdaterSoknadsdataOppdatererVersjonOgSistEndretDato() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
-        val soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)
+        soknadUnderArbeidRepository!!.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidFraDb = soknadUnderArbeidRepository!!.hentSoknad(soknadUnderArbeidId, EIER)
         assertThat(soknadUnderArbeidFraDb?.versjon).isEqualTo(2L)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad).isEqualTo(JSON_INTERNAL_SOKNAD)
         assertThat(soknadUnderArbeidFraDb?.sistEndretDato).isAfter(SIST_ENDRET_DATO)
@@ -94,14 +95,14 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun oppdaterSoknadsdataKasterExceptionVedVersjonskonflikt() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         soknadUnderArbeid.versjon = 5L
         soknadUnderArbeid.jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad?.withAdditionalProperty("endret", true)
 
         assertThatExceptionOfType(SamtidigOppdateringException::class.java)
             .isThrownBy {
-                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
+                soknadUnderArbeidRepository!!.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
             }
     }
 
@@ -109,23 +110,23 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     fun oppdaterSoknadsdataKasterExceptionVedOppdateringAvLaastSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         soknadUnderArbeid.jsonInternalSoknad = JSON_INTERNAL_SOKNAD
         assertThatExceptionOfType(SoknadLaastException::class.java)
             .isThrownBy {
-                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
+                soknadUnderArbeidRepository!!.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
             }
     }
 
     @Test
     fun oppdaterInnsendingStatusOppdatererStatusOgSistEndretDato() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
-        soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, EIER)
-        val soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)
+        soknadUnderArbeidRepository!!.oppdaterInnsendingStatus(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidFraDb = soknadUnderArbeidRepository!!.hentSoknad(soknadUnderArbeidId, EIER)
         assertThat(soknadUnderArbeidFraDb?.versjon).isEqualTo(1L)
         assertThat(soknadUnderArbeidFraDb?.status).isEqualTo(SoknadUnderArbeidStatus.LAAST)
         assertThat(soknadUnderArbeidFraDb?.sistEndretDato).isAfter(SIST_ENDRET_DATO)
@@ -134,15 +135,15 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun slettSoknadSletterSoknadUnderArbeidFraDatabasen() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(
+        val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(
             lagOpplastetVedlegg(soknadUnderArbeidId),
             EIER
         )
-        soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
+        soknadUnderArbeidRepository!!.slettSoknad(soknadUnderArbeid, EIER)
+        assertThat(soknadUnderArbeidRepository!!.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
+        assertThat(opplastetVedleggRepository!!.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {

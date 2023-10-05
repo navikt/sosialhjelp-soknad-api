@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
 import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
+import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -9,15 +9,12 @@ import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(classes = [Application::class])
+@ActiveProfiles(profiles = ["no-redis", "test"])
 internal class OpplastetVedleggMigrationRepositoryTest {
 
     @Inject

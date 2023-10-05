@@ -12,7 +12,7 @@ object Versions {
     const val springdoc = "2.1.0"
     const val flyway = "9.16.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
-    const val hsqldb = "2.7.1"
+    const val hsqldb = "2.7.2"
     const val lettuce = "6.2.3.RELEASE"
     const val tokenValidation = "3.1.0"
     const val javaJwt = "4.3.0"
@@ -126,8 +126,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-logging:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-validation:${Versions.springBoot}")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}")
+//    implementation("org.springframework.boot:spring-boot-starter-jdbc:${Versions.springBoot}")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc:${Versions.springBoot}")
+
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
@@ -178,9 +180,9 @@ dependencies {
     implementation("jakarta.activation:jakarta.activation-api:${Versions.jakartaActivation}")
     implementation("jakarta.annotation:jakarta.annotation-api:${Versions.jakartaAnnotation}")
     implementation("jakarta.inject:jakarta.inject-api:${Versions.jakartaInject}")
-    implementation("jakarta.servlet:jakarta.servlet-api") {
-        version { strictly(Versions.jakartaServlet) }
-    }
+//    implementation("jakarta.servlet:jakarta.servlet-api") {
+//        version { strictly(Versions.jakartaServlet) }
+//    }
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:${Versions.jakartaXmlBind}")
     runtimeOnly("jakarta.validation:jakarta.validation-api:${Versions.jakartaValidation}")
 

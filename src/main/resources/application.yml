@@ -10,10 +10,10 @@ spring:
     banner-mode: off
   flyway:
     enabled: true
-    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-    user: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
+#    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
+#    user: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
+#    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+#    driver-class-name: oracle.jdbc.OracleDriver
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}

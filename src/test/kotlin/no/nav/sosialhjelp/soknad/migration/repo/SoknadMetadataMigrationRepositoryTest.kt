@@ -1,34 +1,29 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
 import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
+import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class SoknadMetadataMigrationRepositoryTest {
+@SpringBootTest(classes = [Application::class])
+@ActiveProfiles(profiles = ["no-redis", "test"])
+internal class SoknadMetadataMigrationRepositoryTest : RepositoryTest() {
 
     @Inject
     private lateinit var soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository
 
     @Inject
     private lateinit var soknadMetadataRepository: SoknadMetadataRepository
-
-    @Inject
-    private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
     fun tearDown() {
