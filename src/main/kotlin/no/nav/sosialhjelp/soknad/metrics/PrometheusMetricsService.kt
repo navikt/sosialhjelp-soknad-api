@@ -30,7 +30,6 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
-
     init {
         Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
             .description("Antall av oppgaver med status FEILET i db")
@@ -108,7 +107,6 @@ class PrometheusMetricsService(
     fun reportOppgaverStuckUnderArbeid(antall: Int) {
         oppgaverStuckUnderArbeid.set(antall)
     }
-
 
     companion object {
         const val TAG_ETTERSENDELSE = "ettersendelse"

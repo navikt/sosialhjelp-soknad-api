@@ -37,13 +37,17 @@ class RequestDelayService(
     private val metricsGauges = mutableListOf<Gauge>()
 
     init {
-        metricsGauges.add(Gauge.builder("soknad_lock_map_size") { lockMap.size.toDouble() }
-            .description("Number of locks in the lock map")
-            .register(meterRegistry))
+        metricsGauges.add(
+            Gauge.builder("soknad_lock_map_size") { lockMap.size.toDouble() }
+                .description("Number of locks in the lock map")
+                .register(meterRegistry)
+        )
 
-        metricsGauges.add(Gauge.builder("soknad_lock_held_count") { lockMap.filterValues { (_, lock) -> lock.isLocked }.size.toDouble() }
-            .description("Number of locks currently held")
-            .register(meterRegistry))
+        metricsGauges.add(
+            Gauge.builder("soknad_lock_held_count") { lockMap.filterValues { (_, lock) -> lock.isLocked }.size.toDouble() }
+                .description("Number of locks currently held")
+                .register(meterRegistry)
+        )
     }
 
     private val soknadLockLatencyTimer =
@@ -58,7 +62,6 @@ class RequestDelayService(
     private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count")
         .description("Number of unsuccessful attempts to acquire a lock")
         .register(meterRegistry)
-
 
     // Timestamp for når denne tråden fikk låsen
     private val lockObtainedMs = ThreadLocal<Long>()
@@ -138,7 +141,6 @@ class RequestDelayService(
     fun reportLockAcquireLatency(lockTimeMs: Long) = soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
     fun reportLockHoldDuration(lockTimeMs: Long) = soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
     fun reportLockTimeout() = soknadLockTimeoutCount.increment()
-
 
     /**
      * Brukes kun av enhetstester
