@@ -39,11 +39,16 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         interceptor = ConflictAvoidanceDelayInterceptor(requestDelayService)
     }
 
+    private fun mockBehandlingsId(request: HttpServletRequest, behandlingsId: String?) {
+        every { request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) } returns mapOf("behandlingsId" to behandlingsId)
+
+    }
+
     @Test
     fun `should not attempt to lock for safe methods`() {
         listOf("GET", "HEAD", "OPTIONS").forEach { method ->
             every { request.method } returns method
-            every { request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) } returns mapOf("behandlingsId" to BEHANDLINGS_ID_A)
+            mockBehandlingsId(request, BEHANDLINGS_ID_A)
 
             interceptor.preHandle(request, response, handler)
 
@@ -56,7 +61,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         listOf("POST", "PUT", "DELETE", "PATCH").forEach { method ->
             every { request.method } returns method
             every { requestDelayService.getLock(any()) } returns mockk()
-            every { request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) } returns mapOf("behandlingsId" to BEHANDLINGS_ID_A)
+            mockBehandlingsId(request, BEHANDLINGS_ID_A)
 
             interceptor.preHandle(request, response, handler)
 
@@ -65,8 +70,8 @@ internal class ConflictAvoidanceDelayInterceptorTest {
     }
 
     @Test
-    fun `should not attempt to lock without acquiredLock`() {
-        every { request.getAttribute("acquiredLock") } returns null
+    fun `should not attempt to lock if no behandlingsId in query`() {
+        mockBehandlingsId(request, null)
 
         interceptor.preHandle(request, response, handler)
 
@@ -75,7 +80,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
     @Test
     fun `should release lock after request completion`() {
-        every { request.getAttribute("acquiredLock") } returns Mutex()
+        every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE) } returns Mutex()
         every { requestDelayService.releaseLock(any()) } just runs
 
         interceptor.afterCompletion(request, response, handler, null)
