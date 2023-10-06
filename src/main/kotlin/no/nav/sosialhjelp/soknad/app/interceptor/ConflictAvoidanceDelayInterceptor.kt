@@ -21,6 +21,10 @@ import org.springframework.web.servlet.HandlerMapping
 class ConflictAvoidanceDelayInterceptor(
     private val requestDelayService: RequestDelayService
 ) : HandlerInterceptor {
+    companion object {
+        const val LOCK_ATTRIBUTE = "ConflictAvoidanceDelayInterceptor::lock"
+    }
+
     /**
      * Pauser en request i opptil 200ms for å forhindre en redigeringskonflikt.
      */
@@ -33,7 +37,7 @@ class ConflictAvoidanceDelayInterceptor(
 
         // Om URLen ikke inneholder behandlingsId, eller kun er for lesing, returnerer vi umiddelbart.
         if (behandlingsId != null && !isSafe(request))
-            requestDelayService.getLock(behandlingsId)?.let { request.setAttribute("acquiredLock", it) }
+            requestDelayService.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE, it) }
 
         return true
     }
@@ -49,8 +53,11 @@ class ConflictAvoidanceDelayInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        (request.getAttribute("acquiredLock") as? Mutex)?.let { requestDelayService.releaseLock(it) }
+        getRequestLock(request)?.let { requestDelayService.releaseLock(it) }
     }
+
+    private fun getRequestLock(request: HttpServletRequest): Mutex? =
+        request.getAttribute(LOCK_ATTRIBUTE) as? Mutex
 
     private fun isSafe(request: HttpServletRequest): Boolean = request.method in setOf("GET", "HEAD", "OPTIONS")
 }
