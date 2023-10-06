@@ -22,7 +22,7 @@ class ConflictAvoidanceDelayInterceptor(
     private val requestDelayService: RequestDelayService
 ) : HandlerInterceptor {
     companion object {
-        const val LOCK_ATTRIBUTE_NAME = "ConflictAvoidanceDelayInterceptor::lock"
+        val LOCK_ATTRIBUTE_NAME = ConflictAvoidanceDelayInterceptor::class.java.canonicalName + ".LOCK"
     }
 
     /**
