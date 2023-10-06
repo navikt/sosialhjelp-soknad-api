@@ -41,7 +41,7 @@ class RequestDelayService(
             .description("Number of locks in the lock map")
             .register(meterRegistry))
 
-        metricsGauges.add(Gauge.builder("soknad_lock_count") { lockMap.filterValues { (_, lock) -> lock.isLocked }.size.toDouble() }
+        metricsGauges.add(Gauge.builder("soknad_lock_held_count") { lockMap.filterValues { (_, lock) -> lock.isLocked }.size.toDouble() }
             .description("Number of locks currently held")
             .register(meterRegistry))
     }
@@ -136,9 +136,7 @@ class RequestDelayService(
     }
 
     fun reportLockAcquireLatency(lockTimeMs: Long) = soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
-
     fun reportLockHoldDuration(lockTimeMs: Long) = soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
-
     fun reportLockTimeout() = soknadLockTimeoutCount.increment()
 
 

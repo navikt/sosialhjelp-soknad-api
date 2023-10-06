@@ -1,14 +1,16 @@
 package no.nav.sosialhjelp.soknad.app.interceptor
 
+import io.micrometer.core.instrument.MeterRegistry
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.service.RequestDelayService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -23,7 +25,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 internal class RequestDelayServiceTest {
-    private val mockPrometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+    private val mockMeterRegistry: MeterRegistry = mockk(relaxed = true)
     private lateinit var lockService: RequestDelayService
     private val mockClock: Clock = mockk()
 
@@ -37,7 +39,7 @@ internal class RequestDelayServiceTest {
         every { mockClock.instant() } returns Instant.now() // mock the current time
         every { mockClock.zone } returns ZoneId.systemDefault() // mock the zone
 
-        lockService = RequestDelayService(mockPrometheusMetricsService, mockClock)
+        lockService = RequestDelayService(mockMeterRegistry, mockClock)
     }
 
     @AfterEach
@@ -47,12 +49,15 @@ internal class RequestDelayServiceTest {
 
     @Test
     fun `test getLock acquires lock successfully`() {
+        every { lockService.reportLockAcquireLatency(any()) } just runs
         lockService.getLock(BEHANDLINGSID_A) ?: fail("Lock should not be null.")
-        verify { mockPrometheusMetricsService.reportLockAcquireLatency(any()) }
+        verify { lockService.reportLockAcquireLatency(any()) }
     }
 
     @Test
     fun `test getLock fails to acquire lock after timeout`() = runBlocking {
+        every { lockService.reportLockTimeout() } just runs
+
         // Acquire the lock on the main coroutine
         lockService.getLock(BEHANDLINGSID_A)
 
@@ -65,14 +70,14 @@ internal class RequestDelayServiceTest {
 
         assertNull(lock)
         assertTrue(duration.toMillis() >= RequestDelayService.LOCK_TIMEOUT_MS)
-        verify { mockPrometheusMetricsService.reportLockTimeout() }
+        verify { lockService.reportLockTimeout() }
     }
 
     @Test
     fun `test releaseLock releases lock successfully`() {
         lockService.getLock(BEHANDLINGSID_A)?.let { lock ->
             lockService.releaseLock(lock)
-            verify { mockPrometheusMetricsService.reportLockHoldDuration(any()) }
+            verify { lockService.reportLockHoldDuration(any()) }
         } ?: fail("Lock should not be null.")
     }
 
