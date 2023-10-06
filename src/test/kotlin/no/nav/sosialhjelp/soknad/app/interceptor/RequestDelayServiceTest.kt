@@ -28,8 +28,8 @@ internal class RequestDelayServiceTest {
     private val mockClock: Clock = mockk()
 
     companion object {
-        const val BEHANDLINGS_ID_A = "12345"
-        const val BEHANDLINGS_ID_B = "56789"
+        const val BEHANDLINGSID_A = "12345"
+        const val BEHANDLINGSID_B = "56789"
     }
 
     @BeforeEach
@@ -47,17 +47,17 @@ internal class RequestDelayServiceTest {
 
     @Test
     fun `test getLock acquires lock successfully`() {
-        lockService.getLock(BEHANDLINGS_ID_A) ?: fail("Lock should not be null.")
+        lockService.getLock(BEHANDLINGSID_A) ?: fail("Lock should not be null.")
         verify { mockPrometheusMetricsService.reportLockAcquireLatency(any()) }
     }
 
     @Test
     fun `test getLock fails to acquire lock after timeout`() = runBlocking {
         // Acquire the lock on the main coroutine
-        lockService.getLock(BEHANDLINGS_ID_A)
+        lockService.getLock(BEHANDLINGSID_A)
 
         // Launch a new coroutine to try and acquire the same lock
-        val deferredLock = async(Dispatchers.Default) { lockService.getLock(BEHANDLINGS_ID_A) }
+        val deferredLock = async(Dispatchers.Default) { lockService.getLock(BEHANDLINGSID_A) }
 
         val start = Instant.now()
         val lock = deferredLock.await()
@@ -70,7 +70,7 @@ internal class RequestDelayServiceTest {
 
     @Test
     fun `test releaseLock releases lock successfully`() {
-        lockService.getLock(BEHANDLINGS_ID_A)?.let { lock ->
+        lockService.getLock(BEHANDLINGSID_A)?.let { lock ->
             lockService.releaseLock(lock)
             verify { mockPrometheusMetricsService.reportLockHoldDuration(any()) }
         } ?: fail("Lock should not be null.")
@@ -80,14 +80,14 @@ internal class RequestDelayServiceTest {
     fun `test pruneLocks removes old locks`() {
         every { mockClock.instant() } returns Instant.now()
 
-        lockService.getLock(BEHANDLINGS_ID_A)
+        lockService.getLock(BEHANDLINGSID_A)
 
         // Mock the time to be past the expiry
         every { mockClock.instant() } returns Instant.now().plus(Duration.ofHours(RequestDelayService.LOCK_EXPIRY_HOURS + 2))
 
         lockService.pruneLocks()
 
-        assertFalse(lockService.hasLock(BEHANDLINGS_ID_A))
+        assertFalse(lockService.hasLock(BEHANDLINGSID_A))
     }
 
     @Test
@@ -98,50 +98,50 @@ internal class RequestDelayServiceTest {
         every { mockClock.instant() } returns now
 
         // Acquire a lock
-        assertNotNull(lockService.getLock(BEHANDLINGS_ID_A))
+        assertNotNull(lockService.getLock(BEHANDLINGSID_A))
 
         // Ensure the lock is set
-        assertTrue(lockService.hasLock(BEHANDLINGS_ID_A))
+        assertTrue(lockService.hasLock(BEHANDLINGSID_A))
 
         // Move the clock forward beyond the lock expiry duration
         every { mockClock.instant() } returns later
 
         // Acquire a new lock, this should trigger pruning
-        lockService.getLock(BEHANDLINGS_ID_B)
+        lockService.getLock(BEHANDLINGSID_B)
 
         // Verify that the old lock was pruned
-        assertFalse(lockService.hasLock(BEHANDLINGS_ID_A))
+        assertFalse(lockService.hasLock(BEHANDLINGSID_A))
     }
 
     @Test
     fun `test pruneLocks does not remove new locks`() {
         every { mockClock.instant() } returns Instant.now()
 
-        lockService.getLock(BEHANDLINGS_ID_A)
+        lockService.getLock(BEHANDLINGSID_A)
         lockService.pruneLocks()
 
-        assertTrue(lockService.hasLock(BEHANDLINGS_ID_A))
+        assertTrue(lockService.hasLock(BEHANDLINGSID_A))
     }
 
     @Test
     fun `test hasLock returns false when lock is not present`() {
-        assertFalse(lockService.hasLock(BEHANDLINGS_ID_A))
+        assertFalse(lockService.hasLock(BEHANDLINGSID_A))
     }
 
     @Test
     fun `test hasLock returns true when lock is present`() {
-        lockService.getLock(BEHANDLINGS_ID_A)
-        assertTrue(lockService.hasLock(BEHANDLINGS_ID_A))
+        lockService.getLock(BEHANDLINGSID_A)
+        assertTrue(lockService.hasLock(BEHANDLINGSID_A))
     }
 
     @Test
     fun `test two threads can acquire different locks`() = runBlocking {
         // Acquire a lock on the main coroutine
-        lockService.getLock(BEHANDLINGS_ID_A)
+        lockService.getLock(BEHANDLINGSID_A)
 
         // Launch a new coroutine to acquire a different lock
         val deferredLock = async(Dispatchers.Default) {
-            lockService.getLock(BEHANDLINGS_ID_B)
+            lockService.getLock(BEHANDLINGSID_B)
         }
 
         assertNotNull(deferredLock.await())
@@ -150,11 +150,11 @@ internal class RequestDelayServiceTest {
     @Test
     fun `test two threads cannot acquire the same lock`() = runBlocking {
         // Acquire a lock on the main coroutine
-        lockService.getLock(BEHANDLINGS_ID_A)
+        lockService.getLock(BEHANDLINGSID_A)
 
         // Launch a new coroutine to acquire the same lock
         val deferredLock = async(Dispatchers.Default) {
-            lockService.getLock(BEHANDLINGS_ID_A)
+            lockService.getLock(BEHANDLINGSID_A)
         }
 
         assertNull(deferredLock.await())

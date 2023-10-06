@@ -20,14 +20,13 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
     private val requestDelayService = mockk<RequestDelayService>()
 
-    lateinit var request: HttpServletRequest
-    lateinit var response: HttpServletResponse
-    lateinit var handler: Any
-
-    lateinit var interceptor: ConflictAvoidanceDelayInterceptor
+    private lateinit var request: HttpServletRequest
+    private lateinit var response: HttpServletResponse
+    private lateinit var handler: Any
+    private lateinit var interceptor: ConflictAvoidanceDelayInterceptor
 
     companion object {
-        const val BEHANDLINGS_ID_A = "123"
+        const val BEHANDLINGSID_A = "123"
     }
 
     @BeforeEach
@@ -40,15 +39,16 @@ internal class ConflictAvoidanceDelayInterceptorTest {
     }
 
     private fun mockBehandlingsId(request: HttpServletRequest, behandlingsId: String?) {
-        every { request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) } returns mapOf("behandlingsId" to behandlingsId)
-
+        every {
+            request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)
+        } returns mapOf("behandlingsId" to behandlingsId)
     }
 
     @Test
     fun `should not attempt to lock for safe methods`() {
         listOf("GET", "HEAD", "OPTIONS").forEach { method ->
             every { request.method } returns method
-            mockBehandlingsId(request, BEHANDLINGS_ID_A)
+            mockBehandlingsId(request, BEHANDLINGSID_A)
 
             interceptor.preHandle(request, response, handler)
 
@@ -61,11 +61,11 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         listOf("POST", "PUT", "DELETE", "PATCH").forEach { method ->
             every { request.method } returns method
             every { requestDelayService.getLock(any()) } returns mockk()
-            mockBehandlingsId(request, BEHANDLINGS_ID_A)
+            mockBehandlingsId(request, BEHANDLINGSID_A)
 
             interceptor.preHandle(request, response, handler)
 
-            verify { requestDelayService.getLock(BEHANDLINGS_ID_A) }
+            verify { requestDelayService.getLock(BEHANDLINGSID_A) }
         }
     }
 
