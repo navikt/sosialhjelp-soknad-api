@@ -31,11 +31,11 @@ class PrometheusMetricsService(
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
     private val soknadLockLatencyTimer =
-        Timer.builder("soknad_lock_acquire_latency_ms")
+        Timer.builder("soknad_lock_acquire_latency")
             .description("Average latency for successful attempts to acquire lock")
             .register(meterRegistry)
 
-    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration_ms")
+    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration")
         .description("Average time between a lock being held and released")
         .register(meterRegistry)
 
