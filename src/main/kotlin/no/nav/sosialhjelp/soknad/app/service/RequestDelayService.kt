@@ -52,7 +52,7 @@ class RequestDelayService(
     }
 
     /**
-     * Prøver (i LOCK_TIMEOUT_MS millisekunder) å få en lås for en gitt behandlingsId.
+     * Prøver (i opptil LOCK_TIMEOUT_MS millisekunder) å få en lås for en gitt behandlingsId.
      *
      * @return Mutex dersom låsen ble oppnådd, ellers null.
      */
