@@ -60,11 +60,11 @@ class RequestDelayService(
         // Construct if absent
         val lock = lockMap.computeIfAbsent(behandlingsId) { MutablePair(ZonedDateTime.now(clock), Mutex()) }
 
-        // Prometheus instrumentation timer
-        lockObtainedMs.set(clock.instant().toEpochMilli())
-
         // Prune locks if we're due for a run
         runBlocking { if (dueForPruning()) pruneLocks() }
+
+        // Prometheus instrumentation timer
+        lockObtainedMs.set(clock.instant().toEpochMilli())
 
         return runBlocking {
             try {
