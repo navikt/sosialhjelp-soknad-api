@@ -80,7 +80,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
     @Test
     fun `should release lock after request completion`() {
-        every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE) } returns Mutex()
+        every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE_NAME) } returns Mutex()
         every { requestDelayService.releaseLock(any()) } just runs
 
         interceptor.afterCompletion(request, response, handler, null)

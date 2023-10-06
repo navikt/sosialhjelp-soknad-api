@@ -22,7 +22,7 @@ class ConflictAvoidanceDelayInterceptor(
     private val requestDelayService: RequestDelayService
 ) : HandlerInterceptor {
     companion object {
-        const val LOCK_ATTRIBUTE = "ConflictAvoidanceDelayInterceptor::lock"
+        const val LOCK_ATTRIBUTE_NAME = "ConflictAvoidanceDelayInterceptor::lock"
     }
 
     /**
@@ -37,7 +37,7 @@ class ConflictAvoidanceDelayInterceptor(
 
         // Om URLen ikke inneholder behandlingsId, eller kun er for lesing, returnerer vi umiddelbart.
         if (behandlingsId != null && !isSafe(request))
-            requestDelayService.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE, it) }
+            requestDelayService.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE_NAME, it) }
 
         return true
     }
@@ -57,7 +57,7 @@ class ConflictAvoidanceDelayInterceptor(
     }
 
     private fun getRequestLock(request: HttpServletRequest): Mutex? =
-        request.getAttribute(LOCK_ATTRIBUTE) as? Mutex
+        request.getAttribute(LOCK_ATTRIBUTE_NAME) as? Mutex
 
     private fun isSafe(request: HttpServletRequest): Boolean = request.method in setOf("GET", "HEAD", "OPTIONS")
 }
