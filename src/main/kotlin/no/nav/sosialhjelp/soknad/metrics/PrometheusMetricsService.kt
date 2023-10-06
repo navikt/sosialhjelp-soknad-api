@@ -30,22 +30,6 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
-    private val soknadLockLatencyTimer =
-        Timer.builder("soknad_lock_acquire_latency")
-            .description("Average latency for successful attempts to acquire lock")
-            .register(meterRegistry)
-
-    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration")
-        .description("Average time between a lock being held and released")
-        .register(meterRegistry)
-
-    private val soknadLockAcquiredCount = Counter.builder("soknad_lock_acquired_count")
-        .description("Number of successful attempts to acquire a lock")
-        .register(meterRegistry)
-
-    private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count")
-        .description("Number of unsuccessful attempts to acquire a lock")
-        .register(meterRegistry)
 
     init {
         Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
@@ -125,16 +109,6 @@ class PrometheusMetricsService(
         oppgaverStuckUnderArbeid.set(antall)
     }
 
-    fun reportLockAcquireLatency(lockTimeMs: Long) {
-        soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
-        soknadLockAcquiredCount.increment()
-    }
-
-    fun reportLockHoldDuration(lockTimeMs: Long) {
-        soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
-    }
-
-    fun reportLockTimeout() = soknadLockTimeoutCount.increment()
 
     companion object {
         const val TAG_ETTERSENDELSE = "ettersendelse"

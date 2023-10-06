@@ -1,17 +1,21 @@
 package no.nav.sosialhjelp.soknad.app.service
 
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.Gauge
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.apache.commons.lang3.tuple.MutablePair
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Clock
 import java.time.ZonedDateTime
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 @Service
 /**
@@ -22,13 +26,40 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * PrometheusMetricsService brukes for å rapportere metrikkdata.
  *
- * @property prometheusMetricsService Tjenesten som håndterer rapportering av metrikkdata.
+ * @property meterRegistry Prometheus MeterRegistry for å rapportere metrikkdata.
  * @property clock Klokken som brukes for tidsstempel og tidshåndtering, kan overstyres for testing.
  */
 class RequestDelayService(
-    private val prometheusMetricsService: PrometheusMetricsService,
+    private val meterRegistry: MeterRegistry,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
+
+    private val metricsGauges = mutableListOf<Gauge>()
+
+    init {
+        metricsGauges.add(Gauge.builder("soknad_lock_map_size") { lockMap.size.toDouble() }
+            .description("Number of locks in the lock map")
+            .register(meterRegistry))
+
+        metricsGauges.add(Gauge.builder("soknad_lock_count") { lockMap.filterValues { (_, lock) -> lock.isLocked }.size.toDouble() }
+            .description("Number of locks currently held")
+            .register(meterRegistry))
+    }
+
+    private val soknadLockLatencyTimer =
+        Timer.builder("soknad_lock_acquire_latency")
+            .description("Average latency for successful attempts to acquire lock")
+            .register(meterRegistry)
+
+    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration")
+        .description("Average time between a lock being held and released")
+        .register(meterRegistry)
+
+    private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count")
+        .description("Number of unsuccessful attempts to acquire a lock")
+        .register(meterRegistry)
+
+
     // Timestamp for når denne tråden fikk låsen
     private val lockObtainedMs = ThreadLocal<Long>()
 
@@ -69,10 +100,10 @@ class RequestDelayService(
         return runBlocking {
             try {
                 withTimeout(LOCK_TIMEOUT_MS) { lock.right.lock() }
-                prometheusMetricsService.reportLockAcquireLatency(System.currentTimeMillis() - lockObtainedMs.get())
+                reportLockAcquireLatency(System.currentTimeMillis() - lockObtainedMs.get())
                 lock.right
             } catch (e: TimeoutCancellationException) {
-                prometheusMetricsService.reportLockTimeout()
+                reportLockTimeout()
                 null
             }
         }
@@ -101,8 +132,15 @@ class RequestDelayService(
         } catch (e: Exception) {
             log.warn("Kunne ikke frigi lås", e)
         }
-        prometheusMetricsService.reportLockHoldDuration(System.currentTimeMillis() - lockObtainedMs.get())
+        reportLockHoldDuration(System.currentTimeMillis() - lockObtainedMs.get())
     }
+
+    fun reportLockAcquireLatency(lockTimeMs: Long) = soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
+
+    fun reportLockHoldDuration(lockTimeMs: Long) = soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
+
+    fun reportLockTimeout() = soknadLockTimeoutCount.increment()
+
 
     /**
      * Brukes kun av enhetstester
