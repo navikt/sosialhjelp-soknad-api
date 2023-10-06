@@ -30,10 +30,22 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
-    private val soknadLockLatencyTimer = Timer.builder("soknad_lock_acquire_latency_ms").register(meterRegistry)
-    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration_ms").register(meterRegistry)
-    private val soknadLockAcquiredCount = Counter.builder("soknad_lock_acquired_count").register(meterRegistry)
-    private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count").register(meterRegistry)
+    private val soknadLockLatencyTimer =
+        Timer.builder("soknad_lock_acquire_latency_ms")
+            .description("Average latency for successful attempts to acquire lock")
+            .register(meterRegistry)
+
+    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration_ms")
+        .description("Average time between a lock being held and released")
+        .register(meterRegistry)
+
+    private val soknadLockAcquiredCount = Counter.builder("soknad_lock_acquired_count")
+        .description("Number of successful attempts to acquire a lock")
+        .register(meterRegistry)
+
+    private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count")
+        .description("Number of unsuccessful attempts to acquire a lock")
+        .register(meterRegistry)
 
     init {
         Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
