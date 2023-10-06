@@ -30,6 +30,11 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
+    private val soknadLockLatencyTimer = Timer.builder("soknad_lock_acquire_latency_ms").register(meterRegistry)
+    private val soknadLockHoldTimer = Timer.builder("soknad_lock_hold_duration_ms").register(meterRegistry)
+    private val soknadLockAcquiredCount = Counter.builder("soknad_lock_acquired_count").register(meterRegistry)
+    private val soknadLockTimeoutCount = Counter.builder("soknad_lock_timeout_count").register(meterRegistry)
+
     init {
         Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
             .description("Antall av oppgaver med status FEILET i db")
@@ -107,6 +112,17 @@ class PrometheusMetricsService(
     fun reportOppgaverStuckUnderArbeid(antall: Int) {
         oppgaverStuckUnderArbeid.set(antall)
     }
+
+    fun reportLockAcquireLatency(lockTimeMs: Long) {
+        soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
+        soknadLockAcquiredCount.increment()
+    }
+
+    fun reportLockHoldDuration(lockTimeMs: Long) {
+        soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
+    }
+
+    fun reportLockTimeout() = soknadLockTimeoutCount.increment()
 
     companion object {
         const val TAG_ETTERSENDELSE = "ettersendelse"

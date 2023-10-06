@@ -6,6 +6,7 @@ metadata:
   labels:
     team: teamdigisos
   annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
     nais.io/run-as-user: "1001"
 spec:
