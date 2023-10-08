@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto.BasisPersonaliaFrontend
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto.NavnFrontend

@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType

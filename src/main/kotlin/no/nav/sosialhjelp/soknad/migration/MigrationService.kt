@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.repository.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import no.nav.sosialhjelp.soknad.migration.dto.OppgaveDto
 import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto

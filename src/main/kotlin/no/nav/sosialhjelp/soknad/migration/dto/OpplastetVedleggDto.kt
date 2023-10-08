@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration.dto
 
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
 
 data class OpplastetVedleggDto(
     val uuid: String,

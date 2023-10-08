@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.repository.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

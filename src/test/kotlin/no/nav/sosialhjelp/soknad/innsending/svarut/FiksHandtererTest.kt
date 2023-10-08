@@ -6,10 +6,10 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksData
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.oppgave.FiksData
+import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
+import no.nav.sosialhjelp.soknad.repository.oppgave.Status
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.assertj.core.api.Assertions

@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFA
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

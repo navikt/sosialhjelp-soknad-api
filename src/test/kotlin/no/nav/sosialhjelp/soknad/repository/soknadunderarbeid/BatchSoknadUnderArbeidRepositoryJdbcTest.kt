@@ -1,18 +1,12 @@
 package no.nav.sosialhjelp.soknad.repository.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.BatchOpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

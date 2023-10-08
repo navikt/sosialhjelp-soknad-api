@@ -20,8 +20,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn

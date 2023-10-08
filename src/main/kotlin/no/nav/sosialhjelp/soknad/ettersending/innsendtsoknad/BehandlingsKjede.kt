@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 
 data class BehandlingsKjede(
     val originalSoknad: InnsendtSoknad?,

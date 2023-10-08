@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.dto
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import java.time.LocalDateTime
 
 data class SoknadUnderArbeidDto(

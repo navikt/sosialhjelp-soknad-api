@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.BatchSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory

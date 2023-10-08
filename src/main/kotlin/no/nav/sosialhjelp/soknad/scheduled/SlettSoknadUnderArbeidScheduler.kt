@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory

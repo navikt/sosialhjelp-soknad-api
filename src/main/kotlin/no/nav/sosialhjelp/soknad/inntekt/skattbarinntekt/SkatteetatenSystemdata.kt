@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdSystemdata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService

@@ -10,7 +10,7 @@ object Versions {
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
-    const val flyway = "9.16.1" // Husk å oppdatere plugin også
+    const val flyway = "9.22.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.2"
     const val lettuce = "6.2.3.RELEASE"
@@ -220,6 +220,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junitJupiter}")
     testImplementation("io.mockk:mockk:${Versions.mockk}")
     testImplementation("io.mockk:mockk-jvm:${Versions.mockk}")
+
+    implementation("org.postgresql:postgresql:42.6.0")
+    testImplementation("org.testcontainers:postgresql:1.19.1")
+
 
     constraints {
         implementation("org.apache.logging.log4j:log4j-api:${Versions.log4j}") {

@@ -10,7 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService

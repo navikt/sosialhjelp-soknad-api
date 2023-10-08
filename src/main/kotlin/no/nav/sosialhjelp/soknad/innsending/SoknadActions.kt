@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligEx
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService

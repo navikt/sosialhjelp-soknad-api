@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRowMapper
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 

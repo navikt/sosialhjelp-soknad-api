@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

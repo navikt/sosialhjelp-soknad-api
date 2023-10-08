@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.migration.repo
 
 import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.Application
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
 import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach

@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG

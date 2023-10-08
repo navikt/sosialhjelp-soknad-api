@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
+import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
+import no.nav.sosialhjelp.soknad.repository.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.repository.oppgave.Status
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory

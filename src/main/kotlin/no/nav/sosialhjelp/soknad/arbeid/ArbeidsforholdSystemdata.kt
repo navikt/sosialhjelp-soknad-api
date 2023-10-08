@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPres
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

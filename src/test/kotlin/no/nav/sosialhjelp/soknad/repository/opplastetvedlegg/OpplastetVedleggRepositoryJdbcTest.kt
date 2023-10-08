@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.repository.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.apache.commons.lang3.RandomUtils

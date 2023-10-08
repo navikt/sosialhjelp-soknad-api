@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.springframework.stereotype.Component
 

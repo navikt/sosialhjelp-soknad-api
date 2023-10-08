@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 

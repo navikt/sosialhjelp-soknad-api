@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepositoryJdbc
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

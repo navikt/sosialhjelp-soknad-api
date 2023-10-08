@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll

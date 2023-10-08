@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService

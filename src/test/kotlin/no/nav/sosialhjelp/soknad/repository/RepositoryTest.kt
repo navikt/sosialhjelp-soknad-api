@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.repository
 
+import no.nav.sosialhjelp.soknad.model.Soknad
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
+import java.time.LocalDateTime
+import java.util.*
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // bruk datasource fra profil
@@ -13,10 +16,13 @@ import org.springframework.test.context.ActiveProfiles
 abstract class RepositoryTest {
 
     @Autowired
-    lateinit var jdbcTemplate: JdbcTemplate
+    protected lateinit var soknadRepository: SoknadRepository
 
     @Autowired
-    lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+    protected lateinit var jdbcTemplate: JdbcTemplate
+
+    @Autowired
+    protected lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 
     companion object {
         const val EIER = "12345678901"
@@ -28,4 +34,6 @@ abstract class RepositoryTest {
         const val SOKNADID3 = 3L
         const val FILNAVN = "dokumentasjon.pdf"
     }
+
+    fun opprettSoknad() = soknadRepository.save(Soknad(soknadId = UUID.randomUUID()))
 }

@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray

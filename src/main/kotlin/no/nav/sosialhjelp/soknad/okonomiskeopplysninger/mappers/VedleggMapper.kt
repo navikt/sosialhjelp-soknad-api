@@ -15,8 +15,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend

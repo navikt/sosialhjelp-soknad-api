@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import no.nav.sosialhjelp.soknad.db.SQLUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper
+import no.nav.sosialhjelp.soknad.repository.SQLUtils
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime

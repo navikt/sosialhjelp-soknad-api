@@ -6,7 +6,8 @@ spring:
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
     # sql.syntax_ora - imdb støtter en del oracle-syntaks
-    url: jdbc:hsqldb:mem:testdb;sql.syntax_ora=true;DB_CLOSE_DELAY=-1
+#    url: jdbc:hsqldb:mem:testdb;sql.syntax_ora=true;DB_CLOSE_DELAY=-1
+    url: jdbc:hsqldb:mem:testdb;sql.syntax_pgs=true;DB_CLOSE_DELAY=-1
     username: sa
     password:
 

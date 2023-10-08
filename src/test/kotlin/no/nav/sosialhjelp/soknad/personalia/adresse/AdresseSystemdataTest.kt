@@ -7,8 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse

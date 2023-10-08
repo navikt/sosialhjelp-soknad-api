@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration.dto
 
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
+import no.nav.sosialhjelp.soknad.repository.oppgave.Status
 import java.time.LocalDateTime
 
 data class OppgaveDto(

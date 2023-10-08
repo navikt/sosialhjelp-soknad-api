@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.ettersending
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.BehandlingsKjede
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService

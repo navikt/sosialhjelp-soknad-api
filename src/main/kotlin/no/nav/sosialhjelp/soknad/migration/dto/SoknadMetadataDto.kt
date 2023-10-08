@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.migration.dto
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import java.time.LocalDateTime
 
 data class SoknadMetadataDto(
