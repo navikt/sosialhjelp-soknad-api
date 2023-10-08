@@ -61,23 +61,17 @@ class SoknadLockManager(
      * @return Mutex dersom låsen ble oppnådd, ellers null.
      */
     fun getLock(behandlingsId: String): Mutex? {
-        val lock = lockMap.computeIfAbsent(behandlingsId) { MutablePair(ZonedDateTime.now(clock), Mutex()) }
+        val (_, mutex) = lockMap.computeIfAbsent(behandlingsId) { MutablePair(ZonedDateTime.now(clock), Mutex()) }
+
+        lockObtainedMs.set(clock.instant().toEpochMilli())
+
+        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { mutex.lock() } } }
+            .onFailure { lockMetrics.reportLockTimeout() }
+            .onSuccess { lockMetrics.reportLockAcquireLatency(clock.instant().toEpochMilli() - lockObtainedMs.get()) }
 
         if (isLockMapDueForPruning()) pruneLocks()
 
-        // For Prometheus-metrikk
-        lockObtainedMs.set(clock.instant().toEpochMilli())
-
-        return runBlocking {
-            try {
-                withTimeout(LOCK_TIMEOUT_MS) { lock.right.lock() }
-                lockMetrics.reportLockAcquireLatency(System.currentTimeMillis() - lockObtainedMs.get())
-                lock.right
-            } catch (e: TimeoutCancellationException) {
-                lockMetrics.reportLockTimeout()
-                null
-            }
-        }
+        return mutex.takeIf { getLock.isSuccess }
     }
 
     /**
