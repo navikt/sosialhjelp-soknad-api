@@ -37,10 +37,13 @@ class SoknadLockManager(
 
     // Sist gang en prune ble kjørt
     private var lastPrune = ZonedDateTime.now(clock)
-    private val pruneMutex = Mutex()
+    private val lastPruneMutex = Mutex()
 
     companion object {
+        // Timeout for lastPruneMutex
         const val PRUNE_LOCK_TIMEOUT_MS = 100L
+
+        // Timeout for låser
         const val LOCK_TIMEOUT_MS = 1000L
 
         // Hvor lenge en behandlingsId skal vare
@@ -61,13 +64,13 @@ class SoknadLockManager(
      * @return Mutex dersom låsen ble oppnådd, ellers null.
      */
     fun getLock(behandlingsId: String): Mutex? {
-        val (_, mutex) = lockMap.computeIfAbsent(behandlingsId) { MutablePair(ZonedDateTime.now(clock), Mutex()) }
+        val mutex = makeOrTouchLock(behandlingsId)
 
-        lockObtainedMs.set(clock.instant().toEpochMilli())
+        startStopwatch()
 
         val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { mutex.lock() } } }
             .onFailure { lockMetrics.reportLockTimeout() }
-            .onSuccess { lockMetrics.reportLockAcquireLatency(clock.instant().toEpochMilli() - lockObtainedMs.get()) }
+            .onSuccess { lockMetrics.reportLockAcquireLatency(getStopwatch()) }
 
         if (isLockMapDueForPruning()) pruneLocks()
 
@@ -75,22 +78,11 @@ class SoknadLockManager(
     }
 
     /**
-     * Sjekker atomisk hvorvidt det er på tide å prune lockMap.
+     *  Releaser en lås for en gitt behandlingsId og rapporterer metrikker.
      */
-    private fun isLockMapDueForPruning(): Boolean = runBlocking {
-        try {
-            withTimeout(PRUNE_LOCK_TIMEOUT_MS) {
-                pruneMutex.withLock {
-                    val now = ZonedDateTime.now(clock)
-                    val isDueForPrune = now.isAfter(lastPrune.plusMinutes(REQUEST_PRUNE_INTERVAL_MINUTES))
-                    if (isDueForPrune) lastPrune = now
-                    isDueForPrune
-                }
-            }
-        } catch (e: TimeoutCancellationException) {
-            log.error("timeout for pruneMutex, skal ikke skje")
-            false
-        }
+    fun releaseLock(lock: Mutex) {
+        lock.unlock()
+        lockMetrics.reportLockHoldDuration(getStopwatch())
     }
 
     /**
@@ -98,7 +90,7 @@ class SoknadLockManager(
      */
     fun pruneLocks() {
         val now = ZonedDateTime.now(clock)
-        var removedKeys = 0
+        var numRemovedKeys = 0
         val expiredLocks = lockMap.filterValues { (timestamp, _) -> now.isAfter(timestamp.plusHours(LOCK_EXPIRY_HOURS)) }
         log.info("Sletter ${expiredLocks.size} foreldede låser")
 
@@ -120,7 +112,7 @@ class SoknadLockManager(
                 lock.let {
                     try {
                         it.unlock()
-                        removedKeys++
+                        numRemovedKeys++
                     } catch (e: IllegalStateException) {
                         log.warn("kunne ikke låse opp lås før sletting, skal ikke skje", e)
                     }
@@ -128,15 +120,7 @@ class SoknadLockManager(
             }
         }
 
-        log.debug("Slettet $removedKeys foreldede låser")
-    }
-
-    /**
-     *  Releaser en lås for en gitt behandlingsId og rapporterer metrikker.
-     */
-    fun releaseLock(lock: Mutex) {
-        lock.unlock()
-        lockMetrics.reportLockHoldDuration(System.currentTimeMillis() - lockObtainedMs.get())
+        log.debug("Slettet $numRemovedKeys foreldede låser")
     }
 
     /**
@@ -158,4 +142,44 @@ class SoknadLockManager(
      * Sjekker om en gitt behandlingsId er låst. Brukes kun til testing.
      */
     fun isLocked(behandlingsId: String): Boolean = lockMap[behandlingsId]?.right?.isLocked ?: false
+
+    /**
+     * Sjekker atomisk hvorvidt det er på tide å prune lockMap.
+     */
+    private fun isLockMapDueForPruning(): Boolean = runBlocking {
+        try {
+            withTimeout(PRUNE_LOCK_TIMEOUT_MS) {
+                lastPruneMutex.withLock {
+                    val now = ZonedDateTime.now(clock)
+                    val isDueForPrune = now.isAfter(lastPrune.plusMinutes(REQUEST_PRUNE_INTERVAL_MINUTES))
+                    if (isDueForPrune) lastPrune = now
+                    isDueForPrune
+                }
+            }
+        } catch (e: TimeoutCancellationException) {
+            log.error("timeout for pruneMutex, skal ikke skje")
+            false
+        }
+    }
+
+    /**
+     * Hent en Mutex for en gitt behandlingsId
+     *
+     * Oppretter atomisk et nytt element i lockMap dersom det ikke eksisterer,
+     * oppdaterer timestamp dersom den allerede eksisterer
+     */
+    private fun makeOrTouchLock(behandlingsId: String): Mutex {
+        val now = ZonedDateTime.now(clock)
+
+        val entry = lockMap.computeIfAbsent(behandlingsId) { MutablePair(now, Mutex()) }
+        entry.left = now
+
+        return entry.right
+    }
+
+    /* Sets a thread-local timestamp */
+    private fun startStopwatch() = lockObtainedMs.set(clock.instant().toEpochMilli())
+
+    /* Gets milliseconds since stopwatch was started */
+    private fun getStopwatch() = clock.instant().toEpochMilli() - lockObtainedMs.get()
 }
