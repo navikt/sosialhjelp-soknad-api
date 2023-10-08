@@ -1,9 +1,9 @@
-package no.nav.sosialhjelp.soknad.app.interceptor
+package no.nav.sosialhjelp.soknad.app.soknadlock
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kotlinx.coroutines.sync.Mutex
-import no.nav.sosialhjelp.soknad.app.service.RequestDelayService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping
@@ -19,10 +19,11 @@ import org.springframework.web.servlet.HandlerMapping
  *
  */
 class ConflictAvoidanceDelayInterceptor(
-    private val requestDelayService: RequestDelayService
+    private val soknadLockManager: SoknadLockManager
 ) : HandlerInterceptor {
     companion object {
         val LOCK_ATTRIBUTE_NAME = ConflictAvoidanceDelayInterceptor::class.java.canonicalName + ".LOCK"
+        private val log = LoggerFactory.getLogger(ConflictAvoidanceDelayInterceptor::class.java)
     }
 
     /**
@@ -38,7 +39,7 @@ class ConflictAvoidanceDelayInterceptor(
         // Om URLen ikke inneholder behandlingsId, eller kun er for lesing, returnerer vi umiddelbart.
         if (behandlingsId == null || isSafe(request)) return true
 
-        requestDelayService.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE_NAME, it) }
+        soknadLockManager.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE_NAME, it) }
 
         return true
     }
@@ -54,7 +55,13 @@ class ConflictAvoidanceDelayInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        getRequestLock(request)?.let { requestDelayService.releaseLock(it) }
+        getRequestLock(request)?.let {
+            try {
+                soknadLockManager.releaseLock(it)
+            } catch (e: Exception) {
+                log.warn("Failed to release lock for ${getBehandlingsId(request)}", e)
+            }
+        }
     }
 
     private fun getRequestLock(request: HttpServletRequest): Mutex? =

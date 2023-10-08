@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.app.interceptor
+package no.nav.sosialhjelp.soknad.app.soknadlock
 
 import io.mockk.every
 import io.mockk.just
@@ -8,7 +8,6 @@ import io.mockk.verify
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kotlinx.coroutines.sync.Mutex
-import no.nav.sosialhjelp.soknad.app.service.RequestDelayService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.HandlerMapping
 @ExtendWith(SpringExtension::class)
 internal class ConflictAvoidanceDelayInterceptorTest {
 
-    private val requestDelayService = mockk<RequestDelayService>()
+    private val soknadLockManager = mockk<SoknadLockManager>()
 
     private lateinit var request: HttpServletRequest
     private lateinit var response: HttpServletResponse
@@ -35,7 +34,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         response = mockk(relaxed = true)
         handler = mockk(relaxed = true)
 
-        interceptor = ConflictAvoidanceDelayInterceptor(requestDelayService)
+        interceptor = ConflictAvoidanceDelayInterceptor(soknadLockManager)
     }
 
     private fun mockBehandlingsId(request: HttpServletRequest, behandlingsId: String?) {
@@ -52,7 +51,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
             interceptor.preHandle(request, response, handler)
 
-            verify(exactly = 0) { requestDelayService.getLock(any()) }
+            verify(exactly = 0) { soknadLockManager.getLock(any()) }
         }
     }
 
@@ -60,12 +59,12 @@ internal class ConflictAvoidanceDelayInterceptorTest {
     fun `should attempt to lock for unsafe methods`() {
         listOf("POST", "PUT", "DELETE", "PATCH").forEach { method ->
             every { request.method } returns method
-            every { requestDelayService.getLock(any()) } returns mockk()
+            every { soknadLockManager.getLock(any()) } returns mockk()
             mockBehandlingsId(request, BEHANDLINGSID_A)
 
             interceptor.preHandle(request, response, handler)
 
-            verify { requestDelayService.getLock(BEHANDLINGSID_A) }
+            verify { soknadLockManager.getLock(BEHANDLINGSID_A) }
         }
     }
 
@@ -75,16 +74,16 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
         interceptor.preHandle(request, response, handler)
 
-        verify(exactly = 0) { requestDelayService.getLock(any()) }
+        verify(exactly = 0) { soknadLockManager.getLock(any()) }
     }
 
     @Test
     fun `should release lock after request completion`() {
         every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE_NAME) } returns Mutex()
-        every { requestDelayService.releaseLock(any()) } just runs
+        every { soknadLockManager.releaseLock(any()) } just runs
 
         interceptor.afterCompletion(request, response, handler, null)
 
-        verify { requestDelayService.releaseLock(any()) }
+        verify { soknadLockManager.releaseLock(any()) }
     }
 }

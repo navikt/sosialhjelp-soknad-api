@@ -4,10 +4,18 @@ import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.stereotype.Component
 
+/**
+ * Denne klassen henter data fra SoknadLockManager og rapporterer til Prometheus.
+ * Se også SoknadLockPushMetrics, som kalles av SoknadLockManager for å rapportere data.
+ *
+ * @property meterRegistry Prometheus MeterRegistry
+ * @property lockManager SoknadLockManager for å hente data om tilstanden på lockMap.
+ */
 @Component
+@Suppress("unused")
 class SoknadLockPullMetrics(
-    meterRegistry: MeterRegistry,
-    lockManager: SoknadLockManager
+    private val meterRegistry: MeterRegistry,
+    private val lockManager: SoknadLockManager
 ) {
     private val metricsGauges = mutableListOf<Gauge>()
 
