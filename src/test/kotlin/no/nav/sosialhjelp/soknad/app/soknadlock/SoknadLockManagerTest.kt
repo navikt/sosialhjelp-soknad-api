@@ -44,7 +44,7 @@ internal class SoknadLockManagerTest {
         every { mockLockMetrics.reportLockTimeout() } just runs
         every { mockLockMetrics.reportLockHoldDuration(any()) } just runs
         lockManager = SoknadLockManager(mockLockMetrics, mockClock)
-        assertNewState(mapOf())
+        assertLockMapState(mapOf())
     }
 
     @AfterEach
@@ -55,7 +55,7 @@ internal class SoknadLockManagerTest {
     @Test
     fun `test getLock acquires lock successfully`() {
         lockManager.getLock(BEHANDLINGSID_A) ?: fail("Lock should not be null.")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
     }
 
     @Test
@@ -68,7 +68,7 @@ internal class SoknadLockManagerTest {
             })
         }
 
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
         verify { mockLockMetrics.reportLockTimeout() }
         verify { mockLockMetrics.reportLockAcquireLatency(any()) }
@@ -76,7 +76,7 @@ internal class SoknadLockManagerTest {
 
         assertEquals(1, locks.filterNotNull().size, "expected only one lock to be acquired")
         assertEquals(1, locks.filter { it == null }.size, "expected one lock to fail to acquire")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting second lock on BEHANDLINGSID_A")
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting second lock on BEHANDLINGSID_A")
         assertTrue(
             (duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS, "expected to wait at least ${SoknadLockManager.LOCK_TIMEOUT_MS}ms"
         )
@@ -86,12 +86,12 @@ internal class SoknadLockManagerTest {
     fun `test getLock fails to acquire lock twice on same thread`() = runBlocking {
         lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
 
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
         // Try to acquire the same lock again
         val (duration, lock) = measureTimeAndResult { lockManager.getLock(BEHANDLINGSID_A) }
 
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
         assertTrue((duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS)
         assertNull(lock)
     }
@@ -99,10 +99,10 @@ internal class SoknadLockManagerTest {
     @Test
     fun `test releaseLock releases lock successfully`() {
         val lock = lockManager.getLock(BEHANDLINGSID_A) ?: fail("Lock should not be null.")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
         lockManager.releaseLock(lock)
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.UNLOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.UNLOCKED))
     }
 
     @Test
@@ -113,7 +113,7 @@ internal class SoknadLockManagerTest {
             lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
         })
 
-        assertNewState(
+        assertLockMapState(
             mapOf(BEHANDLINGSID_A to LockState.LOCKED, BEHANDLINGSID_B to LockState.LOCKED), "after acquiring locks"
         )
     }
@@ -121,19 +121,19 @@ internal class SoknadLockManagerTest {
     @Test
     fun `test pruneLocks removes old locks`() {
         lockManager.getLock(BEHANDLINGSID_A)
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
         // Mock the time to be past the expiry
         every { mockClock.instant() } returns Instant.now().plus(Duration.ofHours(SoknadLockManager.LOCK_EXPIRY_HOURS + 2))
 
         lockManager.pruneLocks()
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.ABSENT))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.ABSENT))
     }
 
     @Test
     fun `test old locks are pruned when getLock is called and prune is due`() = runBlocking {
         lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
         // Move the clock forward beyond the lock expiry duration
         every { mockClock.instant() } returns afterLockExpires()
@@ -141,14 +141,14 @@ internal class SoknadLockManagerTest {
         // Acquire a new lock, this should trigger pruning
         lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
 
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.ABSENT, BEHANDLINGSID_B to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.ABSENT, BEHANDLINGSID_B to LockState.LOCKED))
     }
 
     @Test
     fun `test pruneLocks does not remove new locks`() {
         lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
         lockManager.pruneLocks()
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
     }
 
     /**
@@ -159,20 +159,20 @@ internal class SoknadLockManagerTest {
     fun `test failed getLock reports metrics`() = runBlocking {
         // Acquire the lock on the main coroutine
         lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after acquiring lock on BEHANDLINGSID_A")
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after acquiring lock on BEHANDLINGSID_A")
 
         // Launch a new coroutine to try and acquire the same lock
         val secondLock = async(Dispatchers.Default) { lockManager.getLock(BEHANDLINGSID_A) }.await()
 
         assertNull(secondLock, "expected to fail to acquire second lock on BEHANDLINGSID_A")
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting lock on BEHANDLINGSID_A")
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting lock on BEHANDLINGSID_A")
         verify { mockLockMetrics.reportLockTimeout() }
     }
 
     @Test
     fun `test unlock reports metrics`() {
         lockManager.releaseLock(lockManager.getLock(BEHANDLINGSID_A) ?: fail("Lock should not be null."))
-        assertNewState(mapOf(BEHANDLINGSID_A to LockState.UNLOCKED))
+        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.UNLOCKED))
         verify { mockLockMetrics.reportLockAcquireLatency(any()) }
         verify { mockLockMetrics.reportLockHoldDuration(any()) }
     }
@@ -209,7 +209,7 @@ internal class SoknadLockManagerTest {
         assertTrue(lockManager.isLocked(BEHANDLINGSID_A), "expected BEHANDLINGSID_A to be locked")
     }
 
-    private fun assertNewState(stateMap: Map<String, LockState>, message: String? = null) {
+    private fun assertLockMapState(stateMap: Map<String, LockState>, message: String? = null) {
         val postfix = when (message != null) {
             true -> " $message"
             false -> ""

@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * PrometheusMetricsService brukes for å rapportere metrikkdata.
  *
- * @property lockMetrics Komponent for metrikker
+ * @property lockMetrics Komponent for pushing av metrikker
  * @property clock Klokken som brukes for tidsstempel og tidshåndtering, kan overstyres for testing.
  */
 @Component
@@ -37,26 +37,25 @@ class SoknadLockManager(
     private val lastPruneMutex = Mutex()
 
     companion object {
-        // Timeout for lastPruneMutex
+        /** Timeout for lastPruneMutex */
         const val PRUNE_LOCK_TIMEOUT_MS = 100L
 
-        // Timeout for låser
+        /** Timeout for låser, pt 1 sekund */
         const val LOCK_TIMEOUT_MS = 1000L
 
-        // Hvor lenge en behandlingsId skal vare
+        /** Hvor lenge en behandlingsId skal vare */
         const val LOCK_EXPIRY_HOURS = 1L
 
-        // Hvor hyppig vi sjekker om det er på tide å kjøre pruneLocks
+        /** Hvor hyppig vi sjekker om det er på tide å kjøre pruneLocks */
         const val REQUEST_PRUNE_INTERVAL_MINUTES = 5L
 
         private val log = LoggerFactory.getLogger(SoknadLockManager::class.java)
     }
 
     /**
-     * Prøver (i opptil LOCK_TIMEOUT_MS millisekunder) å få en lås for en gitt behandlingsId.
+     * Prøver (i inntil LOCK_TIMEOUT_MS millisekunder) å få en lås for en gitt behandlingsId.
      *
-     * Dersom det er mer enn REQUEST_PRUNE_INTERVAL_MINUTES siden sist gang denne er kalt,
-     * vil den slette foreldede låser.
+     * Dersom det er mer enn REQUEST_PRUNE_INTERVAL_MINUTES siden sist gang denne er kalt vil den slette foreldede låser.
      *
      * @return TimestampedLock dersom låsen ble ervervet, ellers null.
      */
@@ -71,17 +70,13 @@ class SoknadLockManager(
         return lock.takeIf { getLock.isSuccess }
     }
 
-    /**
-     *  Releaser en lås for en gitt behandlingsId og rapporterer metrikker.
-     */
+    /** Releaser en lås for en gitt behandlingsId og rapporterer metrikker. */
     fun releaseLock(lock: TimestampedLock) {
         lock.unlock()
         lockMetrics.reportLockHoldDuration(lock.nanosecondsSinceLockRequest)
     }
 
-    /**
-     * Sletter foreldede låser fra lockMap.
-     */
+    /** Sletter foreldede låser fra lockMap. */
     fun pruneLocks() {
         val now = ZonedDateTime.now(clock)
         var numRemovedKeys = 0

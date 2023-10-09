@@ -10,7 +10,7 @@ import kotlin.reflect.cast
 
 @Component
 /**
- * En interceptor for å forsinke forespørsler for å unngå redigeringskonflikter.
+ * En interceptor som forsinker skriveforespørsler for å unngå redigeringskonflikter.
  *
  * Denne interceptorklassen forsinker en request opptil ett sekund dersom det er
  * potensiell fare for en redigeringskonflikt. Ved hjelp av `RequestDelayService` blir
@@ -27,7 +27,8 @@ class ConflictAvoidanceDelayInterceptor(
     }
 
     /**
-     * Pauser en request i opptil 200ms for å forhindre en redigeringskonflikt.
+     * Blokkerer writes mot søknad i inntil SoknadLockManager.LOCK_TIMEOUT_MS for å forebygge versjonskonflikter.
+     * @see SoknadLockManager.LOCK_TIMEOUT_MS
      */
     override fun preHandle(
         request: HttpServletRequest,
