@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.app.soknadlock
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import kotlinx.coroutines.sync.Mutex
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping
+import kotlin.reflect.cast
 
 @Component
 /**
@@ -44,11 +44,6 @@ class ConflictAvoidanceDelayInterceptor(
         return true
     }
 
-    private fun getBehandlingsId(request: HttpServletRequest): String? {
-        val pathVariables = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
-        return pathVariables?.get("behandlingsId") as String?
-    }
-
     override fun afterCompletion(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -64,8 +59,20 @@ class ConflictAvoidanceDelayInterceptor(
         }
     }
 
-    private fun getRequestLock(request: HttpServletRequest): Mutex? =
-        request.getAttribute(LOCK_ATTRIBUTE_NAME) as? Mutex
+    private fun getBehandlingsId(request: HttpServletRequest): String? {
+        val pathVariables = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
+        return pathVariables?.get("behandlingsId") as String?
+    }
+
+    private fun getRequestLock(request: HttpServletRequest): SoknadLockManager.TimestampedLock? {
+        val expectedType = SoknadLockManager.TimestampedLock::class
+        val lockAttribute = request.getAttribute(LOCK_ATTRIBUTE_NAME)
+
+        return when (expectedType.isInstance(lockAttribute)) {
+            true -> expectedType.cast(lockAttribute)
+            else -> null
+        }
+    }
 
     private fun isSafe(request: HttpServletRequest): Boolean = request.method in setOf("GET", "HEAD", "OPTIONS")
 }

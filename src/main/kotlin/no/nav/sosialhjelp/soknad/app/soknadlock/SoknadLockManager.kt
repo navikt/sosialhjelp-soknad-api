@@ -5,12 +5,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
-import org.apache.commons.lang3.tuple.MutablePair
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.lang.IllegalStateException
 import java.time.Clock
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -29,11 +29,8 @@ class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
-    // Timestamp for når denne tråden fikk låsen
-    private val lockObtainedMs = ThreadLocal<Long>()
-
     // Lås per behandlingsId med timestamp for når låsen ble opprettet
-    private val lockMap: ConcurrentHashMap<String, MutablePair<ZonedDateTime, Mutex>> = ConcurrentHashMap()
+    private val lockMap: ConcurrentHashMap<String, TimestampedLock> = ConcurrentHashMap()
 
     // Sist gang en prune ble kjørt
     private var lastPrune = ZonedDateTime.now(clock)
@@ -61,28 +58,25 @@ class SoknadLockManager(
      * Dersom det er mer enn REQUEST_PRUNE_INTERVAL_MINUTES siden sist gang denne er kalt,
      * vil den slette foreldede låser.
      *
-     * @return Mutex dersom låsen ble oppnådd, ellers null.
+     * @return TimestampedLock dersom låsen ble ervervet, ellers null.
      */
-    fun getLock(behandlingsId: String): Mutex? {
-        val mutex = makeOrTouchLock(behandlingsId)
+    fun getLock(behandlingsId: String): TimestampedLock? {
+        val lock = lockMap.computeIfAbsent(behandlingsId) { TimestampedLock(clock) }
 
-        startStopwatch()
-
-        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { mutex.lock() } } }
-            .onFailure { lockMetrics.reportLockTimeout() }
-            .onSuccess { lockMetrics.reportLockAcquireLatency(getStopwatch()) }
+        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { lock.lock() } } }.onFailure { lockMetrics.reportLockTimeout() }
+            .onSuccess { lockMetrics.reportLockAcquireLatency(lock.nanosecondsSinceLockRequest) }
 
         if (isLockMapDueForPruning()) pruneLocks()
 
-        return mutex.takeIf { getLock.isSuccess }
+        return lock.takeIf { getLock.isSuccess }
     }
 
     /**
      *  Releaser en lås for en gitt behandlingsId og rapporterer metrikker.
      */
-    fun releaseLock(lock: Mutex) {
+    fun releaseLock(lock: TimestampedLock) {
         lock.unlock()
-        lockMetrics.reportLockHoldDuration(getStopwatch())
+        lockMetrics.reportLockHoldDuration(lock.nanosecondsSinceLockRequest)
     }
 
     /**
@@ -91,7 +85,7 @@ class SoknadLockManager(
     fun pruneLocks() {
         val now = ZonedDateTime.now(clock)
         var numRemovedKeys = 0
-        val expiredLocks = lockMap.filterValues { (timestamp, _) -> now.isAfter(timestamp.plusHours(LOCK_EXPIRY_HOURS)) }
+        val expiredLocks = lockMap.filterValues { it.isExpiredBy(now) }
         log.info("Sletter ${expiredLocks.size} foreldede låser")
 
         expiredLocks.forEach { (behandlingsId, timestampedLock) ->
@@ -107,9 +101,7 @@ class SoknadLockManager(
             }
 
             if (removed) {
-                val (_, lock) = timestampedLock
-
-                lock.let {
+                timestampedLock.let {
                     try {
                         it.unlock()
                         numRemovedKeys++
@@ -126,7 +118,7 @@ class SoknadLockManager(
     /**
      * Teller antall låste entries i lockMap. Brukes kun til metrikker.
      */
-    fun getNumLocks(): Int = lockMap.filterValues { (_, lock) -> lock.isLocked }.size
+    fun getNumLocks(): Int = lockMap.filterValues { it.isLocked }.size
 
     /**
      * Teller antall entries i lockMap. Brukes til metrikker og testing.
@@ -141,10 +133,14 @@ class SoknadLockManager(
     /**
      * Sjekker om en gitt behandlingsId er låst. Brukes kun til testing.
      */
-    fun isLocked(behandlingsId: String): Boolean = lockMap[behandlingsId]?.right?.isLocked ?: false
+    fun isLocked(behandlingsId: String): Boolean = lockMap[behandlingsId]?.isLocked ?: false
 
     /**
      * Sjekker atomisk hvorvidt det er på tide å prune lockMap.
+     *
+     * Dersom ja, nullstill telleren og return true.
+     *
+     * @return true dersom det er på tide å kjøre pruneLocks, ellers false.
      */
     private fun isLockMapDueForPruning(): Boolean = runBlocking {
         try {
@@ -162,24 +158,44 @@ class SoknadLockManager(
         }
     }
 
-    /**
-     * Hent en Mutex for en gitt behandlingsId
-     *
-     * Oppretter atomisk et nytt element i lockMap dersom det ikke eksisterer,
-     * oppdaterer timestamp dersom den allerede eksisterer
-     */
-    private fun makeOrTouchLock(behandlingsId: String): Mutex {
-        val now = ZonedDateTime.now(clock)
+    data class TimestampedLock(
+        var lastLockAttempt: ZonedDateTime,
+        val mutex: Mutex = Mutex(),
+        val clock: Clock = Clock.systemDefaultZone()
+    ) {
+        constructor(clock: Clock) : this(ZonedDateTime.now(clock), Mutex(), clock)
 
-        val entry = lockMap.computeIfAbsent(behandlingsId) { MutablePair(now, Mutex()) }
-        entry.left = now
+        /**
+         * Sets the last lock attempt timestamp and calls lock() on the underlying mutex
+         * @see Mutex.lock
+         */
+        suspend fun lock() {
+            this.lastLockAttempt = ZonedDateTime.now(clock)
+            this.mutex.lock()
+        }
 
-        return entry.right
+        /**
+         * Whether the underlying mutex is locked
+         * @see Mutex.isLocked
+         */
+        val isLocked
+            get(): Boolean = this.mutex.isLocked
+
+        /**
+         * Equivalent to calling `this.mutex.unlock()`
+         * @see Mutex.unlock
+         * */
+        fun unlock() = this.mutex.unlock()
+
+        /**
+         * @return Nanoseconds since lock was last locked
+         */
+        val nanosecondsSinceLockRequest get(): Long = ChronoUnit.NANOS.between(ZonedDateTime.now(clock), lastLockAttempt)
+
+        /**
+         * @param expiry The timestamp to compare against
+         * @return Whether the lock is expired by the given time
+         */
+        fun isExpiredBy(expiry: ZonedDateTime): Boolean = expiry.isAfter(lastLockAttempt.plusHours(LOCK_EXPIRY_HOURS))
     }
-
-    /* Sets a thread-local timestamp */
-    private fun startStopwatch() = lockObtainedMs.set(clock.instant().toEpochMilli())
-
-    /* Gets milliseconds since stopwatch was started */
-    private fun getStopwatch() = clock.instant().toEpochMilli() - lockObtainedMs.get()
 }

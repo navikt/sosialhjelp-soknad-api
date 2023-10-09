@@ -23,7 +23,7 @@ class SoknadLockPushMetrics(
         .description("Number of unsuccessful attempts to acquire a lock")
         .register(meterRegistry)
 
-    fun reportLockAcquireLatency(lockTimeMs: Long) = soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
-    fun reportLockHoldDuration(lockTimeMs: Long) = soknadLockHoldTimer.record(lockTimeMs, TimeUnit.MILLISECONDS)
+    fun reportLockAcquireLatency(lockTimeMs: Long) = soknadLockLatencyTimer.record(lockTimeMs, TimeUnit.NANOSECONDS)
+    fun reportLockHoldDuration(lockTimeMs: Long) = soknadLockHoldTimer.record(lockTimeMs, TimeUnit.NANOSECONDS)
     fun reportLockTimeout() = soknadLockTimeoutCount.increment()
 }
