@@ -52,7 +52,9 @@ internal class InformasjonRessursTest {
         every { personService.hentPerson(any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false
-
+        every {
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
+        } returns emptyList()
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
@@ -60,6 +62,36 @@ internal class InformasjonRessursTest {
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
         unmockkObject(MiljoUtils)
+    }
+
+    @Test
+    fun `viser adressebeskyttelse`() {
+        every { personService.harAdressebeskyttelse(any()) } returns false
+        assertEquals(false, ressurs.getSessionInfo().userBlocked)
+        every { personService.harAdressebeskyttelse(any()) } returns true
+        assertEquals(true, ressurs.getSessionInfo().userBlocked)
+    }
+
+    @Test
+    fun `gjengir fornavn riktig`() {
+        assertEquals(PERSON.fornavn, ressurs.getSessionInfo().fornavn)
+    }
+
+    @Test
+    fun `gjengir antall dager før sletting`() {
+        assertEquals(14, ressurs.getSessionInfo().daysBeforeDeletion)
+    }
+
+    @Test
+    fun `gjengir åpne søknader når tom liste`() {
+        every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
+        assertEquals(0, ressurs.getSessionInfo().open.size)
+    }
+
+    @Test
+    fun `gjengir åpne søknader`() {
+        every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns listOf(mockk(), mockk())
+        assertEquals(2, ressurs.getSessionInfo().open.size)
     }
 
     @Test
