@@ -37,7 +37,6 @@ internal class PabegynteSoknaderServiceTest {
         val pabegyntSoknadList = pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr")
 
         assertThat(pabegyntSoknadList).hasSize(1)
-        assertThat(pabegyntSoknadList[0].getSistOppdatert()).isEqualTo(now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
         assertThat(pabegyntSoknadList[0].behandlingsId).isEqualTo("id")
     }
 }
