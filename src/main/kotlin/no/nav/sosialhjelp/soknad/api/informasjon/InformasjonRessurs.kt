@@ -12,10 +12,6 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.UGRADERT
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -63,13 +59,17 @@ class InformasjonRessurs(
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
     @Deprecated("Bruk getSessionInfo")
     fun getUtslagskriterier(): Utslagskriterier {
-        val adressebeskyttelse = personService.hentAdressebeskyttelse(getUser())
+        val adressebeskyttelse = personService.harAdressebeskyttelse(getUser())
 
         val (harTilgang, sperrekode) =
-            if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
-                Pair(false, Sperrekode.bruker)
-            } else {
-                Pair(true, null)
+            when (adressebeskyttelse) {
+                true -> {
+                    Pair(false, Sperrekode.bruker)
+                }
+
+                else -> {
+                    Pair(true, null)
+                }
             }
 
         return Utslagskriterier(
@@ -124,10 +124,6 @@ class InformasjonRessurs(
         // men hentPerson bør nok bli noe mer deterministisk.
         if (person === null) log.error("Fant ikke person for bruker")
 
-        val beskyttelsesgrad = personService.hentAdressebeskyttelse(eier) ?: UGRADERT
-
-        val open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier)
-
         val numRecentlySent =
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
                 eier,
@@ -135,10 +131,10 @@ class InformasjonRessurs(
             ).size
 
         return SessionResponse(
-            userBlocked = beskyttelsesgrad != UGRADERT,
+            userBlocked = personService.harAdressebeskyttelse(eier),
             fornavn = person?.fornavn,
             daysBeforeDeletion = FJORTEN_DAGER,
-            open = open,
+            open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier),
             numRecentlySent = numRecentlySent
         )
     }
