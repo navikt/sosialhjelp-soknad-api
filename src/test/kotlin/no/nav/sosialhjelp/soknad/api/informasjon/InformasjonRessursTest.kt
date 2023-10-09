@@ -10,8 +10,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -48,9 +48,7 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns emptyList()
 
-        val response = ressurs.harNyligInnsendteSoknader()
-
-        assertThat(response.antallNyligInnsendte).isZero
+        assertEquals(0, ressurs.getSessionInfo().numRecentlySent)
     }
 
     @Test
@@ -59,8 +57,6 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns listOf(mockk(), mockk())
 
-        val response = ressurs.harNyligInnsendteSoknader()
-
-        assertThat(response.antallNyligInnsendte).isEqualTo(2)
+        assertEquals(2, ressurs.getSessionInfo().numRecentlySent)
     }
 }
