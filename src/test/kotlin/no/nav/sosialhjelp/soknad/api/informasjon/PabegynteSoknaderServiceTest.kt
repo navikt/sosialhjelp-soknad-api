@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 internal class PabegynteSoknaderServiceTest {
 
