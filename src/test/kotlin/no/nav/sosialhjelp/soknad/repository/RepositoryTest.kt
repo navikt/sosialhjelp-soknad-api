@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import java.time.LocalDateTime
 import java.util.*
 
 @DataJdbcTest
@@ -35,5 +34,5 @@ abstract class RepositoryTest {
         const val FILNAVN = "dokumentasjon.pdf"
     }
 
-    fun opprettSoknad() = soknadRepository.save(Soknad(soknadId = UUID.randomUUID()))
+    fun opprettSoknad() = soknadRepository.save(Soknad(id = UUID.randomUUID()))
 }

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.Soknad
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -22,18 +21,18 @@ class BosituasjonRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Legg til soknad og bosituasjon`() {
-        val soknad = soknadRepository.save(Soknad(soknadId = UUID.randomUUID()))
-        opprettBosituasjon(soknad.soknadId)
+        val soknad = opprettSoknad()
+        opprettBosituasjon(soknad.id)
 
         assertThat(bosituasjonRepository.findAll().size).isEqualTo(1)
-        assertThat(bosituasjonRepository.existsBySoknadId(soknad.soknadId)).isTrue()
+        assertThat(bosituasjonRepository.existsById(soknad.id)).isTrue()
     }
 
     @Test
     fun `Slett soknad som ogsa fjerner bosituasjon`() {
-        val soknad = soknadRepository.save(Soknad(soknadId = UUID.randomUUID()))
+        val soknad = opprettSoknad()
 
-        opprettBosituasjon(soknad.soknadId)
+        opprettBosituasjon(soknad.id)
         soknadRepository.delete(soknad)
 
         assertThat(bosituasjonRepository.findAll()).isEmpty()
@@ -41,26 +40,35 @@ class BosituasjonRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Slett bosituasjon fra soknad`() {
-        val soknad = soknadRepository.save(Soknad(soknadId = UUID.randomUUID()))
-        val bosituasjon = bosituasjonRepository.save(Bosituasjon(soknadId = soknad.soknadId))
+        opprettSoknad().run {
+            val bosituasjon = opprettBosituasjon(id)
+            assertThat(bosituasjonRepository.existsById(id)).isTrue()
 
-        assertThat(bosituasjonRepository.existsBySoknadId(soknad.soknadId)).isTrue()
-
-        bosituasjonRepository.delete(bosituasjon)
-
-        assertThat(bosituasjonRepository.existsBySoknadId(soknad.soknadId)).isFalse()
+            bosituasjonRepository.delete(bosituasjon)
+            assertThat(bosituasjonRepository.existsById(id)).isFalse()
+        }
     }
 
     @Test
-    fun `Ved oppdatering fra frontent, lagre Bosituasjon selvom den finnes skal gi feil`() {
+    fun `Gjentatte upserts skal fungere fint`() {
         val soknad = opprettSoknad()
-        // oppretter for første gang
-        opprettBosituasjon(soknad.soknadId)
 
-        // oppretter for andre gang skal gi feil
-        assertThatThrownBy {
-            opprettBosituasjon(soknad.soknadId)
-        }.isInstanceOf(DbActionExecutionException::class.java)
+        opprettBosituasjon(soknad.id)
+
+        val bosituasjon = opprettBosituasjon(soknad.id)
+        bosituasjon.antallPersoner = 4
+
+        bosituasjonRepository.save(bosituasjon)
+        val lagretBosituasjon = bosituasjonRepository.findById(soknad.id).get()
+        assertThat(lagretBosituasjon.antallPersoner).isEqualTo(4)
+    }
+
+    @Test
+    fun `Finn soknad gjennom BosituasjonRepository`() {
+        val soknad = opprettSoknad()
+        val soknadViaBosituasjonRepo = bosituasjonRepository.findSoknad(soknadId = soknad.id)
+
+        assertThat(soknad).isEqualTo(soknadViaBosituasjonRepo)
     }
 
     fun opprettBosituasjon(uuid: UUID) = bosituasjonRepository.save(Bosituasjon(soknadId = uuid))

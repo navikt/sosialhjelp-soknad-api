@@ -115,7 +115,8 @@ configurations {
 //        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
 //        exclude(group = "org.hamcrest")
 //        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-//        exclude(group = "org.mockito")
+        exclude(group = "org.mockito")
+        exclude(module = "mockito-core")
 //        exclude(group = "org.skyscreamer", module = "jsonassert")
     }
 }
@@ -220,6 +221,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junitJupiter}")
     testImplementation("io.mockk:mockk:${Versions.mockk}")
     testImplementation("io.mockk:mockk-jvm:${Versions.mockk}")
+    testImplementation("com.ninja-squad:springmockk:4.0.0")
 
     implementation("org.postgresql:postgresql:42.6.0")
     testImplementation("org.testcontainers:postgresql:1.19.1")

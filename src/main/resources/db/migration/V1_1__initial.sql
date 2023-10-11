@@ -58,8 +58,9 @@
 -- CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1;
 
 CREATE TABLE soknad (
-  id serial primary key,
-  soknad_id varchar(50) unique,
+--   id serial primary key,
+--   soknad_id varchar(50) unique,
+  id uuid primary key,
   innsendingstidspunkt timestamp,
   hvorfor_soke varchar(255),
   hva_sokes_om varchar(255),
@@ -67,21 +68,22 @@ CREATE TABLE soknad (
 );
 
 CREATE TABLE bosituasjon (
-    id serial primary key,
-    soknad_id varchar(50) unique ,
+--     id serial primary key,
+--     soknad_id varchar(50) unique ,
+    soknad_id uuid primary key,
     botype varchar(30),
     antall_personer integer
 );
 
 ALTER TABLE bosituasjon
     ADD CONSTRAINT fk_bosituasjon_soknad
-        FOREIGN KEY ( soknad_id ) REFERENCES soknad( soknad_id )
+        FOREIGN KEY ( soknad_id ) REFERENCES soknad( id )
             ON DELETE CASCADE;
 
 
 CREATE TABLE vedlegg (
     id                   serial primary key  ,
-    soknad_id varchar(50)  NOT NULL,
+    soknad_id uuid  NOT NULL,
     vedleggstype varchar(15)    ,
     tilleggsinfo varchar(15)    ,
     status varchar(15)    ,
@@ -92,7 +94,7 @@ CREATE TABLE vedlegg (
 ALTER TABLE vedlegg
     ADD CONSTRAINT fk_vedlegg_soknad
         FOREIGN KEY ( soknad_id )
-            REFERENCES soknad( soknad_id )
+            REFERENCES soknad( id )
                 ON DELETE CASCADE;
 
 CREATE TABLE fil (

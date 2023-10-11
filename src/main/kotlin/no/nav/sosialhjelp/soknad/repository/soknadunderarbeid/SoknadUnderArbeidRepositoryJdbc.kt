@@ -34,24 +34,24 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
-        sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
-        val soknadUnderArbeidId = jdbcTemplate.queryForObject(
-            SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
-            Long::class.java
-        )
-        jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
-            soknadUnderArbeidId,
-            soknadUnderArbeid.versjon,
-            soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.tilknyttetBehandlingsId,
-            soknadUnderArbeid.eier,
-            soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
-            soknadUnderArbeid.status.toString(),
-            Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
-            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
-        )
-        return soknadUnderArbeidId
+            sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
+            val soknadUnderArbeidId = jdbcTemplate.queryForObject(
+                SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
+                Long::class.java
+            )
+            jdbcTemplate.update(
+                "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
+                soknadUnderArbeidId,
+                soknadUnderArbeid.versjon,
+                soknadUnderArbeid.behandlingsId,
+                soknadUnderArbeid.tilknyttetBehandlingsId,
+                soknadUnderArbeid.eier,
+                soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
+                soknadUnderArbeid.status.toString(),
+                Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
+            )
+            return soknadUnderArbeidId
     }
 
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
