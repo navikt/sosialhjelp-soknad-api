@@ -13,14 +13,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
@@ -37,9 +35,10 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -51,7 +50,7 @@ class ForsorgerpliktRessurs(
         @PathVariable("behandlingsId") behandlingsId: String
     ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val jsonForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt
@@ -65,8 +64,7 @@ class ForsorgerpliktRessurs(
         @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
@@ -74,7 +72,7 @@ class ForsorgerpliktRessurs(
         updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
         updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun updateBarnebidrag(
@@ -100,14 +98,17 @@ class ForsorgerpliktRessurs(
                     addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
                     addUtgiftIfNotPresentInOversikt(utgifter, barnebidragType, tittelBetaler)
                 }
+
                 Verdi.BETALER -> {
                     removeInntektIfPresentInOversikt(inntekter, barnebidragType)
                     addUtgiftIfNotPresentInOversikt(utgifter, barnebidragType, tittelBetaler)
                 }
+
                 Verdi.MOTTAR -> {
                     addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
                     removeUtgiftIfPresentInOversikt(utgifter, barnebidragType)
                 }
+
                 Verdi.INGEN -> {
                     removeInntektIfPresentInOversikt(inntekter, barnebidragType)
                     removeUtgiftIfPresentInOversikt(utgifter, barnebidragType)
@@ -125,22 +126,26 @@ class ForsorgerpliktRessurs(
         jsonInternalSoknad: JsonInternalSoknad,
         forsorgerplikt: JsonForsorgerplikt
     ) {
-        val systemAnsvar: MutableList<JsonAnsvar> =
-            if (forsorgerplikt.ansvar == null) mutableListOf() else forsorgerplikt.ansvar.filter { it.barn.kilde == JsonKilde.SYSTEM }.toMutableList()
-        if (forsorgerpliktFrontend.ansvar != null) {
-            for (ansvarFrontend in forsorgerpliktFrontend.ansvar) {
-                for (ansvar in systemAnsvar) {
-                    if (ansvar.barn.personIdentifikator == ansvarFrontend?.barn?.fodselsnummer) {
-                        setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar)
-                    }
+        val systemAnsvar: List<JsonAnsvar> =
+            when (forsorgerplikt.ansvar) {
+                null -> listOf()
+                else -> forsorgerplikt.ansvar.filter { it.barn.kilde == JsonKilde.SYSTEM }.toList()
+            }
+
+        for (ansvarFrontend in forsorgerpliktFrontend.ansvar) {
+            for (ansvar in systemAnsvar) {
+                if (ansvar.barn.personIdentifikator == ansvarFrontend.barn?.fodselsnummer) {
+                    setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar)
                 }
             }
         }
+
         if (forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.BRUKER) {
             forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
             removeBarneutgifterFromSoknad(jsonInternalSoknad)
         }
-        forsorgerplikt.ansvar = if (systemAnsvar.isEmpty()) null else systemAnsvar
+
+        forsorgerplikt.ansvar = systemAnsvar.takeIf { it.isNotEmpty() }
     }
 
     private fun setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend: AnsvarFrontend?, ansvar: JsonAnsvar) {
@@ -174,9 +179,11 @@ class ForsorgerpliktRessurs(
     }
 
     private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {
-        val ansvar: List<AnsvarFrontend?>? = jsonForsorgerplikt.ansvar
+        val ansvar: List<AnsvarFrontend> = jsonForsorgerplikt.ansvar
             ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
+            ?.filterNotNull()
             ?.map { mapToAnsvarFrontend(it) }
+            .orEmpty()
 
         return ForsorgerpliktFrontend(
             harForsorgerplikt = jsonForsorgerplikt.harForsorgerplikt?.verdi,
@@ -185,26 +192,18 @@ class ForsorgerpliktRessurs(
         )
     }
 
-    private fun mapToAnsvarFrontend(jsonAnsvar: JsonAnsvar?): AnsvarFrontend? {
-        return if (jsonAnsvar == null) {
-            null
-        } else AnsvarFrontend(
-            barn = mapToBarnFrontend(jsonAnsvar.barn),
-            borSammenMed = jsonAnsvar.borSammenMed?.verdi,
-            erFolkeregistrertSammen = jsonAnsvar.erFolkeregistrertSammen?.verdi,
-            harDeltBosted = jsonAnsvar.harDeltBosted?.verdi,
-            samvarsgrad = jsonAnsvar.samvarsgrad?.verdi
-        )
-    }
+    private fun mapToAnsvarFrontend(jsonAnsvar: JsonAnsvar): AnsvarFrontend = AnsvarFrontend(
+        barn = jsonAnsvar.barn?.let { mapToBarnFrontend(it) },
+        borSammenMed = jsonAnsvar.borSammenMed?.verdi,
+        erFolkeregistrertSammen = jsonAnsvar.erFolkeregistrertSammen?.verdi,
+        harDeltBosted = jsonAnsvar.harDeltBosted?.verdi,
+        samvarsgrad = jsonAnsvar.samvarsgrad?.verdi
+    )
 
-    private fun mapToBarnFrontend(barn: JsonBarn?): BarnFrontend? {
-        return if (barn == null) {
-            null
-        } else BarnFrontend(
-            navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn, fulltNavn(barn.navn)),
-            fodselsdato = barn.fodselsdato,
-            personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
-            fodselsnummer = barn.personIdentifikator
-        )
-    }
+    private fun mapToBarnFrontend(barn: JsonBarn): BarnFrontend = BarnFrontend(
+        navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn, fulltNavn(barn.navn)),
+        fodselsdato = barn.fodselsdato,
+        personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
+        fodselsnummer = barn.personIdentifikator
+    )
 }

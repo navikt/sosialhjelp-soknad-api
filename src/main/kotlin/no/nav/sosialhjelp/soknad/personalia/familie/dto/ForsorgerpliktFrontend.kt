@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
 data class ForsorgerpliktFrontend(
     val harForsorgerplikt: Boolean?,
     val barnebidrag: JsonBarnebidrag.Verdi?,
-    val ansvar: List<AnsvarFrontend?>?
+    val ansvar: List<AnsvarFrontend> = emptyList()
 )
 
 data class AnsvarFrontend(
