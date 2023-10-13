@@ -3,9 +3,11 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import java.util.Locale
+import java.util.*
 
 object SenderUtils {
+
+    fun lagSoknadUuid() = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
 
     fun lagBehandlingsId(databasenokkel: Long): String {
         val applikasjonsprefix = "11"

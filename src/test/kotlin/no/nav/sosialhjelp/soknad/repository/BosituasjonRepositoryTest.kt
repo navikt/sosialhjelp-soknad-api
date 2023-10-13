@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.repository
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.relational.core.conversion.DbActionExecutionException
@@ -53,14 +54,16 @@ class BosituasjonRepositoryTest : RepositoryTest() {
     fun `Gjentatte upserts skal fungere fint`() {
         val soknad = opprettSoknad()
 
-        opprettBosituasjon(soknad.id)
-
         val bosituasjon = opprettBosituasjon(soknad.id)
-        bosituasjon.antallPersoner = 4
+        bosituasjon.antallPersoner = 8
+        val savedBosituasjon = bosituasjonRepository.save(bosituasjon)
 
+        assertThat(bosituasjonRepository.findById(soknad.id).get().antallPersoner).isEqualTo(8)
+
+        savedBosituasjon.antallPersoner = 4
         bosituasjonRepository.save(bosituasjon)
-        val lagretBosituasjon = bosituasjonRepository.findById(soknad.id).get()
-        assertThat(lagretBosituasjon.antallPersoner).isEqualTo(4)
+
+        assertThat(bosituasjonRepository.findById(soknad.id).get().antallPersoner).isEqualTo(4)
     }
 
     @Test

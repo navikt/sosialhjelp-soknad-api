@@ -25,7 +25,7 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataReposit
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
@@ -42,7 +42,7 @@ import java.time.LocalDateTime
 
 internal class SoknadActionsTest {
 
-    private val soknadService: SoknadService = mockk()
+    private val oldSoknadService: OldSoknadService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -51,7 +51,7 @@ internal class SoknadActionsTest {
     private val nedetidService: NedetidService = mockk()
 
     private val actions = SoknadActions(
-        soknadService,
+        oldSoknadService,
         kommuneInfoService,
         tilgangskontroll,
         soknadUnderArbeidRepository,
@@ -89,7 +89,7 @@ internal class SoknadActionsTest {
         assertThatExceptionOfType(SoknadenHarNedetidException::class.java)
             .isThrownBy { actions.sendSoknad("behandlingsId", token) }
 
-        verify { soknadService wasNot called }
+        verify { oldSoknadService wasNot called }
         verify { digisosApiService wasNot called }
     }
 
@@ -110,11 +110,11 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-        every { soknadService.sendSoknad(behandlingsId) } just runs
+        every { oldSoknadService.sendSoknad(behandlingsId) } just runs
 
         actions.sendSoknad(behandlingsId, token)
 
-        verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
+        verify(exactly = 1) { oldSoknadService.sendSoknad(behandlingsId) }
     }
 
     @Test
@@ -165,7 +165,7 @@ internal class SoknadActionsTest {
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
-        verify { soknadService wasNot called }
+        verify { oldSoknadService wasNot called }
     }
 
     @Test
@@ -176,11 +176,11 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
-        every { soknadService.sendSoknad(any()) } just runs
+        every { oldSoknadService.sendSoknad(any()) } just runs
 
         actions.sendSoknad(behandlingsId, token)
 
-        verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
+        verify(exactly = 1) { oldSoknadService.sendSoknad(behandlingsId) }
     }
 
     @Test
@@ -191,11 +191,11 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        every { soknadService.sendSoknad(any()) } just runs
+        every { oldSoknadService.sendSoknad(any()) } just runs
 
         actions.sendSoknad(behandlingsId, token)
 
-        verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
+        verify(exactly = 1) { oldSoknadService.sendSoknad(behandlingsId) }
     }
 
     @Test
@@ -250,7 +250,7 @@ internal class SoknadActionsTest {
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { actions.sendSoknad("behandlingsId", token) }
 
-        verify { soknadService wasNot called }
+        verify { oldSoknadService wasNot called }
         verify { kommuneInfoService wasNot called }
         verify { digisosApiService wasNot called }
     }

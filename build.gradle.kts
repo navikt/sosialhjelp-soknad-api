@@ -13,6 +13,7 @@ object Versions {
     const val flyway = "9.22.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.2"
+    const val h2database = "2.2.224"
     const val lettuce = "6.2.3.RELEASE"
     const val tokenValidation = "3.1.0"
     const val javaJwt = "4.3.0"
@@ -155,7 +156,9 @@ dependencies {
     // flyway / db
     implementation("org.flywaydb:flyway-core:${Versions.flyway}")
     runtimeOnly("com.oracle.database.jdbc:ojdbc10:${Versions.ojdbc10}")
-    runtimeOnly("org.hsqldb:hsqldb:${Versions.hsqldb}")
+
+    runtimeOnly("com.h2database:h2:${Versions.h2database}")
+//    runtimeOnly("org.hsqldb:hsqldb:${Versions.hsqldb}")
 
     // redis
     implementation("io.lettuce:lettuce-core:${Versions.lettuce}")

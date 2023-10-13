@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.repository.JAXBHelper
 import java.time.LocalDateTime
 
 data class SoknadMetadata(
-    var id: Long,
+    var id: Long? = null,
     var behandlingsId: String,
     var tilknyttetBehandlingsId: String? = null,
     var fnr: String,

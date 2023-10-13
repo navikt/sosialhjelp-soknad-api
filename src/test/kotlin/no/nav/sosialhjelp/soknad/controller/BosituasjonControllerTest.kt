@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype.EIER
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
+import no.nav.sosialhjelp.soknad.model.BosituasjonDTO
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,13 +30,11 @@ class BosituasjonControllerTest {
 
     @Test
     fun `Bosituasjon finnes`() {
-        val bosituasjon = Bosituasjon(
-//            id = 1L,
-            soknadId = UUID.randomUUID(),
-            botype = EIER,
+        val bosituasjonDto = BosituasjonDTO(
+            botype = "eier",
             antallPersoner = 3
         )
-        every { bosituasjonService.hentBosituasjon(any()) } returns bosituasjon
+        every { bosituasjonService.hentBosituasjon(any()) } returns bosituasjonDto
 
         mockMvc.get("/soknad/{soknadId}/bosituasjon", UUID.randomUUID()) {
             contentType = MediaType.APPLICATION_JSON

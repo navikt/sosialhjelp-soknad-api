@@ -47,7 +47,8 @@ class EttersendingService(
     }
 
     private fun opprettSoknadMetadataEttersendelse(ettersendesPaSoknad: SoknadMetadata): String {
-        val id = soknadMetadataRepository.hentNesteId()
+//        val id = soknadMetadataRepository.hentNesteId()
+        val id = 0L
         val ettersendelse = SoknadMetadata(
             id = id,
             behandlingsId = lagBehandlingsId(id),

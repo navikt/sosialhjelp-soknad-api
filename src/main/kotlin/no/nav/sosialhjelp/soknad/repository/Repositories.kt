@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.repository
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
 import no.nav.sosialhjelp.soknad.model.Fil
 import no.nav.sosialhjelp.soknad.model.Soknad
+import no.nav.sosialhjelp.soknad.model.SoknadEier
 import no.nav.sosialhjelp.soknad.model.Vedlegg
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
@@ -22,6 +23,10 @@ interface CommonRepository<T: PartOfSoknad> : ListCrudRepository<T, UUID> {
 
 @Repository
 interface SoknadRepository: UpsertRepository<Soknad>, CommonRepository<Soknad>
+
+@Repository
+interface SoknadEierRepository: ListCrudRepository<SoknadEier, UUID>
+
 @Repository
 interface BosituasjonRepository : UpsertRepository<Bosituasjon>, CommonRepository<Bosituasjon>
 @Repository

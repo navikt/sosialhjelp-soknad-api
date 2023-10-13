@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadRessurs(
-    private val soknadService: SoknadService,
+    private val soknadService: no.nav.sosialhjelp.soknad.innsending.OldSoknadService,
     private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -143,7 +143,7 @@ class SoknadRessurs(
         }
         val result: MutableMap<String, String> = HashMap()
         val opprettetBehandlingsId: String = if (tilknyttetBehandlingsId == null) {
-            soknadService.startSoknad(token)
+            soknadService.startSoknad().toString()
         } else {
             val eier = getUserIdFromToken()
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)

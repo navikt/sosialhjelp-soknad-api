@@ -36,4 +36,16 @@ class SoknadRepositoryTest : RepositoryTest() {
     @Test
     fun `Sok pa soknad som ikke finnes`() =
         assertThat(soknadRepository.findById(UUID.randomUUID()).getOrNull()).isNull()
+
+    @Test
+    fun `Opprett mange`() {
+
+        val soknadList = (0..10).map {
+            opprettSoknad()
+        }
+
+        soknadList
+
+    }
+
 }

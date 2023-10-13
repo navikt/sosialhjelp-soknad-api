@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat

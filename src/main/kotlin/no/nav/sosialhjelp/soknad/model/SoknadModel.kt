@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.model
 
-import jakarta.annotation.Generated
-import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sosialhjelp.soknad.repository.PartOfSoknad
 import org.springframework.data.annotation.Id
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 //interface SoknadEntitet {
 //    val id: UUID
@@ -19,6 +17,11 @@ data class Soknad (
     var hvaSokesOm: String? = null,
     var kommentarArbeid: String? = null
 ): PartOfSoknad
+
+data class SoknadEier (
+    @Id val id: UUID = UUID.randomUUID(),
+    val personIdentifikator: String
+)
 
 data class Bosituasjon (
 //    @Id val id: Long = 0,

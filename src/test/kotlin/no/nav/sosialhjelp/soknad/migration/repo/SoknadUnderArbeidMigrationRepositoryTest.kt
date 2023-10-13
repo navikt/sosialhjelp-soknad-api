@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -76,7 +76,7 @@ internal class SoknadUnderArbeidMigrationRepositoryTest {
                 behandlingsId = behandlingsId,
                 tilknyttetBehandlingsId = null,
                 eier = EIER,
-                jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = OldSoknadService.createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
                 sistEndretDato = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)

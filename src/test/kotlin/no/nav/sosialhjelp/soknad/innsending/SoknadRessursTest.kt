@@ -26,7 +26,7 @@ import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -39,7 +39,7 @@ import java.time.LocalDateTime
 
 internal class SoknadRessursTest {
 
-    private val soknadService: SoknadService = mockk()
+    private val soknadService: no.nav.sosialhjelp.soknad.innsending.OldSoknadService = mockk()
     private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -93,7 +93,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
@@ -105,11 +105,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
-        verify(exactly = 1) { soknadService.startSoknad("") }
+        verify(exactly = 1) { soknadService.startSoknad() }
     }
 
     @Test

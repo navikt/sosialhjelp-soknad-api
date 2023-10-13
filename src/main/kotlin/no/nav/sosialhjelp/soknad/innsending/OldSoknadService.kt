@@ -41,12 +41,15 @@ import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidR
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagSoknadUuid
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.model.Soknad
+import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.service.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -59,13 +62,16 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Component
-class SoknadService(
+class OldSoknadService(
     private val oppgaveHandterer: OppgaveHandterer,
     private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadService: SoknadService, // ***datamodell*** - nytt repository for soknad
     private val systemdataUpdater: SystemdataUpdater,
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
@@ -74,16 +80,19 @@ class SoknadService(
     private val clock: Clock
 ) {
     @Transactional
-    fun startSoknad(token: String?): String {
+    fun startSoknad(): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val behandlingsId = opprettSoknadMetadata(eier)
-        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
+        // ***datamodell*** bytter ut behandlingsId med soknadId (UUID)
+        val soknadId = opprettSoknadMetadata(eier)
+        MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
+        // ***datamodell*** oppretter det nye soknad-objektet når ny søknad opprettes
+        soknadService.opprettNySoknad(soknadId)
 
         prometheusMetricsService.reportStartSoknad(false)
 
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
-            behandlingsId = behandlingsId,
+            behandlingsId = soknadId.toString(),
             tilknyttetBehandlingsId = null,
             eier = eier,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
@@ -95,15 +104,18 @@ class SoknadService(
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 
-        return behandlingsId
+        return soknadId.toString()
     }
 
-    private fun opprettSoknadMetadata(fnr: String): String {
+    private fun opprettSoknadMetadata(fnr: String): UUID {
         log.info("Starter søknad")
-        val id = soknadMetadataRepository.hentNesteId()
+//        val id = soknadMetadataRepository.hentNesteId()
+        val id = 0L
+        val soknadId = lagSoknadUuid()
         val soknadMetadata = SoknadMetadata(
             id = id,
-            behandlingsId = lagBehandlingsId(id),
+            // lager UUID isteden for den gamle behandlingsIDen
+            behandlingsId = soknadId.toString(),
             fnr = fnr,
             skjema = SKJEMANUMMER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
@@ -112,7 +124,7 @@ class SoknadService(
             sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(soknadMetadata)
-        return soknadMetadata.behandlingsId
+        return soknadId
     }
 
     @Transactional
@@ -233,7 +245,7 @@ class SoknadService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(SoknadService::class.java)
+        private val log = LoggerFactory.getLogger(OldSoknadService::class.java)
 
         private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
             val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)

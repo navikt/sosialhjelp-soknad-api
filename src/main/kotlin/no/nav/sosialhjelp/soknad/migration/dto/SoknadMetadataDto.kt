@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import java.time.LocalDateTime
 
 data class SoknadMetadataDto(
-    val id: Long,
+    val id: Long? = null,
     val behandlingsId: String,
     val tilknyttetBehandlingsId: String?,
     val fnr: String,

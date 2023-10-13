@@ -24,11 +24,13 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.model.Soknad
+import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -36,24 +38,28 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
+import java.util.UUID
 
-internal class SoknadServiceTest {
+internal class OldSoknadServiceTest {
 
     private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    // *** datamodell ***
+    private val soknadRepository: SoknadRepository = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
-    private val soknadService = SoknadService(
+    private val oldSoknadService = OldSoknadService(
         oppgaveHandterer,
         innsendingService,
         soknadMetadataRepository,
         soknadUnderArbeidRepository,
+        soknadRepository,
         systemdataUpdater,
         bostotteSystemdata,
         skatteetatenSystemdata,
@@ -85,12 +91,15 @@ internal class SoknadServiceTest {
         val soknadMetadata: SoknadMetadata = mockk()
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
         every { soknadMetadataRepository.opprett(any()) } just runs
-        every { soknadMetadata.behandlingsId } returns "123"
+        val soknadId = UUID.randomUUID()
+        every { soknadMetadata.behandlingsId } returns soknadId.toString()
+        every { soknadRepository.save(any()) } returns Soknad(id = soknadId)
+
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
-        soknadService.startSoknad("")
+        oldSoknadService.startSoknad()
 
         val bekreftelser = soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
@@ -139,7 +148,7 @@ internal class SoknadServiceTest {
         every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
         every { innsendingService.oppdaterSoknadUnderArbeid(any()) } just runs
 
-        soknadService.sendSoknad(behandlingsId)
+        oldSoknadService.sendSoknad(behandlingsId)
 
         verify { oppgaveHandterer.leggTilOppgave(behandlingsId, any()) }
 
@@ -169,7 +178,7 @@ internal class SoknadServiceTest {
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
         every { soknadMetadataRepository.oppdater(any()) } just runs
 
-        soknadService.avbrytSoknad(BEHANDLINGSID, "3")
+        oldSoknadService.avbrytSoknad(BEHANDLINGSID, "3")
 
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
         verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad(false, "3") }

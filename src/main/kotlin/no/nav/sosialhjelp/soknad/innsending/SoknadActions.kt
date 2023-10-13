@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadActions(
-    private val soknadService: SoknadService,
+    private val oldSoknadService: OldSoknadService,
     private val kommuneInfoService: KommuneInfoService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -63,7 +63,7 @@ class SoknadActions(
 
         if (isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId $behandlingsId sendes til SvarUt.")
-            soknadService.sendSoknad(behandlingsId)
+            oldSoknadService.sendSoknad(behandlingsId)
             return SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
         }
 
@@ -88,7 +88,7 @@ class SoknadActions(
                     throw SendingTilKommuneErIkkeAktivertException("Sending til kommune $kommunenummer er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner")
                 }
                 log.info("BehandlingsId $behandlingsId sendes til SvarUt (sfa. Fiks-konfigurasjon).")
-                soknadService.sendSoknad(behandlingsId)
+                oldSoknadService.sendSoknad(behandlingsId)
                 SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
             }
 

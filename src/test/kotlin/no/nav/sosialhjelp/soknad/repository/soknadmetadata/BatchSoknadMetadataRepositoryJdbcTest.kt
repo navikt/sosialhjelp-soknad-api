@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.repository.soknadmetadata
 
+import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.UNDER_ARBEID
-import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -83,7 +83,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest : RepositoryTest() {
     private fun opprettSoknadMetadata(soknadMetadata: SoknadMetadata) {
         soknadMetadataRepository!!.opprett(soknadMetadata)
         val lagretSoknadMetadata = soknadMetadataRepository!!.hent(soknadMetadata.behandlingsId)
-        batchSoknadMetadataRepository!!.leggTilbakeBatch(lagretSoknadMetadata!!.id)
+        batchSoknadMetadataRepository!!.leggTilbakeBatch(lagretSoknadMetadata!!.id!!)
     }
 
     private fun soknadMetadata(

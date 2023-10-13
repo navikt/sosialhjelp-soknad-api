@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.controller
 
+import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.model.BosituasjonDTO
-import no.nav.sosialhjelp.soknad.model.Bosituasjon
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,22 +18,19 @@ import java.util.*
 class BosituasjonController(
     private val bosituasjonService: BosituasjonService
 ) {
+    @Unprotected
     @GetMapping
     fun hentBosituasjon(
         @PathVariable("soknadId") soknadIdString: String?,
     ): BosituasjonDTO {
+        // TODO - flytt til interceptor og sjekk id mot eier
         val soknadId = soknadIdString?.let { UUID.fromString(soknadIdString) }
             ?: throw IllegalArgumentException("SøknadId kan ikke være null.")
 
-        val bosituasjon: Bosituasjon = bosituasjonService.hentBosituasjon(soknadId)
-            ?: throw IkkeFunnetException("Bosituasjon finnes ikke.")
-
-        return BosituasjonDTO(
-            botype = bosituasjon.botype,
-            antallPersoner = bosituasjon.antallPersoner
-        )
+        return bosituasjonService.hentBosituasjon(soknadId) ?: throw IkkeFunnetException("Bosituasjon finnes ikke.")
     }
 
+    @Unprotected
     @PutMapping
     fun oppdaterBosituasjon(
         @PathVariable("soknadId") soknadIdString: String?,

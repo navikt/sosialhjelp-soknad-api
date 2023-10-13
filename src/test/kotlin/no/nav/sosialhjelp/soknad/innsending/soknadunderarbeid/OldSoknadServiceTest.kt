@@ -18,7 +18,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class SoknadUnderArbeidServiceTest {
+internal class OldSoknadServiceTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()

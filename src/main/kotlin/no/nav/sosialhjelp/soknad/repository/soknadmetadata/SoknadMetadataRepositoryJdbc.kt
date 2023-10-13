@@ -18,16 +18,19 @@ class SoknadMetadataRepositoryJdbc(
 
     private val antallRowMapper = RowMapper { rs: ResultSet, _: Int -> rs.getInt("antall") }
 
-    override fun hentNesteId(): Long {
-        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
-            ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
-    }
+//    override fun hentNesteId(): Long {
+//        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
+//            ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
+//    }
+
+    override fun hentNesteId(): Long = 0L
 
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            metadata.id,
+//            "INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+//            metadata.id,
             metadata.behandlingsId,
             metadata.tilknyttetBehandlingsId,
             metadata.skjema,

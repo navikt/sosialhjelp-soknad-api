@@ -67,7 +67,7 @@ class AvbrytAutomatiskScheduler(
                 batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
             }
 
-            batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
+            batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id!!)
             vellykket++
 
             if (harGaattForLangTid()) {

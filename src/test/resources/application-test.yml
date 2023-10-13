@@ -4,10 +4,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    driver-class-name: org.hsqldb.jdbcDriver
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1;NON_KEYWORDS=KEY,VALUE;MODE=PostgreSQL
+#    driver-class-name: org.hsqldb.jdbcDriver
     # sql.syntax_ora - imdb støtter en del oracle-syntaks
 #    url: jdbc:hsqldb:mem:testdb;sql.syntax_ora=true;DB_CLOSE_DELAY=-1
-    url: jdbc:hsqldb:mem:testdb;sql.syntax_pgs=true;DB_CLOSE_DELAY=-1
+#    url: jdbc:hsqldb:mem:testdb;sql.syntax_pgs=true;DB_CLOSE_DELAY=-1
     username: sa
     password:
 

@@ -69,7 +69,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest : RepositoryTest() {
 
     private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
         return SoknadUnderArbeid(
-            versjon = 1L,
+            versjon = 0L,
             behandlingsId = behandlingsId,
             tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
