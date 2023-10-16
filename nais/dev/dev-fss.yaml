@@ -97,7 +97,7 @@ spec:
     - name: KRR_SCOPE
       value: "dev-gcp.team-rocket.digdir-krr-proxy"
     - name: KRR_URL
-      value: "https://digdir-krr-stub.intern.dev.nav.no"
+      value: "https://digdir-krr-proxy.intern.dev.nav.no"
     - name: LOGINSERVICE_URL
       value: "https://login.ekstern.dev.nav.no/oauth2/login"
     - name: NORG_URL
