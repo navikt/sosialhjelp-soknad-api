@@ -53,7 +53,6 @@ class NavEnhetServiceTest {
         unleash
     )
 
-
     @BeforeEach
     fun setUp() {
         mockkObject(MiljoUtils)

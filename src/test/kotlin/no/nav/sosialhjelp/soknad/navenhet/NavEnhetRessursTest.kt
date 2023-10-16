@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import io.mockk.Called
-import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -12,7 +11,6 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -27,7 +25,6 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -67,13 +64,11 @@ internal class NavEnhetRessursTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val navEnhetService: NavEnhetService = mockk()
     private val adresseRessurs: AdresseRessurs = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
         tilgangskontroll = tilgangskontroll,
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        navEnhetService = navEnhetService,
         adresseRessurs = adresseRessurs
     )
 
@@ -106,67 +101,6 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    fun `getValgtNavEnhet - skal hente NavEnhetFrontend`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { navEnhetService.getValgtNavEnhet(SOKNADSMOTTAKER) } returns navEnhetFrontend
-
-        val response = navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)
-
-        assertThat(response).isNotNull
-        assertThat(response?.valgt).isTrue
-    }
-
-    @Test
-    fun `getValgtNavEnhet - null hvis kommunenummer er null`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad
-            .withMottaker(
-                JsonSoknadsmottaker()
-                    .withNavEnhetsnavn(ENHETSNAVN)
-                    .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(null)
-            )
-            .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        assertThat(navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)).isNull()
-    }
-
-    @Test
-    fun `getValgtNavEnhet - null hvis navEnhetsnavn er null`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad
-            .withMottaker(
-                JsonSoknadsmottaker()
-                    .withNavEnhetsnavn(null)
-                    .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(KOMMUNENR)
-            )
-            .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        assertThat(navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)).isNull()
-    }
-
-    @Test
-    fun `getValgtNavEnhet - skal kaste feil`() {
-        val soknadUnderArbeid: SoknadUnderArbeid = mockk()
-        every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker } returns null
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID) }
-
-        verify { navEnhetService wasNot called }
-    }
-
-    @Test
     fun `putNavEnhet - skal kalle adresseRessurs for oppdatering av mottaker`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
 
@@ -178,16 +112,6 @@ internal class NavEnhetRessursTest {
         navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend)
 
         verify(exactly = 1) { adresseRessurs.setSoknadMottaker(any(), any()) }
-    }
-
-    @Test
-    internal fun `hentValgtNavEnhet skal kaste AuthorizationException ved manglende tilgang`() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID) }
-
-        verify { soknadUnderArbeidRepository wasNot Called }
     }
 
     @Test
