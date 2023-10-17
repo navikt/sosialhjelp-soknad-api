@@ -12,24 +12,17 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 object OkonomiMapper {
 
     fun setBekreftelse(opplysninger: JsonOkonomiopplysninger, type: String, verdi: Boolean?, tittel: String?) {
-        if (opplysninger.bekreftelse == null) {
-            opplysninger.bekreftelse = ArrayList()
-        }
-        
-        val utbetaltBekreftelse = opplysninger.bekreftelse.firstOrNull { it.type == type }
+        opplysninger.bekreftelse = opplysninger.bekreftelse ?: ArrayList()
 
-        if (utbetaltBekreftelse != null) {
-            utbetaltBekreftelse.withKilde(JsonKilde.BRUKER).withVerdi(verdi)
-        } else {
-            val bekreftelser = opplysninger.bekreftelse
-            bekreftelser.add(
-                JsonOkonomibekreftelse()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withVerdi(verdi)
-            )
-        }
+        opplysninger.bekreftelse.firstOrNull { it.type == type }?.apply {
+            withKilde(JsonKilde.BRUKER).withVerdi(verdi)
+        } ?: opplysninger.bekreftelse.add(
+            JsonOkonomibekreftelse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(type)
+                .withTittel(tittel)
+                .withVerdi(verdi)
+        )
     }
 
     private fun addFormueIfNotPresentInOversikt(
