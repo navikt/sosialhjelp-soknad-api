@@ -59,23 +59,39 @@ CREATE TABLE SOKNADMETADATA (
 -- CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1;
 
 CREATE TABLE soknad (
---   id serial primary key,
---   soknad_id varchar(50) unique,
   id uuid primary key,
+  eier varchar(255) not null,
   innsendingstidspunkt timestamp,
   hvorfor_soke varchar(255),
-  hva_sokes_om varchar(255),
-  kommentar_arbeid varchar(255)
+  hva_sokes_om varchar(255)
 );
 
-CREATE TABLE soknad_eier (
-    id uuid primary key,
-    eier varchar(50) not null
+CREATE TABLE arbeid (
+    soknad_id uuid primary key,
+    kommentar_arbeid varchar(255)
 );
+
+ALTER TABLE arbeid
+    ADD CONSTRAINT fk_arbeid_soknad
+        FOREIGN KEY ( soknad_id ) REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE arbeidsforhold (
+    orgnummer varchar(50),
+    arbeidsgivernavn varchar(255) not null,
+    fra_og_med varchar(50),
+    til_og_med varchar(50),
+    stillingsprosent numeric,
+    stillingstype varchar(50) not null,
+    soknad_id uuid not null
+);
+
+ALTER TABLE arbeidsforhold
+    ADD CONSTRAINT fk_arbeidsforhold_arbeid
+        FOREIGN KEY ( soknad_id ) REFERENCES arbeid( soknad_id )
+            ON DELETE CASCADE;
 
 CREATE TABLE bosituasjon (
---     id serial primary key,
---     soknad_id varchar(50) unique ,
     soknad_id uuid primary key,
     botype varchar(30),
     antall_personer integer
@@ -88,10 +104,9 @@ ALTER TABLE bosituasjon
 
 
 CREATE TABLE vedlegg (
-    id                   serial primary key  ,
+    id serial primary key  ,
     soknad_id uuid  NOT NULL,
-    vedleggstype varchar(15)    ,
-    tilleggsinfo varchar(15)    ,
+    type varchar(30)    ,
     status varchar(15)    ,
     hendelse_type varchar(15)            ,
     hendelse_referanse varchar(15)

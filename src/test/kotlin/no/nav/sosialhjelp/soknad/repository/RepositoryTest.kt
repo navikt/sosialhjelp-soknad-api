@@ -35,5 +35,9 @@ abstract class RepositoryTest {
         const val FILNAVN = "dokumentasjon.pdf"
     }
 
-    fun opprettSoknad() = soknadRepository.save(Soknad(id = UUID.randomUUID()))
+//    abstract fun saveEntity()
+//    abstract fun updateEntity()
+//    abstract fun deleteEntity()
+
+    fun opprettSoknad() = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
 }

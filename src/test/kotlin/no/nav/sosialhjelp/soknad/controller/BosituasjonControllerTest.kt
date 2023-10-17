@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype.EIER
-import no.nav.sosialhjelp.soknad.model.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.BosituasjonDTO
+import no.nav.sosialhjelp.soknad.app.config.ApiConfig
+import no.nav.sosialhjelp.soknad.model.BosituasjonDto
+import no.nav.sosialhjelp.soknad.model.Botype
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,21 +17,16 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.util.*
 
-@WebMvcTest(BosituasjonController::class)
-@AutoConfigureMockMvc
-@ActiveProfiles("no-redis", "test")
-class BosituasjonControllerTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+@WebMvcTest(controllers = [BosituasjonController::class])
+class BosituasjonControllerTest: MockMvcTest() {
 
     @MockkBean
     private lateinit var bosituasjonService: BosituasjonService
 
     @Test
     fun `Bosituasjon finnes`() {
-        val bosituasjonDto = BosituasjonDTO(
-            botype = "eier",
+        val bosituasjonDto = BosituasjonDto(
+            botype = Botype.EIER,
             antallPersoner = 3
         )
         every { bosituasjonService.hentBosituasjon(any()) } returns bosituasjonDto

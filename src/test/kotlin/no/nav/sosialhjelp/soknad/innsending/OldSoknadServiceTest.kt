@@ -18,19 +18,19 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.model.NySoknadDto
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
-import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
-import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.model.Soknad
-import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.service.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 internal class OldSoknadServiceTest {
 
@@ -47,7 +47,7 @@ internal class OldSoknadServiceTest {
     private val innsendingService: InnsendingService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     // *** datamodell ***
-    private val soknadRepository: SoknadRepository = mockk()
+    private val soknadService: SoknadService = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -59,7 +59,7 @@ internal class OldSoknadServiceTest {
         innsendingService,
         soknadMetadataRepository,
         soknadUnderArbeidRepository,
-        soknadRepository,
+        soknadService,
         systemdataUpdater,
         bostotteSystemdata,
         skatteetatenSystemdata,
@@ -93,8 +93,7 @@ internal class OldSoknadServiceTest {
         every { soknadMetadataRepository.opprett(any()) } just runs
         val soknadId = UUID.randomUUID()
         every { soknadMetadata.behandlingsId } returns soknadId.toString()
-        every { soknadRepository.save(any()) } returns Soknad(id = soknadId)
-
+        every { soknadService.opprettNySoknad(any()) } returns NySoknadDto(soknadId = soknadId)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L

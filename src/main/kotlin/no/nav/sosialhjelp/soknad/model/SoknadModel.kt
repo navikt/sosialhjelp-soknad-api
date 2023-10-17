@@ -1,46 +1,53 @@
 package no.nav.sosialhjelp.soknad.model
 
-import no.nav.sosialhjelp.soknad.repository.PartOfSoknad
+import no.nav.sosialhjelp.soknad.repository.DelAvSoknad
 import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDateTime
 import java.util.*
 
-//interface SoknadEntitet {
-//    val id: UUID
-//}
 data class Soknad (
-//    @Id val id: Long = 0,
-//    val soknadId: UUID,
-    @Id override val id: UUID = UUID.randomUUID(),
+    @Id val id: UUID = UUID.randomUUID(),
+    val eier: String,
     var innsendingstidspunkt: LocalDateTime? = null,
     var hvorforSoke: String? = null,
     var hvaSokesOm: String? = null,
-    var kommentarArbeid: String? = null
-): PartOfSoknad
-
-data class SoknadEier (
-    @Id val id: UUID = UUID.randomUUID(),
-    val personIdentifikator: String
-)
+): DelAvSoknad {
+    override val soknadId: UUID get() = id
+}
 
 data class Bosituasjon (
-//    @Id val id: Long = 0,
-    @Id val soknadId: UUID,
-    var botype: Botype? = null,
-    var antallPersoner: Int? = null
-): PartOfSoknad {
-    override val id: UUID
-        get() = soknadId
-}
+    @Id override val soknadId: UUID,
+    var botype: Botype?,
+    var antallPersoner: Int
+): DelAvSoknad
+
+data class Arbeid (
+    @Id override val soknadId: UUID,
+    var kommentarArbeid: String? = null,
+    @MappedCollection(idColumn = "SOKNAD_ID")
+    val arbeidsforhold: Set<Arbeidsforhold> = emptySet()
+): DelAvSoknad
+
+data class Arbeidsforhold (
+//    @Column(value = "SOKNAD_ID")
+    val soknadId: UUID,
+    val orgnummer: String? = null,
+    val arbeidsgivernavn: String,
+    val fraOgMed: String? = null,
+    val tilOgMed: String? = null,
+    val stillingsprosent: Int? = null,
+    val stillingstype: Stillingstype
+)
 
 data class Vedlegg (
     @Id val id: Long = 0,
     val soknadId: UUID,
-    val vedleggstype: String? = null,
-    val tilleggsinfo: String? = null,
-    val status: String? = null,
-    val hendelseType: String? = null,
-    val hendelseReferanse: String? = null,
+    val vedleggType: VedleggType,
+    val status: String,
+    val hendelseType: VedleggHendelseType,
+    val hendelseReferanse: String,
 )
 
 data class Fil (

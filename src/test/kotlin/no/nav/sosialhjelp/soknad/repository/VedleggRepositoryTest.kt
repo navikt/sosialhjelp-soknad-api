@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.repository
 import no.nav.sosialhjelp.soknad.model.Fil
 import no.nav.sosialhjelp.soknad.model.Soknad
 import no.nav.sosialhjelp.soknad.model.Vedlegg
+import no.nav.sosialhjelp.soknad.model.VedleggHendelseType
+import no.nav.sosialhjelp.soknad.model.VedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -20,8 +22,8 @@ class VedleggRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Lagre nytt vedlegg`() {
-        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID()))
-        vedleggRepository.save(Vedlegg(soknadId = soknad.id))
+        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
+        vedleggRepository.save(opprettVedlegg(soknadId = soknad.id))
 
         assertThat(vedleggRepository.findAll()).size().isEqualTo(1)
         assertThat(vedleggRepository.findAllBySoknadId(soknad.id)).size().isEqualTo(1)
@@ -30,14 +32,14 @@ class VedleggRepositoryTest : RepositoryTest() {
     @Test
     fun `Kan ikke opprette vedlegg uten soknad`() {
         assertThatThrownBy {
-            vedleggRepository.save(Vedlegg(soknadId = UUID.randomUUID()))
+            vedleggRepository.save(opprettVedlegg(UUID.randomUUID()))
         }.isInstanceOf(DbActionExecutionException::class.java)
     }
 
     @Test
     fun `Vedlegg slettes med soknad`() {
-        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID()))
-        val vedlegg = vedleggRepository.save(Vedlegg(soknadId = soknad.id))
+        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
+        val vedlegg = vedleggRepository.save(opprettVedlegg(soknad.id))
 
         assertThat(vedleggRepository.findById(vedlegg.id).getOrNull()).isNotNull
 
@@ -48,7 +50,7 @@ class VedleggRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Opprett fil uten Vedlegg skal gi exception`() {
-        soknadRepository.save(Soknad(id = UUID.randomUUID()))
+        soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
         assertThatThrownBy {
             filRepository.save(Fil(vedleggId = 1L))
         }.isInstanceOf(DbActionExecutionException::class.java)
@@ -56,8 +58,8 @@ class VedleggRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Slett Vedlegg sletter ogsa fil`() {
-        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID()))
-        val vedlegg = vedleggRepository.save(Vedlegg(soknadId = soknad.id))
+        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
+        val vedlegg = vedleggRepository.save(opprettVedlegg(soknad.id))
 
         filRepository.save(Fil(vedleggId = vedlegg.id))
         assertThat(filRepository.findAll()).size().isEqualTo(1)
@@ -68,8 +70,8 @@ class VedleggRepositoryTest : RepositoryTest() {
 
     @Test
     fun `Slett soknad sletter vedlegg og fil`() {
-        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID()))
-        val vedlegg = vedleggRepository.save(Vedlegg(soknadId = soknad.id))
+        val soknad = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
+        val vedlegg = vedleggRepository.save(opprettVedlegg(soknadId = soknad.id))
 
         filRepository.save(Fil(vedleggId = vedlegg.id))
         assertThat(filRepository.findAll()).size().isEqualTo(1)
@@ -110,6 +112,14 @@ class VedleggRepositoryTest : RepositoryTest() {
         assertThat(vedleggRepository.findAll()).isEmpty()
     }
 
-    fun opprettVedlegg(soknadId: UUID) = vedleggRepository.save(Vedlegg(soknadId = soknadId))
+    fun opprettVedlegg(soknadId: UUID): Vedlegg = vedleggRepository.save(
+        Vedlegg(
+            soknadId = soknadId,
+            status = "kreves",
+            vedleggType = VedleggType.BARNEBIDRAG,
+            hendelseType = VedleggHendelseType.BRUKER,
+            hendelseReferanse = UUID.randomUUID().toString()
+        )
+    )
     fun opprettFil(vedleggId: Long) = filRepository.save(Fil(vedleggId = vedleggId))
 }

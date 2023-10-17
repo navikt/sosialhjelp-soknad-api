@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.integrationtest
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.BosituasjonDTO
+import no.nav.sosialhjelp.soknad.model.BosituasjonDto
 import no.nav.sosialhjelp.soknad.model.Botype
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -24,16 +24,16 @@ class BosituasjonIT: SoknadApiIntergrationTest() {
     fun `Legg til ny Bosituasjon`() {
         val soknadId = startSoknad()
 
-        val botypeString = "EIER"
+        val botype = Botype.EIER
         val antallPersoner = 4
 
         val response = doUpdate(
-            soknadId, botypeString, antallPersoner
+            soknadId, botype, antallPersoner
         )
         assertThat(response.statusCode.value()).isEqualTo(204)
 
         bosituasjonRepository.findById(soknadId).getOrNull()?.let {
-            assertThat(it.botype?.name).isEqualTo(botypeString)
+            assertThat(it.botype).isEqualTo(botype)
             assertThat(it.antallPersoner).isEqualTo(antallPersoner)
         } ?: throw IkkeFunnetException("Bosituasjon finnes ikke")
     }
@@ -44,14 +44,14 @@ class BosituasjonIT: SoknadApiIntergrationTest() {
         val bosituasjon = Bosituasjon(soknadId, Botype.EIER, 8)
         bosituasjonRepository.save(bosituasjon)
 
-        doUpdate(soknadId, Botype.FAMILIE.name, 5)
+        doUpdate(soknadId, Botype.FAMILIE, 5)
 
         val response = doGet(soknadId)
         assertThat(response.statusCode.value()).isEqualTo(200)
 
-        val bosituasjonDTO = response.body!!
-        assertThat(bosituasjonDTO.botype).isEqualTo(Botype.FAMILIE.name)
-        assertThat(bosituasjonDTO.antallPersoner).isEqualTo(5)
+        val bosituasjonDto = response.body!!
+        assertThat(bosituasjonDto.botype).isEqualTo(Botype.FAMILIE.name)
+        assertThat(bosituasjonDto.antallPersoner).isEqualTo(5)
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadId.toString(), eier())
         assertThat(soknadUnderArbeid.behandlingsId).isEqualTo(soknadId.toString())
@@ -74,22 +74,22 @@ class BosituasjonIT: SoknadApiIntergrationTest() {
         soknadUuid
     }
 
-    private fun doUpdate(soknadId: UUID, botype: String, antallPersoner: Int): ResponseEntity<BosituasjonDTO> {
+    private fun doUpdate(soknadId: UUID, botype: Botype, antallPersoner: Int): ResponseEntity<BosituasjonDto> {
         return restTemplate.exchange(
             "/soknad/$soknadId/bosituasjon",
             HttpMethod.PUT,
-            HttpEntity(BosituasjonDTO(botype, antallPersoner)),
-            BosituasjonDTO::class.java
+            HttpEntity(BosituasjonDto(botype, antallPersoner)),
+            BosituasjonDto::class.java
         )
     }
 
-    private fun doGet(soknadId: UUID): ResponseEntity<BosituasjonDTO> =
-        restTemplate.getForEntity("/soknad/$soknadId/bosituasjon", BosituasjonDTO::class.java)
+    private fun doGet(soknadId: UUID): ResponseEntity<BosituasjonDto> =
+        restTemplate.getForEntity("/soknad/$soknadId/bosituasjon", BosituasjonDto::class.java)
 
 //    fun putBosituasjon(botype: String, antallPersoner: Int) {
 //        restTemplate.put(
 //            "/soknad/{soknadId}/bosituasjon",
-//            BosituasjonDTO(botype, antallPersoner),
+//            BosituasjonDto(botype, antallPersoner),
 //            mapOf("soknadId" to soknadId)
 //        )
 //    }

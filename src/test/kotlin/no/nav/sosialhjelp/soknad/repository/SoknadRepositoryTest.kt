@@ -14,8 +14,8 @@ class SoknadRepositoryTest : RepositoryTest() {
         val soknad = opprettSoknad()
         assertThat(soknadRepository.findAll().size).isEqualTo(1)
 
-        val lagretSoknad = soknadRepository.findById(soknad.id).get()
-        assertThat(lagretSoknad.id).isEqualTo(soknad.id)
+        val lagretSoknad = soknadRepository.findById(soknad.soknadId).get()
+        assertThat(lagretSoknad.soknadId).isEqualTo(soknad.soknadId)
     }
 
     @Test
@@ -29,7 +29,7 @@ class SoknadRepositoryTest : RepositoryTest() {
         soknadRepository.save(soknad)
         assertThat(soknadRepository.findAll().size).isEqualTo(1)
 
-        val lagretSoknad = soknadRepository.findById(soknad.id).get()
+        val lagretSoknad = soknadRepository.findById(soknad.soknadId).get()
         assertThat(lagretSoknad.innsendingstidspunkt).isEqualTo(now)
     }
 

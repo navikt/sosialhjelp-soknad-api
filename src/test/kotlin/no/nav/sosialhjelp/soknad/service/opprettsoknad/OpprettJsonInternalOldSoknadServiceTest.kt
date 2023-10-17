@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.model.Bosituasjon
 import no.nav.sosialhjelp.soknad.model.Botype
 import no.nav.sosialhjelp.soknad.model.Soknad
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -88,6 +89,7 @@ class OpprettJsonInternalOldSoknadServiceTest {
         soknadRepository.save(
             Soknad(
                 id = SOKNAD_ID,
+                eier = RepositoryTest.EIER,
                 hvorforSoke = "Jeg må",
                 hvaSokesOm = "Penger!"
             )

@@ -18,14 +18,6 @@ object JsonInternalSoknadMappers {
             .withHvorforSoke(soknad.hvorforSoke)
             .withHvaSokesOm(soknad.hvaSokesOm)
 
-        with (this.soknad.data.arbeid) {
-            if (kommentarTilArbeidsforhold == null) {
-                withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold())
-            }
-            kommentarTilArbeidsforhold
-                .withVerdi(soknad.kommentarArbeid)
-        }
-
         this.soknad.withInnsendingstidspunkt(
             soknad.innsendingstidspunkt?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) ?:
             SoknadUnderArbeidService.nowWithForcedNanoseconds()

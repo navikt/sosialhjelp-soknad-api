@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.service.opprettsoknad
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
-import no.nav.sosialhjelp.soknad.repository.PartOfSoknad
+import no.nav.sosialhjelp.soknad.repository.DelAvSoknad
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.service.opprettsoknad.JsonInternalSoknadMappers.map
 import org.springframework.context.ApplicationContext
@@ -25,7 +25,7 @@ class JsonInternalSoknadMappingManager(
     }
 
     // Henter ut domeneobjekt for SoknadId fra Repository
-    private fun <Entity: PartOfSoknad, Repo: ListCrudRepository<Entity, UUID>>getDomainObject(repositoryClazz: KClass<Repo>): Entity {
+    private fun <Entity: DelAvSoknad, Repo: ListCrudRepository<Entity, UUID>>getDomainObject(repositoryClazz: KClass<Repo>): Entity {
         val repository = ctx.getBean(repositoryClazz.java)
         return repository.findById(soknadId).get()
     }

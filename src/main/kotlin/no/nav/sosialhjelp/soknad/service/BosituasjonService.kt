@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.service
 
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.BosituasjonDTO
+import no.nav.sosialhjelp.soknad.model.BosituasjonDto
 import no.nav.sosialhjelp.soknad.model.Botype
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
 import org.springframework.stereotype.Service
@@ -10,25 +10,27 @@ import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 @Service
-class BosituasjonService (private val bosituasjonRepository: BosituasjonRepository) {
+class BosituasjonService (
+    private val bosituasjonRepository: BosituasjonRepository
+) {
     @Transactional(readOnly = true)
-    fun hentBosituasjon(soknadId: UUID): BosituasjonDTO? {
+    fun hentBosituasjon(soknadId: UUID): BosituasjonDto? {
         // TODO skal man alltid få svar, eller exception/null hvis ikke finnes?
         return bosituasjonRepository.findById(soknadId).getOrNull()?.let {
-            BosituasjonDTO(
-                botype = it.botype?.name,
+            BosituasjonDto(
+                botype = it.botype,
                 antallPersoner = it.antallPersoner
             )
         }
     }
 
     @Transactional
-    fun oppdaterBosituasjon(soknadId: UUID, dto: BosituasjonDTO) {
+    fun oppdaterBosituasjon(soknadId: UUID, bosituasjonDto: BosituasjonDto) {
         bosituasjonRepository.save(
             Bosituasjon(
                 soknadId = soknadId,
-                botype = Botype.fromValue(dto.botype),
-                antallPersoner = dto.antallPersoner
+                botype = Botype.fromValue(bosituasjonDto.botype?.name),
+                antallPersoner = bosituasjonDto.antallPersoner
             )
         )
     }
