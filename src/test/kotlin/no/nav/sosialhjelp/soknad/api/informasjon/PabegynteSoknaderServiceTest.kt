@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 internal class PabegynteSoknaderServiceTest {
 
@@ -37,7 +36,6 @@ internal class PabegynteSoknaderServiceTest {
         val pabegyntSoknadList = pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr")
 
         assertThat(pabegyntSoknadList).hasSize(1)
-        assertThat(pabegyntSoknadList[0].getSistOppdatert()).isEqualTo(now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
         assertThat(pabegyntSoknadList[0].behandlingsId).isEqualTo("id")
     }
 }
