@@ -9,15 +9,11 @@ class PabegynteSoknaderService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
 
-    fun hentPabegynteSoknaderForBruker(fnr: String): List<PabegyntSoknad> {
-        val soknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr)
-
-        return soknader
-            .map {
-                PabegyntSoknad(
-                    it.sistEndretDato,
-                    it.behandlingsId
-                )
-            }
-    }
+    fun hentPabegynteSoknaderForBruker(fnr: String): List<PabegyntSoknad> = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr)
+        .map {
+            PabegyntSoknad(
+                it.sistEndretDato,
+                it.behandlingsId
+            )
+        }
 }
