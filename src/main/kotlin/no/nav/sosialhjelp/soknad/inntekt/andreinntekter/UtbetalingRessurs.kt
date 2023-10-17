@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -73,39 +74,34 @@ class UtbetalingRessurs(
             utbetalingerFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("inntekt.inntekter")
         )
-        setUtbetalinger(opplysninger, utbetalingerFrontend)
+        setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun setUtbetalinger(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
-        val utbetalinger = opplysninger.utbetaling
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE])
+    private fun setUtbetalinger(utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>, utbetalingerFrontend: UtbetalingerFrontend) {
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_UTBYTTE,
-            tittel,
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE]),
             utbetalingerFrontend.utbytte
         )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_SALG])
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_SALG,
-            tittel,
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_SALG]),
             utbetalingerFrontend.salg
         )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING])
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_FORSIKRING,
-            tittel,
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING]),
             utbetalingerFrontend.forsikring
         )
-        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet")
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_ANNET,
-            tittel,
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_ANNET]),
             utbetalingerFrontend.annet
         )
     }

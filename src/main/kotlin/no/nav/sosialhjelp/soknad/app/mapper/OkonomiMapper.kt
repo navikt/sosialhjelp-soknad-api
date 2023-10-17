@@ -11,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 
 object OkonomiMapper {
 
-    fun setBekreftelse(opplysninger: JsonOkonomiopplysninger, type: String, verdi: Boolean?, tittel: String?) {
+    fun setBekreftelse(opplysninger: JsonOkonomiopplysninger, type: String, verdi: Boolean?, tittel: String) {
         opplysninger.bekreftelse = opplysninger.bekreftelse ?: ArrayList()
 
         opplysninger.bekreftelse.firstOrNull { it.type == type }?.apply {
