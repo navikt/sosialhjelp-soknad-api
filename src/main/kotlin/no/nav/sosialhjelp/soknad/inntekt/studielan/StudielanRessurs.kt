@@ -63,7 +63,6 @@ class StudielanRessurs(
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
         if (opplysninger.bekreftelse == null) {
-            opplysninger.bekreftelse = ArrayList()
         }
         OkonomiMapper.setBekreftelse(
             opplysninger,

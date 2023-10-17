@@ -70,9 +70,7 @@ class FormueRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        if (okonomi.opplysninger.bekreftelse == null) {
-            okonomi.opplysninger.bekreftelse = ArrayList()
-        }
+
         val hasAnyFormueType = formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
             formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
         setBekreftelse(

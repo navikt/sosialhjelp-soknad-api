@@ -66,9 +66,7 @@ class UtbetalingRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        if (opplysninger.bekreftelse == null) {
-            opplysninger.bekreftelse = ArrayList()
-        }
+
         setBekreftelse(
             opplysninger,
             BEKREFTELSE_UTBETALING,
