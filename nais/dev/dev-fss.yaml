@@ -109,7 +109,7 @@ spec:
     - name: KONTOREGISTER_API_AUDIENCE
       value: "dev-gcp:okonomi:sokos-kontoregister-person"
     - name: KONTOREGISTER_API_BASEURL
-      value: "https://sokos-kontoregister-person.dev.intern.nav.no/"
+      value: "https://sokos-kontoregister-person.intern.dev.nav.no/"
     - name: PDL_API_URL
       value: "https://pdl-api.dev.intern.nav.no/graphql"
     - name: PDL_API_AUDIENCE
