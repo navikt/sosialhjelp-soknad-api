@@ -80,30 +80,19 @@ class UtbetalingRessurs(
     }
 
     private fun setUtbetalinger(utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>, utbetalingerFrontend: UtbetalingerFrontend) {
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_UTBYTTE,
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE]),
-            utbetalingerFrontend.utbytte
-        )
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_SALG,
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_SALG]),
-            utbetalingerFrontend.salg
-        )
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_FORSIKRING,
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING]),
-            utbetalingerFrontend.forsikring
-        )
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_ANNET,
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_ANNET]),
-            utbetalingerFrontend.annet
-        )
+        listOf(
+            UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
+            UTBETALING_SALG to utbetalingerFrontend.salg,
+            UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
+            UTBETALING_ANNET to utbetalingerFrontend.annet
+        ).map { (utbetalingJsonType, isChecked) ->
+            addUtbetalingIfCheckedElseDeleteInOpplysninger(
+                utbetalinger,
+                utbetalingJsonType,
+                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
+                isChecked
+            )
+        }
     }
 
     private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
