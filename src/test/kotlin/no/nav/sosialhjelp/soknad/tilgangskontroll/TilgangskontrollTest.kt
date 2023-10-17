@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
@@ -63,7 +62,7 @@ internal class TilgangskontrollTest {
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
-        every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
+        every { personService.harAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
@@ -120,7 +119,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
         every { soknadMetadataRepository.hent("123") } returns metadata
-        every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
+        every { personService.harAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123") }
@@ -142,17 +141,9 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse StrengtFortrolig`() {
+    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        every { personService.hentAdressebeskyttelse(userId) } returns Gradering.STRENGT_FORTROLIG
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }
-    }
-
-    @Test
-    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressbeskyttelse Fortrolig`() {
-        val userId = SubjectHandlerUtils.getUserIdFromToken()
-        every { personService.hentAdressebeskyttelse(userId) } returns Gradering.FORTROLIG
+        every { personService.harAdressebeskyttelse(userId) } returns true
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }
     }

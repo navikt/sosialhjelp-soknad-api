@@ -97,7 +97,7 @@ spec:
     - name: KRR_SCOPE
       value: "dev-gcp.team-rocket.digdir-krr-proxy"
     - name: KRR_URL
-      value: "https://digdir-krr-proxy.dev.intern.nav.no"
+      value: "https://digdir-krr-proxy.intern.dev.nav.no"
     - name: LOGINSERVICE_URL
       value: "https://login.ekstern.dev.nav.no/oauth2/login"
     - name: NORG_URL
@@ -109,7 +109,7 @@ spec:
     - name: KONTOREGISTER_API_AUDIENCE
       value: "dev-gcp:okonomi:sokos-kontoregister-person"
     - name: KONTOREGISTER_API_BASEURL
-      value: "https://sokos-kontoregister-person.dev.intern.nav.no/"
+      value: "https://sokos-kontoregister-person.intern.dev.nav.no/"
     - name: PDL_API_URL
       value: "https://pdl-api.dev.intern.nav.no/graphql"
     - name: PDL_API_AUDIENCE

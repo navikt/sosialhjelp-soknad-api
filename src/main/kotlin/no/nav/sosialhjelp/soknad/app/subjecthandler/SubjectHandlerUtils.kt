@@ -9,17 +9,9 @@ object SubjectHandlerUtils {
     private val log by logger()
     private var subjectHandlerService: SubjectHandler = SubjectHandlerImpl(SpringTokenValidationContextHolder())
 
-    fun getUserIdFromToken(): String {
-        return subjectHandlerService.getUserIdFromToken()
-    }
-
-    fun getConsumerId(): String {
-        return subjectHandlerService.getConsumerId()
-    }
-
-    fun getToken(): String {
-        return subjectHandlerService.getToken()
-    }
+    fun getUserIdFromToken(): String = subjectHandlerService.getUserIdFromToken()
+    fun getConsumerId(): String = subjectHandlerService.getConsumerId()
+    fun getToken(): String = subjectHandlerService.getToken()
 
     fun setNewSubjectHandlerImpl(subjectHandlerImpl: SubjectHandler) {
         if (!MiljoUtils.isNonProduction()) {
