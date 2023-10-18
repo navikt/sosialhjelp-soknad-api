@@ -71,9 +71,7 @@ class VerdiRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        if (okonomi.opplysninger.bekreftelse == null) {
-            okonomi.opplysninger.bekreftelse = ArrayList()
-        }
+
         setBekreftelse(
             okonomi.opplysninger,
             BEKREFTELSE_VERDI,
