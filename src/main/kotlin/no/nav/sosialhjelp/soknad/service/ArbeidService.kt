@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.service
 
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sosialhjelp.soknad.model.Arbeid
 import no.nav.sosialhjelp.soknad.repository.ArbeidRepository
 import org.springframework.data.repository.findByIdOrNull

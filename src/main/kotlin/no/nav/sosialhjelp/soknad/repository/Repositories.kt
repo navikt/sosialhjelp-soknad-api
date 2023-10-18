@@ -1,12 +1,11 @@
 package no.nav.sosialhjelp.soknad.repository
 
+import no.nav.sosialhjelp.soknad.model.AdresseForSoknad
 import no.nav.sosialhjelp.soknad.model.Arbeid
-import no.nav.sosialhjelp.soknad.model.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.model.Bosituasjon
 import no.nav.sosialhjelp.soknad.model.Fil
 import no.nav.sosialhjelp.soknad.model.Soknad
 import no.nav.sosialhjelp.soknad.model.Vedlegg
-import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.data.repository.NoRepositoryBean
@@ -21,6 +20,9 @@ interface DelAvSoknadRepository<T: DelAvSoknad> : ListCrudRepository<T, UUID> {
     @Query("SELECT * FROM soknad where id = :soknadId")
     fun findSoknad(soknadId: UUID): Soknad
 }
+
+//@Repository
+//interface AdresseRepository: UpsertRepository<AdresseForSoknad>, ListCrudRepository<AdresseForSoknad, UUID>
 
 @Repository
 interface BosituasjonRepository : UpsertRepository<Bosituasjon>, DelAvSoknadRepository<Bosituasjon>
@@ -37,22 +39,6 @@ interface FilRepository : ListCrudRepository<Fil, Long> {
     fun findAllByVedleggId(vedleggId: Long): List<Fil>
 }
 
-interface UpsertRepository<T: DelAvSoknad> {
-    fun <S : T> save(s: S): S
-}
-class UpsertRepositoryImpl<T: DelAvSoknad>(
-    private val jdbcAggregateTemplate: JdbcAggregateTemplate
-): UpsertRepository<T> {
-    // samme signatur som default-implementasjonen for å erstatte denne med en "upsert"
-    override fun <S : T> save(s: S): S {
-        return if (jdbcAggregateTemplate.existsById(s.soknadId, s.javaClass)) {
-            jdbcAggregateTemplate.update(s)
-        } else {
-            jdbcAggregateTemplate.insert(s)
-        }
-    }
-}
-
 interface DelAvSoknad {
-    val soknadId: UUID
+    val id: UUID
 }

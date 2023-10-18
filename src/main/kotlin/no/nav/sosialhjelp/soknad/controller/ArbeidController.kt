@@ -45,7 +45,7 @@ fun Arbeid.toDto(): ArbeidDto = ArbeidDto (
     kommentarArbeid = kommentarArbeid,
     arbeidsforhold = arbeidsforhold.map {
         it.toDto()
-    }
+    }.toSet()
 )
 
 fun Arbeidsforhold.toDto(): ArbeidsforholdDto {

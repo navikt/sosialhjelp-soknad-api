@@ -20,14 +20,14 @@ data class BosituasjonDto (
 )
 data class ArbeidDto (
     val kommentarArbeid: String?,
-    val arbeidsforhold: List<ArbeidsforholdDto>?
+    val arbeidsforhold: Set<ArbeidsforholdDto>?
 )
 
 data class ArbeidsforholdDto (
     val arbeidsgivernavn: String,
-    val orgnummer: String?,
-    val fraOgMed: String?,
-    val tilOgMed: String?,
-    val stillingsprosent: Int?,
-    val stillingstype: Stillingstype?
+    val orgnummer: String? = null,
+    val fraOgMed: String? = null,
+    val tilOgMed: String? = null,
+    val stillingsprosent: Int? = null,
+    val stillingstype: Stillingstype? = null
 )

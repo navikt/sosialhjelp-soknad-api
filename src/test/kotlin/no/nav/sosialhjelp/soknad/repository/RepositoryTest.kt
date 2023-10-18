@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import no.nav.sosialhjelp.soknad.model.Soknad
-import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -34,10 +33,6 @@ abstract class RepositoryTest {
         const val SOKNADID3 = 3L
         const val FILNAVN = "dokumentasjon.pdf"
     }
-
-//    abstract fun saveEntity()
-//    abstract fun updateEntity()
-//    abstract fun deleteEntity()
 
     fun opprettSoknad() = soknadRepository.save(Soknad(id = UUID.randomUUID(), eier = EIER))
 }

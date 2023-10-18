@@ -2,33 +2,37 @@ package no.nav.sosialhjelp.soknad.model
 
 import no.nav.sosialhjelp.soknad.repository.DelAvSoknad
 import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDateTime
 import java.util.*
 
 data class Soknad (
-    @Id val id: UUID = UUID.randomUUID(),
+    @Id override val id: UUID = UUID.randomUUID(),
     val eier: String,
+    var adresseValg: AdresseValg? = null,
     var innsendingstidspunkt: LocalDateTime? = null,
     var hvorforSoke: String? = null,
     var hvaSokesOm: String? = null,
-): DelAvSoknad {
-    override val soknadId: UUID get() = id
-}
-
-data class Bosituasjon (
-    @Id override val soknadId: UUID,
-    var botype: Botype?,
-    var antallPersoner: Int
 ): DelAvSoknad
 
+data class Bosituasjon (
+    @Id val soknadId: UUID,
+    var botype: Botype?,
+    var antallPersoner: Int
+): DelAvSoknad {
+    override val id: UUID
+        get() = soknadId
+}
+
 data class Arbeid (
-    @Id override val soknadId: UUID,
+    @Id val soknadId: UUID,
     var kommentarArbeid: String? = null,
     @MappedCollection(idColumn = "SOKNAD_ID")
     val arbeidsforhold: Set<Arbeidsforhold> = emptySet()
-): DelAvSoknad
+): DelAvSoknad {
+    override val id: UUID
+        get() = soknadId
+}
 
 data class Arbeidsforhold (
 //    @Column(value = "SOKNAD_ID")

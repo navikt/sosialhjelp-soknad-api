@@ -2,23 +2,18 @@ package no.nav.sosialhjelp.soknad.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.app.config.ApiConfig
 import no.nav.sosialhjelp.soknad.model.BosituasjonDto
 import no.nav.sosialhjelp.soknad.model.Botype
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.util.*
 
 @WebMvcTest(controllers = [BosituasjonController::class])
-class BosituasjonControllerTest: MockMvcTest() {
+class BosituasjonControllerTest: SoknadMockMvcTest() {
 
     @MockkBean
     private lateinit var bosituasjonService: BosituasjonService

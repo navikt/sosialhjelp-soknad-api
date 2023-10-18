@@ -18,7 +18,7 @@ class SoknadService(
     fun opprettNySoknad(): NySoknadDto {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val nySoknad = soknadRepository.save(Soknad(eier = eier))
-        return NySoknadDto(soknadId = nySoknad.soknadId)
+        return NySoknadDto(soknadId = nySoknad.id)
     }
 
     @Transactional
@@ -32,7 +32,7 @@ class SoknadService(
     fun hentSoknad(soknadId: UUID): SoknadDto =
         soknadRepository.findById(soknadId).get().let {
             SoknadDto(
-                soknadId = it.soknadId,
+                soknadId = it.id,
                 innsendingsTidspunkt = it.innsendingstidspunkt
             )
         }

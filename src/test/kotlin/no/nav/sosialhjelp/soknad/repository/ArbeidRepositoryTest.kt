@@ -42,7 +42,7 @@ class ArbeidRepositoryTest: RepositoryTest() {
         arbeid.kommentarArbeid = "kommentar"
         arbeidRepository.save(arbeid)
 
-        val updatedArbeid = arbeidRepository.findById(arbeid.soknadId).get()
+        val updatedArbeid = arbeidRepository.findById(arbeid.id).get()
         assertThat(updatedArbeid.kommentarArbeid).isEqualTo("kommentar")
     }
 
@@ -52,7 +52,7 @@ class ArbeidRepositoryTest: RepositoryTest() {
         val arbeid = opprettArbeid(soknad.id)
 
         arbeidRepository.delete(arbeid)
-        assertThat(arbeidRepository.existsById(arbeid.soknadId)).isFalse()
+        assertThat(arbeidRepository.existsById(arbeid.id)).isFalse()
     }
 
     @Test
@@ -61,7 +61,7 @@ class ArbeidRepositoryTest: RepositoryTest() {
         val arbeid = opprettArbeid(soknad.id)
 
         soknadRepository.delete(soknad)
-        assertThat(arbeidRepository.existsById(arbeid.soknadId)).isFalse()
+        assertThat(arbeidRepository.existsById(arbeid.id)).isFalse()
 
         val numberOfRows = jdbcTemplate
             .queryForObject("select count(*) from arbeidsforhold", Int::class.java) as Int
