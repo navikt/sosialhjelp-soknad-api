@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.model.AdresseForSoknad
-import no.nav.sosialhjelp.soknad.model.AdresseForSoknadId
-import no.nav.sosialhjelp.soknad.model.AdresseType
-import no.nav.sosialhjelp.soknad.model.AdresseValg
+import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknad
+import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknadId
+import no.nav.sosialhjelp.soknad.model.personalia.AdresseType
+import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
 import org.springframework.data.repository.Repository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -24,8 +24,8 @@ interface AdresseForSoknadRepository {
     fun existsById(id: AdresseForSoknadId): Boolean
 }
 
-class AdresseRepositoryImpl (
-    val jdbcTemplate: JdbcTemplate
+class AdresseForSoknadRepositoryImpl (
+    val jdbcTemplate: JdbcTemplate,
 ): AdresseForSoknadRepository {
 
     private val mapper = jacksonObjectMapper()

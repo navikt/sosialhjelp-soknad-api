@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-internal class PersonServiceTest {
+internal class PersonForSoknadServiceTest {
 
     companion object {
         private const val BARN_IDENT = "11111111111"

@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.model.Arbeid
-import no.nav.sosialhjelp.soknad.model.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.model.Stillingstype
+import no.nav.sosialhjelp.soknad.model.arbeid.Arbeid
+import no.nav.sosialhjelp.soknad.model.arbeid.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.model.soknad.Stillingstype
 import no.nav.sosialhjelp.soknad.service.ArbeidService
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest

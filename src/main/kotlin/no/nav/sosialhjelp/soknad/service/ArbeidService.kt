@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.service
 
-import no.nav.sosialhjelp.soknad.model.Arbeid
+import no.nav.sosialhjelp.soknad.model.arbeid.Arbeid
 import no.nav.sosialhjelp.soknad.repository.ArbeidRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

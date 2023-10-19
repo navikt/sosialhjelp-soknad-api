@@ -1,14 +1,15 @@
 package no.nav.sosialhjelp.soknad.repository
 
+import no.nav.sosialhjelp.soknad.model.soknad.KeyErSoknadId
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 
 
 // Samme signatur som CrudRepository slik at denne overrides når et
 // repository-interface implementerer begge
-interface UpsertRepository<T: DelAvSoknad> {
+interface UpsertRepository<T: KeyErSoknadId> {
     fun <S : T> save(s: S): S
 }
-class UpsertRepositoryImpl<T: DelAvSoknad>(
+class UpsertRepositoryImpl<T: KeyErSoknadId>(
     private val jdbcAggregateTemplate: JdbcAggregateTemplate
 ): UpsertRepository<T> {
     override fun <S : T> save(s: S): S {

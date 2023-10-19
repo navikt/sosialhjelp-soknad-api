@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.service
 
-import no.nav.sosialhjelp.soknad.model.Bosituasjon
+import no.nav.sosialhjelp.soknad.model.soknad.Bosituasjon
 import no.nav.sosialhjelp.soknad.model.BosituasjonDto
-import no.nav.sosialhjelp.soknad.model.Botype
+import no.nav.sosialhjelp.soknad.model.soknad.Botype
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

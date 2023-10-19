@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.model
+package no.nav.sosialhjelp.soknad.model.soknad
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 

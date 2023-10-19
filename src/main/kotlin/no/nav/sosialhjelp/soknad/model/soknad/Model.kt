@@ -1,10 +1,14 @@
-package no.nav.sosialhjelp.soknad.model
+package no.nav.sosialhjelp.soknad.model.soknad
 
-import no.nav.sosialhjelp.soknad.repository.DelAvSoknad
+import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
 import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDateTime
 import java.util.*
+
+
+interface KeyErSoknadId {
+    val id: UUID
+}
 
 data class Soknad (
     @Id override val id: UUID = UUID.randomUUID(),
@@ -13,37 +17,25 @@ data class Soknad (
     var innsendingstidspunkt: LocalDateTime? = null,
     var hvorforSoke: String? = null,
     var hvaSokesOm: String? = null,
-): DelAvSoknad
+): KeyErSoknadId
 
 data class Bosituasjon (
     @Id val soknadId: UUID,
     var botype: Botype?,
     var antallPersoner: Int
-): DelAvSoknad {
+): KeyErSoknadId {
     override val id: UUID
         get() = soknadId
 }
 
-data class Arbeid (
+data class Utdanning (
     @Id val soknadId: UUID,
-    var kommentarArbeid: String? = null,
-    @MappedCollection(idColumn = "SOKNAD_ID")
-    val arbeidsforhold: Set<Arbeidsforhold> = emptySet()
-): DelAvSoknad {
+    val erStudent: Boolean,
+    val studentGrad: String
+): KeyErSoknadId {
     override val id: UUID
         get() = soknadId
 }
-
-data class Arbeidsforhold (
-//    @Column(value = "SOKNAD_ID")
-    val soknadId: UUID,
-    val orgnummer: String? = null,
-    val arbeidsgivernavn: String,
-    val fraOgMed: String? = null,
-    val tilOgMed: String? = null,
-    val stillingsprosent: Int? = null,
-    val stillingstype: Stillingstype
-)
 
 data class Vedlegg (
     @Id val id: Long = 0,

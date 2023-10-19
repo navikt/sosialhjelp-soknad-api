@@ -1,23 +1,31 @@
-package no.nav.sosialhjelp.soknad.model
+package no.nav.sosialhjelp.soknad.model.personalia
 
-import org.springframework.data.annotation.Id
+import java.util.*
 
-data class PersonIdentifikator (
-    val verdi: String
+data class PersonForSoknadId (
+    val personId: String,
+    val soknadId: UUID,
 )
 
-data class Person (
-    @Id val id: PersonIdentifikator,
-    val fornavn: String,
-    val mellomnavn: String,
-    val etternavn: String,
-    val statsborgerskap: String,
-    val nordiskBorger: Boolean,
+data class PersonForSoknad (
+    val id: PersonForSoknadId,
+    val fornavn: String?,
+    val mellomnavn: String? = null,
+    val etternavn: String?,
+    val statsborgerskap: String? = null,
+    val nordiskBorger: Boolean? = null,
+    val fodselsdato: String? = null
 )
 
-enum class AdresseValg {
-    FOLKEREGISTRERT, OPPHOLD, SOKNAD
-}
+data class AdresseForSoknadId (
+    val soknadId: UUID,
+    val typeAdressevalg: AdresseValg
+)
+data class AdresseForSoknad (
+    val id: AdresseForSoknadId,
+    var adresseType: AdresseType,
+    var adresse: AdresseObject
+)
 
 interface AdresseObject
 data class MatrikkelAdresseObject (

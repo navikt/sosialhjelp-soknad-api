@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.service
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.model.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.model.NySoknadDto
-import no.nav.sosialhjelp.soknad.model.Soknad
+import no.nav.sosialhjelp.soknad.model.soknad.Soknad
 import no.nav.sosialhjelp.soknad.model.SoknadDto
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import org.springframework.stereotype.Service

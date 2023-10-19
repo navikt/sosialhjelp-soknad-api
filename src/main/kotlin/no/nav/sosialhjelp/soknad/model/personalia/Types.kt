@@ -1,12 +1,16 @@
-package no.nav.sosialhjelp.soknad.model
+package no.nav.sosialhjelp.soknad.model.personalia
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+
+internal val mapper = jacksonObjectMapper()
+
+enum class AdresseValg {
+    FOLKEREGISTRERT, OPPHOLD, SOKNAD
+}
 
 interface AdresseTypeMapper {
     fun mapJsonToAdresse(adresseJson: String): AdresseObject
 }
-
-internal val mapper = jacksonObjectMapper()
 
 enum class AdresseType: AdresseTypeMapper {
 

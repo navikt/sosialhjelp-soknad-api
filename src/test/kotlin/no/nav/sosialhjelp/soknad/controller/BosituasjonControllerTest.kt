@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.controller
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.model.BosituasjonDto
-import no.nav.sosialhjelp.soknad.model.Botype
+import no.nav.sosialhjelp.soknad.model.soknad.Botype
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest

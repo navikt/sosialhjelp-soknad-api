@@ -5,8 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.fullfort.SoknadToJsonMapper
-import no.nav.sosialhjelp.soknad.model.Fil
-import no.nav.sosialhjelp.soknad.model.Vedlegg
+import no.nav.sosialhjelp.soknad.model.soknad.Fil
+import no.nav.sosialhjelp.soknad.model.soknad.Vedlegg
 import no.nav.sosialhjelp.soknad.repository.FilRepository
 import no.nav.sosialhjelp.soknad.repository.VedleggRepository
 import org.springframework.stereotype.Component

@@ -5,7 +5,7 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.model.NySoknadDto
-import no.nav.sosialhjelp.soknad.model.Soknad
+import no.nav.sosialhjelp.soknad.model.soknad.Soknad
 import no.nav.sosialhjelp.soknad.model.SoknadDto
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.service.SoknadService
