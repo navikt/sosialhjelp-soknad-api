@@ -63,7 +63,7 @@ internal class ArbeidRessursTest {
         val arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold
         assertThat(arbeidsforholdFrontends).hasSize(2)
 
-        val arbeidsforhold1 = arbeidsforholdFrontends!![0]
+        val arbeidsforhold1 = arbeidsforholdFrontends[0]
         val arbeidsforhold2 = arbeidsforholdFrontends[1]
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold1, ARBEIDSFORHOLD_1)
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold2, ARBEIDSFORHOLD_2)
@@ -103,7 +103,7 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
+        val arbeidFrontend = ArbeidFrontend(emptyList(), KOMMENTAR)
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -138,7 +138,7 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
+        val arbeidFrontend = ArbeidFrontend(emptyList(), KOMMENTAR)
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val captured = slot.captured
@@ -160,7 +160,7 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
+        val arbeidFrontend = ArbeidFrontend(emptyList(), KOMMENTAR)
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -176,7 +176,7 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, "")
+        val arbeidFrontend = ArbeidFrontend(emptyList(), "")
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -197,7 +197,7 @@ internal class ArbeidRessursTest {
     fun putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
-        val arbeidFrontend = ArbeidFrontend(null, "")
+        val arbeidFrontend = ArbeidFrontend(emptyList(), "")
 
         assertThatCode { arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend) }.isInstanceOf(AuthorizationException::class.java)
 
