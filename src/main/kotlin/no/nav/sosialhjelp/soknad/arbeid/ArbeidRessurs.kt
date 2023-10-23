@@ -26,25 +26,25 @@ class ArbeidRessurs(
     @GetMapping
     fun hentArbeid(
         @PathVariable("behandlingsId") behandlingsId: String
-    ): ArbeidFrontend {
+    ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getArbeidFromSoknad(behandlingsId)
     }
 
-    private fun getArbeidFromSoknad(behandlingsId: String): ArbeidFrontend {
+    private fun getArbeidFromSoknad(behandlingsId: String): ArbeidsforholdResponse {
         val intern = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val kommentarTilArbeidsforhold = intern.soknad.data.arbeid.kommentarTilArbeidsforhold?.verdi
         val forhold = intern.soknad.data.arbeid?.forhold?.map { mapToArbeidsforholdFrontend(it) } ?: emptyList()
 
-        return ArbeidFrontend(forhold, kommentarTilArbeidsforhold)
+        return ArbeidsforholdResponse(forhold, kommentarTilArbeidsforhold)
     }
 
     @PutMapping
     fun updateArbeid(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody arbeidFrontend: ArbeidFrontend
-    ): ArbeidFrontend {
+        @RequestBody arbeidFrontend: ArbeidsforholdRequest
+    ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad
@@ -72,8 +72,12 @@ class ArbeidRessurs(
         java.lang.Boolean.FALSE
     )
 
-    data class ArbeidFrontend(
+    data class ArbeidsforholdResponse(
         val arbeidsforhold: List<ArbeidsforholdFrontend>,
+        val kommentarTilArbeidsforhold: String?
+    )
+
+    data class ArbeidsforholdRequest(
         val kommentarTilArbeidsforhold: String?
     )
 
