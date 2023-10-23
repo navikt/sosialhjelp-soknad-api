@@ -1,6 +1,6 @@
-package no.nav.sosialhjelp.soknad.model.soknad
+package no.nav.sosialhjelp.soknad.domene.soknad
 
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseValg
 import org.springframework.data.annotation.Id
 import java.time.LocalDateTime
 import java.util.*

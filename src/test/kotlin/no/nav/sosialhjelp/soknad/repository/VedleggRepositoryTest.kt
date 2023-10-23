@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.soknad.Fil
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
-import no.nav.sosialhjelp.soknad.model.soknad.Vedlegg
-import no.nav.sosialhjelp.soknad.model.soknad.VedleggHendelseType
-import no.nav.sosialhjelp.soknad.model.soknad.VedleggType
+import no.nav.sosialhjelp.soknad.domene.soknad.Fil
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.soknad.Vedlegg
+import no.nav.sosialhjelp.soknad.domene.soknad.VedleggHendelseType
+import no.nav.sosialhjelp.soknad.domene.soknad.VedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

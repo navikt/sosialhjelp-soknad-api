@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.soknad.KeyErSoknadId
+import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 
 

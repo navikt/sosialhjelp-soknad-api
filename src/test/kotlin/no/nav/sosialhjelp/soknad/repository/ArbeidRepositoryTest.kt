@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.arbeid.Arbeid
-import no.nav.sosialhjelp.soknad.model.arbeid.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.model.soknad.Stillingstype
+import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
+import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.domene.soknad.Stillingstype
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

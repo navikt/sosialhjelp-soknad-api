@@ -1,14 +1,14 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknad
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknadId
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseType
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
-import no.nav.sosialhjelp.soknad.model.personalia.GateAdresseObject
-import no.nav.sosialhjelp.soknad.model.personalia.MatrikkelAdresseObject
-import no.nav.sosialhjelp.soknad.model.personalia.PostboksAdresseObject
-import no.nav.sosialhjelp.soknad.model.personalia.UstrukturertAdresseObject
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseForSoknad
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseForSoknadId
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseType
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseValg
+import no.nav.sosialhjelp.soknad.domene.personalia.GateAdresseObject
+import no.nav.sosialhjelp.soknad.domene.personalia.MatrikkelAdresseObject
+import no.nav.sosialhjelp.soknad.domene.personalia.PostboksAdresseObject
+import no.nav.sosialhjelp.soknad.domene.personalia.UstrukturertAdresseObject
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

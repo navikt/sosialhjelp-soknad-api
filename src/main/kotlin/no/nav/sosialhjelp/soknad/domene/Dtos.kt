@@ -1,7 +1,7 @@
-package no.nav.sosialhjelp.soknad.model
+package no.nav.sosialhjelp.soknad.domene
 
-import no.nav.sosialhjelp.soknad.model.soknad.Botype
-import no.nav.sosialhjelp.soknad.model.soknad.Stillingstype
+import no.nav.sosialhjelp.soknad.domene.soknad.Botype
+import no.nav.sosialhjelp.soknad.domene.soknad.Stillingstype
 import java.time.LocalDateTime
 import java.util.*
 

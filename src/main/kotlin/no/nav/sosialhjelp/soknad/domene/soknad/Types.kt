@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.model.soknad
+package no.nav.sosialhjelp.soknad.domene.soknad
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 

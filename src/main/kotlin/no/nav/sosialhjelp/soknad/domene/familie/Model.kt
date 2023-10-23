@@ -1,6 +1,6 @@
-package no.nav.sosialhjelp.soknad.model.familie
+package no.nav.sosialhjelp.soknad.domene.familie
 
-import no.nav.sosialhjelp.soknad.model.soknad.KeyErSoknadId
+import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.MappedCollection

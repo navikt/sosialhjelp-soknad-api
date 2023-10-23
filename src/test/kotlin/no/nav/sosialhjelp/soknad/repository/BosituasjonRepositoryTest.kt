@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.soknad.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.soknad.Botype
+import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
+import no.nav.sosialhjelp.soknad.domene.soknad.Botype
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.controller
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.model.ArbeidDto
-import no.nav.sosialhjelp.soknad.model.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.model.arbeid.Arbeid
-import no.nav.sosialhjelp.soknad.model.arbeid.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.domene.ArbeidDto
+import no.nav.sosialhjelp.soknad.domene.ArbeidsforholdDto
+import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
+import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.service.ArbeidService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping

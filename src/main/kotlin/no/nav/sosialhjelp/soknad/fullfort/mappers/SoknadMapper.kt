@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.fullfort.mappers
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.fullfort.SoknadToJsonMapper
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import org.springframework.stereotype.Component
 import java.util.*

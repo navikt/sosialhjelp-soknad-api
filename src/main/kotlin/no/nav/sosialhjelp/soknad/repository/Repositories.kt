@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.arbeid.Arbeid
-import no.nav.sosialhjelp.soknad.model.familie.Familie
-import no.nav.sosialhjelp.soknad.model.soknad.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.soknad.Fil
-import no.nav.sosialhjelp.soknad.model.soknad.KeyErSoknadId
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
-import no.nav.sosialhjelp.soknad.model.soknad.Vedlegg
+import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
+import no.nav.sosialhjelp.soknad.domene.familie.Familie
+import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
+import no.nav.sosialhjelp.soknad.domene.soknad.Fil
+import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.soknad.Vedlegg
 import org.springframework.data.jdbc.repository.query.Modifying
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.ListCrudRepository

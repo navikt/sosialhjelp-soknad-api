@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.service.opprettsoknad
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.model.soknad.KeyErSoknadId
+import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.service.opprettsoknad.JsonInternalSoknadMappers.map

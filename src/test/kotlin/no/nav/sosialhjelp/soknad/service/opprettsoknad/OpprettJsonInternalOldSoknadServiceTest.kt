@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.service.opprettsoknad
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.OldSoknadService
-import no.nav.sosialhjelp.soknad.model.soknad.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.soknad.Botype
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
+import no.nav.sosialhjelp.soknad.domene.soknad.Botype
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
 import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository

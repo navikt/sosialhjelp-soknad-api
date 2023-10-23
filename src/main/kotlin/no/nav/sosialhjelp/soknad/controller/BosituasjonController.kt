@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.controller
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.model.BosituasjonDto
+import no.nav.sosialhjelp.soknad.domene.BosituasjonDto
 import no.nav.sosialhjelp.soknad.service.BosituasjonService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping

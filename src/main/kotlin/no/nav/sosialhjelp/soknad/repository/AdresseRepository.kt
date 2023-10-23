@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknad
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknadId
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseType
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseForSoknad
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseForSoknadId
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseType
+import no.nav.sosialhjelp.soknad.domene.personalia.AdresseValg
 import org.springframework.data.repository.Repository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper

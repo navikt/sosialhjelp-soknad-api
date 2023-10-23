@@ -23,7 +23,7 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.model.NySoknadDto
+import no.nav.sosialhjelp.soknad.domene.NySoknadDto
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus

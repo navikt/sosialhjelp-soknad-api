@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.service
 
-import no.nav.sosialhjelp.soknad.model.familie.Familie
-import no.nav.sosialhjelp.soknad.model.personalia.PersonForSoknad
+import no.nav.sosialhjelp.soknad.domene.familie.Familie
+import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknad
 import no.nav.sosialhjelp.soknad.repository.FamilieRepository
 import no.nav.sosialhjelp.soknad.repository.PersonRepository
 import org.springframework.stereotype.Service

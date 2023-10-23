@@ -1,12 +1,7 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknad
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseForSoknadId
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseType
-import no.nav.sosialhjelp.soknad.model.personalia.AdresseValg
-import no.nav.sosialhjelp.soknad.model.personalia.PersonForSoknad
-import no.nav.sosialhjelp.soknad.model.personalia.PersonForSoknadId
+import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknad
+import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknadId
 
 import org.springframework.data.repository.Repository
 import org.springframework.jdbc.core.JdbcTemplate
@@ -90,7 +85,6 @@ internal class PersonForSoknadRowMapper: RowMapper<PersonForSoknad> {
             mellomnavn = rs.getString("mellomnavn"),
             etternavn = rs.getString("etternavn"),
             statsborgerskap = rs.getString("statsborgerskap"),
-//            nordiskBorger = rs.getBoolean("nordisk_borger"),
             nordiskBorger = decodeBoolean(rs),
             fodselsdato = rs.getString("fodselsdato"),
         )

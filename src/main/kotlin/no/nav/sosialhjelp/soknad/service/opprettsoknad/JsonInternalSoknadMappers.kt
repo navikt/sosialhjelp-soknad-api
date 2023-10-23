@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.service.opprettsoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.model.soknad.Bosituasjon
-import no.nav.sosialhjelp.soknad.model.soknad.Fil
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
-import no.nav.sosialhjelp.soknad.model.soknad.Vedlegg
+import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
+import no.nav.sosialhjelp.soknad.domene.soknad.Fil
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.soknad.Vedlegg
 import java.time.format.DateTimeFormatter
 
 object JsonInternalSoknadMappers {

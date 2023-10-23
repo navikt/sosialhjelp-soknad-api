@@ -1,14 +1,12 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.personalia.PersonForSoknad
-import no.nav.sosialhjelp.soknad.model.personalia.PersonForSoknadId
-import org.assertj.core.api.Assertions
+import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknad
+import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknadId
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
-import java.util.*
 
 class PersonForSoknadRepositoryTest: RepositoryTest() {
 

@@ -4,9 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.model.NySoknadDto
-import no.nav.sosialhjelp.soknad.model.soknad.Soknad
-import no.nav.sosialhjelp.soknad.model.SoknadDto
+import no.nav.sosialhjelp.soknad.domene.NySoknadDto
+import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
+import no.nav.sosialhjelp.soknad.domene.SoknadDto
 import no.nav.sosialhjelp.soknad.repository.SoknadRepository
 import no.nav.sosialhjelp.soknad.service.SoknadService
 import org.junit.jupiter.api.BeforeEach

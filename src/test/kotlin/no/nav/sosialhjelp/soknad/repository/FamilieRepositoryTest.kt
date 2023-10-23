@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.repository
 
-import no.nav.sosialhjelp.soknad.model.familie.Barn
-import no.nav.sosialhjelp.soknad.model.familie.Barnebidrag
-import no.nav.sosialhjelp.soknad.model.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.model.familie.Familie
-import no.nav.sosialhjelp.soknad.model.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.domene.familie.Barn
+import no.nav.sosialhjelp.soknad.domene.familie.Barnebidrag
+import no.nav.sosialhjelp.soknad.domene.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.domene.familie.Familie
+import no.nav.sosialhjelp.soknad.domene.familie.Sivilstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

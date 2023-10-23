@@ -1,5 +1,6 @@
-package no.nav.sosialhjelp.soknad.model.personalia
+package no.nav.sosialhjelp.soknad.domene.personalia
 
+import org.springframework.data.annotation.Id
 import java.util.*
 
 data class PersonForSoknadId (
@@ -16,6 +17,18 @@ data class PersonForSoknad (
     val nordiskBorger: Boolean? = null,
     val fodselsdato: String? = null
 )
+
+abstract class NummerObject: Nummer  {
+    @Id var soknadId: UUID? = null
+    var nummer: String? = null
+}
+interface Nummer
+interface Telefonnummer: Nummer
+interface Kontonummer: Nummer
+class TelefonnummerBruker:  Telefonnummer, NummerObject()
+class TelefonnummerSystem: Telefonnummer, NummerObject()
+class KontonummerBruker: Kontonummer, NummerObject()
+class KontonummerSystem: Kontonummer, NummerObject()
 
 data class AdresseForSoknadId (
     val soknadId: UUID,

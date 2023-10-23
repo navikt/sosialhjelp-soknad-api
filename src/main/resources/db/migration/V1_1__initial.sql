@@ -189,6 +189,7 @@ ALTER TABLE person_for_soknad
             REFERENCES soknad( id )
             ON DELETE CASCADE;
 
+
 CREATE TABLE familie (
     soknad_id uuid primary key,
     har_forsorgerplikt bool,
