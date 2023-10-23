@@ -52,7 +52,7 @@ class AdresseRessurs(
     fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody adresserFrontend: AdresserFrontendInput
-    ): List<NavEnhetFrontend>? {
+    ): List<NavEnhetFrontend> {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = fetchSoknad(behandlingsId)
         val internalSoknad = internalFraSoknad(soknad)
@@ -60,12 +60,11 @@ class AdresseRessurs(
         internalSoknad.midlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(eier())
         updatePersonalia(internalSoknad.soknad.data.personalia, adresserFrontend.valg, adresserFrontend.soknad)
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad.data.personalia)
+        val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad.data.personalia) ?: return emptyList()
+
         setSoknadMottaker(internalSoknad, navEnhetFrontend)
-
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
-
-        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+        return listOf(navEnhetFrontend)
     }
 
     /**
@@ -84,9 +83,8 @@ class AdresseRessurs(
 
     fun setSoknadMottaker(
         soknadIntern: JsonInternalSoknad,
-        navEnhetFrontend: NavEnhetFrontend?
+        navEnhetFrontend: NavEnhetFrontend
     ) {
-        if (navEnhetFrontend == null) return
         soknadIntern.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
