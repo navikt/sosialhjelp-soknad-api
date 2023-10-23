@@ -122,7 +122,7 @@ internal class StudielanRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val studielanFrontend = StudielanFrontend(false, true)
+        val studielanFrontend = StudielanRessurs.StudielanInputDTO(true)
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -151,7 +151,7 @@ internal class StudielanRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val studielanFrontend = StudielanFrontend(false, false)
+        val studielanFrontend = StudielanRessurs.StudielanInputDTO(false)
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -176,7 +176,7 @@ internal class StudielanRessursTest {
     @Test
     fun putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
-        val studielanFrontend = StudielanFrontend(false, null)
+        val studielanFrontend = StudielanRessurs.StudielanInputDTO(null)
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend) }
         verify(exactly = 0) { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) }

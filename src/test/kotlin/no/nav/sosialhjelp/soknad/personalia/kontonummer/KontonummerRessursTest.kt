@@ -9,6 +9,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import jakarta.validation.Validation
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
@@ -18,7 +19,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs.KontonummerFrontend
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs.KontonummerInputDTO
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -30,9 +31,9 @@ import java.time.LocalDateTime
 internal class KontonummerRessursTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val kontonummerSystemdata: KontonummerSystemdata = mockk()
+    private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val kontonummerRessurs = KontonummerRessurs(tilgangskontroll, soknadUnderArbeidRepository, kontonummerSystemdata)
+    private val kontonummerRessurs = KontonummerRessurs(tilgangskontroll, soknadUnderArbeidRepository, kontonummerService)
 
     @BeforeEach
     fun setUp() {
@@ -40,6 +41,7 @@ internal class KontonummerRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
@@ -58,8 +60,7 @@ internal class KontonummerRessursTest {
         val kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID)
         assertThat(kontonummerFrontend.brukerutfyltVerdi).isNull()
         assertThat(kontonummerFrontend.systemverdi).isEqualTo(KONTONUMMER_SYSTEM)
-        assertThat(kontonummerFrontend.harIkkeKonto).isNull()
-        assertThat(kontonummerFrontend.brukerdefinert).isFalse
+        assertThat(kontonummerFrontend.harIkkeKonto).isFalse()
     }
 
     @Test
@@ -67,13 +68,11 @@ internal class KontonummerRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)
-        every { kontonummerSystemdata.innhentSystemverdiKontonummer(any()) } returns KONTONUMMER_SYSTEM
 
         val kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID)
         assertThat(kontonummerFrontend.brukerutfyltVerdi).isEqualTo(KONTONUMMER_BRUKER)
         assertThat(kontonummerFrontend.systemverdi).isEqualTo(KONTONUMMER_SYSTEM)
-        assertThat(kontonummerFrontend.harIkkeKonto).isNull()
-        assertThat(kontonummerFrontend.brukerdefinert).isTrue
+        assertThat(kontonummerFrontend.harIkkeKonto).isFalse()
     }
 
     @Test
@@ -81,13 +80,20 @@ internal class KontonummerRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null)
-        every { kontonummerSystemdata.innhentSystemverdiKontonummer(any()) } returns null
+        every { kontonummerService.getKontonummer(any()) } returns null
 
         val kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID)
         assertThat(kontonummerFrontend.brukerutfyltVerdi).isNull()
         assertThat(kontonummerFrontend.systemverdi).isNull()
-        assertThat(kontonummerFrontend.harIkkeKonto).isNull()
-        assertThat(kontonummerFrontend.brukerdefinert).isTrue
+        assertThat(kontonummerFrontend.harIkkeKonto).isFalse()
+    }
+
+    @Test
+    fun UgyldigKontonummerValidererIkke() {
+        val invalidInput = KontonummerInputDTO(brukerutfyltVerdi = "invalid; should match ^\\d{11}$")
+        println(Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).map { it.message })
+        val isValid = Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).isEmpty()
+        assertThat(isValid).isFalse()
     }
 
     @Test
@@ -98,7 +104,7 @@ internal class KontonummerRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val kontonummerFrontend = KontonummerFrontend(brukerdefinert = true, brukerutfyltVerdi = KONTONUMMER_BRUKER)
+        val kontonummerFrontend = KontonummerInputDTO(brukerutfyltVerdi = KONTONUMMER_BRUKER)
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -113,12 +119,11 @@ internal class KontonummerRessursTest {
     fun putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
         startWithBrukerKontonummerAndSystemKontonummerInTPS()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { kontonummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val kontonummerFrontend = KontonummerFrontend(brukerdefinert = false, systemverdi = KONTONUMMER_SYSTEM)
+        val kontonummerFrontend = KontonummerInputDTO(brukerutfyltVerdi = null, harIkkeKonto = false)
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -143,7 +148,7 @@ internal class KontonummerRessursTest {
     fun putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
-        val kontonummerFrontend = KontonummerFrontend()
+        val kontonummerFrontend = KontonummerInputDTO()
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend) }
 
@@ -151,7 +156,6 @@ internal class KontonummerRessursTest {
     }
 
     private fun startWithBrukerKontonummerAndSystemKontonummerInTPS() {
-        every { kontonummerSystemdata.innhentSystemverdiKontonummer(any()) } returns KONTONUMMER_SYSTEM
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER)
     }

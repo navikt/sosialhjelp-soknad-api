@@ -25,11 +25,9 @@ class SubjectHandlerImpl(
                     .also { log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.") }
         }
 
-    override fun getUserIdFromToken(): String {
-        return when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
-            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
-        }
+    override fun getUserIdFromToken(): String = when {
+        tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
+        else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
     }
 
     private fun getUserIdFromTokenWithIssuer(issuer: String): String {

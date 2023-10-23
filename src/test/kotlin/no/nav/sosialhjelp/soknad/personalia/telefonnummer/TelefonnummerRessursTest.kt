@@ -39,6 +39,7 @@ internal class TelefonnummerRessursTest {
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
@@ -80,7 +81,6 @@ internal class TelefonnummerRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
-        every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
 
         val telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID)
 
@@ -135,7 +135,6 @@ internal class TelefonnummerRessursTest {
     fun putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
-        every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { telefonnummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 

@@ -65,9 +65,6 @@ class BostotteRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        if (opplysninger.bekreftelse == null) {
-            opplysninger.bekreftelse = ArrayList()
-        }
         OkonomiMapper.setBekreftelse(
             opplysninger,
             BOSTOTTE,
