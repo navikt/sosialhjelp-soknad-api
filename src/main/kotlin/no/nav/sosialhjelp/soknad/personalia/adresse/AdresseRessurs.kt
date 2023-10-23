@@ -38,33 +38,34 @@ class AdresseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val internSoknad = internalFraSoknad(fetchSoknad(behandlingsId))
-
-        return AdresseMapper.mapToAdresserFrontend(
-            sysFolkeregistrert = valgtAdresse(internSoknad, JsonAdresseValg.FOLKEREGISTRERT),
-            sysMidlertidig = adresseSystemdata.innhentMidlertidigAdresse(eier()),
-            jsonOpphold = valgtAdresse(internSoknad, JsonAdresseValg.SOKNAD),
-            navEnhet = runCatching { navEnhetService.getNavEnhet(internSoknad.soknad.data.personalia) }.getOrNull()
-        )
+        return getAdresserForIntern(internalFraSoknad(fetchSoknad(behandlingsId)))
     }
+
+    private fun getAdresserForIntern(
+        intern: JsonInternalSoknad
+    ): AdresserFrontend = AdresseMapper.mapToAdresserFrontend(
+        sysFolkeregistrert = valgtAdresse(intern, JsonAdresseValg.FOLKEREGISTRERT),
+        sysMidlertidig = adresseSystemdata.innhentMidlertidigAdresse(eier()),
+        jsonOpphold = valgtAdresse(intern, JsonAdresseValg.SOKNAD),
+        navEnhet = runCatching { navEnhetService.getNavEnhet(intern.soknad.data.personalia) }.getOrNull()
+    )
 
     @PutMapping
     fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody adresserFrontend: AdresserFrontendInput
-    ): List<NavEnhetFrontend> {
+    ): AdresserFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = fetchSoknad(behandlingsId)
-        val internalSoknad = internalFraSoknad(soknad)
+        val intern = internalFraSoknad(soknad)
 
-        internalSoknad.midlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(eier())
-        updatePersonalia(internalSoknad.soknad.data.personalia, adresserFrontend.valg, adresserFrontend.soknad)
+        intern.midlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(eier())
+        updatePersonalia(intern.soknad.data.personalia, adresserFrontend.valg, adresserFrontend.soknad)
 
-        val navEnhetFrontend = navEnhetService.getNavEnhet(internalSoknad.soknad.data.personalia) ?: return emptyList()
+        navEnhetService.getNavEnhet(intern.soknad.data.personalia)?.let { setSoknadMottaker(intern, it) }
 
-        setSoknadMottaker(internalSoknad, navEnhetFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
-        return listOf(navEnhetFrontend)
+        return getAdresserForIntern(intern)
     }
 
     /**
