@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.service.opprettsoknad
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
-import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
-import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.CommonSoknadModel
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.service.opprettsoknad.JsonInternalSoknadMappers.map
 import org.springframework.context.ApplicationContext
 import org.springframework.data.repository.ListCrudRepository
@@ -25,7 +25,7 @@ class JsonInternalSoknadMappingManager(
     }
 
     // Henter ut domeneobjekt for SoknadId fra Repository
-    private fun <Entity: KeyErSoknadId, Repo: ListCrudRepository<Entity, UUID>>getDomainObject(repositoryClazz: KClass<Repo>): Entity {
+    private fun <Entity: CommonSoknadModel, Repo: ListCrudRepository<Entity, UUID>>getDomainObject(repositoryClazz: KClass<Repo>): Entity {
         val repository = ctx.getBean(repositoryClazz.java)
         return repository.findById(soknadId).get()
     }

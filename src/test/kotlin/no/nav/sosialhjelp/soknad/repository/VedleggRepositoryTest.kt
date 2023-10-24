@@ -1,9 +1,11 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import no.nav.sosialhjelp.soknad.domene.soknad.Fil
+import no.nav.sosialhjelp.soknad.domene.soknad.FilRepository
 import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
 import no.nav.sosialhjelp.soknad.domene.soknad.Vedlegg
 import no.nav.sosialhjelp.soknad.domene.soknad.VedleggHendelseType
+import no.nav.sosialhjelp.soknad.domene.soknad.VedleggRepository
 import no.nav.sosialhjelp.soknad.domene.soknad.VedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

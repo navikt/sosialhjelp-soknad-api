@@ -6,9 +6,9 @@ import no.nav.sosialhjelp.soknad.innsending.OldSoknadService
 import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
 import no.nav.sosialhjelp.soknad.domene.soknad.Botype
 import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
-import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
-import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus

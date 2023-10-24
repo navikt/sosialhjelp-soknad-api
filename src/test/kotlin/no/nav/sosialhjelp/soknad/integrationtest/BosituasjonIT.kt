@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
 import no.nav.sosialhjelp.soknad.domene.BosituasjonDto
 import no.nav.sosialhjelp.soknad.domene.soknad.Botype
-import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

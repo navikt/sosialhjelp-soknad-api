@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.fullfort.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
-import no.nav.sosialhjelp.soknad.repository.ArbeidRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.ArbeidRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*

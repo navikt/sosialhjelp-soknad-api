@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.repository
+package no.nav.sosialhjelp.soknad.domene.personalia.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.domene.personalia.AdresseForSoknad

@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-interface KeyErSoknadId {
+interface CommonSoknadModel {
     val id: UUID
 }
 
@@ -17,13 +17,13 @@ data class Soknad (
     var innsendingstidspunkt: LocalDateTime? = null,
     var hvorforSoke: String? = null,
     var hvaSokesOm: String? = null,
-): KeyErSoknadId
+): CommonSoknadModel
 
 data class Bosituasjon (
     @Id val soknadId: UUID,
     var botype: Botype?,
     var antallPersoner: Int
-): KeyErSoknadId {
+): CommonSoknadModel {
     override val id: UUID
         get() = soknadId
 }
@@ -32,7 +32,7 @@ data class Utdanning (
     @Id val soknadId: UUID,
     val erStudent: Boolean,
     val studentGrad: String
-): KeyErSoknadId {
+): CommonSoknadModel {
     override val id: UUID
         get() = soknadId
 }

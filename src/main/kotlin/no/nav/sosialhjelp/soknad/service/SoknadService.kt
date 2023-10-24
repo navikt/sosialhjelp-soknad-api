@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.domene.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.domene.NySoknadDto
 import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
 import no.nav.sosialhjelp.soknad.domene.SoknadDto
-import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.SoknadRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

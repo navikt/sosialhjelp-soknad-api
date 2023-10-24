@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.domene.familie
 
-import no.nav.sosialhjelp.soknad.domene.soknad.KeyErSoknadId
+import no.nav.sosialhjelp.soknad.domene.soknad.CommonSoknadModel
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.MappedCollection
@@ -15,7 +15,7 @@ data class Familie (
     val ansvar: Set<Barn> = emptySet(),        // jsonForsorgerplikt
     @Column(value = "SOKNAD_ID" )
     val ektefelle: Ektefelle? = null // jsonSivilstatus
-): KeyErSoknadId { override val id: UUID get() = soknadId }
+): CommonSoknadModel { override val id: UUID get() = soknadId }
 
 data class Barn ( // JsonAnsvar
     val soknadId: UUID,

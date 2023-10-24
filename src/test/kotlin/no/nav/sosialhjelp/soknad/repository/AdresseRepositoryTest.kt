@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.domene.personalia.GateAdresseObject
 import no.nav.sosialhjelp.soknad.domene.personalia.MatrikkelAdresseObject
 import no.nav.sosialhjelp.soknad.domene.personalia.PostboksAdresseObject
 import no.nav.sosialhjelp.soknad.domene.personalia.UstrukturertAdresseObject
+import no.nav.sosialhjelp.soknad.domene.personalia.repository.AdresseRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

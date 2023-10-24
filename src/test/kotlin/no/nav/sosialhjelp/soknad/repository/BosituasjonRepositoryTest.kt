@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.repository
 
 import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
 import no.nav.sosialhjelp.soknad.domene.soknad.Botype
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -64,14 +65,6 @@ class BosituasjonRepositoryTest : RepositoryTest() {
         bosituasjonRepository.save(bosituasjon)
 
         assertThat(bosituasjonRepository.findById(soknad.id).get().antallPersoner).isEqualTo(4)
-    }
-
-    @Test
-    fun `Finn soknad gjennom BosituasjonRepository`() {
-        val soknad = opprettSoknad()
-        val soknadViaBosituasjonRepo = bosituasjonRepository.findSoknad(soknadId = soknad.id)
-
-        assertThat(soknad).isEqualTo(soknadViaBosituasjonRepo)
     }
 
     fun opprettBosituasjon(uuid: UUID) =

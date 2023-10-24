@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.repository
 
 import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknad
 import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknadId
+import no.nav.sosialhjelp.soknad.domene.personalia.repository.PersonRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

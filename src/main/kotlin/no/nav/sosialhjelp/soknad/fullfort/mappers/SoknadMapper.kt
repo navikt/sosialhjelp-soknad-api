@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.fullfort.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.domene.soknad.Soknad
-import no.nav.sosialhjelp.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.SoknadRepository
 import org.springframework.stereotype.Component
 import java.util.*
 

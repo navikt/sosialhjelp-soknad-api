@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.repository
+package no.nav.sosialhjelp.soknad.domene.personalia.repository
 
 import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknad
 import no.nav.sosialhjelp.soknad.domene.personalia.PersonForSoknadId

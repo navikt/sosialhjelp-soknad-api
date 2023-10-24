@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.domene.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.domene.familie.Familie
 import no.nav.sosialhjelp.soknad.domene.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.domene.soknad.FamilieRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.service
 
 import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
-import no.nav.sosialhjelp.soknad.repository.ArbeidRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.ArbeidRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

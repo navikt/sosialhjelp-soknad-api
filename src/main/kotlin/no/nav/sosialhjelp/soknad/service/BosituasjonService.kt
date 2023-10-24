@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.service
 import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
 import no.nav.sosialhjelp.soknad.domene.BosituasjonDto
 import no.nav.sosialhjelp.soknad.domene.soknad.Botype
-import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

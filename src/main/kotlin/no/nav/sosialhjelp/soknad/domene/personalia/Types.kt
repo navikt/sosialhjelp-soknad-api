@@ -36,3 +36,7 @@ enum class AdresseType: AdresseTypeMapper {
             }
         };
 }
+
+enum class SoknadKilde {
+    SYSTEM, BRUKER;
+}

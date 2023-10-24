@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sosialhjelp.soknad.fullfort.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.domene.soknad.Bosituasjon
-import no.nav.sosialhjelp.soknad.repository.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.domene.soknad.BosituasjonRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*

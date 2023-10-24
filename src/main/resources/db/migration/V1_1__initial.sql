@@ -191,10 +191,10 @@ ALTER TABLE person_for_soknad
 
 
 CREATE TABLE familie (
-    soknad_id uuid primary key,
-    har_forsorgerplikt bool,
-    barnebidrag varchar(30),
-    sivilstatus varchar(30)
+                         soknad_id uuid primary key,
+                         har_forsorgerplikt bool,
+                         barnebidrag varchar(30),
+                         sivilstatus varchar(30)
 );
 
 ALTER TABLE familie
@@ -204,12 +204,12 @@ ALTER TABLE familie
             ON DELETE CASCADE;
 
 CREATE TABLE barn (
-    soknad_id uuid not null,
-    person_id varchar(30) not null,
-    bor_sammen bool,
-    folkeregistrert_sammen bool,
-    delt_bosted bool,
-    samvarsgrad numeric
+                      soknad_id uuid not null,
+                      person_id varchar(30) not null,
+                      bor_sammen bool,
+                      folkeregistrert_sammen bool,
+                      delt_bosted bool,
+                      samvarsgrad numeric
 );
 
 ALTER TABLE barn
@@ -223,15 +223,48 @@ ALTER TABLE barn
             ON DELETE CASCADE;
 
 CREATE TABLE ektefelle (
-    soknad_id uuid primary key,
-    person_id varchar(30) not null ,
-    har_diskresjonskode bool,
-    folkeregistrert_med_ektefelle bool,
-    bor_sammen bool
+                           soknad_id uuid primary key,
+                           person_id varchar(30) not null ,
+                           har_diskresjonskode bool,
+                           folkeregistrert_med_ektefelle bool,
+                           bor_sammen bool
 );
 
 ALTER TABLE ektefelle
     ADD CONSTRAINT fk_ektefelle_familie
         FOREIGN KEY ( soknad_id )
             REFERENCES familie( soknad_id )
+            ON DELETE CASCADE;
+
+CREATE TABLE telefonnummer (
+                               soknad_id uuid not null,
+                               kilde varchar(30) not null,
+                               nummer varchar(30) not null
+);
+
+ALTER TABLE telefonnummer
+    ADD CONSTRAINT pk_telefonnummer
+        PRIMARY KEY (soknad_id, kilde);
+
+ALTER TABLE telefonnummer
+    ADD CONSTRAINT fk_telefon_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE kontonummer
+(
+    soknad_id uuid not null,
+    kilde varchar(30) not null,
+    nummer varchar(30) not null
+);
+
+ALTER TABLE kontonummer
+    ADD CONSTRAINT pk_kontonummer
+        PRIMARY KEY (soknad_id, kilde);
+
+ALTER TABLE kontonummer
+    ADD CONSTRAINT fk_konto_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
             ON DELETE CASCADE;
