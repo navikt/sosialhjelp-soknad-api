@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -58,6 +59,9 @@ class SoknadActions(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        // TODO - LOGGER UT HELE OBJEKTET FOR ANALYSE
+        log.warn(jacksonObjectMapper().writeValueAsString(soknadUnderArbeid.jsonInternalSoknad))
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
