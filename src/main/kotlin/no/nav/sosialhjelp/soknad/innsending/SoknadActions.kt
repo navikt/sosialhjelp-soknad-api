@@ -61,7 +61,7 @@ class SoknadActions(
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         // TODO - LOGGER UT HELE OBJEKTET FOR ANALYSE
-        log.warn(jacksonObjectMapper().writeValueAsString(soknadUnderArbeid.jsonInternalSoknad))
+        log.warn("***JSON***"+jacksonObjectMapper().writeValueAsString(soknadUnderArbeid.jsonInternalSoknad))
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
