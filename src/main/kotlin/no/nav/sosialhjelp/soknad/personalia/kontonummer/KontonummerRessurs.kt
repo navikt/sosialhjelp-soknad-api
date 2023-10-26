@@ -29,6 +29,10 @@ class KontonummerRessurs(
         @PathVariable("behandlingsId") behandlingsId: String
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
+        storeKontonummer(behandlingsId, loadKontonummer(behandlingsId).apply {
+            kilde = JsonKilde.SYSTEM
+            verdi = kontonummerService.getKontonummer(eier())
+        })
         return mapDAOtoDTO(loadKontonummer(behandlingsId))
     }
 
