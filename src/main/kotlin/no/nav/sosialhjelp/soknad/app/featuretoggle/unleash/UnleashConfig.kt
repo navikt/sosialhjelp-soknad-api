@@ -1,34 +1,37 @@
 package no.nav.sosialhjelp.soknad.app.featuretoggle.unleash
 
-import no.finn.unleash.DefaultUnleash
-import no.finn.unleash.Unleash
-import no.finn.unleash.repository.HttpToggleFetcher
-import no.finn.unleash.repository.ToggleFetcher
-import no.finn.unleash.util.UnleashConfig
+
+import io.getunleash.DefaultUnleash
+import io.getunleash.Unleash
+import io.getunleash.util.UnleashConfig
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class UnleashConfig(
-    @Value("\${unleash_api_url}") private val baseurl: String,
-    @Value("\${unleash_instance_id:prod-fss}") private val instanceId: String
+    @Value("\${unleash_env}") private val environment: String,
+    @Value("\${unleash_server_api_url}") private val baseurl: String,
+    @Value("\${unleash_server_api_token}") private val apiToken: String
 ) {
 
     @Bean
     fun unleashClient(): Unleash {
-        return DefaultUnleash(config, ByInstanceIdStrategy(instanceId))
+        val byInstanceIdStrategy = ByInstanceIdStrategy(environment)
+        val config = UnleashConfig.builder()
+            .environment(environment)
+            .unleashAPI("$baseurl/api")
+            .apiKey(apiToken)
+            .build()
+
+        return DefaultUnleash(
+            config,
+            byInstanceIdStrategy
+        )
     }
 
     @Bean
-    fun unleashToggleFetcher(): ToggleFetcher? {
-        return HttpToggleFetcher(config)
+    fun unleashToggleFetcher(): MutableList<String> {
+        return unleashClient().more().featureToggleNames
     }
-
-    private val config: UnleashConfig =
-        UnleashConfig.builder()
-            .appName("sosialhjelp-soknad-api")
-            .instanceId(instanceId)
-            .unleashAPI(baseurl)
-            .build()
 }
