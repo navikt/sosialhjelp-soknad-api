@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.featuretoggle.unleash
 
-
 import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig

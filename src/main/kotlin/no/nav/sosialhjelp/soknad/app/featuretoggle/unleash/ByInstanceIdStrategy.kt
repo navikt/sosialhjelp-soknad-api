@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.app.featuretoggle.unleash
 
 import io.getunleash.strategy.Strategy
 
-
 class ByInstanceIdStrategy(
     private val currentInstanceId: String
 ) : Strategy {
