@@ -20,7 +20,6 @@ class ConflictAvoidanceController(
     fun setStatus(@RequestBody request: ConflictAvoidanceRequest) =
         ConflictAvoidanceResponse(soknadLockManager.apply { enabled = request.enabled }.enabled, soknadLockManager.getNumLocks())
 
-
     data class ConflictAvoidanceRequest(val enabled: Boolean)
 
     data class ConflictAvoidanceResponse(val enabled: Boolean, val numLocks: Int)
