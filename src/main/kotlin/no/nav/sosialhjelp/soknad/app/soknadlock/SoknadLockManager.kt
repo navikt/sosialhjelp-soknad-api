@@ -29,6 +29,9 @@ class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
+    // Om denne er false, vil ikke SoknadLockDelayInterceptor forsøke å hente låser.
+    var enabled: Boolean = false
+
     // Lås per behandlingsId med timestamp for når låsen ble opprettet
     private val lockMap: ConcurrentHashMap<String, TimestampedLock> = ConcurrentHashMap()
 
