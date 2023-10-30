@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -66,50 +67,32 @@ class UtbetalingRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        if (opplysninger.bekreftelse == null) {
-            opplysninger.bekreftelse = ArrayList()
-        }
+
         setBekreftelse(
             opplysninger,
             BEKREFTELSE_UTBETALING,
             utbetalingerFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("inntekt.inntekter")
         )
-        setUtbetalinger(opplysninger, utbetalingerFrontend)
+        setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun setUtbetalinger(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
-        val utbetalinger = opplysninger.utbetaling
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE])
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_UTBYTTE,
-            tittel,
-            utbetalingerFrontend.utbytte
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_SALG])
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_SALG,
-            tittel,
-            utbetalingerFrontend.salg
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING])
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_FORSIKRING,
-            tittel,
-            utbetalingerFrontend.forsikring
-        )
-        tittel = textService.getJsonOkonomiTittel("opplysninger.inntekt.inntekter.annet")
-        addUtbetalingIfCheckedElseDeleteInOpplysninger(
-            utbetalinger,
-            UTBETALING_ANNET,
-            tittel,
-            utbetalingerFrontend.annet
-        )
+    private fun setUtbetalinger(utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>, utbetalingerFrontend: UtbetalingerFrontend) {
+        listOf(
+            UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
+            UTBETALING_SALG to utbetalingerFrontend.salg,
+            UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
+            UTBETALING_ANNET to utbetalingerFrontend.annet
+        ).map { (utbetalingJsonType, isChecked) ->
+            addUtbetalingIfCheckedElseDeleteInOpplysninger(
+                utbetalinger,
+                utbetalingJsonType,
+                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
+                isChecked
+            )
+        }
     }
 
     private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {

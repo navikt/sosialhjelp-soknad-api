@@ -77,15 +77,6 @@ class SkatteetatenClient(
         }
     }
 
-    fun ping() {
-        skatteetatenWebClient.options()
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .retrieve()
-            .toBodilessEntity()
-            .doOnError { log.warn("SkatteetatenApi - ping feilet") }
-            .block()
-    }
-
     companion object {
         private val log by logger()
 
