@@ -2,10 +2,14 @@ package no.nav.sosialhjelp.soknad.domene.personalia.repository
 
 import no.nav.sosialhjelp.soknad.domene.personalia.Kontonummer
 import no.nav.sosialhjelp.soknad.domene.personalia.SoknadKilde
+import org.springframework.data.repository.Repository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.util.*
+
+@org.springframework.stereotype.Repository
+interface KontonummerRepository: KontoFragmentRepository, Repository<Kontonummer, UUID>
 
 interface KontoFragmentRepository {
     fun findById(soknadId: UUID, kilde: SoknadKilde): Kontonummer?

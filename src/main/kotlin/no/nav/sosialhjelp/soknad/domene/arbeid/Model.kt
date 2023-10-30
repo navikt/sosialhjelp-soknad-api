@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.domene.arbeid
 
-import no.nav.sosialhjelp.soknad.domene.soknad.CommonSoknadModel
+import no.nav.sosialhjelp.soknad.domene.soknad.SoknadBubbleObject
 import no.nav.sosialhjelp.soknad.domene.soknad.Stillingstype
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.MappedCollection
@@ -11,7 +11,7 @@ data class Arbeid (
     var kommentarArbeid: String? = null,
     @MappedCollection(idColumn = "SOKNAD_ID")
     val arbeidsforhold: Set<Arbeidsforhold> = emptySet()
-): CommonSoknadModel {
+): SoknadBubbleObject {
     override val id: UUID
         get() = soknadId
 }

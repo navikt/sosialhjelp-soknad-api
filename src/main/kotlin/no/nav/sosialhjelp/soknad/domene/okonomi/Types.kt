@@ -1,7 +1,24 @@
 package no.nav.sosialhjelp.soknad.domene.okonomi
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonValue
+
+enum class OkonomiType {
+    BARNEBIDRAG,
+    BOSTOTTE,
+    BOSTOTTE_SAMTYKKE,
+    STUDIELAN,
+    JOBB;
+}
+
+enum class OkonomiGruppe {
+    ANDRE_UTGIFTER,
+    ARBEID,
+    BOSITUASJON,
+    FAMILIE,
+    GENERELLE_VEDLEGG,
+    INNTEKT,
+    STATSBORGERSKAP,
+    UTGIFTER;
+}
 
 enum class BostotteStatus {
     UNDER_BEHANDLING, VEDTATT

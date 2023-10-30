@@ -268,3 +268,99 @@ ALTER TABLE kontonummer
         FOREIGN KEY ( soknad_id )
             REFERENCES soknad( id )
             ON DELETE CASCADE;
+
+CREATE TABLE utgift
+(
+    id uuid primary key,
+    soknad_id uuid not null,
+    type varchar(50),
+    tittel varchar(50),
+    belop numeric
+);
+
+ALTER TABLE utgift
+    ADD CONSTRAINT fk_utgift_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE formue
+(
+    id uuid primary key,
+    soknad_id uuid not null,
+    type varchar(50),
+    tittel varchar(50),
+    belop numeric
+);
+
+ALTER TABLE formue
+    ADD CONSTRAINT fk_formue_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE bekreftelse
+(
+    ref_id uuid primary key,
+    soknad_id uuid not null,
+    type varchar(50),
+    tittel varchar(50),
+    bekreftet bool,
+    bekreftelses_dato timestamp
+);
+
+ALTER TABLE bekreftelse
+    ADD CONSTRAINT fk_bekreftelse_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE inntekt
+(
+    id uuid primary key,
+    soknad_id uuid not null,
+    type varchar(50),
+    tittel varchar(50),
+    brutto numeric,
+    netto numeric
+);
+
+ALTER TABLE inntekt
+    ADD CONSTRAINT fk_inntekt_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE utbetaling
+(
+    inntekt uuid primary key,
+    orgnummer varchar(30),
+    belop numeric,
+    skattetrekk numeric,
+    andre_trekk numeric,
+    utbetalingsdato timestamp,
+    periode_start timestamp,
+    periode_slutt timestamp
+);
+
+ALTER TABLE utbetaling
+    ADD CONSTRAINT fk_utbetaling_inntekt
+        FOREIGN KEY ( inntekt )
+            REFERENCES inntekt( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE komponent
+(
+    utbetaling uuid,
+    type varchar(30),
+    belop numeric,
+    sats_type varchar(30),
+    sats_antall numeric,
+    sats_belop numeric
+);
+
+ALTER TABLE komponent
+    ADD CONSTRAINT fk_komponent_utbetaling
+        FOREIGN KEY ( utbetaling )
+            REFERENCES utbetaling( inntekt )
+            ON DELETE CASCADE;

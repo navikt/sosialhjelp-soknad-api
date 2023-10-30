@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.domene.soknad
 
-import no.nav.sosialhjelp.soknad.domene.UuidAsKeyRepository
+import no.nav.sosialhjelp.soknad.domene.UpsertRepository
 import no.nav.sosialhjelp.soknad.domene.arbeid.Arbeid
 import no.nav.sosialhjelp.soknad.domene.familie.Familie
 import org.springframework.data.repository.ListCrudRepository
@@ -8,16 +8,16 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface SoknadRepository: UuidAsKeyRepository<Soknad>, ListCrudRepository<Soknad, UUID>
+interface SoknadRepository: UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
 
 @Repository
-interface BosituasjonRepository : UuidAsKeyRepository<Bosituasjon>, ListCrudRepository<Bosituasjon, UUID>
+interface BosituasjonRepository : UpsertRepository<Bosituasjon>, ListCrudRepository<Bosituasjon, UUID>
 
 @Repository
-interface ArbeidRepository : UuidAsKeyRepository<Arbeid>, ListCrudRepository<Arbeid, UUID>
+interface ArbeidRepository : UpsertRepository<Arbeid>, ListCrudRepository<Arbeid, UUID>
 
 @Repository
-interface FamilieRepository : UuidAsKeyRepository<Familie>, ListCrudRepository<Familie, UUID>
+interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Familie, UUID>
 
 @Repository
 interface VedleggRepository : ListCrudRepository<Vedlegg, Long> {

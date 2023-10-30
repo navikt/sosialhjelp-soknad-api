@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.domene.personalia
 
-import no.nav.sosialhjelp.soknad.domene.soknad.CommonSoknadModel
-import org.springframework.data.annotation.Id
 import java.util.*
 
 data class PersonForSoknadId (

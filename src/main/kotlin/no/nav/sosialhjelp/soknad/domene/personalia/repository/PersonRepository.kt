@@ -10,19 +10,17 @@ import java.sql.ResultSet
 import java.util.*
 
 @org.springframework.stereotype.Repository
-interface PersonRepository : PersonForSoknadRepository, Repository<PersonForSoknad, PersonForSoknadId>
+interface PersonRepository : PersonFragmentRepository, Repository<PersonForSoknad, PersonForSoknadId>
 
-// Samme signatur som CrudRepository slik at denne overrides når et
-// repository-interface implementerer begge
-interface PersonForSoknadRepository {
+interface PersonFragmentRepository {
     fun findById(id: PersonForSoknadId): PersonForSoknad?
     fun save(personForSoknad: PersonForSoknad): PersonForSoknad
     fun delete(personForSoknadId: PersonForSoknadId)
     fun existsById(id: PersonForSoknadId): Boolean
 }
-class PersonForSoknadRepositoryImpl (
+class PersonFragmentRepositoryImpl (
     private val jdbcTemplate: JdbcTemplate
-): PersonForSoknadRepository {
+): PersonFragmentRepository {
 
     override fun findById(personForSoknadId: PersonForSoknadId): PersonForSoknad? {
         return jdbcTemplate.query(

@@ -12,9 +12,9 @@ import java.sql.ResultSet
 import java.util.*
 
 @org.springframework.stereotype.Repository
-interface AdresseRepository: AdresseForSoknadRepository, Repository<AdresseForSoknad, AdresseForSoknadId>
+interface AdresseRepository: AdresseFragmentRepository, Repository<AdresseForSoknad, AdresseForSoknadId>
 
-interface AdresseForSoknadRepository {
+interface AdresseFragmentRepository {
     fun findById(id: AdresseForSoknadId): AdresseForSoknad?
     fun findAllBySoknadId(soknadId: UUID): List<AdresseForSoknad>
     fun save(adresseForSoknad: AdresseForSoknad): AdresseForSoknad
@@ -24,18 +24,18 @@ interface AdresseForSoknadRepository {
     fun existsById(id: AdresseForSoknadId): Boolean
 }
 
-class AdresseForSoknadRepositoryImpl (
+class AdresseFragmentRepositoryImpl (
     val jdbcTemplate: JdbcTemplate,
-): AdresseForSoknadRepository {
+): AdresseFragmentRepository {
 
     private val mapper = jacksonObjectMapper()
 
-    override fun findById(adresseForSoknadId: AdresseForSoknadId): AdresseForSoknad? {
+    override fun findById(id: AdresseForSoknadId): AdresseForSoknad? {
         return jdbcTemplate.query (
             "SELECT * FROM adresse_for_soknad WHERE soknad_id = ? AND type_adressevalg = ?",
             AdresseForSoknadRowMapper(),
-            adresseForSoknadId.soknadId,
-            adresseForSoknadId.typeAdressevalg.name
+            id.soknadId,
+            id.typeAdressevalg.name
         ).firstOrNull()
     }
 
@@ -50,10 +50,9 @@ class AdresseForSoknadRepositoryImpl (
     override fun save(adresseForSoknad: AdresseForSoknad): AdresseForSoknad {
         return adresseForSoknad.let {
 
-            if (existsById(it.id)) doUpdate(it)
-            else doInsert(it)
+            if (existsById(it.id)) doUpdate(it) else doInsert(it)
 
-            findById(adresseForSoknadId = it.id)
+            findById(id = it.id)
                 ?: throw IllegalStateException("Lagring av adresse feilet")
         }
     }
@@ -67,11 +66,7 @@ class AdresseForSoknadRepositoryImpl (
     }
 
     override fun delete(adresseForSoknad: AdresseForSoknad) {
-        jdbcTemplate.update(
-            "DELETE FROM adresse_for_soknad WHERE soknad_id = ? AND type_adressevalg = ?",
-            adresseForSoknad.id.soknadId,
-            adresseForSoknad.id.typeAdressevalg.name
-        )
+        delete(adresseForSoknad.id)
     }
 
     override fun deleteBySoknadId(soknadId: UUID) {

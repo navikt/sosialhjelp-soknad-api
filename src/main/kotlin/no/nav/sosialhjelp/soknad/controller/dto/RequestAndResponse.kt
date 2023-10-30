@@ -1,0 +1,11 @@
+package no.nav.sosialhjelp.soknad.controller.dto
+
+import no.nav.sosialhjelp.soknad.domene.okonomi.OkonomiGruppe
+import no.nav.sosialhjelp.soknad.domene.okonomi.OkonomiType
+
+data class OkonomiRequest(
+    val type: OkonomiType,
+    val gruppe: OkonomiGruppe,
+    val alleredeLevert: Boolean,
+
+)
