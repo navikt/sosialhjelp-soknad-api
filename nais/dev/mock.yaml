@@ -34,7 +34,7 @@ spec:
     outbound:
       external:
         - host: "digisos.ekstern.dev.nav.no"
-        - host: "unleash.nais.io"
+        - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
       rules:
         - application: sosialhjelp-mock-alt-api-mock
   ingresses:
@@ -47,6 +47,7 @@ spec:
       memory: 512Mi
   envFrom:
     - configmap: loginservice-idporten
+    - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: "mock-alt,log-console,no-redis"
@@ -60,8 +61,8 @@ spec:
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api"
     - name: PDL_API_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url"
-    - name: UNLEASH_API_URL
-      value: "https://unleash.nais.io/api"
+    - name: UNLEASH_ENV
+      value: "mock"
     - name: EREG_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/ereg"
     - name: FIKS_NOKKELFIL
