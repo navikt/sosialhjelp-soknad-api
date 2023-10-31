@@ -18,6 +18,7 @@ class UnleashConfig(
     fun unleashClient(): Unleash {
         val byInstanceIdStrategy = ByInstanceIdStrategy(environment)
         val config = UnleashConfig.builder()
+            .appName("sosialhjelp-soknad-api")
             .environment(environment)
             .unleashAPI("$baseurl/api")
             .apiKey(apiToken)
