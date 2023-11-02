@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @NoRepositoryBean
-interface OkonomiRepository<T: SoknadBubbleObject>: ListCrudRepository<T, UUID>
+interface OkonomiRepository<T: SoknadBubbleObject>: ListCrudRepository<T, UUID> {
+    fun findAllBySoknadId(soknadId: UUID): List<T>
+}
 
 @Repository
 interface UtgiftRepository: UpsertRepository<Utgift>, OkonomiRepository<Utgift>
@@ -24,3 +26,6 @@ interface BostotteRepository: UpsertRepository<Bostotte>, OkonomiRepository<Bost
 
 @Repository
 interface BekreftelseRepository: UpsertRepository<Bekreftelse>, OkonomiRepository<Bekreftelse>
+
+@Repository
+interface BeskrivelserAvAnnetRepository: UpsertRepository<BeskrivelserAvAnnet>, OkonomiRepository<BeskrivelserAvAnnet>

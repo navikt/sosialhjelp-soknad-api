@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
@@ -12,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.domene.Kilde
 import no.nav.sosialhjelp.soknad.domene.Kilde.*
+import no.nav.sosialhjelp.soknad.domene.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.domene.okonomi.BeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.domene.okonomi.Bostotte
 import no.nav.sosialhjelp.soknad.domene.okonomi.Formue
@@ -112,6 +114,15 @@ fun BeskrivelserAvAnnet.toJsonOkonomibeskrivelserAvAnnet(): JsonOkonomibeskrivel
         .withUtbetaling(utbetaling)
         .withBoutgifter(boutgifter)
         .withBarneutgifter(barneutgifter)
+}
+
+fun Bekreftelse.toJsonOkonomibekreftelse(): JsonOkonomibekreftelse {
+    return JsonOkonomibekreftelse()
+        .withKilde(JsonKilde.BRUKER) // alltid bruker
+        .withType(type?.toSoknadJsonType())
+        .withTittel(tittel)
+        .withVerdi(bekreftet)
+        .withBekreftelsesDato(bekreftelsesDato.toString())
 }
 
 fun Kilde.toJsonKilde(): JsonKilde = if (this == BRUKER) JsonKilde.BRUKER else JsonKilde.SYSTEM
