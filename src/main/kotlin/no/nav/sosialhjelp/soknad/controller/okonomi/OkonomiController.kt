@@ -1,6 +1,5 @@
-package no.nav.sosialhjelp.soknad.controller
+package no.nav.sosialhjelp.soknad.controller.okonomi
 
-import no.nav.sosialhjelp.soknad.controller.dto.OkonomiRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +13,7 @@ class OkonomiController {
     @PutMapping
     fun updateInntekt(
         @PathVariable("soknadId") soknadId: String,
-        @RequestBody okonomiRequest: OkonomiRequest
+//        @RequestBody okonomiRequest: OkonomiRequest
     ) {
 
     }
@@ -22,7 +21,7 @@ class OkonomiController {
     @PutMapping
     fun updateUtgift(
         @PathVariable("soknadId") soknadId: String,
-        @RequestBody okonomiRequest: OkonomiRequest
+//        @RequestBody okonomiRequest: OkonomiRequest
     ) {
 
     }
@@ -30,7 +29,7 @@ class OkonomiController {
     @PutMapping
     fun updateFormue(
         @PathVariable("soknadId") soknadId: String,
-        @RequestBody okonomiRequest: OkonomiRequest
+//        @RequestBody okonomiRequest: OkonomiRequest
     ) {
 
     }

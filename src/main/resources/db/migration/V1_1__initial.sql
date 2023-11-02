@@ -301,7 +301,7 @@ ALTER TABLE formue
 
 CREATE TABLE bekreftelse
 (
-    ref_id uuid primary key,
+    id uuid primary key,
     soknad_id uuid not null,
     type varchar(50),
     tittel varchar(50),
@@ -333,6 +333,7 @@ ALTER TABLE inntekt
 
 CREATE TABLE utbetaling
 (
+    kilde varchar(15) not null,
     inntekt uuid primary key,
     orgnummer varchar(30),
     belop numeric,

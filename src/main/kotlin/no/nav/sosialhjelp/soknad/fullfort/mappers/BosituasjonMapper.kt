@@ -15,11 +15,11 @@ class BosituasjonMapper(
 ): SoknadToJsonMapper {
     override fun mapToSoknadJson(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
         val bosituasjon = bosituasjonRepository.findByIdOrNull(soknadId)
-        bosituasjon?.let { jsonInternalSoknad.soknad.data.withBosituasjon(it.toJsonObject()) }
+        bosituasjon?.let { jsonInternalSoknad.soknad.data.withBosituasjon(it.toJsonBosituasjon()) }
     }
 }
 
-fun Bosituasjon.toJsonObject(): JsonBosituasjon =
+fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon =
     JsonBosituasjon()
         .withBotype(JsonBosituasjon.Botype.valueOf(botype!!.name))
         .withAntallPersoner(antallPersoner)

@@ -18,11 +18,11 @@ class ArbeidMapper (
 ): SoknadToJsonMapper {
     override fun mapToSoknadJson(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
         val arbeid = arbeidRepository.findByIdOrNull(soknadId)
-        arbeid?.let { jsonInternalSoknad.soknad.data.withArbeid(it.toJsonObject()) }
+        arbeid?.let { jsonInternalSoknad.soknad.data.withArbeid(it.toJsonArbeid()) }
     }
 }
 
-fun Arbeid.toJsonObject(): JsonArbeid = JsonArbeid()
+fun Arbeid.toJsonArbeid(): JsonArbeid = JsonArbeid()
     .withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold().withVerdi(kommentarArbeid))
     .withForhold(
         arbeidsforhold

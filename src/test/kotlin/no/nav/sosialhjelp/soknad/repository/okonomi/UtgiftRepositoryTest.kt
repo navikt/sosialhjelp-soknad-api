@@ -1,10 +1,8 @@
 package no.nav.sosialhjelp.soknad.repository.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sosialhjelp.soknad.domene.okonomi.Bekreftelse
-import no.nav.sosialhjelp.soknad.domene.okonomi.OkonomiType
 import no.nav.sosialhjelp.soknad.domene.okonomi.Utgift
 import no.nav.sosialhjelp.soknad.domene.okonomi.UtgiftRepository
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.UtgiftType
 import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,14 +36,8 @@ class UtgiftRepositoryTest: RepositoryTest() {
 fun createFullUtgift(soknadId: UUID): Utgift {
     return Utgift(
         soknadId = soknadId,
-        type = OkonomiType.BARNEBIDRAG,
+        type = UtgiftType.ANDRE_UTGIFTER,
         tittel = "Utgift tittel",
-        belop = 500,
-        bekreftelse = Bekreftelse(
-            soknadId = soknadId,
-            type = "bekreftelsestype",
-            tittel = "tittel bekreftelse",
-            bekreftet = true
-        )
+        belop = 500
     )
 }

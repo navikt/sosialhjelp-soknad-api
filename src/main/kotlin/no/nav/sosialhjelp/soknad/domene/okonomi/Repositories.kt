@@ -22,5 +22,5 @@ interface FormueRepository: UpsertRepository<Formue>, OkonomiRepository<Formue>
 @Repository
 interface BostotteRepository: UpsertRepository<Bostotte>, OkonomiRepository<Bostotte>
 
-//@Repository
-//interface BekreftelseRepository: UuidAsKeyRepository<Bekreftelse>, OkonomiRepository<Bekreftelse>
+@Repository
+interface BekreftelseRepository: UpsertRepository<Bekreftelse>, OkonomiRepository<Bekreftelse>

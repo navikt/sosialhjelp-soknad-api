@@ -1,14 +1,6 @@
 package no.nav.sosialhjelp.soknad.domene.okonomi
 
 
-enum class OkonomiType {
-    BARNEBIDRAG,
-    BOSTOTTE,
-    BOSTOTTE_SAMTYKKE,
-    STUDIELAN,
-    JOBB;
-}
-
 enum class OkonomiGruppe {
     ANDRE_UTGIFTER,
     ARBEID,

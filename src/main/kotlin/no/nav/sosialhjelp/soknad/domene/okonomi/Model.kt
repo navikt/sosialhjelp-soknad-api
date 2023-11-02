@@ -1,41 +1,49 @@
 package no.nav.sosialhjelp.soknad.domene.okonomi
 
+import no.nav.sosialhjelp.soknad.domene.Kilde
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.BekreftelseType
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.FormueType
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.InntektType
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.OkonomiType
+import no.nav.sosialhjelp.soknad.domene.okonomi.type.UtgiftType
 import no.nav.sosialhjelp.soknad.domene.soknad.SoknadBubbleObject
 import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDate
 import java.util.*
 
+interface OkonomiBubbleObject: SoknadBubbleObject {
+    val type: OkonomiType
+}
+
 data class Utgift (
     @Id override val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
-    val type: OkonomiType? = null,
+    override val type: UtgiftType,
     val tittel: String? = null,
     val belop: Int? = null,
-    @MappedCollection(idColumn = "REF_ID")
-    val bekreftelse: Bekreftelse? = null
-): SoknadBubbleObject
+): OkonomiBubbleObject
+
 data class Formue (
     @Id override val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
-    val type: OkonomiType? = null,
+    override val type: FormueType,
     val tittel: String? = null,
     val belop: Int? = null
-): SoknadBubbleObject
+): OkonomiBubbleObject
+
 data class Inntekt (
     @Id override val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
-    val type: OkonomiType? = null,
+    override val type: InntektType,
     val tittel: String? = null,
     val brutto: Int? = null,
     val netto: Int? = null,
     val utbetaling: Utbetaling? = null,
-    @MappedCollection(idColumn = "REF_ID")
-    val bekreftelse: Bekreftelse? = null
-): SoknadBubbleObject
+): OkonomiBubbleObject
 
 data class Utbetaling (
+    val kilde: Kilde,
     val orgnummer: String? = null,
     val belop: Int? = null,
     val skattetrekk: Double? = null,
@@ -56,14 +64,13 @@ data class Komponent (
 )
 
 data class Bekreftelse (
-//    @Id override val id: UUID = UUID.randomUUID(),
+    @Id override val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
-    val type: String? = null,
+    val type: BekreftelseType? = null,
     val tittel: String? = null,
     val bekreftet: Boolean? = null,
     val bekreftelsesDato: LocalDate = LocalDate.now()
-)
-//    : SoknadBubbleObject
+): SoknadBubbleObject
 
 data class Bostotte ( // systemdata
     @Id override val id: UUID = UUID.randomUUID(),
@@ -74,3 +81,12 @@ data class Bostotte ( // systemdata
     val beskrivelse: String? = null,
     val vedtaksstatus: Vedtaksstatus? = null,
 ): SoknadBubbleObject
+
+data class BeskrivelserAvAnnet (
+    @Id val soknadId: UUID,
+    val verdi: String? = null,
+    val sparing: String? = null,
+    val utbetaling: String? = null,
+    val boutgifter: String? = null,
+    val barneutgifter: String? = null
+): SoknadBubbleObject { override val id: UUID get() = soknadId }

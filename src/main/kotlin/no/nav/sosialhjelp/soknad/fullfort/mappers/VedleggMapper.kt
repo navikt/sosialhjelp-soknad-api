@@ -22,7 +22,7 @@ class VedleggMapper (
 
         val jsonVedleggList = alleVedleggForSoknad
             .map {
-                it.toJsonObject()
+                it.toJsonVedlegg()
                     .withFiler(mapFilerToJsonObject(it.id))
             }
 
@@ -33,11 +33,11 @@ class VedleggMapper (
 
     private fun mapFilerToJsonObject(vedleggId: Long): List<JsonFiler> {
         val alleFilerForVedlegg = filRepository.findAllByVedleggId(vedleggId)
-        return alleFilerForVedlegg.map { it.toJsonObject() }
+        return alleFilerForVedlegg.map { it.toJsonFiler() }
     }
 }
 
-fun Vedlegg.toJsonObject(): JsonVedlegg =
+fun Vedlegg.toJsonVedlegg(): JsonVedlegg =
     JsonVedlegg()
         .withType(vedleggType.type)
         .withTilleggsinfo(vedleggType.tilleggsinfo)
@@ -45,7 +45,7 @@ fun Vedlegg.toJsonObject(): JsonVedlegg =
         .withHendelseType(JsonVedlegg.HendelseType.valueOf(hendelseType.name))
         .withHendelseReferanse(hendelseReferanse)
 
-fun Fil.toJsonObject(): JsonFiler =
+fun Fil.toJsonFiler(): JsonFiler =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)
