@@ -100,15 +100,15 @@ class PdlDtoMapper(
     }
 
     private fun findFornavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.fornavn?.uppercase() ?: ""
+        return helper.utledGjeldendeNavn(navn)?.fornavn ?: ""
     }
 
     private fun findMellomnavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.mellomnavn?.uppercase() ?: ""
+        return helper.utledGjeldendeNavn(navn)?.mellomnavn ?: ""
     }
 
     private fun findEtternavn(navn: List<NavnDto>?): String {
-        return helper.utledGjeldendeNavn(navn)?.etternavn?.uppercase() ?: ""
+        return helper.utledGjeldendeNavn(navn)?.etternavn ?: ""
     }
 
     private fun findFodselsdato(foedsel: List<FoedselDto>?): LocalDate? {
@@ -260,7 +260,7 @@ class PdlDtoMapper(
 
     private fun mapToVegadresse(dto: VegadresseDto): Vegadresse {
         return Vegadresse(
-            dto.adressenavn?.uppercase(),
+            dto.adressenavn,
             dto.husnummer,
             dto.husbokstav,
             dto.tilleggsnavn,
@@ -272,10 +272,7 @@ class PdlDtoMapper(
         )
     }
 
-    private fun getPoststed(postnummer: String): String? {
-        val poststed = kodeverkService.getPoststed(postnummer)
-        return poststed?.uppercase()
-    }
+    private fun getPoststed(postnummer: String): String? = kodeverkService.getPoststed(postnummer)
 
     private fun mapToMatrikkeladresse(dto: MatrikkeladresseDto): Matrikkeladresse {
         return Matrikkeladresse(
