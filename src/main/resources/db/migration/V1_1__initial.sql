@@ -69,16 +69,73 @@ CREATE TABLE SOKNADMETADATA
 CREATE TABLE soknad
 (
     id uuid primary key,
-    eier varchar(255) not null,
-    innsendingstidspunkt timestamp,
-    hvorfor_soke varchar(255),
-    hva_sokes_om varchar(255),
-    adresse_valg varchar(255)
+    innsendingstidspunkt timestamp
 );
 
-CREATE TABLE arbeid (
-                        soknad_id uuid primary key,
-                        kommentar_arbeid varchar(255)
+CREATE TABLE eier
+(
+    soknad uuid primary key,
+    person_id varchar(30) not null,
+    fornavn varchar(255),
+    mellomnavn varchar(255),
+    etternavn varchar(255),
+    statsborgerskap varchar(50),
+    nordisk_borger bool,
+    kontonummer varchar(30),
+    telefonnummer varchar(30),
+    folkeregistrert_adresse varchar(255)
+);
+
+ALTER TABLE eier
+    ADD CONSTRAINT fk_eier_soknad
+        FOREIGN KEY ( soknad ) REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE brukerdata
+(
+    soknad_id uuid primary key,
+    valgt_adresse varchar(30),
+    oppholdsadresse varchar(255),
+
+);
+
+ALTER TABLE brukerdata
+    ADD CONSTRAINT fk_brukerdata_soknad
+        FOREIGN KEY ( soknad_id ) REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE brukerdata_value
+(
+    brukerdata uuid not null,
+    brukerdata_key varchar(255) not null,
+    value varchar(255)
+);
+
+ALTER TABLE brukerdata_value
+    ADD CONSTRAINT pk_brukerdata_value
+        PRIMARY KEY (brukerdata, brukerdata_key);
+
+ALTER TABLE brukerdata_value
+    ADD CONSTRAINT fk_brukerdata_value_brukerdata
+        FOREIGN KEY ( brukerdata ) REFERENCES brukerdata( soknad_id )
+            ON DELETE CASCADE;
+
+-- CREATE TABLE begrunnelse
+-- (
+--     soknad uuid primary key,
+--     hvorfor_soke varchar(255),
+--     hva_sokes_om varchar(255)
+-- );
+--
+-- ALTER TABLE begrunnelse
+--     ADD CONSTRAINT fk_begrunnelse_soknad
+--         FOREIGN KEY ( soknad ) REFERENCES soknad( soknad_id )
+--             ON DELETE CASCADE;
+
+CREATE TABLE arbeid
+(
+    soknad_id uuid primary key,
+    kommentar_arbeid varchar(255)
 );
 
 ALTER TABLE arbeid
@@ -94,12 +151,12 @@ CREATE TABLE arbeidsforhold
     til_og_med varchar(50),
     stillingsprosent numeric,
     stillingstype varchar(50) not null,
-    soknad_id uuid not null
+    arbeid uuid not null
 );
 
 ALTER TABLE arbeidsforhold
     ADD CONSTRAINT fk_arbeidsforhold_arbeid
-        FOREIGN KEY ( soknad_id ) REFERENCES arbeid( soknad_id )
+        FOREIGN KEY ( arbeid ) REFERENCES arbeid( soknad_id )
             ON DELETE CASCADE;
 
 CREATE TABLE bosituasjon
@@ -119,10 +176,10 @@ CREATE TABLE vedlegg
 (
     id serial primary key  ,
     soknad_id uuid  NOT NULL,
-    type varchar(30)    ,
+    vedlegg_type varchar(30)    ,
     status varchar(15)    ,
-    hendelse_type varchar(15)            ,
-    hendelse_referanse varchar(15)
+    hendelse_type varchar(30)            ,
+    hendelse_referanse varchar(50)
 );
 
 ALTER TABLE vedlegg
@@ -190,66 +247,73 @@ ALTER TABLE person_for_soknad
             ON DELETE CASCADE;
 
 
-CREATE TABLE familie (
-                         soknad_id uuid primary key,
-                         har_forsorgerplikt bool,
-                         barnebidrag varchar(30),
-                         sivilstatus varchar(30)
+CREATE TABLE sivilstand
+(
+    soknad_id uuid primary key,
+    kilde varchar(30),
+    sivilstatus varchar(30)
 );
 
-ALTER TABLE familie
-    ADD CONSTRAINT fk_familie_soknad
+ALTER TABLE sivilstand
+    ADD CONSTRAINT fk_sivilstand_soknad
         FOREIGN KEY ( soknad_id )
             REFERENCES soknad( id )
             ON DELETE CASCADE;
 
-CREATE TABLE barn (
-                      soknad_id uuid not null,
-                      person_id varchar(30) not null,
-                      bor_sammen bool,
-                      folkeregistrert_sammen bool,
-                      delt_bosted bool,
-                      samvarsgrad numeric
+CREATE TABLE ektefelle
+(
+    sivilstand uuid primary key,
+    person_id varchar(30) not null,
+    fornavn varchar(255),
+    mellomnavn varchar(255),
+    etternavn varchar(255),
+    fodselsdato varchar(30),
+    har_diskresjonskode bool,
+    bor_sammen bool,
+    folkeregistrert_med bool
+);
+
+ALTER TABLE ektefelle
+    ADD CONSTRAINT fk_ektefelle_sivilstand
+        FOREIGN KEY ( sivilstand )
+            REFERENCES sivilstand( soknad_id )
+            ON DELETE CASCADE;
+
+CREATE TABLE forsorger
+(
+    soknad_id uuid primary key,
+    har_forsorgerplikt bool,
+    barnebidrag varchar(30)
+);
+
+ALTER TABLE forsorger
+    ADD CONSTRAINT fk_forsorger_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE barn
+(
+    forsorger uuid not null,
+    person_id varchar(30) not null,
+    fornavn varchar(255),
+    mellomnavn varchar(255),
+    etternavn varchar(255),
+    fodselsdato date,
+    bor_sammen bool,
+    folkeregistrert_med bool,
+    delt_bosted bool,
+    samvarsgrad numeric
 );
 
 ALTER TABLE barn
     ADD CONSTRAINT pk_barn
-        PRIMARY KEY (soknad_id, person_id);
+        PRIMARY KEY (forsorger, person_id);
 
 ALTER TABLE barn
-    ADD CONSTRAINT fk_barn_familie
-        FOREIGN KEY ( soknad_id )
-            REFERENCES familie( soknad_id )
-            ON DELETE CASCADE;
-
-CREATE TABLE ektefelle (
-                           soknad_id uuid primary key,
-                           person_id varchar(30) not null ,
-                           har_diskresjonskode bool,
-                           folkeregistrert_med_ektefelle bool,
-                           bor_sammen bool
-);
-
-ALTER TABLE ektefelle
-    ADD CONSTRAINT fk_ektefelle_familie
-        FOREIGN KEY ( soknad_id )
-            REFERENCES familie( soknad_id )
-            ON DELETE CASCADE;
-
-CREATE TABLE telefonnummer (
-                               soknad_id uuid not null,
-                               kilde varchar(30) not null,
-                               nummer varchar(30) not null
-);
-
-ALTER TABLE telefonnummer
-    ADD CONSTRAINT pk_telefonnummer
-        PRIMARY KEY (soknad_id, kilde);
-
-ALTER TABLE telefonnummer
-    ADD CONSTRAINT fk_telefon_soknad
-        FOREIGN KEY ( soknad_id )
-            REFERENCES soknad( id )
+    ADD CONSTRAINT fk_barn_forsorgeransvar
+        FOREIGN KEY ( forsorger )
+            REFERENCES forsorger( soknad_id )
             ON DELETE CASCADE;
 
 CREATE TABLE kontonummer

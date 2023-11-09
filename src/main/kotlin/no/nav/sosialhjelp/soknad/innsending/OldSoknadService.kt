@@ -47,7 +47,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
-import no.nav.sosialhjelp.soknad.service.SoknadService
+//import no.nav.sosialhjelp.soknad.service.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -69,7 +69,7 @@ class OldSoknadService(
     private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val soknadService: SoknadService, // ***datamodell*** - nytt repository for soknad
+//    private val soknadService: SoknadService, // ***datamodell*** - nytt repository for soknad
     private val systemdataUpdater: SystemdataUpdater,
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
@@ -84,7 +84,7 @@ class OldSoknadService(
         val soknadId = opprettSoknadMetadata(eier)
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
         // ***datamodell*** oppretter det nye soknad-objektet når ny søknad opprettes
-        soknadService.opprettNySoknad(soknadId)
+//        soknadService.opprettNySoknad(soknadId)
 
         prometheusMetricsService.reportStartSoknad(false)
 

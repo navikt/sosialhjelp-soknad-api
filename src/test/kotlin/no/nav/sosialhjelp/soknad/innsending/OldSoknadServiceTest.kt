@@ -23,14 +23,12 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.domene.NySoknadDto
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.service.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -46,8 +44,6 @@ internal class OldSoknadServiceTest {
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    // *** datamodell ***
-    private val soknadService: SoknadService = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -59,7 +55,6 @@ internal class OldSoknadServiceTest {
         innsendingService,
         soknadMetadataRepository,
         soknadUnderArbeidRepository,
-        soknadService,
         systemdataUpdater,
         bostotteSystemdata,
         skatteetatenSystemdata,
@@ -93,7 +88,7 @@ internal class OldSoknadServiceTest {
         every { soknadMetadataRepository.opprett(any()) } just runs
         val soknadId = UUID.randomUUID()
         every { soknadMetadata.behandlingsId } returns soknadId.toString()
-        every { soknadService.opprettNySoknad(any()) } returns NySoknadDto(soknadId = soknadId)
+//        every { soknadService.opprettNySoknad(any()) } returns NySoknadDto(soknadId = soknadId)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L

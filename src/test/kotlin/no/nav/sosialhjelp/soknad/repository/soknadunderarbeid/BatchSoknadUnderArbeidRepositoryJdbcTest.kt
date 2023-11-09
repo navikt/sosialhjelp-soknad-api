@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.repository.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.BatchOpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

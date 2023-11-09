@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.repository.soknadunderarbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
+import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach

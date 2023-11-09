@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.repository.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.repository.RepositoryTest
+import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

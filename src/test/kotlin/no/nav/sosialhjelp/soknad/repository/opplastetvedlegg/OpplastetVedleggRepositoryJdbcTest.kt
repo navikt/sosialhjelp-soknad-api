@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.repository.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.repository.RepositoryTest
+import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
