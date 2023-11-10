@@ -50,19 +50,17 @@ class NavEnhetService(
         } else finnNavEnhetFraAdresse(personalia, valg)
     }
 
-    fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
-        val kommunenummer = soknadsmottaker.kommunenummer
-        return NavEnhetFrontend(
+    fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend =
+        NavEnhetFrontend(
             enhetsnr = soknadsmottaker.enhetsnummer,
             enhetsnavn = getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
             kommunenavn = getKommunenavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
-            kommuneNr = kommunenummer,
-            isMottakDeaktivert = !isDigisosKommune(kommunenummer),
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
+            kommuneNr = soknadsmottaker.kommunenummer,
+            isMottakDeaktivert = !isDigisosKommune(soknadsmottaker.kommunenummer),
+            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(soknadsmottaker.kommunenummer),
             orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
             valgt = true
         )
-    }
 
     private fun finnNavEnhetFraGT(
         ident: String,
