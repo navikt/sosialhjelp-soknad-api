@@ -13,7 +13,19 @@ data class AdresseForslag(
     val bydel: String? = null,
     val type: AdresseForslagType
 ) {
-    constructor(kommunenummer: String?, geografiskTilknytning: String?, type: AdresseForslagType) : this(null, null, null, kommunenummer, null, null, null, geografiskTilknytning, null, null, type)
+    constructor(kommunenummer: String?, geografiskTilknytning: String?, type: AdresseForslagType) : this(
+        null,
+        null,
+        null,
+        kommunenummer,
+        null,
+        null,
+        null,
+        geografiskTilknytning,
+        null,
+        null,
+        type
+    )
 }
 
 enum class AdresseForslagType(
