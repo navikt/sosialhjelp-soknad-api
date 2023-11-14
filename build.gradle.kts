@@ -121,6 +121,8 @@ configurations {
 
 dependencies {
     // Spring
+    implementation("org.springframework.boot:spring-boot-starter-cache:${Versions.springBoot}")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-jetty:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-webflux:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-logging:${Versions.springBoot}")

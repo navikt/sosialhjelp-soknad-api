@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
@@ -14,9 +13,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
-import no.nav.sosialhjelp.soknad.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -29,12 +25,10 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val tokendingsService: TokendingsService,
-    private val redisService: RedisService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
-        hentFraCache(ident)?.let { return it }
 
         try {
             val response: String =
@@ -50,7 +44,6 @@ class GeografiskTilknytningClient(
             val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
             pdlResponse.checkForPdlApiErrors()
             return pdlResponse.data.hentGeografiskTilknytning
-                ?.also { lagreTilCache(ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -61,28 +54,6 @@ class GeografiskTilknytningClient(
 
     private fun tokenXtoken(ident: String) = runBlocking {
         tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
-    }
-
-    private fun cacheKey(ident: String) = GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident
-
-    private fun hentFraCache(ident: String): GeografiskTilknytningDto? = redisService.get(
-        cacheKey(ident),
-        GeografiskTilknytningDto::class.java
-    ) as? GeografiskTilknytningDto
-
-    private fun lagreTilCache(ident: String, geografiskTilknytningDto: GeografiskTilknytningDto) {
-        try {
-            redisService.setex(
-                cacheKey(ident),
-                pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
-                PDL_CACHE_SECONDS
-            )
-        } catch (e: JsonProcessingException) {
-            log.error(
-                "Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - ${geografiskTilknytningDto.javaClass.name}",
-                e
-            )
-        }
     }
 
     companion object {

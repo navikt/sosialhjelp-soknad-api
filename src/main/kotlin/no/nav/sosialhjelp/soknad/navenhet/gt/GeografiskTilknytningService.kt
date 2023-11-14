@@ -1,28 +1,29 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
-import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Component
 
 @Component
 class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient
 ) {
+    @Cacheable(value = ["PDL-Folkereg-GT"], key = "#ident")
     fun hentGeografiskTilknytning(ident: String): String? {
-        val geografiskTilknytningDto = geografiskTilknytningClient.hentGeografiskTilknytning(ident)
-        return bydelsnummerEllerKommunenummer(geografiskTilknytningDto)
-    }
+        val gt = geografiskTilknytningClient.hentGeografiskTilknytning(ident)
 
-    private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? {
-        if (dto != null && GtType.BYDEL == dto.gtType) {
-            return dto.gtBydel
+        return if (gt == null) {
+            log.info("Geografisk tilknytning er null")
+            null
+        } else when {
+            gt.gtType == GtType.BYDEL -> gt.gtBydel ?: error("GtType er BYDEL men bydel er null")
+            gt.gtType == GtType.KOMMUNE -> gt.gtKommune ?: error("GtType er KOMMUNE men kommune er null")
+            else -> {
+                log.warn("gtType er ikke av type Bydel eller Kommune")
+                null
+            }
         }
-        if (dto != null && GtType.KOMMUNE == dto.gtType) {
-            return dto.gtKommune
-        }
-        log.warn("GeografiskTilknytningDto er ikke av type Bydel eller Kommune -> returnerer null")
-        return null
     }
 
     companion object {

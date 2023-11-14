@@ -22,6 +22,10 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      password: ${REDIS_PASSWORD}
 
 management:
   endpoints:

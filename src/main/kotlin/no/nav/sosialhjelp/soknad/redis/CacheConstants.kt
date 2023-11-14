@@ -17,7 +17,6 @@ const val PERSON_CACHE_KEY_PREFIX = "hentperson-person-"
 const val BARN_CACHE_KEY_PREFIX = "hentperson-barn-"
 const val EKTEFELLE_CACHE_KEY_PREFIX = "hentperson-ektefelle-"
 const val ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX = "hentperson-adressebeskyttelse-"
-const val GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX = "hent-geografisktilknytning-"
 const val PDL_CACHE_SECONDS = 30 * 60L // 30 minutter
 
 const val KRR_CACHE_KEY_PREFIX = "krr-"
