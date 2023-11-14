@@ -46,21 +46,17 @@ class PdlDtoMapper(
             )
     }
 
-    fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
-        return if (personDto == null) {
-            null
-        } else Person(
-            findFornavn(personDto.navn),
-            findMellomnavn(personDto.navn),
-            findEtternavn(personDto.navn),
-            ident,
-            findSivilstatus(personDto.sivilstand),
-            findStatsborgerskap(personDto.statsborgerskap),
-            null,
-            mapToBostedsadresse(personDto.bostedsadresse),
-            mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
-        )
-    }
+    fun personDtoToDomain(personDto: PersonDto, ident: String) = Person(
+        findFornavn(personDto.navn),
+        findMellomnavn(personDto.navn),
+        findEtternavn(personDto.navn),
+        ident,
+        findSivilstatus(personDto.sivilstand),
+        findStatsborgerskap(personDto.statsborgerskap),
+        null,
+        mapToBostedsadresse(personDto.bostedsadresse),
+        mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
+    )
 
     fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
         if (barnDto == null || hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
