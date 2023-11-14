@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.personalia.person.AdressebeskyttelseService
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
@@ -28,9 +28,9 @@ internal class TilgangskontrollTest {
 
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val personService: PersonService = mockk()
+    private val adressebeskyttelseService: AdressebeskyttelseService = mockk()
 
-    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService)
+    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, adressebeskyttelseService)
 
     @BeforeEach
     fun setUp() {
@@ -62,7 +62,7 @@ internal class TilgangskontrollTest {
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
-        every { personService.harAdressebeskyttelse(userId) } returns false
+        every { adressebeskyttelseService.harAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
@@ -119,7 +119,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
         every { soknadMetadataRepository.hent("123") } returns metadata
-        every { personService.harAdressebeskyttelse(userId) } returns false
+        every { adressebeskyttelseService.harAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123") }
@@ -143,7 +143,7 @@ internal class TilgangskontrollTest {
     @Test
     fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        every { personService.harAdressebeskyttelse(userId) } returns true
+        every { adressebeskyttelseService.harAdressebeskyttelse(userId) } returns true
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }
     }

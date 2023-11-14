@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.personalia.person.AdressebeskyttelseService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,6 +33,7 @@ class InformasjonRessurs(
     private val personService: PersonService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val adressebeskyttelseService: AdressebeskyttelseService,
 ) {
     companion object {
         private val log by logger()
@@ -74,7 +76,7 @@ class InformasjonRessurs(
             ).size
 
         return SessionResponse(
-            userBlocked = personService.harAdressebeskyttelse(eier),
+            userBlocked = adressebeskyttelseService.harAdressebeskyttelse(eier),
             fornavn = person?.fornavn,
             daysBeforeDeletion = FJORTEN_DAGER,
             open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier),

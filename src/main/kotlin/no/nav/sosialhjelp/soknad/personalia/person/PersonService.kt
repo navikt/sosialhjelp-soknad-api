@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory.getLogger
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component
 @Component
 class PersonService(
     private val hentPersonClient: HentPersonClient,
+    private val adressebeskyttelseService: AdressebeskyttelseService,
     private val helper: MapperHelper,
     private val mapper: PdlDtoMapper
 ) {
@@ -23,9 +23,9 @@ class PersonService(
     fun hentPerson(ident: String): Person? {
         val personDto = hentPersonClient.hentPerson(ident) ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
-        if (person != null) {
-            person.ektefelle = hentEktefelle(personDto)
-        }
+
+        if (!personDto.sivilstand.isNullOrEmpty()) person.ektefelle = hentEktefelle(personDto)
+        println(person)
         return person
     }
 
@@ -53,35 +53,28 @@ class PersonService(
             .filterNotNull()
     }
 
-    private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
-        if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
-            val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)
-            if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {
-                val ektefelleIdent = sivilstand.relatertVedSivilstand
-                if (ektefelleIdent.isNullOrEmpty()) {
-                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> kaller ikke hentPerson for ektefelle")
-                    return null
-                }
-                if (erFDAT(ektefelleIdent)) {
-                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle")
-                    return null
-                }
+    private fun hentEktefelle(personDto: PersonDto): Ektefelle? {
+        val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand) ?: return null
+        val ektefelleIdent = sivilstand.relatertVedSivilstand ?: return null
+
+        if (!listOf(SivilstandType.GIFT, SivilstandType.REGISTRERT_PARTNER).contains(sivilstand.type)) return null
+
+        return when {
+            adressebeskyttelseService.harAdressebeskyttelse(ektefelleIdent) -> Ektefelle(ikkeTilgangTilEktefelle = true)
+
+            erFDAT(ektefelleIdent) -> {
+                // FDAT brukes ikke lenger i PDL
+                log.warn("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle")
+                null
+            }
+
+            else -> {
                 loggHvisIdentIkkeErFnr(ektefelleIdent)
                 val ektefelleDto = hentPersonClient.hentEktefelle(ektefelleIdent)
-                return mapper.ektefelleDtoToDomain(ektefelleDto, ektefelleIdent, personDto)
+                mapper.ektefelleDtoToDomain(ektefelleDto, ektefelleIdent, personDto)
             }
         }
-        return null
     }
-
-    fun hentAdressebeskyttelse(ident: String): Gradering? {
-        val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident)
-        return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
-    }
-
-    @Cacheable(value = ["PDL-harAdressebeskyttelse"], key = "#ident")
-    fun harAdressebeskyttelse(ident: String): Boolean =
-        hentAdressebeskyttelse(ident) in listOf(Gradering.FORTROLIG, Gradering.STRENGT_FORTROLIG, Gradering.STRENGT_FORTROLIG_UTLAND)
 
     private fun erFDAT(ident: String): Boolean {
         return ident.length == 11 && ident.substring(6).equals("00000", ignoreCase = true)

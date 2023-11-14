@@ -5,10 +5,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.personalia.person.AdressebeskyttelseService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.junit.jupiter.api.AfterEach
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test
 
 internal class InformasjonRessursTest {
 
+    private val adressebeskyttelseService: AdressebeskyttelseService = mockk()
     private val personService: PersonService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
@@ -39,6 +42,7 @@ internal class InformasjonRessursTest {
     private val ressurs = InformasjonRessurs(
         adresseSokService = mockk(),
         personService = personService,
+        adressebeskyttelseService = adressebeskyttelseService,
         soknadMetadataRepository = soknadMetadataRepository,
         pabegynteSoknaderService = pabegynteSoknaderService,
     )
@@ -51,7 +55,7 @@ internal class InformasjonRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { personService.hentPerson(any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
-        every { personService.harAdressebeskyttelse(any()) } returns false
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns false
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns emptyList()
@@ -66,10 +70,16 @@ internal class InformasjonRessursTest {
 
     @Test
     fun `viser adressebeskyttelse`() {
-        every { personService.harAdressebeskyttelse(any()) } returns false
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns false
         assertEquals(false, ressurs.getSessionInfo().userBlocked)
-        every { personService.harAdressebeskyttelse(any()) } returns true
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns true
         assertEquals(true, ressurs.getSessionInfo().userBlocked)
+    }
+
+    @Test
+    fun `kaller ikke hentPerson ved adressebeskyttelse`() {
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns true
+        verify(exactly = 0) { personService.hentPerson(any()) }
     }
 
     @Test

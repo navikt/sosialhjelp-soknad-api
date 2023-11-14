@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.personalia.person.AdressebeskyttelseService
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes
 class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val personService: PersonService,
+    private val adressebeskyttelseService: AdressebeskyttelseService,
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
@@ -54,13 +54,7 @@ class Tilgangskontroll(
      */
     fun verifiserAtBrukerHarTilgang() = verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
 
-    fun verifiserBrukerId(): String {
-        val eier = getUserIdFromToken()
-        verifiserAtBrukerIkkeHarAdressebeskyttelse(eier)
-        return eier
-    }
-
     private fun verifiserAtBrukerIkkeHarAdressebeskyttelse(ident: String) {
-        if (personService.harAdressebeskyttelse(ident)) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+        if (adressebeskyttelseService.harAdressebeskyttelse(ident)) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
     }
 }

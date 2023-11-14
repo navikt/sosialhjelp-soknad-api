@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
+import java.io.Serializable
 import java.time.LocalDate
 
 data class Barn(
@@ -9,4 +10,4 @@ data class Barn(
     val fnr: String,
     val fodselsdato: LocalDate?,
     val folkeregistrertSammen: Boolean
-)
+) : Serializable

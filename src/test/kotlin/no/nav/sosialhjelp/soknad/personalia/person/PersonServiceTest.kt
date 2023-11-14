@@ -13,9 +13,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.ForelderBarnRelasjonDto
-import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
-import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
@@ -65,7 +63,8 @@ internal class PersonServiceTest {
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
     private val helper: MapperHelper = MapperHelper()
-    private val personService = PersonService(hentPersonClient, helper, mapper)
+    private val adressebeskyttelseService: AdressebeskyttelseService = mockk()
+    private val personService = PersonService(hentPersonClient, adressebeskyttelseService, helper, mapper)
 
     private val mockPersonDto = mockk<PersonDto>()
     private val mockEktefelleDto = mockk<EktefelleDto>()
@@ -86,6 +85,8 @@ internal class PersonServiceTest {
     @Test
     fun skalHentePersonMedEktefelle() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns false
+
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
@@ -126,6 +127,8 @@ internal class PersonServiceTest {
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns false
+
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
                 type = SivilstandType.GIFT,
@@ -137,6 +140,34 @@ internal class PersonServiceTest {
 
         val result = personService.hentPerson("ident")
         assertThat(result!!.ektefelle).isNull()
+
+        verify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
+        verify(exactly = 0) { mapper.ektefelleDtoToDomain(any(), any(), any()) }
+    }
+
+    @Test
+    internal fun skalIkkeHenteEktefelleDersomBeskyttet() {
+        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { adressebeskyttelseService.harAdressebeskyttelse(any()) } returns true
+
+        every { mapper.personDtoToDomain(any(), any()) } returns person
+        every { mockPersonDto.sivilstand } returns listOf(
+            SivilstandDto(
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = EKTEFELLE_IDENT,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
+            )
+        )
+
+        val ektefelle = personService.hentPerson("ident")!!.ektefelle!!
+
+        assertThat(ektefelle.ikkeTilgangTilEktefelle).isTrue()
+        assertThat(ektefelle.fnr).isNull()
+        assertThat(ektefelle.fodselsdato).isNull()
+        assertThat(ektefelle.fornavn).isNull()
+        assertThat(ektefelle.mellomnavn).isNull()
+        assertThat(ektefelle.etternavn).isNull()
 
         verify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
         verify(exactly = 0) { mapper.ektefelleDtoToDomain(any(), any(), any()) }
@@ -197,38 +228,5 @@ internal class PersonServiceTest {
 
         verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
         verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
-    }
-
-    @Test
-    internal fun skalHenteAdressebeskyttelse() {
-        val adressebeskyttelse = mockk<PersonAdressebeskyttelseDto>()
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns adressebeskyttelse
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
-
-        val result = personService.hentAdressebeskyttelse("ident")
-        assertThat(result).isNotNull
-        assertThat(result).isEqualTo(Gradering.UGRADERT)
-    }
-
-    @Test
-    internal fun gjenkjennerAdressebeskyttelse() {
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns mockk<PersonAdressebeskyttelseDto>()
-
-        // Ihht. https://pdl-docs.intern.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
-        // hvilket betyr ingen addressebeskyttelse.
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns null
-        assertThat(personService.harAdressebeskyttelse("ident")).isFalse()
-
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
-        assertThat(personService.harAdressebeskyttelse("ident")).isFalse()
-
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.FORTROLIG
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
-
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.STRENGT_FORTROLIG
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
-
-        every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.STRENGT_FORTROLIG_UTLAND
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
     }
 }
