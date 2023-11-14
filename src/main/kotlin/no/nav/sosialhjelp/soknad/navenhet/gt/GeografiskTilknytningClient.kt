@@ -41,7 +41,7 @@ class GeografiskTilknytningClient(
                 baseRequest
                     .header(HEADER_TEMA, TEMA_KOM)
                     .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
+                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, mapOf("ident" to ident)))
                     .retrieve()
                     .bodyToMono<String>()
                     .retryWhen(pdlRetry)
@@ -69,8 +69,6 @@ class GeografiskTilknytningClient(
         cacheKey(ident),
         GeografiskTilknytningDto::class.java
     ) as? GeografiskTilknytningDto
-
-    private fun variables(ident: String): Map<String, Any> = mapOf("ident" to ident)
 
     private fun lagreTilCache(ident: String, geografiskTilknytningDto: GeografiskTilknytningDto) {
         try {
