@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.repository.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.repository.InntektRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.repository.UtgiftRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftRepository
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

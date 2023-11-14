@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -13,6 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping
 import java.util.*
 
+/**
+ * Tidligere ble eier sjekket på nesten alle endepunkt, pluss henting av SoknadUnderArbeid.
+ * Ved kall til API vil denne interceptoren kunne gjøre den sjekken, slik at resterende logikk som trigges
+ * ikke må forholde seg til/sjekke eier.
+ */
 class SoknadEierInterceptor(
     val soknadRepository: SoknadRepository
 ) : HandlerInterceptor {

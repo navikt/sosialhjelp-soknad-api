@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.NySoknadDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.SoknadDto
-import no.nav.sosialhjelp.soknad.nymodell.service.SoknadDetaljerService
+import no.nav.sosialhjelp.soknad.nymodell.service.SoknadService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,7 +18,7 @@ import java.util.*
 @RestController
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadController(
-    val soknadService: SoknadDetaljerService
+    val soknadService: SoknadService
 ) {
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(): NySoknadDto = soknadService.opprettNySoknad()

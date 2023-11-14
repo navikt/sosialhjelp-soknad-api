@@ -8,8 +8,8 @@ import no.nav.sosialhjelp.soknad.nymodell.controller.dto.NySoknadDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.SoknadDto
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Eier
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Soknad
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.repository.SoknadRepository
-import no.nav.sosialhjelp.soknad.nymodell.service.SoknadDetaljerService
+import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.nymodell.service.SoknadService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +34,7 @@ class SoknadEierInterceptorTest {
     @MockkBean
     private lateinit var soknadRepository: SoknadRepository
     @MockkBean
-    private lateinit var soknadService: SoknadDetaljerService
+    private lateinit var soknadService: SoknadService
 
     private val soknadId = UUID.randomUUID()
     private val eier = "09044322843"

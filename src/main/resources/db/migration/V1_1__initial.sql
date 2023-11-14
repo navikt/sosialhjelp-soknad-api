@@ -83,7 +83,8 @@ CREATE TABLE eier
     nordisk_borger bool,
     kontonummer varchar(30),
     telefonnummer varchar(30),
-    folkeregistrert_adresse varchar(255)
+    folkeregistrert_adresse varchar(255),
+    midlertidig_adresse varchar(255)
 );
 
 ALTER TABLE eier
@@ -95,8 +96,7 @@ CREATE TABLE brukerdata
 (
     soknad_id uuid primary key,
     valgt_adresse varchar(30),
-    oppholdsadresse varchar(255),
-
+    oppholdsadresse varchar(255)
 );
 
 ALTER TABLE brukerdata
@@ -104,59 +104,55 @@ ALTER TABLE brukerdata
         FOREIGN KEY ( soknad_id ) REFERENCES soknad( id )
             ON DELETE CASCADE;
 
-CREATE TABLE brukerdata_value
+CREATE TABLE samtykke
 (
     brukerdata uuid not null,
-    brukerdata_key varchar(255) not null,
+    brukerdata_key varchar(50) not null,
+    verdi bool not null,
+    bekreftelsesdato date not null
+);
+
+ALTER TABLE samtykke
+    ADD CONSTRAINT pk_samtykke_brukerdata
+        PRIMARY KEY (brukerdata, brukerdata_key);
+
+ALTER TABLE samtykke
+    ADD CONSTRAINT fk_samtykke_soknad
+        FOREIGN KEY ( brukerdata ) REFERENCES brukerdata( soknad_id )
+            ON DELETE CASCADE;
+
+CREATE TABLE brukerdata_key_value
+(
+    brukerdata uuid not null,
+    key varchar(50) not null,
     value varchar(255)
 );
 
-ALTER TABLE brukerdata_value
+ALTER TABLE brukerdata_key_value
     ADD CONSTRAINT pk_brukerdata_value
-        PRIMARY KEY (brukerdata, brukerdata_key);
+        PRIMARY KEY (brukerdata, key);
 
-ALTER TABLE brukerdata_value
+ALTER TABLE brukerdata_key_value
     ADD CONSTRAINT fk_brukerdata_value_brukerdata
         FOREIGN KEY ( brukerdata ) REFERENCES brukerdata( soknad_id )
             ON DELETE CASCADE;
 
--- CREATE TABLE begrunnelse
--- (
---     soknad uuid primary key,
---     hvorfor_soke varchar(255),
---     hva_sokes_om varchar(255)
--- );
---
--- ALTER TABLE begrunnelse
---     ADD CONSTRAINT fk_begrunnelse_soknad
---         FOREIGN KEY ( soknad ) REFERENCES soknad( soknad_id )
---             ON DELETE CASCADE;
-
-CREATE TABLE arbeid
-(
-    soknad_id uuid primary key,
-    kommentar_arbeid varchar(255)
-);
-
-ALTER TABLE arbeid
-    ADD CONSTRAINT fk_arbeid_soknad
-        FOREIGN KEY ( soknad_id ) REFERENCES soknad( id )
-            ON DELETE CASCADE;
-
 CREATE TABLE arbeidsforhold
 (
+    id uuid primary key,
+    soknad_id uuid not null,
     orgnummer varchar(50),
-    arbeidsgivernavn varchar(255) not null,
+    arbeidsgivernavn varchar(255),
     fra_og_med varchar(50),
     til_og_med varchar(50),
     stillingsprosent numeric,
-    stillingstype varchar(50) not null,
-    arbeid uuid not null
+    stillingstype varchar(50)
 );
 
 ALTER TABLE arbeidsforhold
-    ADD CONSTRAINT fk_arbeidsforhold_arbeid
-        FOREIGN KEY ( arbeid ) REFERENCES arbeid( soknad_id )
+    ADD CONSTRAINT fk_arbeidsforhold_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
             ON DELETE CASCADE;
 
 CREATE TABLE bosituasjon
@@ -416,7 +412,7 @@ ALTER TABLE utbetaling
 
 CREATE TABLE komponent
 (
-    utbetaling uuid,
+    inntekt uuid,
     type varchar(30),
     belop numeric,
     sats_type varchar(30),
@@ -426,6 +422,36 @@ CREATE TABLE komponent
 
 ALTER TABLE komponent
     ADD CONSTRAINT fk_komponent_utbetaling
-        FOREIGN KEY ( utbetaling )
+        FOREIGN KEY ( inntekt )
             REFERENCES utbetaling( inntekt )
+            ON DELETE CASCADE;
+
+CREATE TABLE utdanning
+(
+    soknad_id uuid primary key,
+    er_student boolean not null,
+    student_grad varchar(50)
+);
+
+ALTER TABLE utdanning
+    ADD CONSTRAINT fk_utdanning_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
+            ON DELETE CASCADE;
+
+CREATE TABLE bostotte
+(
+    id uuid primary key,
+    soknad_id uuid not null,
+    type varchar(50),
+    dato date,
+    status varchar(50),
+    beskrivelse varchar(255),
+    vedtaksstatus varchar(50)
+);
+
+ALTER TABLE bostotte
+    ADD CONSTRAINT fk_bostotte_soknad
+        FOREIGN KEY ( soknad_id )
+            REFERENCES soknad( id )
             ON DELETE CASCADE;

@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.integrationtest
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.BosituasjonDto
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Bosituasjon
-import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.repository.BosituasjonRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.type.Botype
+import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.BosituasjonRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Botype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

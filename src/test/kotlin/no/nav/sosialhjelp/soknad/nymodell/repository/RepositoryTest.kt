@@ -1,12 +1,11 @@
 package no.nav.sosialhjelp.soknad.nymodell.repository
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseType
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.GateAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Eier
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.FolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.KontaktInfo
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Navn
+import no.nav.sosialhjelp.soknad.nymodell.domene.common.Navn
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Soknad
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -52,10 +51,11 @@ abstract class RepositoryTest {
                 ),
                 kontaktInfo = KontaktInfo(
                     telefonnummer = "41231322",
-                    folkeregistrertAdresse = FolkeregistrertAdresse(
-                        adresseType = AdresseType.GATEADRESSE,
-                        adresseJson = "En adresse"
-                    ),
+                    folkeregistrertAdresse = GateAdresseObject(
+                        kommunenummer = "2313",
+                        bolignummer = "5",
+                        gatenavn = "Dennevegen"
+                    )
                 )
             ),
 //            brukerdata = mapOf(BrukerdataTypeMapper.BrukerdataType.KONTONUMMER to "3213.22.31322")

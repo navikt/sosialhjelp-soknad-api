@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.repository.okonomi
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Bekreftelse
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.repository.BekreftelseRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseRepository
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

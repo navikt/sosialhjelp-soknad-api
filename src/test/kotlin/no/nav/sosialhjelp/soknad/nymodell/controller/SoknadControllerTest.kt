@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.NySoknadDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.SoknadDto
-import no.nav.sosialhjelp.soknad.nymodell.service.SoknadDetaljerService
+import no.nav.sosialhjelp.soknad.nymodell.service.SoknadService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -18,7 +18,7 @@ import java.util.*
 class SoknadControllerTest: SoknadMockMvcTest() {
 
     @MockkBean
-    private lateinit var soknadService: SoknadDetaljerService
+    private lateinit var soknadService: SoknadService
 
     private val soknadId = UUID.randomUUID()
 

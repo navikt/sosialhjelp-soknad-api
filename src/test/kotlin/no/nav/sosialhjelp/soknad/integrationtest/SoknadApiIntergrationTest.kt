@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.innsending.OldSoknadService
-import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.repository.SoknadRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
