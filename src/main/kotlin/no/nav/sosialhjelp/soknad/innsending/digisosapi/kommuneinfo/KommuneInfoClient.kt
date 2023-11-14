@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -27,7 +28,8 @@ class KommuneInfoClient(
         .baseUrl(digisosApiEndpoint)
         .build()
 
-    fun getAll(): List<KommuneInfo> {
+    @Cacheable(value = ["kommuneinfo"])
+    fun getAll(): List<KommuneInfo>? {
         return kommuneInfoWebClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)
@@ -37,7 +39,6 @@ class KommuneInfoClient(
             .retrieve()
             .bodyToMono<List<KommuneInfo>>()
             .block()
-            ?: emptyList()
     }
 
     fun ping() {

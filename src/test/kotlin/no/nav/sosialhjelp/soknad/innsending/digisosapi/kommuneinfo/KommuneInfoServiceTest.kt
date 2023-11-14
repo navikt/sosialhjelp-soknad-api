@@ -1,27 +1,17 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
-import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 internal class KommuneInfoServiceTest {
 
     private val kommuneInfoClient: KommuneInfoClient = mockk()
-    private val redisService: RedisService = mockk()
-
-    private val kommuneInfoService = KommuneInfoService(kommuneInfoClient, redisService)
+    private val kommuneInfoService = KommuneInfoService(kommuneInfoClient)
 
     companion object {
         private const val KOMMUNENR = "1234"
@@ -54,10 +44,6 @@ internal class KommuneInfoServiceTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-
-        every { redisService.getString(any()) } returns null
-        every { redisService.setex(KOMMUNEINFO_CACHE_KEY, any(), any()) } just Runs
-        every { redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, any()) } just Runs
     }
 
     @Test
@@ -99,9 +85,8 @@ internal class KommuneInfoServiceTest {
     }
 
     @Test
-    internal fun kommuneInfo_fiks_feiler_og_cache_er_tom() {
-        every { kommuneInfoClient.getAll() } returns emptyList()
-        every { redisService.getKommuneInfos() } returns null
+    internal fun kommuneInfo_fiks_feiler() {
+        every { kommuneInfoClient.getAll() } returns null
 
         val kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE)
@@ -137,7 +122,12 @@ internal class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 3 = 0011)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
+        every { kommuneInfoClient.getAll() } returns listOf(
+            kommuneInfo.copy(
+                harMidlertidigDeaktivertMottak = true,
+                harMidlertidigDeaktivertOppdateringer = true
+            )
+        )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
@@ -161,7 +151,13 @@ internal class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 7 = 0111)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
+        every { kommuneInfoClient.getAll() } returns listOf(
+            kommuneInfo.copy(
+                kanOppdatereStatus = true,
+                harMidlertidigDeaktivertMottak = true,
+                harMidlertidigDeaktivertOppdateringer = true
+            )
+        )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
@@ -224,7 +220,12 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
         // Case 6 (permutasjon 15 = 1111)
-        val kommuneInfo = kommuneInfo.copy(kanMottaSoknader = true, kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true)
+        val kommuneInfo = kommuneInfo.copy(
+            kanMottaSoknader = true,
+            kanOppdatereStatus = true,
+            harMidlertidigDeaktivertMottak = true,
+            harMidlertidigDeaktivertOppdateringer = true
+        )
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         val kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
@@ -249,79 +250,9 @@ internal class KommuneInfoServiceTest {
 
     @Test
     internal fun behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarligOgKommuneInfoMapErNull() {
-        every { kommuneInfoClient.getAll() } returns emptyList()
-        every { redisService.getKommuneInfos() } returns null
+        every { kommuneInfoClient.getAll() } returns null
 
         val kommunenavn = kommuneInfoService.getBehandlingskommune(KOMMUNENR, "kommunenavn")
         assertThat(kommunenavn).isEqualTo("kommunenavn")
-    }
-
-    @Test
-    internal fun skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
-        val kommuneInfoMap = mapOf(KOMMUNENR to kommuneInfo)
-
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(2)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { redisService.getKommuneInfos() } returns kommuneInfoMap
-
-        kommuneInfoService.kanMottaSoknader(KOMMUNENR)
-
-        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.getKommuneInfos() }
-    }
-
-    @Test
-    internal fun skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
-
-        kommuneInfoService.kanMottaSoknader(KOMMUNENR)
-
-        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 0) { redisService.getKommuneInfos() }
-    }
-
-    @Test
-    internal fun hentKommuneInfoFraFiksFeiler_brukCache() {
-        val kommuneInfoMap = mapOf(KOMMUNENR to kommuneInfo.copy(kanMottaSoknader = true))
-
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { kommuneInfoClient.getAll() } returns emptyList()
-        every { redisService.getKommuneInfos() } returns kommuneInfoMap
-
-        val kanMottaSoknader = kommuneInfoService.kanMottaSoknader(KOMMUNENR)
-
-        assertThat(kanMottaSoknader).isTrue
-
-        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.getKommuneInfos() }
-    }
-
-    @Test
-    internal fun hentKommuneInfoFraFiksFeiler_cacheErTom() {
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { kommuneInfoClient.getAll() } returns emptyList()
-        every { redisService.getKommuneInfos() } returns null
-
-        val kanMottaSoknader = kommuneInfoService.kanMottaSoknader(KOMMUNENR)
-
-        assertThat(kanMottaSoknader).isFalse
-
-        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.getKommuneInfos() }
-    }
-
-    @Test
-    internal fun hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
-        val cachedKommuneInfoMap = mapOf(KOMMUNENR to kommuneInfo)
-
-        every { kommuneInfoClient.getAll() } returns emptyList()
-        every { redisService.getKommuneInfos() } returns cachedKommuneInfoMap
-
-        val kommuneInfoMap = kommuneInfoService.hentAlleKommuneInfo()
-        assertThat(kommuneInfoMap).isEqualTo(cachedKommuneInfoMap)
     }
 }
