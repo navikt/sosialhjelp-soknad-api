@@ -21,11 +21,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.redis.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.BARN_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.EKTEFELLE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
@@ -53,14 +51,6 @@ class HentPersonClientImpl(
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
 
     override fun hentPerson(ident: String): PersonDto? {
-        return hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
-    }
-
-    private fun hentPersonFraCache(ident: String): PersonDto? {
-        return redisService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
-    }
-
-    private fun hentPersonFraPdl(ident: String): PersonDto? {
         return try {
             val response = hentPersonRequest
                 .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
@@ -72,7 +62,6 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -140,17 +129,6 @@ class HentPersonClientImpl(
     }
 
     override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? {
-        return hentAdressebeskyttelseFraCache(ident) ?: hentAdressebeskyttelseFraPdl(ident)
-    }
-
-    private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? {
-        return redisService.get(
-            ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
-            PersonAdressebeskyttelseDto::class.java
-        ) as? PersonAdressebeskyttelseDto
-    }
-
-    private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? {
         return try {
             val body: String = hentPersonRequest
                 .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
@@ -162,7 +140,6 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {

@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,6 +19,7 @@ class PersonService(
     private val mapper: PdlDtoMapper
 ) {
 
+    @Cacheable(value = ["PDL-hentPerson"], key = "#ident")
     fun hentPerson(ident: String): Person? {
         val personDto = hentPersonClient.hentPerson(ident) ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
@@ -76,6 +78,7 @@ class PersonService(
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }
 
+    @Cacheable(value = ["PDL-harAdressebeskyttelse"], key = "#ident")
     fun harAdressebeskyttelse(ident: String): Boolean =
         hentAdressebeskyttelse(ident) in listOf(Gradering.FORTROLIG, Gradering.STRENGT_FORTROLIG, Gradering.STRENGT_FORTROLIG_UTLAND)
 
