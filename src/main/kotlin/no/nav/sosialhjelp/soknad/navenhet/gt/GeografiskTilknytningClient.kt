@@ -63,19 +63,19 @@ class GeografiskTilknytningClient(
         tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
     }
 
-    private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
-        return redisService.get(
-            GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
-            GeografiskTilknytningDto::class.java
-        ) as? GeografiskTilknytningDto
-    }
+    private fun cacheKey(ident: String) = GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident
+
+    private fun hentFraCache(ident: String): GeografiskTilknytningDto? = redisService.get(
+        cacheKey(ident),
+        GeografiskTilknytningDto::class.java
+    ) as? GeografiskTilknytningDto
 
     private fun variables(ident: String): Map<String, Any> = mapOf("ident" to ident)
 
     private fun lagreTilCache(ident: String, geografiskTilknytningDto: GeografiskTilknytningDto) {
         try {
             redisService.setex(
-                GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
+                cacheKey(ident),
                 pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
                 PDL_CACHE_SECONDS
             )
