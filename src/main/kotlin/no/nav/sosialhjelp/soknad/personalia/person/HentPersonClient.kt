@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
@@ -21,10 +20,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.redis.BARN_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.EKTEFELLE_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -44,7 +39,6 @@ class HentPersonClientImpl(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
-    private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder
@@ -71,14 +65,6 @@ class HentPersonClientImpl(
     }
 
     override fun hentEktefelle(ident: String): EktefelleDto? {
-        return hentEktefelleFraCache(ident) ?: hentEktefelleFraPdl(ident)
-    }
-
-    private fun hentEktefelleFraCache(ident: String): EktefelleDto? {
-        return redisService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
-    }
-
-    private fun hentEktefelleFraPdl(ident: String): EktefelleDto? {
         return try {
             val response = hentPersonRequest
                 .header(AUTHORIZATION, BEARER + azureAdToken())
@@ -90,7 +76,6 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -100,14 +85,6 @@ class HentPersonClientImpl(
     }
 
     override fun hentBarn(ident: String): BarnDto? {
-        return hentBarnFraCache(ident) ?: hentBarnFraPdl(ident)
-    }
-
-    private fun hentBarnFraCache(ident: String): BarnDto? {
-        return redisService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
-    }
-
-    private fun hentBarnFraPdl(ident: String): BarnDto? {
         return try {
             val response: String = hentPersonRequest
                 .header(AUTHORIZATION, BEARER + azureAdToken())
@@ -119,7 +96,6 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -161,14 +137,6 @@ class HentPersonClientImpl(
     }
 
     private val hentPersonRequest get() = baseRequest.header(HEADER_TEMA, TEMA_KOM)
-
-    private fun lagreTilCache(prefix: String, ident: String, pdlResponse: Any) {
-        try {
-            redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
-        } catch (e: JsonProcessingException) {
-            log.error("Noe feilet ved serialisering av response fra Pdl - ${pdlResponse.javaClass.name}", e)
-        }
-    }
 
     companion object {
         private val log = getLogger(HentPersonClient::class.java)

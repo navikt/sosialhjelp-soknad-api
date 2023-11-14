@@ -29,6 +29,7 @@ class PersonService(
         return person
     }
 
+    @Cacheable(value = ["PDL-hentBarnForPerson"], key = "#ident")
     fun hentBarnForPerson(ident: String): List<Barn>? {
         val personDto = hentPersonClient.hentPerson(ident)
         if (personDto?.forelderBarnRelasjon == null) {
