@@ -29,7 +29,6 @@ class GeografiskTilknytningClient(
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
-
         try {
             val response: String =
                 baseRequest
