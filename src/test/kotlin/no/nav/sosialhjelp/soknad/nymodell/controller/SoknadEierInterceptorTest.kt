@@ -49,7 +49,7 @@ class SoknadEierInterceptorTest {
 
     @Test
     fun `Kall til opprettSoknad er eksludert fra interceptor`() {
-        every { soknadService.opprettNySoknad() } returns NySoknadDto(soknadId = soknadId)
+        every { soknadService.opprettNySoknad(any()) } returns NySoknadDto(soknadId = soknadId)
 
         setUser("12345612345")
         mockMvc

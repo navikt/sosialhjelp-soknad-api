@@ -28,7 +28,7 @@ class SoknadControllerTest: SoknadMockMvcTest() {
 
     @Test
     fun `Opprett ny soknad`() {
-        every { soknadService.opprettNySoknad() } returns NySoknadDto(soknadId)
+        every { soknadService.opprettNySoknad(any()) } returns NySoknadDto(soknadId)
 
         mockMvc
             .post("/soknad/opprettSoknad") {

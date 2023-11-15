@@ -109,7 +109,7 @@ CREATE TABLE samtykke
     brukerdata uuid not null,
     brukerdata_key varchar(50) not null,
     verdi bool not null,
-    bekreftelsesdato date not null
+    dato date not null
 );
 
 ALTER TABLE samtykke

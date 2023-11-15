@@ -21,7 +21,7 @@ class SoknadController(
     val soknadService: SoknadService
 ) {
     @PostMapping("/opprettSoknad")
-    fun opprettSoknad(): NySoknadDto = soknadService.opprettNySoknad()
+    fun opprettSoknad(): NySoknadDto = soknadService.opprettNySoknad(UUID.randomUUID())
 
     @GetMapping("/{soknadId}")
     fun hentSoknad(@PathVariable("soknadId") soknadId: UUID): SoknadDto = soknadService.hentSoknad(soknadId)

@@ -30,7 +30,7 @@ class BosituasjonIT: SoknadApiIntergrationTest() {
         val response = doUpdate(
             soknadId, botype, antallPersoner
         )
-        assertThat(response.statusCode.value()).isEqualTo(204)
+        assertThat(response.statusCode.value()).isEqualTo(200)
 
         bosituasjonRepository.findById(soknadId).getOrNull()?.let {
             assertThat(it.botype).isEqualTo(botype)
@@ -50,7 +50,7 @@ class BosituasjonIT: SoknadApiIntergrationTest() {
         assertThat(response.statusCode.value()).isEqualTo(200)
 
         val bosituasjonDto = response.body!!
-        assertThat(bosituasjonDto.botype).isEqualTo(Botype.FAMILIE.name)
+        assertThat(bosituasjonDto.botype).isEqualTo(Botype.FAMILIE)
         assertThat(bosituasjonDto.antallPersoner).isEqualTo(5)
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadId.toString(), eier())
