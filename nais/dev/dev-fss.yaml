@@ -48,6 +48,9 @@ spec:
   tokenx:
     enabled: true
   accessPolicy:
+    outbound:
+      external:
+        - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
     inbound:
       rules:
         - application: mine-saker-api
@@ -78,6 +81,7 @@ spec:
     - secret: fiks-integrasjon-secret
     - secret: fiks-svarut-credentials
     - secret: testbruker-skatteetaten
+    - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: "log-kibana"
@@ -119,8 +123,8 @@ spec:
       value: "dev-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
       value: "dev-fss.pdl.pdl-api"
-    - name: UNLEASH_API_URL
-      value: "https://unleash.nais.io/api"
+    - name: UNLEASH_ENV
+      value: "dev-fss"
     - name: SCHEDULER_DISABLE
       value: "false"
     - name: SOKNADSOSIALHJELPDATASOURCE_URL

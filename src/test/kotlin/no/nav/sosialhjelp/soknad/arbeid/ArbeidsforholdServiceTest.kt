@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.mockk
-import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto

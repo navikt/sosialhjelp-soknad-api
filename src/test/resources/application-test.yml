@@ -59,7 +59,9 @@ ereg_url: https://ereg/
 aareg_url: https://aareg/
 krr_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
-unleash_api_url: https://unleash.nais.io/api
+unleash_env: "local"
+unleash_server_api_url: "http://localhost:58888"
+unleash_server_api_token: "localtoken"
 kodeverk_url: https://kodeverk/
 utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
 kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no

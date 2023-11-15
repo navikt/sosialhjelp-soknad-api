@@ -30,7 +30,7 @@ object Versions {
     const val jakartaServlet = "5.0.0"
     const val jakartaXmlBind = "4.0.0"
     const val jakartaValidation = "3.0.2"
-    const val unleashClient = "3.3.4"
+    const val unleashClient = "8.4.0"
     const val tika = "2.7.0"
     const val reactorNettyHttp = "1.1.5"
     const val commonsText = "1.10.0"
@@ -43,7 +43,6 @@ object Versions {
     // constraints
     const val slf4j = "2.0.6"
     const val log4j = "2.19.0"
-    const val gson = "2.10"
     const val jodatime = "2.12.2"
     const val jsonsmart = "2.4.10"
     const val nimbusOauth2 = "10.7"
@@ -185,7 +184,7 @@ dependencies {
     runtimeOnly("jakarta.validation:jakarta.validation-api:${Versions.jakartaValidation}")
 
     // Unleash
-    implementation("no.finn.unleash:unleash-client-java:${Versions.unleashClient}")
+    implementation("io.getunleash:unleash-client-java:${Versions.unleashClient}")
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
@@ -236,7 +235,6 @@ dependencies {
         implementation("ch.qos.logback:logback-core") {
             version { strictly(Versions.logback) }
         }
-        implementation("com.google.code.gson:gson:${Versions.gson}")
         implementation("joda-time:joda-time:${Versions.jodatime}")
         implementation("net.minidev:json-smart:${Versions.jsonsmart}") {
             because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")

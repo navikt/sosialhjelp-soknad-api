@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration
 
-import no.finn.unleash.Unleash
+import io.getunleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.finn.unleash.Unleash
+import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
