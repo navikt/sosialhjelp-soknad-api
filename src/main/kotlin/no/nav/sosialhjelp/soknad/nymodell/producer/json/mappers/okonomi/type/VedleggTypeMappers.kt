@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi.type
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_AKSJER
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_ANNET
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_BRUKSKONTO
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_BSU
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_LIVSFORSIKRING
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_SPAREKONTO
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.AKSJER
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.ANNET
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.BRUKSKONTO
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.BSU
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.LIVSFORSIKRING
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.SPAREKONTO
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.GenerellOkonomiType
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.BARNEBIDRAG_MOTTAR
@@ -72,12 +72,12 @@ fun UtgiftType.toTypeAndTilleggsinfo(): TypeOgTilleggsinfo {
 
 fun FormueType.toTypeAndTilleggsinfo(): TypeOgTilleggsinfo {
     return when (this) {
-        KONTOOVERSIKT_AKSJER -> wrap("kontooversikt", "aksjer")
-        KONTOOVERSIKT_ANNET -> wrap("kontooversikt", "annet")
-        KONTOOVERSIKT_BRUKSKONTO -> wrap("kontooversikt", "brukskonto")
-        KONTOOVERSIKT_BSU -> wrap("kontooversikt", "bsu")
-        KONTOOVERSIKT_LIVSFORSIKRING -> wrap("kontooversikt", "livsforsikring")
-        KONTOOVERSIKT_SPAREKONTO -> wrap("kontooversikt", "sparekonto")
+        AKSJER -> wrap("kontooversikt", "aksjer")
+        ANNET -> wrap("kontooversikt", "annet")
+        BRUKSKONTO -> wrap("kontooversikt", "brukskonto")
+        BSU -> wrap("kontooversikt", "bsu")
+        LIVSFORSIKRING -> wrap("kontooversikt", "livsforsikring")
+        SPAREKONTO -> wrap("kontooversikt", "sparekonto")
     }
 }
 

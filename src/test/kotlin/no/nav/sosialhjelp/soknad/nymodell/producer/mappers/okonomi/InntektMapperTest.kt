@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.producer.mappers.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.LONNSLIPP_ARBEID

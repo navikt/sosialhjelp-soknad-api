@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.producer.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barn
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Forsorger
@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.familie.ForsorgerRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.SivilstandRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Navn
+import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.FamilieMapper
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest

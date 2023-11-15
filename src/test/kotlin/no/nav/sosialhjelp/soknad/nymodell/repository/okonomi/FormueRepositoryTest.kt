@@ -16,7 +16,7 @@ class FormueRepositoryTest: RepositoryTest() {
     fun `Lagre formue`() {
         val soknad = opprettSoknad()
 
-        Formue(soknadId = soknad.id, type = FormueType.KONTOOVERSIKT_ANNET).also {
+        Formue(soknadId = soknad.id, type = FormueType.ANNET).also {
             formueRepository.save(it)
         }
     }

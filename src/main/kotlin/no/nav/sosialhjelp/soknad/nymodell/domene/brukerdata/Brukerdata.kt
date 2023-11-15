@@ -2,10 +2,9 @@ package no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubbleRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubble
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubbleRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubble
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.stereotype.Repository
@@ -29,12 +28,12 @@ data class Brukerdata(
 
 data class Samtykke(
     val verdi: Boolean,
-    val bekreftelsesdato: LocalDate
+    val dato: LocalDate
 )
 
 enum class SamtykkeType(tittel: String) {
-    BOSTOTTE_SAMTYKKE("inntekt.bostotte.samtykke"),
-    UTBETALING_SKATTEETATEN_SAMTYKKE("utbetalinger.skattbar.samtykke");
+    BOSTOTTE("inntekt.bostotte.samtykke"),
+    UTBETALING_SKATTEETATEN("utbetalinger.skattbar.samtykke");
 }
 
 // Wrapper-klasse for brukerdata-key-values

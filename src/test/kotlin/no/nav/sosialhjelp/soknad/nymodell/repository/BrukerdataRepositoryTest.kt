@@ -31,7 +31,7 @@ class BrukerdataRepositoryTest: RepositoryTest() {
             valgtAdresse = AdresseValg.SOKNAD,
             oppholdsadresse = MatrikkelAdresseObject(kommunenummer = "3211"),
         ).apply {
-            samtykker[SamtykkeType.BOSTOTTE_SAMTYKKE] = Samtykke(true, LocalDate.now())
+            samtykker[SamtykkeType.BOSTOTTE] = Samtykke(true, LocalDate.now())
             keyValueStore.update(BegrunnelseKey.HVA_SOKES_OM, "Penger!")
             keyValueStore.update(BegrunnelseKey.HVORFOR_SOKE, "Fordi jeg må")
         }.also { brukerdataRepository.save(it) }

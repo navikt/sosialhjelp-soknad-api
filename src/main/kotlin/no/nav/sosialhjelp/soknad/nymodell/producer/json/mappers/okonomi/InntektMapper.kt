@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
@@ -10,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.*
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
@@ -74,7 +72,7 @@ class InntektMapper(
             .withBrutto(brutto?.toDouble())
             .withSkattetrekk(utbetaling.skattetrekk)
             .withAndreTrekk(utbetaling.andreTrekk)
-            .withUtbetalingsdato(utbetaling.utbetalingsdato.toString())
+            .withUtbetalingsdato(utbetaling.dato.toString())
             .withPeriodeFom(utbetaling.periodeStart.toString())
             .withPeriodeTom(utbetaling.periodeSlutt.toString())
             .withKomponenter(

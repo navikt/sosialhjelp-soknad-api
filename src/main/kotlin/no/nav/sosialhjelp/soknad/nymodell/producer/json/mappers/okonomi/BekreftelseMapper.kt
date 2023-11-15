@@ -31,6 +31,6 @@ class BekreftelseMapper(
             .withType(type?.toSoknadJsonType())
             .withTittel(tittel)
             .withVerdi(bekreftet)
-            .withBekreftelsesDato(bekreftelsesDato.toString())
+            .withBekreftelsesDato(dato.toString())
     }
 }

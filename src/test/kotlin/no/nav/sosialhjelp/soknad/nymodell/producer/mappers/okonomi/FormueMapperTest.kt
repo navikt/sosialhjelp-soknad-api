@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.nymodell.producer.mappers.okonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Formue
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_BRUKSKONTO
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.KONTOOVERSIKT_SPAREKONTO
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.BRUKSKONTO
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.SPAREKONTO
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi.FormueMapper
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi.type.toSoknadJsonType
@@ -34,8 +34,8 @@ class FormueMapperTest: RepositoryTest() {
 
         with (json.soknad.data.okonomi.oversikt) {
             assertThat(formue).hasSize(2)
-            assertThat(formue.find { it.type == KONTOOVERSIKT_BRUKSKONTO.toSoknadJsonType() }).isNotNull
-            assertThat(formue.find { it.type == KONTOOVERSIKT_SPAREKONTO.toSoknadJsonType() }).isNotNull
+            assertThat(formue.find { it.type == BRUKSKONTO.toSoknadJsonType() }).isNotNull
+            assertThat(formue.find { it.type == SPAREKONTO.toSoknadJsonType() }).isNotNull
         }
     }
 
@@ -44,11 +44,11 @@ class FormueMapperTest: RepositoryTest() {
             listOf(
                 Formue(
                     soknadId = soknadId,
-                    type = KONTOOVERSIKT_BRUKSKONTO,
+                    type = BRUKSKONTO,
                 ),
                 Formue(
                     soknadId = soknadId,
-                    type = KONTOOVERSIKT_SPAREKONTO,
+                    type = SPAREKONTO,
                 )
             )
         )

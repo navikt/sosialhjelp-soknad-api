@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.familie
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubbleRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Kilde
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubble
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Navn
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubbleRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubble
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.stereotype.Repository

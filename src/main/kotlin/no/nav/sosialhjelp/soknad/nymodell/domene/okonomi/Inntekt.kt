@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Kilde
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubblesRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubbles
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -28,10 +28,10 @@ data class Utbetaling (
     val belop: Int? = null,
     val skattetrekk: Double? = null,
     val andreTrekk: Double? = null,
-    val utbetalingsdato: LocalDate? = null,
+    val dato: LocalDate? = null,
     val periodeStart: LocalDate? = null,
     val periodeSlutt: LocalDate? = null,
-    val komponent: Set<Komponent>? = null
+    val komponent: Set<Komponent>? = null // TODO Kan Komponenter være HELT identiske, og bør isåfall være list?
 )
 
 data class Komponent (

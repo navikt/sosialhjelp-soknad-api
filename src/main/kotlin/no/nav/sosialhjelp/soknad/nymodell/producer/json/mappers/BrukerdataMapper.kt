@@ -75,7 +75,7 @@ class BrukerdataMapper(
         .withKilde(JsonKilde.BRUKER)
         .withType(type.toSoknadJsonType())
         .withVerdi(verdi)
-        .withBekreftelsesDato(bekreftelsesdato.toString())
+        .withBekreftelsesDato(dato.toString())
 
     private fun Brukerdata.mapKeyValueData(json: JsonInternalSoknad) {
         keyValueStoreSet.forEach {

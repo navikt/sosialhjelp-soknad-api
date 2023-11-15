@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubbleRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubble
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubbleRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubble
 import org.springframework.data.annotation.Id
 import org.springframework.stereotype.Repository
 import java.util.*

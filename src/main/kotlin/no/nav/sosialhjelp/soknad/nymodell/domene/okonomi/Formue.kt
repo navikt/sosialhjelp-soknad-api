@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubblesRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubbles
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -21,10 +21,10 @@ data class Formue (
 enum class FormueType(
     tittel: String = ""
 ): OkonomiType {
-    KONTOOVERSIKT_AKSJER("opplysninger.inntekt.bankinnskudd.aksjer"),
-    KONTOOVERSIKT_ANNET("opplysninger.inntekt.bankinnskudd.annet"),
-    KONTOOVERSIKT_BRUKSKONTO("opplysninger.inntekt.bankinnskudd.brukskonto"),
-    KONTOOVERSIKT_BSU("opplysninger.inntekt.bankinnskudd.bsu"),
-    KONTOOVERSIKT_LIVSFORSIKRING("opplysninger.inntekt.bankinnskudd.livsforsikring"),
-    KONTOOVERSIKT_SPAREKONTO("opplysninger.inntekt.bankinnskudd.sparekonto");
+    AKSJER("opplysninger.inntekt.bankinnskudd.aksjer"),
+    ANNET("opplysninger.inntekt.bankinnskudd.annet"),
+    BRUKSKONTO("opplysninger.inntekt.bankinnskudd.brukskonto"),
+    BSU("opplysninger.inntekt.bankinnskudd.bsu"),
+    LIVSFORSIKRING("opplysninger.inntekt.bankinnskudd.livsforsikring"),
+    SPAREKONTO("opplysninger.inntekt.bankinnskudd.sparekonto");
 }

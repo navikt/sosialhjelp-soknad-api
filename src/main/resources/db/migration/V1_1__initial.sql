@@ -198,51 +198,6 @@ ALTER TABLE fil
             REFERENCES vedlegg( id )
             ON DELETE CASCADE;
 
-create table adresse_for_soknad
-(
-    soknad_id uuid not null,
-    type_adressevalg varchar(30) not null,
-    adresse_type varchar(30) not null,
-    adresse_json text not null
-);
-
-ALTER TABLE adresse_for_soknad
-    ADD CONSTRAINT pk_adresse_for_soknad
-        PRIMARY KEY (soknad_id, type_adressevalg);
-
-
-ALTER TABLE adresse_for_soknad
-    ADD CONSTRAINT fk_afs_soknad
-        FOREIGN KEY ( soknad_id )
-            REFERENCES soknad( id )
-            ON DELETE CASCADE;
-
--- Knytter person til soknad slik at databasen kan fjerne personinnslag når soknad slettes
--- Dette kan føre til at det forekommer duplikate personer i listen - men siden informasjonen uansett ligger i
--- en begrenset periode, antas overhead å være minimal
-CREATE TABLE person_for_soknad
-(
-    person_id varchar(30) not null,
-    soknad_id uuid not null,
-    fornavn varchar(255),
-    mellomnavn varchar(255),
-    etternavn varchar(255),
-    statsborgerskap varchar(50),
-    nordisk_borger bool,
-    fodselsdato varchar(30)
-);
-
-ALTER TABLE person_for_soknad
-    ADD CONSTRAINT pk_person_for_soknad
-        PRIMARY KEY (person_id, soknad_id);
-
-ALTER TABLE person_for_soknad
-    ADD CONSTRAINT fk_pfs_soknad
-        FOREIGN KEY ( soknad_id )
-            REFERENCES soknad( id )
-            ON DELETE CASCADE;
-
-
 CREATE TABLE sivilstand
 (
     soknad_id uuid primary key,
@@ -312,23 +267,6 @@ ALTER TABLE barn
             REFERENCES forsorger( soknad_id )
             ON DELETE CASCADE;
 
-CREATE TABLE kontonummer
-(
-    soknad_id uuid not null,
-    kilde varchar(30) not null,
-    nummer varchar(30) not null
-);
-
-ALTER TABLE kontonummer
-    ADD CONSTRAINT pk_kontonummer
-        PRIMARY KEY (soknad_id, kilde);
-
-ALTER TABLE kontonummer
-    ADD CONSTRAINT fk_konto_soknad
-        FOREIGN KEY ( soknad_id )
-            REFERENCES soknad( id )
-            ON DELETE CASCADE;
-
 CREATE TABLE utgift
 (
     id uuid primary key,
@@ -366,7 +304,7 @@ CREATE TABLE bekreftelse
     type varchar(50),
     tittel varchar(50),
     bekreftet bool,
-    bekreftelses_dato timestamp
+    dato timestamp
 );
 
 ALTER TABLE bekreftelse
@@ -393,13 +331,13 @@ ALTER TABLE inntekt
 
 CREATE TABLE utbetaling
 (
-    kilde varchar(15) not null,
     inntekt uuid primary key,
+    kilde varchar(15) not null,
     orgnummer varchar(30),
     belop numeric,
     skattetrekk numeric,
     andre_trekk numeric,
-    utbetalingsdato timestamp,
+    dato timestamp,
     periode_start timestamp,
     periode_slutt timestamp
 );

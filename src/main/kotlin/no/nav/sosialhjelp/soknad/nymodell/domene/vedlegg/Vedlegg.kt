@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubblesRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.OkonomiType
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.HasUuidAsId
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubbles
+import no.nav.sosialhjelp.soknad.nymodell.domene.HasUuidAsId
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
 import org.springframework.data.annotation.Id
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -22,7 +22,7 @@ data class Vedlegg (
     override val soknadId: UUID,
     val vedleggType: OkonomiType,
     val status: VedleggStatus,
-    val hendelseType: VedleggHendelseType,
+    val hendelseType: HendelseType,
     val hendelseReferanse: String,
 ): SoknadBubbles(id, soknadId)
 
@@ -30,22 +30,12 @@ enum class VedleggStatus {
     KREVES, LASTET_OPP, LEVERT
 }
 
-enum class VedleggHendelseType(value: String?) {
+enum class HendelseType(value: String?) {
     DOKUMENTASJON_ETTERSPURT("dokumentasjonEtterspurt"),
     DOKUMENTASJONKRAV("dokumentasjonkrav"),
     SOKNAD("soknad"),
     BRUKER("bruker");
 }
-
-/**
- * Slik vi har håndtert filopplasting, er det fristende å håndtere filer som en semantisk kobling til Vedlegg
- * på samme måte som SoknadBubble(s) er koblet til Soknad. Dog bør det være andre måter å håndtere filopplasting
- * på som gjør at Filmeta kan være en del av aggregatet til Vedlegg, og ikke stand-alone.
- */
-abstract class VedleggBubbles (
-    override val id: UUID = UUID.randomUUID(),
-    open val vedleggId: UUID
-): HasUuidAsId
 
 @Repository
 interface FilMetaRepository : ListCrudRepository<FilMeta, UUID> {
@@ -54,7 +44,7 @@ interface FilMetaRepository : ListCrudRepository<FilMeta, UUID> {
 
 data class FilMeta (
     @Id override val id: UUID = UUID.randomUUID(),
-    override val vedleggId: UUID,
+    val vedleggId: UUID,
     val filnavn: String? = null,
     val sha512: String? = null
-): VedleggBubbles(id, vedleggId)
+): HasUuidAsId

@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.BubblesRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.SoknadBubbles
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
+import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.stereotype.Repository
 import java.time.LocalDate

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.nymodell.domene.common
+package no.nav.sosialhjelp.soknad.nymodell.domene
 
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.data.repository.NoRepositoryBean

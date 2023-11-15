@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.nymodell.repository.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.common.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,7 +46,7 @@ fun createFullInntekt(soknadId: UUID): Inntekt {
             belop = 1412,
             skattetrekk = 241.44,
             andreTrekk = 21512.22,
-            utbetalingsdato = LocalDate.now(),
+            dato = LocalDate.now(),
             periodeStart = LocalDate.of(2022, 12, 1),
             periodeSlutt = LocalDate.of(2022, 12, 31),
             komponent = setOf(
