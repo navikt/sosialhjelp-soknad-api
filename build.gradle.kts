@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
-    const val springBoot = "3.1.3" // Husk å oppdatere plugin også
+    const val springBoot = "3.1.5" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
     const val sosialhjelpCommon = "1.20230918.1754-8d4249c"
@@ -14,7 +14,7 @@ object Versions {
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.1.0"
+    const val tokenValidation = "3.1.8"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
@@ -32,7 +32,7 @@ object Versions {
     const val jakartaValidation = "3.0.2"
     const val unleashClient = "8.4.0"
     const val tika = "2.7.0"
-    const val reactorNettyHttp = "1.1.5"
+    const val reactorNettyHttp = "1.1.13"
     const val commonsText = "1.10.0"
     const val commonsCodec = "1.15"
     const val jaxbRuntime = "4.0.2"
@@ -46,7 +46,7 @@ object Versions {
     const val jodatime = "2.12.2"
     const val jsonsmart = "2.4.10"
     const val nimbusOauth2 = "10.7"
-    const val json = "20230227"
+    const val json = "20231013"
     const val byteBuddy = "1.12.20"
     const val jbossLogging = "3.5.0.Final"
     const val errorProneAnnotations = "2.15.0"
@@ -56,7 +56,7 @@ object Versions {
     const val mockOauth2Server = "0.5.8"
     const val snakeyaml = "2.0"
     const val springWebMvc = "6.0.9"
-    const val nettyHandler = "4.1.94.Final"
+    const val nettyHandler = "4.1.101.Final"
     const val bouncyCastle = "1.74"
     const val jettyHttp = "11.0.16"
     const val commonsCompress = "1.24.0"
