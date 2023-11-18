@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.integrationtest
+package no.nav.sosialhjelp.soknad.nymodell.integration
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.BosituasjonDto

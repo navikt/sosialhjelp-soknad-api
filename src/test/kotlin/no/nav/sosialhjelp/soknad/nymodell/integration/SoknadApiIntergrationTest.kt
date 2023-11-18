@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.integrationtest
+package no.nav.sosialhjelp.soknad.nymodell.integration
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
