@@ -14,7 +14,7 @@ import java.util.*
 @Component
 class BekreftelseMapper(
     private val bekreftelseRepository: BekreftelseRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         json.createChildrenIfNotExists()
         json.soknad.data.okonomi.opplysninger

@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 
 @WebMvcTest(controllers = [SoknadController::class])
-class SoknadControllerTest: SoknadMockMvcTest() {
+class SoknadControllerTest : SoknadMockMvcTest() {
 
     @MockkBean
     private lateinit var soknadService: SoknadService

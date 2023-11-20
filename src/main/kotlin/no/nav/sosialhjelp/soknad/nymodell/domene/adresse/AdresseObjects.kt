@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.adresse
 
 interface AdresseObject
-data class MatrikkelAdresseObject (
+data class MatrikkelAdresseObject(
     val kommunenummer: String? = null,
     val gaardsnummer: String? = null,
     val bruksnummer: String? = null,
     val festenummer: String? = "0",
     val seksjonsnummer: String? = "0",
     val undernummer: String? = "0"
-): AdresseObject
+) : AdresseObject
 
-data class GateAdresseObject (
+data class GateAdresseObject(
     val landkode: String = "NO",
     val kommunenummer: String? = null,
     val adresselinjer: List<String> = emptyList(),
@@ -20,14 +20,14 @@ data class GateAdresseObject (
     val gatenavn: String? = null,
     val husnummer: String? = null,
     val husbokstav: String? = null
-): AdresseObject
+) : AdresseObject
 
-data class PostboksAdresseObject (
+data class PostboksAdresseObject(
     val postboks: String,
     val postnummer: String,
     val poststed: String
-): AdresseObject
+) : AdresseObject
 
-data class UstrukturertAdresseObject (
+data class UstrukturertAdresseObject(
     val adresse: List<String>
-): AdresseObject
+) : AdresseObject

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.okonomi
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
 import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
 import org.springframework.data.annotation.Id
@@ -10,9 +10,9 @@ import java.time.LocalDate
 import java.util.*
 
 @Repository
-interface InntektRepository: UpsertRepository<Inntekt>, BubblesRepository<Inntekt>
+interface InntektRepository : UpsertRepository<Inntekt>, BubblesRepository<Inntekt>
 
-data class Inntekt (
+data class Inntekt(
     @Id override val id: UUID = UUID.randomUUID(),
     override val soknadId: UUID,
     val type: InntektType,
@@ -20,9 +20,9 @@ data class Inntekt (
     val brutto: Int? = null,
     val netto: Int? = null,
     val utbetaling: Utbetaling? = null,
-): SoknadBubbles(id, soknadId)
+) : SoknadBubbles(id, soknadId)
 
-data class Utbetaling (
+data class Utbetaling(
     val kilde: Kilde,
     val orgnummer: String? = null,
     val belop: Int? = null,
@@ -34,7 +34,7 @@ data class Utbetaling (
     val komponent: Set<Komponent>? = null // TODO Kan Komponenter være HELT identiske, og bør isåfall være list?
 )
 
-data class Komponent (
+data class Komponent(
     val type: String? = null,
     val belop: Double? = null,
     val satsType: String? = null,
@@ -44,7 +44,7 @@ data class Komponent (
 
 enum class InntektType(
     tittel: String = ""
-): OkonomiType {
+) : OkonomiType {
     BARNEBIDRAG_MOTTAR,
     DOKUMENTASJON_ANNET_INNTEKTER("opplysninger.inntekt.inntekter.annet"),
     DOKUMENTASJON_FORSIKRINGSUTBETALING("opplysninger.inntekt.inntekter.forsikringsutbetalinger"),

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UtdanningRepository: UpsertRepository<Utdanning>, BubbleRepository<Utdanning>
+interface UtdanningRepository : UpsertRepository<Utdanning>, BubbleRepository<Utdanning>
 
-data class Utdanning (
+data class Utdanning(
     @Id override val soknadId: UUID,
     val erStudent: Boolean,
     val studentGrad: Studentgrad? = null
-): SoknadBubble(soknadId)
+) : SoknadBubble(soknadId)
 
 enum class Studentgrad {
     HELTID, DELTID

@@ -47,7 +47,7 @@ class ArbeidController(
         )
     }
 
-    private fun Arbeidsforhold.toResponse() = ArbeidsforholdDto (
+    private fun Arbeidsforhold.toResponse() = ArbeidsforholdDto(
         arbeidsgivernavn = arbeidsgivernavn,
         fraOgMed = fraOgMed.toString(),
         tilOgMed = tilOgMed.toString(),
@@ -55,5 +55,3 @@ class ArbeidController(
         stillingsprosent = stillingsprosent
     )
 }
-
-

@@ -1,16 +1,16 @@
-//package no.nav.sosialhjelp.soknad.nymodell.repository
+// package no.nav.sosialhjelp.soknad.nymodell.repository
 //
-//import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Bosituasjon
-//import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.repository.BosituasjonRepository
-//import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.type.Botype
-//import org.assertj.core.api.Assertions.assertThat
-//import org.assertj.core.api.Assertions.assertThatThrownBy
-//import org.junit.jupiter.api.Test
-//import org.springframework.beans.factory.annotation.Autowired
-//import org.springframework.data.relational.core.conversion.DbActionExecutionException
-//import java.util.*
+// import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Bosituasjon
+// import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.repository.BosituasjonRepository
+// import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.type.Botype
+// import org.assertj.core.api.Assertions.assertThat
+// import org.assertj.core.api.Assertions.assertThatThrownBy
+// import org.junit.jupiter.api.Test
+// import org.springframework.beans.factory.annotation.Autowired
+// import org.springframework.data.relational.core.conversion.DbActionExecutionException
+// import java.util.*
 //
-//class BosituasjonRepositoryTest : RepositoryTest() {
+// class BosituasjonRepositoryTest : RepositoryTest() {
 //
 //    @Autowired
 //    private lateinit var bosituasjonRepository: BosituasjonRepository
@@ -69,4 +69,4 @@
 //
 //    fun opprettBosituasjon(uuid: UUID) =
 //        bosituasjonRepository.save(Bosituasjon(id = uuid, Botype.EIER, 4))
-//}
+// }

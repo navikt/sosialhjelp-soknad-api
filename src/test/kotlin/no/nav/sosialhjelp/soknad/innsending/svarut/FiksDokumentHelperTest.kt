@@ -6,12 +6,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

@@ -38,7 +38,7 @@ import java.util.*
 @Component
 class BrukerdataMapper(
     private val brukerdataRepository: BrukerdataRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         val brukerdata = brukerdataRepository.findById(soknadId).get()
         brukerdata.also {
@@ -79,7 +79,7 @@ class BrukerdataMapper(
 
     private fun Brukerdata.mapKeyValueData(json: JsonInternalSoknad) {
         keyValueStoreSet.forEach {
-            when(it.key) {
+            when (it.key) {
                 is GenerelleDataKey -> it.mapGenerelleDataKeyValue(json)
                 is BegrunnelseKey -> json.addJsonBegrunnelse(it)
                 is BeskrivelseAvAnnetKey -> json.addJsonBeskrivelserAvAnnet(it)
@@ -126,7 +126,7 @@ class BrukerdataMapper(
                     BARNEUTGIFTER -> barneutgifter = keyValue.value
                     BOUTGIFTER -> boutgifter = keyValue.value
                     SPARING -> sparing = keyValue.value
-                    VERDI -> verdi =keyValue.value
+                    VERDI -> verdi = keyValue.value
                     UTBETALING -> utbetaling = keyValue.value
                 }
             }

@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.BubblesRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.OkonomiType
 import no.nav.sosialhjelp.soknad.nymodell.domene.HasUuidAsId
 import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubbles
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.OkonomiType
 import org.springframework.data.annotation.Id
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -17,14 +17,14 @@ interface VedleggRepository : BubblesRepository<Vedlegg>
  * som en del av del-domene okonomi. Dog har Vedlegg en posisjon i verdi-kjeden som kanskje forsvarer å
  * håndtere det isolert.
  */
-data class Vedlegg (
+data class Vedlegg(
     @Id override val id: UUID = UUID.randomUUID(),
     override val soknadId: UUID,
     val vedleggType: OkonomiType,
     val status: VedleggStatus,
     val hendelseType: HendelseType,
     val hendelseReferanse: String,
-): SoknadBubbles(id, soknadId)
+) : SoknadBubbles(id, soknadId)
 
 enum class VedleggStatus {
     KREVES, LASTET_OPP, LEVERT
@@ -42,9 +42,9 @@ interface FilMetaRepository : ListCrudRepository<FilMeta, UUID> {
     fun findAllByVedleggId(vedleggId: UUID): List<FilMeta>
 }
 
-data class FilMeta (
+data class FilMeta(
     @Id override val id: UUID = UUID.randomUUID(),
     val vedleggId: UUID,
     val filnavn: String? = null,
     val sha512: String? = null
-): HasUuidAsId
+) : HasUuidAsId

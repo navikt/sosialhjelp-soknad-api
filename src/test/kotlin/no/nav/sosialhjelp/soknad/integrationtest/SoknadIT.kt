@@ -1,10 +1,10 @@
-//package no.nav.sosialhjelp.soknad.integrationtest
+// package no.nav.sosialhjelp.soknad.integrationtest
 //
-//import no.nav.sosialhjelp.soknad.service.SoknadService
-//import org.junit.jupiter.api.Test
-//import org.springframework.beans.factory.annotation.Autowired
+// import no.nav.sosialhjelp.soknad.service.SoknadService
+// import org.junit.jupiter.api.Test
+// import org.springframework.beans.factory.annotation.Autowired
 //
-//class SoknadIT: SoknadApiIntergrationTest() {
+// class SoknadIT: SoknadApiIntergrationTest() {
 //
 //
 //    @Autowired
@@ -20,4 +20,4 @@
 //
 //    }
 //
-//}
+// }

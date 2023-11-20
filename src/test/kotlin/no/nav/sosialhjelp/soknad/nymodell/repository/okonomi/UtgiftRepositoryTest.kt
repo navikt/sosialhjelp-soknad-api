@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 
-class UtgiftRepositoryTest: RepositoryTest() {
+class UtgiftRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var utgiftRepository: UtgiftRepository
@@ -29,7 +29,6 @@ class UtgiftRepositoryTest: RepositoryTest() {
         )
 
         numberOfRows.dec()
-
     }
 }
 

@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class BostotteRepositoryTest: RepositoryTest() {
+class BostotteRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var bostotteRepository: BostotteRepository
@@ -24,5 +24,4 @@ class BostotteRepositoryTest: RepositoryTest() {
 
         assertThat(bostotteRepository.findAll()).hasSize(1)
     }
-
 }

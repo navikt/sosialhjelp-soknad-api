@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.relational.core.conversion.DbActionExecutionException
 import java.util.*
 
-class ArbeidsforholdRepositoryTest: RepositoryTest() {
+class ArbeidsforholdRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var arbeidsforholdRepository: ArbeidsforholdRepository
@@ -80,7 +80,7 @@ class ArbeidsforholdRepositoryTest: RepositoryTest() {
 
     private fun opprettFlereArbeidsforhold(arbeidId: UUID): Set<Arbeidsforhold> {
         val arbeidsforholdSet: MutableSet<Arbeidsforhold> = mutableSetOf()
-        for(i in 0..3) {
+        for (i in 0..3) {
             arbeidsforholdSet.add(opprettArbeidsforhold(arbeidId, "Test-firma$i"))
         }
         return arbeidsforholdSet

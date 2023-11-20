@@ -1,15 +1,15 @@
-//package no.nav.sosialhjelp.soknad.nymodell.repository
+// package no.nav.sosialhjelp.soknad.nymodell.repository
 //
-//import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
-//import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Telefonnummer
-//import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.TelefonnummerRepository
-//import org.assertj.core.api.Assertions.assertThat
-//import org.assertj.core.api.Assertions.assertThatThrownBy
-//import org.junit.jupiter.api.Test
-//import org.springframework.beans.factory.annotation.Autowired
-//import org.springframework.dao.DuplicateKeyException
+// import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
+// import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Telefonnummer
+// import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.TelefonnummerRepository
+// import org.assertj.core.api.Assertions.assertThat
+// import org.assertj.core.api.Assertions.assertThatThrownBy
+// import org.junit.jupiter.api.Test
+// import org.springframework.beans.factory.annotation.Autowired
+// import org.springframework.dao.DuplicateKeyException
 //
-//class TelefonnummerRepositoryTest: RepositoryTest() {
+// class TelefonnummerRepositoryTest: RepositoryTest() {
 //
 //    @Autowired
 //    private lateinit var telefonnummerRepository: TelefonnummerRepository
@@ -66,4 +66,4 @@
 //        }
 //        assertThat(telefonnummer.nummer).isNotEqualTo(opprinneligNummer)
 //    }
-//}
+// }

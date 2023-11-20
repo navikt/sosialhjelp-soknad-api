@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = ["mock-alt","no-redis", "test"])
+@ActiveProfiles(profiles = ["mock-alt", "no-redis", "test"])
 abstract class SoknadApiIntergrationTest {
 
     @Autowired
@@ -50,7 +50,6 @@ abstract class SoknadApiIntergrationTest {
     }
 
     protected fun<T> doRequest(url: String, method: HttpMethod, entity: HttpEntity<T>, clazz: Class<T>): ResponseEntity<T> {
-        return restTemplate.exchange(url,method,entity,clazz)
+        return restTemplate.exchange(url, method, entity, clazz)
     }
-
 }

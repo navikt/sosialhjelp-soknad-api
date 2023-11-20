@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.MatrikkelAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.BegrunnelseKey
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.BeskrivelseAvAnnetKey
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.Brukerdata
-import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.GenerelleDataKey
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.BrukerdataRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.GenerelleDataKey
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.SamtykkeType
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +17,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import java.time.LocalDate
 import java.util.*
 
-class BrukerdataRepositoryTest: RepositoryTest() {
+class BrukerdataRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var brukerdataRepository: BrukerdataRepository
@@ -59,7 +59,7 @@ class BrukerdataRepositoryTest: RepositoryTest() {
         val barneutgifter = BeskrivelseAvAnnetKey.BARNEUTGIFTER
 
         val brukerdata = Brukerdata(soknadId = soknad.id)
-            .apply{ keyValueStore.update(barneutgifter, "Masse") }
+            .apply { keyValueStore.update(barneutgifter, "Masse") }
             .also { brukerdataRepository.save(it) }
 
         val lagretBrukerdata = brukerdataRepository.findById(soknad.id).get()

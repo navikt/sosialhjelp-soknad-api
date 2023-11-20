@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.repository.oppgave
 
 import no.nav.sosialhjelp.soknad.repository.SQLUtils
 import no.nav.sosialhjelp.soknad.repository.SQLUtils.nullableTimestampTilTid
-import no.nav.sosialhjelp.soknad.repository.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.repository.SQLUtils.tidTilTimestamp
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper

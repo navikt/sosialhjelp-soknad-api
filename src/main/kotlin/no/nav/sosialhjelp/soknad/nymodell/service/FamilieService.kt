@@ -5,10 +5,7 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.familie.SivilstandRepository
 import org.springframework.stereotype.Service
 
 @Service
-class FamilieService (
+class FamilieService(
     private val forsorgerRepository: ForsorgerRepository,
     private val sivilstandRepository: SivilstandRepository
-) {
-
-
-}
+)

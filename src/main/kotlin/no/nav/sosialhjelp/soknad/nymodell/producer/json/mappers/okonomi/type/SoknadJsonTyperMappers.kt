@@ -7,9 +7,9 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.BARNEUTGIFTER
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.BOUTGIFTER
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.SPARING
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.STUDIELAN
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.UTBETALING
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.VERDI
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.BekreftelseType.STUDIELAN
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.AKSJER
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.FormueType.ANNET
@@ -33,8 +33,8 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_STRO
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_TANNBEHANDLING
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.NEDBETALINGSPLAN_AVDRAGSLAN
 
-fun BekreftelseType.toSoknadJsonType(): String  {
-    return when(this) {
+fun BekreftelseType.toSoknadJsonType(): String {
+    return when (this) {
         BARNEUTGIFTER -> SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER
         BOUTGIFTER -> SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER
         SPARING -> SoknadJsonTyper.BEKREFTELSE_SPARING
@@ -46,7 +46,7 @@ fun BekreftelseType.toSoknadJsonType(): String  {
 }
 
 fun SamtykkeType.toSoknadJsonType(): String {
-    return when(this) {
+    return when (this) {
         SamtykkeType.BOSTOTTE -> SoknadJsonTyper.BOSTOTTE_SAMTYKKE
         UTBETALING_SKATTEETATEN -> SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
     }

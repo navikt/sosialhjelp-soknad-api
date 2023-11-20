@@ -6,8 +6,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
-import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.ArbeidsforholdRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.ArbeidsforholdRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.BosituasjonRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Stillingstype
@@ -23,7 +23,7 @@ class LivssituasjonMapper(
     private val bosituasjonRepository: BosituasjonRepository,
     private val utdanningRepository: UtdanningRepository,
     private val arbeidsforholdRepository: ArbeidsforholdRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         val bosituasjon = bosituasjonRepository.findByIdOrNull(soknadId)
         val utdanning = utdanningRepository.findByIdOrNull(soknadId)
@@ -68,4 +68,3 @@ fun Utdanning.toJsonUtdanning() = JsonUtdanning()
 fun Studentgrad.toStudentgrad() = JsonUtdanning.Studentgrad.valueOf(name)
 
 fun Stillingstype.toStillingstype() = JsonArbeidsforhold.Stillingstype.valueOf(name)
-

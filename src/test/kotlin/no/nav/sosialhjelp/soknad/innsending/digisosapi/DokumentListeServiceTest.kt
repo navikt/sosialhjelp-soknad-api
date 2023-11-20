@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.OldSoknadService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat

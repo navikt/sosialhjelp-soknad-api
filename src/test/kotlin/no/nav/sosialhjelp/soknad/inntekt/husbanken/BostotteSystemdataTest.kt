@@ -11,8 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
@@ -21,6 +19,8 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.VedtakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteMottaker
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteRolle
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

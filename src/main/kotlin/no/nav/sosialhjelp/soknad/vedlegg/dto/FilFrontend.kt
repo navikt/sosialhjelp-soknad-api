@@ -5,7 +5,7 @@ data class FilFrontend(
     val uuid: String? = null
 )
 
-data class FilInfoDTO (
+data class FilInfoDTO(
     val filnavn: String,
     val uuid: String? = null
 )

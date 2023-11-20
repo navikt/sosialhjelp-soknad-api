@@ -7,6 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
@@ -17,8 +19,6 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime

@@ -30,7 +30,6 @@ class SoknadService(
         }
     }
 
-
     fun opprettNySoknad(soknadId: UUID): NySoknadDto {
 
         val pid = SubjectHandlerUtils.getUserIdFromToken()
@@ -57,5 +56,4 @@ class SoknadService(
     fun updateBegrunnelse(soknadId: UUID, begrunnelseDto: BegrunnelseDto) {
         TODO("Not yet implemented")
     }
-
 }

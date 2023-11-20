@@ -9,16 +9,16 @@ import java.time.LocalDate
 import java.util.*
 
 @Repository
-interface BekreftelseRepository: UpsertRepository<Bekreftelse>, BubblesRepository<Bekreftelse>
+interface BekreftelseRepository : UpsertRepository<Bekreftelse>, BubblesRepository<Bekreftelse>
 
-data class Bekreftelse (
+data class Bekreftelse(
     @Id override val id: UUID = UUID.randomUUID(),
     override val soknadId: UUID,
     val type: BekreftelseType? = null,
     val tittel: String? = null,
     val bekreftet: Boolean? = null,
     val dato: LocalDate = LocalDate.now()
-): SoknadBubbles(id, soknadId)
+) : SoknadBubbles(id, soknadId)
 
 enum class BekreftelseType(tittel: String) {
     SPARING("inntekt.bankinnskudd"),

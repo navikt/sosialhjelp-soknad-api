@@ -8,19 +8,19 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface FormueRepository: UpsertRepository<Formue>, BubblesRepository<Formue>
+interface FormueRepository : UpsertRepository<Formue>, BubblesRepository<Formue>
 
-data class Formue (
+data class Formue(
     @Id override val id: UUID = UUID.randomUUID(),
     override val soknadId: UUID,
     val type: FormueType,
     val tittel: String? = null,
     val belop: Int? = null
-): SoknadBubbles(id, soknadId)
+) : SoknadBubbles(id, soknadId)
 
 enum class FormueType(
     tittel: String = ""
-): OkonomiType {
+) : OkonomiType {
     AKSJER("opplysninger.inntekt.bankinnskudd.aksjer"),
     ANNET("opplysninger.inntekt.bankinnskudd.annet"),
     BRUKSKONTO("opplysninger.inntekt.bankinnskudd.brukskonto"),

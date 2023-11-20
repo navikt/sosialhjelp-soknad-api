@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import java.util.*
 
 @WebMvcTest(controllers = [BosituasjonController::class])
-class BosituasjonControllerTest: SoknadMockMvcTest() {
+class BosituasjonControllerTest : SoknadMockMvcTest() {
 
     @MockkBean
     private lateinit var service: LivssituasjonService

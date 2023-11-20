@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.nymodell.service
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.ArbeidsforholdRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.BosituasjonRepository

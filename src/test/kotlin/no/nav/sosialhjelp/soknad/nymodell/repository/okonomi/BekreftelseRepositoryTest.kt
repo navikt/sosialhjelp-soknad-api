@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class BekreftelseRepositoryTest: RepositoryTest() {
+class BekreftelseRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var bekreftelseRepository: BekreftelseRepository

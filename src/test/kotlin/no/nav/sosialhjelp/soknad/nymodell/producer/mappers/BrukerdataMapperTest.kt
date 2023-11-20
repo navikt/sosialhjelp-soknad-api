@@ -16,13 +16,13 @@ import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExist
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.BrukerdataMapper
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.adresse.toJsonAdresseValg
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 
 @Import(BrukerdataMapper::class)
-class BrukerdataMapperTest: RepositoryTest() {
+class BrukerdataMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var brukerdataRepository: BrukerdataRepository
@@ -46,7 +46,7 @@ class BrukerdataMapperTest: RepositoryTest() {
             brukerdataMapper.mapDomainToJson(lagretSoknad.id, this)
         }
 
-        with (jsonInternalSoknad) {
+        with(jsonInternalSoknad) {
             soknad.data.personalia.let {
                 assertThat(it.oppholdsadresse.type).isEqualTo(JsonAdresse.Type.GATEADRESSE)
                 assertThat(it.oppholdsadresse.adresseValg).isEqualTo(AdresseValg.SOKNAD.toJsonAdresseValg())

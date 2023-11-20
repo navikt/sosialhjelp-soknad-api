@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 
 @WebMvcTest(ArbeidController::class)
-class ArbeidControllerTest: SoknadMockMvcTest() {
+class ArbeidControllerTest : SoknadMockMvcTest() {
 
     @MockkBean
     private lateinit var livssituasjonService: LivssituasjonService
@@ -48,7 +48,7 @@ class ArbeidControllerTest: SoknadMockMvcTest() {
 
     private fun opprettFlereArbeidsforhold(soknadId: UUID): List<Arbeidsforhold> {
         val arbeidsforholdSet: MutableList<Arbeidsforhold> = mutableListOf()
-        for(i in 0..3) {
+        for (i in 0..3) {
             arbeidsforholdSet.add(opprettArbeidsforhold(soknadId, "Test-firma$i"))
         }
         return arbeidsforholdSet

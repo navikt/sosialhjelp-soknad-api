@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import
 import java.util.*
 
 @Import(UtgiftMapper::class)
-class UtgiftMapperTest: RepositoryTest() {
+class UtgiftMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var utgiftRepository: UtgiftRepository
@@ -32,7 +32,7 @@ class UtgiftMapperTest: RepositoryTest() {
         createAndSaveUtgift(nySoknad.id)
         utgiftMapper.mapDomainToJson(nySoknad.id, json)
 
-        with (json.soknad.data.okonomi) {
+        with(json.soknad.data.okonomi) {
             opplysninger.let {
                 Assertions.assertThat(it.utgift).hasSize(1)
                 Assertions.assertThat(

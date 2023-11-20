@@ -15,15 +15,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.generell.toJsonKilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barn
+import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Forsorger
-import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstand
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.ForsorgerRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstand
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.SivilstandRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.generell.toJsonKilde
 import org.springframework.stereotype.Component
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -32,7 +32,7 @@ import kotlin.jvm.optionals.getOrNull
 class FamilieMapper(
     private val sivilstandRepository: SivilstandRepository,
     private val forsorgerRepository: ForsorgerRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         val jsonSivilstatus = sivilstandRepository.findById(soknadId).getOrNull()?.toJsonSivilstatus()
         val jsonForsorgerplikt = forsorgerRepository.findById(soknadId).getOrNull()?.toJsonForsorgerplikt()

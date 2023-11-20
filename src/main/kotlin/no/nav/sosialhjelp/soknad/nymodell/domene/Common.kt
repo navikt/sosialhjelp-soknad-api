@@ -26,24 +26,24 @@ interface HasUuidAsId {
 /**
  * En Søknad-boble - en boble har et semantisk "en til en"-forhold med en Soknad, hvorav soknadens id også er boblens id
  */
-abstract class SoknadBubble (
+abstract class SoknadBubble(
     open val soknadId: UUID,
-): HasUuidAsId { override val id: UUID get() = soknadId }
+) : HasUuidAsId { override val id: UUID get() = soknadId }
 
 /**
  * Soknad-bobler - disse er semantisk knyttet direkte til en soknad med et "en til mange"-forhold
  */
-abstract class SoknadBubbles (
+abstract class SoknadBubbles(
     override val id: UUID = UUID.randomUUID(),
     open val soknadId: UUID
-): HasUuidAsId
+) : HasUuidAsId
 
 /**
  * Felles Repository-Interface for SoknadBubbles. Tilgjengeliggjør en metode for å finne alle objekter (av typen)
  * basert på soknad-id.
  */
 @NoRepositoryBean
-interface BubblesRepository<T: SoknadBubbles>: ListCrudRepository<T, UUID> {
+interface BubblesRepository<T : SoknadBubbles> : ListCrudRepository<T, UUID> {
     fun findAllBySoknadId(soknadId: UUID): List<T>
 }
 
@@ -51,6 +51,6 @@ interface BubblesRepository<T: SoknadBubbles>: ListCrudRepository<T, UUID> {
  * Et marker-interface for Repositories for objekter med semantisk "en til en"-forhold.
  */
 @NoRepositoryBean
-interface BubbleRepository<T: SoknadBubble>: ListCrudRepository<T, UUID>
+interface BubbleRepository<T : SoknadBubble> : ListCrudRepository<T, UUID>
 
 enum class Kilde { BRUKER, SYSTEM; }

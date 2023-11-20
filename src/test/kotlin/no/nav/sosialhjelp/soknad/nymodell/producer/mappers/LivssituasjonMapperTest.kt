@@ -13,14 +13,14 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.UtdanningReposito
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.LivssituasjonMapper
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import java.util.*
 
 @Import(LivssituasjonMapper::class)
-class LivssituasjonMapperTest: RepositoryTest() {
+class LivssituasjonMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var livssituasjonMapper: LivssituasjonMapper
@@ -43,7 +43,7 @@ class LivssituasjonMapperTest: RepositoryTest() {
 
         livssituasjonMapper.mapDomainToJson(nySoknad.id, json)
 
-        with (json) {
+        with(json) {
             soknad.data.arbeid.let {
                 assertThat(it.forhold).hasSize(2)
                 assertThat(it.forhold.find { it.arbeidsgivernavn == arbeidsforhold[0].arbeidsgivernavn }).isNotNull
@@ -94,6 +94,4 @@ class LivssituasjonMapperTest: RepositoryTest() {
             antallPersoner = 4
         ).also { bosituasjonRepository.save(it) }
     }
-
-
 }

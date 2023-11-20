@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class JsonInternalSoknadProducer (
+class JsonInternalSoknadProducer(
     private val soknadMapper: SoknadMapper
-): SoknadProducer<JsonInternalSoknad> {
+) : SoknadProducer<JsonInternalSoknad> {
 
     override fun produceNew(soknadId: UUID): JsonInternalSoknad {
         return produceFrom(
@@ -42,17 +42,15 @@ fun JsonInternalSoknad.createChildrenIfNotExists() {
     soknad.apply {
         if (data == null) soknad.withData(JsonData())
         data.apply {
-            if(okonomi == null) withOkonomi(JsonOkonomi())
+            if (okonomi == null) withOkonomi(JsonOkonomi())
             okonomi.apply {
                 if (opplysninger == null) opplysninger = JsonOkonomiopplysninger()
                 if (oversikt == null) oversikt = JsonOkonomioversikt()
                 opplysninger.apply {
-                    if(bostotte == null) bostotte = JsonBostotte()
-                    if(beskrivelseAvAnnet == null) beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet()
+                    if (bostotte == null) bostotte = JsonBostotte()
+                    if (beskrivelseAvAnnet == null) beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet()
                 }
             }
         }
     }
-
-
 }

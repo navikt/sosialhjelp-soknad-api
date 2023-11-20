@@ -1,9 +1,10 @@
 package no.nav.sosialhjelp.soknad.nymodell.service
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseObject
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseType
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.*
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.FOLKEREGISTRERT
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.MIDLERTIDIG
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.SOKNAD
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.Brukerdata
 import no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata.BrukerdataRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
@@ -29,7 +30,7 @@ class AdresseService(
     fun hentAdresseValg(soknadId: UUID): AdresseValg? = brukerdataRepository.findByIdOrNull(soknadId)?.valgtAdresse
 
     fun updateAdresseValg(soknadId: UUID, adresseValg: AdresseValg) {
-        val brukerdata = (brukerdataRepository.findByIdOrNull(soknadId)?: Brukerdata(soknadId))
+        val brukerdata = (brukerdataRepository.findByIdOrNull(soknadId) ?: Brukerdata(soknadId))
         brukerdata.valgtAdresse = adresseValg
         brukerdataRepository.save(brukerdata)
     }

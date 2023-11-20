@@ -36,5 +36,4 @@ class SoknadRepositoryTest : RepositoryTest() {
     @Test
     fun `Sok pa soknad som ikke finnes`() =
         assertThat(soknadRepository.findById(UUID.randomUUID()).getOrNull()).isNull()
-
 }

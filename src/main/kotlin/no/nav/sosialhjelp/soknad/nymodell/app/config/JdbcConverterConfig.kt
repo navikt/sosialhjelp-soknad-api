@@ -22,7 +22,7 @@ private val mapper = jacksonObjectMapper()
 
 @Profile("!no-jdbc-converter")
 @Configuration
-class JdbcConverterConfig: AbstractJdbcConfiguration() {
+class JdbcConverterConfig : AbstractJdbcConfiguration() {
     override fun userConverters(): MutableList<Converter<*, *>> {
         return mutableListOf(
             JsonToAdresseObjectConverter,
@@ -38,7 +38,7 @@ class JdbcConverterConfig: AbstractJdbcConfiguration() {
  * til JSON ved lagring til database
  */
 @WritingConverter
-object AdresseObjectToJsonConverter: Converter<AdresseObject, String> {
+object AdresseObjectToJsonConverter : Converter<AdresseObject, String> {
     override fun convert(source: AdresseObject): String = mapper.writeValueAsString(source)
 }
 
@@ -46,7 +46,7 @@ object AdresseObjectToJsonConverter: Converter<AdresseObject, String> {
  * Deserialisering av Json-adresseobjekt tilbake til Riktig type.
  */
 @ReadingConverter
-object JsonToAdresseObjectConverter: Converter<String, AdresseObject> {
+object JsonToAdresseObjectConverter : Converter<String, AdresseObject> {
     override fun convert(source: String): AdresseObject = JsonToAdresseObjectMapper.map(source)
 }
 
@@ -54,7 +54,7 @@ object JsonToAdresseObjectConverter: Converter<String, AdresseObject> {
  * Converter som serialiserer objekter lagret som (interfacet) BrukerdataKey til String
  */
 @WritingConverter
-object BrukerdataKeyToStringConverter: Converter<BrukerdataKey, String> {
+object BrukerdataKeyToStringConverter : Converter<BrukerdataKey, String> {
     override fun convert(source: BrukerdataKey): String = source.name
 }
 
@@ -62,7 +62,7 @@ object BrukerdataKeyToStringConverter: Converter<BrukerdataKey, String> {
  * Converter som deserialiserer String tilbake til riktig type.
  */
 @ReadingConverter
-object StringToBrukerdataKeyConverter: Converter<String, BrukerdataKey> {
+object StringToBrukerdataKeyConverter : Converter<String, BrukerdataKey> {
     override fun convert(source: String): BrukerdataKey = BrukerdataKeyMapper.map(source)
 }
 

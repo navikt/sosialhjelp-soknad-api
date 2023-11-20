@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg.HendelseType
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

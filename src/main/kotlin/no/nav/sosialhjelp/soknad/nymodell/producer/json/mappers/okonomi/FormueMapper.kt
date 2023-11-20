@@ -12,13 +12,15 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class FormueMapper(private val formueRepository: FormueRepository): DomainToJsonMapper {
+class FormueMapper(private val formueRepository: FormueRepository) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         json.createChildrenIfNotExists()
         json.soknad.data.okonomi.oversikt
             .formue
-            .addAll(formueRepository.findAllBySoknadId(soknadId)
-                .map { it.toJsonOkonomioversiktFormue() })
+            .addAll(
+                formueRepository.findAllBySoknadId(soknadId)
+                    .map { it.toJsonOkonomioversiktFormue() }
+            )
     }
 
     private fun Formue.toJsonOkonomioversiktFormue(): JsonOkonomioversiktFormue {

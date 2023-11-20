@@ -9,7 +9,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.*
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.BARNEBIDRAG_MOTTAR
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.DOKUMENTASJON_ANNET_INNTEKTER
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.DOKUMENTASJON_FORSIKRINGSUTBETALING
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.DOKUMENTASJON_UTBYTTE
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.HUSBANKEN_VEDTAK
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.LONNSLIPP_ARBEID
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.SALGSOPPGJOR_EIENDOM
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.SLUTTOPPGJOR_ARBEID
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType.STUDENT_VEDTAK
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.DomainToJsonMapper
@@ -21,10 +29,10 @@ import java.util.*
 @Component
 class InntektMapper(
     private val inntektRepository: InntektRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         json.createChildrenIfNotExists()
-        with (json.soknad.data.okonomi) {
+        with(json.soknad.data.okonomi) {
             inntektRepository.findAllBySoknadId(soknadId)
                 .forEach { mapFromInntekt(it) }
         }

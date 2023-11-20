@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Stillingstype
 import no.nav.sosialhjelp.soknad.nymodell.domene.livssituasjon.Studentgrad
 
-data class BosituasjonDto (
+data class BosituasjonDto(
     val botype: Botype?,
     val antallPersoner: Int
 )
@@ -18,7 +18,7 @@ data class ArbeidResponse(
     val arbeidsforhold: List<ArbeidsforholdDto>
 )
 
-data class ArbeidsforholdDto (
+data class ArbeidsforholdDto(
     val arbeidsgivernavn: String?,
     val fraOgMed: String? = null,
     val tilOgMed: String? = null,
@@ -26,7 +26,7 @@ data class ArbeidsforholdDto (
     val stillingstype: Stillingstype? = null
 )
 
-data class UtdanningDTO (
+data class UtdanningDTO(
     val erStudent: Boolean?,
     val studentgrad: Studentgrad?
 )

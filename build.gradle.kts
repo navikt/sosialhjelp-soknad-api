@@ -229,7 +229,6 @@ dependencies {
     implementation("org.postgresql:postgresql:42.6.0")
     testImplementation("org.testcontainers:postgresql:1.19.1")
 
-
     constraints {
         implementation("org.apache.logging.log4j:log4j-api:${Versions.log4j}") {
             because("0-day exploit i version 2.0.0-2.14.1")

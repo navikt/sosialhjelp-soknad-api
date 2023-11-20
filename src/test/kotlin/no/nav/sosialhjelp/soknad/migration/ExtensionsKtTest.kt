@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.migration
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg.HendelseType
+import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import no.nav.sosialhjelp.soknad.repository.oppgave.DokumentInfo
 import no.nav.sosialhjelp.soknad.repository.oppgave.FiksData
 import no.nav.sosialhjelp.soknad.repository.oppgave.FiksResultat
@@ -15,8 +17,6 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.OldSoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

@@ -2,18 +2,18 @@ package no.nav.sosialhjelp.soknad.nymodell.repository.okonomi
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Inntekt
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Komponent
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.InntektType
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Komponent
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
-class InntektRepositoryTest: RepositoryTest() {
+class InntektRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var inntektRepository: InntektRepository
@@ -32,15 +32,14 @@ class InntektRepositoryTest: RepositoryTest() {
     }
 }
 
-
 fun createFullInntekt(soknadId: UUID): Inntekt {
-    return Inntekt (
+    return Inntekt(
         soknadId = soknadId,
         type = InntektType.HUSBANKEN_VEDTAK,
         tittel = "Tittel",
         brutto = 235,
         netto = 128,
-        utbetaling = Utbetaling (
+        utbetaling = Utbetaling(
             kilde = Kilde.SYSTEM,
             orgnummer = "123152151",
             belop = 1412,

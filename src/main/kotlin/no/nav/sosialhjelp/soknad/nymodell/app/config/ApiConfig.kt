@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class ApiConfig(
     val soknadRepository: SoknadRepository
-): WebMvcConfigurer {
+) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(SoknadEierInterceptor(soknadRepository))
             .excludePathPatterns("/soknad/opprettSoknad")

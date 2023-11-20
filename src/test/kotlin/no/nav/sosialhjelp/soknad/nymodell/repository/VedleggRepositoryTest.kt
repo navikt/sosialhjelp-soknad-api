@@ -1,22 +1,22 @@
-//package no.nav.sosialhjelp.soknad.nymodell.repository
+// package no.nav.sosialhjelp.soknad.nymodell.repository
 //
-//import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Eier
-//import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Soknad
-//import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.FilMeta
-//import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.Vedlegg
-//import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.repository.FilMetaRepository
-//import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.repository.VedleggRepository
-//import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.typer.VedleggHendelseType
-//import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
-//import org.assertj.core.api.Assertions.assertThat
-//import org.assertj.core.api.Assertions.assertThatThrownBy
-//import org.junit.jupiter.api.Test
-//import org.springframework.beans.factory.annotation.Autowired
-//import org.springframework.data.relational.core.conversion.DbActionExecutionException
-//import java.util.*
-//import kotlin.jvm.optionals.getOrNull
+// import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Eier
+// import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Soknad
+// import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.FilMeta
+// import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.Vedlegg
+// import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.repository.FilMetaRepository
+// import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.repository.VedleggRepository
+// import no.nav.sosialhjelp.soknad.nymodell.domene.vedlegg.typer.VedleggHendelseType
+// import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+// import org.assertj.core.api.Assertions.assertThat
+// import org.assertj.core.api.Assertions.assertThatThrownBy
+// import org.junit.jupiter.api.Test
+// import org.springframework.beans.factory.annotation.Autowired
+// import org.springframework.data.relational.core.conversion.DbActionExecutionException
+// import java.util.*
+// import kotlin.jvm.optionals.getOrNull
 //
-//class VedleggRepositoryTest : RepositoryTest() {
+// class VedleggRepositoryTest : RepositoryTest() {
 //
 //    @Autowired
 //    lateinit var vedleggRepository: VedleggRepository
@@ -125,4 +125,4 @@
 //        )
 //    )
 //    fun opprettFil(vedleggId: Long) = filMetaRepository.save(FilMeta(vedleggId = vedleggId))
-//}
+// }

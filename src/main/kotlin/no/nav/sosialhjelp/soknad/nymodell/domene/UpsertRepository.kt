@@ -8,13 +8,13 @@ import org.springframework.data.jdbc.core.JdbcAggregateTemplate
  * Samme signatur som CrudRepository#save slik at denne overrides når et
  * repository-interface implementerer begge.
  */
-interface UpsertRepository<T: HasUuidAsId> {
+interface UpsertRepository<T : HasUuidAsId> {
     fun <S : T> save(s: S): S
     fun <S : T> saveAll(entities: Iterable<S>): List<S>
 }
-class UpsertRepositoryImpl<T: HasUuidAsId>(
+class UpsertRepositoryImpl<T : HasUuidAsId>(
     private val jdbcAggregateTemplate: JdbcAggregateTemplate
-): UpsertRepository<T> {
+) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
         return if (jdbcAggregateTemplate.existsById(s.id, s.javaClass)) {
             jdbcAggregateTemplate.update(s)

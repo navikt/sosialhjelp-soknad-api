@@ -6,10 +6,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureMockMvc
-@ActiveProfiles("no-interceptor","no-redis")
+@ActiveProfiles("no-interceptor", "no-redis")
 abstract class SoknadMockMvcTest {
 
     @Autowired
     protected lateinit var mockMvc: MockMvc
-
 }

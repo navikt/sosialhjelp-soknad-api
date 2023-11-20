@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.familie
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.BubbleRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubble
 import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.stereotype.Repository
@@ -18,9 +18,9 @@ data class Forsorger(
     val harForsorgerplikt: Boolean? = null,
     val barnebidrag: Barnebidrag? = null,
     val barn: Set<Barn> = emptySet()
-): SoknadBubble(soknadId)
+) : SoknadBubble(soknadId)
 
-data class Barn ( // JsonAnsvar
+data class Barn( // JsonAnsvar
     val personId: String,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
     val navn: Navn? = null,

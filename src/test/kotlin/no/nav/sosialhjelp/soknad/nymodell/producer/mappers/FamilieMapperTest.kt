@@ -2,26 +2,26 @@ package no.nav.sosialhjelp.soknad.nymodell.producer.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.nymodell.domene.Kilde
+import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barn
+import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Forsorger
-import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstand
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.ForsorgerRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstand
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.SivilstandRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.nymodell.domene.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.FamilieMapper
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import java.util.*
 
 @Import(FamilieMapper::class)
-class FamilieMapperTest: RepositoryTest() {
+class FamilieMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var familieMapper: FamilieMapper
@@ -40,7 +40,7 @@ class FamilieMapperTest: RepositoryTest() {
         val json = JsonInternalSoknad().apply { createChildrenIfNotExists() }
         familieMapper.mapDomainToJson(nySoknad.id, json)
 
-        with (json) {
+        with(json) {
             soknad.data.familie.sivilstatus.let {
                 assertThat(it.borSammenMed).isEqualTo(sivilstand.ektefelle?.borSammen)
                 assertThat(it.ektefelle.navn.etternavn).isEqualTo(sivilstand.ektefelle?.navn?.etternavn)
@@ -55,7 +55,8 @@ class FamilieMapperTest: RepositoryTest() {
                     assertThat(
                         forsorger.barn.find { domainBarn ->
                             domainBarn.navn?.etternavn == ansvar.barn.navn.etternavn
-                        }).isNotNull
+                        }
+                    ).isNotNull
                 }
             }
         }
@@ -89,5 +90,4 @@ class FamilieMapperTest: RepositoryTest() {
             )
         ).also { sivilstandRepository.save(it) }
     }
-
 }

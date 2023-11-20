@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.nymodell.domene.brukerdata
 
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseObject
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.nymodell.domene.BubbleRepository
 import no.nav.sosialhjelp.soknad.nymodell.domene.SoknadBubble
 import no.nav.sosialhjelp.soknad.nymodell.domene.UpsertRepository
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseObject
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.stereotype.Repository
@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Repository
-interface BrukerdataRepository: UpsertRepository<Brukerdata>, BubbleRepository<Brukerdata>
+interface BrukerdataRepository : UpsertRepository<Brukerdata>, BubbleRepository<Brukerdata>
 
 data class Brukerdata(
     @Id override val soknadId: UUID,
@@ -21,7 +21,7 @@ data class Brukerdata(
     var samtykker: MutableMap<SamtykkeType, Samtykke> = mutableMapOf(),
     @Embedded.Nullable
     val keyValueStore: BrukerdataKeyValueStore = BrukerdataKeyValueStore()
-): SoknadBubble(soknadId) {
+) : SoknadBubble(soknadId) {
     val keyValueStoreMap get() = keyValueStore.getReadMap()
     val keyValueStoreSet get() = keyValueStore.getReadSet()
 }

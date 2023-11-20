@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.MatrikkelAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.PostboksAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.UstrukturertAdresseObject
 
-
 fun AdresseValg.toJsonAdresseValg(): JsonAdresseValg {
     return JsonAdresseValg.valueOf(this.name)
 }

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.nymodell.controller
 
 import no.nav.sosialhjelp.soknad.nymodell.service.VedleggService
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilInfoDTO
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,9 +23,6 @@ class VedleggController(
         @RequestParam("file") fil: MultipartFile,
     ): FilInfoDTO {
 
-
         return FilInfoDTO("titt")
-
     }
-
 }

@@ -19,7 +19,6 @@ class BrukerdataService(
     }
 
     fun updateAdresseValg(soknadId: UUID, adresseValg: AdresseValg) {
-
     }
 
     fun updateOppholdsadresse(soknadId: UUID, adresseObject: AdresseObject) {
@@ -30,9 +29,6 @@ class BrukerdataService(
             )
         brukerdataRepository.save(brukerdata)
     }
-
-
-
 
     fun updateKommentarArbeidsforhold(soknadId: UUID, kommentar: String): String {
         val key = GenerelleDataKey.KOMMENTAR_ARBEIDSFORHOLD

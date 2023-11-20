@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.repository.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.repository.SQLUtils
 import no.nav.sosialhjelp.soknad.repository.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate

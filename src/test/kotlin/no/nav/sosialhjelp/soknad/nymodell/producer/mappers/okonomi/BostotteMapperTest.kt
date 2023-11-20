@@ -8,15 +8,14 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi.BostotteMapper
 import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import java.util.*
 
 @Import(BostotteMapper::class)
-class BostotteMapperTest: RepositoryTest() {
+class BostotteMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var bostotteRepository: BostotteRepository
@@ -32,10 +31,10 @@ class BostotteMapperTest: RepositoryTest() {
         createAndSaveBostotte(nySoknad.id)
         bostotteMapper.mapDomainToJson(nySoknad.id, json)
 
-        with (json.soknad.data.okonomi.opplysninger.bostotte) {
+        with(json.soknad.data.okonomi.opplysninger.bostotte) {
             assertThat(saker).hasSize(2)
-            assertThat(saker.find { it.status == BostotteStatus.VEDTATT.name } ).isNotNull
-            assertThat(saker.find { it.status == BostotteStatus.UNDER_BEHANDLING.name } ).isNotNull
+            assertThat(saker.find { it.status == BostotteStatus.VEDTATT.name }).isNotNull
+            assertThat(saker.find { it.status == BostotteStatus.UNDER_BEHANDLING.name }).isNotNull
         }
     }
 
@@ -56,5 +55,4 @@ class BostotteMapperTest: RepositoryTest() {
             )
         )
     }
-
 }

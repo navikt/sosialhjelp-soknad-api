@@ -4,6 +4,9 @@ import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
+import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
+import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.repository.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.repository.oppgave.Status
@@ -12,9 +15,6 @@ import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggTyp
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

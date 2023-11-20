@@ -2,14 +2,14 @@ package no.nav.sosialhjelp.soknad.metrics
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus.LastetOpp
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus.VedleggAlleredeSendt
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus.VedleggKreves
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererVedleggskravStatistikk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

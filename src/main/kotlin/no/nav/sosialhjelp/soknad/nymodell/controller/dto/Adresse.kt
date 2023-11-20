@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.nymodell.controller.dto
 
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg
 
-data class AdresseResponse (
+data class AdresseResponse(
     val adresseValg: AdresseValg? = null,
     val folkeregistrertAdresse: AdresseObjectDto? = null,
     val oppholdsadresse: AdresseObjectDto? = null,
@@ -26,7 +26,7 @@ data class GateadresseDto(
     val gatenavn: String? = null,
     val husnummer: String? = null,
     val husbokstav: String? = null,
-): AdresseObjectDto
+) : AdresseObjectDto
 
 data class MatrikkeladresseDto(
     val kommunenummer: String? = null,
@@ -35,8 +35,8 @@ data class MatrikkeladresseDto(
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
     val undernummer: String? = null,
-): AdresseObjectDto
+) : AdresseObjectDto
 
 data class UstrukturertAdresseDto(
     val adresse: List<String> = emptyList()
-): AdresseObjectDto
+) : AdresseObjectDto

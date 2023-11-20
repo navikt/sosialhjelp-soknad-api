@@ -6,6 +6,5 @@ class DiverseTest {
 
     @Test
     fun `Test av naming strategy`() {
-
     }
 }

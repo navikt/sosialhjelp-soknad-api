@@ -1,14 +1,5 @@
 package no.nav.sosialhjelp.soknad.migration
 
-import no.nav.sosialhjelp.soknad.repository.oppgave.DokumentInfo
-import no.nav.sosialhjelp.soknad.repository.oppgave.FiksData
-import no.nav.sosialhjelp.soknad.repository.oppgave.FiksResultat
-import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.migration.dto.DokumentInfoDto
 import no.nav.sosialhjelp.soknad.migration.dto.FiksDataDto
 import no.nav.sosialhjelp.soknad.migration.dto.FiksResultatDto
@@ -18,6 +9,15 @@ import no.nav.sosialhjelp.soknad.migration.dto.SoknadMetadataDto
 import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataListeDto
+import no.nav.sosialhjelp.soknad.repository.oppgave.DokumentInfo
+import no.nav.sosialhjelp.soknad.repository.oppgave.FiksData
+import no.nav.sosialhjelp.soknad.repository.oppgave.FiksResultat
+import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 
 object Extensions {
 

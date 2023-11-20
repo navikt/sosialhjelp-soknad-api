@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.repository.SQLUtils
 import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -34,23 +33,23 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
-            sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
+        sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 //            val soknadUnderArbeidId = jdbcTemplate.queryForObject(
 //                SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
 //                Long::class.java
 //            )
-            jdbcTemplate.update(
+        jdbcTemplate.update(
 //                "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
-                "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
-                soknadUnderArbeid.versjon,
-                soknadUnderArbeid.behandlingsId,
-                soknadUnderArbeid.tilknyttetBehandlingsId,
-                soknadUnderArbeid.eier,
-                soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
-                soknadUnderArbeid.status.toString(),
-                Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
-                Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
-            )
+            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
+            soknadUnderArbeid.versjon,
+            soknadUnderArbeid.behandlingsId,
+            soknadUnderArbeid.tilknyttetBehandlingsId,
+            soknadUnderArbeid.eier,
+            soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
+            soknadUnderArbeid.status.toString(),
+            Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
+            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
+        )
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }

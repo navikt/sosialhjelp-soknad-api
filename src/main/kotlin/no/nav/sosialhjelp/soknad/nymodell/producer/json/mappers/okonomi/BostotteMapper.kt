@@ -13,7 +13,7 @@ import java.util.*
 @Component
 class BostotteMapper(
     private val bostotteRepository: BostotteRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         json.createChildrenIfNotExists()
         with(json.soknad.data.okonomi.opplysninger.bostotte) {

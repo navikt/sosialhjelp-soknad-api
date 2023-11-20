@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.repository.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import no.nav.sosialhjelp.soknad.migration.dto.OppgaveDto
 import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto
@@ -10,6 +9,7 @@ import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
+import no.nav.sosialhjelp.soknad.repository.oppgave.OppgaveRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 

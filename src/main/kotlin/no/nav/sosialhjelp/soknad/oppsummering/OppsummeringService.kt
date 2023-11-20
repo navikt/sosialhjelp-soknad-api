@@ -3,11 +3,6 @@ package no.nav.sosialhjelp.soknad.oppsummering
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
@@ -20,6 +15,11 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedle
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.repository.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component

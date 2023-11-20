@@ -29,6 +29,15 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagSoknadUuid
+import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.nymodell.service.SoknadService
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.SoknadMetadataRepository
@@ -39,16 +48,6 @@ import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagSoknadUuid
-import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
-import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
-import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
-import no.nav.sosialhjelp.soknad.nymodell.service.SoknadService
-//import no.nav.sosialhjelp.soknad.service.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -62,7 +61,6 @@ import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Component
 class OldSoknadService(

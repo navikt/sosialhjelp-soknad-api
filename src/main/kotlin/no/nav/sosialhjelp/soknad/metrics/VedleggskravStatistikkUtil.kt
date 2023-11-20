@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.metrics
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.repository.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.repository.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 
 object VedleggskravStatistikkUtil {
 

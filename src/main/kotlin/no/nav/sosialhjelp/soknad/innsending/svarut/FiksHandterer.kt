@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.repository.oppgave.FiksResultat
-import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.repository.oppgave.FiksResultat
+import no.nav.sosialhjelp.soknad.repository.oppgave.Oppgave
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

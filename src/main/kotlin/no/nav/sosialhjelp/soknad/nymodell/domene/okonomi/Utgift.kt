@@ -8,19 +8,19 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UtgiftRepository: UpsertRepository<Utgift>, BubblesRepository<Utgift>
+interface UtgiftRepository : UpsertRepository<Utgift>, BubblesRepository<Utgift>
 
-data class Utgift (
+data class Utgift(
     @Id override val id: UUID = UUID.randomUUID(),
     override val soknadId: UUID,
     val type: UtgiftType,
     val tittel: String? = null,
     val belop: Int? = null,
-): SoknadBubbles(id, soknadId)
+) : SoknadBubbles(id, soknadId)
 
 enum class UtgiftType(
     tittel: String = "" // tittel kan brukes for språk-innstillinger
-): OkonomiType {
+) : OkonomiType {
     ANDRE_UTGIFTER("Annen (brukerangitt): "),
     BARNEBIDRAG_BETALER,
     DOKUMENTASJON_ANNET_BOUTGIFT("opplysninger.utgifter.boutgift.andreutgifter"),

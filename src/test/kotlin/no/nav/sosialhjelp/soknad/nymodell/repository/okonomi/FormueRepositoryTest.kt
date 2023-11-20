@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class FormueRepositoryTest: RepositoryTest() {
+class FormueRepositoryTest : RepositoryTest() {
 
     @Autowired
     private lateinit var formueRepository: FormueRepository

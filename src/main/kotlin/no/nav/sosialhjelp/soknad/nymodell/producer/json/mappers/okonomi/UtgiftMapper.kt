@@ -7,25 +7,36 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.Utgift
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftRepository
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType
-import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.*
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.ANDRE_UTGIFTER
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.BARNEBIDRAG_BETALER
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.DOKUMENTASJON_ANNET_BOUTGIFT
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_ANNET_BARNUTGIFT
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_BARNEHAGE
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_FRITIDSAKTIVITET
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_HUSLEIE
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_KOMMUNALEAVGIFTER
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_OPPVARMING
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_SFO
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_STROM
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_TANNBEHANDLING
+import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.NEDBETALINGSPLAN_AVDRAGSLAN
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.createChildrenIfNotExists
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers.okonomi.type.toSoknadJsonType
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
-class UtgiftMapper(private val utgiftRepository: UtgiftRepository): DomainToJsonMapper {
+class UtgiftMapper(private val utgiftRepository: UtgiftRepository) : DomainToJsonMapper {
     override fun mapDomainToJson(soknadId: UUID, json: JsonInternalSoknad) {
         json.createChildrenIfNotExists()
-        with (json.soknad.data.okonomi) {
+        with(json.soknad.data.okonomi) {
             utgiftRepository.findAllBySoknadId(soknadId).forEach { mapFromUtgift(it) }
         }
     }
 
     private fun JsonOkonomi.mapFromUtgift(utgift: Utgift) {
-        when(utgift.type) {
+        when (utgift.type) {
             ANDRE_UTGIFTER,
             DOKUMENTASJON_ANNET_BOUTGIFT,
             FAKTURA_ANNET_BARNUTGIFT,

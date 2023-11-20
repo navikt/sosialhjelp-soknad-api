@@ -33,7 +33,7 @@ import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_STRO
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.FAKTURA_TANNBEHANDLING
 import no.nav.sosialhjelp.soknad.nymodell.domene.okonomi.UtgiftType.NEDBETALINGSPLAN_AVDRAGSLAN
 
-data class TypeOgTilleggsinfo (
+data class TypeOgTilleggsinfo(
     val type: String,
     val tilleggsinfo: String
 )
@@ -66,7 +66,7 @@ fun UtgiftType.toTypeAndTilleggsinfo(): TypeOgTilleggsinfo {
         FAKTURA_SFO -> wrap("faktura", "sfo")
         FAKTURA_STROM -> wrap("faktura", "strom")
         FAKTURA_TANNBEHANDLING -> wrap("faktura", "tannbehandling")
-        NEDBETALINGSPLAN_AVDRAGSLAN -> wrap("nedbetalingsplan", "avdraglaan");
+        NEDBETALINGSPLAN_AVDRAGSLAN -> wrap("nedbetalingsplan", "avdraglaan")
     }
 }
 

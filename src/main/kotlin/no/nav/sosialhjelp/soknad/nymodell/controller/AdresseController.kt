@@ -7,7 +7,9 @@ import no.nav.sosialhjelp.soknad.nymodell.controller.dto.GateadresseDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.nymodell.controller.dto.UstrukturertAdresseDto
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseObject
-import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.*
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.FOLKEREGISTRERT
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.MIDLERTIDIG
+import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.AdresseValg.SOKNAD
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.GateAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.MatrikkelAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.UstrukturertAdresseObject
@@ -55,7 +57,7 @@ class AdresseController(
     }
 
     private fun AdresseObjectDto.toDomain(): AdresseObject {
-        return when(this) {
+        return when (this) {
             is GateadresseDto -> this.toGateadresseObject()
             is MatrikkeladresseDto -> this.toMatrikkeladresseObject()
             is UstrukturertAdresseDto -> UstrukturertAdresseObject(adresse = this.adresse)
@@ -85,7 +87,7 @@ class AdresseController(
     )
 
     private fun AdresseObject.toGateadresseDto(): AdresseObjectDto {
-        return when(this) {
+        return when (this) {
             is GateAdresseObject -> this.toGateadresseDto()
             is MatrikkelAdresseObject -> this.toMatrikkeladresseDto()
             is UstrukturertAdresseObject -> UstrukturertAdresseDto(adresse = this.adresse)
@@ -94,16 +96,16 @@ class AdresseController(
     }
 
     private fun GateAdresseObject.toGateadresseDto() = GateadresseDto(
-            landkode = landkode,
-            kommunenummer = kommunenummer,
-            adresselinjer = adresselinjer,
-            bolignummer = bolignummer,
-            postnummer = postnummer,
-            poststed = poststed,
-            gatenavn = gatenavn,
-            husnummer = husnummer,
-            husbokstav = husbokstav
-        )
+        landkode = landkode,
+        kommunenummer = kommunenummer,
+        adresselinjer = adresselinjer,
+        bolignummer = bolignummer,
+        postnummer = postnummer,
+        poststed = poststed,
+        gatenavn = gatenavn,
+        husnummer = husnummer,
+        husbokstav = husbokstav
+    )
 
     private fun MatrikkelAdresseObject.toMatrikkeladresseDto() = MatrikkeladresseDto(
         kommunenummer = kommunenummer,

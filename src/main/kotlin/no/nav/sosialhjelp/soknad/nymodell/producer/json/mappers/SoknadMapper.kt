@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.nymodell.producer.json.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonKompatibilitet
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.*
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
@@ -26,7 +24,7 @@ interface DomainToJsonMapper {
  * Tiltenkt toppnivå for mapping. Kan utføre en del "må være på plass"-oppgaver før resten av mapperne kjører.
  */
 @Component
-class SoknadMapper (
+class SoknadMapper(
     private val soknadRepository: SoknadRepository,
     private val mappers: List<DomainToJsonMapper> // Injecter alle som implementerer dette interfacet
 ) {
@@ -60,5 +58,3 @@ class SoknadMapper (
         .withKilde(SYSTEM)
         .withVerdi(nordiskBorger)
 }
-
-

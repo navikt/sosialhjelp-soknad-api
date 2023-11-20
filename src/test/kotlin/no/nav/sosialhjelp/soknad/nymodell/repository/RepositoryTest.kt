@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.nymodell.repository
 
+import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.domene.adresse.GateAdresseObject
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Eier
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.KontaktInfo
-import no.nav.sosialhjelp.soknad.nymodell.domene.Navn
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.Soknad
 import no.nav.sosialhjelp.soknad.nymodell.domene.soknad.SoknadRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.util.*
-
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // bruk datasource fra profil

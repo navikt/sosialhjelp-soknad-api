@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.nymodell.repository.RepositoryTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class OkonomiServiceTest: RepositoryTest() {
+class OkonomiServiceTest : RepositoryTest() {
 
     @Autowired
     private lateinit var inntektRepository: InntektRepository
@@ -43,7 +43,6 @@ class OkonomiServiceTest: RepositoryTest() {
         checkNumberOfRows("BEKREFTELSE")
         checkNumberOfRows("UTBETALING")
     }
-
 
     private fun checkNumberOfRows(tableName: String): Int? {
         val numberOfRows = jdbcTemplate.queryForObject(

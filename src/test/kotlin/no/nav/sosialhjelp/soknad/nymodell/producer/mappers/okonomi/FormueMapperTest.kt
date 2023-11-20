@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import
 import java.util.*
 
 @Import(FormueMapper::class)
-class FormueMapperTest: RepositoryTest() {
+class FormueMapperTest : RepositoryTest() {
 
     @Autowired
     private lateinit var formueRepository: FormueRepository
@@ -32,7 +32,7 @@ class FormueMapperTest: RepositoryTest() {
         createAndSaveFormue(nySoknad.id)
         formueMapper.mapDomainToJson(nySoknad.id, json)
 
-        with (json.soknad.data.okonomi.oversikt) {
+        with(json.soknad.data.okonomi.oversikt) {
             assertThat(formue).hasSize(2)
             assertThat(formue.find { it.type == BRUKSKONTO.toSoknadJsonType() }).isNotNull
             assertThat(formue.find { it.type == SPAREKONTO.toSoknadJsonType() }).isNotNull

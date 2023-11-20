@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
-class BosituasjonIT: SoknadApiIntergrationTest() {
+class BosituasjonIT : SoknadApiIntergrationTest() {
 
     @Autowired
     private lateinit var bosituasjonRepository: BosituasjonRepository
