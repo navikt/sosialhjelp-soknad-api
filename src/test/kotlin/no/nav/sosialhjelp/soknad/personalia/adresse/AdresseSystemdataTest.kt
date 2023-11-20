@@ -241,7 +241,7 @@ internal class AdresseSystemdataTest {
     companion object {
         private const val EIER = "12345678901"
         private val DEFAULT_VEGADRESSE = Vegadresse(
-            adressenavn = "gateveien",
+            adressenavn = "Gateveien",
             husnummer = 1,
             husbokstav = "A",
             tilleggsnavn = "",

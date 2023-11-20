@@ -35,9 +35,9 @@ internal class PdlDtoMapperTest {
 
     companion object {
         private const val IDENT = "ident"
-        private const val FORNAVN = "fornavn"
-        private const val MELLOMNAVN = "mellomnavn"
-        private const val ETTERNAVN = "etternavn"
+        private const val FORNAVN = "Fornavn"
+        private const val MELLOMNAVN = "Mellomnavn"
+        private const val ETTERNAVN = "Etternavn"
 
         private const val BARNIDENT = "barnIdent"
         private const val BARN_ROLLE = "BARN"
@@ -60,7 +60,7 @@ internal class PdlDtoMapperTest {
 
     private val defaultVegadresse = VegadresseDto(
         matrikkelId = "matrikkelId",
-        adressenavn = "gateveien",
+        adressenavn = "Gateveien",
         husnummer = 1,
         husbokstav = "A",
         tilleggsnavn = "tilleggsnavn",
@@ -72,7 +72,7 @@ internal class PdlDtoMapperTest {
 
     private val annenVegadresse = VegadresseDto(
         matrikkelId = "matrikkelId2",
-        adressenavn = "stien",
+        adressenavn = "Stien",
         husnummer = 2,
         husbokstav = "B",
         tilleggsnavn = null,
@@ -151,20 +151,20 @@ internal class PdlDtoMapperTest {
         )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
-        assertThat(person!!.fornavn).isEqualTo(FORNAVN.uppercase())
-        assertThat(person.mellomnavn).isEqualTo(MELLOMNAVN.uppercase())
-        assertThat(person.etternavn).isEqualTo(ETTERNAVN.uppercase())
+        assertThat(person!!.fornavn).isEqualTo(FORNAVN)
+        assertThat(person.mellomnavn).isEqualTo(MELLOMNAVN)
+        assertThat(person.etternavn).isEqualTo(ETTERNAVN)
         assertThat(person.fnr).isEqualTo(IDENT)
         assertThat(person.sivilstatus).isEqualTo("gift")
         assertThat(person.statsborgerskap).hasSize(1)
         assertThat(person.statsborgerskap!![0]).isEqualTo(LAND)
         assertThat(person.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo("gateveien".uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo("Gateveien")
         assertThat(person.bostedsadresse!!.vegadresse!!.postnummer).isEqualTo("1234")
-        assertThat(person.bostedsadresse!!.vegadresse!!.poststed).isEqualTo("Mitt poststed".uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.poststed).isEqualTo("Mitt poststed")
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isEqualTo("Test McTest")
-        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo("midlertidig".uppercase())
+        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo("midlertidig")
     }
 
     @Test
@@ -277,10 +277,10 @@ internal class PdlDtoMapperTest {
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn?.uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn)
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isNull()
-        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(annenVegadresse.adressenavn?.uppercase())
+        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(annenVegadresse.adressenavn)
     }
 
     @Test
@@ -305,7 +305,7 @@ internal class PdlDtoMapperTest {
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse).isNull()
         assertThat(person.oppholdsadresse).isNotNull
-        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn?.uppercase())
+        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(defaultVegadresse.adressenavn)
     }
 
     @Test
@@ -334,9 +334,9 @@ internal class PdlDtoMapperTest {
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNotNull
         assertThat(ektefelle!!.ikkeTilgangTilEktefelle).isFalse
-        assertThat(ektefelle.fornavn).isEqualTo(FORNAVN.uppercase())
-        assertThat(ektefelle.mellomnavn).isEqualTo(MELLOMNAVN.uppercase())
-        assertThat(ektefelle.etternavn).isEqualTo(ETTERNAVN.uppercase())
+        assertThat(ektefelle.fornavn).isEqualTo(FORNAVN)
+        assertThat(ektefelle.mellomnavn).isEqualTo(MELLOMNAVN)
+        assertThat(ektefelle.etternavn).isEqualTo(ETTERNAVN)
         assertThat(ektefelle.fnr).isEqualTo(EKTEFELLEIDENT)
         assertThat(ektefelle.fodselsdato).hasToString("1970-01-01")
         assertThat(ektefelle.folkeregistrertSammen).isTrue
@@ -546,9 +546,9 @@ internal class PdlDtoMapperTest {
         )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNotNull
-        assertThat(barn!!.fornavn).isEqualTo(FORNAVN.uppercase())
+        assertThat(barn!!.fornavn).isEqualTo(FORNAVN)
         assertThat(barn.mellomnavn).isBlank
-        assertThat(barn.etternavn).isEqualTo(ETTERNAVN.uppercase())
+        assertThat(barn.etternavn).isEqualTo(ETTERNAVN)
         assertThat(barn.fnr).isEqualTo(BARNIDENT)
         assertThat(barn.fodselsdato).isEqualTo(
             LocalDate.of(
