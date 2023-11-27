@@ -60,7 +60,8 @@ class InformasjonRessurs(
         val eier = getUser()
         log.debug("Henter søknadsinfo for bruker")
 
-        val person = personService.hentPerson(eier)
+        val userBlocked = personService.harAdressebeskyttelse(eier)
+        val person = if (userBlocked) null else personService.hentPerson(eier)
 
         // Egentlig bør vel hentPerson kaste en exception dersom en bruker ikke finnes
         // for en gitt ID. I første omgang nøyer vi oss med å logge en feilmelding
