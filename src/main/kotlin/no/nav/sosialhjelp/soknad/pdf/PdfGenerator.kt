@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.pdf
 import com.vdurmont.emoji.EmojiParser
 import org.apache.jempbox.xmp.XMPMetadata
 import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId
+import org.apache.pdfbox.pdfwriter.compress.CompressParameters
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
@@ -69,7 +70,7 @@ class PdfGenerator {
         // save document to byte array output stream and return byte array
         val baos = ByteArrayOutputStream()
         currentStream.close()
-        document.save(baos)
+        document.save(baos, CompressParameters.NO_COMPRESSION)
         document.close()
         return baos.use { it.toByteArray() }
     }
