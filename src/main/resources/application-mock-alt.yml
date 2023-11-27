@@ -25,7 +25,9 @@ aareg_url: ${AAREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api
 krr_url: ${KRR_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url}
 kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
-unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
+unleash_env: ${UNLEASH_ENV:mock}
+unleash_server_api_url: ${UNLEASH_SERVER_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/internal/unleash}
+unleash_server_api_token: ${UNLEASH_SERVER_API_TOKEN:token}
 norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}

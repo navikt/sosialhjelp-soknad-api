@@ -79,7 +79,7 @@ internal class ForsorgerpliktRessursTest {
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isNull()
         assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
-        assertThat(forsorgerpliktFrontend.ansvar).isNull()
+        assertThat(forsorgerpliktFrontend.ansvar).isEmpty()
     }
 
     @Test
@@ -97,7 +97,7 @@ internal class ForsorgerpliktRessursTest {
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
         assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
         assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar[0], jsonAnsvar)
     }
 
     @Test
@@ -115,7 +115,7 @@ internal class ForsorgerpliktRessursTest {
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
         assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
         assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar[0], jsonAnsvar)
     }
 
     @Test
@@ -130,8 +130,8 @@ internal class ForsorgerpliktRessursTest {
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
         assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
         assertThat(forsorgerpliktFrontend.ansvar).hasSize(2)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![1], jsonansvar2)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar[0], jsonAnsvar)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar[1], jsonansvar2)
     }
 
     @Test
@@ -145,7 +145,7 @@ internal class ForsorgerpliktRessursTest {
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
         assertThat(forsorgerpliktFrontend.barnebidrag).isEqualTo(Verdi.BEGGE)
         assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar[0], jsonAnsvar)
     }
 
     @Test
@@ -157,7 +157,7 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, emptyList())
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -183,7 +183,7 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, emptyList())
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured

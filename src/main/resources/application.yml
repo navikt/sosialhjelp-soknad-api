@@ -40,7 +40,9 @@ ereg_url: ${EREG_URL}
 aareg_url: ${AAREG_URL}
 krr_url: ${KRR_URL}
 pdl_api_url: ${PDL_API_URL}
-unleash_api_url: ${UNLEASH_API_URL}
+unleash_env: ${UNLEASH_ENV}
+unleash_server_api_url: ${UNLEASH_SERVER_API_URL}
+unleash_server_api_token: ${UNLEASH_SERVER_API_TOKEN}
 kodeverk_url: ${KODEVERK_URL}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
