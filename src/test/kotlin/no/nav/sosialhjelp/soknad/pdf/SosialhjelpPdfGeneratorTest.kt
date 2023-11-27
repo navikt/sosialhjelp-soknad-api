@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
+import io.mockk.every
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -55,7 +56,6 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
 import org.apache.commons.io.FileUtils
-import org.apache.pdfbox.preflight.ValidationResult
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException
 import org.apache.pdfbox.preflight.parser.PreflightParser
 import org.assertj.core.api.Assertions.assertThat
@@ -233,6 +233,8 @@ internal class SosialhjelpPdfGeneratorTest {
     @Disabled("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     fun testGenerate() {
+        every { kodeverkService.getLand(any()) } returns "NORGE"
+
         // SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
         val text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" +
             " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
@@ -574,7 +576,8 @@ internal class SosialhjelpPdfGeneratorTest {
             )
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, false)
         try {
-            val out = FileOutputStream("../temp/starcraft.pdf")
+            val outFile = File("pdf-testgenerate.pdf")
+            val out = FileOutputStream(outFile)
             out.write(bytes)
             out.close()
         } catch (e: IOException) {
@@ -802,23 +805,15 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun skalGenererePdfA() {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
-        jsonInternalSoknad.soknad
 
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val file = File("pdfaTest.pdf")
 
         FileUtils.writeByteArrayToFile(file, bytes)
 
-        val result: ValidationResult
-        val parser = PreflightParser(file)
-
         try {
-            parser.parse()
-            val document = parser.preflightDocument
-            document.validate()
-            result = document.result
-            assertThat(result.isValid).isTrue
-            document.close()
+            val validationResult = PreflightParser.validate(file)
+            assertThat(validationResult.isValid).isTrue
         } catch (e: SyntaxValidationException) {
             fail<Any>("Exception when checking validity of pdf/a. ", e)
         } finally {
@@ -829,23 +824,15 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun skalGenerereEttersendelsePdfA() {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
-        jsonInternalSoknad.soknad
 
         val bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(jsonInternalSoknad, "pdfaTest")
         val file = File("pdfaTest.pdf")
 
         FileUtils.writeByteArrayToFile(file, bytes)
 
-        val result: ValidationResult
-        val parser = PreflightParser(file)
-
         try {
-            parser.parse()
-            val document = parser.preflightDocument
-            document.validate()
-            result = document.result
-            assertThat(result.isValid).isTrue
-            document.close()
+            val validationResult = PreflightParser.validate(file)
+            assertThat(validationResult.isValid).isTrue
         } catch (e: SyntaxValidationException) {
             fail<Any>("Exception when checking validity of pdf/a. ", e)
         } finally {

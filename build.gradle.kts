@@ -6,7 +6,7 @@ object Versions {
     const val springBoot = "3.1.5" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
-    const val sosialhjelpCommon = "1.20230918.1754-8d4249c"
+    const val sosialhjelpCommon = "1.20231127.1050-86ba0df"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
@@ -21,7 +21,7 @@ object Versions {
     const val jackson = "2.14.2"
     const val logback = "1.4.5"
     const val logstash = "7.3"
-    const val pdfbox = "2.0.27"
+    const val pdfbox = "3.0.0"
     const val jempbox = "1.8.17"
     const val emojiJava = "5.1.1"
     const val jakartaActivation = "2.1.1"
@@ -203,14 +203,9 @@ dependencies {
     // pdf
     implementation("org.apache.pdfbox:pdfbox:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:preflight:${Versions.pdfbox}")
+    implementation("org.apache.pdfbox:pdfbox-io:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:jempbox:${Versions.jempbox}")
     implementation("com.vdurmont:emoji-java:${Versions.emojiJava}")
-    implementation("javax.activation:javax.activation-api:1.2.0") {
-        because("pdfbox 2.x.x trenger javax.activation pakker. Kan fjernes når pdfbox 3.x.x er tilgjengelig")
-    }
-    implementation("javax.xml.bind:jaxb-api:2.3.1") {
-        because("pdfbox 2.x.x trenger javax.xml.bind pakker. Kan fjernes når pdfbox 3.x.x er tilgjengelig")
-    }
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}")
