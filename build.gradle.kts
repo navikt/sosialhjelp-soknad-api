@@ -20,7 +20,6 @@ object Versions {
     const val micrometer = "1.10.5"
     const val jackson = "2.14.2"
     const val pdfbox = "3.0.0"
-    const val jempbox = "1.8.17"
     const val emojiJava = "5.1.1"
     const val jakartaServlet = "6.0.0"
     const val unleashClient = "8.4.0"
@@ -139,7 +138,6 @@ dependencies {
     implementation("org.apache.pdfbox:pdfbox:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:preflight:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:pdfbox-io:${Versions.pdfbox}")
-    implementation("org.apache.pdfbox:jempbox:${Versions.jempbox}")
     implementation("com.vdurmont:emoji-java:${Versions.emojiJava}")
 
     // Test
