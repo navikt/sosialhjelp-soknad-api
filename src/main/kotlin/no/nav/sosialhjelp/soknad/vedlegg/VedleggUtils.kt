@@ -11,13 +11,12 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
 import org.apache.commons.io.IOUtils
-import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -151,7 +150,7 @@ object VedleggUtils {
 
     private fun sjekkOmPdfErGyldig(data: ByteArray) {
         try {
-            PDDocument.load(ByteArrayInputStream(data))
+            Loader.loadPDF(data)
                 .use { document ->
                     val text = PDFTextStripper().getText(document)
                     if (text == null || text.isEmpty()) {
