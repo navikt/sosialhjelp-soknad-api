@@ -27,7 +27,7 @@ object Versions {
     const val jakartaActivation = "2.1.1"
     const val jakartaAnnotation = "2.1.1"
     const val jakartaInject = "2.0.1"
-    const val jakartaServlet = "5.0.0"
+    const val jakartaServlet = "6.0.0"
     const val jakartaXmlBind = "4.0.0"
     const val jakartaValidation = "3.0.2"
     const val unleashClient = "8.4.0"
@@ -102,16 +102,16 @@ repositories {
 
 configurations {
     implementation {
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-        exclude(group = "com.google.code.findbugs", module = "jsr305")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+//        exclude(group = "com.google.code.findbugs", module = "jsr305")
     }
     testImplementation {
         // Ved å ekskludere kqueue som Netty-transport tvinger vi en fallback
         // til java NIO, som forhindrer fryser tester på MacOS. Koster noe
         // ytelse, så kan være verdt å besøke igjen senere.
-        exclude(group = "io.netty", module = "netty-transport-native-kqueue")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+//        exclude(group = "io.netty", module = "netty-transport-native-kqueue")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
         exclude(group = "org.hamcrest")
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito")
@@ -121,9 +121,10 @@ configurations {
 
 dependencies {
     // Spring
-    implementation("org.springframework.boot:spring-boot-starter-jetty:${Versions.springBoot}")
+//    implementation("org.springframework.boot:spring-boot-starter-jetty:${Versions.springBoot}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-webflux:${Versions.springBoot}")
-    implementation("org.springframework.boot:spring-boot-starter-logging:${Versions.springBoot}")
+//    implementation("org.springframework.boot:spring-boot-starter-logging:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-validation:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}")
