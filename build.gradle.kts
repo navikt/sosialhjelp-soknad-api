@@ -16,6 +16,7 @@ object Versions {
     const val lettuce = "6.2.3.RELEASE"
     const val tokenValidation = "3.1.8"
     const val javaJwt = "4.3.0"
+    const val logstash = "7.3"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
     const val jackson = "2.14.2"
@@ -124,6 +125,9 @@ dependencies {
 
     // jakarta
     implementation("jakarta.servlet:jakarta.servlet-api:${Versions.jakartaServlet}")
+
+    // logging
+    implementation("net.logstash.logback:logstash-logback-encoder:${Versions.logstash}")
 
     // Unleash
     implementation("io.getunleash:unleash-client-java:${Versions.unleashClient}")
