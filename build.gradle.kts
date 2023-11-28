@@ -78,6 +78,7 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-webflux:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-validation:${Versions.springBoot}")
+    implementation("org.springframework.boot:spring-boot-starter-logging:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Versions.springBoot}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}")
 
