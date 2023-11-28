@@ -12,11 +12,13 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
 import org.apache.commons.io.IOUtils
 import org.apache.pdfbox.Loader
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -27,17 +29,17 @@ object VedleggUtils {
 
     private val log by logger()
 
-    fun behandleFilOgReturnerFildata(orginaltFilnavn: String, orginalData: ByteArray): Pair<String, ByteArray> {
+    fun konverterFilHvisStottet(orginaltFilnavn: String, source: ByteArray): Pair<String, ByteArray> {
+        return FilKonvertering.konverterHvisStottet(orginaltFilnavn, source)
+    }
 
+    fun behandleFilOgReturnerFildata(filnavn: String, bytes: ByteArray): Pair<String, ByteArray> {
         // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
         val uuidRandom = UUID.randomUUID()
 
-        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginaltFilnavn, orginalData)
-        val fileType = validerFil(data, filnavn)
-
+        val fileType = validerFil(bytes, filnavn)
         val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidRandom)
-
-        return Pair(filnavnMedUuid, data)
+        return Pair(filnavnMedUuid, bytes)
     }
 
     fun getSha512FromByteArray(bytes: ByteArray?): String {

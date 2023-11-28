@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg
 
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
-import java.util.*
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
@@ -105,6 +105,26 @@ class OpplastetVedleggRessurs(
                 }
             }
         return FilFrontend(filnavn, uuid)
+    }
+
+    @Unprotected
+    @PostMapping("/{behandlingsId}/konverter", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun konverterVedlegg(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestParam("file") fil: MultipartFile,
+    ): ResponseEntity<ByteArray> {
+//        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+
+        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
+        val orginalData = VedleggUtils.getByteArray(fil)
+        val (filnavn, konvertertData) = VedleggUtils.konverterFilHvisStottet(orginaltFilnavn, orginalData)
+
+        val mimeType = detectMimeType(konvertertData)
+        return ResponseEntity
+            .ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${filnavn}\"")
+            .contentType(MediaType.parseMediaType(mimeType))
+            .body(konvertertData)
     }
 
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
