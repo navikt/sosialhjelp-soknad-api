@@ -22,7 +22,7 @@ import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 
-@Disabled
+//@Disabled
 internal class MdcFilterTest {
 
     private val mdcFilter = MdcFilter()
