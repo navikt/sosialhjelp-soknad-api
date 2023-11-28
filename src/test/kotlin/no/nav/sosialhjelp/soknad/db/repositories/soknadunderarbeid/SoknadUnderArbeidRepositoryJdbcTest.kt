@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
@@ -25,13 +25,13 @@ import java.time.temporal.ChronoUnit
 @ActiveProfiles("test")
 internal class SoknadUnderArbeidRepositoryJdbcTest {
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
     @AfterEach

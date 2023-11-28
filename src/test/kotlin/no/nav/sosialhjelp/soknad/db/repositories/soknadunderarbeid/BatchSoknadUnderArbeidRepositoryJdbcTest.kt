@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -21,16 +21,16 @@ import java.time.LocalDateTime
 @ActiveProfiles("test")
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
-    @Inject
+    @Autowired
     private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
 
     @AfterEach
