@@ -216,7 +216,7 @@ dependencies {
     testImplementation("no.nav.security:mock-oauth2-server") {
         version { strictly("2.0.1") }
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junitJupiter}")
+//    testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junitJupiter}")
     testImplementation("io.mockk:mockk:${Versions.mockk}")
     testImplementation("io.mockk:mockk-jvm:${Versions.mockk}")
 
