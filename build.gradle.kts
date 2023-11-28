@@ -218,59 +218,59 @@ dependencies {
     testImplementation("io.mockk:mockk:${Versions.mockk}")
     testImplementation("io.mockk:mockk-jvm:${Versions.mockk}")
 
-    constraints {
-        implementation("org.apache.logging.log4j:log4j-api:${Versions.log4j}") {
-            because("0-day exploit i version 2.0.0-2.14.1")
-        }
-        implementation("org.apache.logging.log4j:log4j-to-slf4j:${Versions.log4j}") {
-            because("0-day exploit i version 2.0.0-2.14.1")
-        }
-        implementation("org.slf4j:slf4j-api") {
-            version { strictly(Versions.slf4j) }
-        }
-        implementation("ch.qos.logback:logback-classic") {
-            version { strictly(Versions.logback) }
-        }
-        implementation("ch.qos.logback:logback-core") {
-            version { strictly(Versions.logback) }
-        }
-        implementation("joda-time:joda-time:${Versions.jodatime}")
-        implementation("net.minidev:json-smart:${Versions.jsonsmart}") {
-            because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")
-        }
-        implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
-        implementation("org.json:json:${Versions.json}") {
-            because("https://github.com/advisories/GHSA-3vqj-43w4-2q58")
-        }
-        implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
-        implementation("net.bytebuddy:byte-buddy-agent:${Versions.byteBuddy}")
-        implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
-        implementation("com.google.errorprone:error_prone_annotations:${Versions.errorProneAnnotations}")
-        implementation("org.checkerframework:checker-qual:${Versions.checkerQual}")
-
-        implementation("org.yaml:snakeyaml:${Versions.snakeyaml}") {
-            because("https://security.snyk.io/vuln/SNYK-JAVA-ORGYAML-3152153")
-        }
-        implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
-            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
-        }
-        implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
-            because("https://github.com/advisories/GHSA-6mjq-h674-j845")
-        }
-        implementation("org.bouncycastle:bcprov-jdk18on") {
-            version { strictly(Versions.bouncyCastle) }
-        }
-        implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
-            because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
-        }
-        implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
-            because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
-        }
-
-        testImplementation("org.assertj:assertj-core:${Versions.assertj}")
-        testImplementation("junit:junit:${Versions.junit}")
-        testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
-    }
+//    constraints {
+//        implementation("org.apache.logging.log4j:log4j-api:${Versions.log4j}") {
+//            because("0-day exploit i version 2.0.0-2.14.1")
+//        }
+//        implementation("org.apache.logging.log4j:log4j-to-slf4j:${Versions.log4j}") {
+//            because("0-day exploit i version 2.0.0-2.14.1")
+//        }
+//        implementation("org.slf4j:slf4j-api") {
+//            version { strictly(Versions.slf4j) }
+//        }
+//        implementation("ch.qos.logback:logback-classic") {
+//            version { strictly(Versions.logback) }
+//        }
+//        implementation("ch.qos.logback:logback-core") {
+//            version { strictly(Versions.logback) }
+//        }
+//        implementation("joda-time:joda-time:${Versions.jodatime}")
+//        implementation("net.minidev:json-smart:${Versions.jsonsmart}") {
+//            because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")
+//        }
+//        implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
+//        implementation("org.json:json:${Versions.json}") {
+//            because("https://github.com/advisories/GHSA-3vqj-43w4-2q58")
+//        }
+//        implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
+//        implementation("net.bytebuddy:byte-buddy-agent:${Versions.byteBuddy}")
+//        implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
+//        implementation("com.google.errorprone:error_prone_annotations:${Versions.errorProneAnnotations}")
+//        implementation("org.checkerframework:checker-qual:${Versions.checkerQual}")
+//
+//        implementation("org.yaml:snakeyaml:${Versions.snakeyaml}") {
+//            because("https://security.snyk.io/vuln/SNYK-JAVA-ORGYAML-3152153")
+//        }
+//        implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
+//            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
+//        }
+//        implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
+//            because("https://github.com/advisories/GHSA-6mjq-h674-j845")
+//        }
+//        implementation("org.bouncycastle:bcprov-jdk18on") {
+//            version { strictly(Versions.bouncyCastle) }
+//        }
+//        implementation("org.eclipse.jetty:jetty-http:${Versions.jettyHttp}") {
+//            because("https://github.com/advisories/GHSA-hmr7-m48g-48f6")
+//        }
+//        implementation("org.apache.commons:commons-compress:${Versions.commonsCompress}") {
+//            because("https://github.com/advisories/GHSA-cgwf-w82q-5jrr")
+//        }
+//
+//        testImplementation("org.assertj:assertj-core:${Versions.assertj}")
+//        testImplementation("junit:junit:${Versions.junit}")
+//        testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
+//    }
 }
 
 group = "no.nav.sosialhjelp"
