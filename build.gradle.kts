@@ -104,6 +104,8 @@ configurations {
     implementation {
 //        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
 //        exclude(group = "com.google.code.findbugs", module = "jsr305")
+//        exclude(group = "io.netty")
+//        exclude(group = "io.projectreactor.netty")
     }
     testImplementation {
         // Ved å ekskludere kqueue som Netty-transport tvinger vi en fallback
@@ -112,6 +114,8 @@ configurations {
 //        exclude(group = "io.netty", module = "netty-transport-native-kqueue")
 //        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
 //        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+//        exclude(group = "io.netty")
+//        exclude(group = "io.projectreactor.netty")
         exclude(group = "org.hamcrest")
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito")
@@ -192,7 +196,7 @@ dependencies {
     implementation("org.apache.tika:tika-parsers-standard-package:2.9.1")
 
     // netty
-    implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
+//    implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
 
     // commons
     implementation("org.apache.commons:commons-text:${Versions.commonsText}")
