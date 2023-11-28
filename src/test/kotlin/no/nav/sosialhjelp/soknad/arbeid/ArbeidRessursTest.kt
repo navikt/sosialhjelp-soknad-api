@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs.ArbeidFrontend
+import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs.ArbeidsforholdRequest
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -63,7 +63,7 @@ internal class ArbeidRessursTest {
         val arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold
         assertThat(arbeidsforholdFrontends).hasSize(2)
 
-        val arbeidsforhold1 = arbeidsforholdFrontends!![0]
+        val arbeidsforhold1 = arbeidsforholdFrontends[0]
         val arbeidsforhold2 = arbeidsforholdFrontends[1]
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold1, ARBEIDSFORHOLD_1)
         assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold2, ARBEIDSFORHOLD_2)
@@ -103,8 +103,8 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
-        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
+        val arbeidsforholdRequest = ArbeidsforholdRequest(KOMMENTAR)
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val soknadUnderArbeid = slot.captured
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
@@ -138,8 +138,8 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
-        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
+        val arbeidsforholdRequest = ArbeidsforholdRequest(KOMMENTAR)
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val captured = slot.captured
         val internalSoknad = captured.jsonInternalSoknad
@@ -160,8 +160,8 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
-        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
+        val arbeidsforholdRequest = ArbeidsforholdRequest(KOMMENTAR)
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val soknadUnderArbeid = slot.captured
         val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
@@ -176,8 +176,8 @@ internal class ArbeidRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val arbeidFrontend = ArbeidFrontend(null, "")
-        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
+        val arbeidsforholdRequest = ArbeidsforholdRequest("")
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val soknadUnderArbeid = slot.captured
         val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
@@ -197,9 +197,9 @@ internal class ArbeidRessursTest {
     fun putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
-        val arbeidFrontend = ArbeidFrontend(null, "")
+        val arbeidsforholdRequest = ArbeidsforholdRequest("")
 
-        assertThatCode { arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend) }.isInstanceOf(AuthorizationException::class.java)
+        assertThatCode { arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest) }.isInstanceOf(AuthorizationException::class.java)
 
         verify(exactly = 0) { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) }
     }
