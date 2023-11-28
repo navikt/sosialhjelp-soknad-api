@@ -3,10 +3,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
-    const val springBoot = "3.1.3" // Husk å oppdatere plugin også
+    const val springBoot = "3.1.5" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
-    const val sosialhjelpCommon = "1.20230918.1754-8d4249c"
+    const val sosialhjelpCommon = "1.20231127.1050-86ba0df"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
@@ -14,14 +14,14 @@ object Versions {
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.1.0"
+    const val tokenValidation = "3.1.8"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
     const val jackson = "2.14.2"
     const val logback = "1.4.5"
     const val logstash = "7.3"
-    const val pdfbox = "2.0.27"
+    const val pdfbox = "3.0.0"
     const val jempbox = "1.8.17"
     const val emojiJava = "5.1.1"
     const val jakartaActivation = "2.1.1"
@@ -30,9 +30,9 @@ object Versions {
     const val jakartaServlet = "5.0.0"
     const val jakartaXmlBind = "4.0.0"
     const val jakartaValidation = "3.0.2"
-    const val unleashClient = "3.3.4"
+    const val unleashClient = "8.4.0"
     const val tika = "2.7.0"
-    const val reactorNettyHttp = "1.1.5"
+    const val reactorNettyHttp = "1.1.13"
     const val commonsText = "1.10.0"
     const val commonsCodec = "1.15"
     const val jaxbRuntime = "4.0.2"
@@ -43,11 +43,10 @@ object Versions {
     // constraints
     const val slf4j = "2.0.6"
     const val log4j = "2.19.0"
-    const val gson = "2.10"
     const val jodatime = "2.12.2"
     const val jsonsmart = "2.4.10"
     const val nimbusOauth2 = "10.7"
-    const val json = "20230227"
+    const val json = "20231013"
     const val byteBuddy = "1.12.20"
     const val jbossLogging = "3.5.0.Final"
     const val errorProneAnnotations = "2.15.0"
@@ -57,19 +56,19 @@ object Versions {
     const val mockOauth2Server = "0.5.8"
     const val snakeyaml = "2.0"
     const val springWebMvc = "6.0.9"
-    const val nettyHandler = "4.1.94.Final"
+    const val nettyHandler = "4.1.101.Final"
     const val bouncyCastle = "1.74"
     const val jettyHttp = "11.0.16"
     const val commonsCompress = "1.24.0"
 }
 
 plugins {
-    kotlin("jvm") version "1.9.10"
-    kotlin("plugin.spring") version "1.9.10"
-    id("org.springframework.boot") version "3.1.3"
-    id("org.flywaydb.flyway") version "9.22.1"
-    id("com.github.ben-manes.versions") version "0.48.0" // ./gradlew dependencyUpdates
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
+    kotlin("jvm") version "1.9.20"
+    kotlin("plugin.spring") version "1.9.20"
+    id("org.springframework.boot") version "3.1.5"
+    id("org.flywaydb.flyway") version "10.0.1"
+    id("com.github.ben-manes.versions") version "0.50.0" // ./gradlew dependencyUpdates
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
 }
 
 java {
@@ -185,11 +184,11 @@ dependencies {
     runtimeOnly("jakarta.validation:jakarta.validation-api:${Versions.jakartaValidation}")
 
     // Unleash
-    implementation("no.finn.unleash:unleash-client-java:${Versions.unleashClient}")
+    implementation("io.getunleash:unleash-client-java:${Versions.unleashClient}")
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
-    implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.9.1")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
@@ -204,14 +203,9 @@ dependencies {
     // pdf
     implementation("org.apache.pdfbox:pdfbox:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:preflight:${Versions.pdfbox}")
+    implementation("org.apache.pdfbox:pdfbox-io:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:jempbox:${Versions.jempbox}")
     implementation("com.vdurmont:emoji-java:${Versions.emojiJava}")
-    implementation("javax.activation:javax.activation-api:1.2.0") {
-        because("pdfbox 2.x.x trenger javax.activation pakker. Kan fjernes når pdfbox 3.x.x er tilgjengelig")
-    }
-    implementation("javax.xml.bind:jaxb-api:2.3.1") {
-        because("pdfbox 2.x.x trenger javax.xml.bind pakker. Kan fjernes når pdfbox 3.x.x er tilgjengelig")
-    }
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}")
@@ -236,7 +230,6 @@ dependencies {
         implementation("ch.qos.logback:logback-core") {
             version { strictly(Versions.logback) }
         }
-        implementation("com.google.code.gson:gson:${Versions.gson}")
         implementation("joda-time:joda-time:${Versions.jodatime}")
         implementation("net.minidev:json-smart:${Versions.jsonsmart}") {
             because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")
