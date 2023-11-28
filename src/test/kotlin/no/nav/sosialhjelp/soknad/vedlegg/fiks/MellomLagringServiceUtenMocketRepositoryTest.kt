@@ -5,7 +5,7 @@ import io.mockk.just
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkObject
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
@@ -36,19 +36,19 @@ import java.time.temporal.ChronoUnit
 @ActiveProfiles("test")
 internal class MellomLagringServiceUtenMocketRepositoryTest {
 
-    @Inject
+    @Autowired
     private lateinit var mellomlagringClient: MellomlagringClient
 
-    @Inject
+    @Autowired
     private lateinit var mellomlagringService: MellomlagringService
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var virusScanner: VirusScanner
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()

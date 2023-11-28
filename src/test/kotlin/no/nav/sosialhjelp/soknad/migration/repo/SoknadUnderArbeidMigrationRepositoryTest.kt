@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -22,13 +22,13 @@ import java.time.temporal.ChronoUnit
 @ActiveProfiles("test")
 internal class SoknadUnderArbeidMigrationRepositoryTest {
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidMigrationRepository: SoknadUnderArbeidMigrationRepository
 
     @AfterEach

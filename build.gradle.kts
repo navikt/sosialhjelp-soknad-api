@@ -179,14 +179,12 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${Versions.logstash}")
 
     // jakarta
-    implementation("jakarta.activation:jakarta.activation-api:${Versions.jakartaActivation}")
-    implementation("jakarta.annotation:jakarta.annotation-api:${Versions.jakartaAnnotation}")
-    implementation("jakarta.inject:jakarta.inject-api:${Versions.jakartaInject}")
-    implementation("jakarta.servlet:jakarta.servlet-api") {
-        version { strictly(Versions.jakartaServlet) }
-    }
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:${Versions.jakartaXmlBind}")
-    runtimeOnly("jakarta.validation:jakarta.validation-api:${Versions.jakartaValidation}")
+//    implementation("jakarta.activation:jakarta.activation-api:${Versions.jakartaActivation}")
+//    implementation("jakarta.annotation:jakarta.annotation-api:${Versions.jakartaAnnotation}")
+//    implementation("jakarta.inject:jakarta.inject-api:${Versions.jakartaInject}")
+    implementation("jakarta.servlet:jakarta.servlet-api:${ Versions.jakartaServlet }")
+//    implementation("jakarta.xml.bind:jakarta.xml.bind-api:${Versions.jakartaXmlBind}")
+//    runtimeOnly("jakarta.validation:jakarta.validation-api:${Versions.jakartaValidation}")
 
     // Unleash
     implementation("io.getunleash:unleash-client-java:${Versions.unleashClient}")

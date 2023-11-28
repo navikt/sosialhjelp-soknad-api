@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
@@ -23,13 +23,13 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     private val dagerGammelSoknad = 20
     private val behandlingsId = "1100AAAAA"
 
-    @Inject
+    @Autowired
     private lateinit var batchSoknadMetadataRepository: BatchSoknadMetadataRepository
 
-    @Inject
+    @Autowired
     private lateinit var soknadMetadataRepository: SoknadMetadataRepository
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
