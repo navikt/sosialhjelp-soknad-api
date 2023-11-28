@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
+import com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
@@ -13,6 +14,7 @@ object Utils {
     val digisosObjectMapper = JsonSosialhjelpObjectMapper
         .createObjectMapper()
         .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+        .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
         .registerKotlinModule()
 
     fun getDigisosIdFromResponse(errorResponse: String, behandlingsId: String): String? {

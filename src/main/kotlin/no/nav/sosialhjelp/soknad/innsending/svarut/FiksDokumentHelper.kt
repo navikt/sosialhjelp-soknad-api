@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import no.ks.fiks.svarut.klient.model.Dokument
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
@@ -27,7 +28,9 @@ class FiksDokumentHelper(
     private val innsendingService: InnsendingService,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
 ) {
-    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+        .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+        .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
     private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     fun lagDokumentForSoknadJson(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {

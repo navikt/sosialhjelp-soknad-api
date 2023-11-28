@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import io.mockk.every
 import io.mockk.just
@@ -113,7 +114,9 @@ internal class ArbeidRessursTest {
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
 
-        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+            .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
         assertThatNoException().isThrownBy {
             JsonSosialhjelpValidator.ensureValidInternalSoknad(mapper.writeValueAsString(internalSoknad))
         }
@@ -148,7 +151,9 @@ internal class ArbeidRessursTest {
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
 
-        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper().configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+            .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
         assertThatExceptionOfType(JsonSosialhjelpValidationException::class.java).isThrownBy {
             JsonSosialhjelpValidator.ensureValidInternalSoknad(mapper.writeValueAsString(internalSoknad))
         }

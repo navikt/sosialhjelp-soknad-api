@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.redis
 
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature.SORT_PROPERTIES_ALPHABETICALLY
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -17,6 +18,7 @@ object RedisUtils {
 
     val redisObjectMapper: ObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         .configure(ORDER_MAP_ENTRIES_BY_KEYS, true)
+        .configure(SORT_PROPERTIES_ALPHABETICALLY, true)
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .registerKotlinModule()
         .registerModule(JavaTimeModule())
