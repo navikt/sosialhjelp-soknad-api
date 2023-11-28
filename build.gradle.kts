@@ -171,7 +171,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:${Versions.micrometer}")
 
     // jackson
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Versions.jackson}")
+//    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Versions.jackson}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Versions.jackson}")
 
     // Logging
@@ -198,16 +198,16 @@ dependencies {
 
     // commons
     implementation("org.apache.commons:commons-text:${Versions.commonsText}")
-    implementation("commons-codec:commons-codec:${Versions.commonsCodec}")
+//    implementation("commons-codec:commons-codec:${Versions.commonsCodec}")
 
     // jaxb
-    runtimeOnly("org.glassfish.jaxb:jaxb-runtime:${Versions.jaxbRuntime}")
+//    runtimeOnly("org.glassfish.jaxb:jaxb-runtime:${Versions.jaxbRuntime}")
 
     // pdf
     implementation("org.apache.pdfbox:pdfbox:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:preflight:${Versions.pdfbox}")
     implementation("org.apache.pdfbox:pdfbox-io:${Versions.pdfbox}")
-    implementation("org.apache.pdfbox:jempbox:${Versions.jempbox}")
+//    implementation("org.apache.pdfbox:jempbox:${Versions.jempbox}")
     implementation("com.vdurmont:emoji-java:${Versions.emojiJava}")
 
     // Test
