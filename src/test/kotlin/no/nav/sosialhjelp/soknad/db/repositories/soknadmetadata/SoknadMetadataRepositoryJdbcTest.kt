@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -19,10 +19,10 @@ internal class SoknadMetadataRepositoryJdbcTest {
 
     private val behandlingsId = "1100AAAAA"
 
-    @Inject
+    @Autowired
     private lateinit var soknadMetadataRepository: SoknadMetadataRepository
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach

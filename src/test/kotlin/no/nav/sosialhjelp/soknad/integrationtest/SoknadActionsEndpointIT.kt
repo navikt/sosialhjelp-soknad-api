@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import jakarta.inject.Inject
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -35,7 +34,7 @@ class SoknadActionsEndpointIT {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach

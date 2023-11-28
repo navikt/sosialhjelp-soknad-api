@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
-import jakarta.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.apache.commons.lang3.RandomUtils
@@ -18,13 +18,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles("test")
 internal class BatchOpplastetVedleggRepositoryJdbcTest {
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
-    @Inject
+    @Autowired
     private lateinit var batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
