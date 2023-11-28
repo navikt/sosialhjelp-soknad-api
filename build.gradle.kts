@@ -116,10 +116,10 @@ configurations {
 //        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
 //        exclude(group = "io.netty")
 //        exclude(group = "io.projectreactor.netty")
-        exclude(group = "org.hamcrest")
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+//        exclude(group = "org.hamcrest")
+//        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito")
-        exclude(group = "org.skyscreamer", module = "jsonassert")
+//        exclude(group = "org.skyscreamer", module = "jsonassert")
     }
 }
 
