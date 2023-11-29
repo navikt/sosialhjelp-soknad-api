@@ -107,26 +107,6 @@ class OpplastetVedleggRessurs(
         return FilFrontend(filnavn, uuid)
     }
 
-    @Unprotected
-    @PostMapping("/{behandlingsId}/konverter", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun konverterVedlegg(
-        @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestParam("file") fil: MultipartFile,
-    ): ResponseEntity<ByteArray> {
-//        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-
-        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
-        val orginalData = VedleggUtils.getByteArray(fil)
-        val (filnavn, konvertertData) = VedleggUtils.konverterFilHvisStottet(orginaltFilnavn, orginalData)
-
-        val mimeType = detectMimeType(konvertertData)
-        return ResponseEntity
-            .ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${filnavn}\"")
-            .contentType(MediaType.parseMediaType(mimeType))
-            .body(konvertertData)
-    }
-
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
     fun deleteVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
