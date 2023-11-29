@@ -32,7 +32,6 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE_OLD
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
@@ -42,7 +41,6 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -358,18 +356,6 @@ internal class OpplastetVedleggServiceTest {
 
         assertThat(fil.sha512).isEqualTo(getSha512FromByteArray(PDF_FILE.readBytes()))
         assertThat(fil.filnavn.contains(PDF_FILE.name.split(".")[0]))
-    }
-
-    // TODO Disabler test til duplikate filer er på plass
-    @Test
-    @Disabled
-    fun `Laste opp samme fil 2 ganger skal gi feil`() {
-        doCommonMocking()
-
-        opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, PDF_FILE.readBytes(), PDF_FILE.name)
-        // skal feile andre runde
-        assertThatThrownBy { opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, PDF_FILE.readBytes(), PDF_FILE.name) }
-            .isInstanceOf(DuplikatFilException::class.java)
     }
 
     private fun doCommonMocking() {

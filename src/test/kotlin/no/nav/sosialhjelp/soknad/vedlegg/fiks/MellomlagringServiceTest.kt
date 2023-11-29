@@ -26,21 +26,14 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.io.File
 import java.time.LocalDateTime
-import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
 
 internal class MellomlagringServiceTest {
 
@@ -207,83 +200,6 @@ internal class MellomlagringServiceTest {
 
         assertThat(fil.sha512).isEqualTo(getSha512FromByteArray(PDF_FILE.readBytes()))
         assertThat(fil.filnavn).contains(PDF_FILE.name.split(".")[0])
-    }
-
-    // TODO Disabler test til sjekk av duplikate filer er på plass
-    @Test
-    @Disabled
-    fun `Last opp fil kaster ikke exception`() {
-
-        val behandlingsId = "123"
-        val eksternId = createPrefixedBehandlingsId(behandlingsId)
-
-        val soknadUnderArbeid = createSoknadUnderArbeid(
-            behandlingsId,
-            createJsonInternalSoknad()
-        )
-
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-
-        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
-        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
-            eksternId,
-            createDokumentInfoList(PDF_FILE)
-        )
-        mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
-    }
-
-    // TODO Disabler test til sjekk på duplikate filer er på plass
-    @Test
-    @Disabled
-    fun `Allerede opplastet fil kaster exception`() {
-
-        val behandlingsId = "123"
-        val eksternId = createPrefixedBehandlingsId(behandlingsId)
-
-        val soknadUnderArbeid = createSoknadUnderArbeid(
-            behandlingsId,
-            createJsonInternalSoknad()
-        )
-
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-
-        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
-        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
-            eksternId,
-            createDokumentInfoList(PDF_FILE)
-        )
-
-        mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
-        assertThatThrownBy {
-            mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
-        }.isInstanceOf(DuplikatFilException::class.java)
-    }
-
-    private fun createJsonInternalSoknad(): JsonInternalSoknad {
-        return JsonInternalSoknad().withVedlegg(
-            JsonVedleggSpesifikasjon().withVedlegg(
-                listOf(
-                    JsonVedlegg()
-                        .withType(OpplastetVedleggType("hei|på deg").type)
-                        .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
-                        .withStatus("VedleggKreves")
-                )
-            )
-        )
-    }
-
-    private fun createDokumentInfoList(fil: File): List<MellomlagringDokumentInfo> {
-        val bytes = fil.readBytes()
-        return listOf(
-            MellomlagringDokumentInfo(
-                lagFilnavn(fil.name, validerFil(bytes, fil.name), uuidFromBytes(bytes)),
-                uuidFromBytes(bytes).toString(),
-                bytes.size.toLong(),
-                detectMimeType(bytes)
-            )
-        )
     }
 
     private fun createSoknadUnderArbeid(
