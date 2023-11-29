@@ -14,7 +14,7 @@ object FilKonvertering {
                 byttExtension(orginaltFilnavn),
                 konverter(it.getFiltypeConverter(), sourceData)
             )
-        } ?: throw IllegalArgumentException("Konvertering av filtype ikke stottet")
+        } ?: throw KonverteringTilPdfException("Konvertering av filtype ikke stottet", null, null)
     }
 
     private fun konverter(konverterer: FilTilPdfConverter, sourceData: ByteArray) =
