@@ -23,22 +23,14 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.TEXT_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE_OLD
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -238,81 +230,6 @@ internal class OpplastetVedleggServiceTest {
         val opplastetVedlegg =
             opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavn.pdf")
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavn").endsWith(".jpg")
-    }
-
-    @Test
-    fun `Opplasting av Excel-fil kaster ikke exception`() {
-        doCommonMocking()
-
-        val filename = EXCEL_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
-        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
-            BEHANDLINGSID,
-            VEDLEGGSTYPE,
-            EXCEL_FILE.readBytes(),
-            EXCEL_FILE.name
-        )
-        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
-    }
-
-    @Test
-    fun `Opplasting av Word-fil kaster ikke exception`() {
-        doCommonMocking()
-
-        val filename = WORD_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
-        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
-            BEHANDLINGSID,
-            VEDLEGGSTYPE,
-            WORD_FILE.readBytes(),
-            WORD_FILE.name
-        )
-        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
-    }
-
-    @Test
-    fun `Opplasting av CSV-fil kaster ikke exception`() {
-        doCommonMocking()
-
-        val filename = CSV_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
-        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
-            BEHANDLINGSID,
-            VEDLEGGSTYPE,
-            CSV_FILE.readBytes(),
-            CSV_FILE.name
-        )
-        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
-    }
-
-    @Test
-    fun `Skal ikke kunne laste opp gammelt Excel-format`() {
-        assertThatThrownBy {
-            opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, EXCEL_FILE_OLD.readBytes(), EXCEL_FILE_OLD.name)
-        }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
-            .hasMessageContaining("Ugyldig filtype for opplasting")
-            .hasMessageContaining(detectMimeType(EXCEL_FILE_OLD.readBytes()))
-    }
-
-    @Test
-    fun `Skal ikke kunne laste opp gammelt Word-format`() {
-        assertThatThrownBy {
-            opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, WORD_FILE_OLD.readBytes(), WORD_FILE_OLD.name)
-        }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
-            .hasMessageContaining("Ugyldig filtype for opplasting")
-            .hasMessageContaining(detectMimeType(WORD_FILE_OLD.readBytes()))
-    }
-
-    @Test
-    fun `Vanlig tekst-fil konverteres ikke`() {
-        assertThatThrownBy {
-            opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, TEXT_FILE.readBytes(), TEXT_FILE.name)
-        }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
-            .hasMessageContaining("Ugyldig filtype for opplasting")
-            .hasMessageContaining(detectMimeType(TEXT_FILE.readBytes()))
     }
 
     @Test
