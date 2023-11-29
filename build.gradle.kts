@@ -63,10 +63,10 @@ object Versions {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.20"
-    kotlin("plugin.spring") version "1.9.20"
-    id("org.springframework.boot") version "3.1.5"
-    id("org.flywaydb.flyway") version "10.0.1"
+    kotlin("jvm") version "1.9.21"
+    kotlin("plugin.spring") version "1.9.21"
+    id("org.springframework.boot") version "3.2.0"
+    id("org.flywaydb.flyway") version "10.1.0"
     id("com.github.ben-manes.versions") version "0.50.0" // ./gradlew dependencyUpdates
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
 }
