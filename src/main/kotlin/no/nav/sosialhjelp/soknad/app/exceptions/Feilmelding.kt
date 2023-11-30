@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-data class Feilmelding(
+data class Feilmelding (
     val id: String?,
     val message: String?
 ) {

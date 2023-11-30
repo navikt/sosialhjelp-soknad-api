@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
-    const val springBoot = "3.1.5" // Husk å oppdatere plugin også
+    const val springBoot = "3.2.0" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
     const val sosialhjelpCommon = "1.20231127.1050-86ba0df"
@@ -14,7 +14,7 @@ object Versions {
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.1.8"
+    const val tokenValidation = "3.2.0"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
@@ -34,7 +34,7 @@ object Versions {
 plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
-    id("org.springframework.boot") version "3.1.5"
+    id("org.springframework.boot") version "3.2.0"
     id("org.flywaydb.flyway") version "10.0.1"
     id("com.github.ben-manes.versions") version "0.50.0" // ./gradlew dependencyUpdates
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
