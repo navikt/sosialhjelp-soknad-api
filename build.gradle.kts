@@ -149,11 +149,6 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}")
     testImplementation("no.nav.security:token-validation-spring-test:${Versions.tokenValidation}")
-    // i versjon < 2.0.1 brukes en metode som fører til feil på windows
-    // denne kan fjernes når token-validation-spring-test er oppdatert med denne versjonen
-    testImplementation("no.nav.security:mock-oauth2-server") {
-        version { strictly("2.0.1") }
-    }
     testImplementation("io.mockk:mockk:${Versions.mockk}")
     testImplementation("io.mockk:mockk-jvm:${Versions.mockk}")
 }
