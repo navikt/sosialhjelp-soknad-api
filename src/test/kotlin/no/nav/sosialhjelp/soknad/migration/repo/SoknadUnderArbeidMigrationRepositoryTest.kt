@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -10,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -22,13 +22,13 @@ import java.time.temporal.ChronoUnit
 @ActiveProfiles("test")
 internal class SoknadUnderArbeidMigrationRepositoryTest {
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidMigrationRepository: SoknadUnderArbeidMigrationRepository
 
     @AfterEach

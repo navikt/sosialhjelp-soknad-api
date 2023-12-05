@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -10,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -21,16 +21,16 @@ import java.time.LocalDateTime
 @ActiveProfiles("test")
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Inject
+    @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
-    @Inject
+    @Autowired
     private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
 
     @AfterEach

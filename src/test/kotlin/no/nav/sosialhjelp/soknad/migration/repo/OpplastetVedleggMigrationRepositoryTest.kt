@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -10,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -20,13 +20,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles("test")
 internal class OpplastetVedleggMigrationRepositoryTest {
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggMigrationRepository: OpplastetVedleggMigrationRepository
 
-    @Inject
+    @Autowired
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach

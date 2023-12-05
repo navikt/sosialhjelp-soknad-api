@@ -13,13 +13,16 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.web.context.request.WebRequest
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
@@ -239,9 +242,13 @@ class ExceptionMapper(
             .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
     }
 
-    @ExceptionHandler(value = [MaxUploadSizeExceededException::class])
-    fun handleMaxUploadSizeExceededException(e: MaxUploadSizeExceededException): ResponseEntity<Feilmelding> {
-        log.warn("Feilet opplasting", e)
+    override fun handleMaxUploadSizeExceededException(
+        ex: MaxUploadSizeExceededException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        log.warn("Feilet opplasting", ex)
         return ResponseEntity
             .status(HttpStatus.PAYLOAD_TOO_LARGE)
             .contentType(MediaType.APPLICATION_JSON)

@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import jakarta.inject.Inject
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
@@ -15,11 +13,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
-@ContextConfiguration(classes = [PdlIntegrationTestConfig::class])
-@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class SoknadActionsEndpointIT {
@@ -35,7 +31,7 @@ class SoknadActionsEndpointIT {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @Inject
+    @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
