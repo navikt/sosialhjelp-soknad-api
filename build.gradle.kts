@@ -6,7 +6,7 @@ object Versions {
     const val springBoot = "3.2.0" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.06.21-14.54-583dfcc41d77"
-    const val sosialhjelpCommon = "1.20231127.1050-86ba0df"
+    const val sosialhjelpCommon = "1.20231205.0930-5ce172f"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
