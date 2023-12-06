@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
@@ -12,7 +12,12 @@ import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummer
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusBrukerResponse
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusGiftResponse
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusGradertResponse
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusResponse
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusUgiftResponse
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,7 +30,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -34,21 +39,21 @@ class SivilstatusRessurs(
     @GetMapping
     fun hentSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String
-    ): SivilstatusFrontend? {
+    ): SivilstatusResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
+        val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus
 
-        return mapToSivilstatusFrontend(jsonSivilstatus)
+        return jsonSivilstatus?.let { mapToSivilstatusFrontend(it) } ?: SivilstatusBrukerResponse()
     }
 
     @PutMapping
     fun updateSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody sivilstatusFrontend: SivilstatusFrontend
-    ) {
+    ): SivilstatusResponse {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -61,29 +66,31 @@ class SivilstatusRessurs(
         val sivilstatus = familie.sivilstatus
         sivilstatus.kilde = JsonKilde.BRUKER
         sivilstatus.status = sivilstatusFrontend.sivilstatus
-        sivilstatus.ektefelle = mapToJsonEktefelle(sivilstatusFrontend.ektefelle)
+        sivilstatus.ektefelle = sivilstatusFrontend.ektefelle?.let { mapToJsonEktefelle(it) }
         sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        return mapToSivilstatusFrontend(familie.sivilstatus)
     }
 
-    private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {
-        val navn = jsonEktefelle.navn
-        return EktefelleFrontend(
-            navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn, fulltNavn(navn)),
-            fodselsdato = jsonEktefelle.fodselsdato,
-            personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator)
-        )
-    }
+    private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend = EktefelleFrontend(
+        navn = mapNavn(jsonEktefelle.navn),
+        fodselsdato = jsonEktefelle.fodselsdato,
+        personnummer = jsonEktefelle.personIdentifikator?.let { getPersonnummerFromFnr(it) } ?: ""
+    )
 
-    private fun mapToJsonEktefelle(ektefelle: EktefelleFrontend?): JsonEktefelle? {
-        return if (ektefelle == null) {
-            null
-        } else JsonEktefelle()
-            .withNavn(mapToJsonNavn(ektefelle.navn))
-            .withFodselsdato(ektefelle.fodselsdato)
-            .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer))
-    }
+    private fun mapNavn(jsonNavn: JsonNavn): NavnFrontend = NavnFrontend(
+        fornavn = jsonNavn.fornavn,
+        mellomnavn = jsonNavn.mellomnavn,
+        etternavn = jsonNavn.etternavn,
+        fulltNavn = fulltNavn(jsonNavn)
+    )
+
+    private fun mapToJsonEktefelle(ektefelle: EktefelleFrontend): JsonEktefelle = JsonEktefelle()
+        .withNavn(mapToJsonNavn(ektefelle.navn))
+        .withFodselsdato(ektefelle.fodselsdato)
+        .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer))
 
     private fun getFnr(fodselsdato: String?, personnummer: String?): String? {
         if (fodselsdato == null || personnummer == null) {
@@ -95,22 +102,26 @@ class SivilstatusRessurs(
         return targetFormat.format(date) + personnummer
     }
 
-    private fun mapToSivilstatusFrontend(jsonSivilstatus: JsonSivilstatus): SivilstatusFrontend {
-        return SivilstatusFrontend(
-            kildeErSystem = mapToSystemBoolean(jsonSivilstatus.kilde),
-            sivilstatus = jsonSivilstatus.status,
-            ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
-            harDiskresjonskode = jsonSivilstatus.ektefelleHarDiskresjonskode,
-            borSammenMed = jsonSivilstatus.borSammenMed,
-            erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle
-        )
-    }
+    private fun mapToSivilstatusFrontend(jsonSivilstatus: JsonSivilstatus): SivilstatusResponse {
+        return when {
+            (jsonSivilstatus.ektefelleHarDiskresjonskode == true) -> SivilstatusGradertResponse()
 
-    private fun mapToSystemBoolean(kilde: JsonKilde): Boolean? {
-        return when (kilde) {
-            JsonKilde.SYSTEM -> true
-            JsonKilde.BRUKER -> false
-            else -> null
+            jsonSivilstatus.kilde == JsonKilde.SYSTEM ->
+                if (jsonSivilstatus.status == JsonSivilstatus.Status.GIFT)
+                    SivilstatusGiftResponse(
+                        ektefelle = addEktefelleFrontend(jsonSivilstatus.ektefelle),
+                        erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle
+                    )
+                else
+                    SivilstatusUgiftResponse(sivilstatus = jsonSivilstatus.status)
+
+            else -> SivilstatusBrukerResponse(
+                sivilstatus = jsonSivilstatus.status,
+                borSammenMed = jsonSivilstatus.borSammenMed,
+                ektefelle = jsonSivilstatus.ektefelle?.let {
+                    addEktefelleFrontend(it)
+                } ?: EktefelleFrontend(),
+            )
         }
     }
 }

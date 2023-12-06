@@ -25,7 +25,10 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusBrukerResponse
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusGiftResponse
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusGradertResponse
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -47,6 +50,9 @@ internal class SivilstatusRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
@@ -57,18 +63,17 @@ internal class SivilstatusRessursTest {
     }
 
     @Test
-    fun sivilstatusSkalReturnereNull() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+    fun sivilstatusSkalReturnereBlank() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
-        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
-        assertThat(sivilstatusFrontend).isNull()
+        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) as SivilstatusBrukerResponse
+        assertThat(sivilstatusFrontend).isInstanceOf(SivilstatusBrukerResponse::class.java)
+        assertThat(sivilstatusFrontend.sivilstatus).isNull()
     }
 
     @Test
     fun sivilstatusSkalReturnereKunBrukerdefinertStatus() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 true,
@@ -79,17 +84,14 @@ internal class SivilstatusRessursTest {
                 null
             )
 
-        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
-        assertThat(sivilstatusFrontend?.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
-        assertThat(sivilstatusFrontend?.kildeErSystem).isFalse
-        assertThat(sivilstatusFrontend?.ektefelle).isNull()
-        assertThat(sivilstatusFrontend?.harDiskresjonskode).isNull()
-        assertThat(sivilstatusFrontend?.erFolkeregistrertSammen).isNull()
+        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) as SivilstatusBrukerResponse
+        assertThat(sivilstatusFrontend).isInstanceOf(SivilstatusBrukerResponse::class.java)
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
+        assertThat(sivilstatusFrontend.ektefelle).isEqualTo(EktefelleFrontend())
     }
 
     @Test
     fun sivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 true,
@@ -100,40 +102,33 @@ internal class SivilstatusRessursTest {
                 true
             )
 
-        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
-        assertThat(sivilstatusFrontend?.kildeErSystem).isFalse
-        assertThat(sivilstatusFrontend?.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
-        assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend?.ektefelle, JSON_EKTEFELLE)
-        assertThat(sivilstatusFrontend?.harDiskresjonskode).isNull()
-        assertThat(sivilstatusFrontend?.erFolkeregistrertSammen).isNull()
-        assertThat(sivilstatusFrontend?.borSammenMed).isTrue
+        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) as SivilstatusBrukerResponse
+        assertThat(sivilstatusFrontend).isInstanceOf(SivilstatusBrukerResponse::class.java)
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
+        assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE)
+        assertThat(sivilstatusFrontend.borSammenMed).isTrue
     }
 
     @Test
     fun sivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                false,
-                JsonSivilstatus.Status.GIFT,
-                JSON_EKTEFELLE,
-                false,
-                true,
-                null
+                brukerutfylt = false,
+                status = JsonSivilstatus.Status.GIFT,
+                ektefelle = JSON_EKTEFELLE,
+                harDiskresjonskode = false,
+                folkeregistrertMed = true,
+                borSammen = null
             )
 
-        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
-        assertThat(sivilstatusFrontend?.kildeErSystem).isTrue
-        assertThat(sivilstatusFrontend?.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
-        assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend?.ektefelle, JSON_EKTEFELLE)
-        assertThat(sivilstatusFrontend?.harDiskresjonskode).isFalse
-        assertThat(sivilstatusFrontend?.erFolkeregistrertSammen).isTrue
-        assertThat(sivilstatusFrontend?.borSammenMed).isNull()
+        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) as SivilstatusGiftResponse
+        assertThat(sivilstatusFrontend).isInstanceOf(SivilstatusGiftResponse::class.java)
+        assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE)
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen).isTrue
     }
 
     @Test
     fun sivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
                 false,
@@ -144,31 +139,29 @@ internal class SivilstatusRessursTest {
                 null
             )
 
-        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
-        assertThat(sivilstatusFrontend?.kildeErSystem).isTrue
-        assertThat(sivilstatusFrontend?.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT)
-        assertThat(sivilstatusFrontend?.harDiskresjonskode).isTrue
-        assertThat(sivilstatusFrontend?.erFolkeregistrertSammen).isNull()
-        assertThat(sivilstatusFrontend?.borSammenMed).isNull()
+        val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID) as SivilstatusGradertResponse
+        assertThat(sivilstatusFrontend).isInstanceOf(SivilstatusGradertResponse::class.java)
     }
 
     @Test
     fun putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
+            createJsonInternalSoknadWithSivilstatus(null, null, null, false, null, null)
 
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.GIFT)
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.ENKE)
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.SAMBOER)
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.SEPARERT)
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.SKILT)
-        assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.UGIFT)
+        JsonSivilstatus.Status.entries.forEach {
+            val sivilstatusFrontend = SivilstatusFrontend(false, it, null, false, null, null)
+            val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
+            every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
+            sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
+            val soknadUnderArbeid = soknadUnderArbeidSlot.captured
+            val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+            assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.BRUKER)
+            assertThat(sivilstatus.status).isEqualTo(it)
+        }
     }
 
     @Test
     fun putSivilstatusSkalSetteStatusGiftOgEktefelle() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
@@ -222,27 +215,14 @@ internal class SivilstatusRessursTest {
     }
 
     private fun assertThatEktefelleIsCorrectlyConverted(
-        ektefelle: EktefelleFrontend?,
+        ektefelle: EktefelleFrontend,
         jsonEktefelle: JsonEktefelle
     ) {
-        assertThat(ektefelle?.fodselsdato).isEqualTo(jsonEktefelle.fodselsdato)
-        assertThat(ektefelle?.personnummer).isEqualTo(getPersonnummerFromFnr(jsonEktefelle.personIdentifikator))
-        assertThat(ektefelle?.navn?.fornavn).isEqualTo(jsonEktefelle.navn.fornavn)
-        assertThat(ektefelle?.navn?.mellomnavn).isEqualTo(jsonEktefelle.navn.mellomnavn)
-        assertThat(ektefelle?.navn?.etternavn).isEqualTo(jsonEktefelle.navn.etternavn)
-    }
-
-    private fun assertThatPutSivilstatusSetterRiktigStatus(status: JsonSivilstatus.Status) {
-        val sivilstatusFrontend = SivilstatusFrontend(false, status, null, null, null, null)
-
-        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
-
-        sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
-        val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
-        assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.BRUKER)
-        assertThat(sivilstatus.status).isEqualTo(status)
+        assertThat(ektefelle.fodselsdato).isEqualTo(jsonEktefelle.fodselsdato)
+        assertThat(ektefelle.personnummer).isEqualTo(getPersonnummerFromFnr(jsonEktefelle.personIdentifikator))
+        assertThat(ektefelle.navn.fornavn).isEqualTo(jsonEktefelle.navn.fornavn)
+        assertThat(ektefelle.navn.mellomnavn).isEqualTo(jsonEktefelle.navn.mellomnavn)
+        assertThat(ektefelle.navn.etternavn).isEqualTo(jsonEktefelle.navn.etternavn)
     }
 
     private fun createJsonInternalSoknadWithSivilstatus(
@@ -287,17 +267,15 @@ internal class SivilstatusRessursTest {
             personnummer = "12345"
         )
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
     }
 }
