@@ -7,14 +7,12 @@ import io.mockk.runs
 import io.mockk.verify
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import kotlinx.coroutines.sync.Mutex
 import no.nav.sosialhjelp.soknad.app.soknadlock.SoknadLockManager.TimestampedLock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.web.servlet.HandlerMapping
-import java.time.ZonedDateTime
 
 @ExtendWith(SpringExtension::class)
 internal class ConflictAvoidanceDelayInterceptorTest {
@@ -81,7 +79,7 @@ internal class ConflictAvoidanceDelayInterceptorTest {
 
     @Test
     fun `should release lock after request completion`() {
-        every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE_NAME) } returns TimestampedLock(ZonedDateTime.now(), Mutex())
+        every { request.getAttribute(ConflictAvoidanceDelayInterceptor.LOCK_ATTRIBUTE_NAME) } returns TimestampedLock()
         every { soknadLockManager.releaseLock(any()) } just runs
 
         interceptor.afterCompletion(request, response, handler, null)
