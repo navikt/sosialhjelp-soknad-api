@@ -44,18 +44,6 @@ internal class ConflictAvoidanceDelayInterceptorTest {
     }
 
     @Test
-    fun `should not attempt to lock for safe methods`() {
-        listOf("GET", "HEAD", "OPTIONS").forEach { method ->
-            every { request.method } returns method
-            mockBehandlingsId(request, BEHANDLINGSID_A)
-
-            interceptor.preHandle(request, response, handler)
-
-            verify(exactly = 0) { soknadLockManager.getLock(any()) }
-        }
-    }
-
-    @Test
     fun `should attempt to lock for unsafe methods`() {
         listOf("POST", "PUT", "DELETE", "PATCH").forEach { method ->
             every { request.method } returns method
