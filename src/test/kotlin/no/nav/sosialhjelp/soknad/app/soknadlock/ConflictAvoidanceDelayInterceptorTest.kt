@@ -37,7 +37,6 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         handler = mockk(relaxed = true)
 
         interceptor = ConflictAvoidanceDelayInterceptor(soknadLockManager)
-        every { soknadLockManager.enabled } returns true
     }
 
     private fun mockBehandlingsId(request: HttpServletRequest, behandlingsId: String?) {
