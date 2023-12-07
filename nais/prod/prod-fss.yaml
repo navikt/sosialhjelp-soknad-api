@@ -102,7 +102,7 @@ spec:
     - name: KRR_URL
       value: "https://digdir-krr-proxy.intern.nav.no"
     - name: LOGINSERVICE_URL
-      value: "https://loginservice.nav.no/login"
+      value: "https://login.nav.no/oauth2/login"
     - name: NORG_URL
       value: "https://norg2.intern.nav.no/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE
