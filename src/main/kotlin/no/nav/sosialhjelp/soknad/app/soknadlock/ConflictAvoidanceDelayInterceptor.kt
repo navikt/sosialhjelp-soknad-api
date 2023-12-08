@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.app.soknadlock
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping
 import kotlin.reflect.cast
 
-@Component
 /**
  * En interceptor som forsinker skriveforespørsler for å unngå redigeringskonflikter.
  *
@@ -18,6 +18,8 @@ import kotlin.reflect.cast
  * request-atributter for frigjøring etter fullføring.
  *
  */
+@Component
+@Profile("!no-interceptor")
 class ConflictAvoidanceDelayInterceptor(
     private val soknadLockManager: SoknadLockManager
 ) : HandlerInterceptor {
