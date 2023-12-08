@@ -71,9 +71,8 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.midlertidigAdresse = JSON_SYS_USTRUKTURERT_ADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -82,7 +81,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_BRUKER_GATE_ADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -90,9 +88,8 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.midlertidigAdresse = JSON_SYS_USTRUKTURERT_ADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -101,7 +98,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_MATRIKKELADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -109,9 +105,8 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.midlertidigAdresse = JSON_SYS_USTRUKTURERT_ADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -120,7 +115,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -157,7 +151,9 @@ internal class AdresseRessursTest {
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
-        assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+        assertThat(oppholdsadresse).isEqualTo(
+            adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+        )
 
         val navEnhetFrontend = navEnheter.first()
         val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
@@ -276,14 +272,17 @@ internal class AdresseRessursTest {
                 adresseFrontend.gateadresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.MATRIKKELADRESSE -> assertThatMatrikkeladresseIsCorrectlyConverted(
                 adresseFrontend.matrikkeladresse!!,
                 jsonAdresse
             )
+
             JsonAdresse.Type.USTRUKTURERT -> assertThatUstrukturertAdresseIsCorrectlyConverted(
                 adresseFrontend.ustrukturert!!,
                 jsonAdresse
             )
+
             else -> {
                 assertThat(jsonAdresse).isNull()
                 assertThat(adresseFrontend.gateadresse).isNull()

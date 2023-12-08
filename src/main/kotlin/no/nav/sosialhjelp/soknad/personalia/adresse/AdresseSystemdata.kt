@@ -39,6 +39,7 @@ class AdresseSystemdata(
             soknad.mottaker = JsonSoknadsmottaker()
         }
         personalia.folkeregistrertAdresse = folkeregistrertAdresse
+        soknadUnderArbeid.jsonInternalSoknad!!.midlertidigAdresse = midlertidigAdresse
         updateOppholdsadresse(personalia, folkeregistrertAdresse, midlertidigAdresse)
         updatePostadresse(personalia, folkeregistrertAdresse, midlertidigAdresse)
     }
@@ -183,6 +184,7 @@ class AdresseSystemdata(
                     .withPostnummer(gateadresse.postnummer)
                     .withPoststed(gateadresse.poststed)
             }
+
             JsonAdresse.Type.MATRIKKELADRESSE -> {
                 val matrikkeladresse = oppholdsadresse as JsonMatrikkelAdresse
                 JsonMatrikkelAdresse()
@@ -196,6 +198,7 @@ class AdresseSystemdata(
                     .withSeksjonsnummer(matrikkeladresse.seksjonsnummer)
                     .withUndernummer(matrikkeladresse.undernummer)
             }
+
             JsonAdresse.Type.USTRUKTURERT -> {
                 val ustrukturertAdresse = oppholdsadresse as JsonUstrukturertAdresse
                 JsonUstrukturertAdresse()
@@ -204,6 +207,7 @@ class AdresseSystemdata(
                     .withType(ustrukturertAdresse.type)
                     .withAdresse(ustrukturertAdresse.adresse)
             }
+
             JsonAdresse.Type.POSTBOKS -> {
                 val postboksadresse = oppholdsadresse as JsonPostboksAdresse
                 JsonPostboksAdresse()
@@ -214,6 +218,7 @@ class AdresseSystemdata(
                     .withPostnummer(postboksadresse.postnummer)
                     .withPoststed(postboksadresse.poststed)
             }
+
             else -> null
         }
     }
