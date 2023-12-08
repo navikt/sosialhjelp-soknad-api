@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
@@ -20,7 +19,7 @@ import org.springframework.test.web.reactive.server.returnResult
 import org.springframework.web.reactive.function.BodyInserters
 import java.io.File
 
-@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class KonvertereVedleggEndpointTest {
 
@@ -30,11 +29,11 @@ class KonvertereVedleggEndpointTest {
     private val endpoint: String = "/vedlegg/konverter"
 
     @Test
-    fun `Konvertere excel-fil via post-request`() { doRequestAndVerifyExpectations(EXCEL_FILE) }
+    fun `Konvertere excel-fil til pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(EXCEL_FILE) }
     @Test
-    fun `Konvertere word-fil via post-request`() { doRequestAndVerifyExpectations(WORD_FILE) }
+    fun `Konvertere word-fil til pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(WORD_FILE) }
     @Test
-    fun `Konvertere csv-fil via post-request`() { doRequestAndVerifyExpectations(CSV_FILE) }
+    fun `Konvertere csv-fil pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(CSV_FILE) }
 
     @Test
     fun `Filtype som ikke er stottet skal feile`() {
