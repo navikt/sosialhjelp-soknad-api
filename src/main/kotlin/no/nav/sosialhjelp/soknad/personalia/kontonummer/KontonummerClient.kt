@@ -57,7 +57,7 @@ class KontonummerClientImpl(
             log.warn("Kontoregister konto  - 401 Unauthorized - ${e.message}")
             null
         } catch (e: NotFound) {
-            log.warn("Kontoregister konto  - 404 Not Found - ${e.message}")
+            log.info("Fant ingen konto i kontoregister - ${e.message}")
             null
         } catch (e: Exception) {
             log.error("Kontoregister konto  - Noe uventet feilet", e)
