@@ -6,6 +6,9 @@ metadata:
   labels:
     team: teamdigisos
   annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-path: "/sosialhjelp/login-api/soknad-api"
+    nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
     nais.io/run-as-user: "1001"
 spec:
@@ -40,8 +43,8 @@ spec:
   vault:
     enabled: true
     paths:
-     - mountPath: /var/run/secrets/datasource
-       kvPath: /oracle/data/prod/creds/soknadsosialhjel_p-user
+      - mountPath: /var/run/secrets/datasource
+        kvPath: /oracle/data/prod/creds/soknadsosialhjel_p-user
   tokenx:
     enabled: true
   accessPolicy:
@@ -102,7 +105,7 @@ spec:
     - name: KRR_URL
       value: "https://digdir-krr-proxy.intern.nav.no"
     - name: LOGINSERVICE_URL
-      value: "https://loginservice.nav.no/login"
+      value: "https://login.nav.no/oauth2/login"
     - name: NORG_URL
       value: "https://norg2.intern.nav.no/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE

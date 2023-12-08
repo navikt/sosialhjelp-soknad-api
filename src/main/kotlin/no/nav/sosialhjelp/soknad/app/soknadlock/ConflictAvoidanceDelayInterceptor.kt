@@ -35,13 +35,10 @@ class ConflictAvoidanceDelayInterceptor(
         response: HttpServletResponse,
         handler: Any
     ): Boolean {
-        // pt er soknadLockManager skrudd av by default og må skrus på med internt REST-kall
-        if (!soknadLockManager.enabled) return true
-
         val behandlingsId = getBehandlingsId(request)
 
-        // Om URLen ikke inneholder behandlingsId, eller kun er for lesing, returnerer vi umiddelbart.
-        if (behandlingsId == null || isSafe(request)) return true
+        // Om URLen ikke inneholder behandlingsId returnerer vi umiddelbart.
+        if (behandlingsId == null) return true
 
         soknadLockManager.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE_NAME, it) }
 
@@ -77,6 +74,4 @@ class ConflictAvoidanceDelayInterceptor(
             else -> null
         }
     }
-
-    private fun isSafe(request: HttpServletRequest): Boolean = request.method in setOf("GET", "HEAD", "OPTIONS")
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 import java.lang.IllegalStateException
 import java.time.Clock
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -29,9 +28,6 @@ class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
-    // Om denne er false, vil ikke SoknadLockDelayInterceptor forsøke å hente låser.
-    var enabled: Boolean = false
-
     // Lås per behandlingsId med timestamp for når låsen ble opprettet
     private val lockMap: ConcurrentHashMap<String, TimestampedLock> = ConcurrentHashMap()
 
@@ -63,9 +59,10 @@ class SoknadLockManager(
      * @return TimestampedLock dersom låsen ble ervervet, ellers null.
      */
     fun getLock(behandlingsId: String): TimestampedLock? {
-        val lock = lockMap.computeIfAbsent(behandlingsId) { TimestampedLock(clock) }
+        val lock = lockMap.computeIfAbsent(behandlingsId) { TimestampedLock(clock = clock) }
 
-        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { lock.lock() } } }.onFailure { lockMetrics.reportLockTimeout() }
+        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { lock.lock() } } }
+            .onFailure { lockMetrics.reportLockTimeout() }
             .onSuccess { lockMetrics.reportLockAcquireLatency(lock.nanosecondsSinceLockRequest) }
 
         if (isLockMapDueForPruning()) pruneLocks()
@@ -157,18 +154,18 @@ class SoknadLockManager(
     }
 
     data class TimestampedLock(
-        var lastLockAttempt: ZonedDateTime,
         val mutex: Mutex = Mutex(),
-        val clock: Clock = Clock.systemDefaultZone()
+        val clock: Clock = Clock.systemDefaultZone(),
+        val timestamp: ZonedDateTime = ZonedDateTime.now(clock),
     ) {
-        constructor(clock: Clock) : this(ZonedDateTime.now(clock), Mutex(), clock)
+        private var lastLockAttempt: Long = 0L
 
         /**
          * Sets the last lock attempt timestamp and calls lock() on the underlying mutex
          * @see Mutex.lock
          */
         suspend fun lock() {
-            this.lastLockAttempt = ZonedDateTime.now(clock)
+            this.lastLockAttempt = System.nanoTime()
             this.mutex.lock()
         }
 
@@ -188,12 +185,12 @@ class SoknadLockManager(
         /**
          * @return Nanoseconds since lock was last locked
          */
-        val nanosecondsSinceLockRequest get(): Long = ChronoUnit.NANOS.between(ZonedDateTime.now(clock), lastLockAttempt)
+        val nanosecondsSinceLockRequest get(): Long = System.nanoTime() - lastLockAttempt
 
         /**
          * @param expiry The timestamp to compare against
          * @return Whether the lock is expired by the given time
          */
-        fun isExpiredBy(expiry: ZonedDateTime): Boolean = expiry.isAfter(lastLockAttempt.plusHours(LOCK_EXPIRY_HOURS))
+        fun isExpiredBy(expiry: ZonedDateTime): Boolean = expiry.isAfter(timestamp.plusHours(LOCK_EXPIRY_HOURS))
     }
 }
