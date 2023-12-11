@@ -30,11 +30,11 @@ class KonvertereVedleggEndpointTest {
     private val endpoint: String = "/vedlegg/konverter"
 
     @Test
-    fun `Konvertere excel-fil til pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(EXCEL_FILE) }
+    fun `Gyldig excel-fil skal konverteres til pdf med samme navn`() { doRequestAndVerifyExpectations(EXCEL_FILE) }
     @Test
-    fun `Konvertere word-fil til pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(WORD_FILE) }
+    fun `Gyldig word-fil skal konverteres til pdf med samme navn`() { doRequestAndVerifyExpectations(WORD_FILE) }
     @Test
-    fun `Konvertere csv-fil pdf via post-request og verifisere fil`() { doRequestAndVerifyExpectations(CSV_FILE) }
+    fun `Gyldig csv-fil skal konverteres til pdf med samme navn`() { doRequestAndVerifyExpectations(CSV_FILE) }
 
     @Test
     fun `Filtype som ikke er stottet skal feile`() {
