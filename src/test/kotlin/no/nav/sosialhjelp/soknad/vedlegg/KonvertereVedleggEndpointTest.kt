@@ -46,18 +46,6 @@ class KonvertereVedleggEndpointTest {
             }
     }
 
-    fun doPost(fil: File): ResultActionsDsl = mockMvc
-        .multipart(URI(endpoint)) {
-            file(createMockMultipartFile(fil))
-        }
-
-    fun createMockMultipartFile(fil: File) = MockMultipartFile(
-        "file",
-        fil.name,
-        MediaType.MULTIPART_FORM_DATA.toString(),
-        fil.readBytes()
-    )
-
     fun doRequestAndVerifyExpectations(fil: File) {
         doPost(fil)
             .andExpect {
@@ -74,4 +62,16 @@ class KonvertereVedleggEndpointTest {
                 assertThat(mimeType).isEqualTo(MimeTypes.APPLICATION_PDF)
             }
     }
+
+    fun doPost(fil: File): ResultActionsDsl = mockMvc
+        .multipart(URI(endpoint)) {
+            file(createMockMultipartFile(fil))
+        }
+
+    fun createMockMultipartFile(fil: File) = MockMultipartFile(
+        "file",
+        fil.name,
+        MediaType.MULTIPART_FORM_DATA.toString(),
+        fil.readBytes()
+    )
 }
