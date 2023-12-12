@@ -27,8 +27,8 @@ class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
-    // Om denne er false, vil ikke SoknadLockDelayInterceptor forsøke å hente låser.
-    var enabled: Boolean = false
+    // Om denne er false, er hele SoknadLockDelayInterceptor inaktiv.
+    var enabled: Boolean = true
 
     // Lås per behandlingsId med timestamp for når låsen ble opprettet
     private val lockMap: ConcurrentHashMap<String, TimestampedLock> = ConcurrentHashMap()
@@ -100,10 +100,10 @@ class SoknadLockManager(
             if (removed) {
                 timestampedLock.let {
                     try {
-                        it.unlock()
+                        if (it.isLocked) it.unlock()
                         numRemovedKeys++
                     } catch (e: IllegalStateException) {
-                        log.error("kunne ikke låse opp lås før sletting, skal ikke skje", e)
+                        log.warn("kunne ikke låse opp lås før sletting, skal ikke skje", e)
                     }
                 }
             }

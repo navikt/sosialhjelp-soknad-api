@@ -35,7 +35,7 @@ class ConflictAvoidanceDelayInterceptor(
         response: HttpServletResponse,
         handler: Any
     ): Boolean {
-        // pt er soknadLockManager skrudd av by default og må skrus på med internt REST-kall
+        // dersom soknadLockManager er disabled, er hele interceptoren inaktiv.
         if (!soknadLockManager.enabled) return true
 
         val behandlingsId = getBehandlingsId(request)
