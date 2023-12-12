@@ -27,17 +27,17 @@ object VedleggUtils {
 
     private val log by logger()
 
-    fun behandleFilOgReturnerFildata(orginaltFilnavn: String, orginalData: ByteArray): Pair<String, ByteArray> {
+    fun konverterFilHvisStottet(orginaltFilnavn: String, source: ByteArray): Pair<String, ByteArray> {
+        return FilKonvertering.konverterHvisStottet(orginaltFilnavn, source)
+    }
 
+    fun behandleFilOgReturnerFildata(filnavn: String, bytes: ByteArray): Pair<String, ByteArray> {
         // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
         val uuidRandom = UUID.randomUUID()
 
-        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginaltFilnavn, orginalData)
-        val fileType = validerFil(data, filnavn)
-
+        val fileType = validerFil(bytes, filnavn)
         val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidRandom)
-
-        return Pair(filnavnMedUuid, data)
+        return Pair(filnavnMedUuid, bytes)
     }
 
     fun getSha512FromByteArray(bytes: ByteArray?): String {

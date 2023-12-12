@@ -37,14 +37,11 @@ class FilKonverteringTest {
     }
 
     @Test
-    fun `Fil rores ikke hvis formatet ikke er stottet`() {
-        val orgNavn = TEXT_FILE.name
-        val orgData = TEXT_FILE.readBytes()
-
-        val (filnavn, data) = konverterHvisStottet(orgNavn, orgData)
-        assertThat(orgNavn).isEqualTo(filnavn)
-        assertThat(orgData).isEqualTo(data)
-        assertThat(detectMimeType(orgData)).isEqualTo(detectMimeType(data))
+    fun `Kaster feil hvis filtype ikke er stottet`() {
+        TEXT_FILE.let {
+            assertThatThrownBy { konverterHvisStottet(it.name, it.readBytes()) }
+                .isInstanceOf(KonverteringTilPdfException::class.java)
+        }
     }
 
     @Test

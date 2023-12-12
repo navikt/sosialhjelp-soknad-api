@@ -123,20 +123,6 @@ internal class VedleggUtilsTest {
         assertThat(filnavn1).isNotEqualTo(filnavn2)
     }
 
-    @Test
-    fun `Konverterer fil hvis excel`() {
-
-        assertThatThrownBy { validerFil(EXCEL_FILE.readBytes(), EXCEL_FILE.name) }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
-
-        val (filnavn, data) =
-            VedleggUtils.behandleFilOgReturnerFildata(EXCEL_FILE.name, EXCEL_FILE.readBytes())
-
-        assertThat(filnavn).contains(".pdf")
-        val fileType = validerFil(data, filnavn)
-        assertThat(fileType).isEqualTo(TikaFileType.PDF)
-    }
-
     private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
