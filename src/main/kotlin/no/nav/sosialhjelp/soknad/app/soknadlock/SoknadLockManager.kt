@@ -7,7 +7,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.lang.IllegalStateException
 import java.time.Clock
 import java.time.ZonedDateTime
 import java.util.concurrent.ConcurrentHashMap
@@ -28,6 +27,9 @@ class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
+    // Om denne er false, vil ikke SoknadLockDelayInterceptor forsøke å hente låser.
+    var enabled: Boolean = false
+
     // Lås per behandlingsId med timestamp for når låsen ble opprettet
     private val lockMap: ConcurrentHashMap<String, TimestampedLock> = ConcurrentHashMap()
 
@@ -101,7 +103,7 @@ class SoknadLockManager(
                         it.unlock()
                         numRemovedKeys++
                     } catch (e: IllegalStateException) {
-                        log.warn("kunne ikke låse opp lås før sletting, skal ikke skje", e)
+                        log.error("kunne ikke låse opp lås før sletting, skal ikke skje", e)
                     }
                 }
             }
