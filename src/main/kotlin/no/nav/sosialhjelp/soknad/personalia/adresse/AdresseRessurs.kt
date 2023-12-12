@@ -88,7 +88,7 @@ class AdresseRessurs(
                 personalia.oppholdsadresse =
                     adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
 
-            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
+            else -> error("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
