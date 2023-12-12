@@ -40,10 +40,9 @@ class AdresseRessurs(
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
+        val sysMidlertidigAdresse = jsonInternalSoknad.midlertidigAdresse
         val navEnhet = try {
             navEnhetService.getNavEnhet(
                 eier,
@@ -53,8 +52,6 @@ class AdresseRessurs(
         } catch (e: Exception) {
             null
         }
-        jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
