@@ -111,7 +111,7 @@ class AdresseSystemdata(
                 ?.let { mapToJsonMatrikkelAdresse(it) }
                 ?: tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
         } else {
-            throw IllegalStateException("Ukjent bostedsadresse fra PDL (skal være Vegadresse eller Matrikkeladresse")
+            error("Ukjent bostedsadresse fra PDL (skal være Vegadresse eller Matrikkeladresse")
         }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
@@ -124,7 +124,7 @@ class AdresseSystemdata(
         val jsonAdresse: JsonAdresse = if (oppholdsadresse.vegadresse != null) {
             tilGateAdresse(oppholdsadresse.vegadresse)
         } else {
-            throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
+            error("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
         }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
