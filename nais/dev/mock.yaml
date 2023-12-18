@@ -37,6 +37,7 @@ spec:
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
       rules:
         - application: sosialhjelp-mock-alt-api-mock
+        - application: sosialhjelp-konvertering-til-pdf
   ingresses:
     - "https://digisos.ekstern.dev.nav.no/sosialhjelp/soknad-api"
   resources:
@@ -97,3 +98,5 @@ spec:
       value: ""
     - name: ENVIRONMENT_NAME
       value: "mock"
+    - name: KONVERTERING_TIL_PDF
+      value: "https://sosialhjelp-konvertering-til-pdf/"
