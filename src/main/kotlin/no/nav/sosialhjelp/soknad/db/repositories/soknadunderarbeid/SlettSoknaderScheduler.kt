@@ -13,7 +13,7 @@ class SlettSoknaderScheduler(
 ) {
     private val log by logger()
 
-    @Scheduled(cron = "@hourly")
+    @Scheduled(cron = "0 */15 * * * * ")
     fun SlettAlleSoknaderUnderArbeid1Jan() {
 
         if (leaderElection.isLeader()) {
@@ -23,10 +23,10 @@ class SlettSoknaderScheduler(
                 log.info("Forsøk ${retries + 1} av 5: Starter sletting av alle soknader under arbeid")
 
                 try {
-                    val antallRader = jdbcTemplate.update("DELETE * FROM SOKNAD_UNDER_ARBEID")
+                    val antallRader = jdbcTemplate.update("DELETE FROM SOKNAD_UNDER_ARBEID")
                     log.info("Slettet $antallRader rader fra SOKNAD_UNDER_ARBEID")
                 } catch (e: RuntimeException) {
-                    log.error("Sletting av Soknader under arbeid feilet.")
+                    log.error("Sletting av Soknader under arbeid feilet", e)
                     retries++
                     Thread.sleep(5000) // vent 5 sekunder
                 }
