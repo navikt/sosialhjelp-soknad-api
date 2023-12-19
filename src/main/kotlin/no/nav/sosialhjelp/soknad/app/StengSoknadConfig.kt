@@ -17,8 +17,8 @@ class StengSoknadConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(StengSoknadInterceptor)
-            .excludePathPatterns("/sosialhjelp/soknad-api/internal/isAlive")
-            .excludePathPatterns("/sosialhjelp/soknad-api/internal/prometheus")
+            .addPathPatterns("/soknader/{behandlingsId}/actions/send")
+            .addPathPatterns("/soknader/opprettSoknad")
     }
 
     companion object StengSoknadInterceptor : HandlerInterceptor {
