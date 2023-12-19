@@ -23,18 +23,14 @@ class StengSoknadConfig : WebMvcConfigurer {
 
     companion object StengSoknadInterceptor : HandlerInterceptor {
         override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-//            val nedePeriodeStart = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0)
-//            val nedePeriodeSlutt = LocalDateTime.of(2024, Month.JANUARY, 2, 8, 0)
-
-            val nedePeriodeStart = LocalDateTime.of(2023, Month.DECEMBER, 18, 0, 0)
-            val nedePeriodeSlutt = LocalDateTime.of(2023, Month.DECEMBER, 19, 8, 0)
+            val nedePeriodeStart = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0)
+            val nedePeriodeSlutt = LocalDateTime.of(2024, Month.JANUARY, 2, 8, 0)
 
             with(LocalDateTime.now()) {
                 if (isAfter(nedePeriodeStart) && isBefore(nedePeriodeSlutt)) {
                     throw TjenesteUtilgjengeligException("Søknaden er midlertidig stengt.", null)
                 }
             }
-
             return true
         }
     }
