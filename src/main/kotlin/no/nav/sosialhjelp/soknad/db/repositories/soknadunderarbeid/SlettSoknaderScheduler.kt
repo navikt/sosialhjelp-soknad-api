@@ -19,12 +19,7 @@ class SlettSoknaderScheduler(
     fun slettAlleSoknaderUnderArbeid1Jan() {
 
         if (leaderElection.isLeader()) {
-            slettSoknader()
-        }
-    }
-    private fun slettSoknader(retry: Int = 0) {
-        if (retry < 5) {
-            log.info("Forsøk ${retry + 1} av 5: Starter sletting av alle soknader under arbeid")
+            log.info("Starter sletting av alle soknader under arbeid")
 
             try {
                 jdbcTemplate.update(
@@ -40,8 +35,6 @@ class SlettSoknaderScheduler(
                 }
             } catch (e: RuntimeException) {
                 log.error("Sletting av Soknader under arbeid feilet", e)
-                Thread.sleep(5000) // vent 5 sekunder
-                slettSoknader(retry + 1)
             }
         }
     }
