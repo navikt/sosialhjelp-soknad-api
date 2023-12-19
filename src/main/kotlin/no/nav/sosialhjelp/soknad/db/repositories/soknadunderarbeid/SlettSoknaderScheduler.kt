@@ -13,7 +13,7 @@ class SlettSoknaderScheduler(
 ) {
     private val log by logger()
 
-    @Scheduled(cron = "0 */15 * * * * ")
+    @Scheduled(cron = "* */15 * * * * ")
     fun SlettAlleSoknaderUnderArbeid1Jan() {
 
         if (leaderElection.isLeader()) {
