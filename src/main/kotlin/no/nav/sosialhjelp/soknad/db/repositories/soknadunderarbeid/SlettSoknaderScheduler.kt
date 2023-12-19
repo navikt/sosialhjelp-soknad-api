@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.annotation.Scheduled
@@ -23,8 +25,16 @@ class SlettSoknaderScheduler(
                 log.info("Forsøk ${retries + 1} av 5: Starter sletting av alle soknader under arbeid")
 
                 try {
-                    val antallRader = jdbcTemplate.update("DELETE FROM SOKNAD_UNDER_ARBEID")
-                    log.info("Slettet $antallRader rader fra SOKNAD_UNDER_ARBEID")
+                    val antallRaderMetadata = jdbcTemplate.update(
+                        "DELETE FROM SOKNADMETADATA WHERE innsendingstatus = ? AND soknadtype = ?",
+                        SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
+                        SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
+                    )
+                    log.info("Slettet $antallRaderMetadata rader fra SOKNAD_UNDER_ARBEID")
+
+                    val antallRaderSUA = jdbcTemplate.update("DELETE FROM SOKNAD_UNDER_ARBEID")
+                    log.info("Slettet $antallRaderSUA rader fra SOKNAD_UNDER_ARBEID")
+                    return
                 } catch (e: RuntimeException) {
                     log.error("Sletting av Soknader under arbeid feilet", e)
                     retries++
