@@ -20,7 +20,7 @@ class SlettSoknaderScheduler(
             var retries = 0
             while (retries < 5) {
 
-                log.info("Forsøk ${retries+1} av 5: Starter sletting av alle soknader under arbeid")
+                log.info("Forsøk ${retries + 1} av 5: Starter sletting av alle soknader under arbeid")
 
                 try {
                     val antallRader = jdbcTemplate.update("DELETE * FROM SOKNAD_UNDER_ARBEID")
