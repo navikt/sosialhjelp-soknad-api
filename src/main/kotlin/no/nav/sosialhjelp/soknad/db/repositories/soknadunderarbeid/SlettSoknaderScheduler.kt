@@ -16,29 +16,28 @@ class SlettSoknaderScheduler(
     private val log by logger()
 
     @Scheduled(cron = "0 */15 * * * *")
-    fun SlettAlleSoknaderUnderArbeid1Jan() {
+    fun slettAlleSoknaderUnderArbeid1Jan(retry: Int = 0) {
 
         if (leaderElection.isLeader()) {
-            var retries = 0
-            while (retries < 5) {
-
-                log.info("Forsøk ${retries + 1} av 5: Starter sletting av alle soknader under arbeid")
+            if (retry < 5) {
+                log.info("Forsøk ${retry + 1} av 5: Starter sletting av alle soknader under arbeid")
 
                 try {
-                    val antallRaderMetadata = jdbcTemplate.update(
+                    jdbcTemplate.update(
                         "DELETE FROM SOKNADMETADATA WHERE innsendingstatus = ? AND soknadtype = ?",
                         SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
                         SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
-                    )
-                    log.info("Slettet $antallRaderMetadata rader fra SOKNAD_UNDER_ARBEID")
+                    ).also {
+                        log.info("Slettet $it rader fra SOKNADMETADATA")
+                    }
 
-                    val antallRaderSUA = jdbcTemplate.update("DELETE FROM SOKNAD_UNDER_ARBEID")
-                    log.info("Slettet $antallRaderSUA rader fra SOKNAD_UNDER_ARBEID")
-                    return
+                    jdbcTemplate.update("DELETE FROM SOKNAD_UNDER_ARBEID").also {
+                        log.info("Slettet $it rader fra SOKNAD_UNDER_ARBEID")
+                    }
                 } catch (e: RuntimeException) {
                     log.error("Sletting av Soknader under arbeid feilet", e)
-                    retries++
                     Thread.sleep(5000) // vent 5 sekunder
+                    slettAlleSoknaderUnderArbeid1Jan(retry+1)
                 }
             }
         }
