@@ -37,7 +37,7 @@ class SlettSoknaderScheduler(
                 } catch (e: RuntimeException) {
                     log.error("Sletting av Soknader under arbeid feilet", e)
                     Thread.sleep(5000) // vent 5 sekunder
-                    slettAlleSoknaderUnderArbeid1Jan(retry+1)
+                    slettAlleSoknaderUnderArbeid1Jan(retry + 1)
                 }
             }
         }
