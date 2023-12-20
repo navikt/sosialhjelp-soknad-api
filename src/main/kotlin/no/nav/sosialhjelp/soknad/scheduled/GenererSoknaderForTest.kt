@@ -34,10 +34,14 @@ class GenererSoknaderForTest(
     @Scheduled(cron = "0 */15 * * * *")
     fun fyllDbMedSoknader() {
 
-        log.info("Test - oppretter soknad for test")
+        log.info("Test - oppretter soknader for test")
         try {
-            val behandlingsId = startSoknad()
-            log.info("Test - opprettet soknad $behandlingsId for $fnr")
+            var counter = 0
+            while ( counter < 5000) {
+                val behandlingsId = startSoknad()
+                counter++
+            }
+            log.info("Test - opprettet soknader for $fnr")
 
         } catch (e: Exception) {
             log.error("Test - feil ved opprettelse av soknad", e)
