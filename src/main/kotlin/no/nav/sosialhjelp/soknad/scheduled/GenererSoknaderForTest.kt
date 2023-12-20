@@ -35,8 +35,13 @@ class GenererSoknaderForTest(
     fun fyllDbMedSoknader() {
 
         log.info("Test - oppretter soknad for test")
-        val behandlingsId = startSoknad()
-        log.info("Test - opprettet soknad $behandlingsId for $fnr")
+        try {
+            val behandlingsId = startSoknad()
+            log.info("Test - opprettet soknad $behandlingsId for $fnr")
+
+        } catch (e: Exception) {
+            log.error("Test - feil ved opprettelse av soknad", e)
+        }
 
     }
 
@@ -56,7 +61,7 @@ class GenererSoknaderForTest(
             sistEndretDato = LocalDateTime.now()
         )
 
-        systemdataUpdater.update(soknadUnderArbeid)
+//        systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 
         return behandlingsId
