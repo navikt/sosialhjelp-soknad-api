@@ -15,7 +15,7 @@ class SlettSoknaderScheduler(
 ) {
     private val log by logger()
 
-    @Scheduled(cron = "@yearly")
+    @Scheduled(cron = "@hourly")
     fun slettAlleSoknaderUnderArbeid1Jan() {
 
         if (leaderElection.isLeader()) {
