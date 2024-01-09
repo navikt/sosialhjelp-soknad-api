@@ -1,2 +1,2 @@
 [*.{kt,kts}]
-# ij_kotlin_allow_trailing_comma = true
+ktlint_disabled_rules = trailing-comma
