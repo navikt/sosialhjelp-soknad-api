@@ -20,9 +20,7 @@ class SubjectHandlerImpl(
 
     private val tokenValidationContext: TokenValidationContext
         get() {
-            return tokenValidationContextHolder.tokenValidationContext
-                ?: throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
-                    .also { log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.") }
+            return tokenValidationContextHolder.getTokenValidationContext()
         }
 
     override fun getUserIdFromToken(): String = when {
@@ -38,8 +36,8 @@ class SubjectHandlerImpl(
 
     override fun getToken(): String {
         return when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> tokenValidationContext.getJwtToken(TOKENX).tokenAsString
-            else -> tokenValidationContext.getJwtToken(SELVBETJENING).tokenAsString
+            tokenValidationContext.hasTokenFor(TOKENX) -> tokenValidationContext.getJwtToken(TOKENX)!!.encodedToken
+            else -> tokenValidationContext.getJwtToken(SELVBETJENING)!!.encodedToken
         }
     }
 

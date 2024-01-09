@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -19,6 +19,10 @@ java {
 
 ktlint {
     this.version.set(libs.versions.ktlint)
+}
+
+configure<KtlintExtension> {
+    version.set(libs.versions.ktlint)
 }
 
 flyway {
