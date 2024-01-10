@@ -149,7 +149,5 @@ spec:
       value: "https://test.maskinporten.no/.well-known/oauth-authorization-server"
     - name: SWAGGER_ENABLED
       value: "true"
-    - name: KONVERTERING_TIL_PDF
-      value: "https://konvertering-til-pdf.intern.dev.nav.no/"
-    - name: KONVERTERING_TIL_PDF
+    - name: GOTENBERG_URL
       value: "https://konvertering-til-pdf.intern.dev.nav.no/"

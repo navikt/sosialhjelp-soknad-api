@@ -98,5 +98,5 @@ spec:
       value: ""
     - name: ENVIRONMENT_NAME
       value: "mock"
-    - name: KONVERTERING_TIL_PDF
+    - name: GOTENBERG_URL
       value: "https://sosialhjelp-konvertering-til-pdf/"
