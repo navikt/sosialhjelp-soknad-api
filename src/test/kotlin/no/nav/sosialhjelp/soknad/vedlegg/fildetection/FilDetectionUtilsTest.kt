@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fildetection
 
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.BMP_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.GIF_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.HEIC_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.HEIF_FILE
@@ -10,11 +8,9 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.JPG_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PNG_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.TIF_FILE
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
-import no.nav.sosialhjelp.soknad.vedlegg.konvertering.StottetFiltype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -67,24 +63,6 @@ internal class FilDetectionUtilsTest {
     fun `Test detect returnerer bmp`() {
         val mimeType = detectMimeType(BMP_FILE.readBytes())
         assertThat(mimeType).isEqualTo("image/bmp")
-    }
-
-    @Test
-    fun `Test detect returnerer excel`() {
-        val mimeType = detectMimeType(EXCEL_FILE.readBytes())
-        assertThat(mimeType).isEqualTo(StottetFiltype.EXCEL.mimeType)
-    }
-
-    @Test
-    fun `Test detect returnerer word`() {
-        val mimeType = detectMimeType(WORD_FILE.readBytes())
-        assertThat(mimeType).isEqualTo(StottetFiltype.WORD.mimeType)
-    }
-
-    @Test
-    fun `Test detect csv-fil returnerer text`() {
-        val mimeType = detectMimeType(CSV_FILE.readBytes())
-        assertThat(mimeType).isEqualTo(StottetFiltype.CSV.mimeType)
     }
 
     @Test

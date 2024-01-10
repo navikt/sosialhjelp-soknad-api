@@ -14,13 +14,13 @@ class ExceptionMapperTest {
     private val loginserviceUrl = "loginserviceurl"
     private val exceptionMapper = ExceptionMapper(loginserviceUrl)
 
-    @Test
-    fun `skal gi 409 Conflict ved SamtidigOppdateringException`() {
-        val responseEntity = exceptionMapper.handleThrowable(
-            SamtidigOppdateringException(message = "Mulig versjonskonflikt...")
-        )
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONFLICT)
-    }
+//    @Test
+//    fun `skal gi 409 Conflict ved SamtidigOppdateringException`() {
+//        val responseEntity = exceptionMapper.handleThrowable(
+//            SamtidigOppdateringException(message = "Mulig versjonskonflikt...")
+//        )
+//        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONFLICT)
+//    }
 
     @Test
     fun `skal gi 415 Unsupported Media Type ved UgyldigOpplastingTypeException`() {

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import org.springframework.http.HttpStatusCode
 
 interface FileConverter {
@@ -10,4 +11,4 @@ data class FileConverterException(
     val httpStatus: HttpStatusCode,
     val msg: String,
     val trace: String
-): RuntimeException("$trace Feil i filkonvertering: $httpStatus - $msg")
+) : SosialhjelpSoknadApiException("[$trace] Feil i filkonvertering: $httpStatus - $msg")

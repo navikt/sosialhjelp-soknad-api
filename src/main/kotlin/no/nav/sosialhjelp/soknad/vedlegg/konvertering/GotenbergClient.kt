@@ -20,10 +20,10 @@ import java.io.ByteArrayInputStream
 import java.io.File
 
 @Component
-class GotenbergClient (
+class GotenbergClient(
     @Value("\${fil-konvertering_url}") private val baseUrl: String,
     private val webClientBuilder: WebClient.Builder
-): FileConverter {
+) : FileConverter {
 
     companion object GotenbergConsts {
         private const val LIBRE_OFFICE_ROUTE = "/forms/libreoffice/convert"
@@ -48,19 +48,16 @@ class GotenbergClient (
             .exchangeToMono { evaluateClientResponse(filename, it) }
             .block() ?: throw IllegalStateException("[$trace] Innhold i konvertert fil \"$filename\" er null.")
     }
-    
+
     private fun evaluateClientResponse(filename: String, response: ClientResponse): Mono<ByteArray> {
         trace = response.headers().header(GOTENBERG_TRACE_HEADER).first()
         log.info("[$trace] Konverterer fil \"$filename\"")
 
-        return if (response.statusCode().is2xxSuccessful) { response.bodyToMono(ByteArray::class.java)}
-        else {
+        return if (response.statusCode().is2xxSuccessful) { response.bodyToMono(ByteArray::class.java) } else {
             response.bodyToMono(String::class.java)
                 .flatMap { body -> Mono.error(FileConverterException(response.statusCode(), body, trace)) }
         }
-    } 
-    
-    private fun buildWebClient(): WebClient {
+    } private fun buildWebClient(): WebClient {
         return unproxiedWebClientBuilder(webClientBuilder)
             .baseUrl(baseUrl + LIBRE_OFFICE_ROUTE)
             .defaultHeaders {
@@ -74,7 +71,7 @@ class GotenbergClient (
     private class ByteArrayMultipartFile(
         private val filnavn: String,
         private val bytes: ByteArray
-    ): MultipartFile {
+    ) : MultipartFile {
         override fun getInputStream() = ByteArrayInputStream(bytes)
         override fun getName() = "file"
         override fun getOriginalFilename() = filnavn

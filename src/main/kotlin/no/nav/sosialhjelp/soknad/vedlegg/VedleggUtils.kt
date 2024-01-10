@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
-import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
 import org.apache.commons.io.IOUtils
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
@@ -26,10 +25,6 @@ import java.util.*
 object VedleggUtils {
 
     private val log by logger()
-
-    fun konverterFilHvisStottet(orginaltFilnavn: String, source: ByteArray): Pair<String, ByteArray> {
-        return FilKonvertering.konverterHvisStottet(orginaltFilnavn, source)
-    }
 
     fun behandleFilOgReturnerFildata(filnavn: String, bytes: ByteArray): Pair<String, ByteArray> {
         // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
