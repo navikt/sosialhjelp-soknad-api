@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import reactor.netty.http.client.HttpClient
 import reactor.netty.transport.ProxyProvider
-import java.net.URL
+import java.net.URI
 
 @Profile("!(mock-alt|test)")
 @Configuration
@@ -18,7 +18,7 @@ class ProxiedHttpClientConfig(
     fun proxiedHttpClient(): HttpClient = proxiedHttpClient(proxyUrl)
 
     private fun proxiedHttpClient(proxyUrl: String): HttpClient {
-        val uri = URL(proxyUrl)
+        val uri = URI.create(proxyUrl)
 
         return HttpClient.create()
             .resolver(DefaultAddressResolverGroup.INSTANCE)
