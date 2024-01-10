@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @Unprotected
 @RequestMapping("/vedlegg/konverter")
-class ConvertFileController(
+class FileConverterController(
     private val fileConverterService: FileConverterService,
     private val virusScanner: VirusScanner
 ) {
