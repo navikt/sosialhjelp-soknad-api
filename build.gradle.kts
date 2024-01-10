@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
+    `jvm-test-suite`
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.spring)
     alias(libs.plugins.spring.boot)
@@ -13,8 +14,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 ktlint {
@@ -120,17 +121,27 @@ version = "18.1.0-SNAPSHOT"
 description = "sosialhjelp-soknad-api"
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    kotlinOptions.jvmTarget = "21"
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-    testLogging {
-        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-        exceptionFormat = TestExceptionFormat.FULL
-        showCauses = true
-        showExceptions = true
-        showStackTraces = true
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        testLogging {
+                            events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+                            exceptionFormat = TestExceptionFormat.FULL
+                            showCauses = true
+                            showExceptions = true
+                            showStackTraces = true
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

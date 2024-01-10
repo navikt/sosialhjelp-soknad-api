@@ -12,14 +12,14 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 
 ## Teknologi:
 * Java/Kotlin
-* JDK 17
+* JDK 21
 * Gradle
 * Spring Boot
 * Oracle DB
 * Redis (cache)
 
 ### Krav
-* Java (JDK) 17
+* Java (JDK) 21
 
 ### Kjøring lokalt mot mock-alt
 Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
