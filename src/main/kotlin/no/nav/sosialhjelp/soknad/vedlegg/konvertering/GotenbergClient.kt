@@ -45,7 +45,6 @@ class GotenbergClient(
 
                     log.error("Ping av Gotenberg-tjeneste feilet: ${it.statusCode()}")
                     it.bodyToMono(String::class.java).flatMap { body -> Mono.error(RuntimeException(body)) }
-
                 } else {
                     log.info("Ping av Gotenberg-tjeneste: ${it.statusCode()}")
                     it.bodyToMono(PingResponse::class.java)
@@ -82,7 +81,6 @@ class GotenbergClient(
         val status: String,
         val timestamp: LocalDateTime,
     )
-
 
     private fun convertFileRequest(filename: String, multipartBody: MultiValueMap<String, HttpEntity<*>>): ByteArray {
         return webClient.post()

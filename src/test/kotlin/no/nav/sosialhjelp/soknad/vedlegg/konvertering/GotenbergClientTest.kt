@@ -11,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles(profiles = ["no-interceptor", "no-redis", "test"])
 class GotenbergClientTest {
 
-
     @Autowired
     private lateinit var fileConverter: FileConverter
 
@@ -23,7 +22,5 @@ class GotenbergClientTest {
 
         val pdf = fileConverter.toPdf(file.name, file.readBytes())
         val a = 4
-
     }
-
 }
