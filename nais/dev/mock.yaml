@@ -99,4 +99,4 @@ spec:
     - name: ENVIRONMENT_NAME
       value: "mock"
     - name: GOTENBERG_URL
-      value: "https://sosialhjelp-konvertering-til-pdf/"
+      value: "http://sosialhjelp-konvertering-til-pdf/"
