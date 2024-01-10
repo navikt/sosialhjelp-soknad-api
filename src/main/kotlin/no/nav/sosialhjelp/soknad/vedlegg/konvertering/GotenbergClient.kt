@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.time.LocalDateTime
 
 @Component
 class GotenbergClient(
@@ -33,16 +34,59 @@ class GotenbergClient(
     private var trace = "[NA]"
     private val webClient = buildWebClient()
 
+    private fun pingGotenberg(): PingResponse {
+        val pingClient = webClientBuilder
+            .baseUrl(baseUrl + "/health")
+            .build()
+
+        return pingClient.get()
+            .exchangeToMono {
+                if (it.statusCode().isError) {
+
+                    log.error("Ping av Gotenberg-tjeneste feilet: ${it.statusCode()}")
+                    it.bodyToMono(String::class.java).flatMap { body -> Mono.error(RuntimeException(body)) }
+
+                } else {
+                    log.info("Ping av Gotenberg-tjeneste: ${it.statusCode()}")
+                    it.bodyToMono(PingResponse::class.java)
+                }
+            }
+            .block() ?: throw IllegalStateException("No response from ping")
+    }
+
     override fun toPdf(filename: String, bytes: ByteArray): ByteArray {
         val multipartBody = MultipartBodyBuilder().run {
             part("files", ByteArrayMultipartFile(filename, bytes).resource)
             build()
         }
+
+        val pingResponse = pingGotenberg()
+        if (pingResponse.status != "up" || pingResponse.details.libreoffice.status != "up") {
+            throw IllegalStateException("Gotenberg-moduler er ikke healthy: $pingResponse")
+        }
+
         return convertFileRequest(filename, multipartBody)
     }
 
+    data class PingResponse(
+        val status: String,
+        val details: Modules
+    )
+
+    data class Modules(
+        val chromium: AppStatus,
+        val libreoffice: AppStatus
+    )
+
+    data class AppStatus(
+        val status: String,
+        val timestamp: LocalDateTime,
+    )
+
+
     private fun convertFileRequest(filename: String, multipartBody: MultiValueMap<String, HttpEntity<*>>): ByteArray {
         return webClient.post()
+            .uri(baseUrl + LIBRE_OFFICE_ROUTE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$filename\"")
             .body(BodyInserters.fromMultipartData(multipartBody))
             .exchangeToMono { evaluateClientResponse(filename, it) }
@@ -59,7 +103,7 @@ class GotenbergClient(
         }
     } private fun buildWebClient(): WebClient {
         return unproxiedWebClientBuilder(webClientBuilder)
-            .baseUrl(baseUrl + LIBRE_OFFICE_ROUTE)
+            .baseUrl(baseUrl)
             .defaultHeaders {
                 it.contentType = MediaType.MULTIPART_FORM_DATA
                 it.accept = listOf(MediaType.APPLICATION_PDF, MediaType.TEXT_PLAIN)
