@@ -71,7 +71,7 @@ svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
 clamav_url: virusscan_not_enabled
 
-fil-konvertering_url: ${GOTENBERG_URL_DEV:https://konvertering-til-pdf.intern.dev.nav.no}
+fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
 
   # Feature-toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:local}
