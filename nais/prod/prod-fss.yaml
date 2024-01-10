@@ -144,3 +144,5 @@ spec:
       value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
     - name: UNLEASH_INSTANCE_ID
       value: "prod-fss"
+    - name: GOTENBERG_URL
+      value: "http://sosialhjelp-konvertering-til-pdf/"
