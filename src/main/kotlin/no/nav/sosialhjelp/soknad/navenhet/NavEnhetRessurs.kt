@@ -34,7 +34,6 @@ class NavEnhetRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
             ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val valgtEnhetNr = soknad.mottaker.enhetsnummer // todo trenger kanskje ikke denne?
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
         val navEnhetFrontend = navEnhetService.getNavEnhet(eier, soknad, adresseValg)

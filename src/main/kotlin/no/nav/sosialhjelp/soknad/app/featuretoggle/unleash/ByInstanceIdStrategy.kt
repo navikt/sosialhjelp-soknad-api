@@ -8,9 +8,8 @@ class ByInstanceIdStrategy(
 
     override fun getName(): String = "byInstanceId"
 
-    override fun isEnabled(parameters: MutableMap<String, String>?): Boolean {
-        return parameters
-            ?.get("instance.id")
+    override fun isEnabled(parameters: MutableMap<String, String>): Boolean {
+        return parameters["instance.id"]
             ?.split(",\\s*".toRegex())
             ?.any { it == currentInstanceId } ?: false
     }
