@@ -82,7 +82,7 @@ class NedetidService(
         private const val humanreadableFormatEn = "EEEE d MMM yyyy 'at' HH:mm '(CET)'"
 
         val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(nedetidFormat)
-        val humanreadableFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(humanreadableFormat, Locale("nb", "NO"))
+        val humanreadableFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(humanreadableFormat, Locale.forLanguageTag("nb-NO"))
         val humanreadableFormatterEn: DateTimeFormatter = DateTimeFormatter.ofPattern(humanreadableFormatEn, Locale.ENGLISH)
     }
 }

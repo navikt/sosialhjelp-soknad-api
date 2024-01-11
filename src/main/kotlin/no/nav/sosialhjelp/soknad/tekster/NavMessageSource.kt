@@ -34,7 +34,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
             properties
         } else {
             log.warn("Finner ikke tekster for $propertiesFile for språkbundle ${locale.language} for localefile $localFile.")
-            val noLocale = Locale("nb", "NO")
+            val noLocale = Locale.forLanguageTag("nb-NO")
             if (locale == noLocale) {
                 throw IllegalStateException("Kunne ikke laste tekster. Avbryter.")
             } else {
