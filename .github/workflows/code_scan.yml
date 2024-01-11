@@ -9,10 +9,6 @@ on:
     paths-ignore:
       - '.github/**'
       - 'build.gradle.kts'
-  pull_request:
-    paths-ignore:
-      - '.github/**'
-      - 'build.gradle.kts'
 
 jobs:
   analyze_code:
