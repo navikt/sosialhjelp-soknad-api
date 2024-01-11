@@ -20,9 +20,13 @@ class SubjectHandlerImpl(
 
     private val tokenValidationContext: TokenValidationContext
         get() {
-            return tokenValidationContextHolder.tokenValidationContext
-                ?: throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
-                    .also { log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.") }
+            return tokenValidationContextHolder.getTokenValidationContext()
+                .also {
+                    if (!it.hasValidToken()) {
+                        log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
+                        throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
+                    }
+                }
         }
 
     override fun getUserIdFromToken(): String = when {
@@ -37,10 +41,9 @@ class SubjectHandlerImpl(
     }
 
     override fun getToken(): String {
-        return when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> tokenValidationContext.getJwtToken(TOKENX).tokenAsString
-            else -> tokenValidationContext.getJwtToken(SELVBETJENING).tokenAsString
-        }
+        return tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
+            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
+            ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
     }
 
     override fun getConsumerId(): String {
