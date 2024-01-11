@@ -14,7 +14,7 @@ object Utils {
 
     const val DATO_FORMAT = "d. MMMM yyyy"
     const val DATO_OG_TID_FORMAT = "d. MMMM yyyy HH:mm"
-    private val locale = Locale("nb", "NO")
+    private val locale = Locale.forLanguageTag("nb-NO")
 
     fun addLinks(pdf: PdfGenerator, uris: Map<String, String>) {
         pdf.skrivTekst("Lenker på siden: ")

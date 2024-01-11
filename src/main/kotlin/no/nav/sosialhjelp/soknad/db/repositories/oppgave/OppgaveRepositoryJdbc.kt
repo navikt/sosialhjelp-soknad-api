@@ -38,7 +38,7 @@ class OppgaveRepositoryJdbc(
     }
 
     override fun opprett(oppgave: Oppgave) {
-        oppgave.id = jdbcTemplate.queryForObject(selectNextSequenceValue("OPPGAVE_ID_SEQ"), Long::class.java)
+        oppgave.id = jdbcTemplate.queryForObject(selectNextSequenceValue("OPPGAVE_ID_SEQ"), Long::class.java) as Long
         jdbcTemplate.update(
             "INSERT INTO oppgave (id, behandlingsid, type, status, steg, oppgavedata, oppgaveresultat, opprettet, sistkjort, nesteforsok, retries) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             oppgave.id,
