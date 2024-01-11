@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/temurin:19
+FROM ghcr.io/navikt/baseimages/temurin:21
 
 USER root
 
