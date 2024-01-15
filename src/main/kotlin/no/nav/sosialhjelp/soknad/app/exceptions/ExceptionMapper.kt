@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -199,49 +200,49 @@ class ExceptionMapper(
         return response.contentType(MediaType.APPLICATION_JSON).body(Feilmelding(e.id, e.message))
     }
 
-//    @ExceptionHandler(Throwable::class)
-//    fun handleThrowable(e: Throwable): ResponseEntity<*> {
-//        return when (e) {
-//            is HttpStatusCodeException -> {
-//                when (e.statusCode) {
-//                    HttpStatus.UNAUTHORIZED -> {
-//                        log.debug(e.message, e)
-//                        return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
-//                    }
-//                    HttpStatus.FORBIDDEN -> {
-//                        log.debug(e.message, e)
-//                        return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
-//                    }
-//                    HttpStatus.NOT_FOUND -> {
-//                        log.warn(e.message, e)
-//                    }
-//                    else -> {
-//                        log.error(e.message, e)
-//                    }
-//                }
-//                ResponseEntity
-//                    .status(e.statusCode)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .body(Feilmelding(WEB_APPLICATION_ERROR, "Noe uventet feilet"))
-//            }
-//            is SamtidigOppdateringException -> {
-//                log.warn(e.message, e)
-//                ResponseEntity
-//                    .status(HttpStatus.CONFLICT)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .body(Feilmelding(WEB_APPLICATION_ERROR, "Samtidig oppdatering av søknad"))
-//            }
-//            else -> {
-//                log.error("Noe uventet feilet: ${e.message}", e)
-//
-// //                ResponseEntity
-// //                    .internalServerError()
-// //                    .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-// //                    .contentType(MediaType.APPLICATION_JSON)
-// //                    .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
-//            }
-//        }
-//    }
+    @ExceptionHandler(Throwable::class)
+    fun handleThrowable(e: Throwable): ResponseEntity<*> {
+        return when (e) {
+            is HttpStatusCodeException -> {
+                when (e.statusCode) {
+                    HttpStatus.UNAUTHORIZED -> {
+                        log.debug(e.message, e)
+                        return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
+                    }
+                    HttpStatus.FORBIDDEN -> {
+                        log.debug(e.message, e)
+                        return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
+                    }
+                    HttpStatus.NOT_FOUND -> {
+                        log.warn(e.message, e)
+                    }
+                    else -> {
+                        log.error(e.message, e)
+                    }
+                }
+                ResponseEntity
+                    .status(e.statusCode)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Feilmelding(WEB_APPLICATION_ERROR, "Noe uventet feilet"))
+            }
+            is SamtidigOppdateringException -> {
+                log.warn(e.message, e)
+                ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Feilmelding(WEB_APPLICATION_ERROR, "Samtidig oppdatering av søknad"))
+            }
+            else -> {
+                log.error("Noe uventet feilet: ${e.message}", e)
+
+                 ResponseEntity
+                     .internalServerError()
+                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
+            }
+        }
+    }
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
