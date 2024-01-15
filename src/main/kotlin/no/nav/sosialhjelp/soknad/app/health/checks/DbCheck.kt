@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class DbCheck(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) : DependencyCheck {
 
     override val type = DependencyType.DB

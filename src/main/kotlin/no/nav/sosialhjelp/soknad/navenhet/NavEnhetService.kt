@@ -31,7 +31,7 @@ class NavEnhetService(
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService,
-    private val unleash: Unleash
+    private val unleash: Unleash,
 ) {
 
     fun getNavEnhet(
@@ -47,7 +47,9 @@ class NavEnhetService(
                 log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
                 finnNavEnhetFraAdresse(personalia, valg)
             }
-        } else finnNavEnhetFraAdresse(personalia, valg)
+        } else {
+            finnNavEnhetFraAdresse(personalia, valg)
+        }
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -60,13 +62,13 @@ class NavEnhetService(
             isMottakDeaktivert = !isDigisosKommune(kommunenummer),
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
             orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
-            valgt = true
+            valgt = true,
         )
     }
 
     private fun finnNavEnhetFraGT(
         ident: String,
-        personalia: JsonPersonalia
+        personalia: JsonPersonalia,
     ): NavEnhetFrontend? {
         val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
@@ -87,7 +89,7 @@ class NavEnhetService(
     private fun mapToNavEnhetFrontend(
         navEnhet: NavEnhet?,
         geografiskTilknytning: String?,
-        kommunenummer: String?
+        kommunenummer: String?,
     ): NavEnhetFrontend? {
         if (navEnhet == null) {
             log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: $kommunenummer")
@@ -109,7 +111,7 @@ class NavEnhetService(
             valgt = enhetNr != null,
             kommuneNr = kommunenummer,
             isMottakDeaktivert = !isDigisosKommune,
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
+            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
         )
     }
 

@@ -62,30 +62,30 @@ internal class BydelFordelingServiceTest {
                 listOf(Husnummerfordeling(1, 9999, HusnummerfordelingType.ALL)),
                 BYDEL_MARKA_OSLO,
                 BYDEL_GRORUD,
-                "Grorud"
+                "Grorud",
             ),
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
                 listOf(
                     Husnummerfordeling(1, 99, HusnummerfordelingType.ODD),
-                    Husnummerfordeling(2, 100, HusnummerfordelingType.EVEN)
+                    Husnummerfordeling(2, 100, HusnummerfordelingType.EVEN),
                 ),
                 BYDEL_MARKA_OSLO,
                 BYDEL_VESTRE_AKER,
-                "Vestre Aker"
+                "Vestre Aker",
             ),
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
                 listOf(
                     Husnummerfordeling(101, 9999, HusnummerfordelingType.ODD),
-                    Husnummerfordeling(102, 9999, HusnummerfordelingType.EVEN)
+                    Husnummerfordeling(102, 9999, HusnummerfordelingType.EVEN),
                 ),
                 BYDEL_MARKA_OSLO,
                 BYDEL_NORDRE_AKER,
-                "Nordre Aker"
-            )
+                "Nordre Aker",
+            ),
         )
     }
 }

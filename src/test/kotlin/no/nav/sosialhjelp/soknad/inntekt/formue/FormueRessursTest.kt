@@ -84,9 +84,9 @@ internal class FormueRessursTest {
                 SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
                 SoknadJsonTyper.FORMUE_VERDIPAPIRER,
                 SoknadJsonTyper.FORMUE_SPAREKONTO,
-                SoknadJsonTyper.FORMUE_ANNET
+                SoknadJsonTyper.FORMUE_ANNET,
             ),
-            null
+            null,
         )
 
         val formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID)
@@ -123,9 +123,9 @@ internal class FormueRessursTest {
                     SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
                     SoknadJsonTyper.FORMUE_VERDIPAPIRER,
                     SoknadJsonTyper.FORMUE_SPAREKONTO,
-                    SoknadJsonTyper.FORMUE_ANNET
+                    SoknadJsonTyper.FORMUE_ANNET,
                 ),
-                "Vinylplater"
+                "Vinylplater",
             )
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -162,7 +162,7 @@ internal class FormueRessursTest {
             livsforsikring = true,
             verdipapirer = false,
             annet = false,
-            beskrivelseAvAnnet = null
+            beskrivelseAvAnnet = null,
         )
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
@@ -197,7 +197,7 @@ internal class FormueRessursTest {
             livsforsikring = true,
             verdipapirer = true,
             annet = true,
-            beskrivelseAvAnnet = null
+            beskrivelseAvAnnet = null,
         )
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
@@ -260,7 +260,7 @@ internal class FormueRessursTest {
 
     private fun createJsonInternalSoknadWithFormue(
         formueTyper: List<String>,
-        beskrivelseAvAnnet: String?
+        beskrivelseAvAnnet: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
 
@@ -286,7 +286,7 @@ internal class FormueRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

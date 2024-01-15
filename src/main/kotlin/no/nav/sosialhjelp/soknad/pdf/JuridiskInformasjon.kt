@@ -21,11 +21,11 @@ object JuridiskInformasjon {
             pdf.skrivTekst("Du kan være trygg på at personopplysningene dine blir behandlet på en sikker og riktig måte:")
             pdf.skrivTekstMedInnrykk(
                 "* Vi skal ikke innhente flere opplysninger enn det som er nødvendig.",
-                PdfGenerator.INNRYKK_2
+                PdfGenerator.INNRYKK_2,
             )
             pdf.skrivTekstMedInnrykk(
                 "* NAV har taushetsplikt om alle opplysninger som vi behandler. Hvis offentlige virksomheter eller andre ønsker å få utlevert opplysninger om deg, må de ha hjemmel i lov eller du må gi samtykke til det.",
-                PdfGenerator.INNRYKK_2
+                PdfGenerator.INNRYKK_2,
             )
             pdf.addBlankLine()
 
@@ -55,13 +55,13 @@ object JuridiskInformasjon {
             pdf.skrivTekst("Før du sender søknaden lagres opplysningene på nav.no")
             pdf.skrivTekstMedInnrykk(
                 "Søknader som er påbegynt, men ikke fullført, blir lagret hos Arbeids- og velferdsdirektoratet i to uker. Deretter slettes de.",
-                PdfGenerator.INNRYKK_2
+                PdfGenerator.INNRYKK_2,
             )
             pdf.addBlankLine()
             pdf.skrivTekst("Etter du har sendt søknaden har kommunen din ansvaret for opplysningene om deg")
             pdf.skrivTekstMedInnrykk(
                 "Når du sender søknaden din bruker vi KS (Kommunesektorens organisasjon) sin skytjeneste for digital post (Svarut).  Kommunen henter søknaden din i Svarut og lagrer opplysningene i sitt kommunale fagsystem.  Kommunen din har ansvaret for lagring og sletting av opplysningene dine både i Svarut og i fagsystemet . Arkivloven bestemmer hvor lenge opplysninger skal lagres. Ta kontakt med kommunen din hvis du har spørsmål om lagringstid.",
-                PdfGenerator.INNRYKK_2
+                PdfGenerator.INNRYKK_2,
             )
             pdf.addBlankLine()
 

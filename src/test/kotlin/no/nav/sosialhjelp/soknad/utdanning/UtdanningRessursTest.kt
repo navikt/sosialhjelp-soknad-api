@@ -183,7 +183,7 @@ internal class UtdanningRessursTest {
 
     private fun createJsonInternalSoknadWithUtdanning(
         erStudent: Boolean?,
-        studentgrad: Studentgrad?
+        studentgrad: Studentgrad?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -193,7 +193,7 @@ internal class UtdanningRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
             .withKilde(JsonKilde.BRUKER)

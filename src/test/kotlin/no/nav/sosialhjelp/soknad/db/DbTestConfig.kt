@@ -54,7 +54,7 @@ class DbTestConfig {
     fun soknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
-        opplastetVedleggRepository: OpplastetVedleggRepository
+        opplastetVedleggRepository: OpplastetVedleggRepository,
     ): SoknadUnderArbeidRepository {
         return SoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, opplastetVedleggRepository)
     }
@@ -78,7 +78,7 @@ class DbTestConfig {
     fun batchSoknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
-        batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
+        batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository,
     ): BatchSoknadUnderArbeidRepository {
         return BatchSoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, batchOpplastetVedleggRepository)
     }

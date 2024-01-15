@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component
 @Component
 class AdressesokService(
     private val adressesokClient: AdressesokClient,
-    private val kodeverkService: KodeverkService
+    private val kodeverkService: KodeverkService,
 ) {
 
     fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {

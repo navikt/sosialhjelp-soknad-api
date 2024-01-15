@@ -33,11 +33,11 @@ import org.springframework.web.bind.annotation.RestController
 class BarneutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentBarneutgifter(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): BarneutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -61,14 +61,14 @@ class BarneutgiftRessurs(
             barnehage = getUtgiftstype(okonomi.oversikt, UTGIFTER_BARNEHAGE),
             sfo = getUtgiftstype(okonomi.oversikt, UTGIFTER_SFO),
             tannregulering = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_TANNREGULERING),
-            annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BARN)
+            annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BARN),
         )
     }
 
     @PutMapping
     fun updateBarneutgifter(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody barneutgifterFrontend: BarneutgifterFrontend
+        @RequestBody barneutgifterFrontend: BarneutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -80,7 +80,7 @@ class BarneutgiftRessurs(
             okonomi.opplysninger,
             BEKREFTELSE_BARNEUTGIFTER,
             barneutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.barn")
+            textService.getJsonOkonomiTittel("utgifter.barn"),
         )
         setBarneutgifter(okonomi, barneutgifterFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
@@ -94,21 +94,21 @@ class BarneutgiftRessurs(
             oversiktBarneutgifter,
             UTGIFTER_BARNEHAGE,
             tittel,
-            barneutgifterFrontend.barnehage
+            barneutgifterFrontend.barnehage,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_SFO])
         addutgiftIfCheckedElseDeleteInOversikt(
             oversiktBarneutgifter,
             UTGIFTER_SFO,
             tittel,
-            barneutgifterFrontend.sfo
+            barneutgifterFrontend.sfo,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_FRITIDSAKTIVITETER])
         addutgiftIfCheckedElseDeleteInOpplysninger(
             opplysningerBarneutgifter,
             UTGIFTER_BARN_FRITIDSAKTIVITETER,
             tittel,
-            barneutgifterFrontend.fritidsaktiviteter
+            barneutgifterFrontend.fritidsaktiviteter,
         )
         tittel =
             textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_TANNREGULERING])
@@ -116,7 +116,7 @@ class BarneutgiftRessurs(
             opplysningerBarneutgifter,
             UTGIFTER_BARN_TANNREGULERING,
             tittel,
-            barneutgifterFrontend.tannregulering
+            barneutgifterFrontend.tannregulering,
         )
         tittel =
             textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BARN])
@@ -124,7 +124,7 @@ class BarneutgiftRessurs(
             opplysningerBarneutgifter,
             UTGIFTER_ANNET_BARN,
             tittel,
-            barneutgifterFrontend.annet
+            barneutgifterFrontend.annet,
         )
     }
 
@@ -147,6 +147,6 @@ class BarneutgiftRessurs(
         val barnehage: Boolean = false,
         val sfo: Boolean = false,
         val tannregulering: Boolean = false,
-        val annet: Boolean = false
+        val annet: Boolean = false,
     )
 }

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentUtbetalinger(@PathVariable("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
@@ -52,14 +52,14 @@ class UtbetalingRessurs(
             forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
             annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
             beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
+            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
         )
     }
 
     @PutMapping
     fun updateUtbetalinger(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody utbetalingerFrontend: UtbetalingerFrontend
+        @RequestBody utbetalingerFrontend: UtbetalingerFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -72,7 +72,7 @@ class UtbetalingRessurs(
             opplysninger,
             BEKREFTELSE_UTBETALING,
             utbetalingerFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.inntekter")
+            textService.getJsonOkonomiTittel("inntekt.inntekter"),
         )
         setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
@@ -84,13 +84,13 @@ class UtbetalingRessurs(
             UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
             UTBETALING_SALG to utbetalingerFrontend.salg,
             UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
-            UTBETALING_ANNET to utbetalingerFrontend.annet
+            UTBETALING_ANNET to utbetalingerFrontend.annet,
         ).map { (utbetalingJsonType, isChecked) ->
             addUtbetalingIfCheckedElseDeleteInOpplysninger(
                 utbetalinger,
                 utbetalingJsonType,
                 textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
-                isChecked
+                isChecked,
             )
         }
     }
@@ -104,7 +104,7 @@ class UtbetalingRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
@@ -125,6 +125,6 @@ class UtbetalingRessurs(
         var forsikring: Boolean = false,
         var annet: Boolean = false,
         var beskrivelseAvAnnet: String? = null,
-        var utbetalingerFraNavFeilet: Boolean? = null
+        var utbetalingerFraNavFeilet: Boolean? = null,
     )
 }

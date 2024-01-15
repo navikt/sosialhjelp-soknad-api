@@ -82,7 +82,7 @@ internal class SoknadUnderArbeidMigrationRepositoryTest {
                 jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
-                sistEndretDato = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+                sistEndretDato = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             )
         }
     }

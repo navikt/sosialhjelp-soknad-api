@@ -33,7 +33,6 @@ internal class SoknadUnderArbeidServiceTest {
 
     @Test
     internal fun `skalSoknadSendesMedDigisosApi - alle scenarier`() {
-
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         // false - soknadUnderArbeid er ettersendelse
@@ -78,7 +77,7 @@ internal class SoknadUnderArbeidServiceTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 

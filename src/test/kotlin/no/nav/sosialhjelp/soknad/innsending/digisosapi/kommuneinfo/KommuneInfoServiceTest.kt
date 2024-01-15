@@ -37,7 +37,7 @@ internal class KommuneInfoServiceTest {
         harMidlertidigDeaktivertOppdateringer = false,
         kontaktpersoner = null,
         harNksTilgang = false,
-        behandlingsansvarlig = null
+        behandlingsansvarlig = null,
     )
 
     private val kommuneInfoMedKonfig = KommuneInfo(
@@ -48,7 +48,7 @@ internal class KommuneInfoServiceTest {
         harMidlertidigDeaktivertOppdateringer = true,
         kontaktpersoner = null,
         harNksTilgang = true,
-        behandlingsansvarlig = null
+        behandlingsansvarlig = null,
     )
 
     @BeforeEach

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class KontonummerService(
-    private val kontonummerClient: KontonummerClient
+    private val kontonummerClient: KontonummerClient,
 ) {
 
     /**

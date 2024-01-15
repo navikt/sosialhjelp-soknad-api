@@ -94,7 +94,7 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Mimetype var $mimeType, filtype var $filType",
                 null,
-                "opplasting.feilmelding.feiltype"
+                "opplasting.feilmelding.feiltype",
             )
         }
         if (fileType == TikaFileType.JPEG || fileType == TikaFileType.PNG) {
@@ -120,7 +120,9 @@ object VedleggUtils {
         val fileExtension = filnavn.substring(sisteIndexForPunktum)
         return if (!isValidFileExtension(fileExtension)) {
             null
-        } else fileExtension
+        } else {
+            fileExtension
+        }
     }
 
     private fun isValidFileExtension(fileExtension: String): Boolean {
@@ -138,7 +140,7 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Filtype var $fileExtension",
                 null,
-                "opplasting.feilmelding.feiltype"
+                "opplasting.feilmelding.feiltype",
             )
         }
     }
@@ -155,7 +157,7 @@ object VedleggUtils {
                         throw UgyldigOpplastingTypeException(
                             "PDF kan ikke være kryptert.",
                             null,
-                            "opplasting.feilmelding.pdf.kryptert"
+                            "opplasting.feilmelding.pdf.kryptert",
                         )
                     }
                 }
@@ -163,7 +165,7 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "PDF kan ikke være krypert.",
                 null,
-                "opplasting.feilmelding.pdf.kryptert"
+                "opplasting.feilmelding.pdf.kryptert",
             )
         } catch (e: IOException) {
             throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
@@ -179,7 +181,9 @@ object VedleggUtils {
         }
         return if (TikaFileType.PDF == fileType) {
             ".pdf".equals(fileExtension, ignoreCase = true)
-        } else false
+        } else {
+            false
+        }
     }
 
     fun getByteArray(file: MultipartFile): ByteArray {

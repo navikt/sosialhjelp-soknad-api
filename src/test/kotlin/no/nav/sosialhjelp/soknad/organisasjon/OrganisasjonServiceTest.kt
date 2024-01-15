@@ -20,9 +20,9 @@ internal class OrganisasjonServiceTest {
             navnelinje2 = "andre linje",
             navnelinje3 = null,
             navnelinje4 = null,
-            navnelinje5 = null
+            navnelinje5 = null,
         ),
-        organisasjonsnummer = orgnr
+        organisasjonsnummer = orgnr,
     )
 
     @Test

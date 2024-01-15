@@ -64,7 +64,7 @@ internal class FamiliesituasjonStegTest {
                 JsonEktefelle()
                     .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
                     .withFodselsdato(null)
-                    .withPersonIdentifikator(null)
+                    .withPersonIdentifikator(null),
             )
             .withBorSammenMed(true)
         val soknad = createSoknad(gift, null)
@@ -112,7 +112,7 @@ internal class FamiliesituasjonStegTest {
                 JsonEktefelle()
                     .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
                     .withFodselsdato("1999-12-31")
-                    .withPersonIdentifikator("11111111111")
+                    .withPersonIdentifikator("11111111111"),
             )
             .withFolkeregistrertMedEktefelle(true)
         val soknad = createSoknad(giftMedAdressebeskyttelse, null)
@@ -153,7 +153,7 @@ internal class FamiliesituasjonStegTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(TRUE)
+                    .withVerdi(TRUE),
             )
             .withAnsvar(
                 listOf(
@@ -163,11 +163,11 @@ internal class FamiliesituasjonStegTest {
                                 .withKilde(JsonKilde.SYSTEM)
                                 .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
                                 .withFodselsdato("2020-02-02")
-                                .withPersonIdentifikator("11111111111")
+                                .withPersonIdentifikator("11111111111"),
                         )
                         .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(TRUE))
-                        .withHarDeltBosted(null)
-                )
+                        .withHarDeltBosted(null),
+                ),
             )
             .withBarnebidrag(null)
         val soknad = createSoknad(null, forsorgerplikt)
@@ -203,7 +203,7 @@ internal class FamiliesituasjonStegTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(TRUE)
+                    .withVerdi(TRUE),
             )
             .withAnsvar(
                 listOf(
@@ -213,21 +213,21 @@ internal class FamiliesituasjonStegTest {
                                 .withKilde(JsonKilde.SYSTEM)
                                 .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
                                 .withFodselsdato("2020-02-02")
-                                .withPersonIdentifikator("11111111111")
+                                .withPersonIdentifikator("11111111111"),
                         )
                         .withErFolkeregistrertSammen(
                             JsonErFolkeregistrertSammen()
-                                .withVerdi(TRUE)
+                                .withVerdi(TRUE),
                         )
                         .withHarDeltBosted(
                             JsonHarDeltBosted()
-                                .withVerdi(TRUE)
-                        )
-                )
+                                .withVerdi(TRUE),
+                        ),
+                ),
             )
             .withBarnebidrag(
                 JsonBarnebidrag()
-                    .withVerdi(JsonBarnebidrag.Verdi.BETALER)
+                    .withVerdi(JsonBarnebidrag.Verdi.BETALER),
             )
         val soknad = createSoknad(null, forsorgerplikt)
 
@@ -260,9 +260,9 @@ internal class FamiliesituasjonStegTest {
                             .withFamilie(
                                 JsonFamilie()
                                     .withSivilstatus(sivilstatus)
-                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt())
-                            )
-                    )
+                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt()),
+                            ),
+                    ),
             )
     }
 }

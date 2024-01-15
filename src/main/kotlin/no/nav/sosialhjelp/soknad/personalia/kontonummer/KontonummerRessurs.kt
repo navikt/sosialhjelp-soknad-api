@@ -22,11 +22,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kontonummerService: KontonummerService
+    private val kontonummerService: KontonummerService,
 ) {
     @GetMapping
     fun hentKontonummer(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val konto = loadKontonummer(behandlingsId)
@@ -36,7 +36,7 @@ class KontonummerRessurs(
                 JsonKontonummer().apply {
                     kilde = JsonKilde.SYSTEM
                     verdi = kontonummerService.getKontonummer(eier())
-                }
+                },
             )
         }
 
@@ -46,7 +46,7 @@ class KontonummerRessurs(
     @PutMapping
     fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody @Valid kontoDTO: KontonummerInputDTO
+        @RequestBody @Valid kontoDTO: KontonummerInputDTO,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
@@ -75,7 +75,7 @@ class KontonummerRessurs(
         @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
         val harIkkeKonto: Boolean? = null,
         @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
-        val brukerdefinert: Boolean? = null
+        val brukerdefinert: Boolean? = null,
     )
 
     private fun loadKontonummer(behandlingsId: String): JsonKontonummer =
@@ -112,6 +112,6 @@ class KontonummerRessurs(
     private fun mapDAOtoDTO(kontonummer: JsonKontonummer) = KontonummerFrontend(
         systemverdi = kontonummerService.getKontonummer(eier()),
         brukerutfyltVerdi = kontonummer.verdi.takeIf { kontonummer.kilde == JsonKilde.BRUKER },
-        harIkkeKonto = kontonummer.harIkkeKonto ?: false
+        harIkkeKonto = kontonummer.harIkkeKonto ?: false,
     )
 }

@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 class AzureadService(
     private val azureClient: AzureadClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
 
     suspend fun getSystemToken(scope: String): String {

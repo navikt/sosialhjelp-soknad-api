@@ -49,7 +49,7 @@ class NavEnhetServiceTest {
         finnAdresseService,
         geografiskTilknytningService,
         kodeverkService,
-        unleash
+        unleash,
     )
 
     @BeforeEach
@@ -199,7 +199,7 @@ class NavEnhetServiceTest {
 
     private fun assertThatEnhetIsCorrectlyConverted(
         navEnhetFrontend: NavEnhetFrontend?,
-        soknadsmottaker: JsonSoknadsmottaker
+        soknadsmottaker: JsonSoknadsmottaker,
     ) {
         if (navEnhetFrontend == null) {
             assertThat(soknadsmottaker).isNull()
@@ -222,7 +222,7 @@ class NavEnhetServiceTest {
             jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 

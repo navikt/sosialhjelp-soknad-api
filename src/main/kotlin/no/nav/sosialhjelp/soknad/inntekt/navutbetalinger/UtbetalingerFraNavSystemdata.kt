@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 @Component
 class UtbetalingerFraNavSystemdata(
     private val organisasjonService: OrganisasjonService,
-    private val navUtbetalingerService: NavUtbetalingerService
+    private val navUtbetalingerService: NavUtbetalingerService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {

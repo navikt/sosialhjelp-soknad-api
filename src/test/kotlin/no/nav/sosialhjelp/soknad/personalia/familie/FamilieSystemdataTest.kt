@@ -159,7 +159,7 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
@@ -195,7 +195,7 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.BRUKER)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
@@ -259,13 +259,13 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2))
             .withBarnebidrag(
                 JsonBarnebidrag()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(Verdi.BEGGE)
+                    .withVerdi(Verdi.BEGGE),
             )
         return jsonInternalSoknad
     }
@@ -306,7 +306,7 @@ internal class FamilieSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = ektefelle,
             bostedsadresse = null,
-            oppholdsadresse = null
+            oppholdsadresse = null,
         )
     }
 
@@ -340,7 +340,7 @@ internal class FamilieSystemdataTest {
             ETTERNAVN_BARN,
             FNR_BARN,
             FODSELSDATO_BARN,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN
+            ER_FOLKEREGISTRERT_SAMMEN_BARN,
         )
         private val BARN_2 = Barn(
             FORNAVN_BARN_2,
@@ -348,7 +348,7 @@ internal class FamilieSystemdataTest {
             ETTERNAVN_BARN_2,
             FNR_BARN_2,
             FODSELSDATO_BARN_2,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN_2
+            ER_FOLKEREGISTRERT_SAMMEN_BARN_2,
         )
         private val JSON_ANSVAR = JsonAnsvar()
             .withBarn(
@@ -358,20 +358,20 @@ internal class FamilieSystemdataTest {
                         JsonNavn()
                             .withFornavn(FORNAVN_BARN)
                             .withMellomnavn(MELLOMNAVN_BARN)
-                            .withEtternavn(ETTERNAVN_BARN)
+                            .withEtternavn(ETTERNAVN_BARN),
                     )
                     .withFodselsdato(FODSELSDATO_BARN.toString())
-                    .withPersonIdentifikator(FNR_BARN)
+                    .withPersonIdentifikator(FNR_BARN),
             )
             .withErFolkeregistrertSammen(
                 JsonErFolkeregistrertSammen()
                     .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN)
+                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN),
             )
             .withHarDeltBosted(
                 JsonHarDeltBosted()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(HAR_DELT_BOSTED_BARN)
+                    .withVerdi(HAR_DELT_BOSTED_BARN),
             )
         private val JSON_ANSVAR_2 = JsonAnsvar()
             .withBarn(
@@ -381,20 +381,20 @@ internal class FamilieSystemdataTest {
                         JsonNavn()
                             .withFornavn(FORNAVN_BARN_2)
                             .withMellomnavn(MELLOMNAVN_BARN_2)
-                            .withEtternavn(ETTERNAVN_BARN_2)
+                            .withEtternavn(ETTERNAVN_BARN_2),
                     )
                     .withFodselsdato(FODSELSDATO_BARN_2.toString())
-                    .withPersonIdentifikator(FNR_BARN_2)
+                    .withPersonIdentifikator(FNR_BARN_2),
             )
             .withErFolkeregistrertSammen(
                 JsonErFolkeregistrertSammen()
                     .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN_2)
+                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN_2),
             )
             .withSamvarsgrad(
                 JsonSamvarsgrad()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(SAMVARSGRAD_BARN_2)
+                    .withVerdi(SAMVARSGRAD_BARN_2),
             )
         private val JSON_ANSVAR_3_BRUKERREGISTRERT = JsonAnsvar()
             .withBarn(
@@ -404,19 +404,19 @@ internal class FamilieSystemdataTest {
                         JsonNavn()
                             .withFornavn(FORNAVN_BARN_3)
                             .withMellomnavn(MELLOMNAVN_BARN_3)
-                            .withEtternavn(ETTERNAVN_BARN_3)
+                            .withEtternavn(ETTERNAVN_BARN_3),
                     )
-                    .withFodselsdato(FODSELSDATO_BARN_3.toString())
+                    .withFodselsdato(FODSELSDATO_BARN_3.toString()),
             )
             .withBorSammenMed(
                 JsonBorSammenMed()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(false)
+                    .withVerdi(false),
             )
             .withSamvarsgrad(
                 JsonSamvarsgrad()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(SAMVARSGRAD_BARN_3)
+                    .withVerdi(SAMVARSGRAD_BARN_3),
             )
 
         private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
@@ -428,7 +428,7 @@ internal class FamilieSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

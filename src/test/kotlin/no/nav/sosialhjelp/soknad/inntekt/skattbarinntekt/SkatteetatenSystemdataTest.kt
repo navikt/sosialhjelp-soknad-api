@@ -174,14 +174,14 @@ internal class SkatteetatenSystemdataTest {
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
                     .withVerdi(harSamtykke)
-                    .withTittel("beskrivelse")
+                    .withTittel("beskrivelse"),
             )
     }
 
     private fun assertThatUtbetalingIsCorrectlyConverted(
         utbetaling: Utbetaling,
         jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        type: String
+        type: String,
     ) {
         // todo belop, netto og andretrekk er null, men assertion gir NPE?
         assertThat(jsonUtbetaling.type).isEqualTo(type)
@@ -232,7 +232,7 @@ internal class SkatteetatenSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

@@ -15,14 +15,14 @@ class SoknadMetadataMigrationRepository(
         return jdbcTemplate.query(
             "select * from soknadmetadata where sistendretdato > ? order by sistendretdato asc",
             SoknadMetadataRowMapper.soknadMetadataRowMapper,
-            SQLUtils.tidTilTimestamp(sistEndretDato)
+            SQLUtils.tidTilTimestamp(sistEndretDato),
         ).firstOrNull()
     }
 
     fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from soknadmetadata",
-            Int::class.java
+            Int::class.java,
         ) ?: 0
     }
 }

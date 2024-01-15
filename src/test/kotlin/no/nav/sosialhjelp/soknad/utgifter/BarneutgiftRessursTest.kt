@@ -86,7 +86,7 @@ internal class BarneutgiftRessursTest {
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = false,
                 harUtgifter = false,
-                utgiftstyper = emptyList()
+                utgiftstyper = emptyList(),
             )
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
@@ -111,8 +111,8 @@ internal class BarneutgiftRessursTest {
                     UTGIFTER_SFO,
                     UTGIFTER_BARN_FRITIDSAKTIVITETER,
                     UTGIFTER_BARN_TANNREGULERING,
-                    UTGIFTER_ANNET_BARN
-                )
+                    UTGIFTER_ANNET_BARN,
+                ),
             )
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
@@ -136,8 +136,8 @@ internal class BarneutgiftRessursTest {
                     UTGIFTER_BARNEHAGE,
                     UTGIFTER_SFO,
                     UTGIFTER_BARN_FRITIDSAKTIVITETER,
-                    UTGIFTER_ANNET_BARN
-                )
+                    UTGIFTER_ANNET_BARN,
+                ),
             )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -171,7 +171,7 @@ internal class BarneutgiftRessursTest {
             barnehage = true,
             sfo = true,
             tannregulering = false,
-            annet = false
+            annet = false,
         )
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
@@ -205,7 +205,7 @@ internal class BarneutgiftRessursTest {
             barnehage = true,
             sfo = true,
             tannregulering = true,
-            annet = true
+            annet = true,
         )
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
@@ -248,7 +248,7 @@ internal class BarneutgiftRessursTest {
     private fun createJsonInternalSoknadWithBarneutgifter(
         harForsorgerplikt: Boolean,
         harUtgifter: Boolean,
-        utgiftstyper: List<String>
+        utgiftstyper: List<String>,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift> = ArrayList()
@@ -259,14 +259,14 @@ internal class BarneutgiftRessursTest {
                     JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
             } else if (utgiftstype == UTGIFTER_BARN_FRITIDSAKTIVITETER || utgiftstype == UTGIFTER_BARN_TANNREGULERING || utgiftstype == UTGIFTER_ANNET_BARN) {
                 opplysningUtgifter.add(
                     JsonOkonomiOpplysningUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
             }
         }
@@ -274,7 +274,7 @@ internal class BarneutgiftRessursTest {
             JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(BEKREFTELSE_BARNEUTGIFTER)
-                .withVerdi(harUtgifter)
+                .withVerdi(harUtgifter),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
@@ -282,7 +282,7 @@ internal class BarneutgiftRessursTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(harForsorgerplikt)
+                    .withVerdi(harForsorgerplikt),
             )
         return soknadUnderArbeid
     }
@@ -296,7 +296,7 @@ internal class BarneutgiftRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 

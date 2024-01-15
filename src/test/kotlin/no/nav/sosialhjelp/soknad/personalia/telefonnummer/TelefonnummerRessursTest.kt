@@ -100,7 +100,7 @@ internal class TelefonnummerRessursTest {
 
         val telefonnummerFrontend = TelefonnummerFrontend(
             brukerdefinert = true,
-            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER,
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
@@ -121,7 +121,7 @@ internal class TelefonnummerRessursTest {
 
         val telefonnummerFrontend = TelefonnummerFrontend(
             brukerdefinert = true,
-            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER,
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
@@ -180,7 +180,7 @@ internal class TelefonnummerRessursTest {
                     JsonTelefonnummer()
                         .withKilde(kilde)
                         .withVerdi(it)
-                }
+                },
             )
         return soknadUnderArbeid
     }
@@ -200,7 +200,7 @@ internal class TelefonnummerRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

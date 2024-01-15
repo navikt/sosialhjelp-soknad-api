@@ -17,7 +17,7 @@ interface TokendingsClient {
 class TokendingsClientImpl(
     private val tokendingsWebClient: WebClient,
     private val wellKnown: WellKnown,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TokendingsClient {
 
     override suspend fun exchangeToken(subjectToken: String, clientAssertion: String, audience: String): TokendingsResponse {

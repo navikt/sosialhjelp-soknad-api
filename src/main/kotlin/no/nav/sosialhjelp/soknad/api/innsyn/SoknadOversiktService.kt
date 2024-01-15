@@ -8,7 +8,7 @@ import java.sql.Timestamp
 
 @Component
 class SoknadOversiktService(
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     fun hentSvarUtSoknaderFor(fnr: String): List<SoknadOversiktDto> {
         val soknader = soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker(fnr)
@@ -18,7 +18,7 @@ class SoknadOversiktService(
                 soknadTittel = "$DEFAULT_TITTEL (${it.behandlingsId})",
                 sistOppdatert = Timestamp.valueOf(it.sistEndretDato),
                 kilde = KILDE_SOKNAD_API,
-                url = lagEttersendelseLenke(it.behandlingsId)
+                url = lagEttersendelseLenke(it.behandlingsId),
             )
         }
     }

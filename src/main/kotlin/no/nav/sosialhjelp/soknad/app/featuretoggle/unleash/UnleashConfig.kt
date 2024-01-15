@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 class UnleashConfig(
     @Value("\${unleash_env}") private val environment: String,
     @Value("\${unleash_server_api_url}") private val baseurl: String,
-    @Value("\${unleash_server_api_token}") private val apiToken: String
+    @Value("\${unleash_server_api_token}") private val apiToken: String,
 ) {
 
     @Bean
@@ -26,7 +26,7 @@ class UnleashConfig(
 
         return DefaultUnleash(
             config,
-            byInstanceIdStrategy
+            byInstanceIdStrategy,
         )
     }
 

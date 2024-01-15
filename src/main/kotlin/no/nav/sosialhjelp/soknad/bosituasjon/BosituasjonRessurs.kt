@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @RequestMapping("/soknader/{behandlingsId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
     @GetMapping
     fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String): BosituasjonFrontend {
@@ -37,7 +37,7 @@ class BosituasjonRessurs(
     @PutMapping
     fun updateBosituasjon(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody bosituasjonFrontend: BosituasjonFrontend
+        @RequestBody bosituasjonFrontend: BosituasjonFrontend,
     ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = eier()
@@ -56,6 +56,6 @@ class BosituasjonRessurs(
 
     data class BosituasjonFrontend(
         var botype: Botype?,
-        var antallPersoner: Int?
+        var antallPersoner: Int?,
     )
 }

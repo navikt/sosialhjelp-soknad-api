@@ -30,7 +30,7 @@ internal class DittNavMetadataServiceTest {
         opprettetDato = LocalDateTime.now().minusDays(10),
         innsendtDato = LocalDateTime.now().minusDays(2),
         sistEndretDato = LocalDateTime.now().minusDays(2),
-        lest = false
+        lest = false,
     )
 
     @BeforeEach

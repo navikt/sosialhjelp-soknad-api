@@ -15,7 +15,7 @@ class TokendingsConfig(
     @Value("\${tokendings_client_id}") val tokendingsClientId: String,
     @Value("\${tokendings_private_jwk}") val tokendingsPrivateJwk: String,
     private val redisService: RedisService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
 
     @Profile("!test")
@@ -29,7 +29,7 @@ class TokendingsConfig(
     fun tokendingsClientTest(): TokendingsClient {
         return TokendingsClientImpl(
             tokendingsWebClient,
-            WellKnown("iss-localhost", "authorizationEndpoint", "tokenEndpoint", tokendingsUrl)
+            WellKnown("iss-localhost", "authorizationEndpoint", "tokenEndpoint", tokendingsUrl),
         )
     }
 
@@ -39,7 +39,7 @@ class TokendingsConfig(
             tokendingsClient,
             tokendingsClientId,
             tokendingsPrivateJwk,
-            redisService
+            redisService,
         )
     }
 

@@ -24,7 +24,7 @@ class MellomlagringConfig(
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     @Bean
@@ -33,7 +33,7 @@ class MellomlagringConfig(
             dokumentlagerClient,
             krypteringService,
             maskinportenClient,
-            webClient
+            webClient,
         )
     }
 
@@ -43,8 +43,8 @@ class MellomlagringConfig(
             ReactorClientHttpConnector(
                 proxiedHttpClient
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+            ),
         )
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)

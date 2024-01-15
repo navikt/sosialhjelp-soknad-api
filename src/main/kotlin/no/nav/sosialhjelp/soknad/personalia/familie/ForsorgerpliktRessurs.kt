@@ -43,11 +43,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val textService: TextService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
     @GetMapping
     fun hentForsorgerplikt(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = eier()
@@ -61,7 +61,7 @@ class ForsorgerpliktRessurs(
     @PutMapping
     fun updateForsorgerplikt(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend
+        @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
@@ -78,7 +78,7 @@ class ForsorgerpliktRessurs(
     private fun updateBarnebidrag(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
         jsonInternalSoknad: JsonInternalSoknad,
-        forsorgerplikt: JsonForsorgerplikt
+        forsorgerplikt: JsonForsorgerplikt,
     ) {
         val barnebidragType = "barnebidrag"
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
@@ -124,7 +124,7 @@ class ForsorgerpliktRessurs(
     private fun updateAnsvarAndHarForsorgerplikt(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
         jsonInternalSoknad: JsonInternalSoknad,
-        forsorgerplikt: JsonForsorgerplikt
+        forsorgerplikt: JsonForsorgerplikt,
     ) {
         val systemAnsvar: List<JsonAnsvar> =
             when (forsorgerplikt.ansvar) {
@@ -188,7 +188,7 @@ class ForsorgerpliktRessurs(
         return ForsorgerpliktFrontend(
             harForsorgerplikt = jsonForsorgerplikt.harForsorgerplikt?.verdi,
             barnebidrag = jsonForsorgerplikt.barnebidrag?.verdi,
-            ansvar = ansvar
+            ansvar = ansvar,
         )
     }
 
@@ -197,13 +197,13 @@ class ForsorgerpliktRessurs(
         borSammenMed = jsonAnsvar.borSammenMed?.verdi,
         erFolkeregistrertSammen = jsonAnsvar.erFolkeregistrertSammen?.verdi,
         harDeltBosted = jsonAnsvar.harDeltBosted?.verdi,
-        samvarsgrad = jsonAnsvar.samvarsgrad?.verdi
+        samvarsgrad = jsonAnsvar.samvarsgrad?.verdi,
     )
 
     private fun mapToBarnFrontend(barn: JsonBarn): BarnFrontend = BarnFrontend(
         navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn, fulltNavn(barn.navn)),
         fodselsdato = barn.fodselsdato,
         personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
-        fodselsnummer = barn.personIdentifikator
+        fodselsnummer = barn.personIdentifikator,
     )
 }

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class PrometheusMetricsService(
-    private val meterRegistry: MeterRegistry
+    private val meterRegistry: MeterRegistry,
 ) {
 
     private val startSoknadCounter = Counter.builder("start_soknad_counter")

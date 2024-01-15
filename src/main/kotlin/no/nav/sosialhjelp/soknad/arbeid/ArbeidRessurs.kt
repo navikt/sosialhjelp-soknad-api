@@ -21,11 +21,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @RequestMapping("/soknader/{behandlingsId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArbeidRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping
     fun hentArbeid(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getArbeidFromSoknad(behandlingsId)
@@ -43,7 +43,7 @@ class ArbeidRessurs(
     @PutMapping
     fun updateArbeid(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody arbeidFrontend: ArbeidsforholdRequest
+        @RequestBody arbeidFrontend: ArbeidsforholdRequest,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
@@ -69,16 +69,16 @@ class ArbeidRessurs(
         arbeidsforhold.tom,
         arbeidsforhold.stillingstype?.let { isStillingstypeHeltid(it) },
         arbeidsforhold.stillingsprosent,
-        java.lang.Boolean.FALSE
+        java.lang.Boolean.FALSE,
     )
 
     data class ArbeidsforholdResponse(
         val arbeidsforhold: List<ArbeidsforholdFrontend>,
-        val kommentarTilArbeidsforhold: String?
+        val kommentarTilArbeidsforhold: String?,
     )
 
     data class ArbeidsforholdRequest(
-        val kommentarTilArbeidsforhold: String?
+        val kommentarTilArbeidsforhold: String?,
     )
 
     data class ArbeidsforholdFrontend(
@@ -87,7 +87,7 @@ class ArbeidRessurs(
         var tom: String?,
         var stillingstypeErHeltid: Boolean?,
         var stillingsprosent: Int?,
-        var overstyrtAvBruker: Boolean?
+        var overstyrtAvBruker: Boolean?,
     )
 
     companion object {

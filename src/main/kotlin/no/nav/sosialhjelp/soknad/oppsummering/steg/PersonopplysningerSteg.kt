@@ -31,8 +31,8 @@ class PersonopplysningerSteg {
                 personaliaAvsnitt(personalia),
                 adresseOgNavKontorAvsnitt(personalia),
                 telefonnummerAvsnitt(telefonnummer),
-                kontonummerAvsnitt(kontonummer)
-            )
+                kontonummerAvsnitt(kontonummer),
+            ),
         )
     }
 
@@ -47,21 +47,21 @@ class PersonopplysningerSteg {
                         Felt(
                             type = Type.SYSTEMDATA,
                             label = "kontakt.system.personalia.navn",
-                            svar = createSvar(fulltnavn(personalia.navn), SvarType.TEKST)
+                            svar = createSvar(fulltnavn(personalia.navn), SvarType.TEKST),
                         ),
                         Felt(
                             type = Type.SYSTEMDATA,
                             label = "kontakt.system.personalia.fnr",
-                            svar = createSvar(personalia.personIdentifikator.verdi, SvarType.TEKST)
+                            svar = createSvar(personalia.personIdentifikator.verdi, SvarType.TEKST),
                         ),
                         Felt(
                             type = Type.SYSTEMDATA,
                             label = "kontakt.system.personalia.statsborgerskap",
-                            svar = createSvar(personalia.statsborgerskap?.verdi, SvarType.TEKST)
-                        )
-                    )
-                )
-            )
+                            svar = createSvar(personalia.statsborgerskap?.verdi, SvarType.TEKST),
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 
@@ -77,11 +77,11 @@ class PersonopplysningerSteg {
                         Felt(
                             type = if (JsonAdresseValg.SOKNAD == oppholdsadresse.adresseValg) Type.TEKST else Type.SYSTEMDATA,
                             label = adresseLabel(oppholdsadresse.adresseValg),
-                            svar = createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST)
-                        )
-                    )
-                )
-            )
+                            svar = createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST),
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 
@@ -130,9 +130,9 @@ class PersonopplysningerSteg {
                 Sporsmal(
                     tittel = "kontakt.system.telefoninfo.infotekst.tekst", // skal variere ut fra kilde? systemdata eller bruker
                     erUtfylt = harUtfyltTelefonnummer,
-                    felt = telefonnummer?.let { if (harUtfyltTelefonnummer) telefonnummerFelt(it) else null }
-                )
-            )
+                    felt = telefonnummer?.let { if (harUtfyltTelefonnummer) telefonnummerFelt(it) else null },
+                ),
+            ),
         )
     }
 
@@ -142,8 +142,8 @@ class PersonopplysningerSteg {
             Felt(
                 type = if (erSystemdata) Type.SYSTEMDATA else Type.TEKST,
                 label = "kontakt.system.telefon.label",
-                svar = createSvar(telefonnummer.verdi, SvarType.TEKST)
-            )
+                svar = createSvar(telefonnummer.verdi, SvarType.TEKST),
+            ),
         )
     }
 
@@ -157,9 +157,9 @@ class PersonopplysningerSteg {
                 Sporsmal(
                     tittel = "kontakt.system.kontonummer.label",
                     erUtfylt = harUtfyltKontonummer,
-                    felt = kontonummer?.let { if (harUtfyltKontonummer) kontonummerFelt(it) else null }
-                )
-            )
+                    felt = kontonummer?.let { if (harUtfyltKontonummer) kontonummerFelt(it) else null },
+                ),
+            ),
         )
     }
 
@@ -168,8 +168,8 @@ class PersonopplysningerSteg {
             return listOf(
                 Felt(
                     type = Type.CHECKBOX,
-                    svar = createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE_TEKST)
-                )
+                    svar = createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE_TEKST),
+                ),
             )
         }
         val erSystemdata = kontonummer.kilde == JsonKilde.SYSTEM
@@ -177,8 +177,8 @@ class PersonopplysningerSteg {
             Felt(
                 type = if (erSystemdata) Type.SYSTEMDATA else Type.TEKST,
                 label = "kontakt.system.kontonummer.label",
-                svar = createSvar(kontonummer.verdi, SvarType.TEKST)
-            )
+                svar = createSvar(kontonummer.verdi, SvarType.TEKST),
+            ),
         )
     }
 

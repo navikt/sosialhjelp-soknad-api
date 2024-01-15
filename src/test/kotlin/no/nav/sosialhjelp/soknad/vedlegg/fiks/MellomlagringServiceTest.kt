@@ -43,13 +43,14 @@ internal class MellomlagringServiceTest {
     private val kommuneInfoService: KommuneInfoService = mockk()
 
     private val soknadUnderArbeidService = SoknadUnderArbeidService(
-        soknadUnderArbeidRepository, kommuneInfoService
+        soknadUnderArbeidRepository,
+        kommuneInfoService,
     )
 
     private val mellomlagringService = MellomlagringService(
         mellomlagringClient,
         soknadUnderArbeidService,
-        virusScanner
+        virusScanner,
     )
 
     @BeforeEach
@@ -72,29 +73,26 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere tom liste når det ikke finnes innslag for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
     }
 
     @Test
     internal fun `skal returnere tom liste når det ikke finnes vedlegg for gitt behandlingsid`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
-            mellomlagringMetadataList = null
+            mellomlagringMetadataList = null,
         )
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
     }
 
     @Test
     internal fun `skal returnere liste med vedlegg når det finnes mellomlagrede vedlegg`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
-                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "uuid", storrelse = 123L, mimetype = "mime")
-            )
+                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "uuid", storrelse = 123L, mimetype = "mime"),
+            ),
         )
         val allVedlegg = mellomlagringService.getAllVedlegg("behandlingsId")
         assertThat(allVedlegg).hasSize(1)
@@ -103,7 +101,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal ikke finne vedlegg for id dersom behandlingsid ikke finnes i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
@@ -111,10 +108,9 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere 0 vedlegg dersom det ikke ligger vedlegg for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
-            mellomlagringMetadataList = null
+            mellomlagringMetadataList = null,
         )
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
@@ -122,12 +118,11 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere 0 vedlegg dersom vedleggid ikke finnes i liste over vedlegg`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
-                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "uuid", storrelse = 123L, mimetype = "mime")
-            )
+                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "uuid", storrelse = 123L, mimetype = "mime"),
+            ),
         )
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
@@ -135,12 +130,11 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere riktig vedlegg dersom vedleggsid finnes for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
-                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "vedleggId", storrelse = 123L, mimetype = "mime")
-            )
+                MellomlagringDokumentInfo(filnavn = "filnavn", filId = "vedleggId", storrelse = 123L, mimetype = "mime"),
+            ),
         )
         every { mellomlagringClient.getVedlegg(any(), any()) } returns "hello-world".encodeToByteArray()
         val mellomlagretVedlegg = mellomlagringService.getVedlegg("behandlingsId", "vedleggId")
@@ -150,14 +144,13 @@ internal class MellomlagringServiceTest {
 
     @Test
     fun `Test uploade fil som ikke stottes`() {
-
         val behandlingsId = "123"
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 
         every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
         every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
             eksternId,
-            emptyList()
+            emptyList(),
         )
 
         assertThatThrownBy {
@@ -179,10 +172,10 @@ internal class MellomlagringServiceTest {
                         JsonVedlegg()
                             .withType(OpplastetVedleggType("hei|på deg").type)
                             .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -191,7 +184,7 @@ internal class MellomlagringServiceTest {
             getSha512FromByteArray(PDF_FILE.readBytes()),
             behandlingsId,
             "hei|på deg",
-            PDF_FILE.name
+            PDF_FILE.name,
         )
 
         val soknadUnderArbeid = slot.captured
@@ -204,7 +197,7 @@ internal class MellomlagringServiceTest {
 
     private fun createSoknadUnderArbeid(
         behandligsId: String,
-        jsonInternalSoknad: JsonInternalSoknad
+        jsonInternalSoknad: JsonInternalSoknad,
     ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
@@ -214,7 +207,7 @@ internal class MellomlagringServiceTest {
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

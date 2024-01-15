@@ -20,14 +20,14 @@ data class SoknadMetadata(
     var opprettetDato: LocalDateTime,
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
-    var lest: Boolean = false
+    var lest: Boolean = false,
 ) {
     val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
 }
 
 @XmlRootElement
 data class VedleggMetadataListe(
-    var vedleggListe: MutableList<VedleggMetadata> = mutableListOf()
+    var vedleggListe: MutableList<VedleggMetadata> = mutableListOf(),
 )
 
 @XmlRootElement
@@ -40,7 +40,7 @@ data class VedleggMetadata(
     var skjema: String? = null,
     var tillegg: String? = null,
     var hendelseType: JsonVedlegg.HendelseType? = null,
-    var hendelseReferanse: String? = null
+    var hendelseReferanse: String? = null,
 )
 
 enum class SoknadMetadataType {
@@ -61,5 +61,5 @@ enum class Vedleggstatus {
 
 val JAXB = JAXBHelper(
     VedleggMetadata::class.java,
-    VedleggMetadataListe::class.java
+    VedleggMetadataListe::class.java,
 )

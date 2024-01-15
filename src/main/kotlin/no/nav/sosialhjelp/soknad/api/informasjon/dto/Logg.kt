@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 enum class LoggLevel {
     ERROR,
     WARN,
-    INFO
+    INFO,
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,7 +32,7 @@ data class Logg(
             columnNumber,
             url,
             useragentWithoutSpaceAndComma,
-            message
+            message,
         )
     }
 }

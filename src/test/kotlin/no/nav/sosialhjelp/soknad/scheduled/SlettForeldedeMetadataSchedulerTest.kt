@@ -30,7 +30,7 @@ internal class SlettForeldedeMetadataSchedulerTest {
         batchSoknadMetadataRepository,
         oppgaveRepository,
         batchEnabled = true,
-        schedulerDisabled = false
+        schedulerDisabled = false,
     )
 
     @BeforeEach
@@ -116,7 +116,7 @@ internal class SlettForeldedeMetadataSchedulerTest {
             opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             nesteForsok = null,
-            retries = 0
+            retries = 0,
         )
     }
 

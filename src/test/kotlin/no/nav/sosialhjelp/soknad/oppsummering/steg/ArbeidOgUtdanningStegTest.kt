@@ -98,7 +98,7 @@ internal class ArbeidOgUtdanningStegTest {
             JsonArbeid()
                 .withForhold(listOf(arbeidsforholdUtenSlutt))
                 .withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold().withVerdi("kommentar")),
-            JsonUtdanning()
+            JsonUtdanning(),
         )
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(2)
@@ -181,8 +181,8 @@ internal class ArbeidOgUtdanningStegTest {
                     .withData(
                         JsonData()
                             .withArbeid(arbeid)
-                            .withUtdanning(utdanning)
-                    )
+                            .withUtdanning(utdanning),
+                    ),
             )
     }
 }

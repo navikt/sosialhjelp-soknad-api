@@ -11,17 +11,19 @@ import java.util.Locale
 @Component
 class NedetidService(
     @Value("\${nedetid.start}") private val nedetidStart: String?,
-    @Value("\${nedetid.slutt}") private val nedetidSlutt: String?
+    @Value("\${nedetid.slutt}") private val nedetidSlutt: String?,
 ) {
 
     private fun getNedetid(time: String?): LocalDateTime? {
         return if (time.isNullOrEmpty()) {
             null
-        } else try {
-            LocalDateTime.parse(time, dateTimeFormatter)
-        } catch (e: DateTimeParseException) {
-            log.error("Klarte ikke parse $time. Skal være på formatet: $nedetidFormat")
-            null
+        } else {
+            try {
+                LocalDateTime.parse(time, dateTimeFormatter)
+            } catch (e: DateTimeParseException) {
+                log.error("Klarte ikke parse $time. Skal være på formatet: $nedetidFormat")
+                null
+            }
         }
     }
 

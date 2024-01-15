@@ -1,14 +1,14 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto
 
 data class SkattbarInntekt(
-    val oppgaveInntektsmottaker: List<OppgaveInntektsmottaker> = java.util.ArrayList()
+    val oppgaveInntektsmottaker: List<OppgaveInntektsmottaker> = java.util.ArrayList(),
 )
 
 data class OppgaveInntektsmottaker(
     val kalendermaaned: String,
     val opplysningspliktigId: String,
     val inntekt: List<Inntekt> = ArrayList(),
-    val forskuddstrekk: List<Forskuddstrekk> = ArrayList()
+    val forskuddstrekk: List<Forskuddstrekk> = ArrayList(),
 )
 
 data class Inntekt(
@@ -23,11 +23,11 @@ data class Inntekt(
     val lottOgPartInnenFiske: LottOgPartInnenFiske? = null,
     val dagmammaIEgenBolig: DagmammaIEgenBolig? = null,
     val naeringsinntekt: Naeringsinntekt? = null,
-    val aldersUfoereEtterlatteAvtalefestetOgKrigspensjon: AldersUfoereEtterlatteAvtalefestetOgKrigspensjon? = null
+    val aldersUfoereEtterlatteAvtalefestetOgKrigspensjon: AldersUfoereEtterlatteAvtalefestetOgKrigspensjon? = null,
 )
 
 data class Loennsinntekt(
-    val tilleggsinformasjon: Tilleggsinformasjon? = null
+    val tilleggsinformasjon: Tilleggsinformasjon? = null,
 )
 
 class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon
@@ -36,20 +36,20 @@ class Naeringsinntekt
 class LottOgPartInnenFiske
 
 data class PensjonEllerTrygd(
-    val tilleggsinformasjon: Tilleggsinformasjon? = null
+    val tilleggsinformasjon: Tilleggsinformasjon? = null,
 )
 
 data class YtelseFraOffentlige(
-    val tilleggsinformasjon: Tilleggsinformasjon? = null
+    val tilleggsinformasjon: Tilleggsinformasjon? = null,
 )
 
 data class Tilleggsinformasjon(
     val dagmammaIEgenBolig: DagmammaIEgenBolig? = null,
     val lottOgPart: LottOgPartInnenFiske? = null,
-    val pensjon: AldersUfoereEtterlatteAvtalefestetOgKrigspensjon? = null
+    val pensjon: AldersUfoereEtterlatteAvtalefestetOgKrigspensjon? = null,
 )
 
 data class Forskuddstrekk(
     val beskrivelse: String? = null,
-    val beloep: Int? = null
+    val beloep: Int? = null,
 )

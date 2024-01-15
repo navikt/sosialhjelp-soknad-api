@@ -197,7 +197,7 @@ internal class FiksSenderTest {
                 .withStatus(Vedleggstatus.LastetOpp.name)
                 .withType("type")
                 .withTilleggsinfo("tilleggsinfo")
-                .withFiler(jsonFiler)
+                .withFiler(jsonFiler),
         )
         return JsonInternalSoknad()
             .withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg))
@@ -208,9 +208,9 @@ internal class FiksSenderTest {
                         JsonData()
                             .withOkonomi(
                                 JsonOkonomi()
-                                    .withOpplysninger(JsonOkonomiopplysninger())
-                            )
-                    )
+                                    .withOpplysninger(JsonOkonomiopplysninger()),
+                            ),
+                    ),
             )
     }
 
@@ -222,8 +222,8 @@ internal class FiksSenderTest {
                 data = byteArrayOf(1, 2, 3),
                 soknadId = 123L,
                 filnavn = FILNAVN,
-                sha512 = "sha512"
-            )
+                sha512 = "sha512",
+            ),
         )
     }
 
@@ -238,7 +238,7 @@ internal class FiksSenderTest {
             navEnhet = NAVENHETSNAVN,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
-            innsendtDato = null
+            innsendtDato = null,
         )
     }
 
@@ -265,7 +265,7 @@ internal class FiksSenderTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

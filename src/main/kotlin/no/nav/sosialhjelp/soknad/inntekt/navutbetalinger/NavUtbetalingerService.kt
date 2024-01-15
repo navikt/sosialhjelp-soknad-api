@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 @Component
 class NavUtbetalingerService(
-    private val navUtbetalingerClient: NavUtbetalingerClient
+    private val navUtbetalingerClient: NavUtbetalingerClient,
 ) {
 
     fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
@@ -36,7 +36,7 @@ class NavUtbetalingerService(
         }
         return utbetalinger.joinToString(
             prefix = "Antall komponenter: ",
-            separator = ", "
+            separator = ", ",
         ) { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
     }
 
@@ -69,7 +69,7 @@ class NavUtbetalingerService(
                                 periodeTom = it.ytelsesperiode.tom,
                                 komponenter = mapToKomponenter(it.ytelseskomponentListe),
                                 tittel = it.ytelsestype ?: "",
-                                orgnummer = ORGNR_NAV
+                                orgnummer = ORGNR_NAV,
                             )
                         }
                 }
@@ -107,7 +107,7 @@ class NavUtbetalingerService(
                         belop = it.ytelseskomponentbeloep?.toDouble(),
                         satsType = it.satstype,
                         satsBelop = it.satsbeloep?.toDouble(),
-                        satsAntall = it.satsantall
+                        satsAntall = it.satsantall,
                     )
                 }
         }

@@ -42,7 +42,7 @@ class OkonomiskeOpplysningerRessursTest {
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
         opplastetVedleggRepository = opplastetVedleggRepository,
         mellomlagringService = mellomlagringService,
-        soknadUnderArbeidService = soknadUnderArbeidService
+        soknadUnderArbeidService = soknadUnderArbeidService,
     )
 
     private val behandlingsId = "123"
@@ -54,7 +54,7 @@ class OkonomiskeOpplysningerRessursTest {
         jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
         status = SoknadUnderArbeidStatus.UNDER_ARBEID,
         opprettetDato = LocalDateTime.now(),
-        sistEndretDato = LocalDateTime.now()
+        sistEndretDato = LocalDateTime.now(),
     )
 
     @BeforeEach
@@ -83,12 +83,12 @@ class OkonomiskeOpplysningerRessursTest {
                                         mutableListOf(
                                             JsonFiler()
                                                 .withFilnavn("hubbabubba.jpg")
-                                                .withSha512("sha512")
-                                        )
-                                    )
-                            )
-                        )
-                )
+                                                .withSha512("sha512"),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
@@ -96,7 +96,7 @@ class OkonomiskeOpplysningerRessursTest {
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
+            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
         )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -139,12 +139,12 @@ class OkonomiskeOpplysningerRessursTest {
                                                 .withSha512("sha512"),
                                             JsonFiler()
                                                 .withFilnavn("juicyfruit.pdf")
-                                                .withSha512("shasha512512")
-                                        )
-                                    )
-                            )
-                        )
-                )
+                                                .withSha512("shasha512512"),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
@@ -153,7 +153,7 @@ class OkonomiskeOpplysningerRessursTest {
 
         // kun 1 mellomlagret fil - 1 færre enn soknad.json over viser
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
+            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
         )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -178,12 +178,12 @@ class OkonomiskeOpplysningerRessursTest {
                                         mutableListOf(
                                             JsonFiler()
                                                 .withFilnavn("hubbabubba.jpg")
-                                                .withSha512("sha512")
-                                        )
-                                    )
-                            )
-                        )
-                )
+                                                .withSha512("sha512"),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
         )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
@@ -191,7 +191,7 @@ class OkonomiskeOpplysningerRessursTest {
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123")
+            MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123"),
         )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs

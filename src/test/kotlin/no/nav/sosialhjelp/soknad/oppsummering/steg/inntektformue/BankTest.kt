@@ -37,8 +37,8 @@ internal class BankTest {
             .withFormue(
                 listOf(
                     createFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO),
-                    createFormue(SoknadJsonTyper.FORMUE_ANNET)
-                )
+                    createFormue(SoknadJsonTyper.FORMUE_ANNET),
+                ),
             )
         okonomi.opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet().withSparing("sparing")
 
@@ -65,9 +65,9 @@ internal class BankTest {
                         listOf(
                             JsonOkonomibekreftelse()
                                 .withType(SoknadJsonTyper.BEKREFTELSE_SPARING)
-                                .withVerdi(harBekreftelse)
-                        )
-                    )
+                                .withVerdi(harBekreftelse),
+                        ),
+                    ),
             )
     }
 

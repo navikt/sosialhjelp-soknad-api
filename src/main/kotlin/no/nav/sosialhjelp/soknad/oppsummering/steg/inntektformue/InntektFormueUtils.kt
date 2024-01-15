@@ -32,8 +32,8 @@ object InntektFormueUtils {
                 felter.add(
                     Felt(
                         type = Type.CHECKBOX,
-                        svar = createSvar(key, SvarType.LOCALE_TEKST)
-                    )
+                        svar = createSvar(key, SvarType.LOCALE_TEKST),
+                    ),
                 )
             }
     }

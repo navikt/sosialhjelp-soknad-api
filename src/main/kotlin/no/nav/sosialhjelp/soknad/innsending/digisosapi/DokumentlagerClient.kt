@@ -33,7 +33,7 @@ class DokumentlagerClient(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     private var cachedPublicKey: X509Certificate? = null
@@ -44,8 +44,8 @@ class DokumentlagerClient(
             ReactorClientHttpConnector(
                 proxiedHttpClient
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+            ),
         )
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)

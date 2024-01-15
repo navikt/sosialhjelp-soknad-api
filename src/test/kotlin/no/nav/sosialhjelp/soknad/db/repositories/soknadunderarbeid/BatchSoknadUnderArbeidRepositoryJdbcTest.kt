@@ -70,7 +70,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
-            sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5)
+            sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
         )
     }
 
@@ -81,7 +81,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
             data = byteArrayOf(1, 2, 3),
             soknadId = soknadId,
             filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
+            sha512 = "aaa",
         )
     }
 

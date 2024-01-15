@@ -23,7 +23,7 @@ class EttersendingRessurs(
     private val innsendtSoknadService: InnsendtSoknadService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping("/innsendte/{behandlingsId}")
     fun hentBehandlingskjede(@PathVariable("behandlingsId") behandlingsId: String): BehandlingsKjede {
@@ -42,7 +42,7 @@ class EttersendingRessurs(
         return VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg(
             innsendingstidspunkt,
             opplastedeVedlegg,
-            originaleVedlegg
+            originaleVedlegg,
         )
     }
 }

@@ -89,7 +89,7 @@ internal class UtbetalingRessursTest {
         } returns createJsonInternalSoknadWithUtbetalinger(
             true,
             listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            null
+            null,
         )
 
         val utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID)
@@ -123,7 +123,7 @@ internal class UtbetalingRessursTest {
         } returns createJsonInternalSoknadWithUtbetalinger(
             true,
             listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
+            "Lottogevinst",
         )
 
         val slot = slot<SoknadUnderArbeid>()
@@ -148,7 +148,7 @@ internal class UtbetalingRessursTest {
         } returns createJsonInternalSoknadWithUtbetalinger(
             true,
             listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
+            "Lottogevinst",
         )
 
         val slot = slot<SoknadUnderArbeid>()
@@ -182,7 +182,7 @@ internal class UtbetalingRessursTest {
             utbytte = false,
             salg = true,
             forsikring = true,
-            annet = false
+            annet = false,
         )
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
@@ -214,7 +214,7 @@ internal class UtbetalingRessursTest {
             utbytte = true,
             salg = true,
             forsikring = true,
-            annet = true
+            annet = true,
         )
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
@@ -276,7 +276,7 @@ internal class UtbetalingRessursTest {
     private fun createJsonInternalSoknadWithUtbetalinger(
         harUtbetalinger: Boolean,
         utbetalingTyper: List<String>,
-        beskrivelseAvAnnet: String?
+        beskrivelseAvAnnet: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
@@ -285,14 +285,14 @@ internal class UtbetalingRessursTest {
                 JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(utbetaling)
-                    .withTittel("tittel")
+                    .withTittel("tittel"),
             )
         }
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
             JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
-                .withVerdi(harUtbetalinger)
+                .withVerdi(harUtbetalinger),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
@@ -309,7 +309,7 @@ internal class UtbetalingRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

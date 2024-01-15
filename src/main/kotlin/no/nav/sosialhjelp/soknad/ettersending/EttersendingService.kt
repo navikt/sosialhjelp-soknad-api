@@ -29,7 +29,7 @@ import java.time.temporal.ChronoUnit.DAYS
 class EttersendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val clock: Clock
+    private val clock: Clock,
 ) {
     fun startEttersendelse(behandlingsIdDetEttersendesPaa: String?): String {
         val originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa)
@@ -68,7 +68,7 @@ class EttersendingService(
     private fun lagreSoknadILokalDb(
         originalSoknad: SoknadMetadata,
         nyBehandlingsId: String,
-        manglendeJsonVedlegg: List<JsonVedlegg>
+        manglendeJsonVedlegg: List<JsonVedlegg>,
     ) {
         val ettersendingSoknad = SoknadUnderArbeid(
             versjon = 1L,
@@ -78,16 +78,16 @@ class EttersendingService(
             jsonInternalSoknad = JsonInternalSoknad()
                 .withVedlegg(
                     JsonVedleggSpesifikasjon()
-                        .withVedlegg(manglendeJsonVedlegg)
+                        .withVedlegg(manglendeJsonVedlegg),
                 )
                 .withMottaker(
                     JsonSoknadsmottaker()
                         .withOrganisasjonsnummer(originalSoknad.orgnr)
-                        .withNavEnhetsnavn(originalSoknad.navEnhet)
+                        .withNavEnhetsnavn(originalSoknad.navEnhet),
                 ),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr)
@@ -124,7 +124,7 @@ class EttersendingService(
     private fun throwDetailedExceptionForEttersendelserEtterFrist(soknad: SoknadMetadata) {
         val dagerEtterFrist = DAYS.between(
             soknad.innsendtDato,
-            LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
+            LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()),
         )
         val frist = soknad.innsendtDato?.plusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
         val dateTimeFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy HH:mm:ss")
@@ -161,7 +161,7 @@ class EttersendingService(
             val annetVedlegg = VedleggMetadata(
                 skjema = "annet",
                 tillegg = "annet",
-                hendelseType = JsonVedlegg.HendelseType.BRUKER
+                hendelseType = JsonVedlegg.HendelseType.BRUKER,
             )
             manglendeVedlegg.add(annetVedlegg)
         }

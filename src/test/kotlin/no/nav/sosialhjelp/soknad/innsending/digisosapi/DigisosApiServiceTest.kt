@@ -42,7 +42,7 @@ internal class DigisosApiServiceTest {
         soknadMetadataRepository,
         dokumentListeService,
         prometheusMetricsService,
-        Clock.systemDefaultZone()
+        Clock.systemDefaultZone(),
     )
 
     private val eier = "12345678910"
@@ -95,7 +95,7 @@ internal class DigisosApiServiceTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         val soknadMetadata = SoknadMetadata(
@@ -103,7 +103,7 @@ internal class DigisosApiServiceTest {
             behandlingsId = "behandlingsid",
             fnr = "12345678910",
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()

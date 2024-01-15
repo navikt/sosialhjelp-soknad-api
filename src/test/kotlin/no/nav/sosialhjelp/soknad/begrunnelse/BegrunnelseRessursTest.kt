@@ -115,7 +115,7 @@ internal class BegrunnelseRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)

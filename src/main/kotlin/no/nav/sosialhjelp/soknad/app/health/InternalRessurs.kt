@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @Unprotected
 @RequestMapping("/internal")
 class InternalRessurs(
-    private val selftestService: SelftestService
+    private val selftestService: SelftestService,
 ) {
 
     @GetMapping("/isAlive", produces = [MediaType.TEXT_PLAIN_VALUE])

@@ -287,9 +287,9 @@ internal class PersonopplysningerStegTest {
                                     .withStatsborgerskap(JsonStatsborgerskap().withVerdi("NOR"))
                                     .withKontonummer(kontonummer)
                                     .withTelefonnummer(telefonnummer)
-                                    .withOppholdsadresse(oppholdsadresse)
-                            )
-                    )
+                                    .withOppholdsadresse(oppholdsadresse),
+                            ),
+                    ),
             )
     }
 }

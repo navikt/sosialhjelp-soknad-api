@@ -30,11 +30,11 @@ internal class HentAdresseServiceTest {
             gaardsnummer = "000123",
             bruksnummer = "H0101",
             festenummer = "F4",
-            seksjonsnummer = "seksjonsnummer"
+            seksjonsnummer = "seksjonsnummer",
         ),
         bydel = Bydel(
-            bydelsnummer = "030107"
-        )
+            bydelsnummer = "030107",
+        ),
     )
 
     @BeforeEach

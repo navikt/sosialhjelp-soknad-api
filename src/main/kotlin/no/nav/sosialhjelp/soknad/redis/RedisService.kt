@@ -16,7 +16,7 @@ interface RedisService {
 }
 
 class RedisServiceImpl(
-    private val redisStore: RedisStore
+    private val redisStore: RedisStore,
 ) : RedisService {
 
     override fun get(key: String, requestedClass: Class<*>): Any? {

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 @Component
 class FinnAdresseService(
     private val adressesokService: AdressesokService,
-    private val hentAdresseService: HentAdresseService
+    private val hentAdresseService: HentAdresseService,
 ) {
 
     fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: JsonAdresseValg?): AdresseForslag? {
@@ -36,7 +36,7 @@ class FinnAdresseService(
                     AdresseForslag(
                         kommunenummer = it.kommunenummer,
                         geografiskTilknytning = it.bydelsnummer ?: it.kommunenummer,
-                        type = AdresseForslagType.MATRIKKELADRESSE
+                        type = AdresseForslagType.MATRIKKELADRESSE,
                     )
                 }
         } else if (JsonAdresse.Type.GATEADRESSE == adresse?.type) {

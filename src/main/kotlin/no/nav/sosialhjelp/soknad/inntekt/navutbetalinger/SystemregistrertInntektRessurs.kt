@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/inntekt/systemdata", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SystemregistrertInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping
     fun hentSystemregistrerteInntekter(@PathVariable("behandlingsId") behandlingsId: String): SysteminntekterFrontend {
@@ -32,7 +32,7 @@ class SystemregistrertInntektRessurs(
             systeminntekter = utbetalinger
                 ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
                 ?.map { mapToUtbetalingFrontend(it) },
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
+            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
         )
     }
 
@@ -40,7 +40,7 @@ class SystemregistrertInntektRessurs(
         return SysteminntektFrontend(
             inntektType = utbetaling.tittel,
             utbetalingsdato = utbetaling.utbetalingsdato,
-            belop = utbetaling.netto
+            belop = utbetaling.netto,
         )
     }
 
@@ -52,6 +52,6 @@ class SystemregistrertInntektRessurs(
     data class SysteminntektFrontend(
         val inntektType: String? = null,
         val utbetalingsdato: String? = null,
-        val belop: Double? = null
+        val belop: Double? = null,
     )
 }

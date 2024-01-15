@@ -31,10 +31,10 @@ object StegUtils {
                     Felt(
                         label = key,
                         svar = createSvar(it.toString(), SvarType.TEKST),
-                        type = Type.TEKST
-                    )
+                        type = Type.TEKST,
+                    ),
                 )
-            }
+            },
         )
     }
 
@@ -42,8 +42,8 @@ object StegUtils {
         return listOf(
             Felt(
                 type = Type.CHECKBOX,
-                svar = createSvar(if (harSvartJa) keyTrue else keyFalse, SvarType.LOCALE_TEKST)
-            )
+                svar = createSvar(if (harSvartJa) keyTrue else keyFalse, SvarType.LOCALE_TEKST),
+            ),
         )
     }
 

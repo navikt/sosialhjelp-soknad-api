@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 @Profile("!no-interceptor")
 class WebConfig(
-    private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor
+    private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
 ) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {

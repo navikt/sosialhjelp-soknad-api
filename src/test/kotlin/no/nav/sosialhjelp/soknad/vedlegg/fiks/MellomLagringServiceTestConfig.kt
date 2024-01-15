@@ -44,7 +44,7 @@ class MellomLagringServiceTestConfig {
     @Bean
     fun soknadUnderArbeidService(
         soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-        kommuneInfoService: KommuneInfoService
+        kommuneInfoService: KommuneInfoService,
     ): SoknadUnderArbeidService {
         return SoknadUnderArbeidService(soknadUnderArbeidRepository, kommuneInfoService)
     }
@@ -53,7 +53,7 @@ class MellomLagringServiceTestConfig {
     fun mellomLagringService(
         mellomlagringClient: MellomlagringClient,
         soknadUnderArbeidService: SoknadUnderArbeidService,
-        virusScanner: VirusScanner
+        virusScanner: VirusScanner,
     ): MellomlagringService {
         return MellomlagringService(mellomlagringClient, soknadUnderArbeidService, virusScanner)
     }

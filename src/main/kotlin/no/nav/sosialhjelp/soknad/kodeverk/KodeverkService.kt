@@ -15,7 +15,7 @@ import java.util.Locale
 @Component
 class KodeverkService(
     private val kodeverkClient: KodeverkClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
 
     fun getKommunenavn(kommunenummer: String): String? {
@@ -89,7 +89,9 @@ class KodeverkService(
                 val dtos = it.value
                 if (dtos.isNotEmpty() && dtos[0].beskrivelser?.get(SPRAAKKODE_NB)?.term != null) {
                     term.equals(dtos[0].beskrivelser?.get(SPRAAKKODE_NB)?.term, ignoreCase = true)
-                } else false
+                } else {
+                    false
+                }
             }
             ?.key
     }
@@ -97,7 +99,9 @@ class KodeverkService(
     private fun finnFoersteTermForKodeverdi(kodeverk: KodeverkDto?, kodeverdi: String): String? {
         return if (kodeverk != null && kodeverk.betydninger?.containsKey(kodeverdi) == true) {
             kodeverk.betydninger[kodeverdi]?.get(0)?.beskrivelser?.get(SPRAAKKODE_NB)?.term
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun formaterLand(land: String?): String? {

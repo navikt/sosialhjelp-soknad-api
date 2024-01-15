@@ -46,7 +46,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
         soknad.soknad.data.okonomi.oversikt.inntekt = listOf(
             createInntekt(SoknadJsonTyper.JOBB, 42).withBrutto(142),
             createInntekt(SoknadJsonTyper.STUDIELAN, 111),
-            createInntekt(SoknadJsonTyper.BARNEBIDRAG, null)
+            createInntekt(SoknadJsonTyper.BARNEBIDRAG, null),
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
@@ -65,7 +65,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
         soknad.soknad.data.okonomi.oversikt.formue = listOf(
             createFormue(SoknadJsonTyper.FORMUE_VERDIPAPIRER, 42),
             createFormue(SoknadJsonTyper.FORMUE_BSU, 111),
-            createFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING, null)
+            createFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING, null),
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
@@ -84,7 +84,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
             createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
             createUtbetaling(SoknadJsonTyper.SLUTTOPPGJOER, 111),
             createUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING, null),
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET, null)
+            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET, null),
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
@@ -105,13 +105,13 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
         soknad.soknad.data.okonomi.opplysninger.utgift = listOf(
             createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, 42), // skal filtreres vekk
             createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_STROM, 111),
-            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER, null)
+            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER, null),
         )
         soknad.soknad.data.okonomi.oversikt.utgift = listOf(
             createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BARNEHAGE, 42), // skal filtreres vekk
             createOversiktUtgift(SoknadJsonTyper.UTGIFTER_HUSLEIE, 111),
             createOversiktUtgift(SoknadJsonTyper.BARNEBIDRAG, 111),
-            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, null)
+            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, null),
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
@@ -136,13 +136,13 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
         soknad.vedlegg.vedlegg = mutableListOf(
             createVedlegg("faktura", "oppvarming", "VedleggAlleredeSendt", null),
             createVedlegg("kontooversikt", "sparekonto", "VedleggKreves", null),
-            createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn)))
+            createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn))),
         )
         val opplastedeVedlegg = listOf(
             OppsummeringVedleggInfo(
                 filnavn = filnavn,
-                id = "uuid-goes-here"
-            )
+                id = "uuid-goes-here",
+            ),
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, opplastedeVedlegg)
@@ -208,7 +208,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
         type: String,
         tilleggsinfo: String,
         status: String,
-        filer: List<JsonFiler>?
+        filer: List<JsonFiler>?,
     ): JsonVedlegg {
         return JsonVedlegg()
             .withType(type)
@@ -226,9 +226,9 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
                             .withOkonomi(
                                 JsonOkonomi()
                                     .withOversikt(JsonOkonomioversikt())
-                                    .withOpplysninger(JsonOkonomiopplysninger())
-                            )
-                    )
+                                    .withOpplysninger(JsonOkonomiopplysninger()),
+                            ),
+                    ),
             )
             .withVedlegg(JsonVedleggSpesifikasjon())
     }

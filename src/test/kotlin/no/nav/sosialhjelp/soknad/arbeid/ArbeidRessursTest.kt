@@ -128,7 +128,7 @@ internal class ArbeidRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         // skal ikke være mulig:
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
@@ -206,7 +206,7 @@ internal class ArbeidRessursTest {
 
     private fun assertThatArbeidsforholdIsCorrectlyConverted(
         forholdFrontend: ArbeidRessurs.ArbeidsforholdFrontend,
-        jsonForhold: JsonArbeidsforhold
+        jsonForhold: JsonArbeidsforhold,
     ) {
         assertThat(forholdFrontend.arbeidsgivernavn).isEqualTo(jsonForhold.arbeidsgivernavn)
         assertThat(forholdFrontend.fom).isEqualTo(jsonForhold.fom)
@@ -233,7 +233,7 @@ internal class ArbeidRessursTest {
 
     private fun createJsonInternalSoknadWithArbeid(
         arbeidsforholdList: List<JsonArbeidsforhold>?,
-        kommentar: String?
+        kommentar: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -243,7 +243,7 @@ internal class ArbeidRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         arbeidsforholdList?.let { soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = it }
         kommentar?.let {

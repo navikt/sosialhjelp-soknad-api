@@ -57,9 +57,9 @@ internal class AdresseSystemdataTest {
                     "poststed",
                     "tilleggsnavn",
                     "kommunenummer",
-                    "bruksenhetsnummer"
-                )
-            )
+                    "bruksenhetsnummer",
+                ),
+            ),
         )
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
         every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns null
@@ -92,9 +92,9 @@ internal class AdresseSystemdataTest {
                     "poststed",
                     "tilleggsnavn",
                     "kommunenummer",
-                    "bruksenhetsnummer"
-                )
-            )
+                    "bruksenhetsnummer",
+                ),
+            ),
         )
 
         val kartverketMatrikkelAdresse = KartverketMatrikkelAdresse(
@@ -104,7 +104,7 @@ internal class AdresseSystemdataTest {
             festenummer = "F4",
             seksjonsunmmer = null,
             undernummer = "under1",
-            bydelsnummer = "030107"
+            bydelsnummer = "030107",
         )
 
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
@@ -132,7 +132,7 @@ internal class AdresseSystemdataTest {
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
         val personWithOppholdsadresse = createPersonWithBostedsadresseOgOppholdsadresse(
             Bostedsadresse("", DEFAULT_VEGADRESSE, null),
-            Oppholdsadresse("", ANNEN_VEGADRESSE)
+            Oppholdsadresse("", ANNEN_VEGADRESSE),
         )
         every { personService.hentPerson(any()) } returns personWithOppholdsadresse
 
@@ -223,7 +223,7 @@ internal class AdresseSystemdataTest {
 
     private fun createPersonWithBostedsadresseOgOppholdsadresse(
         bostedsadresse: Bostedsadresse,
-        oppholdsadresse: Oppholdsadresse
+        oppholdsadresse: Oppholdsadresse,
     ): Person {
         return Person(
             fornavn = "fornavn",
@@ -249,7 +249,7 @@ internal class AdresseSystemdataTest {
             poststed = "poststed",
             kommunenummer = "0301",
             bruksenhetsnummer = "H0101",
-            bydelsnummer = "123456"
+            bydelsnummer = "123456",
         )
         private val ANNEN_VEGADRESSE = Vegadresse(
             adressenavn = "en annen sti",
@@ -260,7 +260,7 @@ internal class AdresseSystemdataTest {
             poststed = "oslo",
             kommunenummer = "0302",
             bruksenhetsnummer = null,
-            bydelsnummer = null
+            bydelsnummer = null,
         )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -272,7 +272,7 @@ internal class AdresseSystemdataTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

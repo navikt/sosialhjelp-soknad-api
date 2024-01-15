@@ -13,14 +13,14 @@ class OpplastetVedleggMigrationRepository(
         return jdbcTemplate.query(
             "select * from opplastet_vedlegg where soknad_under_arbeid_id = ?",
             opplastetVedleggRowMapper,
-            soknadUnderArbeidId
+            soknadUnderArbeidId,
         )
     }
 
     fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from opplastet_vedlegg",
-            Int::class.java
+            Int::class.java,
         ) ?: 0
     }
 }

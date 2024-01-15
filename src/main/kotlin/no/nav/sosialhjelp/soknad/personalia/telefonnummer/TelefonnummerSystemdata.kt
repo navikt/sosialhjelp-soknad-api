@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class TelefonnummerSystemdata(
-    private val mobiltelefonService: MobiltelefonService
+    private val mobiltelefonService: MobiltelefonService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {

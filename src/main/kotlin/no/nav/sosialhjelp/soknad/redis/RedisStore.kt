@@ -9,7 +9,7 @@ import io.lettuce.core.codec.StringCodec
 import org.slf4j.LoggerFactory
 
 class RedisStore(
-    redisClient: RedisClient
+    redisClient: RedisClient,
 ) {
     private val commands: RedisCommands<String, ByteArray>
 

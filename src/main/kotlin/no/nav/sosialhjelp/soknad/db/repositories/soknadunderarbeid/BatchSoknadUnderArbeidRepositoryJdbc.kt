@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 class BatchSoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
+    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository,
 ) : BatchSoknadUnderArbeidRepository {
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
@@ -28,7 +28,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull()
     }
 
@@ -36,7 +36,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?",
             soknadUnderArbeidRowMapper,
-            soknadUnderArbeidId
+            soknadUnderArbeidId,
         ).firstOrNull()
     }
 
@@ -46,7 +46,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
             "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < ? and STATUS = ?",
             { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
             SQLUtils.tidTilTimestamp(datoMinusFjortenDager),
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
+            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         )
     }
 
@@ -59,7 +59,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
                 batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?",
-                    soknadUnderArbeidId
+                    soknadUnderArbeidId,
                 )
             }
         })
@@ -69,7 +69,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
             soknadUnderArbeidRowMapper,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
+            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         )
     }
 }

@@ -49,7 +49,7 @@ class HentPersonClientImpl(
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
 
     override fun hentPerson(ident: String): PersonDto? {
@@ -146,7 +146,7 @@ class HentPersonClientImpl(
     private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? {
         return redisService.get(
             ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
-            PersonAdressebeskyttelseDto::class.java
+            PersonAdressebeskyttelseDto::class.java,
         ) as? PersonAdressebeskyttelseDto
     }
 

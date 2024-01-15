@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
-    private val clock: Clock = Clock.systemDefaultZone()
+    private val clock: Clock = Clock.systemDefaultZone(),
 ) {
     // Om denne er false, er hele SoknadLockDelayInterceptor inaktiv.
     var enabled: Boolean = true

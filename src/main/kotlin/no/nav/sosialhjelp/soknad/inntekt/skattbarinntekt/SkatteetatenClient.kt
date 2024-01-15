@@ -30,7 +30,7 @@ class SkatteetatenClient(
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     private val skatteetatenMapper = jacksonObjectMapper()
@@ -51,7 +51,7 @@ class SkatteetatenClient(
         val sokedata = Sokedata(
             identifikator = identifikator,
             fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
-            tom = LocalDate.now()
+            tom = LocalDate.now(),
         )
 
         return try {

@@ -119,10 +119,10 @@ internal class ArbeidsforholdSystemdataTest {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         jsonInternalSoknad.soknad.data.arbeid.forhold.add(JsonArbeidsforhold())
         jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling.add(
-            JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.SLUTTOPPGJOER)
+            JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.SLUTTOPPGJOER),
         )
         jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt.add(
-            JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.JOBB)
+            JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.JOBB),
         )
         return jsonInternalSoknad
     }
@@ -138,13 +138,13 @@ internal class ArbeidsforholdSystemdataTest {
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
                     .withVerdi(harSamtykke)
-                    .withTittel("beskrivelse")
+                    .withTittel("beskrivelse"),
             )
     }
 
     private fun assertThatArbeidsforholdIsCorrectlyConverted(
         arbeidsforhold: Arbeidsforhold,
-        jsonArbeidsforhold: JsonArbeidsforhold
+        jsonArbeidsforhold: JsonArbeidsforhold,
     ) {
         assertThat(jsonArbeidsforhold.arbeidsgivernavn).isEqualTo(arbeidsforhold.arbeidsgivernavn)
         assertThat(jsonArbeidsforhold.fom).isEqualTo(arbeidsforhold.fom)
@@ -167,7 +167,7 @@ internal class ArbeidsforholdSystemdataTest {
             fom = "1337-01-01",
             tom = tom_lonnslipp,
             fastStillingsprosent = 50L,
-            harFastStilling = true
+            harFastStilling = true,
         )
         private val ARBEIDSFORHOLD_SLUTTOPPGJOR = Arbeidsforhold(
             orgnr = null,
@@ -175,7 +175,7 @@ internal class ArbeidsforholdSystemdataTest {
             fom = "1337-02-02",
             tom = tom_sluttoppgjor,
             fastStillingsprosent = 30L,
-            harFastStilling = false
+            harFastStilling = false,
         )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -187,7 +187,7 @@ internal class ArbeidsforholdSystemdataTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

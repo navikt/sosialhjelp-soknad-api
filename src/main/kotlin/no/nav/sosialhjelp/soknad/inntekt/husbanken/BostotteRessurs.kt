@@ -33,7 +33,7 @@ class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentBostotte(@PathVariable("behandlingsId") behandlingsId: String): BostotteFrontend {
@@ -49,7 +49,7 @@ class BostotteRessurs(
             utbetalinger = mapToUtbetalinger(soknad),
             saker = mapToUtSaksStatuser(soknad),
             stotteFraHusbankenFeilet = soknad.soknad.driftsinformasjon.stotteFraHusbankenFeilet,
-            samtykkeTidspunkt = bekreftelse?.run { hentSamtykkeDatoFraSoknad(opplysninger) }
+            samtykkeTidspunkt = bekreftelse?.run { hentSamtykkeDatoFraSoknad(opplysninger) },
         )
     }
 
@@ -57,7 +57,7 @@ class BostotteRessurs(
     fun updateBostotte(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody bostotteFrontend: BostotteFrontend,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -69,7 +69,7 @@ class BostotteRessurs(
             opplysninger,
             BOSTOTTE,
             bostotteFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.bostotte")
+            textService.getJsonOkonomiTittel("inntekt.bostotte"),
         )
 
         bostotteFrontend.bekreftelse?.let {
@@ -78,12 +78,12 @@ class BostotteRessurs(
                 OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
                     opplysninger.utbetaling,
                     UTBETALING_HUSBANKEN,
-                    tittel
+                    tittel,
                 )
             } else {
                 OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
                     opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN
+                    UTBETALING_HUSBANKEN,
                 )
             }
         }
@@ -94,7 +94,7 @@ class BostotteRessurs(
     fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykke: Boolean,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -111,7 +111,7 @@ class BostotteRessurs(
                 opplysninger,
                 BOSTOTTE_SAMTYKKE,
                 samtykke,
-                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke")
+                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
             )
         }
         if (skalLagre) {
@@ -155,6 +155,6 @@ class BostotteRessurs(
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>?,
         val saker: List<JsonBostotteSak>?,
         val stotteFraHusbankenFeilet: Boolean?,
-        val samtykkeTidspunkt: String?
+        val samtykkeTidspunkt: String?,
     )
 }

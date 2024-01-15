@@ -15,7 +15,7 @@ object VedleggskravStatistikkUtil {
 
     fun genererOgLoggVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
-        vedleggList: List<VedleggMetadata>
+        vedleggList: List<VedleggMetadata>,
     ) {
         val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeid, vedleggList)
         log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
@@ -23,7 +23,7 @@ object VedleggskravStatistikkUtil {
 
     fun genererVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
-        vedleggList: List<VedleggMetadata>
+        vedleggList: List<VedleggMetadata>,
     ): VedleggskravStatistikk {
         val isEttersendelse = soknadUnderArbeid.erEttersendelse
 
@@ -51,7 +51,7 @@ object VedleggskravStatistikkUtil {
             antallIkkeLevert = antallIkkeLevert,
             prosentInnsendt = getProsent(antallInnsendt, totaltAntall),
             prosentLevertTidligere = getProsent(antallLevertTidligere, totaltAntall),
-            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall)
+            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall),
         )
     }
 
@@ -63,6 +63,6 @@ object VedleggskravStatistikkUtil {
         val antallIkkeLevert: Int,
         val prosentInnsendt: Int,
         val prosentLevertTidligere: Int,
-        val prosentIkkeLevert: Int
+        val prosentIkkeLevert: Int,
     )
 }

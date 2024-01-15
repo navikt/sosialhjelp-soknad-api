@@ -42,7 +42,7 @@ internal class PersonServiceTest {
         statsborgerskap = emptyList(),
         ektefelle = null,
         bostedsadresse = null,
-        oppholdsadresse = null
+        oppholdsadresse = null,
     )
     private val ektefelle = Ektefelle(
         fornavn = "fornavn",
@@ -51,7 +51,7 @@ internal class PersonServiceTest {
         fodselsdato = LocalDate.now(),
         fnr = "fnr2",
         folkeregistrertSammen = true,
-        ikkeTilgangTilEktefelle = false
+        ikkeTilgangTilEktefelle = false,
     )
     private val barn = Barn(
         fornavn = "fornavn",
@@ -59,7 +59,7 @@ internal class PersonServiceTest {
         etternavn = "etternavn",
         fnr = "barnident",
         fodselsdato = null,
-        folkeregistrertSammen = true
+        folkeregistrertSammen = true,
     )
 
     private val hentPersonClient: HentPersonClient = mockk()
@@ -74,8 +74,8 @@ internal class PersonServiceTest {
     private val defaultMetadataDto = MetadataDto(
         master = "PDL",
         endringer = listOf(
-            EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type")
-        )
+            EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type"),
+        ),
     )
 
     @BeforeEach
@@ -92,8 +92,8 @@ internal class PersonServiceTest {
                 type = SivilstandType.GIFT,
                 relatertVedSivilstand = EKTEFELLE_IDENT,
                 metadata = defaultMetadataDto,
-                folkeregistermetadata = null
-            )
+                folkeregistermetadata = null,
+            ),
         )
         every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
         every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
@@ -111,8 +111,8 @@ internal class PersonServiceTest {
                 type = SivilstandType.GIFT,
                 relatertVedSivilstand = null,
                 metadata = defaultMetadataDto,
-                folkeregistermetadata = null
-            )
+                folkeregistermetadata = null,
+            ),
         )
 
         val result = personService.hentPerson("ident")
@@ -131,8 +131,8 @@ internal class PersonServiceTest {
                 type = SivilstandType.GIFT,
                 relatertVedSivilstand = FDAT_IDENT,
                 metadata = defaultMetadataDto,
-                folkeregistermetadata = null
-            )
+                folkeregistermetadata = null,
+            ),
         )
 
         val result = personService.hentPerson("ident")

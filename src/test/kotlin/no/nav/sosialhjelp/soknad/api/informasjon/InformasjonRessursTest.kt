@@ -32,7 +32,7 @@ internal class InformasjonRessursTest {
             statsborgerskap = null,
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null
+            oppholdsadresse = null,
         )
     }
 

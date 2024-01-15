@@ -6,5 +6,5 @@ data class Arbeidsforhold(
     val fom: String?,
     val tom: String?,
     val fastStillingsprosent: Long? = 0L,
-    val harFastStilling: Boolean?
+    val harFastStilling: Boolean?,
 )

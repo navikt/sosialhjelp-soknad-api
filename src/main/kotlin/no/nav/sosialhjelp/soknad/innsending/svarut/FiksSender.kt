@@ -29,7 +29,7 @@ class FiksSender(
     private val innsendingService: InnsendingService,
     sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
-    private val svarUtService: SvarUtService
+    private val svarUtService: SvarUtService,
 ) {
     private val fakeUtskriftsConfig = UtskriftsKonfigurasjon()
         .withUtskriftMedFarger(true)
@@ -55,7 +55,7 @@ class FiksSender(
             .withMottaker(
                 Adresse()
                     .withDigitalAdresse(Digitaladresse().withOrganisasjonsNummer(soknadMetadata.orgnr))
-                    .withPostAdresse(fakeAdresse)
+                    .withPostAdresse(fakeAdresse),
             )
             .withAvgivendeSystem("digisos_avsender")
             .withForsendelsesType("nav.digisos")
@@ -69,7 +69,7 @@ class FiksSender(
             .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, map))
             .withMetadataFraAvleverendeSystem(
                 NoarkMetadataFraAvleverendeSaksSystem()
-                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate()))
+                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate())),
             )
     }
 
@@ -83,17 +83,19 @@ class FiksSender(
 
     private fun getSvarPaForsendelseId(
         soknadMetadata: SoknadMetadata,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ): ForsendelsesId? {
         return if (soknadMetadata.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
                 .withId(UUID.fromString(innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)))
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun validerAtEttersendelseSinSoknadHarForsendelseId(
         soknadMetadata: SoknadMetadata,
-        svarPaForsendelseId: ForsendelsesId?
+        svarPaForsendelseId: ForsendelsesId?,
     ) {
         check(!(soknadMetadata.erEttersendelse && svarPaForsendelseId?.id?.toString().isNullOrEmpty())) {
             "Ettersendelse med behandlingsId " + soknadMetadata.behandlingsId +
@@ -118,8 +120,8 @@ class FiksSender(
                 fiksDokumentHelper.lagDokumentForEttersendelsePdf(
                     internalSoknad,
                     soknadUnderArbeid.eier,
-                    map
-                )
+                    map,
+                ),
             )
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, map))
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(map))

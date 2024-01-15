@@ -102,7 +102,7 @@ internal class UtbetalingerFraNavSystemdataTest {
     private fun assertThatUtbetalingIsCorrectlyConverted(
         navUtbetaling: NavUtbetaling,
         jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        type: String
+        type: String,
     ) {
         assertThat(jsonUtbetaling.type).isEqualTo(type)
         assertThat(jsonUtbetaling.tittel).isEqualTo(navUtbetaling.tittel)
@@ -158,9 +158,9 @@ internal class UtbetalingerFraNavSystemdataTest {
         private val NAV_UTBETALING_1 = NavUtbetaling(
             "type", NETTO, BRUTTO, SKATT, TREKK, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM,
             listOf(
-                NAV_KOMPONENT
+                NAV_KOMPONENT,
             ),
-            TITTEL, "orgnr"
+            TITTEL, "orgnr",
         )
         private val NAV_UTBETALING_2 = NavUtbetaling(
             "type",
@@ -174,12 +174,12 @@ internal class UtbetalingerFraNavSystemdataTest {
             PERIODE_TOM,
             emptyList(),
             TITTEL_2,
-            ORGANISASJONSNR
+            ORGANISASJONSNR,
         )
         private val NAV_UTBETALING_3 = NavUtbetaling(
             "type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM,
             listOf(NAV_KOMPONENT),
-            TITTEL_2, PERSONNR
+            TITTEL_2, PERSONNR,
         )
 
         private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
@@ -191,7 +191,7 @@ internal class UtbetalingerFraNavSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

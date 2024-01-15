@@ -23,7 +23,7 @@ class OppgaveHandtererImpl(
     private val oppgaveRepository: OppgaveRepository,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val leaderElection: LeaderElection
+    private val leaderElection: LeaderElection,
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
@@ -114,7 +114,7 @@ class OppgaveHandtererImpl(
             opprettet = LocalDateTime.now(),
             sistKjort = null,
             nesteForsok = LocalDateTime.now(),
-            retries = 0
+            retries = 0,
         )
         oppgave.oppgaveData?.avsenderFodselsnummer = eier
         oppgaveRepository.opprett(oppgave)

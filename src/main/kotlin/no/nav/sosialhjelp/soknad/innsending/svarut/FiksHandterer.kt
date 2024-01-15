@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 class FiksHandterer(
     private val fiksSender: FiksSender,
     private val innsendingService: InnsendingService,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     fun eksekver(oppgave: Oppgave) {
         val behandlingsId = oppgave.behandlingsId

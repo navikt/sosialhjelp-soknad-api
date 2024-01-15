@@ -22,7 +22,7 @@ class KrrService(
     private fun hentFraCache(ident: String): DigitalKontaktinformasjon? {
         return redisService.get(
             key = KRR_CACHE_KEY_PREFIX + ident,
-            requestedClass = DigitalKontaktinformasjon::class.java
+            requestedClass = DigitalKontaktinformasjon::class.java,
         ) as? DigitalKontaktinformasjon
     }
 
@@ -35,7 +35,7 @@ class KrrService(
             redisService.setex(
                 key = KRR_CACHE_KEY_PREFIX + ident,
                 value = redisObjectMapper.writeValueAsBytes(digitalKontaktinformasjon),
-                timeToLiveSeconds = CACHE_30_MINUTES_IN_SECONDS
+                timeToLiveSeconds = CACHE_30_MINUTES_IN_SECONDS,
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av krr-informasjon til redis", e)

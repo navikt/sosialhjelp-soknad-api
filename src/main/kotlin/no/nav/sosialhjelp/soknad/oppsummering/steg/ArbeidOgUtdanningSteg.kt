@@ -27,13 +27,13 @@ class ArbeidOgUtdanningSteg {
             avsnitt = listOf(
                 Avsnitt(
                     tittel = "arbeidsforhold.sporsmal",
-                    sporsmal = arbeidsforholdSporsmal(arbeid)
+                    sporsmal = arbeidsforholdSporsmal(arbeid),
                 ),
                 Avsnitt(
                     tittel = "arbeid.dinsituasjon.studerer.undertittel",
-                    sporsmal = utdanningSporsmal(utdanning)
-                )
-            )
+                    sporsmal = utdanningSporsmal(utdanning),
+                ),
+            ),
         )
     }
 
@@ -46,16 +46,16 @@ class ArbeidOgUtdanningSteg {
             Sporsmal(
                 tittel = if (harArbeidsforhold) "arbeidsforhold.infotekst" else "arbeidsforhold.ingen",
                 erUtfylt = true,
-                felt = if (harArbeidsforhold) arbeidsforholdFelter(arbeid.forhold) else null
-            )
+                felt = if (harArbeidsforhold) arbeidsforholdFelter(arbeid.forhold) else null,
+            ),
         )
         if (harKommentarTilArbeidsforhold) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "opplysninger.arbeidsituasjon.kommentarer.label",
                     erUtfylt = true,
-                    felt = kommentarFelter(arbeid.kommentarTilArbeidsforhold)
-                )
+                    felt = kommentarFelter(arbeid.kommentarTilArbeidsforhold),
+                ),
             )
         }
         return sporsmal
@@ -84,7 +84,7 @@ class ArbeidOgUtdanningSteg {
         }
         return Felt(
             type = Type.SYSTEMDATA_MAP,
-            labelSvarMap = labelSvarMap
+            labelSvarMap = labelSvarMap,
         )
     }
 
@@ -92,8 +92,8 @@ class ArbeidOgUtdanningSteg {
         return listOf(
             Felt(
                 type = Type.TEKST,
-                svar = createSvar(kommentar.verdi, SvarType.TEKST)
-            )
+                svar = createSvar(kommentar.verdi, SvarType.TEKST),
+            ),
         )
     }
 
@@ -106,24 +106,32 @@ class ArbeidOgUtdanningSteg {
             Sporsmal(
                 tittel = "dinsituasjon.studerer.sporsmal",
                 erUtfylt = erUtdanningUtfylt,
-                felt = if (erUtdanningUtfylt) booleanVerdiFelt(
-                    erStudent,
-                    "dinsituasjon.studerer.true",
-                    "dinsituasjon.studerer.false"
-                ) else null
-            )
+                felt = if (erUtdanningUtfylt) {
+                    booleanVerdiFelt(
+                        erStudent,
+                        "dinsituasjon.studerer.true",
+                        "dinsituasjon.studerer.false",
+                    )
+                } else {
+                    null
+                },
+            ),
         )
         if (erStudent) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "dinsituasjon.studerer.true.grad.sporsmal",
                     erUtfylt = erStudentgradUtfylt,
-                    felt = if (erStudentgradUtfylt) booleanVerdiFelt(
-                        Studentgrad.HELTID == utdanning.studentgrad,
-                        "dinsituasjon.studerer.true.grad.heltid",
-                        "dinsituasjon.studerer.true.grad.deltid"
-                    ) else null
-                )
+                    felt = if (erStudentgradUtfylt) {
+                        booleanVerdiFelt(
+                            Studentgrad.HELTID == utdanning.studentgrad,
+                            "dinsituasjon.studerer.true.grad.heltid",
+                            "dinsituasjon.studerer.true.grad.deltid",
+                        )
+                    } else {
+                        null
+                    },
+                ),
             )
         }
         return sporsmal

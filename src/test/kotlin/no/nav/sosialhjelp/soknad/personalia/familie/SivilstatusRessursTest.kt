@@ -76,7 +76,7 @@ internal class SivilstatusRessursTest {
                 null,
                 null,
                 null,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -97,7 +97,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 null,
                 null,
-                true
+                true,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -119,7 +119,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 false,
                 true,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -141,7 +141,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 true,
                 null,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -181,7 +181,7 @@ internal class SivilstatusRessursTest {
             EKTEFELLE_FRONTEND,
             null,
             null,
-            null
+            null,
         )
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
 
@@ -212,7 +212,7 @@ internal class SivilstatusRessursTest {
             EKTEFELLE_FRONTEND,
             null,
             null,
-            null
+            null,
         )
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -223,7 +223,7 @@ internal class SivilstatusRessursTest {
 
     private fun assertThatEktefelleIsCorrectlyConverted(
         ektefelle: EktefelleFrontend?,
-        jsonEktefelle: JsonEktefelle
+        jsonEktefelle: JsonEktefelle,
     ) {
         assertThat(ektefelle?.fodselsdato).isEqualTo(jsonEktefelle.fodselsdato)
         assertThat(ektefelle?.personnummer).isEqualTo(getPersonnummerFromFnr(jsonEktefelle.personIdentifikator))
@@ -251,7 +251,7 @@ internal class SivilstatusRessursTest {
         ektefelle: JsonEktefelle?,
         harDiskresjonskode: Boolean?,
         folkeregistrertMed: Boolean?,
-        borSammen: Boolean?
+        borSammen: Boolean?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
@@ -264,7 +264,7 @@ internal class SivilstatusRessursTest {
                         .withEktefelleHarDiskresjonskode(harDiskresjonskode)
                         .withFolkeregistrertMedEktefelle(folkeregistrertMed)
                         .withBorSammenMed(borSammen)
-                }
+                },
             )
         return soknadUnderArbeid
     }
@@ -277,14 +277,14 @@ internal class SivilstatusRessursTest {
                 JsonNavn()
                     .withFornavn("Alfred")
                     .withMellomnavn("Thaddeus Crane")
-                    .withEtternavn("Pennyworth")
+                    .withEtternavn("Pennyworth"),
             )
             .withFodselsdato("1940-01-01")
             .withPersonIdentifikator("11111111111")
         private val EKTEFELLE_FRONTEND = EktefelleFrontend(
             navn = NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"),
             fodselsdato = "1940-01-01",
-            personnummer = "12345"
+            personnummer = "12345",
         )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -296,7 +296,7 @@ internal class SivilstatusRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

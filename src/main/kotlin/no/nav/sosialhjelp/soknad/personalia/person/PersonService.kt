@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val helper: MapperHelper,
-    private val mapper: PdlDtoMapper
+    private val mapper: PdlDtoMapper,
 ) {
 
     fun hentPerson(ident: String): Person? {

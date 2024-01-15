@@ -39,11 +39,11 @@ import org.springframework.web.bind.annotation.RestController
 class BoutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentBoutgifter(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): BoutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -62,14 +62,14 @@ class BoutgiftRessurs(
             oppvarming = getUtgiftstype(okonomi.opplysninger, UTGIFTER_OPPVARMING),
             boliglan = getUtgiftstype(okonomi.oversikt, UTGIFTER_BOLIGLAN_AVDRAG),
             annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BO),
-            skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi)
+            skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi),
         )
     }
 
     @PutMapping
     fun updateBoutgifter(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody boutgifterFrontend: BoutgifterFrontend
+        @RequestBody boutgifterFrontend: BoutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -81,7 +81,7 @@ class BoutgiftRessurs(
             okonomi.opplysninger,
             BEKREFTELSE_BOUTGIFTER,
             boutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.boutgift")
+            textService.getJsonOkonomiTittel("utgifter.boutgift"),
         )
         setBoutgifter(okonomi, boutgifterFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
@@ -95,49 +95,49 @@ class BoutgiftRessurs(
             oversiktBoutgifter,
             UTGIFTER_HUSLEIE,
             tittel,
-            boutgifterFrontend.husleie
+            boutgifterFrontend.husleie,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_STROM])
         addutgiftIfCheckedElseDeleteInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_STROM,
             tittel,
-            boutgifterFrontend.strom
+            boutgifterFrontend.strom,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_KOMMUNAL_AVGIFT])
         addutgiftIfCheckedElseDeleteInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_KOMMUNAL_AVGIFT,
             tittel,
-            boutgifterFrontend.kommunalAvgift
+            boutgifterFrontend.kommunalAvgift,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_OPPVARMING])
         addutgiftIfCheckedElseDeleteInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_OPPVARMING,
             tittel,
-            boutgifterFrontend.oppvarming
+            boutgifterFrontend.oppvarming,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_AVDRAG])
         addutgiftIfCheckedElseDeleteInOversikt(
             oversiktBoutgifter,
             UTGIFTER_BOLIGLAN_AVDRAG,
             tittel,
-            boutgifterFrontend.boliglan
+            boutgifterFrontend.boliglan,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_RENTER])
         addutgiftIfCheckedElseDeleteInOversikt(
             oversiktBoutgifter,
             UTGIFTER_BOLIGLAN_RENTER,
             tittel,
-            boutgifterFrontend.boliglan
+            boutgifterFrontend.boliglan,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BO])
         addutgiftIfCheckedElseDeleteInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_ANNET_BO,
             tittel,
-            boutgifterFrontend.annet
+            boutgifterFrontend.annet,
         )
     }
 

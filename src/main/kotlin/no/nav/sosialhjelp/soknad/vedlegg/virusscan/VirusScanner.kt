@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
  */
 class VirusScanner(
     private val virusScannerWebClient: WebClient,
-    private val enabled: Boolean
+    private val enabled: Boolean,
 ) {
 
     fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
@@ -23,7 +23,7 @@ class VirusScanner(
             throw OpplastingException(
                 "Fant virus i fil for behandlingsId $behandlingsId",
                 null,
-                "vedlegg.opplasting.feil.muligVirus"
+                "vedlegg.opplasting.feil.muligVirus",
             )
         } else if (!enabled) {
             log.info("Virusscanning er ikke aktivert")

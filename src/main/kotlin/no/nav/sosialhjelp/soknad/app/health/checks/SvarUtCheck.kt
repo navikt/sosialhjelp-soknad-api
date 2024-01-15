@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class SvarUtCheck(
     @Value("\${svarut_url}") private var svarUtUrl: String,
-    private val svarUtClient: SvarUtClient
+    private val svarUtClient: SvarUtClient,
 ) : DependencyCheck {
 
     override val type = DependencyType.REST

@@ -13,7 +13,7 @@ class Studielan {
     fun getAvsnitt(opplysninger: JsonOkonomiopplysninger): Avsnitt {
         return Avsnitt(
             tittel = "inntekt.studielan.titel",
-            sporsmal = studielanSporsmal(opplysninger)
+            sporsmal = studielanSporsmal(opplysninger),
         )
     }
 
@@ -25,12 +25,16 @@ class Studielan {
             Sporsmal(
                 tittel = "inntekt.studielan.sporsmal",
                 erUtfylt = harUtfyltStudielanSporsmal,
-                felt = if (harUtfyltStudielanSporsmal) booleanVerdiFelt(
-                    harSvartJaStudielan,
-                    "inntekt.studielan.true",
-                    "inntekt.studielan.false"
-                ) else null
-            )
+                felt = if (harUtfyltStudielanSporsmal) {
+                    booleanVerdiFelt(
+                        harSvartJaStudielan,
+                        "inntekt.studielan.true",
+                        "inntekt.studielan.false",
+                    )
+                } else {
+                    null
+                },
+            ),
         )
     }
 }

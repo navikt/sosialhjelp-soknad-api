@@ -22,7 +22,7 @@ class HentAdresseClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentMatrikkelAdresse(matrikkelId: String): MatrikkeladresseDto? {

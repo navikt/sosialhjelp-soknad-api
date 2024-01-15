@@ -89,7 +89,7 @@ internal class BasisPersonaliaRessursTest {
 
     private fun assertThatPersonaliaIsCorrectlyConverted(
         personaliaFrontend: BasisPersonaliaFrontend,
-        jsonPersonalia: JsonPersonalia
+        jsonPersonalia: JsonPersonalia,
     ) {
         assertThat(personaliaFrontend.fodselsnummer).isEqualTo(jsonPersonalia.personIdentifikator.verdi)
         assertThat(personaliaFrontend.navn?.fornavn).isEqualTo(jsonPersonalia.navn.fornavn)
@@ -101,7 +101,7 @@ internal class BasisPersonaliaRessursTest {
     }
 
     private fun createJsonInternalSoknadWithBasisPersonalia(
-        withStatsborgerskap: Boolean
+        withStatsborgerskap: Boolean,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -111,7 +111,7 @@ internal class BasisPersonaliaRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
@@ -120,12 +120,14 @@ internal class BasisPersonaliaRessursTest {
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
                     .withFornavn(FORNAVN)
                     .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
+                    .withEtternavn(ETTERNAVN),
             )
             .withStatsborgerskap(
-                if (!withStatsborgerskap) null else JsonStatsborgerskap()
+                if (!withStatsborgerskap) {
+                    null
+                } else JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(NORSK_STATSBORGERSKAP)
+                    .withVerdi(NORSK_STATSBORGERSKAP),
             )
         return soknadUnderArbeid
     }
@@ -142,32 +144,32 @@ internal class BasisPersonaliaRessursTest {
             .withPersonIdentifikator(
                 JsonPersonIdentifikator()
                     .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                    .withVerdi(EIER)
+                    .withVerdi(EIER),
             )
             .withNavn(
                 JsonSokernavn()
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
                     .withFornavn(FORNAVN)
                     .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
+                    .withEtternavn(ETTERNAVN),
             )
             .withStatsborgerskap(
                 JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi("NOR")
+                    .withVerdi("NOR"),
             )
         private val JSON_PERSONALIA_UTEN_STAT = JsonPersonalia()
             .withPersonIdentifikator(
                 JsonPersonIdentifikator()
                     .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                    .withVerdi(EIER)
+                    .withVerdi(EIER),
             )
             .withNavn(
                 JsonSokernavn()
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
                     .withFornavn(FORNAVN)
                     .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
+                    .withEtternavn(ETTERNAVN),
             )
     }
 }

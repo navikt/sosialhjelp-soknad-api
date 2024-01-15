@@ -28,7 +28,7 @@ internal class AdressesokServiceTest {
         hits = emptyList(),
         pageNumber = 1,
         totalPages = 1,
-        totalHits = 0
+        totalHits = 0,
     )
 
     private val defaultVegadresse = VegadresseDto(
@@ -40,7 +40,7 @@ internal class AdressesokServiceTest {
         kommunenummer = "0301",
         postnummer = "0123",
         poststed = "Oslo",
-        bydelsnummer = null
+        bydelsnummer = null,
     )
 
     @Test
@@ -71,8 +71,8 @@ internal class AdressesokServiceTest {
         val adressesokResult = resultDto.copy(
             hits = listOf(
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
-                AdressesokHitDto(defaultVegadresse, 0.7f)
-            )
+                AdressesokHitDto(defaultVegadresse, 0.7f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
@@ -83,8 +83,8 @@ internal class AdressesokServiceTest {
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
         val adressesokResult = resultDto.copy(
             hits = listOf(
-                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
@@ -95,8 +95,8 @@ internal class AdressesokServiceTest {
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
         val adressesokResult = resultDto.copy(
             hits = listOf(
-                AdressesokHitDto(defaultVegadresse, 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse, 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
@@ -108,8 +108,8 @@ internal class AdressesokServiceTest {
         val adressesokResult = resultDto.copy(
             hits = listOf(
                 AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune1"), 0.5f),
-                AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune2"), 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune2"), 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
@@ -121,8 +121,8 @@ internal class AdressesokServiceTest {
         val adressesokResult = resultDto.copy(
             hits = listOf(
                 AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "1111"), 0.5f),
-                AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "2222"), 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "2222"), 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
@@ -134,8 +134,8 @@ internal class AdressesokServiceTest {
         val adressesokResult = resultDto.copy(
             hits = listOf(
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
-                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030102"), 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030102"), 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
@@ -147,8 +147,8 @@ internal class AdressesokServiceTest {
         val adressesokResult = resultDto.copy(
             hits = listOf(
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
-                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
-            )
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
+            ),
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
@@ -177,12 +177,12 @@ internal class AdressesokServiceTest {
             hits = listOf(
                 AdressesokHitDto(
                     vegadresse = defaultVegadresse,
-                    score = 1.0f
-                )
+                    score = 1.0f,
+                ),
             ),
             pageNumber = 1,
             totalPages = 1,
-            totalHits = 1
+            totalHits = 1,
         )
 
         val result = adressesokService.sokEtterAdresser("oslogaten 42, 1337 Leet")

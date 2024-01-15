@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
 @Component
 class NorgService(
     private val norgClient: NorgClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
 
     fun getEnhetForGt(gt: String?): NavEnhet? {

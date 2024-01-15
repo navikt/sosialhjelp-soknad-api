@@ -260,7 +260,7 @@ object KommuneTilNavEnhetMapper {
         "3436", // Nytt Nord-Fron
         "3438", // Nytt Sør-Fron
         "3439", // Nytt Ringebu
-        "1514" // Nytt Sande i Møre og Romsdal
+        "1514", // Nytt Sande i Møre og Romsdal
     )
     private val PROD_DIGISOS_KOMMUNER = listOf(
         "0301",
@@ -459,7 +459,7 @@ object KommuneTilNavEnhetMapper {
         "1121", // Time
         "4201", // Risør
         "4202", // Grimstad
-        "5426" // Gáivuotna/Kåfjord
+        "5426", // Gáivuotna/Kåfjord
     )
 
     /**

@@ -82,10 +82,10 @@ internal class OpplastetVedleggServiceTest {
                         JsonVedlegg()
                             .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
                             .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
@@ -114,10 +114,10 @@ internal class OpplastetVedleggServiceTest {
                             .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
                             .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
-                            .withStatus("LastetOpp")
-                    )
-                )
-            )
+                            .withStatus("LastetOpp"),
+                    ),
+                ),
+            ),
         )
         every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns OpplastetVedlegg(
             eier = "eier",
@@ -125,7 +125,7 @@ internal class OpplastetVedleggServiceTest {
             data = byteArrayOf(1, 2, 3),
             soknadId = 123L,
             filnavn = FILNAVN2,
-            sha512 = SHA512
+            sha512 = SHA512,
         )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -148,15 +148,15 @@ internal class OpplastetVedleggServiceTest {
                         JsonVedlegg()
                             .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
                             .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         every {
             opplastetVedleggRepository.hentSamletVedleggStorrelse(
                 any(),
-                any()
+                any(),
             )
         } returns MAKS_SAMLET_VEDLEGG_STORRELSE
 
@@ -193,7 +193,7 @@ internal class OpplastetVedleggServiceTest {
                         BEHANDLINGSID,
                         VEDLEGGSTYPE,
                         "ikkeBildeEllerPdf".toByteArray(),
-                        "filnavnUtenFiltype"
+                        "filnavnUtenFiltype",
                     )
             }
     }
@@ -217,7 +217,7 @@ internal class OpplastetVedleggServiceTest {
             BEHANDLINGSID,
             VEDLEGGSTYPE,
             imageFile,
-            "filnavnMed.punktum"
+            "filnavnMed.punktum",
         )
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavnMedpunktum").endsWith(".jpg")
     }
@@ -239,10 +239,10 @@ internal class OpplastetVedleggServiceTest {
             vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
             data = PDF_FILE.readBytes(),
             soknadId = 1L,
-            filnavn = PDF_FILE.name
+            filnavn = PDF_FILE.name,
         )
         every { opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, any()) } returns UUID.nameUUIDFromBytes(
-            PDF_FILE.readBytes()
+            PDF_FILE.readBytes(),
         ).toString()
 
         val initSoknadUnderArbeid = createSoknadUnderArbeid(
@@ -252,10 +252,10 @@ internal class OpplastetVedleggServiceTest {
                         JsonVedlegg()
                             .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
                             .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns initSoknadUnderArbeid
         val slot = slot<SoknadUnderArbeid>()
@@ -265,7 +265,7 @@ internal class OpplastetVedleggServiceTest {
             opplastetVedlegg.sha512,
             BEHANDLINGSID,
             "hei|på deg",
-            opplastetVedlegg.filnavn
+            opplastetVedlegg.filnavn,
         )
 
         val soknadUnderArbeid = slot.captured
@@ -283,10 +283,10 @@ internal class OpplastetVedleggServiceTest {
                         JsonVedlegg()
                             .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
                             .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
@@ -316,7 +316,7 @@ internal class OpplastetVedleggServiceTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

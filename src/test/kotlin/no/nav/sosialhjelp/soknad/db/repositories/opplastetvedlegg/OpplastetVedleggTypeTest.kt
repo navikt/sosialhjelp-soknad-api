@@ -16,7 +16,7 @@ internal class OpplastetVedleggTypeTest {
     fun vedleggTypeObjekterMedSammeTypeOgTilleggsinfoHarSammeHashVerdi() {
         val vedleggTypeList: MutableList<OpplastetVedleggType> = mutableListOf(
             OpplastetVedleggType(TYPE),
-            OpplastetVedleggType(TYPE)
+            OpplastetVedleggType(TYPE),
         )
         val vedleggTyper: MutableSet<OpplastetVedleggType> = HashSet()
         vedleggTypeList.removeIf { type: OpplastetVedleggType ->

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class BasisPersonaliaSystemdata(
-    private val personService: PersonService
+    private val personService: PersonService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -98,9 +98,11 @@ class BasisPersonaliaSystemdata(
         fun erNordiskBorger(statsborgerskap: String?): Boolean? {
             return if (statsborgerskap == null || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
                 null
-            } else when (statsborgerskap) {
-                NOR, SWE, FRO, ISL, DNK, FIN -> true
-                else -> false
+            } else {
+                when (statsborgerskap) {
+                    NOR, SWE, FRO, ISL, DNK, FIN -> true
+                    else -> false
+                }
             }
         }
     }

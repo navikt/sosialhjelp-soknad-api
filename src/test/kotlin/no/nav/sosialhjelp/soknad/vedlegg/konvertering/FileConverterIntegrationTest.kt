@@ -62,7 +62,7 @@ class FileConverterIntegrationTest {
         every { fileConverter.toPdf(any(), any()) } throws FileConverterException(
             httpStatus = HttpStatus.BAD_REQUEST,
             msg = "Unknown format",
-            trace = UUID.randomUUID().toString()
+            trace = UUID.randomUUID().toString(),
         )
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))
@@ -75,7 +75,7 @@ class FileConverterIntegrationTest {
     fun `Ikke stottet content-type`() {
         doPost(
             contentType = MediaType.APPLICATION_JSON,
-            BodyInserters.fromValue("{id: 44}")
+            BodyInserters.fromValue("{id: 44}"),
         )
             .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
             .expectHeader().contentType("application/problem+json;charset=UTF-8")
@@ -85,7 +85,7 @@ class FileConverterIntegrationTest {
 
     fun doPost(
         contentType: MediaType = MediaType.MULTIPART_FORM_DATA,
-        producer: BodyInserter<*, in ClientHttpRequest>
+        producer: BodyInserter<*, in ClientHttpRequest>,
     ): WebTestClient.ResponseSpec {
         return webClient.post()
             .uri(endpoint)
@@ -99,7 +99,7 @@ class FileConverterIntegrationTest {
             "file",
             ExampleFileRepository.EXCEL_FILE.name,
             MediaType.MULTIPART_FORM_DATA.toString(),
-            ExampleFileRepository.EXCEL_FILE.readBytes()
+            ExampleFileRepository.EXCEL_FILE.readBytes(),
         ).let {
             val builder = MultipartBodyBuilder()
             builder.part("file", it.resource)

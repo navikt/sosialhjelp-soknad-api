@@ -28,7 +28,7 @@ class KrypteringService {
     fun krypter(
         dokumentStream: InputStream,
         krypteringFutureList: MutableList<Future<Void>>,
-        fiksX509Certificate: X509Certificate
+        fiksX509Certificate: X509Certificate,
     ): InputStream {
         val pipedInputStream = PipedInputStream()
         try {
@@ -42,7 +42,7 @@ class KrypteringService {
                             pipedOutputStream,
                             dokumentStream,
                             fiksX509Certificate,
-                            Security.getProvider("BC")
+                            Security.getProvider("BC"),
                         )
                     }
                 } catch (e: Exception) {

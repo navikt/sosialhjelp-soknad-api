@@ -35,8 +35,8 @@ internal class BostotteHusbankenTest {
     fun harSoktEllerMottattBostotte_manglerSamtykke() {
         val opplysninger = createOpplysninger(
             listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+            ),
         )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
@@ -58,8 +58,8 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         val driftsinformasjon = JsonDriftsinformasjon().withStotteFraHusbankenFeilet(true)
 
@@ -82,12 +82,12 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         opplysninger.utbetaling = listOf(
             createUtbetaling(42.0, "2020-01-01"),
-            createUtbetaling(1000.0, "2020-02-02")
+            createUtbetaling(1000.0, "2020-02-02"),
         )
         opplysninger.bostotte = JsonBostotte()
             .withSaker(
@@ -96,8 +96,8 @@ internal class BostotteHusbankenTest {
                         .withDato("2020-01-01")
                         .withStatus("Vedtatt")
                         .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
-                        .withBeskrivelse("Ekstra info")
-                )
+                        .withBeskrivelse("Ekstra info"),
+                ),
             )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
@@ -148,8 +148,8 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         opplysninger.utbetaling = listOf(createUtbetaling(42.0, "2020-01-01"))
         opplysninger.bostotte = JsonBostotte()
@@ -190,12 +190,12 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         opplysninger.utbetaling = listOf(
             createUtbetaling(42.0, "2020-01-01")
-                .withMottaker(null)
+                .withMottaker(null),
         )
         opplysninger.bostotte = JsonBostotte()
 
@@ -225,8 +225,8 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         opplysninger.utbetaling = emptyList()
         opplysninger.bostotte = JsonBostotte()
@@ -236,8 +236,8 @@ internal class BostotteHusbankenTest {
                         .withDato("2020-01-01")
                         .withStatus("Vedtatt")
                         .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
-                        .withBeskrivelse("Ekstra info")
-                )
+                        .withBeskrivelse("Ekstra info"),
+                ),
             )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
@@ -276,8 +276,8 @@ internal class BostotteHusbankenTest {
         val opplysninger = createOpplysninger(
             listOf(
                 createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
+                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+            ),
         )
         opplysninger.utbetaling = emptyList()
         opplysninger.bostotte = JsonBostotte()

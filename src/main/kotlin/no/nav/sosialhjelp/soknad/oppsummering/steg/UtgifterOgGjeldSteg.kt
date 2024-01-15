@@ -43,9 +43,9 @@ class UtgifterOgGjeldSteg {
             avsnitt = listOf(
                 Avsnitt(
                     tittel = "utgifter.tittel",
-                    sporsmal = alleSporsmal
-                )
-            )
+                    sporsmal = alleSporsmal,
+                ),
+            ),
         )
     }
 
@@ -58,12 +58,16 @@ class UtgifterOgGjeldSteg {
             Sporsmal(
                 tittel = "utgifter.boutgift.sporsmal",
                 erUtfylt = erBoutgifterUtfylt,
-                felt = if (erBoutgifterUtfylt) StegUtils.booleanVerdiFelt(
-                    harBoutgifter,
-                    "utgifter.boutgift.true",
-                    "utgifter.boutgift.false"
-                ) else null
-            )
+                felt = if (erBoutgifterUtfylt) {
+                    StegUtils.booleanVerdiFelt(
+                        harBoutgifter,
+                        "utgifter.boutgift.true",
+                        "utgifter.boutgift.false",
+                    )
+                } else {
+                    null
+                },
+            ),
         )
         if (erBoutgifterUtfylt && harBoutgifter) {
             val utgifter = okonomi.opplysninger.utgift
@@ -79,8 +83,8 @@ class UtgifterOgGjeldSteg {
                 Sporsmal(
                     tittel = "utgifter.boutgift.true.type.sporsmal",
                     erUtfylt = true,
-                    felt = felter
-                )
+                    felt = felter,
+                ),
             )
         }
         return sporsmalList
@@ -99,12 +103,16 @@ class UtgifterOgGjeldSteg {
             Sporsmal(
                 tittel = "utgifter.barn.sporsmal",
                 erUtfylt = erBarneutgifterUtfylt,
-                felt = if (erBarneutgifterUtfylt) StegUtils.booleanVerdiFelt(
-                    harBarneutgifter,
-                    "utgifter.barn.true",
-                    "utgifter.barn.false"
-                ) else null
-            )
+                felt = if (erBarneutgifterUtfylt) {
+                    StegUtils.booleanVerdiFelt(
+                        harBarneutgifter,
+                        "utgifter.barn.true",
+                        "utgifter.barn.false",
+                    )
+                } else {
+                    null
+                },
+            ),
         )
         if (erBarneutgifterUtfylt && harBarneutgifter) {
             val utgifter = okonomi.opplysninger.utgift
@@ -119,8 +127,8 @@ class UtgifterOgGjeldSteg {
                 Sporsmal(
                     tittel = "utgifter.barn.true.utgifter.sporsmal",
                     erUtfylt = true,
-                    felt = felter
-                )
+                    felt = felter,
+                ),
             )
         }
         return sporsmalList
@@ -133,15 +141,15 @@ class UtgifterOgGjeldSteg {
         felter: MutableList<Felt>,
         utgifter: List<JsonOkonomiOpplysningUtgift>,
         type: String,
-        key: String
+        key: String,
     ) {
         utgifter.firstOrNull { type == it.type }
             ?.let {
                 felter.add(
                     Felt(
                         type = Type.CHECKBOX,
-                        svar = createSvar(key, SvarType.LOCALE_TEKST)
-                    )
+                        svar = createSvar(key, SvarType.LOCALE_TEKST),
+                    ),
                 )
             }
     }
@@ -153,15 +161,15 @@ class UtgifterOgGjeldSteg {
         felter: MutableList<Felt>,
         utgifter: List<JsonOkonomioversiktUtgift>,
         type: String,
-        key: String
+        key: String,
     ) {
         utgifter.firstOrNull { type == it.type }
             ?.let {
                 felter.add(
                     Felt(
                         type = Type.CHECKBOX,
-                        svar = createSvar(key, SvarType.LOCALE_TEKST)
-                    )
+                        svar = createSvar(key, SvarType.LOCALE_TEKST),
+                    ),
                 )
             }
     }

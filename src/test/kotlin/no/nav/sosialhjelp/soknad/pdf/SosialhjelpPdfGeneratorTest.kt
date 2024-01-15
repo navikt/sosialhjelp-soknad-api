@@ -68,10 +68,10 @@ internal class SosialhjelpPdfGeneratorTest {
                         .withTilleggsinfo("annet")
                         .withFiler(
                             mutableListOf(
-                                JsonFiler().withFilnavn("Fil1.pdf")
-                            )
-                        )
-                )
+                                JsonFiler().withFilnavn("Fil1.pdf"),
+                            ),
+                        ),
+                ),
             )
         internalSoknad.vedlegg = vedleggSpesifikasjon
 
@@ -146,55 +146,55 @@ internal class SosialhjelpPdfGeneratorTest {
                                 JsonPersonalia().withPersonIdentifikator(
                                     JsonPersonIdentifikator()
                                         .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                        .withVerdi("1234")
+                                        .withVerdi("1234"),
                                 )
                                     .withNavn(
                                         JsonSokernavn()
                                             .withFornavn("Navn")
                                             .withMellomnavn("")
                                             .withEtternavn("Navnesen")
-                                            .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                            .withKilde(JsonSokernavn.Kilde.SYSTEM),
                                     )
                                     .withKontonummer(
                                         JsonKontonummer()
                                             .withKilde(JsonKilde.SYSTEM)
-                                            .withVerdi("0000")
-                                    )
+                                            .withVerdi("0000"),
+                                    ),
                             )
                             .withArbeid(JsonArbeid())
                             .withUtdanning(
                                 JsonUtdanning()
-                                    .withKilde(JsonKilde.SYSTEM)
+                                    .withKilde(JsonKilde.SYSTEM),
                             )
                             .withFamilie(
                                 JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt())
+                                    .withForsorgerplikt(JsonForsorgerplikt()),
                             )
                             .withBegrunnelse(
                                 JsonBegrunnelse()
                                     .withKilde(JsonKildeBruker.BRUKER)
                                     .withHvaSokesOm("")
-                                    .withHvorforSoke("")
+                                    .withHvorforSoke(""),
                             )
                             .withBosituasjon(
                                 JsonBosituasjon()
-                                    .withKilde(JsonKildeBruker.BRUKER)
+                                    .withKilde(JsonKildeBruker.BRUKER),
                             )
                             .withOkonomi(
                                 JsonOkonomi()
                                     .withOpplysninger(
                                         JsonOkonomiopplysninger()
                                             .withUtbetaling(emptyList())
-                                            .withUtgift(emptyList())
+                                            .withUtgift(emptyList()),
                                     )
                                     .withOversikt(
                                         JsonOkonomioversikt()
                                             .withInntekt(emptyList())
                                             .withUtgift(emptyList())
-                                            .withFormue(emptyList())
-                                    )
-                            )
-                    )
+                                            .withFormue(emptyList()),
+                                    ),
+                            ),
+                    ),
             )
 
     @Test

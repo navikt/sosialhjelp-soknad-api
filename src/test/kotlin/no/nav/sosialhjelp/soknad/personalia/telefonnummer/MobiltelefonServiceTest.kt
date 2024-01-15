@@ -19,7 +19,7 @@ internal class MobiltelefonServiceTest {
         aktiv = true,
         kanVarsles = true,
         reservert = false,
-        mobiltelefonnummer = mobiltelefonnummer
+        mobiltelefonnummer = mobiltelefonnummer,
     )
 
     @Test

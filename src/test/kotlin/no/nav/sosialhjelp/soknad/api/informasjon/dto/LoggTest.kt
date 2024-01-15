@@ -14,7 +14,7 @@ internal class LoggTest {
             lineNumber = "100",
             columnNumber = "99",
             url = "http://nav.no/url",
-            userAgent = "IE ROCKS,MSIE"
+            userAgent = "IE ROCKS,MSIE",
         )
         assertThat(logg.melding()).isEqualTo("jsmessagehash=" + feilmelding.hashCode() + ", fileUrl=minFil.js:100:99, url=http://nav.no/url, userAgent=IE_ROCKS_MSIE, melding: Cannot read blabla of undefined")
     }

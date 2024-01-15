@@ -29,11 +29,11 @@ import java.text.SimpleDateFormat
 @RequestMapping("/soknader/{behandlingsId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
     @GetMapping
     fun hentSivilstatus(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -47,7 +47,7 @@ class SivilstatusRessurs(
     @PutMapping
     fun updateSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody sivilstatusFrontend: SivilstatusFrontend
+        @RequestBody sivilstatusFrontend: SivilstatusFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -72,7 +72,7 @@ class SivilstatusRessurs(
         return EktefelleFrontend(
             navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn, fulltNavn(navn)),
             fodselsdato = jsonEktefelle.fodselsdato,
-            personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator)
+            personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator),
         )
     }
 
@@ -102,7 +102,7 @@ class SivilstatusRessurs(
             ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
             harDiskresjonskode = jsonSivilstatus.ektefelleHarDiskresjonskode,
             borSammenMed = jsonSivilstatus.borSammenMed,
-            erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle
+            erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle,
         )
     }
 

@@ -33,8 +33,8 @@ internal class StudielanTest {
                 listOf(
                     JsonOkonomibekreftelse()
                         .withType(SoknadJsonTyper.STUDIELAN)
-                        .withVerdi(true)
-                )
+                        .withVerdi(true),
+                ),
             )
 
         val avsnitt = studielan.getAvsnitt(opplysninger)

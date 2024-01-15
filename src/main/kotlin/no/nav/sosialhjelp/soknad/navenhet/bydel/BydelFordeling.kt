@@ -6,13 +6,13 @@ data class BydelFordeling(
     val husnummerfordeling: List<Husnummerfordeling>,
     val bydelFra: String,
     val bydelTil: String,
-    val bydelsnavnTil: String
+    val bydelsnavnTil: String,
 )
 
 data class Husnummerfordeling(
     val fra: Int,
     val til: Int,
-    val type: HusnummerfordelingType
+    val type: HusnummerfordelingType,
 )
 
 enum class HusnummerfordelingType {

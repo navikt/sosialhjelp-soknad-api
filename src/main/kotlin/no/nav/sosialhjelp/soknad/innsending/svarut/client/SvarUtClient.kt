@@ -34,7 +34,7 @@ class SvarUtClient(
     @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     private val basicAuthentication: String
@@ -51,8 +51,8 @@ class SvarUtClient(
             ReactorClientHttpConnector(
                 proxiedHttpClient
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SVARUT_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SVARUT_TIMEOUT.toLong()))
-            )
+                    .responseTimeout(Duration.ofMillis(SVARUT_TIMEOUT.toLong())),
+            ),
         )
         .codecs {
             it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)

@@ -19,14 +19,14 @@ object AdresseMapper {
         sysFolkeregistrert: JsonAdresse?,
         sysMidlertidig: JsonAdresse?,
         jsonOpphold: JsonAdresse?,
-        navEnhet: NavEnhetFrontend?
+        navEnhet: NavEnhetFrontend?,
     ): AdresserFrontend {
         return AdresserFrontend(
             valg = jsonOpphold?.adresseValg,
             folkeregistrert = mapToAdresseFrontend(sysFolkeregistrert),
             midlertidig = mapToAdresseFrontend(sysMidlertidig),
             soknad = mapToAdresseFrontend(jsonOpphold),
-            navEnhet = navEnhet
+            navEnhet = navEnhet,
         )
     }
 
@@ -38,19 +38,19 @@ object AdresseMapper {
             JsonAdresse.Type.GATEADRESSE -> {
                 AdresseFrontend(
                     type = JsonAdresse.Type.GATEADRESSE,
-                    gateadresse = mapToGateadresseFrontend(adresse)
+                    gateadresse = mapToGateadresseFrontend(adresse),
                 )
             }
             JsonAdresse.Type.MATRIKKELADRESSE -> {
                 AdresseFrontend(
                     type = JsonAdresse.Type.MATRIKKELADRESSE,
-                    matrikkeladresse = mapToMatrikkeladresseFrontend(adresse)
+                    matrikkeladresse = mapToMatrikkeladresseFrontend(adresse),
                 )
             }
             JsonAdresse.Type.USTRUKTURERT -> {
                 AdresseFrontend(
                     type = JsonAdresse.Type.USTRUKTURERT,
-                    ustrukturert = mapToUstrukturertAdresseFrontend(adresse)
+                    ustrukturert = mapToUstrukturertAdresseFrontend(adresse),
                 )
             }
             else -> null
@@ -68,7 +68,7 @@ object AdresseMapper {
             poststed = gateAdresse.poststed,
             gatenavn = gateAdresse.gatenavn,
             husnummer = gateAdresse.husnummer,
-            husbokstav = gateAdresse.husbokstav
+            husbokstav = gateAdresse.husbokstav,
         )
     }
 
@@ -80,7 +80,7 @@ object AdresseMapper {
             bruksnummer = matrikkelAdresse.bruksnummer,
             festenummer = matrikkelAdresse.festenummer,
             seksjonsnummer = matrikkelAdresse.seksjonsnummer,
-            undernummer = matrikkelAdresse.undernummer
+            undernummer = matrikkelAdresse.undernummer,
         )
     }
 

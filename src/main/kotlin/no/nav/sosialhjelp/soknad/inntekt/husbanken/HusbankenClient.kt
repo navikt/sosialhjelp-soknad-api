@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
 class HusbankenClient(
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) {
 
     fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {

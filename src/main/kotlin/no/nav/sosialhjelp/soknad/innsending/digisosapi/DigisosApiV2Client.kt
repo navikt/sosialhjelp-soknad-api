@@ -45,7 +45,7 @@ class DigisosApiV2Client(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     private val fiksWebClient = webClientBuilder
@@ -58,8 +58,8 @@ class DigisosApiV2Client(
                             .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
                             .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
                     }
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+            ),
         )
         .codecs {
             it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
@@ -83,7 +83,7 @@ class DigisosApiV2Client(
         dokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,
-        token: String?
+        token: String?,
     ): String {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
@@ -97,12 +97,12 @@ class DigisosApiV2Client(
                     FilForOpplasting(
                         filnavn = dokument.metadata.filnavn,
                         metadata = dokument.metadata,
-                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
+                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
                     )
                 },
                 kommunenr,
                 navEksternRefId,
-                token
+                token,
             )
             waitForFutures(krypteringFutureList)
         } finally {
@@ -120,7 +120,7 @@ class DigisosApiV2Client(
         filer: List<FilForOpplasting<Any>>,
         kommunenummer: String,
         behandlingsId: String,
-        token: String?
+        token: String?,
     ): String {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))

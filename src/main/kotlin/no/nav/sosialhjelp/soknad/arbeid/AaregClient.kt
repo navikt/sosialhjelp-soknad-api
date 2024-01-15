@@ -104,7 +104,7 @@ class AaregClient(
 
     data class Sokeperiode(
         private val fomDate: LocalDate,
-        private val tomDate: LocalDate
+        private val tomDate: LocalDate,
     ) {
         val fom: String get() = fomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
         val tom: String get() = tomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)

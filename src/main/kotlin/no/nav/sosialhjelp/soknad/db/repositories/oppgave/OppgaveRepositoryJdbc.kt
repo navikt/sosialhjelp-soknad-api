@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @Transactional
 class OppgaveRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : OppgaveRepository {
 
     private val oppgaveRowMapper = RowMapper { rs: ResultSet, _: Int ->
@@ -33,7 +33,7 @@ class OppgaveRepositoryJdbc(
             opprettet = nullableTimestampTilTid(rs.getTimestamp("opprettet")),
             sistKjort = nullableTimestampTilTid(rs.getTimestamp("sistkjort")),
             nesteForsok = nullableTimestampTilTid(rs.getTimestamp("nesteforsok")),
-            retries = rs.getInt("retries")
+            retries = rs.getInt("retries"),
         )
     }
 
@@ -51,7 +51,7 @@ class OppgaveRepositoryJdbc(
             tidTilTimestamp(oppgave.opprettet),
             tidTilTimestamp(oppgave.sistKjort),
             tidTilTimestamp(oppgave.nesteForsok),
-            oppgave.retries
+            oppgave.retries,
         )
     }
 
@@ -64,7 +64,7 @@ class OppgaveRepositoryJdbc(
             oppgave.oppgaveResultat?.let { JAXB.marshal(it) },
             tidTilTimestamp(oppgave.nesteForsok),
             oppgave.retries,
-            oppgave.id
+            oppgave.id,
         )
     }
 
@@ -72,7 +72,7 @@ class OppgaveRepositoryJdbc(
         return jdbcTemplate.query(
             "SELECT * FROM oppgave WHERE behandlingsid = ?",
             oppgaveRowMapper,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull()
     }
 
@@ -80,7 +80,7 @@ class OppgaveRepositoryJdbc(
         val parameters = MapSqlParameterSource("ids", behandlingsIdList)
         return namedParameterJdbcTemplate.query(
             "SELECT * FROM oppgave WHERE behandlingsid IN (:ids)",
-            parameters
+            parameters,
         ) { resultSet: ResultSet, _: Int -> resultSet.getLong("id") }
     }
 
@@ -92,7 +92,7 @@ class OppgaveRepositoryJdbc(
                 select,
                 oppgaveRowMapper,
                 Status.KLAR.name,
-                tidTilTimestamp(LocalDateTime.now())
+                tidTilTimestamp(LocalDateTime.now()),
             ).firstOrNull() ?: return null
 
             val rowsAffected = jdbcTemplate.update(
@@ -100,7 +100,7 @@ class OppgaveRepositoryJdbc(
                 Status.UNDER_ARBEID.name,
                 tidTilTimestamp(LocalDateTime.now()),
                 Status.KLAR.name,
-                resultat.id
+                resultat.id,
             )
             if (rowsAffected == 1) {
                 return resultat
@@ -113,7 +113,7 @@ class OppgaveRepositoryJdbc(
             "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?",
             Status.KLAR.name,
             Status.UNDER_ARBEID.name,
-            tidTilTimestamp(LocalDateTime.now().minusHours(1))
+            tidTilTimestamp(LocalDateTime.now().minusHours(1)),
         )
     }
 
@@ -121,7 +121,7 @@ class OppgaveRepositoryJdbc(
         return jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ?",
             Int::class.java,
-            Status.FEILET.name
+            Status.FEILET.name,
         )
     }
 
@@ -130,7 +130,7 @@ class OppgaveRepositoryJdbc(
             "SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
             Int::class.java,
             Status.UNDER_ARBEID.name,
-            tidTilTimestamp(LocalDateTime.now().minusMinutes(10))
+            tidTilTimestamp(LocalDateTime.now().minusMinutes(10)),
         )
     }
 
@@ -142,7 +142,7 @@ class OppgaveRepositoryJdbc(
     override fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from oppgave",
-            Int::class.java
+            Int::class.java,
         ) ?: 0
     }
 }

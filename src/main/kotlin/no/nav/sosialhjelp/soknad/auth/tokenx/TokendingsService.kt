@@ -18,7 +18,7 @@ class TokendingsService(
     private val tokendingsClient: TokendingsClient,
     private val tokendingsClientId: String,
     tokendingsPrivateJwk: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
 
     private val privateRsaKey: RSAKey = if (tokendingsPrivateJwk == "generateRSA") {

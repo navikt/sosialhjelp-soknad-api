@@ -439,7 +439,9 @@ object InntektOgFormue {
             }
             if (sak.vedtaksstatus == null) {
                 "Avslag: ${sak.beskrivelse}"
-            } else "Vedtatt"
+            } else {
+                "Vedtatt"
+            }
         } else {
             "Under behandling"
         }

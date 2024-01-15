@@ -35,7 +35,7 @@ class KontonummerClientImpl(
     @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
@@ -80,7 +80,7 @@ class KontonummerClientImpl(
             redisService.setex(
                 KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident,
                 redisObjectMapper.writeValueAsBytes(kontoDto),
-                CACHE_30_MINUTES_IN_SECONDS
+                CACHE_30_MINUTES_IN_SECONDS,
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av kontoDto til redis", e)

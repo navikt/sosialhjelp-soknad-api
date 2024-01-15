@@ -36,7 +36,7 @@ internal class HusbankenClientTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(IOUtils.toString(inputStream, StandardCharsets.UTF_8))
+                .setBody(IOUtils.toString(inputStream, StandardCharsets.UTF_8)),
         )
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
@@ -60,7 +60,7 @@ internal class HusbankenClientTest {
 
         mockWebServer.enqueue(
             MockResponse()
-                .setResponseCode(503)
+                .setResponseCode(503),
         )
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
@@ -75,7 +75,7 @@ internal class HusbankenClientTest {
 
         mockWebServer.enqueue(
             MockResponse()
-                .setResponseCode(400)
+                .setResponseCode(400),
         )
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
@@ -88,7 +88,7 @@ internal class HusbankenClientTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody("OK")
+                .setBody("OK"),
         )
 
         assertThatNoException().isThrownBy { husbankenClient.ping() }

@@ -40,12 +40,12 @@ class SoknadRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
-    private val nedetidService: NedetidService
+    private val nedetidService: NedetidService,
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
     fun hentXsrfCookie(
         @PathVariable("behandlingsId") behandlingsId: String,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): Boolean {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         response.addCookie(xsrfCookie(behandlingsId))
@@ -57,7 +57,7 @@ class SoknadRessurs(
     @GetMapping("/{behandlingsId}/erSystemdataEndret")
     fun sjekkOmSystemdataErEndret(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): Boolean {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = getUserIdFromToken()
@@ -89,7 +89,7 @@ class SoknadRessurs(
     fun oppdaterSamtykker(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykker: List<BekreftelseRessurs>,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val harBostotteSamtykke = samtykker
@@ -102,7 +102,7 @@ class SoknadRessurs(
     @GetMapping("/{behandlingsId}/hentSamtykker")
     fun hentSamtykker(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): List<BekreftelseRessurs> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = getUserIdFromToken()
@@ -118,7 +118,7 @@ class SoknadRessurs(
 
     private fun hentBekreftelse(
         soknadUnderArbeid: SoknadUnderArbeid,
-        samtykke: String
+        samtykke: String,
     ): JsonOkonomibekreftelse? {
         val bekreftelser = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
         return bekreftelser
@@ -129,11 +129,11 @@ class SoknadRessurs(
     fun opprettSoknad(
         @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): Map<String, String> {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
-                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
+                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
             )
         }
         if (tilknyttetBehandlingsId == null) {
@@ -159,7 +159,7 @@ class SoknadRessurs(
     @DeleteMapping("/{behandlingsId}")
     fun slettSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.REFERER) referer: String?
+        @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"

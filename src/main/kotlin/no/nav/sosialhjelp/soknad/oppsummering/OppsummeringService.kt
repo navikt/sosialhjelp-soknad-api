@@ -75,8 +75,8 @@ class OppsummeringService(
                 bosituasjonSteg.get(jsonInternalSoknad),
                 inntektOgFormueSteg.get(jsonInternalSoknad),
                 utgifterOgGjeldSteg.get(jsonInternalSoknad),
-                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, vedleggInfo)
-            )
+                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, vedleggInfo),
+            ),
         )
     }
 
@@ -94,7 +94,7 @@ class OppsummeringService(
                     it
                         .withStatus(Vedleggstatus.VedleggKreves.toString())
                         .withHendelseType(JsonVedlegg.HendelseType.SOKNAD)
-                }
+                },
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
@@ -104,7 +104,7 @@ class OppsummeringService(
     private fun fjernIkkePaakrevdeVedlegg(
         jsonVedleggs: MutableList<JsonVedlegg>,
         paakrevdeVedlegg: List<JsonVedlegg>,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ) {
         val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(paakrevdeVedlegg).test(it) }.toMutableList()
 
@@ -127,7 +127,7 @@ class OppsummeringService(
 
     private fun excludeTypeAnnetAnnetFromList(jsonVedleggs: MutableList<JsonVedlegg>) {
         jsonVedleggs.removeAll(
-            jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" }
+            jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" },
         )
     }
 

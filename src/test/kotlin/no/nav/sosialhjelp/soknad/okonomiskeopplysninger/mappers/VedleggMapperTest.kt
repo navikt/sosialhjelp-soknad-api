@@ -18,7 +18,7 @@ internal class VedleggMapperTest {
         val result = VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg(
             innsendingstidspunkt,
             opplastedeVedlegg,
-            originaleVedlegg
+            originaleVedlegg,
         )
         assertThat(result).hasSize(3)
         assertThat(result[0].type).isEqualTo(BOSTOTTE.sammensattType)
@@ -37,7 +37,7 @@ internal class VedleggMapperTest {
         val result = VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg(
             innsendingstidspunkt,
             opplastedeVedlegg,
-            originaleVedlegg
+            originaleVedlegg,
         )
         assertThat(result).hasSize(2)
         assertThat(result[0].type).isEqualTo(BOSTOTTE.sammensattType)
@@ -59,14 +59,14 @@ internal class VedleggMapperTest {
             JsonVedlegg()
                 .withType(ANNET.type)
                 .withTilleggsinfo(ANNET.tilleggsinfo)
-                .withStatus(Vedleggstatus.VedleggKreves.toString())
+                .withStatus(Vedleggstatus.VedleggKreves.toString()),
         )
     }
 
     private fun createOpplastetVedleggList(): List<OpplastetVedlegg> {
         return mutableListOf(
             createOpplastetVedlegg(BOSTOTTE),
-            createOpplastetVedlegg(ANNET)
+            createOpplastetVedlegg(ANNET),
         )
     }
 
@@ -77,7 +77,7 @@ internal class VedleggMapperTest {
             data = byteArrayOf(1, 2, 3),
             soknadId = 123L,
             filnavn = "FILNAVN",
-            sha512 = "sha512"
+            sha512 = "sha512",
         )
     }
 

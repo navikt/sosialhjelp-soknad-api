@@ -24,13 +24,13 @@ class SkattbarInntekt {
         val fikkFeilMotSkatteetaten = java.lang.Boolean.TRUE == driftsinformasjon.inntektFraSkatteetatenFeilet
         return Avsnitt(
             tittel = "utbetalinger.inntekt.skattbar.tittel",
-            sporsmal = skattbarInntektSporsmal(opplysninger, fikkFeilMotSkatteetaten)
+            sporsmal = skattbarInntektSporsmal(opplysninger, fikkFeilMotSkatteetaten),
         )
     }
 
     private fun skattbarInntektSporsmal(
         opplysninger: JsonOkonomiopplysninger,
-        fikkFeilMotSkatteetaten: Boolean
+        fikkFeilMotSkatteetaten: Boolean,
     ): List<Sporsmal> {
         val harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
         val sporsmal = mutableListOf<Sporsmal>()
@@ -39,8 +39,8 @@ class SkattbarInntekt {
                 Sporsmal(
                     tittel = "utbetalinger.inntekt.skattbar.mangler_samtykke",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         }
         if (harSkatteetatenSamtykke && fikkFeilMotSkatteetaten) {
@@ -48,8 +48,8 @@ class SkattbarInntekt {
                 Sporsmal(
                     tittel = "utbetalinger.skattbar.kontaktproblemer.oppsummering",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         }
         if (harSkatteetatenSamtykke && !fikkFeilMotSkatteetaten) {
@@ -61,8 +61,8 @@ class SkattbarInntekt {
                 Sporsmal(
                     tittel = "utbetalinger.inntekt.skattbar.inntekt.tittel",
                     erUtfylt = true,
-                    felt = skattbarInntektFelter(opplysninger.utbetaling)
-                )
+                    felt = skattbarInntektFelter(opplysninger.utbetaling),
+                ),
             )
         }
         return sporsmal
@@ -75,9 +75,9 @@ class SkattbarInntekt {
             felt = listOf(
                 Felt(
                     type = Type.TEKST,
-                    svar = createSvar(skatteetatenBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT)
-                )
-            )
+                    svar = createSvar(skatteetatenBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT),
+                ),
+            ),
         )
     }
 
@@ -88,8 +88,8 @@ class SkattbarInntekt {
             feltListe.add(
                 Felt(
                     type = Type.TEKST,
-                    svar = createSvar("utbetalinger.inntekt.skattbar.ingen", SvarType.LOCALE_TEKST)
-                )
+                    svar = createSvar("utbetalinger.inntekt.skattbar.ingen", SvarType.LOCALE_TEKST),
+                ),
             )
         } else {
             utbetalinger
@@ -111,8 +111,8 @@ class SkattbarInntekt {
                     feltListe.add(
                         Felt(
                             type = Type.SYSTEMDATA_MAP,
-                            labelSvarMap = map
-                        )
+                            labelSvarMap = map,
+                        ),
                     )
                 }
         }

@@ -54,7 +54,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
         return Steg(
             stegNr = 8,
             tittel = "opplysningerbolk.tittel",
-            avsnitt = okonomiOgVedleggAvsnitt(okonomi, vedlegg, vedleggInfo)
+            avsnitt = okonomiOgVedleggAvsnitt(okonomi, vedlegg, vedleggInfo),
         )
     }
 
@@ -65,15 +65,15 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     ): List<Avsnitt> {
         val inntektAvsnitt = Avsnitt(
             tittel = "inntektbolk.tittel",
-            sporsmal = inntekterSporsmal(okonomi)
+            sporsmal = inntekterSporsmal(okonomi),
         )
         val utgifterAvsnitt = Avsnitt(
             tittel = "utgifterbolk.tittel",
-            sporsmal = utgifterSporsmal(okonomi)
+            sporsmal = utgifterSporsmal(okonomi),
         )
         val vedleggAvsnitt = Avsnitt(
             tittel = "vedlegg.oppsummering.tittel",
-            sporsmal = vedleggSporsmal(vedleggSpesifikasjon, vedleggInfo)
+            sporsmal = vedleggSporsmal(vedleggSpesifikasjon, vedleggInfo),
         )
         return listOf(inntektAvsnitt, utgifterAvsnitt, vedleggAvsnitt)
     }
@@ -97,15 +97,15 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.arbeid.jobb.bruttolonn.label",
-                        it.brutto
-                    )
+                        it.brutto,
+                    ),
                 )
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.arbeid.jobb.nettolonn.label",
-                        it.netto
-                    )
+                        it.netto,
+                    ),
                 )
             }
 
@@ -117,8 +117,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.arbeid.student.utbetaling.label",
-                        it.netto
-                    )
+                        it.netto,
+                    ),
                 )
             }
 
@@ -130,8 +130,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         "json.okonomi.opplysninger.familiesituasjon.barnebidrag.mottar",
                         "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label",
-                        it.netto
-                    )
+                        it.netto,
+                    ),
                 )
             }
 
@@ -143,8 +143,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         "json.okonomi.opplysninger.inntekt.bostotte",
                         "opplysninger.inntekt.bostotte.utbetaling.label",
-                        it.netto
-                    )
+                        it.netto,
+                    ),
                 )
             }
     }
@@ -159,8 +159,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.inntekt.bankinnskudd.${it.type}.saldo.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
     }
@@ -178,8 +178,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.arbeid.avsluttet.netto.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         filteredUtbetalinger
@@ -189,8 +189,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.inntekt.inntekter.${it.type}.sum.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
     }
@@ -205,8 +205,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.barn.${it.type}.sisteregning.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         opplysningUtgifter
@@ -216,8 +216,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.boutgift.${it.type}.sisteregning.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         opplysningUtgifter
@@ -227,8 +227,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         it.tittel,
                         "opplysninger.ekstrainfo.utgifter.utgift.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
 
@@ -240,8 +240,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.barn.${it.type}.sistemnd.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         oversiktUtgifter
@@ -251,8 +251,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         oversiktUtgifter
@@ -262,8 +262,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.boutgift.husleie.permnd.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         oversiktUtgifter
@@ -273,8 +273,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
         oversiktUtgifter
@@ -284,8 +284,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     integerVerdiSporsmalMedTittel(
                         getTitleKey(it.type),
                         "opplysninger.utgifter.boutgift.avdraglaan.renter.label",
-                        it.belop
-                    )
+                        it.belop,
+                    ),
                 )
             }
 
@@ -301,7 +301,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                 Sporsmal(
                     tittel = getTittelFrom(it.type, it.tilleggsinfo),
                     erUtfylt = true,
-                    felt = vedleggFelter(it, vedleggInfo)
+                    felt = vedleggFelter(it, vedleggInfo),
                 )
             }
     }
@@ -316,15 +316,15 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                 type = Type.VEDLEGG,
                 vedlegg = vedlegg.filer.map {
                     Vedlegg(it.filnavn, getIdFraVedlegg(it, vedleggInfo))
-                }
+                },
             )
         } else {
             Felt(
                 type = Type.TEKST,
                 svar = StegUtils.createSvar(
                     if ("VedleggAlleredeSendt" == vedlegg.status) "opplysninger.vedlegg.alleredelastetopp" else "vedlegg.oppsummering.ikkelastetopp",
-                    SvarType.LOCALE_TEKST
-                )
+                    SvarType.LOCALE_TEKST,
+                ),
             )
         }
         return listOf(felt)
@@ -345,19 +345,19 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             FORMUE_BSU,
             FORMUE_LIVSFORSIKRING,
             FORMUE_SPAREKONTO,
-            FORMUE_ANNET
+            FORMUE_ANNET,
         )
         private val systemdataUtbetalingTyper = listOf(
             UTBETALING_NAVYTELSE,
             UTBETALING_SKATTEETATEN,
-            UTBETALING_HUSBANKEN
+            UTBETALING_HUSBANKEN,
         )
         private val barneutgifter = listOf(
             UTGIFTER_BARNEHAGE,
             UTGIFTER_SFO,
             UTGIFTER_BARN_FRITIDSAKTIVITETER,
             UTGIFTER_BARN_TANNREGULERING,
-            UTGIFTER_ANNET_BARN
+            UTGIFTER_ANNET_BARN,
         )
         private val boutgifter = listOf(
             UTGIFTER_HUSLEIE,
@@ -366,7 +366,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             UTGIFTER_OPPVARMING,
             UTGIFTER_BOLIGLAN_AVDRAG,
             UTGIFTER_BOLIGLAN_RENTER,
-            UTGIFTER_ANNET_BO
+            UTGIFTER_ANNET_BO,
         )
     }
 

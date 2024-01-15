@@ -30,7 +30,7 @@ object IntegrationTestUtils {
         issuer: String = SELVBETJENING,
         audience: String = "someaudience",
         claims: Map<String, Any> = mapOf("acr" to "Level4"),
-        expiry: Long = 60L
+        expiry: Long = 60L,
     ): SignedJWT {
         return mockOAuth2Server.issueToken(issuer, fnr, audience, claims, expiry)
     }

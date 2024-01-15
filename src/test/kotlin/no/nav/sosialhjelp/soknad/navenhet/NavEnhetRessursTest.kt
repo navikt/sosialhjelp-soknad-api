@@ -74,7 +74,7 @@ internal class NavEnhetRessursTest {
         tilgangskontroll = tilgangskontroll,
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
         navEnhetService = navEnhetService,
-        adresseRessurs = adresseRessurs
+        adresseRessurs = adresseRessurs,
     )
 
     private val navEnhetFrontend = NavEnhetFrontend(
@@ -86,7 +86,7 @@ internal class NavEnhetRessursTest {
         behandlingsansvarlig = null,
         valgt = true,
         isMottakMidlertidigDeaktivert = false,
-        isMottakDeaktivert = false
+        isMottakDeaktivert = false,
     )
 
     @BeforeEach
@@ -169,7 +169,7 @@ internal class NavEnhetRessursTest {
                 JsonSoknadsmottaker()
                     .withNavEnhetsnavn(ENHETSNAVN)
                     .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(null)
+                    .withKommunenummer(null),
             )
             .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -186,7 +186,7 @@ internal class NavEnhetRessursTest {
                 JsonSoknadsmottaker()
                     .withNavEnhetsnavn(null)
                     .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(KOMMUNENR)
+                    .withKommunenummer(KOMMUNENR),
             )
             .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -262,7 +262,7 @@ internal class NavEnhetRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

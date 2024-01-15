@@ -6,7 +6,7 @@ import java.io.InputStream
 
 @Component
 class SvarUtService(
-    private val svarUtClient: SvarUtClient
+    private val svarUtClient: SvarUtClient,
 ) {
 
     fun send(forsendelse: Forsendelse, filnavnInputStreamMap: Map<String, InputStream>): String? {

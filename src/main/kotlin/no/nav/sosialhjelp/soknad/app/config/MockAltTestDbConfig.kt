@@ -59,27 +59,27 @@ class MockAltTestDbConfig {
                         st.execute(
                             "create table SOKNADMETADATA (id numeric not null, behandlingsId varchar(255) not null, tilknyttetBehandlingsId varchar(255), skjema varchar(255), fnr varchar(255), " +
                                 "hovedskjema clob, vedlegg clob, orgnr varchar(255), navenhet varchar(255), fiksforsendelseid varchar(255), soknadtype varchar(255), innsendingstatus varchar(255), " +
-                                "opprettetdato timestamp, sistendretdato timestamp, innsendtdato timestamp, batchstatus varchar(255))"
+                                "opprettetdato timestamp, sistendretdato timestamp, innsendtdato timestamp, batchstatus varchar(255))",
                         )
                         st.execute("drop sequence OPPGAVE_ID_SEQ if exists")
                         st.execute("create sequence OPPGAVE_ID_SEQ as integer start with 1 increment by 1")
                         st.execute("drop table OPPGAVE if exists")
                         st.execute(
                             "create table OPPGAVE (id numeric not null, behandlingsid varchar(255), type varchar(255), status varchar(255), steg numeric, oppgavedata clob, " +
-                                "oppgaveresultat clob, opprettet timestamp, sistkjort timestamp, nesteforsok timestamp, retries numeric)"
+                                "oppgaveresultat clob, opprettet timestamp, sistkjort timestamp, nesteforsok timestamp, retries numeric)",
                         )
                         st.execute("drop table SOKNAD_UNDER_ARBEID if exists")
                         st.execute(
                             "CREATE TABLE SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID bigint NOT NULL, VERSJON bigint DEFAULT 1 NOT NULL, BEHANDLINGSID VARCHAR(255) NOT NULL, TILKNYTTETBEHANDLINGSID VARCHAR(255)," +
                                 " EIER VARCHAR(255) NOT NULL, DATA BLOB, STATUS VARCHAR(255) NOT NULL, OPPRETTETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, SISTENDRETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL," +
-                                " CONSTRAINT UNIK_UA_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT SOKNAD_UNDER_ARBEID_PK PRIMARY KEY (SOKNAD_UNDER_ARBEID_ID))"
+                                " CONSTRAINT UNIK_UA_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT SOKNAD_UNDER_ARBEID_PK PRIMARY KEY (SOKNAD_UNDER_ARBEID_ID))",
                         )
                         st.execute("drop sequence SOKNAD_UNDER_ARBEID_ID_SEQ if exists")
                         st.execute("CREATE sequence SOKNAD_UNDER_ARBEID_ID_SEQ start WITH 1 increment BY 1")
                         st.execute("drop table OPPLASTET_VEDLEGG if exists")
                         st.execute(
                             "CREATE TABLE OPPLASTET_VEDLEGG(UUID VARCHAR(255) NOT NULL, EIER VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL, DATA blob NOT NULL, SOKNAD_UNDER_ARBEID_ID bigint NOT NULL," +
-                                " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))"
+                                " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))",
                         )
                         st.execute("alter table SOKNADMETADATA add LEST_DITT_NAV BOOLEAN default FALSE NOT NULL")
                     }

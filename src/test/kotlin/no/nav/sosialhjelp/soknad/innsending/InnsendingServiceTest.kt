@@ -30,7 +30,7 @@ internal class InnsendingServiceTest {
         soknadUnderArbeidRepository,
         opplastetVedleggRepository,
         soknadUnderArbeidService,
-        soknadMetadataRepository
+        soknadMetadataRepository,
     )
 
     @BeforeEach
@@ -81,7 +81,7 @@ internal class InnsendingServiceTest {
             jsonInternalSoknad = createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn(),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -89,7 +89,7 @@ internal class InnsendingServiceTest {
         return JsonInternalSoknad().withMottaker(
             JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(ORGNR)
-                .withNavEnhetsnavn(NAVENHETSNAVN)
+                .withNavEnhetsnavn(NAVENHETSNAVN),
         )
     }
 
@@ -103,7 +103,7 @@ internal class InnsendingServiceTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -116,7 +116,7 @@ internal class InnsendingServiceTest {
             navEnhet = NAVENHETSNAVN_METADATA,
             fiksForsendelseId = FIKSFORSENDELSEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 

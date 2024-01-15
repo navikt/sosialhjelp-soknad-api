@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 @Component
 class SoknadLockPushMetrics(
-    meterRegistry: MeterRegistry
+    meterRegistry: MeterRegistry,
 ) {
     private val soknadLockLatencyTimer =
         Timer.builder("soknad_lock_acquire_latency")

@@ -15,14 +15,14 @@ class SoknadUnderArbeidMigrationRepository(
         return jdbcTemplate.query(
             "select * from soknad_under_arbeid where behandlingsid = ?",
             soknadUnderArbeidRowMapper,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull()
     }
 
     fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from soknad_under_arbeid",
-            Int::class.java
+            Int::class.java,
         ) ?: 0
     }
 }

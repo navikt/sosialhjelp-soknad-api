@@ -66,7 +66,7 @@ class GeografiskTilknytningClient(
     private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
         return redisService.get(
             GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
-            GeografiskTilknytningDto::class.java
+            GeografiskTilknytningDto::class.java,
         ) as? GeografiskTilknytningDto
     }
 
@@ -77,12 +77,12 @@ class GeografiskTilknytningClient(
             redisService.setex(
                 GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
                 pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
-                PDL_CACHE_SECONDS
+                PDL_CACHE_SECONDS,
             )
         } catch (e: JsonProcessingException) {
             log.error(
                 "Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - ${geografiskTilknytningDto.javaClass.name}",
-                e
+                e,
             )
         }
     }

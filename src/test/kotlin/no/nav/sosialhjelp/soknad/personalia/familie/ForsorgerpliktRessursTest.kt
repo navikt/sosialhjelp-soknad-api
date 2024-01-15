@@ -86,7 +86,7 @@ internal class ForsorgerpliktRessursTest {
     fun forsorgerpliktSkalReturnereEtBarnSomErFolkeregistrertSammenOgHarDeltBosted() {
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
             .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true)
+                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true),
             )
             .withHarDeltBosted(JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true))
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
@@ -104,7 +104,7 @@ internal class ForsorgerpliktRessursTest {
     fun forsorgerpliktSkalReturnereEtBarnSomIkkeErFolkeregistrertSammenMenHarSamvarsgrad() {
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
             .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false)
+                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false),
             )
             .withSamvarsgrad(JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30))
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
@@ -245,12 +245,12 @@ internal class ForsorgerpliktRessursTest {
                 navn = null,
                 fodselsdato = null,
                 personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN_2.personIdentifikator),
-                fodselsnummer = JSON_BARN_2.personIdentifikator
+                fodselsnummer = JSON_BARN_2.personIdentifikator,
             ),
             borSammenMed = null,
             erFolkeregistrertSammen = null,
             harDeltBosted = null,
-            samvarsgrad = 30
+            samvarsgrad = 30,
         )
     }
 
@@ -260,18 +260,18 @@ internal class ForsorgerpliktRessursTest {
                 navn = null,
                 fodselsdato = null,
                 personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN.personIdentifikator),
-                fodselsnummer = JSON_BARN.personIdentifikator
+                fodselsnummer = JSON_BARN.personIdentifikator,
             ),
             borSammenMed = null,
             erFolkeregistrertSammen = null,
             harDeltBosted = true,
-            samvarsgrad = null
+            samvarsgrad = null,
         )
     }
 
     private fun assertThatAnsvarIsCorrectlyConverted(
         ansvarFrontend: AnsvarFrontend?,
-        jsonAnsvar: JsonAnsvar
+        jsonAnsvar: JsonAnsvar,
     ) {
         val barnFrontend = ansvarFrontend?.barn
         val jsonBarn = jsonAnsvar.barn
@@ -289,7 +289,7 @@ internal class ForsorgerpliktRessursTest {
     private fun createJsonInternalSoknadWithForsorgerplikt(
         harForsorgerplikt: Boolean?,
         barnebidrag: Verdi?,
-        ansvars: List<JsonAnsvar>?
+        ansvars: List<JsonAnsvar>?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
@@ -300,16 +300,16 @@ internal class ForsorgerpliktRessursTest {
                             JsonHarForsorgerplikt()
                                 .withKilde(JsonKilde.SYSTEM)
                                 .withVerdi(it)
-                        }
+                        },
                     )
                     .withBarnebidrag(
                         barnebidrag?.let {
                             JsonBarnebidrag()
                                 .withKilde(JsonKildeBruker.BRUKER)
                                 .withVerdi(it)
-                        }
+                        },
                     )
-                    .withAnsvar(ansvars)
+                    .withAnsvar(ansvars),
             )
         return soknadUnderArbeid
     }
@@ -323,7 +323,7 @@ internal class ForsorgerpliktRessursTest {
                 JsonNavn()
                     .withFornavn("Amadeus")
                     .withMellomnavn("Wolfgang")
-                    .withEtternavn("Mozart")
+                    .withEtternavn("Mozart"),
             )
             .withFodselsdato("1756-01-27")
             .withPersonIdentifikator("11111111111")
@@ -333,7 +333,7 @@ internal class ForsorgerpliktRessursTest {
                 JsonNavn()
                     .withFornavn("Ludwig")
                     .withMellomnavn("van")
-                    .withEtternavn("Beethoven")
+                    .withEtternavn("Beethoven"),
             )
             .withFodselsdato("1770-12-16")
             .withPersonIdentifikator("22222222222")
@@ -347,7 +347,7 @@ internal class ForsorgerpliktRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

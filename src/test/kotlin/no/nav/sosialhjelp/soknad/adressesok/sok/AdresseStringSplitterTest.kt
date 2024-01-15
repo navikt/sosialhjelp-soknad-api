@@ -101,7 +101,7 @@ internal class AdresseStringSplitterTest {
     fun dobbeltnavnPlussDiverseMellomrom() {
         val sokedata = toSokedata(
             kodeverkService = null,
-            adresse = "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   "
+            adresse = "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ",
         )
         assertThat(sokedata!!.adresse).isEqualTo("Nedre Glommas Vei")
         assertThat(sokedata.husnummer).isEqualTo("211")

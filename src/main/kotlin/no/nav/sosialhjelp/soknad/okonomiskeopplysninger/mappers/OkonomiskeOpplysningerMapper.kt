@@ -23,7 +23,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllInntekterToJsonOkonomi(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ) {
         jsonOkonomi.oversikt.inntekt
             .firstOrNull { it.type == soknadType }
@@ -40,7 +40,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllInntekterToJsonOkonomiUtbetalinger(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String
+        soknadType: String,
     ) {
         jsonOkonomi.opplysninger.utbetaling
             .firstOrNull { it.type == soknadType }
@@ -57,7 +57,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllFormuerToJsonOkonomi(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ) {
         jsonOkonomi.oversikt.formue
             .firstOrNull { it.type == soknadType }
@@ -74,7 +74,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllOversiktUtgifterToJsonOkonomi(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ) {
         jsonOkonomi.oversikt.utgift
             .firstOrNull { it.type == soknadType }
@@ -97,7 +97,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllOpplysningUtgifterToJsonOkonomi(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ) {
         var eksisterendeOpplysningUtgift = jsonOkonomi.opplysninger.utgift
             .firstOrNull { it.type == soknadType }
@@ -135,7 +135,7 @@ object OkonomiskeOpplysningerMapper {
     fun addAllUtbetalingerToJsonOkonomi(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ) {
         jsonOkonomi.opplysninger.utbetaling
             .firstOrNull { it.type == soknadType }
@@ -152,7 +152,7 @@ object OkonomiskeOpplysningerMapper {
     private fun addBoliglanRenterToUtgifter(
         vedleggFrontend: VedleggFrontend,
         jsonOkonomi: JsonOkonomi,
-        utgifter: MutableList<JsonOkonomioversiktUtgift>
+        utgifter: MutableList<JsonOkonomioversiktUtgift>,
     ) {
         val soknadType = UTGIFTER_BOLIGLAN_RENTER
         jsonOkonomi.oversikt.utgift
@@ -166,14 +166,14 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToInntektList(
         rader: List<VedleggRadFrontend>?,
-        eksisterendeInntekt: JsonOkonomioversiktInntekt
+        eksisterendeInntekt: JsonOkonomioversiktInntekt,
     ): List<JsonOkonomioversiktInntekt> {
         return rader?.map { mapToInntekt(it, eksisterendeInntekt) } ?: emptyList()
     }
 
     private fun mapToInntekt(
         rad: VedleggRadFrontend,
-        eksisterendeInntekt: JsonOkonomioversiktInntekt
+        eksisterendeInntekt: JsonOkonomioversiktInntekt,
     ): JsonOkonomioversiktInntekt {
         return JsonOkonomioversiktInntekt()
             .withKilde(JsonKilde.BRUKER)
@@ -187,7 +187,7 @@ object OkonomiskeOpplysningerMapper {
     private fun mapToUtbetalingList(
         rader: List<VedleggRadFrontend>?,
         eksisterendeUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        brukBelop: Boolean
+        brukBelop: Boolean,
     ): List<JsonOkonomiOpplysningUtbetaling> {
         return rader?.map { mapToUtbetaling(it, eksisterendeUtbetaling, brukBelop) } ?: emptyList()
     }
@@ -195,7 +195,7 @@ object OkonomiskeOpplysningerMapper {
     private fun mapToUtbetaling(
         rad: VedleggRadFrontend,
         eksisterendeUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        brukBelop: Boolean
+        brukBelop: Boolean,
     ): JsonOkonomiOpplysningUtbetaling {
         val jsonOkonomiOpplysningUtbetaling = JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.BRUKER)
@@ -212,14 +212,14 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToFormueList(
         rader: List<VedleggRadFrontend>?,
-        eksisterendeFormue: JsonOkonomioversiktFormue
+        eksisterendeFormue: JsonOkonomioversiktFormue,
     ): List<JsonOkonomioversiktFormue> {
         return rader?.map { mapToFormue(it, eksisterendeFormue) } ?: emptyList()
     }
 
     private fun mapToFormue(
         radFrontend: VedleggRadFrontend,
-        eksisterendeFormue: JsonOkonomioversiktFormue
+        eksisterendeFormue: JsonOkonomioversiktFormue,
     ): JsonOkonomioversiktFormue {
         return JsonOkonomioversiktFormue()
             .withKilde(JsonKilde.BRUKER)
@@ -231,14 +231,14 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToOversiktUtgiftList(
         rader: List<VedleggRadFrontend>?,
-        eksisterendeUtgift: JsonOkonomioversiktUtgift
+        eksisterendeUtgift: JsonOkonomioversiktUtgift,
     ): List<JsonOkonomioversiktUtgift> {
         return rader?.map { mapToOversiktUtgift(it, eksisterendeUtgift) } ?: emptyList()
     }
 
     private fun mapToOversiktUtgift(
         radFrontend: VedleggRadFrontend,
-        eksisterendeUtgift: JsonOkonomioversiktUtgift
+        eksisterendeUtgift: JsonOkonomioversiktUtgift,
     ): JsonOkonomioversiktUtgift {
         val tittel = eksisterendeUtgift.tittel
         val typetittel = getTypetittel(tittel)
@@ -261,14 +261,14 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToOppysningUtgiftList(
         rader: List<VedleggRadFrontend>?,
-        eksisterendeUtgift: JsonOkonomiOpplysningUtgift
+        eksisterendeUtgift: JsonOkonomiOpplysningUtgift,
     ): List<JsonOkonomiOpplysningUtgift> {
         return rader?.map { mapToOppysningUtgift(it, eksisterendeUtgift) } ?: emptyList()
     }
 
     private fun mapToOppysningUtgift(
         radFrontend: VedleggRadFrontend,
-        eksisterendeUtgift: JsonOkonomiOpplysningUtgift
+        eksisterendeUtgift: JsonOkonomiOpplysningUtgift,
     ): JsonOkonomiOpplysningUtgift {
         val tittel = eksisterendeUtgift.tittel
         val typetittel = getTypetittel(tittel)

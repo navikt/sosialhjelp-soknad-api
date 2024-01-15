@@ -274,7 +274,7 @@ internal class BostotteRessursTest {
                 bostotteRessurs.updateBostotte(
                     BEHANDLINGSID,
                     bostotteFrontend,
-                    "token"
+                    "token",
                 )
             }
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
@@ -288,7 +288,7 @@ internal class BostotteRessursTest {
                 bostotteRessurs.updateSamtykke(
                     BEHANDLINGSID,
                     true,
-                    "token"
+                    "token",
                 )
             }
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
@@ -301,15 +301,15 @@ internal class BostotteRessursTest {
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(SoknadJsonTyper.BOSTOTTE)
-                    .withVerdi(verdi)
-            )
+                    .withVerdi(verdi),
+            ),
         )
         return soknadUnderArbeid
     }
 
     private fun createJsonInternalSoknadWithBostotteUtbetalinger(
         harUtbetalinger: Boolean,
-        utbetalingTyper: List<String>
+        utbetalingTyper: List<String>,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
@@ -318,7 +318,7 @@ internal class BostotteRessursTest {
                 JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(utbetaling)
-                    .withTittel("tittel")
+                    .withTittel("tittel"),
             )
         }
         if (harUtbetalinger) {
@@ -326,7 +326,7 @@ internal class BostotteRessursTest {
                 JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)
-                    .withTittel("tittel")
+                    .withTittel("tittel"),
             )
         }
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
@@ -341,7 +341,7 @@ internal class BostotteRessursTest {
                 JsonBostotteSak()
                     .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(sak)
-                    .withStatus("STATUS")
+                    .withStatus("STATUS"),
             )
         }
         if (harSaker) {
@@ -349,7 +349,7 @@ internal class BostotteRessursTest {
                 JsonBostotteSak()
                     .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)
-                    .withStatus("UNDER_BEHANDLING")
+                    .withStatus("UNDER_BEHANDLING"),
             )
         }
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker = saker
@@ -369,7 +369,7 @@ internal class BostotteRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

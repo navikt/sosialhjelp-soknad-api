@@ -38,11 +38,12 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
         val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(
             lagOpplastetVedlegg(EIER, TYPE, SOKNADID),
-            EIER
+            EIER,
         )
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(
-                lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER
+                lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3),
+                EIER,
             )
         batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID)
         assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
@@ -61,7 +62,7 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
             data = DATA,
             soknadId = soknadId,
             filnavn = FILNAVN,
-            sha512 = getSha512FromByteArray(DATA)
+            sha512 = getSha512FromByteArray(DATA),
         )
     }
 

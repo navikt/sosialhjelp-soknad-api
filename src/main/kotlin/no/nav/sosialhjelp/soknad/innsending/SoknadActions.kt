@@ -48,7 +48,7 @@ class SoknadActions(
     @PostMapping("/send")
     fun sendSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SendTilUrlFrontend {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
@@ -106,13 +106,13 @@ class SoknadActions(
 
     private fun updateVedleggJsonWithHendelseTypeAndHendelseReferanse(
         eier: String,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
 
         addHendelseTypeAndHendelseReferanse(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
-            isSoknad = !soknadUnderArbeid.erEttersendelse
+            isSoknad = !soknadUnderArbeid.erEttersendelse,
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }

@@ -68,7 +68,7 @@ fun SkattbarInntekt?.getForskuddstrekk(): List<Utbetaling> {
                         periodeFom = fom,
                         periodeTom = tom,
                         tittel = "Forskuddstrekk",
-                        orgnummer = it.opplysningspliktigId
+                        orgnummer = it.opplysningspliktigId,
                     )
                     forskuddstrekk.add(utbetaling)
                 }
@@ -81,7 +81,7 @@ private fun getUtbetaling(
     fom: LocalDate,
     tom: LocalDate,
     inntekt: Inntekt,
-    tittel: String
+    tittel: String,
 ): Utbetaling {
     return Utbetaling(
         type = "skatteopplysninger",
@@ -90,7 +90,7 @@ private fun getUtbetaling(
         periodeFom = fom,
         periodeTom = tom,
         tittel = tittel,
-        orgnummer = oppgaveInntektsmottaker.opplysningspliktigId
+        orgnummer = oppgaveInntektsmottaker.opplysningspliktigId,
     )
 }
 

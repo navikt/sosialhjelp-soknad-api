@@ -15,6 +15,8 @@ import no.nav.sosialhjelp.soknad.app.Constants
  * @see no.nav.security.token.support.core.validation.JwtTokenAnnotationHandler.handleProtectedWithClaims Token-validering
  */
 @ProtectedWithClaims(
-    issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true
+    issuer = Constants.TOKENX,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
 )
 annotation class ProtectionTokenXHigh

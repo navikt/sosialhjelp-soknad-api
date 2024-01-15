@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
     @GetMapping
     fun hentBegrunnelse(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): BegrunnelseFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -36,7 +36,7 @@ class BegrunnelseRessurs(
     @PutMapping
     fun updateBegrunnelse(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody begrunnelseFrontend: BegrunnelseFrontend
+        @RequestBody begrunnelseFrontend: BegrunnelseFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -52,6 +52,6 @@ class BegrunnelseRessurs(
 
     data class BegrunnelseFrontend(
         val hvaSokesOm: String?,
-        val hvorforSoke: String?
+        val hvorforSoke: String?,
     )
 }

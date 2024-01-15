@@ -27,7 +27,7 @@ internal class OppgaveHandtererImplTest {
         oppgaveRepository,
         schedulerDisabled = false,
         prometheusMetricsService,
-        leaderElection
+        leaderElection,
     )
 
     private val oppgaveSlot = slot<Oppgave>()
@@ -48,7 +48,7 @@ internal class OppgaveHandtererImplTest {
             opprettet = LocalDateTime.now(),
             sistKjort = null,
             nesteForsok = LocalDateTime.now(),
-            retries = 0
+            retries = 0,
         )
 
         every { oppgaveRepository.hentNeste() } returns oppgave andThen null

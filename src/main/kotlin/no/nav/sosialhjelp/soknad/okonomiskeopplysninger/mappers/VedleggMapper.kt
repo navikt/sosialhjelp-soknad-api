@@ -39,7 +39,7 @@ object VedleggMapper {
     fun mapToVedleggFrontend(
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): VedleggFrontend {
         val filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
         val vedleggType = getVedleggType(vedlegg)
@@ -49,7 +49,7 @@ object VedleggMapper {
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
             vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
-            filer = filer
+            filer = filer,
         )
     }
 
@@ -66,7 +66,7 @@ object VedleggMapper {
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
             vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
-            filer = filer
+            filer = filer,
         )
     }
 
@@ -110,7 +110,7 @@ object VedleggMapper {
 
     private fun getRadListFromOpplysningerUtgift(
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ): List<VedleggRadFrontend> {
         val radList = if (jsonOkonomi.opplysninger.utgift.isEmpty()) {
             mutableListOf(VedleggRadFrontend())
@@ -169,13 +169,13 @@ object VedleggMapper {
 
     private fun getRadFromOpplysningerUtgift(
         utgift: JsonOkonomiOpplysningUtgift,
-        soknadType: String?
+        soknadType: String?,
     ): VedleggRadFrontend {
         return when (soknadType) {
             UTGIFTER_ANDRE_UTGIFTER, UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO, UTGIFTER_BARN_FRITIDSAKTIVITETER -> {
                 VedleggRadFrontend(
                     belop = utgift.belop,
-                    beskrivelse = utgift.tittel.substring(utgift.tittel.indexOf(":") + 1) + " "
+                    beskrivelse = utgift.tittel.substring(utgift.tittel.indexOf(":") + 1) + " ",
                 )
             }
             else -> VedleggRadFrontend(belop = utgift.belop)
@@ -186,7 +186,7 @@ object VedleggMapper {
         if (soknadType == JOBB) {
             return VedleggRadFrontend(
                 brutto = inntekt.brutto,
-                netto = inntekt.netto
+                netto = inntekt.netto,
             )
         }
         if (inntekt.brutto != null) {
@@ -208,7 +208,7 @@ object VedleggMapper {
 
     private fun mapJsonFilerAndOpplastedeVedleggToFilerFrontend(
         filer: List<JsonFiler>,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): List<FilFrontend> {
         return filer
             .map { fil: JsonFiler ->
@@ -238,10 +238,10 @@ object VedleggMapper {
     fun mapVedleggToSortedListOfEttersendteVedlegg(
         innsendingstidspunkt: LocalDateTime?,
         opplastedeVedlegg: List<OpplastetVedlegg>,
-        originaleVedlegg: List<JsonVedlegg>
+        originaleVedlegg: List<JsonVedlegg>,
     ): List<EttersendtVedlegg> {
         val ettersendteVedlegg: SortedMap<String, EttersendtVedlegg> = TreeMap(
-            sortAlphabeticallyAndPutTypeAnnetLast()
+            sortAlphabeticallyAndPutTypeAnnetLast(),
         )
         originaleVedlegg
             .filter { filterGittInnsendingstidspunkt(innsendingstidspunkt, it) }
@@ -256,7 +256,7 @@ object VedleggMapper {
                     ettersendteVedlegg[sammensattNavn] = EttersendtVedlegg(
                         type = sammensattNavn,
                         vedleggStatus = vedlegg.status,
-                        filer = filerFrontend
+                        filer = filerFrontend,
                     )
                 }
             }

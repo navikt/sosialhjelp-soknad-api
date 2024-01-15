@@ -26,18 +26,18 @@ class BegrunnelseSteg {
                         Sporsmal(
                             tittel = "begrunnelse.hva.sporsmal",
                             erUtfylt = harUtfyltHvaSokesOm,
-                            felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse) else null
+                            felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse) else null,
                         ),
                         Sporsmal(
                             tittel = "begrunnelse.hvorfor.sporsmal",
                             erUtfylt = harUtfyltHvorforSoke,
-                            felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(begrunnelse) else null
-                        )
+                            felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(begrunnelse) else null,
+                        ),
 
-                    )
-                )
+                    ),
+                ),
 
-            )
+            ),
         )
     }
 
@@ -45,8 +45,8 @@ class BegrunnelseSteg {
         return listOf(
             Felt(
                 type = Type.TEKST,
-                svar = createSvar(begrunnelse.hvaSokesOm, SvarType.TEKST)
-            )
+                svar = createSvar(begrunnelse.hvaSokesOm, SvarType.TEKST),
+            ),
         )
     }
 
@@ -54,8 +54,8 @@ class BegrunnelseSteg {
         return listOf(
             Felt(
                 type = Type.TEKST,
-                svar = createSvar(begrunnelse.hvorforSoke, SvarType.TEKST)
-            )
+                svar = createSvar(begrunnelse.hvorforSoke, SvarType.TEKST),
+            ),
         )
     }
 }

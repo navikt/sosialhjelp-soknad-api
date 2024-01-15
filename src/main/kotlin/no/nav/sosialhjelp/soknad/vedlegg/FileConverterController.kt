@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/vedlegg/konverter")
 class FileConverterController(
     private val fileConverterService: FileConverterService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
 ) {
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun konverterVedlegg(
@@ -39,8 +39,9 @@ class FileConverterController(
 
     private fun MultipartFile.validateFileName(): String {
         return originalFilename?.also {
-            if (it.isBlank() || it.isEmpty())
+            if (it.isBlank() || it.isEmpty()) {
                 throw IllegalStateException("Filnavn er tomt")
+            }
         }
             ?: throw IllegalStateException("Filnavn er null")
     }

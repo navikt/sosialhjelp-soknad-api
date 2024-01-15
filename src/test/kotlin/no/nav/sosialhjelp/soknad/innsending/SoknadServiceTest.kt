@@ -59,7 +59,7 @@ internal class SoknadServiceTest {
         skatteetatenSystemdata,
         mellomlagringService,
         prometheusMetricsService,
-        Clock.systemDefaultZone()
+        Clock.systemDefaultZone(),
     )
 
     @BeforeEach
@@ -115,7 +115,7 @@ internal class SoknadServiceTest {
             JsonVedlegg()
                 .withType(testType2)
                 .withTilleggsinfo(testTilleggsinfo2)
-                .withStatus(Vedleggstatus.LastetOpp.toString())
+                .withStatus(Vedleggstatus.LastetOpp.toString()),
         )
 
         val behandlingsId = "123"
@@ -127,7 +127,7 @@ internal class SoknadServiceTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
@@ -162,7 +162,7 @@ internal class SoknadServiceTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
@@ -181,7 +181,7 @@ internal class SoknadServiceTest {
             behandlingsId = BEHANDLINGSID,
             fnr = EIER,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 

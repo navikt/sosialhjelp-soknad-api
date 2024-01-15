@@ -34,7 +34,7 @@ internal class KontonummerServiceTest {
     internal fun kontonummerSkalIkkeSettesNaarKlientReturnererUtenlandskontoNr() {
         every { kontonummerClient.getKontonummer(any()) } returns KontoDto(
             "1337",
-            UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null)
+            UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null),
         )
 
         val kontonummer = kontonummerService.getKontonummer("ident")

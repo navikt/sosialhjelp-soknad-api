@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class DittNavMetadataService(
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     fun hentAktivePabegynteSoknader(fnr: String): List<PabegyntSoknadDto> {
         return hentPabegynteSoknader(fnr, true)
@@ -32,7 +32,7 @@ class DittNavMetadataService(
                 lenkeTilPabegyntSoknad(it.behandlingsId),
                 SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
                 toUtc(it.sistEndretDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                aktiv
+                aktiv,
             )
         }
     }

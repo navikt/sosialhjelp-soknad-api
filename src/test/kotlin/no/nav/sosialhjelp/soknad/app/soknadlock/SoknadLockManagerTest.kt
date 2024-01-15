@@ -78,7 +78,8 @@ internal class SoknadLockManagerTest {
         assertEquals(1, locks.filter { it == null }.size, "expected one lock to fail to acquire")
         assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting second lock on BEHANDLINGSID_A")
         assertTrue(
-            (duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS, "expected to wait at least ${SoknadLockManager.LOCK_TIMEOUT_MS}ms"
+            (duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS,
+            "expected to wait at least ${SoknadLockManager.LOCK_TIMEOUT_MS}ms",
         )
     }
 
@@ -114,7 +115,8 @@ internal class SoknadLockManagerTest {
         })
 
         assertLockMapState(
-            mapOf(BEHANDLINGSID_A to LockState.LOCKED, BEHANDLINGSID_B to LockState.LOCKED), "after acquiring locks"
+            mapOf(BEHANDLINGSID_A to LockState.LOCKED, BEHANDLINGSID_B to LockState.LOCKED),
+            "after acquiring locks",
         )
     }
 

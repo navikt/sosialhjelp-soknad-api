@@ -11,14 +11,14 @@ data class AdresseForslag(
     val geografiskTilknytning: String?,
     val gatekode: String? = null,
     val bydel: String? = null,
-    val type: AdresseForslagType
+    val type: AdresseForslagType,
 ) {
     constructor(kommunenummer: String?, geografiskTilknytning: String?, type: AdresseForslagType) : this(null, null, null, kommunenummer, null, null, null, geografiskTilknytning, null, null, type)
 }
 
 enum class AdresseForslagType(
-    val value: String
+    val value: String,
 ) {
     GATEADRESSE("gateadresse"),
-    MATRIKKELADRESSE("matrikkeladresse")
+    MATRIKKELADRESSE("matrikkeladresse"),
 }

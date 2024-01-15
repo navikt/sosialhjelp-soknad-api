@@ -29,15 +29,15 @@ class FamiliesituasjonSteg {
             tittel = "familiebolk.tittel",
             avsnitt = listOf(
                 sivilstatusAvsnitt(sivilstatus),
-                forsorgerpliktAvsnitt(forsorgerplikt)
-            )
+                forsorgerpliktAvsnitt(forsorgerplikt),
+            ),
         )
     }
 
     private fun sivilstatusAvsnitt(sivilstatus: JsonSivilstatus?): Avsnitt {
         return Avsnitt(
             tittel = "system.familie.sivilstatus.sporsmal",
-            sporsmal = sivilstatusSporsmal(sivilstatus)
+            sporsmal = sivilstatusSporsmal(sivilstatus),
         )
     }
 
@@ -74,12 +74,16 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.sivilstatus.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST)
+            felt = if (erUtfylt) {
+                listOf(
+                    Felt(
+                        type = Type.CHECKBOX,
+                        svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST),
+                    ),
                 )
-            ) else null
+            } else {
+                null
+            },
         )
     }
 
@@ -118,9 +122,9 @@ class FamiliesituasjonSteg {
             felt = listOf(
                 Felt(
                     type = Type.SYSTEMDATA_MAP, // selv om dette ikke er systemdata?!?
-                    labelSvarMap = map
-                )
-            )
+                    labelSvarMap = map,
+                ),
+            ),
         )
     }
 
@@ -145,9 +149,9 @@ class FamiliesituasjonSteg {
             felt = listOf(
                 Felt(
                     type = Type.SYSTEMDATA,
-                    svar = createSvar("system.familie.sivilstatus.ikkeTilgang.label", SvarType.LOCALE_TEKST)
-                )
-            )
+                    svar = createSvar("system.familie.sivilstatus.ikkeTilgang.label", SvarType.LOCALE_TEKST),
+                ),
+            ),
         )
     }
 
@@ -165,7 +169,7 @@ class FamiliesituasjonSteg {
         if (sivilstatus.folkeregistrertMedEktefelle != null) {
             labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"] = createSvar(
                 if (java.lang.Boolean.TRUE == sivilstatus.folkeregistrertMedEktefelle) "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" else "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false",
-                SvarType.LOCALE_TEKST
+                SvarType.LOCALE_TEKST,
             )
         }
         return Sporsmal(
@@ -174,16 +178,16 @@ class FamiliesituasjonSteg {
             felt = listOf(
                 Felt(
                     type = Type.SYSTEMDATA_MAP,
-                    labelSvarMap = labelSvarMap
-                )
-            )
+                    labelSvarMap = labelSvarMap,
+                ),
+            ),
         )
     }
 
     private fun forsorgerpliktAvsnitt(forsorgerplikt: JsonForsorgerplikt): Avsnitt {
         return Avsnitt(
             tittel = "familierelasjon.faktum.sporsmal",
-            sporsmal = forsorgerpliktSporsmal(forsorgerplikt)
+            sporsmal = forsorgerpliktSporsmal(forsorgerplikt),
         )
     }
 
@@ -215,9 +219,9 @@ class FamiliesituasjonSteg {
             felt = listOf(
                 Felt(
                     type = Type.SYSTEMDATA,
-                    svar = createSvar("familierelasjon.ingen_registrerte_barn_tekst", SvarType.LOCALE_TEKST)
-                )
-            )
+                    svar = createSvar("familierelasjon.ingen_registrerte_barn_tekst", SvarType.LOCALE_TEKST),
+                ),
+            ),
         )
     }
 
@@ -232,7 +236,7 @@ class FamiliesituasjonSteg {
         if (barn.erFolkeregistrertSammen != null) {
             labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] = createSvar(
                 if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
-                SvarType.LOCALE_TEKST
+                SvarType.LOCALE_TEKST,
             )
         }
         return Sporsmal(
@@ -241,9 +245,9 @@ class FamiliesituasjonSteg {
             felt = listOf(
                 Felt(
                     type = Type.SYSTEMDATA_MAP,
-                    labelSvarMap = labelSvarMap
-                )
-            )
+                    labelSvarMap = labelSvarMap,
+                ),
+            ),
         )
     }
 
@@ -253,11 +257,15 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "system.familie.barn.true.barn.deltbosted.sporsmal",
             erUtfylt = harUtfyltDeltBostedSporsmal,
-            felt = if (harUtfyltDeltBostedSporsmal) StegUtils.booleanVerdiFelt(
-                harSvartJaDeltBosted,
-                "system.familie.barn.true.barn.deltbosted.true",
-                "system.familie.barn.true.barn.deltbosted.false"
-            ) else null
+            felt = if (harUtfyltDeltBostedSporsmal) {
+                StegUtils.booleanVerdiFelt(
+                    harSvartJaDeltBosted,
+                    "system.familie.barn.true.barn.deltbosted.true",
+                    "system.familie.barn.true.barn.deltbosted.false",
+                )
+            } else {
+                null
+            },
         )
     }
 
@@ -266,12 +274,16 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.barn.true.barnebidrag.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST)
+            felt = if (erUtfylt) {
+                listOf(
+                    Felt(
+                        type = Type.CHECKBOX,
+                        svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST),
+                    ),
                 )
-            ) else null
+            } else {
+                null
+            },
         )
     }
 

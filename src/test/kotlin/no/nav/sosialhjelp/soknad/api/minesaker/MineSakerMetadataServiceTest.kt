@@ -22,7 +22,7 @@ internal class MineSakerMetadataServiceTest {
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
-            innsendtDato = LocalDateTime.now()
+            innsendtDato = LocalDateTime.now(),
         )
 
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)

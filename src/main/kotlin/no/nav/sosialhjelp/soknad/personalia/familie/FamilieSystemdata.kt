@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class FamilieSystemdata(
-    private val personService: PersonService
+    private val personService: PersonService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -44,7 +44,7 @@ class FamilieSystemdata(
             if (!ansvarList.isNullOrEmpty()) {
                 ansvarList.removeIf { it.barn.kilde == JsonKilde.SYSTEM && isNotInList(it, systemverdiForsorgerplikt.ansvar) }
                 ansvarList.addAll(
-                    systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) }
+                    systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) },
                 )
             } else {
                 forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
@@ -109,16 +109,16 @@ class FamilieSystemdata(
                         JsonNavn()
                             .withFornavn(barn.fornavn)
                             .withMellomnavn(barn.mellomnavn)
-                            .withEtternavn(barn.etternavn)
+                            .withEtternavn(barn.etternavn),
                     )
                     .withFodselsdato(barn.fodselsdato?.toString())
                     .withPersonIdentifikator(barn.fnr)
-                    .withHarDiskresjonskode(false)
+                    .withHarDiskresjonskode(false),
             )
             .withErFolkeregistrertSammen(
                 JsonErFolkeregistrertSammen()
                     .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(barn.folkeregistrertSammen)
+                    .withVerdi(barn.folkeregistrertSammen),
             )
     }
 
@@ -129,7 +129,7 @@ class FamilieSystemdata(
                     JsonNavn()
                         .withFornavn("")
                         .withMellomnavn("")
-                        .withEtternavn("")
+                        .withEtternavn(""),
                 )
             } else JsonEktefelle()
                 .withNavn(mapToJsonNavn(ektefelle))

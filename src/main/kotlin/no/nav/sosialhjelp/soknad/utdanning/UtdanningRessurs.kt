@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/utdanning", produces = [APPLICATION_JSON_VALUE])
 class UtdanningRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
 
     @GetMapping
     fun hentUtdanning(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): UtdanningFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -40,7 +40,7 @@ class UtdanningRessurs(
     @PutMapping
     fun updateUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody utdanningFrontend: UtdanningFrontend
+        @RequestBody utdanningFrontend: UtdanningFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -68,7 +68,7 @@ class UtdanningRessurs(
         @Schema(nullable = true)
         var erStudent: Boolean?,
         @Schema(nullable = true)
-        var studengradErHeltid: Boolean?
+        var studengradErHeltid: Boolean?,
     )
 
     companion object {

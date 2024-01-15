@@ -71,7 +71,7 @@ class SoknadService(
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val clock: Clock
+    private val clock: Clock,
 ) {
     @Transactional
     fun startSoknad(token: String?): String {
@@ -89,7 +89,7 @@ class SoknadService(
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         systemdataUpdater.update(soknadUnderArbeid)
@@ -109,7 +109,7 @@ class SoknadService(
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(clock),
-            sistEndretDato = LocalDateTime.now(clock)
+            sistEndretDato = LocalDateTime.now(clock),
         )
         soknadMetadataRepository.opprett(soknadMetadata)
         return soknadMetadata.behandlingsId
@@ -212,7 +212,7 @@ class SoknadService(
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ) {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.vedlegg = vedlegg
@@ -252,38 +252,38 @@ class SoknadService(
                                     .withPersonIdentifikator(
                                         JsonPersonIdentifikator()
                                             .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                            .withVerdi(eier)
+                                            .withVerdi(eier),
                                     )
                                     .withNavn(
                                         JsonSokernavn()
                                             .withKilde(JsonSokernavn.Kilde.SYSTEM)
                                             .withFornavn("")
                                             .withMellomnavn("")
-                                            .withEtternavn("")
+                                            .withEtternavn(""),
                                     )
                                     .withKontonummer(
                                         JsonKontonummer()
-                                            .withKilde(JsonKilde.SYSTEM)
-                                    )
+                                            .withKilde(JsonKilde.SYSTEM),
+                                    ),
                             )
                             .withArbeid(JsonArbeid())
                             .withUtdanning(
                                 JsonUtdanning()
-                                    .withKilde(JsonKilde.BRUKER)
+                                    .withKilde(JsonKilde.BRUKER),
                             )
                             .withFamilie(
                                 JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt())
+                                    .withForsorgerplikt(JsonForsorgerplikt()),
                             )
                             .withBegrunnelse(
                                 JsonBegrunnelse()
                                     .withKilde(JsonKildeBruker.BRUKER)
                                     .withHvorforSoke("")
-                                    .withHvaSokesOm("")
+                                    .withHvaSokesOm(""),
                             )
                             .withBosituasjon(
                                 JsonBosituasjon()
-                                    .withKilde(JsonKildeBruker.BRUKER)
+                                    .withKilde(JsonKildeBruker.BRUKER),
                             )
                             .withOkonomi(
                                 JsonOkonomi()
@@ -292,28 +292,28 @@ class SoknadService(
                                             .withUtbetaling(ArrayList())
                                             .withUtgift(ArrayList())
                                             .withBostotte(JsonBostotte())
-                                            .withBekreftelse(ArrayList())
+                                            .withBekreftelse(ArrayList()),
                                     )
                                     .withOversikt(
                                         JsonOkonomioversikt()
                                             .withInntekt(ArrayList())
                                             .withUtgift(ArrayList())
-                                            .withFormue(ArrayList())
-                                    )
-                            )
+                                            .withFormue(ArrayList()),
+                                    ),
+                            ),
                     )
                     .withMottaker(
                         JsonSoknadsmottaker()
                             .withNavEnhetsnavn("")
-                            .withEnhetsnummer("")
+                            .withEnhetsnummer(""),
                     )
                     .withDriftsinformasjon(
                         JsonDriftsinformasjon()
                             .withUtbetalingerFraNavFeilet(false)
                             .withInntektFraSkatteetatenFeilet(false)
-                            .withStotteFraHusbankenFeilet(false)
+                            .withStotteFraHusbankenFeilet(false),
                     )
-                    .withKompatibilitet(ArrayList())
+                    .withKompatibilitet(ArrayList()),
             ).withVedlegg(JsonVedleggSpesifikasjon())
         }
 

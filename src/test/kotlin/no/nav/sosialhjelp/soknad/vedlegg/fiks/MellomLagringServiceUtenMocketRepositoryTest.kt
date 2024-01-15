@@ -55,7 +55,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-
         mockkObject(SubjectHandlerUtils)
         mockkObject(VedleggUtils)
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns lagMellomlagringDto()
@@ -74,7 +73,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } just runs
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
@@ -83,25 +81,24 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
             BEHANDLINGSID,
             VEDLEGGSTYPE.stringName,
             PDF_FILE.readBytes(),
-            ORIGINALT_FILNAVN
+            ORIGINALT_FILNAVN,
         )
 
         val soknadUnderArbeidFraDb = jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
-            BEHANDLINGSID
+            BEHANDLINGSID,
         ).firstOrNull()
 
         assertThat(soknadUnderArbeidFraDb?.behandlingsId).isEqualTo(BEHANDLINGSID)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(1)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.get(0)?.filnavn).isEqualTo(
-            FILNAVN
+            FILNAVN,
         )
     }
 
     @Test
     internal fun `skal ikke oppdatere soknad_under_arbeid med filer i vedlegg hvis feil kaller mot FIKS`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } throws (IllegalStateException("feil"))
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
@@ -111,14 +108,14 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
                 BEHANDLINGSID,
                 VEDLEGGSTYPE.stringName,
                 PDF_FILE.readBytes(),
-                ORIGINALT_FILNAVN
+                ORIGINALT_FILNAVN,
             )
         }
 
         val soknadUnderArbeidFraDb = jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
-            BEHANDLINGSID
+            BEHANDLINGSID,
         ).firstOrNull()
 
         assertThat(soknadUnderArbeidFraDb?.behandlingsId).isEqualTo(BEHANDLINGSID)
@@ -134,7 +131,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
             jsonInternalSoknad = lagInternalSoknadJson(),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -146,9 +143,9 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
                         JsonVedlegg()
                             .withType("annet")
                             .withTilleggsinfo("annet")
-                            .withStatus("VedleggKreves")
-                    )
-                )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
             )
     }
 
@@ -156,8 +153,8 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         return MellomlagringDto(
             navEksternRefId = BEHANDLINGSID,
             mellomlagringMetadataList = listOf(
-                MellomlagringDokumentInfo(filnavn = FILNAVN, filId = "uuid", storrelse = 123L, mimetype = "mime")
-            )
+                MellomlagringDokumentInfo(filnavn = FILNAVN, filId = "uuid", storrelse = 123L, mimetype = "mime"),
+            ),
         )
     }
 

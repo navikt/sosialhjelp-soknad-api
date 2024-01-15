@@ -15,7 +15,7 @@ interface SubjectHandler {
 
 @Component
 class SubjectHandlerImpl(
-    private val tokenValidationContextHolder: TokenValidationContextHolder
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) : SubjectHandler {
 
     private val tokenValidationContext: TokenValidationContext

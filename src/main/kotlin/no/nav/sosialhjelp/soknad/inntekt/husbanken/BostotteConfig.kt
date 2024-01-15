@@ -11,7 +11,7 @@ import reactor.netty.http.client.HttpClient
 class BostotteConfig(
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
 
     @Bean

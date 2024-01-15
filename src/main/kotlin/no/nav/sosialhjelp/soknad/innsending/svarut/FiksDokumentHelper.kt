@@ -24,7 +24,7 @@ class FiksDokumentHelper(
     private val skalKryptere: Boolean,
     private val dokumentKrypterer: DokumentKrypterer,
     private val innsendingService: InnsendingService,
-    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
+    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
 ) {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
@@ -57,7 +57,7 @@ class FiksDokumentHelper(
 
     fun lagDokumentForSaksbehandlerPdf(
         internalSoknad: JsonInternalSoknad,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val filnavn = "Soknad.pdf"
         val soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false)
@@ -79,7 +79,7 @@ class FiksDokumentHelper(
     fun lagDokumentForEttersendelsePdf(
         internalSoknad: JsonInternalSoknad,
         eier: String,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val filnavn = "ettersendelse.pdf"
         val pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier)
@@ -91,7 +91,7 @@ class FiksDokumentHelper(
         mimetype: String,
         bytes: ByteArray,
         eksluderesFraUtskrift: Boolean,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(bytes)
         map[filnavn] = byteArrayInputStream
@@ -103,7 +103,7 @@ class FiksDokumentHelper(
 
     fun lagDokumentListeForVedlegg(
         soknadUnderArbeid: SoknadUnderArbeid,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): List<Dokument> {
         val opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid)
         return opplastedeVedlegg.map { opprettDokumentForVedlegg(it, map) }

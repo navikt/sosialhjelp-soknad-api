@@ -23,12 +23,12 @@ class BatchSoknadMetadataRepositoryJdbc(
             val resultat = jdbcTemplate.query(
                 "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + SQLUtils.limit(1),
                 soknadMetadataRowMapper,
-                SQLUtils.tidTilTimestamp(frist)
+                SQLUtils.tidTilTimestamp(frist),
             ).firstOrNull() ?: return null
 
             val rowsAffected = jdbcTemplate.update(
                 "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.id
+                resultat.id,
             )
             if (rowsAffected == 1) {
                 return resultat
@@ -43,13 +43,13 @@ class BatchSoknadMetadataRepositoryJdbc(
             val resultat = jdbcTemplate.query(
                 "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(20),
                 soknadMetadataRowMapper,
-                SQLUtils.tidTilTimestamp(frist)
+                SQLUtils.tidTilTimestamp(frist),
             )
 
             val rowsAffected = resultat.sumOf {
                 jdbcTemplate.update(
                     "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                    it.id
+                    it.id,
                 )
             }
 

@@ -58,7 +58,7 @@ internal class AvbrytAutomatiskSchedulerTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every {
@@ -96,7 +96,7 @@ internal class AvbrytAutomatiskSchedulerTest {
             jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
@@ -127,7 +127,7 @@ internal class AvbrytAutomatiskSchedulerTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
@@ -138,7 +138,7 @@ internal class AvbrytAutomatiskSchedulerTest {
             status = status,
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
         )
     }
 

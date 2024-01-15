@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RestController
 class BasisPersonaliaRessurs(
     private val kodeverkService: KodeverkService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping
     fun hentBasisPersonalia(
-        @PathVariable("behandlingsId") behandlingsId: String?
+        @PathVariable("behandlingsId") behandlingsId: String?,
     ): BasisPersonaliaFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -40,7 +40,7 @@ class BasisPersonaliaRessurs(
         return BasisPersonaliaFrontend(
             navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn),
             fodselsnummer = jsonPersonalia.personIdentifikator.verdi,
-            statsborgerskap = jsonPersonalia.statsborgerskap?.verdi?.let { kodeverkService.getLand(it) }
+            statsborgerskap = jsonPersonalia.statsborgerskap?.verdi?.let { kodeverkService.getLand(it) },
         )
     }
 }

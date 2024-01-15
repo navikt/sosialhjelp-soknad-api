@@ -51,7 +51,7 @@ internal class BostotteSystemdataTest {
         val utbetalingsDato = LocalDate.now()
         val bostotteDto = BostotteDto(
             emptyList(),
-            listOf(UtbetalingDto(utbetalingsDato, netto, mottaker, BostotteRolle.HOVEDPERSON))
+            listOf(UtbetalingDto(utbetalingsDato, netto, mottaker, BostotteRolle.HOVEDPERSON)),
         )
 
         // Mock:
@@ -79,8 +79,8 @@ internal class BostotteSystemdataTest {
             emptyList(),
             listOf(
                 UtbetalingDto(utbetalingsDato.minusDays(32), netto1, mottaker, BostotteRolle.HOVEDPERSON),
-                UtbetalingDto(utbetalingsDato, netto2, mottaker, BostotteRolle.HOVEDPERSON)
-            )
+                UtbetalingDto(utbetalingsDato, netto2, mottaker, BostotteRolle.HOVEDPERSON),
+            ),
         )
 
         // Mock:
@@ -106,7 +106,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             null,
             null,
-            null
+            null,
         )
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
@@ -137,7 +137,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             null,
             null,
-            null
+            null,
         )
         val sakDto2 = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -145,7 +145,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             "V02",
             "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
+            Vedtaksstatus.AVSLAG,
         )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
@@ -193,7 +193,7 @@ internal class BostotteSystemdataTest {
             JsonBostotteSak()
                 .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)
                 .withKilde(JsonKildeSystem.SYSTEM)
-                .withStatus(BostotteStatus.UNDER_BEHANDLING.toString())
+                .withStatus(BostotteStatus.UNDER_BEHANDLING.toString()),
         )
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
@@ -231,7 +231,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             null,
             null,
-            null
+            null,
         )
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
@@ -261,7 +261,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             null,
             null,
-            null
+            null,
         )
         val sakDto2 = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -269,7 +269,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.BIPERSON,
             "V02",
             "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
+            Vedtaksstatus.AVSLAG,
         )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
@@ -293,13 +293,13 @@ internal class BostotteSystemdataTest {
             LocalDate.now().minusDays(32),
             BigDecimal.valueOf(10000),
             BostotteMottaker.KOMMUNE,
-            BostotteRolle.HOVEDPERSON
+            BostotteRolle.HOVEDPERSON,
         )
         val utbetalingDto2 = UtbetalingDto(
             LocalDate.now().minusDays(32),
             BigDecimal.valueOf(20000),
             BostotteMottaker.HUSSTAND,
-            BostotteRolle.BIPERSON
+            BostotteRolle.BIPERSON,
         )
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto1, utbetalingDto2))
 
@@ -325,7 +325,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             null,
             null,
-            null
+            null,
         )
         val sakDto2 = lagSak(
             LocalDate.now().withDayOfMonth(1).minusDays(32),
@@ -333,7 +333,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             "V02",
             "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
+            Vedtaksstatus.AVSLAG,
         )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
@@ -364,7 +364,7 @@ internal class BostotteSystemdataTest {
             BostotteRolle.HOVEDPERSON,
             "V02",
             "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
+            Vedtaksstatus.AVSLAG,
         )
         val bostotteDto = BostotteDto(listOf(sakDto2), emptyList())
 
@@ -403,7 +403,7 @@ internal class BostotteSystemdataTest {
             LocalDate.now().minusDays(32),
             BigDecimal.valueOf(10000),
             BostotteMottaker.KOMMUNE,
-            BostotteRolle.HOVEDPERSON
+            BostotteRolle.HOVEDPERSON,
         )
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto))
 
@@ -430,7 +430,7 @@ internal class BostotteSystemdataTest {
         rolle: BostotteRolle,
         kode: String?,
         beskrivelse: String?,
-        vedtaksstatus: Vedtaksstatus?
+        vedtaksstatus: Vedtaksstatus?,
     ): SakDto {
         var vedtakDto: VedtakDto? = null
         if (kode != null) {
@@ -449,7 +449,7 @@ internal class BostotteSystemdataTest {
                 JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
                     .withVerdi(harSamtykke)
-                    .withTittel("beskrivelse")
+                    .withTittel("beskrivelse"),
             )
     }
 
@@ -457,7 +457,7 @@ internal class BostotteSystemdataTest {
         mottaker: BostotteMottaker,
         netto: BigDecimal,
         utbetaling: JsonOkonomiOpplysningUtbetaling,
-        utbetalingsDato: LocalDate
+        utbetalingsDato: LocalDate,
     ) {
         assertThat(utbetaling.tittel).isEqualToIgnoringCase("Statlig bostøtte")
         assertThat(utbetaling.mottaker).isEqualTo(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(mottaker.value))
@@ -479,7 +479,7 @@ internal class BostotteSystemdataTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

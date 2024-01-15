@@ -13,7 +13,7 @@ object Familie {
         pdf: PdfGenerator,
         pdfUtils: PdfUtils,
         familie: JsonFamilie?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         // Familie
         pdf.skrivH4Bold(pdfUtils.getTekst("familiebolk.tittel"))

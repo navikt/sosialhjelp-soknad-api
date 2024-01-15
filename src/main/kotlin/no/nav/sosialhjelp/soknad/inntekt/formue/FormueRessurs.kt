@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentFormue(@PathVariable("behandlingsId") behandlingsId: String): FormueFrontend {
@@ -55,14 +55,14 @@ class FormueRessurs(
             livsforsikring = hasFormueType(okonomi.oversikt, FORMUE_LIVSFORSIKRING),
             verdipapirer = hasFormueType(okonomi.oversikt, FORMUE_VERDIPAPIRER),
             annet = hasFormueType(okonomi.oversikt, FORMUE_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing
+            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing,
         )
     }
 
     @PutMapping
     fun updateFormue(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody formueFrontend: FormueFrontend
+        @RequestBody formueFrontend: FormueFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -77,7 +77,7 @@ class FormueRessurs(
             okonomi.opplysninger,
             BEKREFTELSE_SPARING,
             hasAnyFormueType,
-            textService.getJsonOkonomiTittel("inntekt.bankinnskudd")
+            textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
         )
         setFormue(okonomi.oversikt, formueFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
@@ -115,7 +115,7 @@ class FormueRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         opplysninger.beskrivelseAvAnnet.sparing = formueFrontend.beskrivelseAvAnnet ?: ""
@@ -132,6 +132,6 @@ class FormueRessurs(
         val livsforsikring: Boolean = false,
         val verdipapirer: Boolean = false,
         val annet: Boolean = false,
-        val beskrivelseAvAnnet: String?
+        val beskrivelseAvAnnet: String?,
     )
 }

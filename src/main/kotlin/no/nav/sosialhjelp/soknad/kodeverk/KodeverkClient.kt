@@ -65,7 +65,7 @@ class KodeverkClient(
                     "$kodeverkUrl/{kodeverksnavn}/koder/betydninger?ekskluderUgyldige={ekskluderUgyldige}&spraak={spraak}",
                     kodeverksnavn,
                     true,
-                    SPRAAK_NB
+                    SPRAAK_NB,
                 )
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
@@ -87,7 +87,7 @@ class KodeverkClient(
             redisService.setex(key, redisObjectMapper.writeValueAsBytes(kodeverk), KODEVERK_CACHE_SECONDS)
             redisService.set(
                 KODEVERK_LAST_POLL_TIME_KEY,
-                LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8)
+                LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8),
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e)

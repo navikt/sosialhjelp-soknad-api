@@ -83,7 +83,7 @@ internal class OpplastetVedleggMigrationRepositoryTest {
                 data = RandomUtils.nextBytes(4),
                 soknadId = soknadId,
                 filnavn = "filnavn",
-                sha512 = "sha"
+                sha512 = "sha",
             )
         }
     }

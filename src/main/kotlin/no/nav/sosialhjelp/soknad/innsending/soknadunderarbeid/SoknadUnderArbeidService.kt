@@ -78,7 +78,7 @@ class SoknadUnderArbeidService(
             .filer.add(
                 JsonFiler()
                     .withFilnavn(filnavn)
-                    .withSha512(sha512)
+                    .withSha512(sha512),
             )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }

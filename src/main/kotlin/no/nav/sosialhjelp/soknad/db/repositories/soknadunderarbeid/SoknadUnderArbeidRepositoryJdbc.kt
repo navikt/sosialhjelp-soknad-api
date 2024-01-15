@@ -37,7 +37,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val soknadUnderArbeidId = jdbcTemplate.queryForObject(
             SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
-            Long::class.java
+            Long::class.java,
         )
         jdbcTemplate.update(
             "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
@@ -49,7 +49,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
-            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
+            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
         )
         return soknadUnderArbeidId
     }
@@ -59,7 +59,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            soknadId
+            soknadId,
         ).firstOrNull()
     }
 
@@ -68,7 +68,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
@@ -77,7 +77,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull()
     }
 
@@ -90,7 +90,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeidRowMapper,
             eier,
             tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
+            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         ).firstOrNull()
     }
 
@@ -110,7 +110,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.soknadId,
             eier,
             opprinneligVersjon,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
+            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         )
         if (antallOppdaterteRader == 0) {
             val soknadIDb: SoknadUnderArbeid = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
@@ -133,7 +133,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.status.toString(),
             Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
             soknadUnderArbeid.soknadId,
-            eier
+            eier,
         )
         if (antallOppdaterteRader != 0) {
             soknadUnderArbeid.sistEndretDato = sistEndretDato
@@ -149,7 +149,7 @@ class SoknadUnderArbeidRepositoryJdbc(
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                     eier,
-                    soknadUnderArbeidId
+                    soknadUnderArbeidId,
                 )
             }
         })

@@ -138,7 +138,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(
             lagOpplastetVedlegg(soknadUnderArbeidId),
-            EIER
+            EIER,
         )
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
@@ -154,7 +154,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -165,7 +165,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             data = byteArrayOf(1, 2, 3),
             soknadId = soknadId,
             filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
+            sha512 = "aaa",
         )
     }
 

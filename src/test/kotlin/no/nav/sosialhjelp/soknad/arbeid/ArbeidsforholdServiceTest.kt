@@ -34,7 +34,7 @@ internal class ArbeidsforholdServiceTest {
     private val arbeidsgiverPerson = PersonDto(
         offentligIdent = "arbeidsgiver_fnr",
         aktoerId = "aktoerid",
-        type = "Person"
+        type = "Person",
     )
     private val arbeidstaker = PersonDto(offentligIdent = "arbeidstaker_fnr", aktoerId = "aktoerid", type = "Person")
 
@@ -107,7 +107,7 @@ internal class ArbeidsforholdServiceTest {
             listOf(arbeidsavtaleDto),
             "arbeidsforholdId",
             if (erArbeidsgiverOrganisasjon) arbeidsgiverOrganisasjon else arbeidsgiverPerson,
-            arbeidstaker
+            arbeidstaker,
         )
     }
 
@@ -119,7 +119,7 @@ internal class ArbeidsforholdServiceTest {
             arbeidsavtaler,
             "arbeidsforholdId",
             arbeidsgiverOrganisasjon,
-            arbeidstaker
+            arbeidstaker,
         )
     }
 }

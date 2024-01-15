@@ -16,7 +16,7 @@ import java.util.UUID
 
 class MaskinportenGrantTokenGenerator(
     private val maskinportenProperties: MaskinportenProperties,
-    private val issuer: String
+    private val issuer: String,
 ) {
 
     /**

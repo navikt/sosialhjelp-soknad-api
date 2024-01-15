@@ -40,7 +40,7 @@ internal class SkattbarInntektRessursTest {
         tilgangskontroll,
         soknadUnderArbeidRepository,
         skatteetatenSystemdata,
-        textService
+        textService,
     )
 
     @BeforeEach
@@ -182,7 +182,7 @@ internal class SkattbarInntektRessursTest {
                 .withOrganisasjon(
                     JsonOrganisasjon()
                         .withNavn("Arbeidsgiver")
-                        .withOrganisasjonsnummer("123456789")
+                        .withOrganisasjonsnummer("123456789"),
                 )
                 .withBelop(123456)
                 .withPeriodeFom("2020-01-01")
@@ -205,7 +205,7 @@ internal class SkattbarInntektRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

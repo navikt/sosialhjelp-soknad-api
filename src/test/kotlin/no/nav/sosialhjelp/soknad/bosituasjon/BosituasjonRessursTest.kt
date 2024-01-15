@@ -138,7 +138,7 @@ internal class BosituasjonRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.bosituasjon

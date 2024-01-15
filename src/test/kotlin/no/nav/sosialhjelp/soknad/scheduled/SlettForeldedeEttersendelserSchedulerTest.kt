@@ -24,7 +24,7 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
         soknadService,
         batchSoknadUnderArbeidRepository,
         batchEnabled = true,
-        schedulerDisabled = false
+        schedulerDisabled = false,
     )
 
     @BeforeEach
@@ -46,7 +46,7 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
@@ -72,7 +72,7 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)

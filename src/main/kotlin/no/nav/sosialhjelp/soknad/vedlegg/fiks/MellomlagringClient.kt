@@ -40,7 +40,7 @@ class MellomlagringClientImpl(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) : MellomlagringClient {
 
     /**
@@ -82,9 +82,9 @@ class MellomlagringClientImpl(
                 filForOpplasting = FilForOpplasting(
                     filnavn = filOpplasting.metadata.filnavn,
                     metadata = filOpplasting.metadata,
-                    data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate)
+                    data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
                 ),
-                navEksternId = navEksternId
+                navEksternId = navEksternId,
             )
             waitForFutures(krypteringFutureList)
         } finally {

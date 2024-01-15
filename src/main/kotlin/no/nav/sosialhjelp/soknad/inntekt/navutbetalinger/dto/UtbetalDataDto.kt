@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class UtbetalDataDto(
     val utbetalinger: List<Utbetaling>?,
-    val feilet: Boolean
+    val feilet: Boolean,
 )
 
 data class Utbetaling(

@@ -31,7 +31,7 @@ internal class SoknadOversiktServiceTest {
         status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
         opprettetDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
         sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
-        innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
     )
 
     @BeforeEach

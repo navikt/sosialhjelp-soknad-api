@@ -34,7 +34,7 @@ internal class NavUtbetalingerServiceTest {
     internal fun clientReturnererUtbetalinger() {
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
             listOf(lagUtbetalingResponse()),
-            false
+            false,
         )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
@@ -64,7 +64,7 @@ internal class NavUtbetalingerServiceTest {
     internal fun clientReturnererUtbetalingerUtenKomponenter() {
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
             listOf(lagUtbetalingUtenKomponenterResponse()),
-            false
+            false,
         )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")

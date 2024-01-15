@@ -17,7 +17,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 409 Conflict ved SamtidigOppdateringException`() {
         val responseEntity = exceptionMapper.handleThrowable(
-            SamtidigOppdateringException(message = "Mulig versjonskonflikt...")
+            SamtidigOppdateringException(message = "Mulig versjonskonflikt..."),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.CONFLICT)
     }
@@ -25,7 +25,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 415 Unsupported Media Type ved UgyldigOpplastingTypeException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            UgyldigOpplastingTypeException(message = "feil", cause = RuntimeException(), id = "id")
+            UgyldigOpplastingTypeException(message = "feil", cause = RuntimeException(), id = "id"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     }
@@ -33,7 +33,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 413 Payload Too Large ved OpplastingException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            OpplastingException(message = "feil", cause = RuntimeException(), id = "id")
+            OpplastingException(message = "feil", cause = RuntimeException(), id = "id"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE)
     }
@@ -41,7 +41,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 403 Forbidden ved AuthorizationException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            AuthorizationException(message = "feil")
+            AuthorizationException(message = "feil"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
     }
@@ -49,7 +49,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 410 Gone ved SoknadAlleredeSendtException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            SoknadAlleredeSendtException(message = "soknad allerede innsendt")
+            SoknadAlleredeSendtException(message = "soknad allerede innsendt"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.GONE)
     }
@@ -57,7 +57,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 500 med header for Ingen BigIpRedirect for andre kjente unntak`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            SosialhjelpSoknadApiException(melding = "feil")
+            SosialhjelpSoknadApiException(melding = "feil"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
         assertThat(responseEntity.headers.getFirst(Feilmelding.NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
@@ -66,7 +66,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 500 med header for ingen BigIpRedirect ved TjenesteUtilgjengeligException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            TjenesteUtilgjengeligException(message = "feil", throwable = RuntimeException())
+            TjenesteUtilgjengeligException(message = "feil", throwable = RuntimeException()),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
         assertThat(responseEntity.headers.getFirst(Feilmelding.NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
@@ -75,7 +75,7 @@ class ExceptionMapperTest {
     @Test
     fun `skal gi 500 med header for ingen BigIpRedirect ved EttersendelseSendtForSentException`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            EttersendelseSendtForSentException(message = "feil")
+            EttersendelseSendtForSentException(message = "feil"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
         assertThat(responseEntity.headers.getFirst(Feilmelding.NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
@@ -84,7 +84,7 @@ class ExceptionMapperTest {
     @Test
     fun `Skal gi 406 Not Acceptable hvis fil er lastet opp allerede`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            DuplikatFilException(message = "feil")
+            DuplikatFilException(message = "feil"),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.NOT_ACCEPTABLE)
     }
@@ -92,7 +92,7 @@ class ExceptionMapperTest {
     @Test
     fun `Skal gi 500 Internal Server Error hvis konvertering av akseptert fil feiler`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
-            KonverteringTilPdfException(message = "feil", cause = ExcelKonverteringException("feil", null))
+            KonverteringTilPdfException(message = "feil", cause = ExcelKonverteringException("feil", null)),
         )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
     }

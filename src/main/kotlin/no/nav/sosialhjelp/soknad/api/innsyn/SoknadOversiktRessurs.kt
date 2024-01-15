@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknadoversikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadOversiktRessurs(
     private val service: SoknadOversiktService,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping("/soknader")
     fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {

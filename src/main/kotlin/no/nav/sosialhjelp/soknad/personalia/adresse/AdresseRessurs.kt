@@ -29,12 +29,12 @@ class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetService: NavEnhetService
+    private val navEnhetService: NavEnhetService,
 ) {
 
     @GetMapping
     fun hentAdresser(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -49,7 +49,7 @@ class AdresseRessurs(
             navEnhetService.getNavEnhet(
                 eier,
                 jsonInternalSoknad.soknad,
-                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg
+                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg,
             )
         } catch (e: Exception) {
             null
@@ -61,14 +61,14 @@ class AdresseRessurs(
             sysFolkeregistrertAdresse,
             sysMidlertidigAdresse,
             jsonOppholdsadresse,
-            navEnhet
+            navEnhet,
         )
     }
 
     @PutMapping
     fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody adresserFrontend: AdresserFrontendInput
+        @RequestBody adresserFrontend: AdresserFrontendInput,
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -97,7 +97,7 @@ class AdresseRessurs(
         val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
-            adresserFrontend.valg
+            adresserFrontend.valg,
         )?.also {
             setNavEnhetAsMottaker(soknad, it, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
@@ -108,7 +108,7 @@ class AdresseRessurs(
     fun setNavEnhetAsMottaker(
         soknad: SoknadUnderArbeid,
         navEnhetFrontend: NavEnhetFrontend,
-        eier: String
+        eier: String,
     ) {
         soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
@@ -126,6 +126,8 @@ class AdresseRessurs(
         }
         return if (oppholdsadresse.type == JsonAdresse.Type.MATRIKKELADRESSE) {
             null
-        } else adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+        } else {
+            adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+        }
     }
 }

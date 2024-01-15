@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream
 class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
@@ -28,7 +28,7 @@ class MellomlagringService(
             ?.map {
                 MellomlagretVedleggMetadata(
                     filnavn = it.filnavn,
-                    filId = it.filId
+                    filId = it.filId,
                 )
             } ?: emptyList()
     }
@@ -46,7 +46,7 @@ class MellomlagringService(
             ?.let {
                 MellomlagretVedlegg(
                     filnavn = it,
-                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId),
                 )
             }
     }
@@ -56,7 +56,7 @@ class MellomlagringService(
         behandlingsId: String,
         vedleggstype: String,
         orginalData: ByteArray,
-        orginaltFilnavn: String
+        orginaltFilnavn: String,
     ): MellomlagretVedleggMetadata {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
@@ -68,7 +68,7 @@ class MellomlagringService(
             VedleggUtils.getSha512FromByteArray(data),
             behandlingsId,
             vedleggstype,
-            filnavn
+            filnavn,
         )
 
         val filOpplasting = opprettFilOpplasting(filnavn, data)
@@ -83,7 +83,7 @@ class MellomlagringService(
 
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
-            filId = filId
+            filId = filId,
         )
     }
 
@@ -93,8 +93,8 @@ class MellomlagringService(
             metadata = FilMetadata(
                 filnavn = filnavn,
                 mimetype = detectMimeType(data),
-                storrelse = data.size.toLong()
-            )
+                storrelse = data.size.toLong(),
+            ),
         )
     }
 
@@ -152,12 +152,12 @@ class MellomlagringService(
 data class MellomlagretVedleggMetadata(
     val filnavn: String,
     val filId: String,
-    val sha512: String? = null
+    val sha512: String? = null,
 )
 
 data class MellomlagretVedlegg(
     val filnavn: String,
-    val data: ByteArray
+    val data: ByteArray,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

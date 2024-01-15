@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 @Component
 class SkattbarInntektService(
-    private val skatteetatenClient: SkatteetatenClient
+    private val skatteetatenClient: SkatteetatenClient,
 ) {
 
     fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {

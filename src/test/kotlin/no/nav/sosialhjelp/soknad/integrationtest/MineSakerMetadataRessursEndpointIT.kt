@@ -42,7 +42,6 @@ class MineSakerMetadataRessursEndpointIT {
 
     @Test
     internal fun innsendte_skalGi401UtenToken() {
-
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 
         webClient

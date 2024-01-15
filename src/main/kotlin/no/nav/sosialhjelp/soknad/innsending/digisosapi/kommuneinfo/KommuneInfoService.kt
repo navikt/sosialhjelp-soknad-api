@@ -96,11 +96,11 @@ class KommuneInfoService(
                 redisService.setex(
                     KOMMUNEINFO_CACHE_KEY,
                     redisObjectMapper.writeValueAsBytes(kommuneInfoList),
-                    KOMMUNEINFO_CACHE_SECONDS
+                    KOMMUNEINFO_CACHE_SECONDS,
                 )
                 redisService.set(
                     KOMMUNEINFO_LAST_POLL_TIME_KEY,
-                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8)
+                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8),
                 )
             }
         } catch (e: JsonProcessingException) {
@@ -125,7 +125,7 @@ class KommuneInfoService(
             harMidlertidigDeaktivertOppdateringer = false,
             kontaktpersoner = null,
             harNksTilgang = false,
-            behandlingsansvarlig = null
+            behandlingsansvarlig = null,
         )
     }
 }

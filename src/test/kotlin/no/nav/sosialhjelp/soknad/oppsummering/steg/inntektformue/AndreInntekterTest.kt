@@ -69,7 +69,7 @@ internal class AndreInntekterTest {
         val opplysninger = createOpplysninger(true)
         opplysninger.utbetaling = listOf(
             createUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
-            createUtbetaling(SoknadJsonTyper.UTBETALING_SALG)
+            createUtbetaling(SoknadJsonTyper.UTBETALING_SALG),
         )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
@@ -93,7 +93,7 @@ internal class AndreInntekterTest {
     fun harAndreInntekterUtenBeskrivelseAvAnnet() {
         val opplysninger = createOpplysninger(true)
         opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET)
+            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
         )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
@@ -121,7 +121,7 @@ internal class AndreInntekterTest {
     fun harAndreInntekterMedBeskrivelseAvAnnet() {
         val opplysninger = createOpplysninger(true)
         opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET)
+            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
         )
         opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet()
             .withUtbetaling("ANNEN")
@@ -154,8 +154,8 @@ internal class AndreInntekterTest {
                 listOf(
                     JsonOkonomibekreftelse()
                         .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
-                        .withVerdi(harBekreftelse)
-                )
+                        .withVerdi(harBekreftelse),
+                ),
             )
     }
 

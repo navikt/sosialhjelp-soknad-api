@@ -19,13 +19,13 @@ class OpplastetVedleggService(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
 ) {
     fun lastOppVedlegg(
         behandlingsId: String,
         vedleggstype: String,
         orginalData: ByteArray,
-        orginaltFilnavn: String
+        orginaltFilnavn: String,
     ): OpplastetVedlegg {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, FileDetectionUtils.detectMimeType(orginalData))
 
@@ -47,7 +47,7 @@ class OpplastetVedleggService(
                 getSha512FromByteArray(data),
                 behandlingsId,
                 vedleggstype,
-                filnavn
+                filnavn,
             )
         }
     }
@@ -67,7 +67,7 @@ class OpplastetVedleggService(
             throw SamletVedleggStorrelseForStorException(
                 "Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor",
                 null,
-                feilmeldingId
+                feilmeldingId,
             )
         }
     }

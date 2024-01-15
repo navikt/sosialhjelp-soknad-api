@@ -19,7 +19,7 @@ object XsrfGenerator {
     fun generateXsrfToken(
         behandlingsId: String?,
         date: String = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")),
-        id: String? = SubjectHandlerUtils.getUserIdFromToken()
+        id: String? = SubjectHandlerUtils.getUserIdFromToken(),
     ): String {
         return try {
             val signKey = id + behandlingsId + date

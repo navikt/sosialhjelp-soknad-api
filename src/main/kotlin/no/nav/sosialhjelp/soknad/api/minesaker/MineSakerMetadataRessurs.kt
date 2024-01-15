@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectionTokenXSubstantial
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
-    private val mineSakerMetadataService: MineSakerMetadataService
+    private val mineSakerMetadataService: MineSakerMetadataService,
 ) {
     /**
      * Henter informasjon om innsendte søknader via SoknadMetadataRepository.

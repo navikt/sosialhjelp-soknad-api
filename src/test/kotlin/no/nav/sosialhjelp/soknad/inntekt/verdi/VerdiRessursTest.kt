@@ -86,7 +86,7 @@ internal class VerdiRessursTest {
             createJsonInternalSoknadWithVerdier(
                 true,
                 listOf(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_FRITIDSEIENDOM, VERDI_ANNET),
-                null
+                null,
             )
 
         val verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID)
@@ -119,7 +119,7 @@ internal class VerdiRessursTest {
             createJsonInternalSoknadWithVerdier(
                 true,
                 listOf(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_ANNET),
-                "Bestefars klokke"
+                "Bestefars klokke",
             )
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -144,7 +144,7 @@ internal class VerdiRessursTest {
             createJsonInternalSoknadWithVerdier(
                 true,
                 listOf(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_ANNET),
-                "Bestefars klokke"
+                "Bestefars klokke",
             )
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -179,7 +179,7 @@ internal class VerdiRessursTest {
             campingvogn = true,
             kjoretoy = false,
             fritidseiendom = false,
-            annet = false
+            annet = false,
         )
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
@@ -212,7 +212,7 @@ internal class VerdiRessursTest {
             campingvogn = true,
             kjoretoy = true,
             fritidseiendom = true,
-            annet = true
+            annet = true,
         )
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
@@ -274,7 +274,7 @@ internal class VerdiRessursTest {
     private fun createJsonInternalSoknadWithVerdier(
         harVerdier: Boolean,
         verdiTyper: List<String>,
-        beskrivelseAvAnnet: String?
+        beskrivelseAvAnnet: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val verdier: MutableList<JsonOkonomioversiktFormue> = ArrayList()
@@ -283,14 +283,14 @@ internal class VerdiRessursTest {
                 JsonOkonomioversiktFormue()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(verdi)
-                    .withTittel("tittel")
+                    .withTittel("tittel"),
             )
         }
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
             JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(SoknadJsonTyper.BEKREFTELSE_VERDI)
-                .withVerdi(harVerdier)
+                .withVerdi(harVerdier),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue = verdier
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
@@ -307,7 +307,7 @@ internal class VerdiRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

@@ -57,7 +57,7 @@ internal class TilgangskontrollTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(userId),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
@@ -78,7 +78,7 @@ internal class TilgangskontrollTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad("other_user"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
@@ -116,7 +116,7 @@ internal class TilgangskontrollTest {
             behandlingsId = "123",
             fnr = userId,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         every { soknadMetadataRepository.hent("123") } returns metadata
         every { personService.harAdressebeskyttelse(userId) } returns false
@@ -132,7 +132,7 @@ internal class TilgangskontrollTest {
             behandlingsId = "123",
             fnr = "other_user",
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         every { soknadMetadataRepository.hent("123") } returns metadata
 

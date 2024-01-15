@@ -48,7 +48,7 @@ class MaskinportenClientConfig(
         clientId = clientId,
         jwkPrivate = clientJwk,
         scope = scopes,
-        wellKnownUrl = wellKnownUrl
+        wellKnownUrl = wellKnownUrl,
     )
 
     companion object {

@@ -67,7 +67,7 @@ internal class FinnAdresseServiceTest {
             festenummer = "42",
             seksjonsunmmer = "asd123",
             undernummer = null,
-            bydelsnummer = "030107"
+            bydelsnummer = "030107",
         )
         every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns matrikkelAdresse
 
@@ -129,7 +129,7 @@ internal class FinnAdresseServiceTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

@@ -30,7 +30,7 @@ import java.net.URI
 
 @ControllerAdvice
 class ExceptionMapper(
-    @Value("\${loginservice.url}") private val loginserviceUrl: String
+    @Value("\${loginservice.url}") private val loginserviceUrl: String,
 ) : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
@@ -82,8 +82,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "innsending_midlertidig_utilgjengelig",
-                            message = "Tjenesten er midlertidig utilgjengelig hos kommunen"
-                        )
+                            message = "Tjenesten er midlertidig utilgjengelig hos kommunen",
+                        ),
                     )
             }
             is SendingTilKommuneErIkkeAktivertException -> {
@@ -94,8 +94,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "innsending_ikke_aktivert",
-                            message = "Tjenesten er ikke aktivert hos kommunen"
-                        )
+                            message = "Tjenesten er ikke aktivert hos kommunen",
+                        ),
                     )
             }
             is SendingTilKommuneUtilgjengeligException -> {
@@ -106,8 +106,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "innsending_ikke_tilgjengelig",
-                            message = "Tjenesten er midlertidig ikke tilgjengelig"
-                        )
+                            message = "Tjenesten er midlertidig ikke tilgjengelig",
+                        ),
                     )
             }
             is SoknadenHarNedetidException -> {
@@ -118,8 +118,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "nedetid",
-                            message = "Søknaden har planlagt nedetid nå"
-                        )
+                            message = "Søknaden har planlagt nedetid nå",
+                        ),
                     )
             }
             is PdfGenereringException -> {
@@ -130,8 +130,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "pdf_generering",
-                            message = "Innsending av søknad eller ettersendelse feilet"
-                        )
+                            message = "Innsending av søknad eller ettersendelse feilet",
+                        ),
                     )
             }
             is SoknadUnderArbeidIkkeFunnetException -> {
@@ -142,8 +142,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "soknad_not_found",
-                            message = "Ingen søknad med denne behandlingsId funnet"
-                        )
+                            message = "Ingen søknad med denne behandlingsId funnet",
+                        ),
                     )
             }
             is PdlApiException -> {
@@ -159,8 +159,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "duplikat_fil",
-                            message = "Fil er allerede lastet opp"
-                        )
+                            message = "Fil er allerede lastet opp",
+                        ),
                     )
             }
             is KonverteringTilPdfException -> {
@@ -171,8 +171,8 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "konvertering_til_pdf_error",
-                            message = "Feil ved konvertering: ${e.message}"
-                        )
+                            message = "Feil ved konvertering: ${e.message}",
+                        ),
                     )
             }
             is FileConverterException -> {
@@ -180,15 +180,16 @@ class ExceptionMapper(
 
                 return ResponseEntity
                     .status(
-                        if (e.httpStatus.is4xxClientError) HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                        else HttpStatus.SERVICE_UNAVAILABLE
+                        if (e.httpStatus.is4xxClientError) {
+                            HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                        } else HttpStatus.SERVICE_UNAVAILABLE,
                     )
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(
                         Feilmelding(
                             id = "filkonvertering_error",
-                            message = "${e.message}"
-                        )
+                            message = "${e.message}",
+                        ),
                     )
             }
             else -> {
@@ -264,7 +265,7 @@ class ExceptionMapper(
         ex: MaxUploadSizeExceededException,
         headers: HttpHeaders,
         status: HttpStatusCode,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         log.warn("Feilet opplasting", ex)
         return ResponseEntity
@@ -273,8 +274,8 @@ class ExceptionMapper(
             .body(
                 Feilmelding(
                     id = "vedlegg.opplasting.feil.forStor",
-                    message = "Kunne ikke lagre fil fordi total filstørrelse er for stor"
-                )
+                    message = "Kunne ikke lagre fil fordi total filstørrelse er for stor",
+                ),
             )
     }
 

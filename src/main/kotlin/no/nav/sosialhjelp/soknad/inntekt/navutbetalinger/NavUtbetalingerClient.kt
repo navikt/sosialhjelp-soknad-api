@@ -35,7 +35,7 @@ class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : NavUtbetalingerClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
@@ -76,7 +76,7 @@ class NavUtbetalingerClientImpl(
     private fun hentFraCache(ident: String): UtbetalDataDto? {
         return redisService.get(
             UTBETALDATA_CACHE_KEY_PREFIX + ident,
-            UtbetalDataDto::class.java
+            UtbetalDataDto::class.java,
         ) as? UtbetalDataDto
     }
 
@@ -85,7 +85,7 @@ class NavUtbetalingerClientImpl(
             redisService.setex(
                 UTBETALDATA_CACHE_KEY_PREFIX + ident,
                 redisObjectMapper.writeValueAsBytes(utbetalDataDto),
-                CACHE_30_MINUTES_IN_SECONDS
+                CACHE_30_MINUTES_IN_SECONDS,
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av UtbetalDataDto til redis", e)

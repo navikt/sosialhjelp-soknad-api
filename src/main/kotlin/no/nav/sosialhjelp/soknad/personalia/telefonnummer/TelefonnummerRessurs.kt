@@ -22,11 +22,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
 ) {
     @GetMapping
     fun hentTelefonnummer(
-        @PathVariable("behandlingsId") behandlingsId: String?
+        @PathVariable("behandlingsId") behandlingsId: String?,
     ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = eier()
@@ -40,7 +40,7 @@ class TelefonnummerRessurs(
     @PutMapping
     fun updateTelefonnummer(
         @PathVariable("behandlingsId") behandlingsId: String?,
-        @RequestBody telefonnummerFrontend: TelefonnummerFrontend
+        @RequestBody telefonnummerFrontend: TelefonnummerFrontend,
     ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = eier()
@@ -75,7 +75,7 @@ class TelefonnummerRessurs(
         return TelefonnummerFrontend(
             brukerdefinert = telefonnummer == null || telefonnummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
+            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi,
         )
     }
 
@@ -83,6 +83,6 @@ class TelefonnummerRessurs(
         val brukerdefinert: Boolean = false,
         val systemverdi: String? = null,
         @Schema(nullable = true)
-        val brukerutfyltVerdi: String? = null
+        val brukerutfyltVerdi: String? = null,
     )
 }

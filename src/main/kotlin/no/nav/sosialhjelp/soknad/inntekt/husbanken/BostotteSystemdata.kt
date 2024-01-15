@@ -26,7 +26,7 @@ import java.time.LocalDate
 @Component
 class BostotteSystemdata(
     private val husbankenClient: HusbankenClient,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
 
     fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
@@ -89,7 +89,7 @@ class BostotteSystemdata(
 
     private fun mapToJsonOkonomiOpplysningUtbetalinger(
         bostotte: Bostotte,
-        trengerViDataFraDeSiste60Dager: Boolean
+        trengerViDataFraDeSiste60Dager: Boolean,
     ): List<JsonOkonomiOpplysningUtbetaling> {
         val filterDays = if (trengerViDataFraDeSiste60Dager) 60 else 30
         return bostotte.utbetalinger

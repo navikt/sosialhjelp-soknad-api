@@ -23,12 +23,12 @@ class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val adresseRessurs: AdresseRessurs
+    private val adresseRessurs: AdresseRessurs,
 ) {
 
     @GetMapping("/navEnheter")
     fun getNavEnheter(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): List<NavEnhetFrontend> {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -42,7 +42,7 @@ class NavEnhetRessurs(
 
     @GetMapping("/navEnhet")
     fun getValgtNavEnhet(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): NavEnhetFrontend? {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -59,7 +59,7 @@ class NavEnhetRessurs(
     @PutMapping("/navEnheter")
     fun putNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody navEnhetFrontend: NavEnhetFrontend
+        @RequestBody navEnhetFrontend: NavEnhetFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

@@ -22,7 +22,7 @@ import java.io.File
 @Component
 class GotenbergClient(
     @Value("\${fil-konvertering_url}") private val baseUrl: String,
-    private val webClientBuilder: WebClient.Builder
+    private val webClientBuilder: WebClient.Builder,
 ) : FileConverter {
 
     companion object GotenbergConsts {
@@ -73,7 +73,7 @@ class GotenbergClient(
 
     private class ByteArrayMultipartFile(
         private val filnavn: String,
-        private val bytes: ByteArray
+        private val bytes: ByteArray,
     ) : MultipartFile {
         override fun getInputStream() = ByteArrayInputStream(bytes)
         override fun getName() = "file"

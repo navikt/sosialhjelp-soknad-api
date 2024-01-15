@@ -53,9 +53,9 @@ internal class BegrunnelseStegTest {
                             .withBegrunnelse(
                                 JsonBegrunnelse()
                                     .withHvaSokesOm(hvaSokesOm)
-                                    .withHvorforSoke(hvorforSoke)
-                            )
-                    )
+                                    .withHvorforSoke(hvorforSoke),
+                            ),
+                    ),
             )
     }
 }

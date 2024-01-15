@@ -33,7 +33,7 @@ class DigisosApiService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val dokumentListeService: DokumentListeService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val clock: Clock
+    private val clock: Clock,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -66,7 +66,7 @@ class DigisosApiService(
                 dokumenter = filOpplastinger,
                 kommunenr = kommunenummer,
                 navEksternRefId = behandlingsId,
-                token = token
+                token = token,
             )
         } catch (e: Exception) {
             prometheusMetricsService.reportFeiletMedDigisosApi()
@@ -85,7 +85,7 @@ class DigisosApiService(
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ) {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.vedlegg = vedlegg

@@ -33,11 +33,11 @@ import org.springframework.web.bind.annotation.RestController
 class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentVerdier(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): VerdierFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -56,14 +56,14 @@ class VerdiRessurs(
             kjoretoy = hasVerdiType(okonomi.oversikt, VERDI_KJORETOY),
             fritidseiendom = hasVerdiType(okonomi.oversikt, VERDI_FRITIDSEIENDOM),
             annet = hasVerdiType(okonomi.oversikt, VERDI_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi
+            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi,
         )
     }
 
     @PutMapping
     fun updateVerdier(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody verdierFrontend: VerdierFrontend
+        @RequestBody verdierFrontend: VerdierFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -76,7 +76,7 @@ class VerdiRessurs(
             okonomi.opplysninger,
             BEKREFTELSE_VERDI,
             verdierFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.eierandeler")
+            textService.getJsonOkonomiTittel("inntekt.eierandeler"),
         )
         setVerdier(okonomi.oversikt, verdierFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
@@ -106,7 +106,7 @@ class VerdiRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         opplysninger.beskrivelseAvAnnet.verdi = verdierFrontend.beskrivelseAvAnnet ?: ""
@@ -127,6 +127,6 @@ class VerdiRessurs(
         var kjoretoy: Boolean = false,
         var fritidseiendom: Boolean = false,
         var annet: Boolean = false,
-        var beskrivelseAvAnnet: String? = null
+        var beskrivelseAvAnnet: String? = null,
     )
 }

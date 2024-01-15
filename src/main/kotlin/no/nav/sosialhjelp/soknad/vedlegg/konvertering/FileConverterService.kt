@@ -9,7 +9,7 @@ class FileConverterService(val fileConverter: FileConverter) {
 
         return Pair(
             replaceExtension(name),
-            fileConverter.toPdf(name, bytes)
+            fileConverter.toPdf(name, bytes),
         )
     }
 

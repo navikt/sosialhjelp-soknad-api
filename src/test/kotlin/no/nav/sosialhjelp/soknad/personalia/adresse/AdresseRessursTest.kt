@@ -50,7 +50,7 @@ internal class AdresseRessursTest {
         tilgangskontroll,
         adresseSystemdata,
         soknadUnderArbeidRepository,
-        navEnhetService
+        navEnhetService,
     )
 
     @BeforeEach
@@ -80,7 +80,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_BRUKER_GATE_ADRESSE
+            JSON_BRUKER_GATE_ADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -99,7 +99,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_SYS_MATRIKKELADRESSE
+            JSON_SYS_MATRIKKELADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -118,7 +118,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_SYS_USTRUKTURERT_ADRESSE
+            JSON_SYS_USTRUKTURERT_ADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -191,7 +191,7 @@ internal class AdresseRessursTest {
 
         val adresserFrontend = AdresserFrontendInput(
             valg = JsonAdresseValg.MIDLERTIDIG,
-            soknad = AdresseFrontend()
+            soknad = AdresseFrontend(),
         )
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
@@ -221,8 +221,8 @@ internal class AdresseRessursTest {
             valg = JsonAdresseValg.SOKNAD,
             soknad = AdresseFrontend(
                 type = JsonAdresse.Type.GATEADRESSE,
-                gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata")
-            )
+                gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata"),
+            ),
         )
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
 
@@ -258,7 +258,7 @@ internal class AdresseRessursTest {
         adresserFrontend: AdresserFrontend,
         folkeregAdresse: JsonAdresse?,
         midlertidigAdresse: JsonAdresse?,
-        valgtAdresse: JsonAdresse?
+        valgtAdresse: JsonAdresse?,
     ) {
         assertThatAdresseIsCorrectlyConverted(adresserFrontend.folkeregistrert, folkeregAdresse)
         assertThatAdresseIsCorrectlyConverted(adresserFrontend.midlertidig, midlertidigAdresse)
@@ -274,15 +274,15 @@ internal class AdresseRessursTest {
         when (jsonAdresse.type) {
             JsonAdresse.Type.GATEADRESSE -> assertThatGateadresseIsCorrectlyConverted(
                 adresseFrontend.gateadresse!!,
-                jsonAdresse
+                jsonAdresse,
             )
             JsonAdresse.Type.MATRIKKELADRESSE -> assertThatMatrikkeladresseIsCorrectlyConverted(
                 adresseFrontend.matrikkeladresse!!,
-                jsonAdresse
+                jsonAdresse,
             )
             JsonAdresse.Type.USTRUKTURERT -> assertThatUstrukturertAdresseIsCorrectlyConverted(
                 adresseFrontend.ustrukturert!!,
-                jsonAdresse
+                jsonAdresse,
             )
             else -> {
                 assertThat(jsonAdresse).isNull()
@@ -308,7 +308,7 @@ internal class AdresseRessursTest {
 
     private fun assertThatMatrikkeladresseIsCorrectlyConverted(
         matrikkeladresse: MatrikkeladresseFrontend,
-        jsonAdresse: JsonAdresse?
+        jsonAdresse: JsonAdresse?,
     ) {
         val jsonMatrikkelAdresse = jsonAdresse as JsonMatrikkelAdresse?
         assertThat(matrikkeladresse.kommunenummer).isEqualTo(jsonMatrikkelAdresse?.kommunenummer)
@@ -321,7 +321,7 @@ internal class AdresseRessursTest {
 
     private fun assertThatUstrukturertAdresseIsCorrectlyConverted(
         ustrukturertAdresse: UstrukturertAdresseFrontend,
-        jsonAdresse: JsonAdresse?
+        jsonAdresse: JsonAdresse?,
     ) {
         val jsonUstrukturertAdresse = jsonAdresse as JsonUstrukturertAdresse?
         assertThat(ustrukturertAdresse.adresse).isEqualTo(jsonUstrukturertAdresse?.adresse)
@@ -336,7 +336,7 @@ internal class AdresseRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(getSelectedAdresse(valg))
@@ -346,11 +346,13 @@ internal class AdresseRessursTest {
     private fun getSelectedAdresse(valg: JsonAdresseValg?): JsonAdresse? {
         return if (valg == null) {
             null
-        } else when (valg) {
-            JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
-            JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
-            JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
-            else -> null
+        } else {
+            when (valg) {
+                JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
+                JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
+                JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
+                else -> null
+            }
         }
     }
 

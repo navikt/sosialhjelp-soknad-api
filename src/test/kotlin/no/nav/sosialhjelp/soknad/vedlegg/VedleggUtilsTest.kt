@@ -33,7 +33,7 @@ internal class VedleggUtilsTest {
         val truncate = lagFilnavn(
             "etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
             TikaFileType.JPEG,
-            uuid
+            uuid,
         )
         assertThat(truncate).isEqualTo("etkjempelangtfilnavn123456789012345678901234567890-$uuidFirstPart.jpg")
 
@@ -60,7 +60,6 @@ internal class VedleggUtilsTest {
 
     @Test
     fun `Validering av PDF-fil gir riktig TikaType`() {
-
         val file = PDF_FILE
         val parts = file.name.split(".")
         val navn = parts[0]
@@ -76,7 +75,6 @@ internal class VedleggUtilsTest {
 
     @Test
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
-
         val vedleggType = OpplastetVedleggType("hei|på deg")
 
         val soknadUnderArbeid = createSoknadUnderArbeid(
@@ -86,10 +84,10 @@ internal class VedleggUtilsTest {
                         JsonVedlegg()
                             .withType(vedleggType.type)
                             .withTilleggsinfo(vedleggType.tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
+            ),
         )
         val vedlegg = finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid)
         assertThat(vedlegg.type).isEqualTo(soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0].type)
@@ -100,9 +98,9 @@ internal class VedleggUtilsTest {
         val soknadUnderArbeid = createSoknadUnderArbeid(
             JsonInternalSoknad().withVedlegg(
                 JsonVedleggSpesifikasjon().withVedlegg(
-                    emptyList()
-                )
-            )
+                    emptyList(),
+                ),
+            ),
         )
         assertThatThrownBy { finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid) }
             .isInstanceOf(IkkeFunnetException::class.java)
@@ -132,7 +130,7 @@ internal class VedleggUtilsTest {
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

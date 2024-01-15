@@ -31,7 +31,7 @@ class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
 
     @GetMapping("/{vedleggId}/fil")
@@ -54,7 +54,7 @@ class OpplastetVedleggRessurs(
     fun getVedleggFil(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 

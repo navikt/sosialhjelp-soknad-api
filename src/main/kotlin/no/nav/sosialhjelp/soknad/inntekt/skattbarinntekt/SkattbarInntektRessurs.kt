@@ -35,7 +35,7 @@ class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
@@ -81,7 +81,7 @@ class SkattbarInntektRessurs(
             inntektFraSkatteetaten = inntektFraSkatteetaten,
             inntektFraSkatteetatenFeilet = soknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
             samtykke = samtykkeFraSoknad(soknad),
-            samtykkeTidspunkt = samtykkeDatoFraSoknad(soknad)
+            samtykkeTidspunkt = samtykkeDatoFraSoknad(soknad),
         )
     }
 
@@ -92,9 +92,9 @@ class SkattbarInntektRessurs(
                 mapTilOrganisasjon(
                     utbetalinger = mapTilUtbetalinger(utbetalinger),
                     organisasjon = organisasjon,
-                    periode = utbetalinger.first().periode()
+                    periode = utbetalinger.first().periode(),
                 )
-            }
+            },
         )
 
     private fun JsonOkonomiOpplysningUtbetaling.periode(): Pair<String, String> = Pair(periodeFom, periodeTom)
@@ -105,13 +105,14 @@ class SkattbarInntektRessurs(
 
         if (samtykkeFraSoknad(internal) != samtykke) {
             removeBekreftelserIfPresent(
-                internal.soknad.data.okonomi.opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE
+                internal.soknad.data.okonomi.opplysninger,
+                UTBETALING_SKATTEETATEN_SAMTYKKE,
             )
             setBekreftelse(
                 internal.soknad.data.okonomi.opplysninger,
                 UTBETALING_SKATTEETATEN_SAMTYKKE,
                 samtykke,
-                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
+                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"),
             )
             skatteetatenSystemdata.updateSystemdataIn(soknad)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, getBrukerPid())
@@ -147,14 +148,18 @@ class SkattbarInntektRessurs(
             .sortedByDescending { it }.firstOrNull()
 
     private fun mapTilUtbetalinger(
-        utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
+        utbetalinger: List<JsonOkonomiOpplysningUtbetaling>,
     ) = utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
 
     private fun mapTilOrganisasjon(
         utbetalinger: List<Utbetaling>,
         organisasjon: JsonOrganisasjon?,
-        periode: Pair<String, String>
+        periode: Pair<String, String>,
     ) = Organisasjon(
-        utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer ?: "", periode.first, periode.second
+        utbetalinger,
+        organisasjon?.navn ?: "Uten organisasjonsnummer",
+        organisasjon?.organisasjonsnummer ?: "",
+        periode.first,
+        periode.second,
     )
 }

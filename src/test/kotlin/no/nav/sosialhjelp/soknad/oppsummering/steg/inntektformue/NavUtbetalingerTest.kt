@@ -45,8 +45,8 @@ internal class NavUtbetalingerTest {
             .withUtbetaling(
                 listOf(
                     createUtbetaling("Dagpenger", 1234.0, "2021-01-01"),
-                    createUtbetaling("Uføre", 42.0, "2021-03-03")
-                )
+                    createUtbetaling("Uføre", 42.0, "2021-03-03"),
+                ),
             )
 
         val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon())
@@ -82,7 +82,7 @@ internal class NavUtbetalingerTest {
     private fun createUtbetaling(
         tittel: String,
         netto: Double,
-        utbetalingsdato: String
+        utbetalingsdato: String,
     ): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withType(SoknadJsonTyper.UTBETALING_NAVYTELSE)

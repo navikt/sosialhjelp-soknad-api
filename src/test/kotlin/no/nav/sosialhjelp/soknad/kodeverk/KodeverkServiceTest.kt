@@ -136,8 +136,8 @@ internal class KodeverkServiceTest {
             return KodeverkDto(
                 mapOf(
                     kommunenr1 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(oslo, oslo)))),
-                    kommunenr2 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(bergen, bergen))))
-                )
+                    kommunenr2 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(bergen, bergen)))),
+                ),
             )
         }
 
@@ -150,8 +150,8 @@ internal class KodeverkServiceTest {
                     landkode2 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(sverige, sverige)))),
                     "WLF" to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto("WALLIS/FUTUNAØYENE", "WALLIS/FUTUNAØYENE")))),
                     "STP" to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto("SAO TOME OG PRINCIPE", "SAO TOME OG PRINCIPE")))),
-                    "PNG" to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto("PAPUA NY-GUINEA", "PAPUA NY-GUINEA"))))
-                )
+                    "PNG" to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto("PAPUA NY-GUINEA", "PAPUA NY-GUINEA")))),
+                ),
             )
         }
 
@@ -161,8 +161,8 @@ internal class KodeverkServiceTest {
             return KodeverkDto(
                 mapOf(
                     postnummer1 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(oslo, oslo)))),
-                    postnummer2 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(bergen, bergen))))
-                )
+                    postnummer2 to listOf(BetydningDto(now, now, mapOf(SPRAAKKODE_NB to BeskrivelseDto(bergen, bergen)))),
+                ),
             )
         }
 }

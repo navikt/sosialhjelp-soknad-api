@@ -110,7 +110,7 @@ internal class FiksHandtererTest {
             opprettet = LocalDateTime.now(),
             sistKjort = null,
             nesteForsok = LocalDateTime.now(),
-            retries = 0
+            retries = 0,
         )
     }
 
@@ -123,7 +123,7 @@ internal class FiksHandtererTest {
             navEnhet = NAVENHETSNAVN,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
-            innsendtDato = null
+            innsendtDato = null,
         )
     }
 

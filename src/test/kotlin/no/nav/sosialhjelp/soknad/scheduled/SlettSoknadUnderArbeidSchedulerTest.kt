@@ -25,7 +25,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
         schedulerDisabled = false,
         leaderElection,
         batchSoknadUnderArbeidRepository,
-        mellomlagringService
+        mellomlagringService,
     )
 
     @BeforeEach
@@ -44,7 +44,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         val soknadUnderArbeid2 = SoknadUnderArbeid(
@@ -56,7 +56,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         every { batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch() } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)

@@ -54,7 +54,7 @@ internal class SoknadRessursTest {
         soknadUnderArbeidRepository,
         systemdata,
         tilgangskontroll,
-        nedetidService
+        nedetidService,
     )
 
     @BeforeEach
@@ -303,7 +303,7 @@ internal class SoknadRessursTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

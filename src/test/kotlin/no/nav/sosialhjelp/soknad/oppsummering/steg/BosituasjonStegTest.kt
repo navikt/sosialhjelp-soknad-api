@@ -92,9 +92,9 @@ internal class BosituasjonStegTest {
                             .withBosituasjon(
                                 JsonBosituasjon()
                                     .withBotype(botype)
-                                    .withAntallPersoner(antallPersoner)
-                            )
-                    )
+                                    .withAntallPersoner(antallPersoner),
+                            ),
+                    ),
             )
     }
 }

@@ -17,13 +17,13 @@ class NavUtbetalinger {
         val utbetalingerFraNavFeilet = java.lang.Boolean.TRUE == driftsinformasjon.utbetalingerFraNavFeilet
         return Avsnitt(
             tittel = "navytelser.sporsmal",
-            sporsmal = navUtbetalingerSporsmal(opplysninger, utbetalingerFraNavFeilet)
+            sporsmal = navUtbetalingerSporsmal(opplysninger, utbetalingerFraNavFeilet),
         )
     }
 
     private fun navUtbetalingerSporsmal(
         opplysninger: JsonOkonomiopplysninger,
-        utbetalingerFraNavFeilet: Boolean
+        utbetalingerFraNavFeilet: Boolean,
     ): List<Sporsmal> {
         if (utbetalingerFraNavFeilet) {
             // På grunn av systemfeil klarte vi ikke å hente ned informasjon om ytelser fra NAV.
@@ -31,8 +31,8 @@ class NavUtbetalinger {
                 Sporsmal(
                     tittel = "utbetalinger.kontaktproblemer",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         }
         val harNavUtbetalinger =
@@ -43,8 +43,8 @@ class NavUtbetalinger {
                 Sporsmal(
                     tittel = "utbetalinger.ingen.true",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         } else { // 1 eller flere utbetalinger
             opplysninger.utbetaling
@@ -61,9 +61,9 @@ class NavUtbetalinger {
                         felt = listOf(
                             Felt(
                                 type = Type.SYSTEMDATA_MAP,
-                                labelSvarMap = map
-                            )
-                        )
+                                labelSvarMap = map,
+                            ),
+                        ),
                     )
                 }
         }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisasjonService(
-    private val organisasjonClient: OrganisasjonClient
+    private val organisasjonClient: OrganisasjonClient,
 ) {
 
     fun hentOrgNavn(orgnr: String?): String {
@@ -22,7 +22,7 @@ class OrganisasjonService(
                     noekkelinfo.navn.navnelinje2,
                     noekkelinfo.navn.navnelinje3,
                     noekkelinfo.navn.navnelinje4,
-                    noekkelinfo.navn.navnelinje5
+                    noekkelinfo.navn.navnelinje5,
                 )
                     .filterNotNull()
                     .filter { it.isNotEmpty() }

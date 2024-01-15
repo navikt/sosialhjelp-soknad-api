@@ -90,7 +90,8 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     fun slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
         val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(
-            lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER
+            lagOpplastetVedlegg(EIER, TYPE, SOKNADID),
+            EIER,
         )
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
@@ -109,7 +110,7 @@ internal class OpplastetVedleggRepositoryJdbcTest {
             uuid = UUID.nameUUIDFromBytes(data).toString(),
             soknadId = soknadId,
             filnavn = FILNAVN,
-            sha512 = getSha512FromByteArray(data)
+            sha512 = getSha512FromByteArray(data),
         )
     }
 

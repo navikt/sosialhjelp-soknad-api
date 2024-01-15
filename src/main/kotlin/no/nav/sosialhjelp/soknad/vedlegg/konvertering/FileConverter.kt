@@ -10,5 +10,5 @@ interface FileConverter {
 data class FileConverterException(
     val httpStatus: HttpStatusCode,
     val msg: String,
-    val trace: String
+    val trace: String,
 ) : SosialhjelpSoknadApiException("[$trace] Feil i filkonvertering: $httpStatus - $msg")

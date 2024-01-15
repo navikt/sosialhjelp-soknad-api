@@ -57,7 +57,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeidRepository,
         soknadMetadataRepository,
         digisosApiService,
-        nedetidService
+        nedetidService,
     )
 
     private val token = "token"
@@ -105,7 +105,7 @@ internal class SoknadActionsTest {
             fnr = EIER,
             status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -143,7 +143,7 @@ internal class SoknadActionsTest {
             fnr = EIER,
             status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -269,7 +269,7 @@ internal class SoknadActionsTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

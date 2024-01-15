@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 @Component
 class AdresseSystemdata(
     private val personService: PersonService,
-    private val hentAdresseService: HentAdresseService
+    private val hentAdresseService: HentAdresseService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -46,7 +46,7 @@ class AdresseSystemdata(
     private fun valgtAdresseLikNull(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ): Boolean {
         return (
             folkeregistrertAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.FOLKEREGISTRERT == personalia.oppholdsadresse.adresseValg ||
@@ -57,7 +57,7 @@ class AdresseSystemdata(
     private fun updatePostadresse(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ) {
         val postadresse = personalia.postadresse ?: return
         val adresseValg = postadresse.adresseValg
@@ -72,7 +72,7 @@ class AdresseSystemdata(
     private fun updateOppholdsadresse(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ) {
         val oppholdsadresse = personalia.oppholdsadresse ?: return
         val adresseValg = oppholdsadresse.adresseValg

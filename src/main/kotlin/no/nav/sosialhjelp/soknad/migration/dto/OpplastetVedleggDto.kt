@@ -9,7 +9,7 @@ data class OpplastetVedleggDto(
     val data: ByteArray,
     val soknadId: Long,
     val filnavn: String,
-    val sha512: String
+    val sha512: String,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -27,7 +27,7 @@ internal class BasisPersonaliaSystemdataTest {
         jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
         status = SoknadUnderArbeidStatus.UNDER_ARBEID,
         opprettetDato = LocalDateTime.now(),
-        sistEndretDato = LocalDateTime.now()
+        sistEndretDato = LocalDateTime.now(),
     )
 
     @Test
@@ -114,7 +114,7 @@ internal class BasisPersonaliaSystemdataTest {
             sivilstatus = "ugift",
             statsborgerskap = listOf(
                 IKKE_NORDISK_STATSBORGERSKAP,
-                NORDISK_STATSBORGERSKAP
+                NORDISK_STATSBORGERSKAP,
             ),
             ektefelle = null,
             bostedsadresse = null,
@@ -141,7 +141,7 @@ internal class BasisPersonaliaSystemdataTest {
             fnr = EIER,
             sivilstatus = "ugift",
             statsborgerskap = listOf(
-                IKKE_NORDISK_STATSBORGERSKAP
+                IKKE_NORDISK_STATSBORGERSKAP,
             ),
             ektefelle = null,
             bostedsadresse = null,

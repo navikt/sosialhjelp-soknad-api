@@ -45,16 +45,16 @@ internal class ExtensionsKtTest {
                         skjema = null,
                         tillegg = null,
                         hendelseType = HendelseType.SOKNAD,
-                        hendelseReferanse = "ref"
-                    )
-                )
+                        hendelseReferanse = "ref",
+                    ),
+                ),
             ),
             type = null,
             status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
             innsendtDato = null,
-            lest = false
+            lest = false,
         )
 
         val dto = soknadMetadata.toDto()
@@ -88,7 +88,7 @@ internal class ExtensionsKtTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
 
         val opplastetVedlegg = OpplastetVedlegg(
@@ -97,7 +97,7 @@ internal class ExtensionsKtTest {
             data = "hello".toByteArray(),
             soknadId = 1L,
             filnavn = "filnavn",
-            sha512 = "sha"
+            sha512 = "sha",
         )
 
         val dto = soknadUnderArbeid.toDto(listOf(opplastetVedlegg))
@@ -139,20 +139,20 @@ internal class ExtensionsKtTest {
                         uuid = "uuid",
                         filnavn = "filnavn",
                         mimetype = "mime",
-                        ekskluderesFraPrint = false
-                    )
+                        ekskluderesFraPrint = false,
+                    ),
                 ),
                 innsendtDato = LocalDateTime.now(),
-                ettersendelsePa = null
+                ettersendelsePa = null,
             ),
             oppgaveResultat = FiksResultat(
                 fiksForsendelsesId = "fiksId",
-                feilmelding = null
+                feilmelding = null,
             ),
             opprettet = LocalDateTime.now(),
             sistKjort = LocalDateTime.now(),
             nesteForsok = null,
-            retries = 0
+            retries = 0,
         )
 
         val dto = oppgave.toDto()

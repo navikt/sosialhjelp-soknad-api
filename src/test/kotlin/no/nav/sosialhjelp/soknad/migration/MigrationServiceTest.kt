@@ -30,7 +30,7 @@ internal class MigrationServiceTest {
         soknadMetadataMigrationRepository,
         soknadUnderArbeidMigrationRepository,
         opplastetVedleggMigrationRepository,
-        oppgaveRepository
+        oppgaveRepository,
     )
 
     @Test
@@ -85,13 +85,13 @@ internal class MigrationServiceTest {
 
     private fun createSoknadMetadata(behandlingsId: String): SoknadMetadata {
         return SoknadMetadata(
-            1L, behandlingsId, null, "fnr", null, null, null, null, null, null, null, LocalDateTime.now(), LocalDateTime.now(), null, false
+            1L, behandlingsId, null, "fnr", null, null, null, null, null, null, null, LocalDateTime.now(), LocalDateTime.now(), null, false,
         )
     }
 
     private fun createSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {
         return SoknadUnderArbeid(
-            1L, 1L, behandlingsId, null, "fnr", null, SoknadUnderArbeidStatus.UNDER_ARBEID, LocalDateTime.now(), LocalDateTime.now()
+            1L, 1L, behandlingsId, null, "fnr", null, SoknadUnderArbeidStatus.UNDER_ARBEID, LocalDateTime.now(), LocalDateTime.now(),
         )
     }
 
@@ -102,13 +102,13 @@ internal class MigrationServiceTest {
             data = "hello".toByteArray(),
             soknadId = soknadId,
             filnavn = "filnavn",
-            sha512 = "sha"
+            sha512 = "sha",
         )
     }
 
     private fun createOppgave(behandlingsId: String): Oppgave {
         return Oppgave(
-            1L, behandlingsId, null, Status.UNDER_ARBEID, 21, null, null, null, null, null, 0
+            1L, behandlingsId, null, Status.UNDER_ARBEID, 21, null, null, null, null, null, 0,
         )
     }
 }

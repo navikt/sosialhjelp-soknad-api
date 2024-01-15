@@ -11,13 +11,12 @@ import org.springframework.stereotype.Component
 @Component
 class SlettSoknaderScheduler(
     private val jdbcTemplate: JdbcTemplate,
-    private val leaderElection: LeaderElection
+    private val leaderElection: LeaderElection,
 ) {
     private val log by logger()
 
     @Scheduled(cron = "@yearly")
     fun slettAlleSoknaderUnderArbeid1Jan() {
-
         if (leaderElection.isLeader()) {
             log.info("Starter sletting av alle soknader under arbeid")
 
@@ -25,7 +24,7 @@ class SlettSoknaderScheduler(
                 jdbcTemplate.update(
                     "DELETE FROM SOKNADMETADATA WHERE innsendingstatus = ? AND soknadtype = ?",
                     SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
-                    SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
+                    SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
                 ).also {
                     log.info("Slettet $it rader fra SOKNADMETADATA")
                 }
