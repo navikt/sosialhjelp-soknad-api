@@ -235,11 +235,11 @@ class ExceptionMapper(
             else -> {
                 log.error("Noe uventet feilet: ${e.message}", e)
 
-                 ResponseEntity
-                     .internalServerError()
-                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-                     .contentType(MediaType.APPLICATION_JSON)
-                     .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
+                ResponseEntity
+                    .internalServerError()
+                    .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
             }
         }
     }
