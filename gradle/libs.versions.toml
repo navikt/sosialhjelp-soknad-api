@@ -20,7 +20,6 @@ jackson = "2.16.1"
 logback = "1.4.14"
 logstash = "7.4"
 pdfbox = "3.0.1"
-emoji_java = "5.1.1"
 jakarta_servlet = "6.0.0"
 unleash_client = "9.2.0"
 tika = "2.9.1"
@@ -72,7 +71,6 @@ commons-text = { module = "org.apache.commons:commons-text", version.ref = "comm
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }
 pdfbox-io = { module = "org.apache.pdfbox:pdfbox-io", version.ref = "pdfbox" }
-emoji-java = { module = "com.vdurmont:emoji-java", version.ref = "emoji_java" }
 
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 token-validation-spring-test = { module = "no.nav.security:token-validation-spring-test", version.ref = "token_validation" }

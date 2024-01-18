@@ -107,7 +107,6 @@ dependencies {
 
     // pdf
     implementation(libs.bundles.pdfbox)
-    implementation(libs.emoji.java)
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
