@@ -26,7 +26,7 @@ class OppgaveHandtererImpl(
     private val leaderElection: LeaderElection
 ) : OppgaveHandterer {
 
-    @Scheduled(fixedDelay = PROSESS_RATE)
+//    @Scheduled(fixedDelay = PROSESS_RATE)
     fun prosesserOppgaver() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
@@ -52,7 +52,7 @@ class OppgaveHandtererImpl(
         }
     }
 
-    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
+//    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     fun retryStuckUnderArbeid() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
@@ -70,7 +70,7 @@ class OppgaveHandtererImpl(
         }
     }
 
-    @Scheduled(fixedRate = RAPPORTER_RATE)
+//    @Scheduled(fixedRate = RAPPORTER_RATE)
     fun rapporterFeilede() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")

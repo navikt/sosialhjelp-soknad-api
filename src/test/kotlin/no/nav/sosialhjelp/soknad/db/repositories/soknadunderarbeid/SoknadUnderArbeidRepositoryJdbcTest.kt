@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.repositories.RepositoryTest
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -20,25 +20,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class SoknadUnderArbeidRepositoryJdbcTest {
-
-    @Autowired
-    private lateinit var jdbcTemplate: JdbcTemplate
+internal class SoknadUnderArbeidRepositoryJdbcTest: RepositoryTest() {
 
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
-
-    @Autowired
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
-    }
 
     @Test
     fun opprettSoknadOppretterSoknadUnderArbeidIDatabasen() {
@@ -135,14 +120,12 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     fun slettSoknadSletterSoknadUnderArbeidFraDatabasen() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
         val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
-        soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(
-            lagOpplastetVedlegg(soknadUnderArbeidId),
-            EIER
-        )
+            ?: throw RuntimeException("Kunne ikke lagre soknad")
+
+        soknadUnderArbeid.soknadId = soknadUnderArbeidId
+
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {

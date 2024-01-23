@@ -35,13 +35,9 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
-        val soknadUnderArbeidId = jdbcTemplate.queryForObject(
-            SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
-            Long::class.java
-        )
+
         jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
-            soknadUnderArbeidId,
+            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
             soknadUnderArbeid.tilknyttetBehandlingsId,
@@ -51,7 +47,7 @@ class SoknadUnderArbeidRepositoryJdbc(
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
         )
-        return soknadUnderArbeidId
+        return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
@@ -145,7 +141,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
                 val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                     eier,

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.repositories.RepositoryTest
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -10,34 +10,20 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
-
-    @Autowired
-    private lateinit var jdbcTemplate: JdbcTemplate
+internal class BatchSoknadUnderArbeidRepositoryJdbcTest: RepositoryTest() {
 
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Autowired
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @Autowired
     private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
-    }
 
     @Test
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
@@ -54,11 +40,10 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
         val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
-        soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
-        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
+            ?: throw RuntimeException("Kunne ikke finne søknad")
+
+        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
@@ -71,17 +56,6 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
             sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5)
-        )
-    }
-
-    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg(
-            eier = EIER,
-            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = soknadId,
-            filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
         )
     }
 

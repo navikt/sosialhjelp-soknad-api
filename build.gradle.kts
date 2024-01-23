@@ -71,8 +71,9 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    runtimeOnly(libs.ojdbc10)
-    runtimeOnly(libs.hsqldb)
+//    runtimeOnly(libs.ojdbc10)
+//    runtimeOnly(libs.hsqldb)
+    runtimeOnly("org.postgresql:postgresql:42.7.1")
 
     // redis
     implementation(libs.lettuce.core)
@@ -113,6 +114,8 @@ dependencies {
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
+    testImplementation("org.testcontainers:postgresql:1.19.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
 }
 
 group = "no.nav.sosialhjelp"
