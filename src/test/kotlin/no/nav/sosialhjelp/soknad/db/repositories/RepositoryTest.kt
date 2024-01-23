@@ -1,31 +1,21 @@
 package no.nav.sosialhjelp.soknad.db.repositories
 
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-//@Testcontainers
+@Transactional
 @ActiveProfiles("test", "no-redis")
 class RepositoryTest {
 
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
-    }
 
     companion object {
         @DynamicPropertySource
