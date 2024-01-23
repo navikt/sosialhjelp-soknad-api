@@ -109,13 +109,15 @@ dependencies {
     // pdf
     implementation(libs.bundles.pdfbox)
 
+    // testcontainers
+    testImplementation("org.testcontainers:postgresql:1.19.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
-    testImplementation("org.testcontainers:postgresql:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
 }
 
 group = "no.nav.sosialhjelp"

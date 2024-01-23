@@ -4,10 +4,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: "jdbc:tc:postgres:15-alpine"
-    username: sa
-    password: sa
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:15-alpine:///soknad
+    username: user
+    password: password
 
 # Andre properties
 sendsoknad.batch.enabled: false
