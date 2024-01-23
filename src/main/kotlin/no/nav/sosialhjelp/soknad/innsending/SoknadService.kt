@@ -59,6 +59,8 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Component
 class SoknadService(
@@ -76,7 +78,8 @@ class SoknadService(
     @Transactional
     fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val behandlingsId = opprettSoknadMetadata(eier)
+//        val behandlingsId = opprettSoknadMetadata(eier)
+        val behandlingsId = UUID.randomUUID().toString()
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)

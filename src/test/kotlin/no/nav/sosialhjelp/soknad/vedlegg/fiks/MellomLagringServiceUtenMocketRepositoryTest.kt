@@ -22,18 +22,15 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [MellomLagringServiceTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("no-redis","test")
 internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Autowired
@@ -66,7 +63,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @AfterEach
     fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
         jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
         unmockkObject(SubjectHandlerUtils)
         unmockkObject(VedleggUtils)

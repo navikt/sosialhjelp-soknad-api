@@ -37,7 +37,6 @@ class SoknadActionsEndpointIT {
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
-        jdbcTemplate.update("delete from soknadmetadata")
     }
 
     @Test

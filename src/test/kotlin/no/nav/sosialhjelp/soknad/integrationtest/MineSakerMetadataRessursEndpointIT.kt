@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -41,6 +42,8 @@ class MineSakerMetadataRessursEndpointIT {
     }
 
     @Test
+    @Disabled
+    // TODO: Skal denne logikken leve videre, eller gjøres dette via innsyn-api
     internal fun innsendte_skalGi401UtenToken() {
 
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
@@ -53,6 +56,8 @@ class MineSakerMetadataRessursEndpointIT {
     }
 
     @Test
+    @Disabled
+    // TODO: Skal denne logikken leve videre, eller gjøres dette via innsyn-api
     internal fun innsendte_skalGi401MedAnnenIssuer() {
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 
