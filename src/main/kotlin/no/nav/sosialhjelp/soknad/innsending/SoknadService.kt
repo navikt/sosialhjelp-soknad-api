@@ -78,7 +78,7 @@ class SoknadService(
     @Transactional
     fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-//        val behandlingsId = opprettSoknadMetadata(eier)
+//        val behandlingsId = opprettSoknadMetadata(eier) // TODO NyModell Metadata
         val behandlingsId = UUID.randomUUID().toString()
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
