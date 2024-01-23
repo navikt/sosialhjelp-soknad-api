@@ -26,7 +26,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -39,7 +39,7 @@ import java.time.LocalDateTime
 
 internal class SoknadRessursTest {
 
-    private val soknadService: SoknadService = mockk()
+    private val soknadServiceOld: SoknadServiceOld = mockk()
     private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -48,7 +48,7 @@ internal class SoknadRessursTest {
     private val nedetidService: NedetidService = mockk()
 
     private val ressurs = SoknadRessurs(
-        soknadService,
+        soknadServiceOld,
         ettersendingService,
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
@@ -65,7 +65,7 @@ internal class SoknadRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { soknadService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
+        every { soknadServiceOld.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
         every { nedetidService.isInnenforNedetid } returns false
     }
 
@@ -93,7 +93,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadServiceOld.startSoknad(any()) } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
@@ -105,11 +105,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadServiceOld.startSoknad(any()) } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
-        verify(exactly = 1) { soknadService.startSoknad("") }
+        verify(exactly = 1) { soknadServiceOld.startSoknad("") }
     }
 
     @Test
@@ -144,19 +144,19 @@ internal class SoknadRessursTest {
     @Test
     fun oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
         val samtykkeListe = emptyList<BekreftelseRessurs>()
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadService.oppdaterSamtykker(BEHANDLINGSID, false, false, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, false, false, token) }
     }
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, true)
@@ -164,13 +164,13 @@ internal class SoknadRessursTest {
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadService.oppdaterSamtykker(BEHANDLINGSID, true, true, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, true, token) }
     }
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, false)
@@ -178,13 +178,13 @@ internal class SoknadRessursTest {
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadService.oppdaterSamtykker(BEHANDLINGSID, true, false, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, false, token) }
     }
 
     @Test
     fun hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns createSoknadUnderArbeid(EIER)
 
         val token = "token"
@@ -196,7 +196,7 @@ internal class SoknadRessursTest {
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
@@ -220,7 +220,7 @@ internal class SoknadRessursTest {
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
@@ -244,7 +244,7 @@ internal class SoknadRessursTest {
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.hentXsrfCookie(BEHANDLINGSID, mockk()) }
 
-        verify { soknadService wasNot called }
+        verify { soknadServiceOld wasNot called }
     }
 
     @Test
@@ -264,7 +264,7 @@ internal class SoknadRessursTest {
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.oppdaterSamtykker(BEHANDLINGSID, emptyList(), "token") }
 
-        verify { soknadService wasNot called }
+        verify { soknadServiceOld wasNot called }
     }
 
     @Test
@@ -284,7 +284,7 @@ internal class SoknadRessursTest {
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }
 
-        verify { soknadService wasNot called }
+        verify { soknadServiceOld wasNot called }
     }
 
     companion object {

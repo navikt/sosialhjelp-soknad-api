@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Component
 class SlettForeldedeEttersendelserScheduler(
     private val leaderElection: LeaderElection,
-    private val soknadService: SoknadService,
+    private val soknadServiceOld: SoknadServiceOld,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
     @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
@@ -63,7 +63,7 @@ class SlettForeldedeEttersendelserScheduler(
 
     private fun avbrytOgSlettEttersendelse(soknadUnderArbeid: SoknadUnderArbeid) {
         try {
-            soknadService.settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, true)
+            soknadServiceOld.settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, true)
             batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
 
             vellykket++

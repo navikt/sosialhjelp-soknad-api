@@ -10,7 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavSystemdata.Companion.tilIntegerMedAvrunding
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling

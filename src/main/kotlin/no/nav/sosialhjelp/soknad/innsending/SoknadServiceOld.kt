@@ -63,7 +63,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Component
-class SoknadService(
+class SoknadServiceOld(
     private val oppgaveHandterer: OppgaveHandterer,
     private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
@@ -236,7 +236,7 @@ class SoknadService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(SoknadService::class.java)
+        private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
 
         private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
             val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)

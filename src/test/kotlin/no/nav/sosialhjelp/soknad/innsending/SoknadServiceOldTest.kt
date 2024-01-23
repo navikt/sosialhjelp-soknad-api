@@ -24,7 +24,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
 
-internal class SoknadServiceTest {
+internal class SoknadServiceOldTest {
 
     private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
@@ -49,7 +49,7 @@ internal class SoknadServiceTest {
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
-    private val soknadService = SoknadService(
+    private val soknadServiceOld = SoknadServiceOld(
         oppgaveHandterer,
         innsendingService,
         soknadMetadataRepository,
@@ -90,7 +90,7 @@ internal class SoknadServiceTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
-        soknadService.startSoknad("")
+        soknadServiceOld.startSoknad("")
 
         val bekreftelser = soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
@@ -139,7 +139,7 @@ internal class SoknadServiceTest {
         every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
         every { innsendingService.oppdaterSoknadUnderArbeid(any()) } just runs
 
-        soknadService.sendSoknad(behandlingsId)
+        soknadServiceOld.sendSoknad(behandlingsId)
 
         verify { oppgaveHandterer.leggTilOppgave(behandlingsId, any()) }
 
@@ -169,7 +169,7 @@ internal class SoknadServiceTest {
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
         every { soknadMetadataRepository.oppdater(any()) } just runs
 
-        soknadService.avbrytSoknad(BEHANDLINGSID, "3")
+        soknadServiceOld.avbrytSoknad(BEHANDLINGSID, "3")
 
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
         verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad(false, "3") }

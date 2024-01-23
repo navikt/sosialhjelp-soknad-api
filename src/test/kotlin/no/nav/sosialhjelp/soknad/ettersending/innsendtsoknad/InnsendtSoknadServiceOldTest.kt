@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class InnsendtSoknadServiceTest {
+internal class InnsendtSoknadServiceOldTest {
 
     @Test
     fun soknadsalderIMinutter_returnsMinutes() {

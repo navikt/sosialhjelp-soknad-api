@@ -31,7 +31,7 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis","test")
-internal class MellomLagringServiceUtenMocketRepositoryTest {
+internal class MellomLagringServiceUtenMocketAbstractRepositoryTest {
 
     @Autowired
     private lateinit var mellomlagringClient: MellomlagringClient
