@@ -14,9 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 @ActiveProfiles("test", "no-redis")
 class RepositoryTest {
 
-    @Autowired
-    private lateinit var jdbcTemplate: JdbcTemplate
-
     companion object {
         @DynamicPropertySource
         @JvmStatic
@@ -25,21 +22,6 @@ class RepositoryTest {
             registry.add("spring.datasource.username", PostgresContainerObject::getUsername)
             registry.add("spring.datasource.password", PostgresContainerObject::getPassword)
         }
-//        @JvmStatic
-//        @BeforeAll
-//        fun startContainer() {
-//            if (!PostgresContainerObject.isRunning) {
-//                PostgresContainerObject.start()
-//            }
-//        }
-//
-//        @JvmStatic
-//        @AfterAll
-//        fun stopContainer() {
-//            if (PostgresContainerObject.isRunning) {
-//                PostgresContainerObject.stop()
-//            }
-//        }
     }
 }
 
