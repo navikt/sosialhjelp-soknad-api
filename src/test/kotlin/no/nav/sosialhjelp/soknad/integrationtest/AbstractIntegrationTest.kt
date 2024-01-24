@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("no-redis", "test")
+@ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractIntegrationTest {
 
     @Autowired
