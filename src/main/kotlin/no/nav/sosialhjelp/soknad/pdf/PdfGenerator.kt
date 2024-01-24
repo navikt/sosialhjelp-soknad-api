@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.pdf
 
-import com.vdurmont.emoji.EmojiParser
 import org.apache.jempbox.xmp.XMPMetadata
 import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId
 import org.apache.pdfbox.pdfwriter.compress.CompressParameters
@@ -212,7 +211,6 @@ class PdfGenerator {
         if (text == null) {
             return lines
         }
-        text = EmojiParser.parseToAliases(text)
         splitTextOnNewlines(text).forEach { originalLine ->
             var lastSpace = -1
             var line = originalLine

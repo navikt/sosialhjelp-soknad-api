@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConverterException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -174,6 +175,22 @@ class ExceptionMapper(
                         )
                     )
             }
+            is FileConverterException -> {
+                log.error("Filkonverteringsfeil: ${e.message}", e)
+
+                return ResponseEntity
+                    .status(
+                        if (e.httpStatus.is4xxClientError) HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                        else HttpStatus.SERVICE_UNAVAILABLE
+                    )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(
+                        Feilmelding(
+                            id = "filkonvertering_error",
+                            message = "${e.message}"
+                        )
+                    )
+            }
             else -> {
                 log.error("REST-kall feilet", e)
                 ResponseEntity.internalServerError()
@@ -217,6 +234,7 @@ class ExceptionMapper(
             }
             else -> {
                 log.error("Noe uventet feilet: ${e.message}", e)
+
                 ResponseEntity
                     .internalServerError()
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
