@@ -11,6 +11,16 @@ class SoknadService(
 ) {
     fun findSoknad(soknadId: UUID): Soknad {
         return soknadRepository.findById(soknadId).getOrNull()
-            ?: throw IkkeFunnetException("Soknad ikke funnet")
+            ?: throw IkkeFunnetException("Soknad finnes ikke")
+    }
+
+    fun deleteSoknad(soknadId: UUID) {
+        val soknad = soknadRepository.findById(soknadId).getOrNull()
+            ?: throw IkkeFunnetException("Soknad finnes ikke")
+
+        soknadRepository.delete(soknad)
+        if (soknadRepository.existsById(soknadId)) {
+            throw IkkeFunnetException("Kunne ikke slette soknad")
+        }
     }
 }
