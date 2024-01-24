@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.AbstractRepositoryTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class SoknadRepositoryTest: AbstractRepositoryTest() {
+class SoknadRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun `Lagre ny soknad`() {

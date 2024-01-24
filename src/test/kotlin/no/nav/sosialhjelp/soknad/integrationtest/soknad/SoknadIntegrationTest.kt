@@ -9,7 +9,7 @@ import org.springframework.http.MediaType
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-class SoknadIntegrationTest: AbstractIntegrationTest() {
+class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente ut lagret soknad`() {
@@ -26,8 +26,8 @@ class SoknadIntegrationTest: AbstractIntegrationTest() {
             .expectBody(Soknad::class.java)
             .returnResult()
             .responseBody!!.run {
-                assertThat(this).isEqualTo(lagretSoknad)
-            }
+            assertThat(this).isEqualTo(lagretSoknad)
+        }
     }
 
     @Test
@@ -43,8 +43,8 @@ class SoknadIntegrationTest: AbstractIntegrationTest() {
             .expectBody(Feilmelding::class.java)
             .returnResult()
             .responseBody!!.run {
-                assertThat(message).isEqualTo("Soknad finnes ikke")
-            }
+            assertThat(message).isEqualTo("Soknad finnes ikke")
+        }
     }
 
     @Test
@@ -54,7 +54,7 @@ class SoknadIntegrationTest: AbstractIntegrationTest() {
 
         webTestClient
             .delete()
-            .uri("/soknad/${lagretSoknadId}")
+            .uri("/soknad/$lagretSoknadId")
             .accept(MediaType.APPLICATION_JSON)
 //            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token.serialize())
             .exchange()
@@ -78,7 +78,7 @@ class SoknadIntegrationTest: AbstractIntegrationTest() {
             .expectBody(Feilmelding::class.java)
             .returnResult()
             .responseBody!!.run {
-                assertThat(message).isEqualTo("Soknad finnes ikke")
-            }
+            assertThat(message).isEqualTo("Soknad finnes ikke")
+        }
     }
 }

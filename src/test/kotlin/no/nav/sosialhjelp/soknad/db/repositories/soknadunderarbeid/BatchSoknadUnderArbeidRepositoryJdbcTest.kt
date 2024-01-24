@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
-@ActiveProfiles("no-redis","test")
+@ActiveProfiles("no-redis", "test")
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Autowired

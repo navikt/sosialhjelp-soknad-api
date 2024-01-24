@@ -13,7 +13,7 @@ import java.util.*
 @Unprotected
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadController(
-   private val soknadService: SoknadService
+    private val soknadService: SoknadService
 ) {
     @GetMapping("/{soknadId}/hentSoknad")
     fun getSoknad(

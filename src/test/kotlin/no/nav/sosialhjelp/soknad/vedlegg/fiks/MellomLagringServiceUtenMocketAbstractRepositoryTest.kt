@@ -30,7 +30,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ActiveProfiles("no-redis","test")
+@ActiveProfiles("no-redis", "test")
 internal class MellomLagringServiceUtenMocketAbstractRepositoryTest {
 
     @Autowired
