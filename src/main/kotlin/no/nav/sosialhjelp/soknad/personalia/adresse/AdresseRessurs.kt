@@ -91,7 +91,7 @@ class AdresseRessurs(
 
             else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
         }
-        personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
+        personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         val navEnhetFrontend = navEnhetService.getNavEnhet(
