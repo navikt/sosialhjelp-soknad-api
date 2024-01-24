@@ -26,7 +26,7 @@ class JsonInternalSoknadGenerator(
     }
 
     fun copyAndMerge(soknadId: UUID, orgJsonSoknad: JsonInternalSoknad): JsonInternalSoknad {
-        return copyJsonInternalSoknad(orgJsonSoknad).also {jsonSoknad ->
+        return copyJsonInternalSoknad(orgJsonSoknad).also { jsonSoknad ->
             mappers.forEach { it.mapToSoknad(soknadId, jsonSoknad) }
         }
     }
