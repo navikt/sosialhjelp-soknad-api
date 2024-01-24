@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockkObject
@@ -31,9 +32,9 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test")
-internal class MellomLagringServiceUtenMocketAbstractRepositoryTest {
+internal class MellomLagringServiceUtenMocketRepositoryTest {
 
-    @Autowired
+    @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
 
     @Autowired
@@ -42,7 +43,7 @@ internal class MellomLagringServiceUtenMocketAbstractRepositoryTest {
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Autowired
+    @MockkBean
     private lateinit var virusScanner: VirusScanner
 
     @Autowired

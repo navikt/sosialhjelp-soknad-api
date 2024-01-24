@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
-import io.mockk.mockk
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -34,10 +32,10 @@ class FileConverterIntegrationTest {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @Autowired
+    @MockkBean
     private lateinit var virusScanner: VirusScanner
 
-    @Autowired
+    @MockkBean
     private lateinit var fileConverter: FileConverter
 
     @BeforeEach
@@ -105,11 +103,5 @@ class FileConverterIntegrationTest {
             builder.part("file", it.resource)
             builder.build()
         }
-    }
-
-    @TestConfiguration
-    class FileConverterTestConfig {
-        @Bean
-        fun fileConverter() = mockk<FileConverter>()
     }
 }

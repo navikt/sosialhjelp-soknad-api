@@ -118,6 +118,7 @@ dependencies {
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 group = "no.nav.sosialhjelp"
