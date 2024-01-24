@@ -1,18 +1,18 @@
 [versions]
 kotlin = "1.9.22"
-spring-boot = "3.2.1"
+spring-boot = "3.2.2"
 coroutines = "1.7.3"
 filformat = "1.2023.07.11-15.37-bb76af3d1843"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
 fiks_svar_ut = "4.0.0"
 fiks_kryptering = "2.0.3"
 springdoc = "2.3.0"
-flyway_plugin = "10.4.1"
-flyway = "9.16.1"
+flyway_plugin = "10.6.0"
+flyway = "10.6.0"
 ojdbc_10 = "19.21.0.0"
 hsqldb = "2.7.2"
-lettuce = "6.3.0.RELEASE"
-token_validation = "4.0.3"
+lettuce = "6.3.1.RELEASE"
+token_validation = "4.1.0"
 java_jwt = "4.4.0"
 prometheus = "0.16.0"
 micrometer = "1.12.2"
@@ -27,7 +27,7 @@ tika_parsers = "2.9.1"
 commons_text = "1.11.0"
 ktlint = "0.45.2"
 mockk = "1.13.9"
-versions = "0.50.0"
+versions = "0.51.0"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
@@ -115,6 +115,6 @@ sosialhjelp-common = [
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.1" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }
 versions = {id = "com.github.ben-manes.versions", version.ref = "versions"}
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway_plugin" }
