@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
-@ActiveProfiles("test")
+@ActiveProfiles("test", "test-container")
 abstract class AbstractRepositoryTest {
 
     @Autowired

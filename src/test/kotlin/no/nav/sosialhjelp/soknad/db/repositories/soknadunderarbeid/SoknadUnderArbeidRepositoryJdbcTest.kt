@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
-@ActiveProfiles("no-redis", "test")
+@ActiveProfiles("no-redis", "test", "test-container")
 internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Autowired
