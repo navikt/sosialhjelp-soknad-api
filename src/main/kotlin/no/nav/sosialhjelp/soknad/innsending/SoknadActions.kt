@@ -94,7 +94,7 @@ class SoknadActions(
 
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
-                val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+                val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, "4699")
                 SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
             }
 
