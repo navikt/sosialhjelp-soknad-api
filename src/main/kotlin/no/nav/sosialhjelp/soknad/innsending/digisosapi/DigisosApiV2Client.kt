@@ -135,7 +135,7 @@ class DigisosApiV2Client(
         val startTime = System.currentTimeMillis()
         try {
             val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/4699/{behandlingsId}", kommunenummer, behandlingsId)
+                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/4699/{behandlingsId}", behandlingsId)
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
