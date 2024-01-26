@@ -11,10 +11,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.SoknadToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
-import no.nav.sosialhjelp.soknad.v2.soknad.Navn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

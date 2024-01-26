@@ -4,10 +4,10 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.toV2Eier
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.AdresseAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
-import no.nav.sosialhjelp.soknad.v2.soknad.Navn
 import org.springframework.stereotype.Component
 import java.util.*
 

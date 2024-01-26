@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
-import no.nav.sosialhjelp.soknad.v2.soknad.Navn
 import java.time.LocalDateTime
 
 @Deprecated("Erstattes av no.nav.sosialhjelp.soknad.v2.soknad.Soknad")
