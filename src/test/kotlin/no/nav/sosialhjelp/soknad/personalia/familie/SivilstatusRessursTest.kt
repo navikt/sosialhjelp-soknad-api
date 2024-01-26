@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
+import io.mockk.Runs
 import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -27,6 +28,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -38,8 +40,9 @@ internal class SivilstatusRessursTest {
 
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val controllerAdapter: ControllerAdapter = mockk()
 
-    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository)
+    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
 
     @BeforeEach
     fun setUp() {
@@ -48,6 +51,7 @@ internal class SivilstatusRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        every { controllerAdapter.updateSivilstand(any(), any()) } just Runs
     }
 
     @AfterEach

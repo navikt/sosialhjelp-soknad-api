@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs
@@ -20,6 +22,15 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerControlle
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerInput
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.UtdanningController
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.UtdanningDto
+import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
+import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
+import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerInput
+import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktController
+import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
+import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Controller
 import java.util.*
 
@@ -30,11 +41,13 @@ class SoknadV2ControllerAdapter(
     private val bosituasjonController: BosituasjonController,
     private val kontonummerController: KontonummerController,
     private val telefonnummerController: TelefonnummerController,
-    private val utdanningController: UtdanningController
+    private val utdanningController: UtdanningController,
+    private val sivilstandController: SivilstandController,
+    private val forsorgerpliktController: ForsorgerpliktController,
 ) : ControllerAdapter {
     override fun updateArbeid(
         soknadId: String,
-        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest
+        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
         arbeidFrontend.kommentarTilArbeidsforhold?.let {
             arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
@@ -43,7 +56,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBegrunnelse(
         soknadId: String,
-        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend
+        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
         with(begrunnelseFrontend) {
             if (hvaSokesOm != null || hvorforSoke != null) {
@@ -60,7 +73,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBosituasjon(
         soknadId: String,
-        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend
+        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
         with(bosituasjonFrontend) {
             if (botype != null || antallPersoner != null) {
@@ -74,9 +87,10 @@ class SoknadV2ControllerAdapter(
             }
         }
     }
+
     override fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerRessurs.KontonummerInputDTO
+        kontoInputDto: KontonummerRessurs.KontonummerInputDTO,
     ) {
         with(kontoInputDto) {
             if (harIkkeKonto != null || brukerutfyltVerdi != null) {
@@ -90,17 +104,19 @@ class SoknadV2ControllerAdapter(
             }
         }
     }
+
     override fun updateTelefonnummer(
         soknadId: String,
-        telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend
+        telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend,
     ) {
         telefonnummerFrontend.brukerutfyltVerdi?.let {
             telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
         }
     }
+
     override fun updateUtdanning(
         soknadId: String,
-        utdanningFrontend: UtdanningRessurs.UtdanningFrontend
+        utdanningFrontend: UtdanningRessurs.UtdanningFrontend,
     ) {
 
         utdanningFrontend.erStudent?.let {
@@ -113,5 +129,34 @@ class SoknadV2ControllerAdapter(
                 )
             )
         }
+    }
+
+    override fun updateSivilstand(soknadId: String, familieFrontend: SivilstatusFrontend) {
+        val sivilstandInput = with(familieFrontend) {
+            SivilstandInput(
+                sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
+                ektefelle?.let {
+                    EktefelleInput(
+                        ektefelle.personnummer,
+                        Navn(ektefelle.navn?.fornavn ?: "", ektefelle.navn?.mellomnavn, ektefelle.navn?.etternavn ?: ""),
+                        ektefelle.fodselsdato,
+                        familieFrontend.borSammenMed
+                    )
+                },
+            )
+        }
+        sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
+    }
+
+    override fun updateForsorger(soknadId: String, forsorgerpliktFrontend: ForsorgerpliktFrontend) {
+        val forsorgerInput = with(forsorgerpliktFrontend) {
+            ForsorgerInput(
+                barnebidrag?.name?.let {
+                    Barnebidrag.valueOf(it)
+                },
+                ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) }
+            )
+        }
+        forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
     }
 }

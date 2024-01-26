@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
+import io.mockk.Runs
 import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -38,6 +39,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -50,8 +52,9 @@ internal class ForsorgerpliktRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val controllerAdapter: ControllerAdapter = mockk()
 
-    private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository)
+    private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository, controllerAdapter)
 
     @BeforeEach
     fun setUp() {
@@ -62,6 +65,7 @@ internal class ForsorgerpliktRessursTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
+        every { controllerAdapter.updateForsorger(any(), any()) } just Runs
     }
 
     @AfterEach

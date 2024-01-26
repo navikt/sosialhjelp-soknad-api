@@ -56,7 +56,7 @@ abstract class PdlClient(
             .uri(baseurl)
             .accept(MediaType.APPLICATION_JSON)
 
-    protected inline fun <reified T>parse(response: String): T {
+    protected inline fun <reified T> parse(response: String): T {
         return try {
             pdlMapper.readValue(response)
         } catch (e: MismatchedInputException) {

@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.repository.ListCrudRepository
@@ -41,12 +42,6 @@ data class Tidspunkt(
     val opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     var sistEndret: LocalDateTime? = null,
     var sendtInn: LocalDateTime? = null,
-)
-
-data class Navn(
-    val fornavn: String,
-    val mellomnavn: String? = null,
-    val etternavn: String,
 )
 
 data class NavEnhet(

@@ -23,10 +23,15 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Utdanning
+import no.nav.sosialhjelp.soknad.v2.familie.Barn
+import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
+import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.familie.Familie
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
-import no.nav.sosialhjelp.soknad.v2.soknad.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
@@ -49,7 +54,7 @@ fun createSoknad(
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
     navenhet: NavEnhet = opprettNavEnhet(),
-    arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList()
+    arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList(),
 ): Soknad {
     return Soknad(
         id = id,
@@ -64,7 +69,7 @@ fun opprettArbeidsforholdList(
     arbeidsforholdList: List<Arbeidsforhold> = listOf(
         opprettArbeidsforhold(),
         opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321")
-    )
+    ),
 ): List<Arbeidsforhold> {
     return arbeidsforholdList
 }
@@ -84,7 +89,7 @@ fun opprettNavEnhet(
     enhetNr: String = "321321321",
     navn: String = "NAV-kontoret",
     kommunenummer: String = "4314",
-    orgnummer: String = "3414513515"
+    orgnummer: String = "3414513515",
 ): NavEnhet {
     return NavEnhet(enhetNr, navn, kommunenummer, orgnummer)
 }
@@ -95,7 +100,7 @@ fun createEier(
     nordiskBoolean: Boolean? = true,
     kontonummer: String? = "12341212345",
     navn: Navn = createNavn(),
-    telefonnummer: String? = "1234567123"
+    telefonnummer: String? = "1234567123",
 ): Eier {
     return Eier(
         personId = personId,
@@ -110,7 +115,7 @@ fun createEier(
 fun createNavn(
     fornavn: String = "Test",
     mellomnavn: String = "Tester",
-    etternavn: String = "Testesen"
+    etternavn: String = "Testesen",
 ): Navn {
     return Navn(
         fornavn = fornavn,
@@ -124,7 +129,7 @@ fun opprettMidlertidigAdresse(
         "Bortiheiavegen 6",
         "2855 Poststed",
         "Norge"
-    )
+    ),
 ): Adresse {
     return UstrukturertAdresse(adresse = adresselinjer)
 }
@@ -135,7 +140,7 @@ fun opprettEier(
     statsborgerskap: String? = "Norsk",
     nordiskBorger: Boolean? = true,
     telefonnummer: String? = "94342312",
-    kontonummer: String? = "12341212345"
+    kontonummer: String? = "12341212345",
 ): Eier {
     return Eier(
         personId = personId,
@@ -151,7 +156,7 @@ fun opprettAdresserSoknad(
     soknadId: UUID,
     midlertidigAdresse: Adresse = opprettMidlertidigAdresse(),
     folkeregistrertAdresse: Adresse = opprettFolkeregistrertAdresse(),
-    brukerInput: BrukerInputAdresse = opprettBrukerInputAdresse()
+    brukerInput: BrukerInputAdresse = opprettBrukerInputAdresse(),
 ): AdresserSoknad {
     return AdresserSoknad(
         soknadId = soknadId,
@@ -163,7 +168,7 @@ fun opprettAdresserSoknad(
 
 fun opprettBrukerInputAdresse(
     valgtAdresse: AdresseValg = AdresseValg.FOLKEREGISTRERT,
-    adresseBruker: Adresse = opprettMatrikkelAdresse()
+    adresseBruker: Adresse = opprettMatrikkelAdresse(),
 ): BrukerInputAdresse {
     return BrukerInputAdresse(
         valgtAdresse = valgtAdresse,
@@ -193,7 +198,7 @@ fun opprettFolkeregistrertAdresse(
     poststed: String? = "Poststedet",
     gatenavn: String? = "Vegadresseveien",
     husnummer: String? = "8",
-    husbokstav: String? = "b"
+    husbokstav: String? = "b",
 ): Adresse {
     return VegAdresse(
         landkode, kommunenummer, adresselinjer, bolignummer,
@@ -227,7 +232,7 @@ fun opprettBrukerdataFormelt(
 
 fun opprettUtdanning(
     erStudent: Boolean = true,
-    studentGrad: Studentgrad = Studentgrad.HELTID
+    studentGrad: Studentgrad = Studentgrad.HELTID,
 ): Utdanning {
     return Utdanning(erStudent, studentGrad)
 }
@@ -243,7 +248,7 @@ fun opprettSamtykker(
     samtykker: Set<Samtykke> = setOf(
         Samtykke(SamtykkeType.BOSTOTTE, null, null),
         Samtykke(SamtykkeType.UTBETALING_SKATTEETATEN, null, null)
-    )
+    ),
 ): Set<Samtykke> {
     return samtykker
 }
@@ -253,10 +258,39 @@ fun opprettBeskrivelseAvAnnet(
     verdier: String? = "Ikke så mye verdier",
     sparing: String? = "Har lite sparing",
     utbetalinger: String? = "Det er få utbetalinger",
-    boutgifter: String? = "Sjukt med boutgifter"
+    boutgifter: String? = "Sjukt med boutgifter",
 ): BeskrivelseAvAnnet {
     return BeskrivelseAvAnnet(barneutgifter, verdier, sparing, utbetalinger, boutgifter)
 }
+
+fun createFamilie(
+    soknadId: UUID,
+    harForsorgerPlikt: Boolean? = null,
+    barnebidrag: Barnebidrag? = null,
+    sivilstatus: Sivilstatus? = null,
+    ansvar: List<Barn> = emptyList(),
+    ektefelle: Ektefelle? = null,
+) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
+
+fun createBarn(
+    uuid: UUID = UUID.randomUUID(),
+    personId: String? = null,
+    navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
+    fodselsdato: String? = null,
+    borSammen: Boolean? = null,
+    folkeregistrertSammen: Boolean? = null,
+    deltBosted: Boolean? = null,
+    samvarsgrad: Int? = null,
+) = Barn(
+    uuid,
+    personId,
+    navn,
+    fodselsdato,
+    borSammen,
+    folkeregistrertSammen,
+    deltBosted,
+    samvarsgrad,
+)
 
 fun opprettBrukerdataPerson(
     soknadId: UUID,
