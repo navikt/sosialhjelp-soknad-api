@@ -21,16 +21,9 @@ data class Eier(
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,
     val kontonummer: String? = null,
+    val telefonnummer: String? = null,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
     val navn: Navn,
-    @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
-    val kontaktInfo: KontaktInfo? = null
-)
-
-data class KontaktInfo(
-    val telefonnummer: String? = null,
-    val folkeregistrertAdresse: String? = null,
-    val midlertidigAdresse: String? = null
 )
 
 data class Navn(

@@ -15,6 +15,7 @@ CREATE TABLE eier
     nordisk_borger bool,
     kontonummer varchar(30),
     telefonnummer varchar(30),
-    folkeregistrert_adresse varchar(255),
-    midlertidig_adresse varchar(255)
+    constraint fk_eier_soknad
+        foreign key (soknad)
+            references soknad(id) on delete cascade
 );
