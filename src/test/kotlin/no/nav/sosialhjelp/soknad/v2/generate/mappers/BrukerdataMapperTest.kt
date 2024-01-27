@@ -72,7 +72,6 @@ class BrukerdataMapperTest {
                 assertThat(it).isEqualTo(personalia.kontonummer.harIkkeKonto)
             }
                 ?: Assertions.assertNull(personalia.kontonummer.harIkkeKonto)
-
         } else {
             assertThat(personalia.kontonummer).isNull()
         }

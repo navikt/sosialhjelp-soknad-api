@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import java.util.*
 
-class BrukerdataRepositoryTest: AbstractRepositoryTest() {
+class BrukerdataRepositoryTest : AbstractRepositoryTest() {
 
     @Autowired
     private lateinit var brukerdataRepository: BrukerdataRepository

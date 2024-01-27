@@ -25,7 +25,7 @@ import java.util.*
 @Component
 class SoknadToJsonMapper(
     private val soknadRepository: SoknadRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
 
         soknadRepository.findByIdOrNull(soknadId)?.let {

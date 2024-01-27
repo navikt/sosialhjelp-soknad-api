@@ -175,8 +175,10 @@ fun opprettBrukerdata(
     samtykker: Set<Samtykke> = opprettSamtykker(),
     beskrivelseAvAnnet: BeskrivelseAvAnnet = opprettBeskrivelseAvAnnet(),
 ): Brukerdata {
-    return Brukerdata(soknadId, begrunnelse, kontoInformasjon, kommentarTilArbeidsforhold,
-        telefonnummer, samtykker, beskrivelseAvAnnet)
+    return Brukerdata(
+        soknadId, begrunnelse, kontoInformasjon, kommentarTilArbeidsforhold,
+        telefonnummer, samtykker, beskrivelseAvAnnet
+    )
 }
 
 fun opprettBegrunnelse(

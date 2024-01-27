@@ -25,11 +25,13 @@ import java.util.*
 @Component
 class AdresseToJsonMapper(
     private val adresseRepository: AdresseRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
 
-        val adresserSoknad = (adresseRepository.findByIdOrNull(soknadId)
-            ?: throw IllegalStateException("Fant ikke Adresser"))
+        val adresserSoknad = (
+            adresseRepository.findByIdOrNull(soknadId)
+                ?: throw IllegalStateException("Fant ikke Adresser")
+            )
 
         doMapping(adresserSoknad, jsonInternalSoknad)
     }
@@ -69,15 +71,14 @@ class AdresseToJsonMapper(
         private fun JsonInternalSoknad.mapOppholdsadresse(oppholdsadresse: Adresse, adresseValg: AdresseValg) {
             soknad.data.personalia.oppholdsadresse = oppholdsadresse.toJsonAdresse()
                 .also {
-                    it.kilde = if (adresseValg == SOKNAD) { JsonKilde.BRUKER }
-                    else { JsonKilde.SYSTEM }
+                    it.kilde = if (adresseValg == SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
 
                     it.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
                 }
         }
 
         private fun Adresse.toJsonAdresse(): JsonAdresse {
-            return when(this) {
+            return when (this) {
                 is VegAdresse -> toJsonGateAdresse()
                 is MatrikkelAdresse -> toJsonMatrikkelAdresse()
                 is UstrukturertAdresse -> toJsonUstrukturertAdresse()

@@ -27,7 +27,7 @@ import java.util.*
 @Component
 class BrukerdataToJsonMapper(
     private val brukerdataRepository: BrukerdataRepository
-): DomainToJsonMapper {
+) : DomainToJsonMapper {
 
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
         brukerdataRepository.findByIdOrNull(soknadId)?.let {
@@ -51,7 +51,7 @@ class BrukerdataToJsonMapper(
 
         private fun JsonInternalSoknad.initializeObjectsIfMissing() {
             val jsonData = soknad.data ?: soknad.withData(JsonData()).data
-            with (jsonData) {
+            with(jsonData) {
                 personalia ?: withPersonalia(JsonPersonalia())
                 begrunnelse ?: withBegrunnelse(JsonBegrunnelse())
                 arbeid ?: withArbeid(JsonArbeid())
@@ -158,9 +158,5 @@ class BrukerdataToJsonMapper(
                     .withBarneutgifter(it.barneutgifter)
             }
         }
-
     }
 }
-
-
-

@@ -7,7 +7,7 @@ import java.util.*
  * UpsertRepository er et fragment interface med egen implementasjon.
  * Overskriver signaturen til ListCrudRepository, slik at disse metodene erstatter default.
  */
-interface UpsertRepository<T: SoknadBubble> {
+interface UpsertRepository<T : SoknadBubble> {
     fun <S : T> save(s: S): S
     fun <S : T> saveAll(entities: Iterable<S>): List<S>
 }

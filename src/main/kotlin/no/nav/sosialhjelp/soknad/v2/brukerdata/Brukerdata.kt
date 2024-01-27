@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Repository
-interface BrukerdataRepository: UpsertRepository<Brukerdata>, ListCrudRepository<Brukerdata, UUID>
+interface BrukerdataRepository : UpsertRepository<Brukerdata>, ListCrudRepository<Brukerdata, UUID>
 
 data class Brukerdata(
     @Id override val soknadId: UUID,
@@ -22,7 +22,7 @@ data class Brukerdata(
     val kommentarArbeidsforhold: String? = null,
     val samtykker: Set<Samtykke> = initSamtykker(),
     val beskrivelseAvAnnet: BeskrivelseAvAnnet? = null,
-): SoknadBubble
+) : SoknadBubble
 
 data class KontoInformasjonBruker(
     val kontonummer: String? = null,

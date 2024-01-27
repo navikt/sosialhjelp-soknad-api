@@ -23,11 +23,11 @@ data class AdresserSoknad(
     val folkeregistrertAdresse: Adresse?,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
     var brukerInput: BrukerInputAdresse?
-): SoknadBubble {
+) : SoknadBubble {
 
     fun getOppholdsadresse(): Adresse {
         return brukerInput?.let {
-            return when(it.valgtAdresse) {
+            return when (it.valgtAdresse) {
                 FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(FOLKEREGISTRERT)
                 MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(MIDLERTIDIG)
                 SOKNAD -> it.brukerAdresse ?: valgtAdresseNullError(SOKNAD)
@@ -36,7 +36,7 @@ data class AdresserSoknad(
     }
 
     private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing {
-        throw IllegalStateException("Adressevalg er ${valgtAdresse}, men adresse-objektet er null")
+        throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
     }
 }
 
