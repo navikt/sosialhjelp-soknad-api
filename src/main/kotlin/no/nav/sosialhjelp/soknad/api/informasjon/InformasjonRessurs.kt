@@ -43,6 +43,7 @@ class InformasjonRessurs(
     fun adresseSok(
         @RequestParam("sokestreng") sokestreng: String?
     ): List<AdresseForslag> {
+        log.debug("Søker etter adresser for streng: $sokestreng")
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
