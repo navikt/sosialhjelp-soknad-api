@@ -1,0 +1,60 @@
+package no.nav.sosialhjelp.soknad.v2.integrationtest
+
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
+import no.nav.sosialhjelp.soknad.v2.createSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.http.MediaType
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
+
+class SoknadIntegrationTest : AbstractIntegrationTest() {
+
+    @MockkBean
+    private lateinit var mellomlagringClient: MellomlagringClient
+
+    @BeforeEach
+    fun setup() {
+        every { mellomlagringClient.deleteAllVedlegg(any()) } just runs
+    }
+
+    @Test
+    fun `Slette lagret soknad`() {
+        val lagretSoknadId = createSoknad().let { soknadRepository.save(it).id }
+            ?: throw RuntimeException("Kunne ikke lagre soknad")
+
+        webTestClient
+            .delete()
+            .uri("/soknad/$lagretSoknadId")
+            .accept(MediaType.APPLICATION_JSON)
+//            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token.serialize())
+            .exchange()
+            .expectStatus().isNoContent
+
+        assertThat(soknadRepository.findById(lagretSoknadId).getOrNull()).isNull()
+    }
+
+    @Test
+    fun `Slette soknad som ikke finnes skal gi 404`() {
+
+        webTestClient
+            .delete()
+            .uri("/soknad/${UUID.randomUUID()}")
+            .accept(MediaType.APPLICATION_JSON)
+//            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token.serialize())
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody(Feilmelding::class.java)
+            .returnResult()
+            .responseBody!!.also {
+                assertThat(it.message).isEqualTo("Soknad finnes ikke")
+            }
+    }
+}
