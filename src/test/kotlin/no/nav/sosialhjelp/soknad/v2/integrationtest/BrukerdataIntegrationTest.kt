@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class BrukerdataIntegrationTest: AbstractIntegrationTest() {
+class BrukerdataIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var brukerdataRepository: BrukerdataRepository

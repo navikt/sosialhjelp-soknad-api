@@ -41,5 +41,3 @@ data class NavEnhet(
     val kommunenummer: String?,
     val orgnummer: String?
 )
-
-

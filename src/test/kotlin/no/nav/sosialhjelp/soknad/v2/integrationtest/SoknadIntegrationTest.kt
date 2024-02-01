@@ -6,7 +6,6 @@ import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
 import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -54,7 +53,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             .expectBody(Feilmelding::class.java)
             .returnResult()
             .responseBody!!.also {
-                assertThat(it.message).isEqualTo("Soknad finnes ikke")
-            }
+            assertThat(it.message).isEqualTo("Soknad finnes ikke")
+        }
     }
 }

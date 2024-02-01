@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class RegisterDataFetcherImpl: RegisterDataFetcher {
+class RegisterDataFetcherImpl : RegisterDataFetcher {
     override fun hentEierData(): Eier {
         TODO("Not yet implemented")
     }

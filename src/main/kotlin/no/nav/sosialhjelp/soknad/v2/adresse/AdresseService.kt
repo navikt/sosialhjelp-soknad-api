@@ -24,6 +24,6 @@ class AdresseService(
     @Transactional(readOnly = true)
     fun getAdresserSoknad(soknadId: UUID): AdresserSoknad {
         return adresseRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Adresser for soknad ${soknadId} ikke funnet")
+            ?: throw IkkeFunnetException("Adresser for soknad $soknadId ikke funnet")
     }
 }

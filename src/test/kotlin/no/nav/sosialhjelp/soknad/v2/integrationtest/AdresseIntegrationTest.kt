@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class AdresseIntegrationTest: AbstractIntegrationTest() {
+class AdresseIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var adresseRepository: AdresseRepository

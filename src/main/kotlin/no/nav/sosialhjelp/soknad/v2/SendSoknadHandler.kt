@@ -30,9 +30,11 @@ class SendSoknadHandler(
         val json = jsonGenerator.createJsonInternalSoknad(soknad.id!!)
 
         soknad.navEnhet?.let {
-            log.info("Starter kryptering av filer for ${soknad.id}, " +
+            log.info(
+                "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
-                    "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}")
+                    "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}"
+            )
         }
             ?: throw IllegalStateException("NavEnhet for soknad ${soknad.id} finnes ikke.")
 
