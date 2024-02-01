@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.soknad.generate
+package no.nav.sosialhjelp.soknad.v2.generate
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -22,12 +22,14 @@ class JsonInternalSoknadGenerator(
 
         mappers.forEach { it.mapToSoknad(soknadId, jsonSoknad) }
 
+        // TODO Validate ?
+
         return jsonSoknad
     }
 
-    fun copyAndMerge(soknadId: UUID, orgJsonSoknad: JsonInternalSoknad): JsonInternalSoknad {
-        return copyJsonInternalSoknad(orgJsonSoknad).also { jsonSoknad ->
-            mappers.forEach { it.mapToSoknad(soknadId, jsonSoknad) }
+    fun copyAndMerge(soknadId: UUID, orgJson: JsonInternalSoknad): JsonInternalSoknad {
+        return copyJsonInternalSoknad(orgJson).also { json ->
+            mappers.forEach { it.mapToSoknad(soknadId, json) }
         }
     }
 

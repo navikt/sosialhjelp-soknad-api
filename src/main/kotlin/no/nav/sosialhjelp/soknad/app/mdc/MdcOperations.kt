@@ -13,6 +13,7 @@ object MdcOperations {
     const val MDC_BEHANDLINGS_ID = "behandlingsId"
     const val MDC_CONSUMER_ID = "consumerId"
     const val MDC_PATH = "path"
+    const val MDC_SOKNAD_ID = "soknadId"
 
     private val random = SecureRandom()
 
