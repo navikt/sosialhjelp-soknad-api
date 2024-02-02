@@ -119,6 +119,7 @@ class SoknadServiceOld(
     }
 
     @Transactional
+    @Deprecated("For SvarUT.")
     fun sendSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

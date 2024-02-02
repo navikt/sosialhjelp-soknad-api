@@ -33,7 +33,7 @@ versions = "0.50.0"
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
-spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
+spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -80,7 +80,7 @@ mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
-    "spring-boot-starter-jdbc",
+    "spring-boot-starter-data-jdbc",
     "spring-boot-starter-test",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",

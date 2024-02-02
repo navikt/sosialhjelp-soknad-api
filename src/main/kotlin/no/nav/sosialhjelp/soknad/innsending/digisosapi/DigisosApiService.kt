@@ -26,6 +26,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 @Component
+@Deprecated("Ny logikk erstattes i LifecycleService#sendSoknad")
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
@@ -37,6 +38,7 @@ class DigisosApiService(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
+    @Deprecated("Gammel logikk. Se #LifecycleService")
     fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
@@ -69,13 +71,13 @@ class DigisosApiService(
                 token = token
             )
         } catch (e: Exception) {
-            prometheusMetricsService.reportFeiletMedDigisosApi()
+            prometheusMetricsService.reportFeilet()
             throw e
         }
 
         genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendtMedDigisosApi()
+        prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)

@@ -46,6 +46,7 @@ class PrometheusMetricsService(
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
+    @Deprecated("Ettersendelse ikke relevant lenger")
     fun reportStartSoknad(isEttersendelse: Boolean) {
         startSoknadCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
@@ -53,6 +54,20 @@ class PrometheusMetricsService(
             .increment()
     }
 
+    fun reportStartSoknad() {
+        startSoknadCounter
+            .register(meterRegistry)
+            .increment()
+    }
+
+    fun reportSoknadMottaker(navEnhet: String) {
+        soknadMottakerCounter
+            .tag(TAG_MOTTAKER, navEnhet)
+            .register(meterRegistry)
+            .increment()
+    }
+
+    @Deprecated("Ettersendelse er ikke lenger relevant")
     fun reportSoknadMottaker(isEttersendelse: Boolean, navEnhet: String) {
         soknadMottakerCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
@@ -68,12 +83,13 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendtMedDigisosApi() {
+    fun reportSendt() {
         sendtSoknadDigisosApiCounter
             .register(meterRegistry)
             .increment()
     }
 
+    @Deprecated("SvarUt støttes ikke lenger")
     fun reportFeiletMedSvarUt(isEttersendelse: Boolean) {
         feiletSendingMedSvarUtCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
@@ -81,15 +97,24 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportFeiletMedDigisosApi() {
+    fun reportFeilet() {
         feiletSendingMedDigisosApiCounter
             .register(meterRegistry)
             .increment()
     }
 
+    @Deprecated("Ettersendelse er irrelevant. SvarUt støttes ikke lenger")
     fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
         avbruttSoknadCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
+            .tag(TAG_STEG, steg)
+            .register(meterRegistry)
+            .increment()
+    }
+
+    fun reportAvbruttSoknad(referer: String?) {
+        val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
+        avbruttSoknadCounter
             .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
