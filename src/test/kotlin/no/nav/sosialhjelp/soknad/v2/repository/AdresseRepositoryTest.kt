@@ -16,7 +16,7 @@ class AdresseRepositoryTest : AbstractRepositoryTest() {
     private lateinit var adresseRepository: AdresseRepository
 
     @Test
-    fun `Lagre adresser for soknad`() {
+    fun `Skal lagre adresse i databasen`() {
         val soknad = createSoknad().run { soknadRepository.save(this) }
 
         opprettAdresserSoknad(soknadId = soknad.id!!).also { adresseRepository.save(it) }

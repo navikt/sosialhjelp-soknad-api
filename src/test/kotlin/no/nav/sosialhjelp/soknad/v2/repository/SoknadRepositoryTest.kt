@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test
 class SoknadRepositoryTest : AbstractRepositoryTest() {
 
     @Test
-    fun `Lagre ny soknad`() {
+    fun `Skal lagre ny soknad i databasen`() {
         soknadRepository.save(createSoknadNoId()).also {
             assertThat(it.id).isNotNull()
         }
     }
 
     @Test
-    fun `Oppdatere soknad`() {
+    fun `Skal oppdatere soknad i databasen`() {
         val lagretSoknad = soknadRepository.save(createSoknadNoId())
 
         val oppdatertSoknad = Soknad(

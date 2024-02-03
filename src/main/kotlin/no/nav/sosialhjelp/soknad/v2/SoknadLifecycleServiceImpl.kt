@@ -12,11 +12,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class LifecycleServiceImpl(
+class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val registerDataFetcher: RegisterDataFetcher,
     private val soknadService: SoknadService,
-) : LifecycleService {
+) : SoknadLifecycleService {
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
 

@@ -23,7 +23,7 @@ class AdresseMapperTest {
     private val mapper = AdresseToJsonMapper.AdresseMapper
 
     @Test
-    fun `Adresse mappes til JsonInternalSoknad`() {
+    fun `Adresse-data skal mappes til JsonInternalSoknad`() {
 
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
         val adresserSoknad = opprettAdresserSoknad(UUID.randomUUID())

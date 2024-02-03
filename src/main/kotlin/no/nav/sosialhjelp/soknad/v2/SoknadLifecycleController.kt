@@ -25,8 +25,8 @@ import java.util.*
 @RestController
 @Unprotected
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
-class LifecycleController(
-    private val lifecycleService: LifecycleService,
+class SoknadLifecycleController(
+    private val soknadLifecycleService: SoknadLifecycleService,
     private val nedetidService: NedetidService,
     private val prometheusMetricsService: PrometheusMetricsService
 ) {
@@ -39,7 +39,7 @@ class LifecycleController(
             )
         }
 
-        return lifecycleService.startSoknad()
+        return soknadLifecycleService.startSoknad()
             .let { id ->
                 response.addCookie(xsrfCookie(id.toString()))
                 response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
@@ -56,7 +56,7 @@ class LifecycleController(
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
 
-        val (soknadId, innsendingstidspunkt) = lifecycleService.sendSoknad(soknadId)
+        val (soknadId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
         return SoknadSendtDto(soknadId, innsendingstidspunkt)
     }
@@ -67,7 +67,7 @@ class LifecycleController(
         // TODO Interceptor...?
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?
     ) {
-        lifecycleService.cancelSoknad(soknadId = soknadId, referer)
+        soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
     }
 
     companion object {

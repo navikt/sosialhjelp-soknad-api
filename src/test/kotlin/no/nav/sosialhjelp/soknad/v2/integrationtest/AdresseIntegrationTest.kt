@@ -22,7 +22,7 @@ class AdresseIntegrationTest : AbstractIntegrationTest() {
     private lateinit var adresseRepository: AdresseRepository
 
     @Test
-    fun `Hente ut adresser for soknad`() {
+    fun `Skal returnere alle adresser for soknad`() {
 
         val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
         val adresserDto = opprettAdresserSoknad(soknadId = lagretSoknad.id!!)
@@ -43,7 +43,7 @@ class AdresseIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere brukeradresse`() {
+    fun `Skal oppdatere brukeradresse i soknad`() {
         val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
 
         val adresserInput = AdresserInput(

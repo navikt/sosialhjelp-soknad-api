@@ -25,7 +25,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Slette lagret soknad`() {
+    fun `Skal slette lagret soknad`() {
         val lagretSoknadId = createSoknad().let { soknadRepository.save(it).id }
             ?: throw RuntimeException("Kunne ikke lagre soknad")
 

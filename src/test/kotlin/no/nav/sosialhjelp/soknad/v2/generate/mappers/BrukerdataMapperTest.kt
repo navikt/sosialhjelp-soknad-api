@@ -22,7 +22,7 @@ class BrukerdataMapperTest {
     private val mapper = BrukerdataToJsonMapper.BrukerdataMapper
 
     @Test
-    fun `Brukerdata mappes til JsonInternalSoknad`() {
+    fun `Brukerdata skal mappes til JsonInternalSoknad`() {
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
 
         val brukerdata = opprettBrukerdata(soknadId = UUID.randomUUID())

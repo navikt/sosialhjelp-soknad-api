@@ -16,7 +16,7 @@ class BrukerdataIntegrationTest : AbstractIntegrationTest() {
     private lateinit var brukerdataRepository: BrukerdataRepository
 
     @Test
-    fun `Hente begrunnelse`() {
+    fun `Skal returnere begrunnelse fra soknad`() {
         val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
         val brukerdata = opprettBrukerdata(soknadId = lagretSoknad.id!!).let { brukerdataRepository.save(it) }
 
@@ -29,7 +29,7 @@ class BrukerdataIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere begrunnelse`() {
+    fun `Skal oppdatere begrunnelse i soknad`() {
         val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
 
         val begrunnelseDto = BegrunnelseDto(

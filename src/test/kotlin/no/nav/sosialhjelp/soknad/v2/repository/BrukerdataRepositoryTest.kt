@@ -16,7 +16,7 @@ class BrukerdataRepositoryTest : AbstractRepositoryTest() {
     private lateinit var brukerdataRepository: BrukerdataRepository
 
     @Test
-    fun `Lagre brukerdata skal fungere`() {
+    fun `Skal lagre brukerdata i databasen`() {
         val soknad = createSoknadNoId().run { soknadRepository.save(this) }
         brukerdataRepository.save(opprettBrukerdata(soknad.id!!))
 

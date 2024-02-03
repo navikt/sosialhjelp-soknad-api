@@ -20,7 +20,7 @@ class SoknadMapperTest {
     private val mapper = SoknadToJsonMapper.SoknadMapper
 
     @Test
-    fun `Mappe data fra Soknad til JsonInternalSoknad`() {
+    fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         val soknad = createSoknad(innsendingstidspunkt = now)
