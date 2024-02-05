@@ -23,8 +23,7 @@ class BegrunnelseController(
     ): BegrunnelseDto {
         val brukerdata = brukerdataService.getBrukerdata(soknadId)
         return brukerdata?.toBegrunnelseDto() ?: BegrunnelseDto()
-        // TODO hva skal vi egentlig returnere i dette tilfellet ?
-        // TODO Returnere null eller tomt objekt?
+        // TODO hva skal vi egentlig returnere når bruker ikke har fylt ut data? null, objekt med null-verdier eller 404?
     }
 
     @PutMapping

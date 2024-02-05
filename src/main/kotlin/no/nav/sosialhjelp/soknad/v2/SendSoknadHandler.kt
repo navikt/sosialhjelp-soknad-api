@@ -39,7 +39,7 @@ class SendSoknadHandler(
             ?: throw IllegalStateException("NavEnhet for soknad ${soknad.id} finnes ikke.")
 
         val digisosId: UUID = try {
-            // TODO Verdt å kikke litt på digisosApiV2Clienten da vi manuelt håndterer feil
+            // TODO Verdt å kikke litt på digisosApiV2Clienten da vi tilsynelatende håndterer feil manuelt
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = objectMapper.writeValueAsString(json.soknad),
                 tilleggsinformasjonJson = objectMapper.writeValueAsString(
@@ -61,7 +61,7 @@ class SendSoknadHandler(
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
 
-        // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer
+        // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer..
         // TODO ...overens med antall vedlegg hos mellomlagring
 //        val mellomlagredeVedlegg = mellomlagringService.getAllVedlegg(soknadUnderArbeid.behandlingsId)
 

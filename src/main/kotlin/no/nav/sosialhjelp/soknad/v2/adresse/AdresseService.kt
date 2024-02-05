@@ -16,6 +16,8 @@ class AdresseService(
         val adresserSoknad = adresseRepository.findByIdOrNull(soknadId)
             ?: AdresserSoknad(soknadId = soknadId)
 
+        // TODO validere at brukervalgt adresse ikke er tom/null.
+
         adresserSoknad.brukerInput = brukerInputAdresse
 
         return adresseRepository.save(adresserSoknad)

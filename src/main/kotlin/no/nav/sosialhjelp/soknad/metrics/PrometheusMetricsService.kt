@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
+// TODO Hvor hører oppdateringer til prometheus hjemme? Controller, Business-logikk (service) eller...
+// TODO ...er det egentlig en side-tjeneste. Kunne vært interessant å skille ut Prometheus-logikk som en egen..
+// TODO... interceptor.
 @Component
 class PrometheusMetricsService(
     private val meterRegistry: MeterRegistry

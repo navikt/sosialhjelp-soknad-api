@@ -37,6 +37,7 @@ class KontonummerController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) input: KontoInformasjonInput
     ): KontoDto {
+        // TODO Validere kontonummer-input
         val kontonummer = soknadService.getKontonummer(soknadId)
         input.validate(kontonummer)
 
@@ -56,7 +57,6 @@ class KontonummerController(
     }
 
     // TODO Skal bruker kunne velge at vedkommende ikke har kontonummer, selvom vi har ett?
-    // TODO Business-logikk ?
     private fun KontoInformasjonInput.validate(kontonummerRegister: String?) {
         if (harIkkeKonto == true && (kontonummerBruker != null || kontonummerRegister != null)) {
             throw IllegalStateException("Bruker har kontonummer, men har krysset av for harIkkeKonto")

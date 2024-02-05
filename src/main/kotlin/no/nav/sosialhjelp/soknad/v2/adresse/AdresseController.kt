@@ -31,7 +31,6 @@ class AdresseController(
         @RequestBody(required = true) adresserInput: AdresserInput
     ): AdresserDto {
         // TODO Validere format på adresse?
-        // TODO Validere at valgt adresse ikke er null?
 
         val adresser = adresseService.updateAdresseBruker(
             soknadId = soknadId,

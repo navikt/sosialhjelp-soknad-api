@@ -22,7 +22,7 @@ class JsonInternalSoknadGenerator(
 
         mappers.forEach { it.mapToSoknad(soknadId, jsonSoknad) }
 
-        // TODO Validate ?
+        // TODO Json-validering (finnes i filformat-biblioteket)
 
         return jsonSoknad
     }

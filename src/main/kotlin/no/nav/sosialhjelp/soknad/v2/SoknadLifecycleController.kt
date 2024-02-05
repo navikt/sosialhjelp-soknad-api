@@ -64,7 +64,7 @@ class SoknadLifecycleController(
     @DeleteMapping("/{soknadId}")
     fun deleteSoknad(
         @PathVariable("soknadId") soknadId: UUID,
-        // TODO Interceptor...?
+        // TODO Se Prometheus-metrics-todo
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?
     ) {
         soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
