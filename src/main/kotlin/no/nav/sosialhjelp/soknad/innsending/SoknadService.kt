@@ -99,7 +99,6 @@ class SoknadService(
     }
 
     private fun opprettSoknadMetadata(fnr: String): String {
-        log.info("Starter søknad")
         val id = soknadMetadataRepository.hentNesteId()
         val soknadMetadata = SoknadMetadata(
             id = id,
@@ -112,7 +111,9 @@ class SoknadService(
             sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(soknadMetadata)
-        return soknadMetadata.behandlingsId
+        return soknadMetadata.behandlingsId.also {
+            log.info("Starter søknad $it")
+        }
     }
 
     @Transactional
