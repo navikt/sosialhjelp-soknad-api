@@ -60,6 +60,8 @@ class BrukerdataToJsonMapper(
             }
         }
 
+        // TODO Skal bruker-input på telefonnummer være gjeldende og absolutt uansett hva bruker ønsker?
+        // TODO I søknaden er det ingen mulighet til å hente opp igjen systemregistrert telefonnummer.
         // Hvis det finnes bruker-input, skal det overskrive hva enn som ligger uansett
         private fun JsonInternalSoknad.mapTelefonnummer(brukerdata: Brukerdata) {
             brukerdata.toJsonTelefonnummer()?.let {
@@ -87,6 +89,8 @@ class BrukerdataToJsonMapper(
             }
         }
 
+        // TODO Skal bruker-innfylt kontonummer være gjeldende og absolutt uanset hva bruker ønsker?
+        // TODO I selve søknaden er det ingen mulighet til å hente opp igjen systemregistrert kontonummer.
         // Hvis det finnes bruker-input, skal det overskrive hva enn som ligger uansett
         private fun JsonInternalSoknad.mapKontonummer(brukerdata: Brukerdata) {
             brukerdata.kontoInformasjon?.toJsonKontonummer()?.let {
