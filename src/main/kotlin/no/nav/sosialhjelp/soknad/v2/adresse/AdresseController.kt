@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.adresse
 
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

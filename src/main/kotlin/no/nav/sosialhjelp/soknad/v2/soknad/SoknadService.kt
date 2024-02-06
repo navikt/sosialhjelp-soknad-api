@@ -24,6 +24,8 @@ class SoknadService(
     fun getKontonummer(soknadId: UUID): String? = getSoknadOrThrowException(soknadId).eier.kontonummer
     @Transactional
     fun getTelefonnummer(soknadId: UUID): String? = getSoknadOrThrowException(soknadId).eier.telefonnummer
+    @Transactional
+    fun getArbeidsforhold(soknadId: UUID): Set<Arbeidsforhold> = getSoknadOrThrowException(soknadId).arbeidsForhold
 
     @Transactional(readOnly = true)
     fun getNavEnhet(soknadId: UUID): NavEnhet? {

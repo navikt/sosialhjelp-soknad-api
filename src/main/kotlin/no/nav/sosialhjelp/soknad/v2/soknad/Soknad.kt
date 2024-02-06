@@ -17,6 +17,8 @@ data class Soknad(
     val eier: Eier,
     var innsendingstidspunkt: LocalDateTime? = null,
     var navEnhet: NavEnhet? = null,
+    // TODO Denne hører ikke hjemme her.... Men hvor? Stand-alone?
+    var arbeidsForhold: Set<Arbeidsforhold> = emptySet()
 )
 
 data class Eier(
@@ -40,4 +42,14 @@ data class NavEnhet(
     val enhetsnavn: String,
     val kommunenummer: String?,
     val orgnummer: String?
+)
+
+// TODO Denne hører ikke hjemme her..... Men hvor? Stand-alone?
+data class Arbeidsforhold(
+    val arbeidsgivernavn: String,
+    val orgnummer: String?,
+    val start: String?,
+    val slutt: String?,
+    val fastStillingsprosent: Long? = 0L,
+    val harFastStilling: Boolean?
 )

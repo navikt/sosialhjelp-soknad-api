@@ -23,3 +23,17 @@ CREATE TABLE nav_enhet
         foreign key(soknad)
             references soknad(id) on delete cascade
 );
+
+CREATE TABLE arbeidsforhold
+(
+    soknad uuid not null,
+    arbeidsgivernavn varchar(255) not null,
+    orgnummer varchar(50),
+    start varchar(50),
+    slutt varchar(50),
+    fast_stillingsprosent numeric,
+    har_fast_stilling bool,
+    constraint fk_arbeidsforhold_soknad
+        foreign key(soknad)
+            references soknad(id) on delete cascade
+);

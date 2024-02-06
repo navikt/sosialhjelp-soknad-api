@@ -1,6 +1,7 @@
-package no.nav.sosialhjelp.soknad.v2.brukerdata
+package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,7 +25,7 @@ class TelefonnummerController(
         @PathVariable("soknadId") soknadId: UUID
     ): TelefonnummerDto {
         val telefonRegister = soknadService.getTelefonnummer(soknadId)
-        val telefonBruker = brukerdataService.getTelefonnummer(soknadId)
+        val telefonBruker = brukerdataService.getBrukerdataPersonlig(soknadId)?.telefonnummer
 
         return TelefonnummerDto(
             telefonnummerRegister = telefonRegister,

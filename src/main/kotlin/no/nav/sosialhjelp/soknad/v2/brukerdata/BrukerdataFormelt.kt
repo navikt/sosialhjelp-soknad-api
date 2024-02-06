@@ -10,35 +10,19 @@ import java.time.LocalDate
 import java.util.*
 
 @Repository
-interface BrukerdataRepository : UpsertRepository<Brukerdata>, ListCrudRepository<Brukerdata, UUID>
+interface BrukerdataFormeltRepository : UpsertRepository<BrukerdataFormelt>, ListCrudRepository<BrukerdataFormelt, UUID>
 
-data class Brukerdata(
-    @Id override val soknadId: UUID,
-    @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
-    var begrunnelse: Begrunnelse? = null,
-    @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
-    var kontoInformasjon: KontoInformasjonBruker? = null,
-    var telefonnummer: String? = null,
+data class BrukerdataFormelt(
+    @Id
+    override val soknadId: UUID,
     var kommentarArbeidsforhold: String? = null,
     val samtykker: Set<Samtykke> = initSamtykker(),
     var beskrivelseAvAnnet: BeskrivelseAvAnnet? = null,
+
+    @Embedded.Nullable
+    var utdanning: Utdanning? = null,
+
 ) : SoknadBubble
-
-data class KontoInformasjonBruker(
-    val kontonummer: String? = null,
-    val harIkkeKonto: Boolean? = null,
-)
-
-enum class AdresseValg {
-    FOLKEREGISTRERT,
-    MIDLERTIDIG,
-    SOKNAD;
-}
-
-data class Begrunnelse(
-    val hvorforSoke: String? = null,
-    val hvaSokesOm: String? = null,
-)
 
 data class BeskrivelseAvAnnet(
     val barneutgifter: String? = null,
@@ -63,4 +47,13 @@ private fun initSamtykker(): Set<Samtykke> {
         Samtykke(SamtykkeType.BOSTOTTE, null, null),
         Samtykke(SamtykkeType.UTBETALING_SKATTEETATEN, null, null)
     )
+}
+
+data class Utdanning (
+    val erStudent: Boolean,
+    val studentGrad: Studentgrad? = null
+)
+
+enum class Studentgrad {
+    HELTID, DELTID
 }

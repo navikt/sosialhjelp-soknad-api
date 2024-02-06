@@ -1,6 +1,8 @@
-package no.nav.sosialhjelp.soknad.v2.brukerdata
+package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
+import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,11 +23,11 @@ class KontonummerController(
     @GetMapping
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID
-    ): KontoDto {
+    ): KontoInformasjonDto {
         val kontonummerRegister = soknadService.getKontonummer(soknadId)
-        val kontoInformasjonBruker = brukerdataService.getBrukerdata(soknadId)?.kontoInformasjon
+        val kontoInformasjonBruker = brukerdataService.getBrukerdataPersonlig(soknadId)?.kontoInformasjon
 
-        return KontoDto(
+        return KontoInformasjonDto(
             harIkkeKonto = kontoInformasjonBruker?.harIkkeKonto,
             kontonummerRegister = kontonummerRegister,
             kontonummerBruker = kontoInformasjonBruker?.kontonummer
@@ -36,12 +38,11 @@ class KontonummerController(
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) input: KontoInformasjonInput
-    ): KontoDto {
-        // TODO Validere kontonummer-input
-        val kontonummer = soknadService.getKontonummer(soknadId)
-        input.validate(kontonummer)
+    ): KontoInformasjonDto {
+        val kontonummerRegister = soknadService.getKontonummer(soknadId)
+        input.validate(kontonummerRegister)
 
-        val brukerdata = brukerdataService.updateKontoinformasjon(
+        val kontoInformasjon = brukerdataService.updateKontoinformasjon(
             soknadId = soknadId,
             KontoInformasjonBruker(
                 kontonummer = input.kontonummerBruker,
@@ -49,22 +50,27 @@ class KontonummerController(
             )
         )
 
-        return KontoDto(
-            harIkkeKonto = brukerdata.kontoInformasjon?.harIkkeKonto,
-            kontonummerRegister = kontonummer,
-            kontonummerBruker = brukerdata.kontoInformasjon?.kontonummer
+        return KontoInformasjonDto(
+            harIkkeKonto = kontoInformasjon.harIkkeKonto,
+            kontonummerRegister = kontonummerRegister,
+            kontonummerBruker = kontoInformasjon.kontonummer
         )
     }
 
     // TODO Skal bruker kunne velge at vedkommende ikke har kontonummer, selvom vi har ett?
     private fun KontoInformasjonInput.validate(kontonummerRegister: String?) {
+        if (harIkkeKonto == null && kontonummerBruker == null) {
+            throw IllegalStateException(
+                "Prøver og oppdatere kontoinformasjon, men både `harIkkeKonto` og `kontonummerBruker` er null"
+            )
+        }
         if (harIkkeKonto == true && (kontonummerBruker != null || kontonummerRegister != null)) {
             throw IllegalStateException("Bruker har kontonummer, men har krysset av for harIkkeKonto")
         }
     }
 }
 
-data class KontoDto(
+data class KontoInformasjonDto(
     val harIkkeKonto: Boolean?,
     val kontonummerRegister: String?,
     val kontonummerBruker: String?

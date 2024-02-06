@@ -1,12 +1,9 @@
-create table brukerdata
+create table brukerdata_formelt
 (
     soknad_id uuid primary key,
-    telefonnummer varchar(50),
     kommentar_arbeidsforhold text,
-    kontonummer varchar(50),
-    har_ikke_konto bool,
-    hvorfor_soke text,
-    hva_sokes_om text,
+    er_student bool,
+    student_grad varchar(30),
     constraint fk_brukerdata_soknad
         foreign key(soknad_id)
             references soknad(id) on delete cascade
@@ -15,26 +12,26 @@ create table brukerdata
 -- brukerdata kan ha flere samtykker
 create table samtykke
 (
-    brukerdata uuid not null,
+    brukerdata_formelt uuid not null,
     type varchar(50) not null,
     verdi bool,
     dato date,
-    constraint samtykke_pk primary key(brukerdata, type),
+    constraint samtykke_pk primary key(brukerdata_formelt, type),
     constraint fk_samtykke_brukerdata
-        foreign key (brukerdata)
-            references brukerdata(soknad_id) on delete cascade
+        foreign key (brukerdata_formelt)
+            references brukerdata_formelt(soknad_id) on delete cascade
 );
 
 -- brukerdata har 1 beskrivelse av annet
 create table beskrivelse_av_annet
 (
-    brukerdata uuid primary key,
+    brukerdata_formelt uuid primary key,
     barneutgifter text,
     verdier text,
     sparing text,
     utbetalinger text,
     boutgifter text,
     constraint fk_beskrivelser_brukerdata
-        foreign key (brukerdata)
-            references brukerdata(soknad_id) on delete cascade
+        foreign key (brukerdata_formelt)
+            references brukerdata_formelt(soknad_id) on delete cascade
 );

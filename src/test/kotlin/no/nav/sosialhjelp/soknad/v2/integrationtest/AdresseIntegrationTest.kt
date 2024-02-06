@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
+import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.toAdresserDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettAdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse

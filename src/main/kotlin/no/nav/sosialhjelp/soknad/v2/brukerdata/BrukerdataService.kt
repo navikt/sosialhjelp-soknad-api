@@ -9,49 +9,59 @@ import java.util.*
 @Service
 @Transactional
 class BrukerdataService(
-    private val brukerdataRepository: BrukerdataRepository
+    private val brukerFormeltRepository: BrukerdataFormeltRepository,
+    private val brukerPersonligRepository: BrukerdataPersonligRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getBrukerdata(soknadId: UUID) = brukerdataRepository.findByIdOrNull(soknadId)
+    fun getBrukerdataFormelt(soknadId: UUID) = brukerFormeltRepository.findByIdOrNull(soknadId)
     @Transactional(readOnly = true)
-    fun getKontoinformasjon(soknadId: UUID) = brukerdataRepository.findByIdOrNull(soknadId)?.kontoInformasjon
-    @Transactional
-    fun getTelefonnummer(soknadId: UUID) = brukerdataRepository.findByIdOrNull(soknadId)?.telefonnummer
+    fun getBrukerdataPersonlig(soknadId: UUID) = brukerPersonligRepository.findByIdOrNull(soknadId)
 
-    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Brukerdata {
-        return findOrCreateBrukerdata(soknadId)
+
+    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): BrukerdataPerson {
+        return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 this.begrunnelse = begrunnelse
-                brukerdataRepository.save(this)
+                brukerPersonligRepository.save(this)
             }
     }
 
-    fun updateKontoinformasjon(soknadId: UUID, kontoInformasjonBruker: KontoInformasjonBruker): Brukerdata {
-        return findOrCreateBrukerdata(soknadId)
+    fun updateBosituasjon(soknadId: UUID, bosituasjon: Bosituasjon): BrukerdataPerson {
+        return findOrCreateBrukerdataPersonlig(soknadId)
+            .run {
+                this.bosituasjon = bosituasjon
+                brukerPersonligRepository.save(this)
+            }
+    }
+
+    fun updateKontoinformasjon(soknadId: UUID, kontoInformasjonBruker: KontoInformasjonBruker): KontoInformasjonBruker {
+        return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 kontoInformasjon = kontoInformasjonBruker
-                brukerdataRepository.save(this)
+                brukerPersonligRepository.save(this)
+                kontoInformasjonBruker
             }
     }
 
-    fun updateTelefonnummer(soknadId: UUID, telefonnummer: String): Brukerdata {
-        return findOrCreateBrukerdata(soknadId)
+    fun updateTelefonnummer(soknadId: UUID, telefonnummer: String): BrukerdataPerson {
+        return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 this.telefonnummer = telefonnummer
-                brukerdataRepository.save(this)
+                brukerPersonligRepository.save(this)
             }
     }
 
-    fun updateKommentarArbeidsforhold(soknadId: UUID, kommentarArbeidsforhold: String): Brukerdata {
-        return findOrCreateBrukerdata(soknadId)
+    fun updateKommentarArbeidsforhold(soknadId: UUID, kommentarArbeidsforhold: String): String {
+        return findOrCreateBrukerdataFormelt(soknadId)
             .run {
                 this.kommentarArbeidsforhold = kommentarArbeidsforhold
-                brukerdataRepository.save(this)
+                brukerFormeltRepository.save(this)
+                kommentarArbeidsforhold
             }
     }
 
-    fun updateSamtykke(soknadId: UUID, samtykkeType: SamtykkeType, verdi: Boolean): Brukerdata {
-        val brukerdata = findOrCreateBrukerdata(soknadId)
+    fun updateSamtykke(soknadId: UUID, samtykkeType: SamtykkeType, verdi: Boolean): BrukerdataFormelt {
+        val brukerdata = findOrCreateBrukerdataFormelt(soknadId)
 
         brukerdata.samtykker.find { it.type == samtykkeType }
             ?.let {
@@ -65,15 +75,21 @@ class BrukerdataService(
         return brukerdata
     }
 
-    fun updateBeskrivelseAvAnnet(soknadId: UUID, beskrivelseAvAnnet: BeskrivelseAvAnnet): Brukerdata {
-        return findOrCreateBrukerdata(soknadId)
+    fun updateBeskrivelseAvAnnet(soknadId: UUID, beskrivelseAvAnnet: BeskrivelseAvAnnet): BrukerdataFormelt {
+        return findOrCreateBrukerdataFormelt(soknadId)
             .run {
                 this.beskrivelseAvAnnet = beskrivelseAvAnnet
-                brukerdataRepository.save(this)
+                brukerFormeltRepository.save(this)
             }
     }
 
-    private fun findOrCreateBrukerdata(soknadId: UUID): Brukerdata {
-        return brukerdataRepository.findByIdOrNull(soknadId) ?: Brukerdata(soknadId)
+    private fun findOrCreateBrukerdataFormelt(soknadId: UUID): BrukerdataFormelt {
+        return brukerFormeltRepository.findByIdOrNull(soknadId) ?: BrukerdataFormelt(soknadId)
     }
+
+    private fun findOrCreateBrukerdataPersonlig(soknadId: UUID): BrukerdataPerson {
+        return brukerPersonligRepository.findByIdOrNull(soknadId) ?: BrukerdataPerson(soknadId)
+    }
+
+    fun getBegrunnelse(soknadId: UUID): Begrunnelse? = brukerPersonligRepository.findByIdOrNull(soknadId)?.begrunnelse
 }

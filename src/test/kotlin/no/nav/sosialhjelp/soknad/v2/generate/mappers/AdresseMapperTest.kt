@@ -6,11 +6,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.AdresseToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.opprettAdresserSoknad

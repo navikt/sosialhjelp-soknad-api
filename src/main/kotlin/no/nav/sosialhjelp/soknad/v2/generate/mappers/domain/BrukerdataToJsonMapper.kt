@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
@@ -14,11 +15,16 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskriv
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Brukerdata
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataRepository
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormeltRepository
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonligRepository
 import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -26,29 +32,21 @@ import java.util.*
 
 @Component
 class BrukerdataToJsonMapper(
-    private val brukerdataRepository: BrukerdataRepository
+    private val brukerdataPersonligRepository: BrukerdataPersonligRepository,
+    private val brukerdataFormeltRepository: BrukerdataFormeltRepository
 ) : DomainToJsonMapper {
 
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
-        brukerdataRepository.findByIdOrNull(soknadId)?.let {
+        brukerdataFormeltRepository.findByIdOrNull(soknadId)?.let {
             doMapping(it, jsonInternalSoknad)
         }
-            ?: throw RuntimeException("Brukerdata finnes ikke")
+
+        brukerdataPersonligRepository.findByIdOrNull(soknadId)?.let {
+            doMapping(it, jsonInternalSoknad)
+        }
     }
 
     internal companion object BrukerdataMapper {
-        fun doMapping(brukerdata: Brukerdata, json: JsonInternalSoknad) {
-            with(json) {
-                initializeObjectsIfMissing()
-                mapTelefonnummer(brukerdata)
-                mapArbeid(brukerdata)
-                mapKontonummer(brukerdata)
-                mapBegrunnelse(brukerdata)
-                mapSamtykker(brukerdata)
-                mapBeskrivelseAvAnnet(brukerdata)
-            }
-        }
-
         private fun JsonInternalSoknad.initializeObjectsIfMissing() {
             val jsonData = soknad.data ?: soknad.withData(JsonData()).data
             with(jsonData) {
@@ -60,16 +58,36 @@ class BrukerdataToJsonMapper(
             }
         }
 
+        fun doMapping(brukerdataFormelt: BrukerdataFormelt, json: JsonInternalSoknad) {
+            with(json) {
+                initializeObjectsIfMissing()
+                mapArbeid(brukerdataFormelt)
+                mapSamtykker(brukerdataFormelt)
+                mapBeskrivelseAvAnnet(brukerdataFormelt)
+                mapUtdanning(brukerdataFormelt)
+            }
+        }
+
+        fun doMapping(brukerdataPerson: BrukerdataPerson, json: JsonInternalSoknad) {
+            with(json) {
+                initializeObjectsIfMissing()
+                mapTelefonnummer(brukerdataPerson)
+                mapBegrunnelse(brukerdataPerson)
+                mapBosituasjon(brukerdataPerson)
+                mapKontonummer(brukerdataPerson)
+            }
+        }
+
         // TODO Skal bruker-input på telefonnummer være gjeldende og absolutt uansett hva bruker ønsker?
         // TODO I søknaden er det ingen mulighet til å hente opp igjen systemregistrert telefonnummer.
         // Hvis det finnes bruker-input, skal det overskrive hva enn som ligger uansett
-        private fun JsonInternalSoknad.mapTelefonnummer(brukerdata: Brukerdata) {
-            brukerdata.toJsonTelefonnummer()?.let {
+        private fun JsonInternalSoknad.mapTelefonnummer(brukerdataFormelt: BrukerdataPerson) {
+            brukerdataFormelt.toJsonTelefonnummer()?.let {
                 soknad.data.personalia.telefonnummer = it
             }
         }
 
-        private fun Brukerdata.toJsonTelefonnummer(): JsonTelefonnummer? {
+        private fun BrukerdataPerson.toJsonTelefonnummer(): JsonTelefonnummer? {
             return telefonnummer?.let {
                 JsonTelefonnummer()
                     .withKilde(JsonKilde.BRUKER)
@@ -77,27 +95,27 @@ class BrukerdataToJsonMapper(
             }
         }
 
-        private fun JsonInternalSoknad.mapArbeid(brukerdata: Brukerdata) {
-            brukerdata.toJsonKommentarTilArbeidsforhold()?.let {
+        private fun JsonInternalSoknad.mapArbeid(brukerdataFormelt: BrukerdataFormelt) {
+            brukerdataFormelt.toJsonKommentarTilArbeidsforhold()?.let {
                 soknad.data.arbeid.kommentarTilArbeidsforhold = it
             }
         }
 
-        private fun Brukerdata.toJsonKommentarTilArbeidsforhold(): JsonKommentarTilArbeidsforhold? {
+        private fun BrukerdataFormelt.toJsonKommentarTilArbeidsforhold(): JsonKommentarTilArbeidsforhold? {
             return kommentarArbeidsforhold?.let {
                 JsonKommentarTilArbeidsforhold().withVerdi(it)
             }
         }
 
-        // TODO Skal bruker-innfylt kontonummer være gjeldende og absolutt uanset hva bruker ønsker?
-        // TODO I selve søknaden er det ingen mulighet til å hente opp igjen systemregistrert kontonummer.
         // Hvis det finnes bruker-input, skal det overskrive hva enn som ligger uansett
-        private fun JsonInternalSoknad.mapKontonummer(brukerdata: Brukerdata) {
-            brukerdata.kontoInformasjon?.toJsonKontonummer()?.let {
-                soknad.data.personalia.kontonummer = it
+        private fun JsonInternalSoknad.mapKontonummer(brukerdataPerson: BrukerdataPerson) {
+            brukerdataPerson.kontoInformasjon?.let {
+                soknad.data.personalia.kontonummer = it.toJsonKontonummer()
             }
         }
 
+        // TODO Skal bruker-innfylt kontonummer være gjeldende og absolutt uanset hva bruker ønsker?
+        // TODO I selve søknaden er det ingen mulighet til å hente opp igjen systemregistrert kontonummer.
         private fun KontoInformasjonBruker.toJsonKontonummer(): JsonKontonummer? {
             return if (kontonummer != null || harIkkeKonto != null) {
                 JsonKontonummer()
@@ -108,10 +126,10 @@ class BrukerdataToJsonMapper(
         }
 
         // disse finnes uansett, potensielt med null-verdier
-        private fun JsonInternalSoknad.mapSamtykker(brukerdata: Brukerdata) {
+        private fun JsonInternalSoknad.mapSamtykker(brukerdataFormelt: BrukerdataFormelt) {
             soknad.data.okonomi.opplysninger.bekreftelse
                 .addAll(
-                    brukerdata.samtykker.map {
+                    brukerdataFormelt.samtykker.map {
                         it.toJsonOkonomibekreftelse()
                     }
                 )
@@ -132,13 +150,13 @@ class BrukerdataToJsonMapper(
             }
         }
 
-        private fun JsonInternalSoknad.mapBegrunnelse(brukerdata: Brukerdata) {
-            brukerdata.toJsonBegrunnelse()?.let {
+        private fun JsonInternalSoknad.mapBegrunnelse(brukerdataPerson: BrukerdataPerson) {
+            brukerdataPerson.toJsonBegrunnelse()?.let {
                 soknad.data.begrunnelse = it
             }
         }
 
-        private fun Brukerdata.toJsonBegrunnelse(): JsonBegrunnelse? {
+        private fun BrukerdataPerson.toJsonBegrunnelse(): JsonBegrunnelse? {
             return begrunnelse?.let {
                 JsonBegrunnelse()
                     .withHvorforSoke(it.hvorforSoke)
@@ -146,13 +164,11 @@ class BrukerdataToJsonMapper(
             }
         }
 
-        private fun JsonInternalSoknad.mapBeskrivelseAvAnnet(brukerdata: Brukerdata) {
-            brukerdata.toJsonOkonomibeskrivelseAvAnnet().let {
-                soknad.data.okonomi.opplysninger.beskrivelseAvAnnet = it
-            }
+        private fun JsonInternalSoknad.mapBeskrivelseAvAnnet(brukerdataFormelt: BrukerdataFormelt) {
+            soknad.data.okonomi.opplysninger.beskrivelseAvAnnet = brukerdataFormelt.toJsonOkonomibeskrivelseAvAnnet()
         }
 
-        private fun Brukerdata.toJsonOkonomibeskrivelseAvAnnet(): JsonOkonomibeskrivelserAvAnnet? {
+        private fun BrukerdataFormelt.toJsonOkonomibeskrivelseAvAnnet(): JsonOkonomibeskrivelserAvAnnet? {
             return beskrivelseAvAnnet?.let {
                 JsonOkonomibeskrivelserAvAnnet()
                     .withVerdi(it.verdier)
@@ -162,5 +178,34 @@ class BrukerdataToJsonMapper(
                     .withBarneutgifter(it.barneutgifter)
             }
         }
+
+        private fun JsonInternalSoknad.mapUtdanning(brukerdataFormelt: BrukerdataFormelt) {
+            soknad.data.utdanning = brukerdataFormelt.toJsonUtdanning()
+        }
+
+        private fun BrukerdataFormelt.toJsonUtdanning(): JsonUtdanning? {
+            return utdanning?.let {
+                JsonUtdanning()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withErStudent(it.erStudent)
+                    .withStudentgrad(it.studentGrad?.toJsonUtdanningStudentgrad())
+            }
+        }
+
+        private fun Studentgrad.toJsonUtdanningStudentgrad() = JsonUtdanning.Studentgrad.fromValue(this.name.lowercase())
+
+        private fun JsonInternalSoknad.mapBosituasjon(brukerdataPerson: BrukerdataPerson) {
+            soknad.data.bosituasjon = brukerdataPerson.toJsonBosituasjon()
+        }
+
+        private fun BrukerdataPerson.toJsonBosituasjon(): JsonBosituasjon? {
+            return bosituasjon?.let {
+                JsonBosituasjon()
+                    .withAntallPersoner(it.antallHusstand)
+                    .withBotype(it.botype?.toJsonBosituasjonBotype())
+            }
+        }
+
+        private fun Botype.toJsonBosituasjonBotype() = JsonBosituasjon.Botype.fromValue(name.lowercase())
     }
 }
