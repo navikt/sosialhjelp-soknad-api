@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormeltRepository
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonligRepository
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.toBegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPersonlig
+import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,14 +17,14 @@ class BrukerdataFormeltIntegrationTest : AbstractIntegrationTest() {
     private lateinit var brukerdataFormeltRepository: BrukerdataFormeltRepository
 
     @Autowired
-    private lateinit var brukerdataPersonligRepository: BrukerdataPersonligRepository
+    private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository
 
     @Test
     fun `Skal returnere begrunnelse fra soknad`() {
         val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
 
-        val brukerdataPersonlig = opprettBrukerdataPersonlig(lagretSoknad.id!!)
-            .let { brukerdataPersonligRepository.save(it) }
+        val brukerdataPersonlig = opprettBrukerdataPerson(lagretSoknad.id!!)
+            .let { brukerdataPersonRepository.save(it) }
 
         doGet(
             uri = "/soknad/${lagretSoknad.id}/begrunnelse",
@@ -49,7 +49,7 @@ class BrukerdataFormeltIntegrationTest : AbstractIntegrationTest() {
             responseBodyClass = BegrunnelseDto::class.java
         )
 
-        brukerdataPersonligRepository.findByIdOrNull(lagretSoknad.id)?.let {
+        brukerdataPersonRepository.findByIdOrNull(lagretSoknad.id)?.let {
             assertThat(it.toBegrunnelseDto()).isEqualTo(begrunnelseDto)
         }
             ?: throw RuntimeException("Brukerdata ble ikke lagret.")

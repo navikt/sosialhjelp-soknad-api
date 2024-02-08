@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.repository.ListCrudRepository
@@ -18,7 +19,7 @@ data class Soknad(
     var innsendingstidspunkt: LocalDateTime? = null,
     var navEnhet: NavEnhet? = null,
     // TODO Denne hører ikke hjemme her.... Men hvor? Stand-alone?
-    var arbeidsForhold: Set<Arbeidsforhold> = emptySet()
+    var arbeidsForhold: List<Arbeidsforhold> = emptyList()
 )
 
 data class Eier(
@@ -50,6 +51,6 @@ data class Arbeidsforhold(
     val orgnummer: String?,
     val start: String?,
     val slutt: String?,
-    val fastStillingsprosent: Long? = 0L,
+    val fastStillingsprosent: Int? = 0,
     val harFastStilling: Boolean?
 )

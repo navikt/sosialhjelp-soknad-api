@@ -44,30 +44,37 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
 fun createSoknad(
     id: UUID? = null,
     eier: Eier = createEier(),
-    innsendingstidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    innsendingstidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    navenhet: NavEnhet = opprettNavEnhet(),
+    arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList()
 ): Soknad {
     return Soknad(
         id = id,
         eier = eier,
         innsendingstidspunkt = innsendingstidspunkt,
-        navEnhet = opprettNavEnhet(),
-        arbeidsForhold = opprettArbeidsforhold()
+        navEnhet = navenhet,
+        arbeidsForhold = arbeidsforholdList
     )
 }
 
-fun opprettArbeidsforhold(): Set<Arbeidsforhold> {
-
-    return setOf(
-        Arbeidsforhold(
-            arbeidsgivernavn = "Arbeidsgiversen",
-            orgnummer = "123451234",
-            start = "01012010",
-            slutt = "01012020",
-            fastStillingsprosent = 100,
-            harFastStilling = true
-        )
+fun opprettArbeidsforholdList(
+    arbeidsforholdList: List<Arbeidsforhold> = listOf(
+        opprettArbeidsforhold(),
+        opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321")
     )
+): List<Arbeidsforhold> {
+    return arbeidsforholdList
+}
 
+fun opprettArbeidsforhold(
+    arbeidsgivernavn: String = "Arbeidsgiversen",
+    orgnummer: String? = "1234567890",
+    start: String? = "01012010",
+    slutt: String? = "01012020",
+    fastStillingsprosent: Int? = 100,
+    harFastStilling: Boolean? = true,
+): Arbeidsforhold {
+    return Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent, harFastStilling)
 }
 
 fun opprettNavEnhet(
@@ -81,11 +88,11 @@ fun opprettNavEnhet(
 
 fun createEier(
     personId: String = "12345612345",
-    statsborgerskap: String = "Norsk",
-    nordiskBoolean: Boolean = true,
-    kontonummer: String = "12341212345",
+    statsborgerskap: String? = "Norsk",
+    nordiskBoolean: Boolean? = true,
+    kontonummer: String? = "12341212345",
     navn: Navn = createNavn(),
-    telefonnummer: String = "1234567123"
+    telefonnummer: String? = "1234567123"
 ): Eier {
     return Eier(
         personId = personId,
@@ -255,7 +262,7 @@ fun opprettBeskrivelseAvAnnet(
     return BeskrivelseAvAnnet(barneutgifter, verdier, sparing, utbetalinger, boutgifter)
 }
 
-fun opprettBrukerdataPersonlig(
+fun opprettBrukerdataPerson(
     soknadId: UUID,
     telefonnummer: String = "98412232",
     begrunnelse: Begrunnelse = opprettBegrunnelse(),

@@ -4,7 +4,7 @@ create table brukerdata_formelt
     kommentar_arbeidsforhold text,
     er_student bool,
     student_grad varchar(30),
-    constraint fk_brukerdata_soknad
+    constraint fk_brukerdata_formelt_soknad
         foreign key(soknad_id)
             references soknad(id) on delete cascade
 );

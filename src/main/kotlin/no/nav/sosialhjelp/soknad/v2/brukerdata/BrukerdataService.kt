@@ -10,19 +10,19 @@ import java.util.*
 @Transactional
 class BrukerdataService(
     private val brukerFormeltRepository: BrukerdataFormeltRepository,
-    private val brukerPersonligRepository: BrukerdataPersonligRepository,
+    private val brukerPersonRepository: BrukerdataPersonRepository,
 ) {
     @Transactional(readOnly = true)
     fun getBrukerdataFormelt(soknadId: UUID) = brukerFormeltRepository.findByIdOrNull(soknadId)
     @Transactional(readOnly = true)
-    fun getBrukerdataPersonlig(soknadId: UUID) = brukerPersonligRepository.findByIdOrNull(soknadId)
+    fun getBrukerdataPersonlig(soknadId: UUID) = brukerPersonRepository.findByIdOrNull(soknadId)
 
 
     fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): BrukerdataPerson {
         return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 this.begrunnelse = begrunnelse
-                brukerPersonligRepository.save(this)
+                brukerPersonRepository.save(this)
             }
     }
 
@@ -30,7 +30,7 @@ class BrukerdataService(
         return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 this.bosituasjon = bosituasjon
-                brukerPersonligRepository.save(this)
+                brukerPersonRepository.save(this)
             }
     }
 
@@ -38,7 +38,7 @@ class BrukerdataService(
         return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 kontoInformasjon = kontoInformasjonBruker
-                brukerPersonligRepository.save(this)
+                brukerPersonRepository.save(this)
                 kontoInformasjonBruker
             }
     }
@@ -47,7 +47,7 @@ class BrukerdataService(
         return findOrCreateBrukerdataPersonlig(soknadId)
             .run {
                 this.telefonnummer = telefonnummer
-                brukerPersonligRepository.save(this)
+                brukerPersonRepository.save(this)
             }
     }
 
@@ -84,12 +84,14 @@ class BrukerdataService(
     }
 
     private fun findOrCreateBrukerdataFormelt(soknadId: UUID): BrukerdataFormelt {
-        return brukerFormeltRepository.findByIdOrNull(soknadId) ?: BrukerdataFormelt(soknadId)
+        return brukerFormeltRepository.findByIdOrNull(soknadId)
+            ?: brukerFormeltRepository.save(BrukerdataFormelt(soknadId))
     }
 
     private fun findOrCreateBrukerdataPersonlig(soknadId: UUID): BrukerdataPerson {
-        return brukerPersonligRepository.findByIdOrNull(soknadId) ?: BrukerdataPerson(soknadId)
+        return brukerPersonRepository.findByIdOrNull(soknadId)
+            ?: brukerPersonRepository.save(BrukerdataPerson(soknadId))
     }
 
-    fun getBegrunnelse(soknadId: UUID): Begrunnelse? = brukerPersonligRepository.findByIdOrNull(soknadId)?.begrunnelse
+    fun getBegrunnelse(soknadId: UUID): Begrunnelse? = brukerPersonRepository.findByIdOrNull(soknadId)?.begrunnelse
 }

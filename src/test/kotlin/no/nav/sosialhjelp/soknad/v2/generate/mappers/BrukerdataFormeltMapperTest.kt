@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuper
 import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.BrukerdataToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.BrukerdataToJsonMapper.BrukerdataMapper.toSoknadJsonType
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataFormelt
-import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPersonlig
+import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -32,7 +32,7 @@ class BrukerdataFormeltMapperTest {
         val soknadId = UUID.randomUUID()
 
         val brukerdataFormelt = opprettBrukerdataFormelt(soknadId)
-        val brukerdataPersonlig = opprettBrukerdataPersonlig(soknadId)
+        val brukerdataPersonlig = opprettBrukerdataPerson(soknadId)
 
         mapper.doMapping(brukerdataPersonlig, json)
         mapper.doMapping(brukerdataFormelt, json)

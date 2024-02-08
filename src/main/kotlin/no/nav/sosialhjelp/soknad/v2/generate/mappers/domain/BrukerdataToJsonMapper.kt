@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormeltRepository
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonligRepository
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
 import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
@@ -32,7 +32,7 @@ import java.util.*
 
 @Component
 class BrukerdataToJsonMapper(
-    private val brukerdataPersonligRepository: BrukerdataPersonligRepository,
+    private val brukerdataPersonRepository: BrukerdataPersonRepository,
     private val brukerdataFormeltRepository: BrukerdataFormeltRepository
 ) : DomainToJsonMapper {
 
@@ -41,7 +41,7 @@ class BrukerdataToJsonMapper(
             doMapping(it, jsonInternalSoknad)
         }
 
-        brukerdataPersonligRepository.findByIdOrNull(soknadId)?.let {
+        brukerdataPersonRepository.findByIdOrNull(soknadId)?.let {
             doMapping(it, jsonInternalSoknad)
         }
     }

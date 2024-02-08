@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
@@ -33,7 +34,7 @@ class BegrunnelseController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) begrunnelseDto: BegrunnelseDto
     ): BegrunnelseDto {
-        begrunnelseDto.validate()
+        begrunnelseDto.validate(soknadId)
 
         val brukerdata = begrunnelseDto.let {
             brukerdataService.updateBegrunnelse(
@@ -48,17 +49,13 @@ class BegrunnelseController(
     }
 }
 
-private fun BegrunnelseDto.validate() {
-    if (hvorforSoke == null && hvaSokesOm == null) {
-        throw IllegalArgumentException("Begrunnelse inneholder ikke data.")
-    }
+private fun BegrunnelseDto.validate(soknadId: UUID) {
+    SoknadInputValidator(BegrunnelseDto::class).validateInputNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
+//    SoknadInputValidator(BegrunnelseDto::class).validateInputStringNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
 
     listOfNotNull(hvorforSoke, hvaSokesOm)
-        .flatMap { it.toList() }
         .forEach {
-            if (!it.isLetterOrDigit() && !it.isWhitespace()) {
-                throw IllegalStateException("Kun bokstaver og tall er lovlig i Begrunnelse.")
-            }
+            SoknadInputValidator(BegrunnelseDto::class).validateTextInput(soknadId, it)
         }
 }
 

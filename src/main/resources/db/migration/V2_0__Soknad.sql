@@ -26,6 +26,7 @@ CREATE TABLE nav_enhet
 
 CREATE TABLE arbeidsforhold
 (
+    soknad_key int not null,
     soknad uuid not null,
     arbeidsgivernavn varchar(255) not null,
     orgnummer varchar(50),
@@ -33,6 +34,8 @@ CREATE TABLE arbeidsforhold
     slutt varchar(50),
     fast_stillingsprosent numeric,
     har_fast_stilling bool,
+    constraint pk_arbeidsforhold
+        primary key(soknad_key, soknad),
     constraint fk_arbeidsforhold_soknad
         foreign key(soknad)
             references soknad(id) on delete cascade

@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.NotValidInputException
+import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
 import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -24,7 +26,7 @@ class KontonummerController(
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID
     ): KontoInformasjonDto {
-        val kontonummerRegister = soknadService.getKontonummer(soknadId)
+        val kontonummerRegister = soknadService.getSoknad(soknadId).eier.kontonummer
         val kontoInformasjonBruker = brukerdataService.getBrukerdataPersonlig(soknadId)?.kontoInformasjon
 
         return KontoInformasjonDto(
@@ -39,8 +41,11 @@ class KontonummerController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) input: KontoInformasjonInput
     ): KontoInformasjonDto {
-        val kontonummerRegister = soknadService.getKontonummer(soknadId)
-        input.validate(kontonummerRegister)
+        SoknadInputValidator(KontoInformasjonInput::class)
+            .validateInputNotNullOrEmpty(soknadId, input.harIkkeKonto, input.kontonummerBruker)
+
+        val kontonummerRegister = soknadService.getSoknad(soknadId).eier.kontonummer
+        validate(soknadId, input, kontonummerRegister)
 
         val kontoInformasjon = brukerdataService.updateKontoinformasjon(
             soknadId = soknadId,
@@ -57,15 +62,13 @@ class KontonummerController(
         )
     }
 
-    // TODO Skal bruker kunne velge at vedkommende ikke har kontonummer, selvom vi har ett?
-    private fun KontoInformasjonInput.validate(kontonummerRegister: String?) {
-        if (harIkkeKonto == null && kontonummerBruker == null) {
-            throw IllegalStateException(
-                "Prøver og oppdatere kontoinformasjon, men både `harIkkeKonto` og `kontonummerBruker` er null"
-            )
+    private fun validate(id: UUID, input: KontoInformasjonInput, kontonummerRegister: String?) {
+        if (input.harIkkeKonto == true && (input.kontonummerBruker != null || kontonummerRegister != null)) {
+            throw NotValidInputException(id, "HarIkkeKonto er satt, men det finnes kontonummer.")
         }
-        if (harIkkeKonto == true && (kontonummerBruker != null || kontonummerRegister != null)) {
-            throw IllegalStateException("Bruker har kontonummer, men har krysset av for harIkkeKonto")
+
+        if (input.harIkkeKonto == false && input.kontonummerBruker == null && kontonummerRegister == null) {
+            throw NotValidInputException(id, "HarIkkeKonto er ikke satt, men det finnes ikke kontonummer")
         }
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
 import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -24,11 +25,11 @@ class ArbeidController(
 
     @GetMapping
     fun getArbeid(@PathVariable("soknadId") soknadId: UUID): ArbeidDto {
-        val arbeidsforhold = soknadService.getArbeidsforhold(soknadId)
+        val arbeidsforhold = soknadService.getSoknad(soknadId).arbeidsForhold
         val kommentarArbeidsforhold = brukerdataService.getBrukerdataFormelt(soknadId)?.kommentarArbeidsforhold
 
         return ArbeidDto(
-            arbeidsforholdList = arbeidsforhold,
+            arbeidsforholdList = arbeidsforhold.map { it.toArbeidsforholdDto() },
             kommentar = kommentarArbeidsforhold
         )
     }
@@ -36,27 +37,44 @@ class ArbeidController(
     @PutMapping
     fun updateKommentarArbeidsforhold(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody kommentarTilArbeidsforhold: String
+        @RequestBody input: ArbeidInput
     ): ArbeidDto {
-        validate(kommentarTilArbeidsforhold)
+        SoknadInputValidator(ArbeidInput::class)
+            .validateTextInput(soknadId, input.kommentarTilArbeidsforhold)
 
         return ArbeidDto(
-            kommentar = brukerdataService.updateKommentarArbeidsforhold(soknadId, kommentarTilArbeidsforhold),
-            arbeidsforholdList = soknadService.getArbeidsforhold(soknadId)
+            kommentar = brukerdataService.updateKommentarArbeidsforhold(soknadId, input.kommentarTilArbeidsforhold),
+            arbeidsforholdList = soknadService.getSoknad(soknadId)
+                .arbeidsForhold.map {it.toArbeidsforholdDto() }
         )
     }
 }
 
-fun validate(tekst: String) {
-    tekst.toList()
-        .forEach {
-            if (!it.isLetterOrDigit()) {
-                throw IllegalArgumentException("Kommentar til arbeidsforhold inneholder ikke kun bokstaver og tall.")
-            }
-        }
-}
-
 data class ArbeidDto(
-    val arbeidsforholdList: Set<Arbeidsforhold>,
+    val arbeidsforholdList: List<ArbeidsforholdDto>,
     val kommentar: String? = null
 )
+
+data class ArbeidInput(
+    val kommentarTilArbeidsforhold: String
+)
+
+data class ArbeidsforholdDto(
+    val arbeidsgivernavn: String? = null,
+    val orgnummer: String? = null,
+    val start: String? = null,
+    val slutt: String? = null,
+    val fastStillingsprosent: Int? = null,
+    val harFastStilling: Boolean? = null
+)
+
+private fun Arbeidsforhold.toArbeidsforholdDto(): ArbeidsforholdDto {
+    return ArbeidsforholdDto(
+        arbeidsgivernavn = arbeidsgivernavn,
+        orgnummer = orgnummer,
+        start = start,
+        slutt = slutt,
+        fastStillingsprosent = fastStillingsprosent,
+        harFastStilling = harFastStilling
+    )
+}

@@ -8,7 +8,7 @@ create table brukerdata_person
     hva_sokes_om text,
     botype varchar(30),
     antall_husstand numeric,
-    constraint fk_brukerdata_soknad
+    constraint fk_brukerdata_person_soknad
         foreign key(soknad_id)
             references soknad(id) on delete cascade
 );

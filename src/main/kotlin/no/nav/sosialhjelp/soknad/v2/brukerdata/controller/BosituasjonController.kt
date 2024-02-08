@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
@@ -33,7 +34,8 @@ class BosituasjonController(
         @RequestBody bosituasjonDto: BosituasjonDto
     ): BosituasjonDto {
 
-        bosituasjonDto.validate()
+        SoknadInputValidator(BosituasjonDto::class)
+            .validateInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
 
         return brukerdataService.updateBosituasjon(
             soknadId,
@@ -49,12 +51,6 @@ data class BosituasjonDto(
     val botype: Botype? = null,
     val antallPersoner: Int? = null
 )
-
-private fun BosituasjonDto.validate() {
-    if (antallPersoner == null || botype == null) {
-        throw IllegalStateException("Bosituasjon inneholder ingen informasjon")
-    }
-}
 
 private fun BrukerdataPerson.toBosituasjonDto() = BosituasjonDto(
     botype = bosituasjon?.botype,

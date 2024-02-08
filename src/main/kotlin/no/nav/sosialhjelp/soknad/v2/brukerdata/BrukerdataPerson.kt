@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface BrukerdataPersonligRepository : UpsertRepository<BrukerdataPerson>, ListCrudRepository<BrukerdataPerson, UUID>
+interface BrukerdataPersonRepository : UpsertRepository<BrukerdataPerson>, ListCrudRepository<BrukerdataPerson, UUID>
 
 data class BrukerdataPerson(
     @Id
