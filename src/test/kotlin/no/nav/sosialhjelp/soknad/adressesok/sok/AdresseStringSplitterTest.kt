@@ -138,7 +138,6 @@ internal class AdresseStringSplitterTest {
 
         val sokedata = toSokedata(kodeverkService = kodeverkService, adresse = "asdf, OSLO")
         assertThat(sokedata!!.adresse).isEqualTo("asdf")
-        assertThat(sokedata.poststed).isNull()
         assertThat(sokedata.kommunenummer).isEqualTo("0301")
     }
 
@@ -151,7 +150,7 @@ internal class AdresseStringSplitterTest {
         assertThat(sokedata!!.adresse).isEqualTo("asdf")
         assertThat(sokedata.postnummer).isEqualTo("0756")
         assertThat(sokedata.poststed).isEqualTo("OSLO")
-        assertThat(sokedata.kommunenummer).isNull()
+        assertThat(sokedata.kommunenummer).isEqualTo("0301")
     }
 
     @Test

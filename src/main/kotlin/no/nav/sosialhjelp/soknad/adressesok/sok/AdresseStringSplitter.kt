@@ -18,9 +18,14 @@ object AdresseStringSplitter {
      */
     private fun MatchResult.asTrimmedOrNull(group: String): String? = this.groups[group]?.value?.trim()?.takeUnless { it.isEmpty() }
 
+    /**
+     * Erstatter alle forekomster av 1 eller flere whitespace med et enkelt mellomrom.
+     */
+    private fun String.deduplicateWhitespace(): String = this.replace(Regex("\\s+"), " ")
+
     private val adresseRegex = Regex(
         """(?x) # Enable comments and ignore whitespace in the regex pattern
-            ^(?<adresse>[^0-9,]*\b)? # Optionally capture the street name, allowing letters and spaces
+            ^(?<adresse>[^0-9,]*\b*)? # Optionally capture the street name, allowing letters and spaces
             (?<husnummer>\s*\d*)? # Optionally capture the street number, allowing leading spaces
             (?<husbokstav>\s*[A-Za-z]?)? # Optionally capture the optional letter, allowing leading spaces
             ([,\s]*(?<postnummer>\d{0,4})\s*)? # Optionally capture the 4-digit postal code, allowing for partial entry
@@ -29,7 +34,7 @@ object AdresseStringSplitter {
     )
 
     private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? =
-        adresseRegex.matchEntire(adresse)?.let { matchResult ->
+        adresseRegex.matchEntire(adresse.deduplicateWhitespace())?.let { matchResult ->
             val gateAdresse = matchResult.asTrimmedOrNull("adresse")
             val husnummer = matchResult.asTrimmedOrNull("husnummer")
             val husbokstav = matchResult.asTrimmedOrNull("husbokstav")
