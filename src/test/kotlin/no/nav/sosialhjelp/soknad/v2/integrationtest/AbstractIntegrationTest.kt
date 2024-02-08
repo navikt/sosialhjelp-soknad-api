@@ -1,17 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatusCode
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("no-redis", "test", "test-container")
@@ -45,7 +42,7 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun doPutExpectError(uri: String, requestBody: Any, httpStatus: HttpStatusCode): Feilmelding {
+    protected fun doPutExpectError(uri: String, requestBody: Any, httpStatus: HttpStatus): Feilmelding {
         return webTestClient.put()
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)

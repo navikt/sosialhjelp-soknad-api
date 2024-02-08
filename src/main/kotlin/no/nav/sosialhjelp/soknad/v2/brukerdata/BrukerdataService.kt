@@ -83,6 +83,14 @@ class BrukerdataService(
             }
     }
 
+    fun updateUtdanning(soknadId: UUID, utdanning: Utdanning): BrukerdataFormelt {
+        return findOrCreateBrukerdataFormelt(soknadId)
+            .run {
+                this.utdanning = utdanning
+                brukerFormeltRepository.save(this)
+            }
+    }
+
     private fun findOrCreateBrukerdataFormelt(soknadId: UUID): BrukerdataFormelt {
         return brukerFormeltRepository.findByIdOrNull(soknadId)
             ?: brukerFormeltRepository.save(BrukerdataFormelt(soknadId))

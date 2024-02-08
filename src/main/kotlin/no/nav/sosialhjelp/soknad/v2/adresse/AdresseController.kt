@@ -53,6 +53,15 @@ data class AdresserDto(
     val folkeregistrertAdresse: Adresse? = null,
     val midlertidigAdresse: Adresse? = null,
     val adresseBruker: Adresse? = null,
+    val navenhet: NavEnhetDto? = null,
+)
+
+data class NavEnhetDto(
+    val enhetsnavn: String? = null,
+    val orgnummer: String? = null,
+    val enhetsnummer: String? = null,
+    val kommunenummer: String? = null,
+    val kommunenavn: String? = null,
 )
 
 fun AdresserSoknad.toAdresserDto() =
