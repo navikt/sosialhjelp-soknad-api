@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.adressesok.sok
 
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import java.util.regex.Pattern
 
 object AdresseStringSplitter {
 
@@ -14,21 +13,32 @@ object AdresseStringSplitter {
         )
     }
 
-    private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? {
-        // Why Trim: This  that depends on a  may run slow on strings with many repetitions of ' '.
-        // https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
-        val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9]{1,4})? *[0-9]* *([^0-9]*[^ ])? *$")
-        val m = p.matcher(adresse.trim())
-        if (m.matches()) {
-            val postnummer = m.group(4)
-            val kommunenavn = if (postnummer == null) m.group(5) else null
-            val kommunenummer = getKommunenummer(kodeverkService, kommunenavn)
-            val poststed = if (kommunenummer == null) m.group(5) else null
-            val gateAdresse = m.group(1).trim { it <= ' ' }.replace(" +".toRegex(), " ")
-            return Sokedata(gateAdresse, m.group(2), m.group(3), postnummer, poststed, kommunenummer)
+    /**
+     * Trimmer en navngitt MatchGroup og returnerer null hvis resultatet er en tom streng, strengen hvis ikke.
+     */
+    private fun MatchResult.asTrimmedOrNull(group: String): String? = this.groups[group]?.value?.trim()?.takeUnless { it.isEmpty() }
+
+    private val adresseRegex = Regex(
+        """(?x) # Enable comments and ignore whitespace in the regex pattern
+            ^(?<adresse>[^0-9,]*\b)? # Optionally capture the street name, allowing letters and spaces
+            (?<husnummer>\s*\d*)? # Optionally capture the street number, allowing leading spaces
+            (?<husbokstav>\s*[A-Za-z]?)? # Optionally capture the optional letter, allowing leading spaces
+            ([,\s]*(?<postnummer>\d{0,4})\s*)? # Optionally capture the 4-digit postal code, allowing for partial entry
+            (?<poststed>[A-Za-zÆØÅæøå\s]*)? # Optionally capture the city name, allowing letters and spaces     
+        """.trimIndent()
+    )
+
+    private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? =
+        adresseRegex.matchEntire(adresse)?.let { matchResult ->
+            val gateAdresse = matchResult.asTrimmedOrNull("adresse")
+            val husnummer = matchResult.asTrimmedOrNull("husnummer")
+            val husbokstav = matchResult.asTrimmedOrNull("husbokstav")
+            val postnummer = matchResult.asTrimmedOrNull("postnummer")
+            val poststed = matchResult.asTrimmedOrNull("poststed")
+            val kommunenummer = getKommunenummer(kodeverkService, poststed)
+
+            Sokedata(gateAdresse, husnummer, husbokstav, postnummer, poststed, kommunenummer)
         }
-        return null
-    }
 
     private fun getKommunenummer(kodeverkService: KodeverkService?, kommunenavn: String?): String? {
         return if (kommunenavn != null && kommunenavn.trim { it <= ' ' }.isNotEmpty() && kodeverkService != null) {
