@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.adresse
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,13 +17,15 @@ import java.util.*
 // @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val adresseService: AdresseService
+    private val adresseService: AdresseService,
+    private val soknadService: SoknadService
 ) {
     @GetMapping
     fun getAdresser(
         @PathVariable("soknadId") soknadId: UUID
     ): AdresserDto {
-        return adresseService.getAdresserSoknad(soknadId).toAdresserDto()
+        val navEnhet = soknadService.getSoknad(soknadId).navEnhet
+        return adresseService.getAdresserSoknad(soknadId).toAdresserDto(navEnhet)
     }
 
     @PutMapping
@@ -38,8 +42,8 @@ class AdresseController(
                 brukerAdresse = adresserInput.adresseBruker
             )
         )
-
-        return adresser.toAdresserDto()
+        val navEnhet = soknadService.getSoknad(soknadId).navEnhet
+        return adresser.toAdresserDto(navEnhet)
     }
 }
 
@@ -64,10 +68,20 @@ data class NavEnhetDto(
     val kommunenavn: String? = null,
 )
 
-fun AdresserSoknad.toAdresserDto() =
+fun AdresserSoknad.toAdresserDto(navenhet: NavEnhet?) =
     AdresserDto(
         valgtAdresse = brukerInput?.valgtAdresse,
         adresseBruker = brukerInput?.brukerAdresse,
         midlertidigAdresse = midlertidigAdresse,
         folkeregistrertAdresse = folkeregistrertAdresse,
+        navenhet = navenhet?.toNavEnhetDto()
     )
+
+fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
+    return NavEnhetDto(
+        enhetsnavn = enhetsnavn,
+        orgnummer = orgnummer,
+        enhetsnummer = enhetsnummer,
+        kommunenummer = kommunenummer,
+    )
+}

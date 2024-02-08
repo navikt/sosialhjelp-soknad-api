@@ -38,10 +38,11 @@ data class Navn(
 )
 
 data class NavEnhet(
-    val enhetsnummer: String?,
     val enhetsnavn: String,
-    val kommunenummer: String?,
-    val orgnummer: String?
+    val enhetsnummer: String? = null,
+    val kommunenummer: String? = null,
+    val orgnummer: String? = null,
+    val kommunenavn: String? = null,
 )
 
 // TODO Denne hører ikke hjemme her..... Men hvor? Stand-alone?
