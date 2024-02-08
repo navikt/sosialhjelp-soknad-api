@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
 import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter
-import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.isAddressTooShortOrNull
+import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.isAdressTooShort
 import no.nav.sosialhjelp.soknad.adressesok.sok.Criteria
 import no.nav.sosialhjelp.soknad.adressesok.sok.Direction
 import no.nav.sosialhjelp.soknad.adressesok.sok.FieldName
@@ -31,8 +31,8 @@ class AdressesokService(
         return vegadresse.toAdresseForslag()
     }
 
-    fun sokEtterAdresser(sokeString: String?): List<AdresseForslag> {
-        if (isAddressTooShortOrNull(sokeString)) {
+    fun sokEtterAdresser(sokeString: String): List<AdresseForslag> {
+        if (isAdressTooShort(sokeString)) {
             return emptyList()
         }
 
@@ -42,7 +42,7 @@ class AdressesokService(
     }
 
     private fun getAdresser(sokedata: Sokedata?): List<VegadresseDto> {
-        if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
+        if (sokedata?.adresse == null || isAdressTooShort(sokedata.adresse)) {
             return emptyList()
         }
         val adressesokResult = adressesokClient.getAdressesokResult(toVariablesForFritekstSok(sokedata))

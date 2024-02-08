@@ -5,11 +5,11 @@ import java.util.regex.Pattern
 
 object AdresseStringSplitter {
 
-    fun toSokedata(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
-        return if (isAddressTooShortOrNull(adresse)) {
+    fun toSokedata(kodeverkService: KodeverkService?, adresse: String): Sokedata? {
+        return if (isAdressTooShort(adresse)) {
             Sokedata(adresse = adresse)
         } else firstNonNull(
-            fullstendigGateadresseMatch(kodeverkService, adresse!!),
+            fullstendigGateadresseMatch(kodeverkService, adresse),
             Sokedata(adresse = adresse)
         )
     }
@@ -40,7 +40,7 @@ object AdresseStringSplitter {
         return elems.firstOrNull { it != null }
     }
 
-    fun isAddressTooShortOrNull(address: String?): Boolean {
-        return address == null || address.trim { it <= ' ' }.length < 2
+    fun isAdressTooShort(address: String): Boolean {
+        return address.trim { it <= ' ' }.length < 2
     }
 }

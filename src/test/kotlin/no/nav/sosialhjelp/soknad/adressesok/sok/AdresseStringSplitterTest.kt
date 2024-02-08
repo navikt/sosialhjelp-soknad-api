@@ -16,12 +16,6 @@ internal class AdresseStringSplitterTest {
     }
 
     @Test
-    fun nullStrengGirNullSvar() {
-        val sokedata = toSokedata(kodeverkService = null, adresse = null)
-        assertThat(sokedata!!.adresse).isNull()
-    }
-
-    @Test
     fun kunAdresseVirker() {
         val sokedata = toSokedata(kodeverkService = null, adresse = "asdf")
         assertThat(sokedata!!.adresse).isEqualTo("asdf")

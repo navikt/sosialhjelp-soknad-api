@@ -41,7 +41,7 @@ class InformasjonRessurs(
 
     @GetMapping("/adressesok")
     fun adresseSok(
-        @RequestParam("sokestreng") sokestreng: String?
+        @RequestParam("sokestreng") sokestreng: String
     ): List<AdresseForslag> {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
