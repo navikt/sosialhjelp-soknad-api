@@ -13,7 +13,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import java.util.*
 
-class UtdanningIntegrationTest: AbstractIntegrationTest() {
+class UtdanningIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var brukerdataFormeltRepository: BrukerdataFormeltRepository

@@ -17,7 +17,6 @@ class BrukerdataService(
     @Transactional(readOnly = true)
     fun getBrukerdataPersonlig(soknadId: UUID) = brukerPersonRepository.findByIdOrNull(soknadId)
 
-
     fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): BrukerdataPerson {
         return findOrCreateBrukerdataPersonlig(soknadId)
             .run {

@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.app.Constants
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +9,7 @@ import java.util.*
 
 @RestController
 @Unprotected
-//@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+// @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknad/{soknadId}/personalia/basisPersonalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BasisPersonaliaController(
     private val soknadService: SoknadService

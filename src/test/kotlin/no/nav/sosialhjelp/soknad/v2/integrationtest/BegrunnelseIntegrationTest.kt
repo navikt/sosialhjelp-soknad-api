@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
-class BegrunnelseIntegrationTest: AbstractIntegrationTest() {
+class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository

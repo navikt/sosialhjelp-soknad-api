@@ -49,7 +49,7 @@ private fun initSamtykker(): Set<Samtykke> {
     )
 }
 
-data class Utdanning (
+data class Utdanning(
     val erStudent: Boolean,
     val studentGrad: Studentgrad? = null
 )

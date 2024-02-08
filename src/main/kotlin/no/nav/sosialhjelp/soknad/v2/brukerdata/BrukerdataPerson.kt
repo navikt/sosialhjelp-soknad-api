@@ -31,7 +31,7 @@ data class Begrunnelse(
     val hvaSokesOm: String? = null,
 )
 
-data class Bosituasjon (
+data class Bosituasjon(
     var botype: Botype?,
     var antallHusstand: Int?
 )

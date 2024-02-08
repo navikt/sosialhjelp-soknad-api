@@ -4,18 +4,15 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
 import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BosituasjonDto
 import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettBosituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 
-class BosituasjonIntegrationTest: AbstractIntegrationTest() {
+class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository

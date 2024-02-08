@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.repository.ListCrudRepository

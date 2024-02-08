@@ -13,7 +13,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import java.util.*
 
-class ArbeidIntegrationTest: AbstractIntegrationTest() {
+class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var brukerdataFormeltRepository: BrukerdataFormeltRepository
@@ -36,7 +36,7 @@ class ArbeidIntegrationTest: AbstractIntegrationTest() {
         assertThat(arbeidDto.kommentar).isEqualTo(brukerdataFormelt.kommentarArbeidsforhold)
 
         arbeidDto.arbeidsforholdList.forEachIndexed { index, arbeidsforholdDto ->
-            with (soknad.arbeidsForhold[index]) {
+            with(soknad.arbeidsForhold[index]) {
                 assertThat(arbeidsforholdDto.arbeidsgivernavn).isEqualTo(arbeidsgivernavn)
                 assertThat(arbeidsforholdDto.orgnummer).isEqualTo(orgnummer)
                 assertThat(arbeidsforholdDto.start).isEqualTo(start)

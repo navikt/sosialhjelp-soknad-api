@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-//@ProtectionSelvbetjeningHigh
+// @ProtectionSelvbetjeningHigh
 @Unprotected
 @RequestMapping("/soknad/{soknadId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArbeidController(
@@ -45,7 +45,7 @@ class ArbeidController(
         return ArbeidDto(
             kommentar = brukerdataService.updateKommentarArbeidsforhold(soknadId, input.kommentarTilArbeidsforhold),
             arbeidsforholdList = soknadService.getSoknad(soknadId)
-                .arbeidsForhold.map {it.toArbeidsforholdDto() }
+                .arbeidsForhold.map { it.toArbeidsforholdDto() }
         )
     }
 }

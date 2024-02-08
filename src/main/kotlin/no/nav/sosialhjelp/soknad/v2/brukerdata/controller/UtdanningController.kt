@@ -17,7 +17,7 @@ import java.util.*
 
 @RestController
 @Unprotected
-//@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+// @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknad/{soknadId}/utdanning", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtdanningController(
     private val brukerdataService: BrukerdataService

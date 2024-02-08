@@ -36,4 +36,4 @@ class SoknadInputValidator(private val clazz: KClass<*>) {
     }
 }
 
-class NotValidInputException(id: UUID?, message: String): SosialhjelpSoknadApiException(message, null, id?.toString())
+class NotValidInputException(id: UUID?, message: String) : SosialhjelpSoknadApiException(message, null, id?.toString())
