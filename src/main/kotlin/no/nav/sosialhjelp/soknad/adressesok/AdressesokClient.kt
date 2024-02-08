@@ -26,7 +26,7 @@ class AdressesokClient(
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
-        log.debug("{}", PdlRequest(ADRESSE_SOK, variables))
+        log.info("{}", PdlRequest(ADRESSE_SOK, variables))
         return try {
             val response = baseRequest
                 .header(AUTHORIZATION, BEARER + azureAdToken())
@@ -35,7 +35,7 @@ class AdressesokClient(
                 .bodyToMono<String>()
                 .retryWhen(pdlRetry)
                 .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
-            log.debug("PDL - response: $response")
+            log.info("PDL - response: $response")
             val pdlResponse = parse<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data?.sokAdresse
