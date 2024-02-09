@@ -122,7 +122,7 @@ class SoknadToJsonMapper(
             return if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL
         }
 
-        private fun Soknad.toJsonSoknadsMottaker1(): no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker {
+        private fun Soknad.toJsonSoknadsMottaker1(): JsonSoknadsmottaker {
             return navEnhet?.let {
                 JsonSoknadsmottaker()
                     .withOrganisasjonsnummer(it.orgnummer)

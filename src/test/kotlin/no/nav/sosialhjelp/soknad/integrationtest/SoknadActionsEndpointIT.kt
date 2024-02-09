@@ -1,21 +1,12 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.awaits
-import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.createEier
 import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient

@@ -17,20 +17,20 @@ class BrukerdataPersonRepositoryTest : AbstractRepositoryTest() {
     @Test
     fun `Skal lagre brukerdata i databasen`() {
         val soknad = soknadRepository.save(createSoknad())
-        brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
+        brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id))
 
-        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id!!)).isTrue()
+        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id)).isTrue()
     }
 
     @Test
     fun `Slette soknad skal slette brukerdata`() {
         val soknad = soknadRepository.save(createSoknad())
 
-        brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
-        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id!!)).isTrue()
+        brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id))
+        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id)).isTrue()
 
-        soknadRepository.deleteById(soknad.id!!)
-        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id!!)).isFalse()
+        soknadRepository.deleteById(soknad.id)
+        Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id)).isFalse()
     }
 
     @Test

@@ -1,13 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

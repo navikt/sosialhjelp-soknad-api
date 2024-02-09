@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull

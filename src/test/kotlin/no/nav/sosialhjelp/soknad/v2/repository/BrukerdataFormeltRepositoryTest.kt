@@ -27,11 +27,11 @@ class BrukerdataFormeltRepositoryTest : AbstractRepositoryTest() {
     fun `Slette soknad skal slette brukerdata`() {
         val soknad = soknadRepository.save(createSoknad())
 
-        brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id!!))
-        assertThat(brukerdataFormeltRepository.existsById(soknad.id!!)).isTrue()
+        brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id))
+        assertThat(brukerdataFormeltRepository.existsById(soknad.id)).isTrue()
 
-        soknadRepository.deleteById(soknad.id!!)
-        assertThat(brukerdataFormeltRepository.existsById(soknad.id!!)).isFalse()
+        soknadRepository.deleteById(soknad.id)
+        assertThat(brukerdataFormeltRepository.existsById(soknad.id)).isFalse()
     }
 
     @Test

@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Navn
-import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

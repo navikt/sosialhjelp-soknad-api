@@ -18,7 +18,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
 @Deprecated("Gammel logikk - nye søknader skal håndteres via SoknadRepository")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
