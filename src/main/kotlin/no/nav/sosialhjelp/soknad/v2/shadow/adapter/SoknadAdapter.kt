@@ -30,7 +30,6 @@ class SoknadAdapter(
 
                 this.arbeidsForhold = arbeidsforholdList
                 soknadRepository.save(this)
-
             }
     }
 
@@ -43,5 +42,3 @@ class SoknadAdapter(
             ?: throw IllegalArgumentException("Skyggeproduksjon: Lagring av telefonnummer fra register feilet")
     }
 }
-
-

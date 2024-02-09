@@ -31,13 +31,13 @@ class SoknadV2ControllerAdapter(
     private val kontonummerController: KontonummerController,
     private val telefonnummerController: TelefonnummerController,
     private val utdanningController: UtdanningController
-): ControllerAdapter {
+) : ControllerAdapter {
     override fun updateArbeid(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest
     ) {
         arbeidFrontend.kommentarTilArbeidsforhold?.let {
-            arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId),ArbeidInput(it))
+            arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
         }
     }
 
@@ -45,7 +45,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend
     ) {
-        with (begrunnelseFrontend) {
+        with(begrunnelseFrontend) {
             if (hvaSokesOm != null || hvorforSoke != null) {
                 begrunnelseController.updateBegrunnelse(
                     UUID.fromString(soknadId),
@@ -62,7 +62,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend
     ) {
-        with (bosituasjonFrontend) {
+        with(bosituasjonFrontend) {
             if (botype != null || antallPersoner != null) {
                 bosituasjonController.updateBosituasjon(
                     UUID.fromString(soknadId),
@@ -78,7 +78,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         kontoInputDto: KontonummerRessurs.KontonummerInputDTO
     ) {
-        with (kontoInputDto) {
+        with(kontoInputDto) {
             if (harIkkeKonto != null || brukerutfyltVerdi != null) {
                 kontonummerController.updateKontoInformasjonBruker(
                     UUID.fromString(soknadId),
@@ -95,7 +95,7 @@ class SoknadV2ControllerAdapter(
         telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend
     ) {
         telefonnummerFrontend.brukerutfyltVerdi?.let {
-            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId),TelefonnummerInput(it))
+            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
         }
     }
     override fun updateUtdanning(

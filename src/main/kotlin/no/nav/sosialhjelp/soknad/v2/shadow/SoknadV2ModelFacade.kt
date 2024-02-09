@@ -15,9 +15,9 @@ import java.util.*
 class SoknadV2ModelFacade(
     private val soknadAdapter: SoknadAdapter,
     private val adresseAdapter: AdresseAdapter,
-): RegisterFacade {
+) : RegisterFacade {
     override fun createSoknad(soknadUnderArbeid: SoknadUnderArbeid) {
-        with (soknadUnderArbeid) {
+        with(soknadUnderArbeid) {
             soknadAdapter.createNewSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
@@ -54,4 +54,3 @@ class SoknadV2ModelFacade(
         telefonnummer?.let { soknadAdapter.addTelefonnummer(UUID.fromString(behandlingsId), it) }
     }
 }
-

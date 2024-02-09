@@ -25,7 +25,7 @@ data class Soknad(
 
     var navEnhet: NavEnhet? = null,
     var arbeidsForhold: List<Arbeidsforhold> = emptyList()
-): SoknadBubble { override val soknadId: UUID get() = id }
+) : SoknadBubble { override val soknadId: UUID get() = id }
 
 data class Eier(
     val personId: String,

@@ -21,6 +21,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs.KontonummerInputDTO
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -33,7 +34,10 @@ internal class KontonummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val kontonummerRessurs = KontonummerRessurs(tilgangskontroll, soknadUnderArbeidRepository, kontonummerService)
+    private val controllerAdapter: ControllerAdapter = mockk()
+    private val kontonummerRessurs = KontonummerRessurs(
+        tilgangskontroll, soknadUnderArbeidRepository, kontonummerService, controllerAdapter
+    )
 
     @BeforeEach
     fun setUp() {
@@ -42,6 +46,7 @@ internal class KontonummerRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM
+        every { controllerAdapter.updateKontonummer(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 

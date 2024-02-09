@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -31,12 +32,14 @@ internal class BegrunnelseRessursTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val begrunnelseRessurs = BegrunnelseRessurs(tilgangskontroll, soknadUnderArbeidRepository)
+    private val controllerAdapter: ControllerAdapter = mockk()
+    private val begrunnelseRessurs = BegrunnelseRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
 
     @BeforeEach
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { controllerAdapter.updateBegrunnelse(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
