@@ -2,7 +2,9 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
@@ -18,6 +20,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,13 +32,15 @@ internal class ArbeidsforholdSystemdataTest {
     private val arbeidsforholdService: ArbeidsforholdService = mockk()
     private val textService: TextService = mockk()
     private val skattbarInntektService: SkattbarInntektService = mockk()
+    private val dataModelFacade: DataModelFacade = mockk()
 
-    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService)
+    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService, dataModelFacade)
     private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, mockk(), textService)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
+        every { dataModelFacade.addArbeidsforholdList(any(), any()) } just runs
     }
 
     @Test

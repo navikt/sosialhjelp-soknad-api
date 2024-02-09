@@ -18,7 +18,7 @@ class HentAdresseService(
                     gaardsnummer = it.matrikkelnummer?.gaardsnummer,
                     bruksnummer = it.matrikkelnummer?.bruksnummer,
                     festenummer = it.matrikkelnummer?.festenummer,
-                    seksjonsunmmer = it.matrikkelnummer?.seksjonsnummer,
+                    seksjonsnummer = it.matrikkelnummer?.seksjonsnummer,
                     undernummer = it.undernummer,
                     bydelsnummer = it.bydel?.bydelsnummer
                 )

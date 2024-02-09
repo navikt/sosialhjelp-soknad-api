@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
-import no.nav.sosialhjelp.soknad.v2.createSoknadNoId
+import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ class BrukerdataPersonRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun `Skal lagre brukerdata i databasen`() {
-        val soknad = createSoknadNoId().let { soknadRepository.save(it) }
+        val soknad = soknadRepository.save(createSoknad())
         brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
 
         Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id!!)).isTrue()
@@ -24,7 +24,7 @@ class BrukerdataPersonRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun `Slette soknad skal slette brukerdata`() {
-        val soknad = createSoknadNoId().let { soknadRepository.save(it) }
+        val soknad = soknadRepository.save(createSoknad())
 
         brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
         Assertions.assertThat(brukerdataPersonRepository.existsById(soknad.id!!)).isTrue()

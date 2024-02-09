@@ -1,25 +1,31 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Repository
-interface SoknadRepository : ListCrudRepository<Soknad, UUID>
+interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
 
 data class Soknad(
     @Id
-    val id: UUID? = null,
-    @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
+    val id: UUID = UUID.randomUUID(),
+
+    @Embedded.Empty
     val eier: Eier,
-    var innsendingstidspunkt: LocalDateTime? = null,
+
+    @Embedded.Empty
+    val tidspunkt: Tidspunkt = Tidspunkt(),
+
     var navEnhet: NavEnhet? = null,
-    // TODO Denne hører ikke hjemme her.... Men hvor? Stand-alone?
     var arbeidsForhold: List<Arbeidsforhold> = emptyList()
-)
+): SoknadBubble { override val soknadId: UUID get() = id }
 
 data class Eier(
     val personId: String,
@@ -29,6 +35,12 @@ data class Eier(
     var telefonnummer: String? = null,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
     val navn: Navn,
+)
+
+data class Tidspunkt(
+    val opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+    var sistEndret: LocalDateTime? = null,
+    var sendtInn: LocalDateTime? = null,
 )
 
 data class Navn(

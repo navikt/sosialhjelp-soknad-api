@@ -9,6 +9,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -23,7 +24,6 @@ class SoknadService(
 
     fun createSoknad(eier: Eier): UUID {
         return soknadRepository.save(Soknad(eier = eier)).id
-            ?: throw SosialhjelpSoknadApiException("Kunne ikke opprette soknad")
     }
 
     fun deleteSoknad(soknadId: UUID) {
@@ -35,7 +35,7 @@ class SoknadService(
 
     fun sendSoknad(id: UUID): UUID {
         val digisosId: UUID = getSoknadOrThrowException(id).run {
-            innsendingstidspunkt = LocalDateTime.now()
+            tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
             soknadRepository.save(this)
 
             sendSoknadHandler.doSendAndReturnDigisosId(this)

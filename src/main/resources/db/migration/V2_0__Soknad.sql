@@ -1,7 +1,9 @@
 CREATE TABLE soknad
 (
-    id uuid primary key default gen_random_uuid(),
-    innsendingstidspunkt timestamp,
+    id uuid primary key,
+    opprettet timestamp not null,
+    sist_endret timestamp,
+    sendt_inn timestamp,
     person_id varchar(30) not null,
     fornavn varchar(255) not null,
     mellomnavn varchar(255),

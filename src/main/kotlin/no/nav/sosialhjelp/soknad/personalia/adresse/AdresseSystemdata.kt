@@ -18,12 +18,14 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
+import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
 import org.springframework.stereotype.Component
 
 @Component
 class AdresseSystemdata(
     private val personService: PersonService,
-    private val hentAdresseService: HentAdresseService
+    private val hentAdresseService: HentAdresseService,
+    private val dataModelFacade: DataModelFacade,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -31,8 +33,15 @@ class AdresseSystemdata(
 
         val personalia = soknad.data.personalia
         val personIdentifikator = personalia.personIdentifikator.verdi
-        val folkeregistrertAdresse = innhentFolkeregistrertAdresse(personIdentifikator)
-        val midlertidigAdresse = innhentMidlertidigAdresse(personIdentifikator)
+
+        val person = personService.hentPerson(personIdentifikator)
+
+        val folkeregistrertAdresse = person?.bostedsadresse?.let { mapToJsonAdresse(it) }
+        val midlertidigAdresse = person?.oppholdsadresse?.let { mapToJsonAdresse(it) }
+
+        // NyModell
+        dataModelFacade.addAdresserRegister(soknadUnderArbeid.behandlingsId, person)
+
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.oppholdsadresse = null
             personalia.postadresse = null
@@ -85,11 +94,19 @@ class AdresseSystemdata(
         }
     }
 
-    private fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
+    private fun innhentFolkeregistrertAdresse(personIdentifikator: String): Bostedsadresse? {
+        return personService.hentPerson(personIdentifikator)?.bostedsadresse
+    }
+
+    private fun innhentFolkeregistrertAdresseToJsonAdresse(personIdentifikator: String): JsonAdresse? {
         return personService.hentPerson(personIdentifikator)?.bostedsadresse.let { mapToJsonAdresse(it) }
     }
 
-    fun innhentMidlertidigAdresse(personIdentifikator: String): JsonAdresse? {
+    fun innhentMidlertidigAdresse(personIdentifikator: String): Oppholdsadresse? {
+        return personService.hentPerson(personIdentifikator)?.oppholdsadresse
+    }
+
+    fun innhentMidlertidigAdresseToJsonAdresse(personIdentifikator: String): JsonAdresse? {
         return personService.hentPerson(personIdentifikator)?.oppholdsadresse.let { mapToJsonAdresse(it) }
     }
 
@@ -158,7 +175,7 @@ class AdresseSystemdata(
         jsonMatrikkelAdresse.gaardsnummer = kartverketMatrikkelAdresse.gaardsnummer
         jsonMatrikkelAdresse.bruksnummer = kartverketMatrikkelAdresse.bruksnummer
         jsonMatrikkelAdresse.festenummer = kartverketMatrikkelAdresse.festenummer
-        jsonMatrikkelAdresse.seksjonsnummer = kartverketMatrikkelAdresse.seksjonsunmmer
+        jsonMatrikkelAdresse.seksjonsnummer = kartverketMatrikkelAdresse.seksjonsnummer
         jsonMatrikkelAdresse.undernummer = kartverketMatrikkelAdresse.undernummer
         return jsonMatrikkelAdresse
     }

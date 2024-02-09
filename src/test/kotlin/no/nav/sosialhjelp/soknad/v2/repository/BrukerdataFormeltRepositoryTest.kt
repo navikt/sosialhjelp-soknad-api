@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormeltRepository
-import no.nav.sosialhjelp.soknad.v2.createSoknadNoId
+import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataFormelt
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -17,15 +17,15 @@ class BrukerdataFormeltRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun `Skal lagre brukerdata i databasen`() {
-        val soknad = createSoknadNoId().run { soknadRepository.save(this) }
-        brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id!!))
+        val soknad = soknadRepository.save(createSoknad())
+        brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id))
 
-        assertThat(brukerdataFormeltRepository.existsById(soknad.id!!)).isTrue()
+        assertThat(brukerdataFormeltRepository.existsById(soknad.id)).isTrue()
     }
 
     @Test
     fun `Slette soknad skal slette brukerdata`() {
-        val soknad = createSoknadNoId().run { soknadRepository.save(this) }
+        val soknad = soknadRepository.save(createSoknad())
 
         brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id!!))
         assertThat(brukerdataFormeltRepository.existsById(soknad.id!!)).isTrue()

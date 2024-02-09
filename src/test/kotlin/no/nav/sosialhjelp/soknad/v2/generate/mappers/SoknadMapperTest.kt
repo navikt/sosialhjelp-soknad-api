@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Navn
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -27,8 +28,8 @@ class SoknadMapperTest {
     @Test
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
-        val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-        val soknad = createSoknad(innsendingstidspunkt = now)
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        val soknad = createSoknad(sendtInn = now)
 
         mapper.doMapping(soknad, jsonInternalSoknad)
 

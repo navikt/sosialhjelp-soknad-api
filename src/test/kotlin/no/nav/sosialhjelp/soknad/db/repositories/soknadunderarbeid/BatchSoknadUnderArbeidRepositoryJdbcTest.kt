@@ -1,13 +1,20 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -24,7 +31,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
         val skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13)
         val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
-        val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
+        val skalSlettes = lagSoknadUnderArbeid(UUID.randomUUID().toString(), 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
         val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
@@ -56,7 +63,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     companion object {
         private const val EIER = "12345678901"
-        private const val BEHANDLINGSID = "1100020"
+        private val BEHANDLINGSID = UUID.randomUUID().toString()
         private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val JSON_INTERNAL_SOKNAD = JsonInternalSoknad()
     }

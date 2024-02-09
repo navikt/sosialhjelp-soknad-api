@@ -42,7 +42,7 @@ class SoknadToJsonMapper(
         fun doMapping(domainSoknad: Soknad, json: JsonInternalSoknad) {
             with(json) {
                 initializeObjects()
-                soknad.innsendingstidspunkt = domainSoknad.innsendingstidspunkt.toString()
+                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
                 soknad.data.personalia = domainSoknad.eier.toJsonPersonalia()
                 soknad.data.arbeid = domainSoknad.toJsonArbeid()
                 mottaker = domainSoknad.toJsonSoknadsMottaker1()

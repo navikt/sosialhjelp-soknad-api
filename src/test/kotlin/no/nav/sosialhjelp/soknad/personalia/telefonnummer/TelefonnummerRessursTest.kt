@@ -21,6 +21,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -30,7 +31,12 @@ import java.time.LocalDateTime
 
 internal class TelefonnummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val telefonnummerSystemdata: TelefonnummerSystemdata = mockk()
+    private val dataModelFacade: DataModelFacade = mockk()
+    private val mobiltelefonService: MobiltelefonService = mockk()
+    private val telefonnummerSystemdata: TelefonnummerSystemdata = TelefonnummerSystemdata(
+        mobiltelefonService = mobiltelefonService,
+        dataModelFacade = dataModelFacade
+    )
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val telefonnummerRessurs =
         TelefonnummerRessurs(tilgangskontroll, telefonnummerSystemdata, soknadUnderArbeidRepository)
@@ -39,7 +45,8 @@ internal class TelefonnummerRessursTest {
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
+        every { mobiltelefonService.hent(any()) } returns TELEFONNUMMER_SYSTEM
+        every { dataModelFacade.addTelefonnummerRegister(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
@@ -136,7 +143,7 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { telefonnummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
+//        every { telefonnummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -189,7 +196,7 @@ internal class TelefonnummerRessursTest {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
         private const val TELEFONNUMMER_BRUKER = "98765432"
-        private const val TELEFONNUMMER_SYSTEM = "23456789"
+        private const val TELEFONNUMMER_SYSTEM = "+4723456789"
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(

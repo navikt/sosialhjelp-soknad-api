@@ -65,7 +65,7 @@ internal class FinnAdresseServiceTest {
             gaardsnummer = "11",
             bruksnummer = "001",
             festenummer = "42",
-            seksjonsunmmer = "asd123",
+            seksjonsnummer = "asd123",
             undernummer = null,
             bydelsnummer = "030107"
         )
