@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.adresse
 
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg.FOLKEREGISTRERT
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg.MIDLERTIDIG
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg.SOKNAD
 import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
@@ -28,9 +24,9 @@ data class AdresserSoknad(
     fun getOppholdsadresse(): Adresse {
         return brukerInput?.let {
             return when (it.valgtAdresse) {
-                FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(FOLKEREGISTRERT)
-                MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(MIDLERTIDIG)
-                SOKNAD -> it.brukerAdresse ?: valgtAdresseNullError(SOKNAD)
+                AdresseValg.FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
+                AdresseValg.MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
+                AdresseValg.SOKNAD -> it.brukerAdresse ?: valgtAdresseNullError(AdresseValg.SOKNAD)
             }
         } ?: throw IllegalStateException("AdresseValg finnes ikke for soknad.")
     }
@@ -44,3 +40,9 @@ data class BrukerInputAdresse(
     val valgtAdresse: AdresseValg,
     val brukerAdresse: Adresse? = null
 )
+
+enum class AdresseValg {
+    FOLKEREGISTRERT,
+    MIDLERTIDIG,
+    SOKNAD;
+}

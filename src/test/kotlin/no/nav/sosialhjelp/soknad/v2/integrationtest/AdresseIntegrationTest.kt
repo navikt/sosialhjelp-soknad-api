@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
+import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.toAdresserDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettAdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
@@ -24,21 +23,23 @@ class AdresseIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Skal returnere alle adresser for soknad`() {
 
-        val lagretSoknad = createSoknad().let { soknadRepository.save(it) }
-        val adresserDto = opprettAdresserSoknad(soknadId = lagretSoknad.id!!)
-            .let {
-                val adresser = adresseRepository.save(it)
-                adresser.toAdresserDto()
-            }
+        val soknad = soknadRepository.save(createSoknad())
+        val adresserSoknad = adresseRepository.save(opprettAdresserSoknad(soknad.id!!))
 
         doGet(
-            uri = "/soknad/${lagretSoknad.id}/adresser",
+            uri = "/soknad/${soknad.id}/adresser",
             responseBodyClass = AdresserDto::class.java
         ).also {
-            assertThat(it).isEqualTo(adresserDto)
+            assertThat(it.valgtAdresse).isEqualTo(adresserSoknad.brukerInput?.valgtAdresse)
+
             assertThat(it.midlertidigAdresse).isInstanceOf(UstrukturertAdresse::class.java)
+            assertThat(it.midlertidigAdresse).isEqualTo(adresserSoknad.midlertidigAdresse)
+
             assertThat(it.folkeregistrertAdresse).isInstanceOf(VegAdresse::class.java)
+            assertThat(it.folkeregistrertAdresse).isEqualTo(adresserSoknad.folkeregistrertAdresse)
+
             assertThat(it.adresseBruker).isInstanceOf(MatrikkelAdresse::class.java)
+            assertThat(it.adresseBruker).isEqualTo(adresserSoknad.brukerInput?.brukerAdresse)
         }
     }
 

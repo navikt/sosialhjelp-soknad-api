@@ -6,6 +6,7 @@ import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableExcepti
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
+import no.nav.sosialhjelp.soknad.v2.NotValidInputException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
@@ -188,6 +189,19 @@ class ExceptionMapper(
                         Feilmelding(
                             id = "filkonvertering_error",
                             message = "${e.message}"
+                        )
+                    )
+            }
+            is NotValidInputException -> {
+                log.error("Ugyldige input: ${e.message}, id: ${e.id}")
+
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(
+                        Feilmelding(
+                            id = e.id,
+                            message = e.message
                         )
                     )
             }

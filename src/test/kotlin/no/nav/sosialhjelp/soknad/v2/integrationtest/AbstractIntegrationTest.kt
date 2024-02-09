@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
+import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -36,6 +38,18 @@ abstract class AbstractIntegrationTest {
             .exchange()
             .expectStatus().isOk
             .expectBody(responseBodyClass)
+            .returnResult()
+            .responseBody!!
+    }
+
+    protected fun doPutExpectError(uri: String, requestBody: Any, httpStatus: HttpStatus): Feilmelding {
+        return webTestClient.put()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(requestBody))
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus)
+            .expectBody(Feilmelding::class.java)
             .returnResult()
             .responseBody!!
     }

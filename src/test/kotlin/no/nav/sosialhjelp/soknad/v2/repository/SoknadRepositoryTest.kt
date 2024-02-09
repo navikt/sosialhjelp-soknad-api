@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
+import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.createSoknadNoId
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
@@ -10,7 +11,7 @@ class SoknadRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun `Skal lagre ny soknad i databasen`() {
-        soknadRepository.save(createSoknadNoId()).also {
+        soknadRepository.save(createSoknad()).also {
             assertThat(it.id).isNotNull()
         }
     }

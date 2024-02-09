@@ -20,15 +20,6 @@ class SoknadService(
 ) {
     @Transactional(readOnly = true)
     fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
-    @Transactional(readOnly = true)
-    fun getKontonummer(soknadId: UUID): String? = getSoknadOrThrowException(soknadId).eier.kontonummer
-    @Transactional
-    fun getTelefonnummer(soknadId: UUID): String? = getSoknadOrThrowException(soknadId).eier.telefonnummer
-
-    @Transactional(readOnly = true)
-    fun getNavEnhet(soknadId: UUID): NavEnhet? {
-        return getSoknadOrThrowException(soknadId).navEnhet
-    }
 
     fun createSoknad(eier: Eier): UUID {
         return soknadRepository.save(Soknad(eier = eier)).id

@@ -11,12 +11,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
+import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg.SOKNAD
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -71,7 +70,7 @@ class AdresseToJsonMapper(
         private fun JsonInternalSoknad.mapOppholdsadresse(oppholdsadresse: Adresse, adresseValg: AdresseValg) {
             soknad.data.personalia.oppholdsadresse = oppholdsadresse.toJsonAdresse()
                 .also {
-                    it.kilde = if (adresseValg == SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
+                    it.kilde = if (adresseValg == AdresseValg.SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
 
                     it.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
                 }

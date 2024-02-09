@@ -1,6 +1,10 @@
-package no.nav.sosialhjelp.soknad.v2.brukerdata
+package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,10 +24,9 @@ class BegrunnelseController(
     @GetMapping
     fun getBegrunnelse(
         @PathVariable("soknadId") soknadId: UUID
-    ): BegrunnelseDto {
-        val brukerdata = brukerdataService.getBrukerdata(soknadId)
-        return brukerdata?.toBegrunnelseDto() ?: BegrunnelseDto()
+    ): BegrunnelseDto? {
         // TODO hva skal vi egentlig returnere når bruker ikke har fylt ut data? null, objekt med null-verdier eller 404?
+        return brukerdataService.getBrukerdataPersonlig(soknadId)?.toBegrunnelseDto()
     }
 
     @PutMapping
@@ -31,7 +34,7 @@ class BegrunnelseController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) begrunnelseDto: BegrunnelseDto
     ): BegrunnelseDto {
-        // TODO Validere at tekst kun inneholder bokstaver og tall?
+        begrunnelseDto.validate(soknadId)
 
         val brukerdata = begrunnelseDto.let {
             brukerdataService.updateBegrunnelse(
@@ -42,8 +45,18 @@ class BegrunnelseController(
                 )
             )
         }
-        return brukerdata.toBegrunnelseDto() ?: BegrunnelseDto()
+        return brukerdata.toBegrunnelseDto()
     }
+}
+
+private fun BegrunnelseDto.validate(soknadId: UUID) {
+    SoknadInputValidator(BegrunnelseDto::class).validateAllInputNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
+//    SoknadInputValidator(BegrunnelseDto::class).validateInputStringNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
+
+    listOfNotNull(hvorforSoke, hvaSokesOm)
+        .forEach {
+            SoknadInputValidator(BegrunnelseDto::class).validateTextInput(soknadId, it)
+        }
 }
 
 data class BegrunnelseDto(
@@ -51,11 +64,11 @@ data class BegrunnelseDto(
     val hvorforSoke: String? = null
 )
 
-fun Brukerdata.toBegrunnelseDto(): BegrunnelseDto? {
-    return begrunnelse?.let {
-        BegrunnelseDto(
-            hvorforSoke = it.hvorforSoke,
-            hvaSokesOm = it.hvaSokesOm
+fun BrukerdataPerson.toBegrunnelseDto(): BegrunnelseDto {
+    begrunnelse.let {
+        return BegrunnelseDto(
+            hvorforSoke = it?.hvorforSoke,
+            hvaSokesOm = it?.hvaSokesOm
         )
     }
 }

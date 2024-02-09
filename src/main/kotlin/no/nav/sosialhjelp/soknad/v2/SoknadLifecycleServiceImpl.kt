@@ -45,7 +45,9 @@ class SoknadLifecycleServiceImpl(
 
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(
-            MetricsUtils.navKontorTilMetricNavn(soknadService.getNavEnhet(soknadId)?.enhetsnavn)
+            MetricsUtils.navKontorTilMetricNavn(
+                soknadService.getSoknad(soknadId).navEnhet?.enhetsnavn
+            )
         )
 
         return Pair(digisosId, LocalDateTime.now())

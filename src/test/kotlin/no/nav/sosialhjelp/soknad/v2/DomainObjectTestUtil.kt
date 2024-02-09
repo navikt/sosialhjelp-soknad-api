@@ -6,18 +6,24 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.adresse.BrukerInputAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.brukerdata.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BeskrivelseAvAnnet
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Brukerdata
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
+import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
 import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
+import no.nav.sosialhjelp.soknad.v2.brukerdata.Utdanning
+import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Navn
@@ -38,14 +44,37 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
 fun createSoknad(
     id: UUID? = null,
     eier: Eier = createEier(),
-    innsendingstidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    innsendingstidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    navenhet: NavEnhet = opprettNavEnhet(),
+    arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList()
 ): Soknad {
     return Soknad(
         id = id,
         eier = eier,
         innsendingstidspunkt = innsendingstidspunkt,
-//        navEnhet = opprettNavEnhet()
+        navEnhet = navenhet,
+        arbeidsForhold = arbeidsforholdList
     )
+}
+
+fun opprettArbeidsforholdList(
+    arbeidsforholdList: List<Arbeidsforhold> = listOf(
+        opprettArbeidsforhold(),
+        opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321")
+    )
+): List<Arbeidsforhold> {
+    return arbeidsforholdList
+}
+
+fun opprettArbeidsforhold(
+    arbeidsgivernavn: String = "Arbeidsgiversen",
+    orgnummer: String? = "1234567890",
+    start: String? = "01012010",
+    slutt: String? = "01012020",
+    fastStillingsprosent: Int? = 100,
+    harFastStilling: Boolean? = true,
+): Arbeidsforhold {
+    return Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent, harFastStilling)
 }
 
 fun opprettNavEnhet(
@@ -59,11 +88,11 @@ fun opprettNavEnhet(
 
 fun createEier(
     personId: String = "12345612345",
-    statsborgerskap: String = "Norsk",
-    nordiskBoolean: Boolean = true,
-    kontonummer: String = "12341212345",
+    statsborgerskap: String? = "Norsk",
+    nordiskBoolean: Boolean? = true,
+    kontonummer: String? = "12341212345",
     navn: Navn = createNavn(),
-    telefonnummer: String = "1234567123"
+    telefonnummer: String? = "1234567123"
 ): Eier {
     return Eier(
         personId = personId,
@@ -188,22 +217,23 @@ fun opprettNavn(
     )
 }
 
-fun opprettBrukerdata(
+fun opprettBrukerdataFormelt(
     soknadId: UUID,
-    telefonnummer: String? = "91423231",
     kommentarTilArbeidsforhold: String = "Jeg er glad i jobben min",
-    kontoInformasjon: KontoInformasjonBruker = KontoInformasjonBruker(
-        kontonummer = "1234567890",
-        harIkkeKonto = null,
-    ),
-    begrunnelse: Begrunnelse = opprettBegrunnelse(),
     samtykker: Set<Samtykke> = opprettSamtykker(),
     beskrivelseAvAnnet: BeskrivelseAvAnnet = opprettBeskrivelseAvAnnet(),
-): Brukerdata {
-    return Brukerdata(
-        soknadId, begrunnelse, kontoInformasjon, kommentarTilArbeidsforhold,
-        telefonnummer, samtykker, beskrivelseAvAnnet
+    utdanning: Utdanning = opprettUtdanning(),
+): BrukerdataFormelt {
+    return BrukerdataFormelt(
+        soknadId, kommentarTilArbeidsforhold, samtykker, beskrivelseAvAnnet, utdanning
     )
+}
+
+fun opprettUtdanning(
+    erStudent: Boolean = true,
+    studentGrad: Studentgrad = Studentgrad.HELTID
+): Utdanning {
+    return Utdanning(erStudent, studentGrad)
 }
 
 fun opprettBegrunnelse(
@@ -230,4 +260,28 @@ fun opprettBeskrivelseAvAnnet(
     boutgifter: String? = "Sjukt med boutgifter"
 ): BeskrivelseAvAnnet {
     return BeskrivelseAvAnnet(barneutgifter, verdier, sparing, utbetalinger, boutgifter)
+}
+
+fun opprettBrukerdataPerson(
+    soknadId: UUID,
+    telefonnummer: String = "98412232",
+    begrunnelse: Begrunnelse = opprettBegrunnelse(),
+    bosituasjon: Bosituasjon = opprettBosituasjon(),
+    kontoInformasjonBruker: KontoInformasjonBruker = opprettKontoInformasjon(),
+): BrukerdataPerson {
+    return BrukerdataPerson(soknadId, telefonnummer, begrunnelse, bosituasjon, kontoInformasjonBruker)
+}
+
+fun opprettBosituasjon(
+    botype: Botype = Botype.EIER,
+    antallPersoner: Int = 3,
+): Bosituasjon {
+    return Bosituasjon(botype, antallPersoner)
+}
+
+fun opprettKontoInformasjon(
+    kontonummer: String = "41321342312",
+    harIkkeKonto: Boolean = false,
+): KontoInformasjonBruker {
+    return KontoInformasjonBruker(kontonummer, harIkkeKonto)
 }
