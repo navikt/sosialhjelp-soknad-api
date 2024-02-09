@@ -15,10 +15,11 @@ CREATE TABLE soknad
 CREATE TABLE nav_enhet
 (
     soknad uuid primary key,
-    kommunenummer varchar(10) not null,
-    orgnummer varchar(30) not null,
-    enhetsnummer varchar(30) not null,
-    enhetsnavn text not null,
+    enhetsnavn text,
+    kommunenummer varchar(10),
+    kommunenavn varchar(50),
+    orgnummer varchar(30),
+    enhetsnummer varchar(30),
     constraint fk_navenhet_soknad
         foreign key(soknad)
             references soknad(id) on delete cascade
