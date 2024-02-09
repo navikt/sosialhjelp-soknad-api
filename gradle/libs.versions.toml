@@ -28,6 +28,7 @@ commons_text = "1.11.0"
 ktlint = "0.45.2"
 mockk = "1.13.9"
 versions = "0.50.0"
+resilience4j = "2.2.0"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
@@ -77,6 +78,11 @@ token-validation-spring-test = { module = "no.nav.security:token-validation-spri
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
+resilience4j-circuitbreaker = { module = "io.github.resilience4j:resilience4j-circuitbreaker", version.ref = "resilience4j" }
+resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
+resilience4j-reactor = { module = "io.github.resilience4j:resilience4j-reactor", version.ref = "resilience4j" }
+resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
+
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
@@ -110,11 +116,18 @@ sosialhjelp-common = [
     "sosialhjelp-common-kotlin-utils",
 ]
 
+resilience4j = [
+    "resilience4j-circuitbreaker",
+    "resilience4j-kotlin",
+    "resilience4j-reactor",
+    "resilience4j-spring-boot3",
+]
+
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.1" }
-versions = {id = "com.github.ben-manes.versions", version.ref = "versions"}
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway_plugin" }
