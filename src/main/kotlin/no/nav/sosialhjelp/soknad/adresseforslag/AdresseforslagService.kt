@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
-import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,9 +11,9 @@ class AdresseforslagService(
      */
     private val MINIMUM_ADRESS_SEARCH_LENGTH = 3
 
-    fun find(substring: String): AdresseCompletionResult? {
+    fun find(substring: String): Any? {
         if (substring.length <= MINIMUM_ADRESS_SEARCH_LENGTH) return null
 
-        return adresseforslagClient.getAdresseforslag(substring).block()?.data?.forslagAdresse
+        return adresseforslagClient.getAdresseforslag(substring).block()
     }
 }
