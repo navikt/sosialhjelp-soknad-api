@@ -3,12 +3,15 @@ package no.nav.sosialhjelp.soknad.adresseforslag
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
 import no.nav.sosialhjelp.soknad.adressesok.AdresseforslagService
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("/adresseforslag")
+@RestController
 @Unprotected
+@RequestMapping("/adresseforslag", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseforslagController(private val adresseforslagService: AdresseforslagService) {
     @GetMapping()
     fun adresseSok(
