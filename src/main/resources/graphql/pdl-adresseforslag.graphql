@@ -1,0 +1,19 @@
+query($parameters: CompletionParameters) {
+    forslagAdresse(parameters: $parameters) {
+        suggestions
+        addressFound {
+            vegadresse {
+                matrikkelId
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+                poststed
+                kommunenavn
+                kommunenummer
+                bydelsnavn
+                bydelsnummer
+            }
+        }
+    }
+}

@@ -1,0 +1,49 @@
+package no.nav.sosialhjelp.soknad.adresseforslag.domain
+
+data class VegadresseResult(
+    val matrikkelId: String?,
+    val husnummer: Int?,
+    val husbokstav: String?,
+    val adressenavn: String?,
+    val adressekode: String?,
+    val tilleggsnavn: String?,
+    val fylkesnavn: String?,
+    val fylkesnummer: String?,
+    val kommunenavn: String?,
+    val kommunenummer: String?,
+    val postnummer: String?,
+    val poststed: String?,
+    val bydelsnavn: String?,
+    val bydelsnummer: String?
+)
+
+data class MatrikkeladresseResult(
+    val matrikkelId: String?,
+    val tilleggsnavn: String?,
+    val kommunenummer: String?,
+    val gaardsnummer: String?,
+    val bruksnummer: String?,
+    val postnummer: String?,
+    val poststed: String?
+)
+
+data class CompletionAdresse(
+    val vegadresse: VegadresseResult?,
+    val matrikkeladresse: MatrikkeladresseResult?
+)
+
+data class AdresseCompletionResult(
+    val suggestions: List<String>,
+    val addressFound: CompletionAdresse
+)
+
+data class AdresseForslagParameters(
+    val completionField: String,
+    val maxSuggestions: Int?,
+    val fieldValues: List<CompletionFieldValue>
+)
+
+data class CompletionFieldValue(
+    val fieldName: String,
+    val fieldValue: String?
+)

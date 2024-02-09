@@ -32,6 +32,11 @@ data class AdressesokDto(
     override val errors: List<JsonNode>?
 ) : BaseResponse(errors)
 
+data class PdlResponse<T>(
+    val data: T,
+    override val errors: List<JsonNode>?
+) : BaseResponse(errors)
+
 data class HentPersonDto<T>(
     val data: HentPersonDataDto<T>,
     override val errors: List<JsonNode>?
