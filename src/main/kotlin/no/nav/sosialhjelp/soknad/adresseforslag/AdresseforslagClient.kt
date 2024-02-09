@@ -31,13 +31,11 @@ class AdresseforslagClient(
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) : PdlClient(webClientBuilder, baseurl) {
 
-    private fun toVariables(fritekst: String): Map<String, AdresseForslagParameters> = mapOf(
-        "parameters" to AdresseForslagParameters(
-            completionField = "vegadresse.fritekst",
-            maxSuggestions = 10,
-            fieldValues = listOf(
-                CompletionFieldValue("vegadresse.fritekst", fritekst)
-            )
+    private fun toVariables(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
+        completionField = "vegadresse.fritekst",
+        maxSuggestions = 10,
+        fieldValues = listOf(
+            CompletionFieldValue("vegadresse.fritekst", fritekst)
         )
     )
 

@@ -1,5 +1,5 @@
-query($parameters: CompletionParameters) {
-    forslagAdresse(parameters: $parameters) {
+query($variables: CompletionParameters) {
+    forslagAdresse(parameters: $variables) {
         suggestions
         addressFound {
             vegadresse {
