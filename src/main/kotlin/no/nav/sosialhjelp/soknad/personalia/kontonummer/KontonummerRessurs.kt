@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -22,7 +23,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kontonummerService: KontonummerService
+    private val kontonummerService: KontonummerService,
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentKontonummer(
@@ -51,6 +53,10 @@ class KontonummerRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
         storeKontonummer(behandlingsId, kontoDAO)
+
+        // NyModell
+        controllerAdapter.updateKontonummer(behandlingsId, kontoDTO)
+
         return mapDAOtoDTO(kontoDAO)
     }
 

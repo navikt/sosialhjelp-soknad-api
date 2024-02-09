@@ -18,14 +18,14 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterFacade
 import org.springframework.stereotype.Component
 
 @Component
 class AdresseSystemdata(
     private val personService: PersonService,
     private val hentAdresseService: HentAdresseService,
-    private val dataModelFacade: DataModelFacade,
+    private val registerFacade: RegisterFacade,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -40,7 +40,7 @@ class AdresseSystemdata(
         val midlertidigAdresse = person?.oppholdsadresse?.let { mapToJsonAdresse(it) }
 
         // NyModell
-        dataModelFacade.addAdresserRegister(soknadUnderArbeid.behandlingsId, person)
+        registerFacade.addAdresserRegister(soknadUnderArbeid.behandlingsId, person)
 
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.oppholdsadresse = null

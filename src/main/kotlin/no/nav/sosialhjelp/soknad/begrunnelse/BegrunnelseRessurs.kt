@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
 ) {
     @GetMapping
     fun hentBegrunnelse(
@@ -48,6 +50,9 @@ class BegrunnelseRessurs(
         begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
         begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // NyModell
+        soknadV2ControllerAdapter.updateBegrunnelse(behandlingsId, begrunnelseFrontend)
     }
 
     data class BegrunnelseFrontend(

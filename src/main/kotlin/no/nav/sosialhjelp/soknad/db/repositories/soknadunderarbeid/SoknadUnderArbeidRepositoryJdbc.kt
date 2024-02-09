@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.v2.shadow.DataModelFacade
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterFacade
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -27,7 +27,7 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-    private val dataModelFacade: DataModelFacade
+    private val registerFacade: RegisterFacade
 ) : SoknadUnderArbeidRepository {
 
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
@@ -52,7 +52,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         )
 
         // NyModell
-        dataModelFacade.createSoknad(soknadUnderArbeid)
+        registerFacade.createSoknad(soknadUnderArbeid)
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }

@@ -35,7 +35,7 @@ class TelefonnummerController(
     }
 
     @PutMapping
-    fun updateTelefon(
+    fun updateTelefonnummer(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) telefonnummerInput: TelefonnummerInput
     ): TelefonnummerDto {

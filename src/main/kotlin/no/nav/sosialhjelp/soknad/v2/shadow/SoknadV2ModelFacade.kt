@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class SoknadModelFacade(
+class SoknadV2ModelFacade(
     private val soknadAdapter: SoknadAdapter,
     private val adresseAdapter: AdresseAdapter,
-): DataModelFacade {
+): RegisterFacade {
     override fun createSoknad(soknadUnderArbeid: SoknadUnderArbeid) {
         with (soknadUnderArbeid) {
             soknadAdapter.createNewSoknad(
