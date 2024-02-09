@@ -33,7 +33,7 @@ data class CompletionAdresse(
 )
 
 data class AdresseCompletionData(
-    val forslagAdresse: AdresseCompletionResult
+    val forslagAdresse: AdresseCompletionResult?
 )
 
 data class AdresseCompletionResult(
