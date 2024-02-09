@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.adressesok
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
+import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionData
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseForslagParameters
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.CompletionFieldValue
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -31,8 +31,6 @@ class AdresseforslagClient(
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) : PdlClient(webClientBuilder, baseurl) {
 
-    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("adresseforslag")
-
     private fun toVariables(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
         completionField = "vegadresse.fritekst",
         maxSuggestions = 10,
@@ -41,13 +39,14 @@ class AdresseforslagClient(
         )
     )
 
-    fun getAdresseforslag(fritekst: String): Mono<PdlResponse<AdresseCompletionResult?>> {
+    fun getAdresseforslag(fritekst: String): Mono<PdlResponse<AdresseCompletionData?>> {
+        val circuitBreaker = circuitBreakerRegistry.circuitBreaker("adresseforslag")
 
         return Mono.fromCallable {
             baseRequest.header(AUTHORIZATION, BEARER + azureAdToken())
                 .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, toVariables(fritekst)))
                 .retrieve()
-                .bodyToMono<PdlResponse<AdresseCompletionResult?>>()
+                .bodyToMono<PdlResponse<AdresseCompletionData?>>()
         }.transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
             .flatMap { it }
             .onErrorResume { e ->

@@ -32,9 +32,13 @@ data class CompletionAdresse(
     val matrikkeladresse: MatrikkeladresseResult?
 )
 
+data class AdresseCompletionData(
+    val forslagAdresse: AdresseCompletionResult
+)
+
 data class AdresseCompletionResult(
-    val suggestions: List<String>,
-    val addressFound: CompletionAdresse
+    val suggestions: List<String> = emptyList(),
+    val addressFound: CompletionAdresse?
 )
 
 data class AdresseForslagParameters(

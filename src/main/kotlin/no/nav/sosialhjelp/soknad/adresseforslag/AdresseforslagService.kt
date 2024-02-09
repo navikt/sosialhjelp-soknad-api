@@ -15,6 +15,6 @@ class AdresseforslagService(
     fun find(substring: String): AdresseCompletionResult? {
         if (substring.length <= MINIMUM_ADRESS_SEARCH_LENGTH) return null
 
-        return adresseforslagClient.getAdresseforslag(substring).block()?.data
+        return adresseforslagClient.getAdresseforslag(substring).block()?.data?.forslagAdresse
     }
 }
