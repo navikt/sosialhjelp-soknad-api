@@ -31,7 +31,7 @@ class AdresseforslagClient(
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) : PdlClient(webClientBuilder, baseurl) {
 
-    private fun toVariables(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
+    private fun toParameters(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
         completionField = "vegadresse.fritekst",
         maxSuggestions = 10,
         fieldValues = listOf(
@@ -44,7 +44,7 @@ class AdresseforslagClient(
 
         return Mono.fromCallable {
             baseRequest.header(AUTHORIZATION, BEARER + azureAdToken())
-                .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, toVariables(fritekst)))
+                .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, mapOf("parameters" to toParameters(fritekst))))
                 .retrieve()
                 .bodyToMono<PdlResponse<AdresseCompletionData?>>()
         }.transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
