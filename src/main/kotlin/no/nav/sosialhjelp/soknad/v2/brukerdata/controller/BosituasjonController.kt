@@ -35,7 +35,7 @@ class BosituasjonController(
     ): BosituasjonDto {
 
         SoknadInputValidator(BosituasjonDto::class)
-            .validateInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
+            .validateAllInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
 
         return brukerdataService.updateBosituasjon(
             soknadId,

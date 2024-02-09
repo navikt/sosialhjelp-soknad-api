@@ -4,6 +4,9 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import java.util.*
 import kotlin.reflect.KClass
 
+/**
+ * Felles valideringslogikk på tvers av klasser
+ */
 class SoknadInputValidator(private val clazz: KClass<*>) {
 
     fun validateTextInput(id: UUID?, input: String) {
@@ -15,7 +18,7 @@ class SoknadInputValidator(private val clazz: KClass<*>) {
             }
     }
 
-    fun validateInputNotNullOrEmpty(id: UUID, vararg input: Any?) {
+    fun validateAllInputNotNullOrEmpty(id: UUID, vararg input: Any?) {
         if (input.all { isVariableNullOrEmpty(it) }) {
             throw NotValidInputException(id, "$clazz - Input er tom")
         }

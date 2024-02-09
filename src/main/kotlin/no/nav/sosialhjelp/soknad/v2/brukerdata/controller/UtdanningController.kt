@@ -46,7 +46,7 @@ class UtdanningController(
 
 private fun UtdanningDto.validate(soknadId: UUID) {
     SoknadInputValidator(UtdanningDto::class)
-        .validateInputNotNullOrEmpty(soknadId, erStudent, studentgrad)
+        .validateAllInputNotNullOrEmpty(soknadId, erStudent, studentgrad)
 
     if (!erStudent && studentgrad != null) {
         throw NotValidInputException(soknadId, "erStudent er satt, men studentgrad er ikke null.")

@@ -50,7 +50,7 @@ class BegrunnelseController(
 }
 
 private fun BegrunnelseDto.validate(soknadId: UUID) {
-    SoknadInputValidator(BegrunnelseDto::class).validateInputNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
+    SoknadInputValidator(BegrunnelseDto::class).validateAllInputNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
 //    SoknadInputValidator(BegrunnelseDto::class).validateInputStringNotNullOrEmpty(soknadId, hvaSokesOm, hvorforSoke)
 
     listOfNotNull(hvorforSoke, hvaSokesOm)

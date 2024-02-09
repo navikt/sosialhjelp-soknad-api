@@ -42,7 +42,7 @@ class KontonummerController(
         @RequestBody(required = true) input: KontoInformasjonInput
     ): KontoInformasjonDto {
         SoknadInputValidator(KontoInformasjonInput::class)
-            .validateInputNotNullOrEmpty(soknadId, input.harIkkeKonto, input.kontonummerBruker)
+            .validateAllInputNotNullOrEmpty(soknadId, input.harIkkeKonto, input.kontonummerBruker)
 
         val kontonummerRegister = soknadService.getSoknad(soknadId).eier.kontonummer
         validate(soknadId, input, kontonummerRegister)
