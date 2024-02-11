@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterFacade
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -31,11 +31,11 @@ import java.time.LocalDateTime
 
 internal class TelefonnummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val registerFacade: RegisterFacade = mockk()
+    private val registerDataAdapter: RegisterDataAdapter = mockk()
     private val mobiltelefonService: MobiltelefonService = mockk()
     private val telefonnummerSystemdata: TelefonnummerSystemdata = TelefonnummerSystemdata(
         mobiltelefonService = mobiltelefonService,
-        registerFacade = registerFacade
+        registerDataAdapter = registerDataAdapter
     )
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val telefonnummerRessurs =
@@ -46,7 +46,7 @@ internal class TelefonnummerRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         every { mobiltelefonService.hent(any()) } returns TELEFONNUMMER_SYSTEM
-        every { registerFacade.addTelefonnummerRegister(any(), any()) } just runs
+        every { registerDataAdapter.addTelefonnummerRegister(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 

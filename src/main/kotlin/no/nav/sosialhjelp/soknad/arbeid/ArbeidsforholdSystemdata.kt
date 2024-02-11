@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterFacade
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val textService: TextService,
-    private val registerFacade: RegisterFacade,
+    private val registerDataAdapter: RegisterDataAdapter,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -42,7 +42,7 @@ class ArbeidsforholdSystemdata(
             null
         }
         // NyModell
-        registerFacade.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds ?: emptyList())
+        registerDataAdapter.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds ?: emptyList())
         return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
     }
 
