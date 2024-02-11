@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/adresseforslag", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseforslagController(private val adresseforslagService: AdresseforslagService) {
     @GetMapping()
-    fun adresseSok(
-        @RequestParam("sokestreng") sokestreng: String?
-    ): AdresseCompletionResult? {
-        requireNotNull(sokestreng) { "sokestreng is required" }
-
-        return adresseforslagService.find(sokestreng)
-    }
+    fun adresseForslag(
+        @RequestParam("sokestreng") sokestreng: String
+    ): AdresseCompletionResult? = adresseforslagService.find(sokestreng)
 }
