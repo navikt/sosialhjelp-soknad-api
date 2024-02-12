@@ -52,10 +52,8 @@ class FileConverterController(
     }
 
     private fun MultipartFile.validateFileName(): String {
-        return originalFilename?.also {
-            if (it.isBlank() || it.isEmpty())
-                throw IllegalStateException("Filnavn er tomt")
-        }
-            ?: throw IllegalStateException("Filnavn er null")
+        val filename = this.originalFilename ?: error("Filnavn er null")
+        if (filename.isBlank()) error("Filnavn er tomt")
+        return filename
     }
 }
