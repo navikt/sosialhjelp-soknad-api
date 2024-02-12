@@ -51,7 +51,7 @@ soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
 clamav_url: ${CLAMAV_URL}
-fil-konvertering_url: ${GOTENBERG_URL}
+fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
 
 fiks.nokkelfil: ${FIKS_NOKKELFIL}
 
