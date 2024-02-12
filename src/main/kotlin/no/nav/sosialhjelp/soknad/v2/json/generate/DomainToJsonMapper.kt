@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate
+package no.nav.sosialhjelp.soknad.v2.json.generate
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import java.util.*

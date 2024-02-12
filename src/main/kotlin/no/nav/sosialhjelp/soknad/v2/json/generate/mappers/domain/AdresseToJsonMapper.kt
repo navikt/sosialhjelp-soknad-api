@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers.domain
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
@@ -14,9 +15,10 @@ import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.adresse.PostboksAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*
@@ -58,12 +60,14 @@ class AdresseToJsonMapper(
         private fun JsonInternalSoknad.mapFolkeregistrertAdresse(folkeregistrertAdresse: Adresse?) {
             folkeregistrertAdresse?.let {
                 soknad.data.personalia.folkeregistrertAdresse = it.toJsonAdresse()
+                soknad.data.personalia.folkeregistrertAdresse.kilde = JsonKilde.SYSTEM
             }
         }
 
         private fun JsonInternalSoknad.mapMidlertidigAdresse(midlertidigAdresseSoknad: Adresse?) {
             midlertidigAdresseSoknad?.let {
                 midlertidigAdresse = it.toJsonAdresse()
+                midlertidigAdresse.kilde = JsonKilde.SYSTEM
             }
         }
 
@@ -71,7 +75,6 @@ class AdresseToJsonMapper(
             soknad.data.personalia.oppholdsadresse = oppholdsadresse.toJsonAdresse()
                 .also {
                     it.kilde = if (adresseValg == AdresseValg.SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
-
                     it.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
                 }
         }
@@ -81,6 +84,7 @@ class AdresseToJsonMapper(
                 is VegAdresse -> toJsonGateAdresse()
                 is MatrikkelAdresse -> toJsonMatrikkelAdresse()
                 is UstrukturertAdresse -> toJsonUstrukturertAdresse()
+                is PostboksAdresse -> toJsonPostboksAdresse()
                 else -> throw IllegalStateException("Kan ikke mappe type ${this.javaClass} til adresse.")
             }
         }
@@ -109,5 +113,10 @@ class AdresseToJsonMapper(
         private fun UstrukturertAdresse.toJsonUstrukturertAdresse() = JsonUstrukturertAdresse()
             .withType(JsonAdresse.Type.USTRUKTURERT)
             .withAdresse(adresse)
+
+        private fun PostboksAdresse.toJsonPostboksAdresse() = JsonPostboksAdresse()
+            .withPostboks(postboks)
+            .withPoststed(poststed)
+            .withPostnummer(postnummer)
     }
 }

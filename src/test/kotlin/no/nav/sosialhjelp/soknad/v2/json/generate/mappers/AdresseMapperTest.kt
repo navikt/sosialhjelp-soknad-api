@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.AdresseToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.AdresseToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.opprettAdresserSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

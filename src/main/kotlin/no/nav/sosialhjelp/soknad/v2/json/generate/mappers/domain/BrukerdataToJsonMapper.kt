@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers.domain
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
@@ -25,7 +25,7 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
-import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*

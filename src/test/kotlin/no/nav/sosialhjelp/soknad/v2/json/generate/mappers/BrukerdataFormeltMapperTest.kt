@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
@@ -12,8 +12,8 @@ import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
 import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
 import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.BrukerdataToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.BrukerdataToJsonMapper.BrukerdataMapper.toSoknadJsonType
+import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.BrukerdataToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.BrukerdataToJsonMapper.BrukerdataMapper.toSoknadJsonType
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataFormelt
 import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
 import org.assertj.core.api.Assertions.assertThat

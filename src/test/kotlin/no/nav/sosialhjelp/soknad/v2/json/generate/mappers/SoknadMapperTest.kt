@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
@@ -10,7 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.SoknadToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet

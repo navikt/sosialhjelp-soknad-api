@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers.domain
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -14,7 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
