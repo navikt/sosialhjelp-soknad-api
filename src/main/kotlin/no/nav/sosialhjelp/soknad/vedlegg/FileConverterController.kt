@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
@@ -21,7 +25,17 @@ class FileConverterController(
     private val fileConverterService: FileConverterService,
     private val virusScanner: VirusScanner
 ) {
+    @Operation(summary = "Konverterer vedlegg til PDF")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @ApiResponse(
+        responseCode = "200", description = "Vedlegg konvertert til PDF",
+        content = [
+            Content(
+                mediaType = MediaType.APPLICATION_PDF_VALUE,
+                schema = Schema(type = "string", format = "binary")
+            )
+        ]
+    )
     fun konverterVedlegg(
         @RequestParam("file") file: MultipartFile,
     ): ResponseEntity<ByteArray> {
