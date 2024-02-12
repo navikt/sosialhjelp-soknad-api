@@ -2,20 +2,25 @@ package no.nav.sosialhjelp.soknad.adresseforslag.domain
 
 data class VegadresseResult(
     val matrikkelId: String?,
+    val adressenavn: String?,
     val husnummer: Int?,
     val husbokstav: String?,
-    val adressenavn: String?,
-    val adressekode: String?,
-    val tilleggsnavn: String?,
-    val fylkesnavn: String?,
-    val fylkesnummer: String?,
-    val kommunenavn: String?,
-    val kommunenummer: String?,
     val postnummer: String?,
     val poststed: String?,
+    val kommunenavn: String?,
+    val kommunenummer: String?,
     val bydelsnavn: String?,
     val bydelsnummer: String?
-)
+) {
+    val geografiskTilknytning: String
+        get() {
+            return when {
+                bydelsnummer?.isNotEmpty() == true -> bydelsnummer
+                kommunenummer?.isNotEmpty() == true -> kommunenummer
+                else -> error("Geografisk tilknytning mangler")
+            }
+        }
+}
 
 data class MatrikkeladresseResult(
     val matrikkelId: String?,
