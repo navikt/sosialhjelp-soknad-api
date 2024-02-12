@@ -1,5 +1,15 @@
-query($parameters: CompletionParameters) {
-    forslagAdresse(parameters: $parameters) {
+query (
+    $completionField: String!
+    $fieldValues: [CompletionFieldValue]!
+    $maxSuggestions: Int
+) {
+    forslagAdresse(
+        parameters: {
+            completionField: $completionField
+            fieldValues: $fieldValues
+            maxSuggestions: $maxSuggestions
+        }
+    ) {
         suggestions
         addressFound {
             vegadresse {

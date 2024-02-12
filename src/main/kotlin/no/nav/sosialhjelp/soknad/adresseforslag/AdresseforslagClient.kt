@@ -44,7 +44,7 @@ class AdresseforslagClient(
         return try {
             val response = circuitBreaker.executeSupplier {
                 baseRequest.header(AUTHORIZATION, BEARER + azureAdToken())
-                    .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, mapOf("parameters" to makeParameters(fritekst))))
+                    .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, makeParameters(fritekst)))
                     .retrieve()
                     .bodyToMono<String>()
                     .retryWhen(pdlRetry)
