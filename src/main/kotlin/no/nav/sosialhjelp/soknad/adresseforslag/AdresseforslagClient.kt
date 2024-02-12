@@ -1,9 +1,9 @@
-package no.nav.sosialhjelp.soknad.adressesok
+package no.nav.sosialhjelp.soknad.adresseforslag
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
-import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionData
+import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseForslagParameters
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.CompletionFieldValue
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -20,7 +20,6 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 @Component
 class AdresseforslagClient(
@@ -28,10 +27,10 @@ class AdresseforslagClient(
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder,
-    private val circuitBreakerRegistry: CircuitBreakerRegistry
+    circuitBreakerRegistry: CircuitBreakerRegistry
 ) : PdlClient(webClientBuilder, baseurl) {
 
-    private fun toParameters(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
+    private fun makeParameters(fritekst: String): AdresseForslagParameters = AdresseForslagParameters(
         completionField = "vegadresse.fritekst",
         maxSuggestions = 10,
         fieldValues = listOf(
@@ -39,29 +38,28 @@ class AdresseforslagClient(
         )
     )
 
-    fun getAdresseforslag(fritekst: String): Mono<PdlResponse<AdresseCompletionData?>> {
-        val circuitBreaker = circuitBreakerRegistry.circuitBreaker("adresseforslag")
+    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("adresseforslag")
 
-        return Mono.fromCallable {
-            baseRequest.header(AUTHORIZATION, BEARER + azureAdToken())
-                .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, mapOf("parameters" to toParameters(fritekst))))
-                .retrieve()
-                .bodyToMono<PdlResponse<AdresseCompletionData?>>()
-        }.transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
-            .flatMap { it }
-            .onErrorResume { e ->
-                when (e) {
-                    is PdlApiException -> {
-                        log.warn("PDL - feil oppdaget i response: ${e.message}", e)
-                        Mono.error(e)
-                    }
-
-                    else -> {
-                        log.error("Kall til PDL feilet (adresseSok)", e)
-                        Mono.error(TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e))
-                    }
-                }
+    fun getAdresseforslag(fritekst: String): AdresseCompletionResult? {
+        return try {
+            val response = circuitBreaker.executeSupplier {
+                baseRequest.header(AUTHORIZATION, BEARER + azureAdToken())
+                    .bodyValue(TypedPdlRequest(ADRESSE_FORSLAG, mapOf("parameters" to makeParameters(fritekst))))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
             }
+            val pdlResponse = parse<PdlResponse<AdresseCompletionData>>(response)
+            pdlResponse.checkForPdlApiErrors()
+            pdlResponse.data.forslagAdresse
+        } catch (e: PdlApiException) {
+            log.warn("PDL - feil oppdaget i response: ${e.message}", e)
+            throw e
+        } catch (e: Exception) {
+            log.error("Kall til PDL feilet (adresseSok)")
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+        }
     }
 
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
