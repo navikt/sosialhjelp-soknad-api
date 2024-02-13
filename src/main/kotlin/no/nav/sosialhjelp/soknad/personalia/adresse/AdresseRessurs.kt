@@ -44,7 +44,7 @@ class AdresseRessurs(
         val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
+        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
         val navEnhet = try {
             navEnhetService.getNavEnhet(
                 eier,
@@ -83,7 +83,7 @@ class AdresseRessurs(
 
             JsonAdresseValg.MIDLERTIDIG ->
                 personalia.oppholdsadresse =
-                    adresseSystemdata.innhentMidlertidigAdresse(eier)
+                    adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(eier)
 
             JsonAdresseValg.SOKNAD ->
                 personalia.oppholdsadresse =

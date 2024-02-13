@@ -28,6 +28,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -42,16 +43,18 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
 }
 
 fun createSoknad(
-    id: UUID? = null,
+    id: UUID = UUID.randomUUID(),
     eier: Eier = createEier(),
-    innsendingstidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+    sistEndret: LocalDateTime? = null,
+    sendtInn: LocalDateTime? = null,
     navenhet: NavEnhet = opprettNavEnhet(),
     arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList()
 ): Soknad {
     return Soknad(
         id = id,
         eier = eier,
-        innsendingstidspunkt = innsendingstidspunkt,
+        tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
         navEnhet = navenhet,
         arbeidsForhold = arbeidsforholdList
     )
@@ -124,13 +127,6 @@ fun opprettMidlertidigAdresse(
     )
 ): Adresse {
     return UstrukturertAdresse(adresse = adresselinjer)
-}
-
-fun createSoknadNoId(
-    eier: Eier = opprettEier(),
-    tidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-): Soknad {
-    return Soknad(eier = eier, innsendingstidspunkt = tidspunkt)
 }
 
 fun opprettEier(

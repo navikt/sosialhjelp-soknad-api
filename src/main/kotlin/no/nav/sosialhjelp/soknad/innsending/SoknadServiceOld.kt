@@ -95,6 +95,8 @@ class SoknadServiceOld(
             sistEndretDato = LocalDateTime.now()
         )
 
+        // pga. nyModell - opprette soknad før systemdata-updater
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 

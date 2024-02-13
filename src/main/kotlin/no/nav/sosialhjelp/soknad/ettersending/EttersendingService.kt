@@ -25,12 +25,14 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.DAYS
 
+@Deprecated("SvarUt og denne type ettersending støttes ikke lenger")
 @Component
 class EttersendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val clock: Clock
 ) {
+    @Deprecated("SvarUt og denne type ettersending støttes ikke lenger")
     fun startEttersendelse(behandlingsIdDetEttersendesPaa: String?): String {
         val originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa)
         val nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad)

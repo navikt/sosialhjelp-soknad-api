@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
@@ -163,7 +164,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         private const val FILNAVN = "EksempelPDF_123"
         private const val ORIGINALT_FILNAVN = "EksempelPDF"
         private val VEDLEGGSTYPE = VedleggType.AnnetAnnet
-        private const val BEHANDLINGSID = "1100020"
+        private val BEHANDLINGSID = UUID.randomUUID().toString()
         private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS)
         private val SIST_ENDRET_DATO = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)

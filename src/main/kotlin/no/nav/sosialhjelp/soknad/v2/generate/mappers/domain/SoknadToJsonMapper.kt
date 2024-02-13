@@ -42,7 +42,7 @@ class SoknadToJsonMapper(
         fun doMapping(domainSoknad: Soknad, json: JsonInternalSoknad) {
             with(json) {
                 initializeObjects()
-                soknad.innsendingstidspunkt = domainSoknad.innsendingstidspunkt.toString()
+                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
                 soknad.data.personalia = domainSoknad.eier.toJsonPersonalia()
                 soknad.data.arbeid = domainSoknad.toJsonArbeid()
                 mottaker = domainSoknad.toJsonSoknadsMottaker1()
@@ -122,7 +122,7 @@ class SoknadToJsonMapper(
             return if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL
         }
 
-        private fun Soknad.toJsonSoknadsMottaker1(): no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker {
+        private fun Soknad.toJsonSoknadsMottaker1(): JsonSoknadsmottaker {
             return navEnhet?.let {
                 JsonSoknadsmottaker()
                     .withOrganisasjonsnummer(it.orgnummer)

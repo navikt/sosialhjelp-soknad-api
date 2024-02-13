@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,7 +20,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @RequestMapping("/soknader/{behandlingsId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String): BosituasjonFrontend {
@@ -51,6 +53,10 @@ class BosituasjonRessurs(
         }
         bosituasjon.antallPersoner = bosituasjonFrontend.antallPersoner
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // NyModell
+        controllerAdapter.updateBosituasjon(behandlingsId, bosituasjonFrontend)
+
         return getBosituasjonFromSoknad(behandlingsId)
     }
 

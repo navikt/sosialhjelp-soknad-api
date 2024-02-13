@@ -4,6 +4,8 @@ import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.createSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +16,7 @@ import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
@@ -34,6 +37,9 @@ class SoknadActionsEndpointIT {
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
+    @Autowired
+    private lateinit var soknadRepository: SoknadRepository
+
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
@@ -42,6 +48,7 @@ class SoknadActionsEndpointIT {
     @Test
     internal fun sendSoknad_skalGiForbiddenMedAnnenBruker() {
         val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        soknadRepository.save(createSoknad(id = UUID.fromString(behandlingsId)))
 
         webClient
             .post().uri("/soknader/$behandlingsId/actions/send")
@@ -54,6 +61,7 @@ class SoknadActionsEndpointIT {
     @Test
     internal fun sendSoknad_skalGi401UtenToken() {
         val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        soknadRepository.save(createSoknad(id = UUID.fromString(behandlingsId)))
 
         webClient
             .post().uri("/soknader/$behandlingsId/actions/send")

@@ -2,13 +2,13 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Service
@@ -23,7 +23,6 @@ class SoknadService(
 
     fun createSoknad(eier: Eier): UUID {
         return soknadRepository.save(Soknad(eier = eier)).id
-            ?: throw SosialhjelpSoknadApiException("Kunne ikke opprette soknad")
     }
 
     fun deleteSoknad(soknadId: UUID) {
@@ -35,7 +34,7 @@ class SoknadService(
 
     fun sendSoknad(id: UUID): UUID {
         val digisosId: UUID = getSoknadOrThrowException(id).run {
-            innsendingstidspunkt = LocalDateTime.now()
+            tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
             soknadRepository.save(this)
 
             sendSoknadHandler.doSendAndReturnDigisosId(this)

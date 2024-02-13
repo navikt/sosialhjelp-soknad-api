@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -17,14 +18,16 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
+@Deprecated("Gammel logikk - nye søknader skal håndteres via SoknadRepository")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
+    private val registerDataAdapter: RegisterDataAdapter
 ) : SoknadUnderArbeidRepository {
 
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
@@ -32,6 +35,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
+    @Deprecated("Gammel logikk. Nye søknader skal lagres via SoknadRepository")
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
@@ -46,9 +50,14 @@ class SoknadUnderArbeidRepositoryJdbc(
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
         )
+
+        // NyModell
+        registerDataAdapter.createSoknad(soknadUnderArbeid)
+
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
@@ -58,6 +67,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -67,6 +77,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -76,6 +87,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
         eier: String,
@@ -89,6 +101,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -120,6 +133,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         soknadUnderArbeid.sistEndretDato = sistEndretDato
     }
 
+    @Deprecated("Gammelt repository")
     override fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
@@ -135,6 +149,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
+    @Deprecated("Gammelt repository")
     override fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {

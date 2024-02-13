@@ -1,21 +1,31 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class TelefonnummerSystemdataTest {
 
     private val mobiltelefonService: MobiltelefonService = mockk()
-    private val telefonnummerSystemdata = TelefonnummerSystemdata(mobiltelefonService)
+    private val registerDataAdapter: RegisterDataAdapter = mockk()
+    private val telefonnummerSystemdata = TelefonnummerSystemdata(mobiltelefonService, registerDataAdapter)
+
+    @BeforeEach
+    fun setup() {
+        every { registerDataAdapter.addTelefonnummerRegister(any(), any()) } just runs
+    }
 
     @Test
     fun skalOppdatereTelefonnummerUtenLandkode() {

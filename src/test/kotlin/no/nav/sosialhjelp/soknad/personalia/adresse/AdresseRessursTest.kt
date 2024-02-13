@@ -73,7 +73,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -92,7 +92,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -111,7 +111,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -129,7 +129,7 @@ internal class AdresseRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(null)
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns null
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns null
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, null, null, null)
     }
@@ -177,7 +177,7 @@ internal class AdresseRessursTest {
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik midlertidigAdresse og returnere tilhorendeNavenhet`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())

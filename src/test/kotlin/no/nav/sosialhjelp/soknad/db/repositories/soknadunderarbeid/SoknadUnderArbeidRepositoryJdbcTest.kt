@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -153,7 +154,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     companion object {
         private const val EIER = "12345678901"
         private const val EIER2 = "22222222222"
-        private const val BEHANDLINGSID = "1100020"
+        private val BEHANDLINGSID = UUID.randomUUID().toString()
         private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS)
         private val SIST_ENDRET_DATO = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
