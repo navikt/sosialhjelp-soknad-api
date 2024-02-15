@@ -146,19 +146,20 @@ class OkonomiskeOpplysningerRessurs(
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
-        if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type) && (vedleggFrontend.rader != null)) {
+        if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
+            val rader = vedleggFrontend.rader ?: emptyList()
             val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
             when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
-                    addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend.rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
+                    addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
                 } else {
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.opplysninger, soknadType)
+                    addAllUtbetalingerToJsonOkonomi(rader, jsonOkonomi.opplysninger, soknadType)
                 }
 
-                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend.rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
-                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.oversikt, soknadType)
-                "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.oversikt, soknadType)
-                "inntekt" -> addAllInntekterToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.oversikt, soknadType)
+                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
+                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "formue" -> addAllFormuerToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "inntekt" -> addAllInntekterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
             }
         }
 
