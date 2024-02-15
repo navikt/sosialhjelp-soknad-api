@@ -12,7 +12,7 @@ class JsonStructureComparator(private val soknadId: UUID) {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun <T: Any> doCompareAndLogErrors(original: T, other: T) {
+    fun <T : Any> doCompareAndLogErrors(original: T, other: T) {
         logger.info("$soknadId - *** COMPARING *** - baseClass: ${original::class.simpleName}")
 
         compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
@@ -21,6 +21,6 @@ class JsonStructureComparator(private val soknadId: UUID) {
             }
     }
 
-    fun compare(original: String, other: String): JSONCompareResult = JSONCompare
+    private fun compare(original: String, other: String): JSONCompareResult = JSONCompare
         .compareJSON(original, other, JSONCompareMode.STRICT_ORDER)
 }

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.json.compare
+package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
@@ -192,7 +192,6 @@ fun createJsonArbeid(): JsonArbeid? {
         this.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold().withKilde(JsonKildeBruker.BRUKER).withVerdi("Jeg er veldig glad i å jobbe")
         this.forhold = createJsonArbeidsforholdList()
     }
-
 }
 
 fun createJsonArbeidsforholdList(): List<JsonArbeidsforhold> {

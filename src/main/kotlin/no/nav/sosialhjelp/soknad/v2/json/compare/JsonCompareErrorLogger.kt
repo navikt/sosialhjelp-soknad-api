@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
+import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.ARRAY_SIZE
+import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIELD_FAILURE
+import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -8,67 +11,44 @@ class JsonCompareErrorLogger(
     private val soknadId: UUID,
     private val result: JSONCompareResult
 ) {
-    private val log = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun logAllErrors() {
 
-        parseResultAndReturnErrorList()
-            .forEach {
-                logError(error = it)
-            }
+        getFieldFailures().forEach { logError(it) }
+        getFieldMissing().forEach { logError(it) }
+        getArraySizeErrorList().forEach { logError(it) }
     }
     private fun logError(error: ErrorRow) {
-        log.error("$soknadId - ** ${error.errorType} ** - ${error.message}")
-    }
-
-    private fun parseResultAndReturnErrorList(): List<ErrorRow> {
-
-        return mutableListOf<ErrorRow>()
-            .apply {
-                addAll( getFieldFailures() )
-                addAll( getFieldMissing() )
-                addAll( getArraySizeErrorList() )
-            }
+        logger.error("$soknadId - ${error.type} - ${error.message}")
     }
 
     private fun getFieldFailures(): List<ErrorRow> {
         return result.fieldFailures
             .map {
                 var errorMessage = it.field
-                if (isNotFiltered(it.field)) errorMessage += " {expected: ${it.expected}, actual: ${it.actual}}"
-                ErrorRow("FieldFailure", errorMessage)
+                if (LogFieldValueFilter.isNotFiltered(it.field)) errorMessage += " {expected: ${it.expected}, actual: ${it.actual}}"
+                ErrorRow(FIELD_FAILURE, errorMessage)
             }
     }
 
     private fun getFieldMissing(): List<ErrorRow> {
         return result.fieldMissing
             .map { "${it.field} {expected: ${it.expected}, actual: ${it.actual}}" }
-            .map { ErrorRow("MissingField", it) }
+            .map { ErrorRow(MISSING_FIELD, it) }
     }
 
     private fun getArraySizeErrorList() = result.message
         .split(";")
         .filter { isArraySizeErrorMessage(it) }
-        .map { ErrorRow("ArraySizeError", it) }
+        .map { ErrorRow(ARRAY_SIZE, it) }
 
     private fun isArraySizeErrorMessage(message: String): Boolean {
         return message.contains("Expected [\\d][\\d]?[\\d]? values but got [\\d][\\d]?[\\d]?".toRegex())
     }
 
     private data class ErrorRow(
-        val errorType: String,
+        val type: LoggerComparisonErrorTypes,
         val message: String
     )
-
-    companion object {
-        private fun isNotFiltered(field: String): Boolean {
-            return noFilterFields.any { field.contains(it) }
-        }
-
-        private val noFilterFields = listOf(
-            ".type",
-            ".hendelseReferanse",
-            ".sha512",
-        )
-    }
 }
