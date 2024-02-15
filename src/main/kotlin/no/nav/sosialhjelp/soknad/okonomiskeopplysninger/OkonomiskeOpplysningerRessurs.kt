@@ -148,7 +148,7 @@ class OkonomiskeOpplysningerRessurs(
 
         if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
             val rader = vedleggFrontend.rader ?: emptyList()
-            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
+            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
             when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
                     addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)

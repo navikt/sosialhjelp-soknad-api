@@ -72,7 +72,7 @@ object VedleggMapper {
 
     private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: VedleggType): List<VedleggRadFrontend> {
         if (!VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggType)) return emptyList()
-        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType.toString()]
+        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType]
         val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
 
         // Spesialtilfelle for avdrag og renter
@@ -156,15 +156,11 @@ object VedleggMapper {
         }
     }
 
-    private fun getRadFromUtbetaling(utbetaling: JsonOkonomiOpplysningUtbetaling): VedleggRadFrontend {
-        if (utbetaling.belop != null) {
-            return VedleggRadFrontend(belop = utbetaling.belop)
-        } else if (utbetaling.brutto != null) {
-            return VedleggRadFrontend(belop = Integer.valueOf(utbetaling.brutto.toString()))
-        } else if (utbetaling.netto != null) {
-            return VedleggRadFrontend(belop = utbetaling.netto.toInt())
-        }
-        return VedleggRadFrontend()
+    private fun getRadFromUtbetaling(utbetaling: JsonOkonomiOpplysningUtbetaling): VedleggRadFrontend = when {
+        utbetaling.belop != null -> VedleggRadFrontend(belop = utbetaling.belop)
+        utbetaling.brutto != null -> VedleggRadFrontend(belop = Integer.valueOf(utbetaling.brutto.toString()))
+        utbetaling.netto != null -> VedleggRadFrontend(belop = utbetaling.netto.toInt())
+        else -> VedleggRadFrontend()
     }
 
     private fun getRadFromOpplysningerUtgift(
@@ -178,6 +174,7 @@ object VedleggMapper {
                     beskrivelse = utgift.tittel.substring(utgift.tittel.indexOf(":") + 1) + " "
                 )
             }
+
             else -> VedleggRadFrontend(belop = utgift.belop)
         }
     }
@@ -275,16 +272,12 @@ object VedleggMapper {
         return VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]
     }
 
-    private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> {
-        return Comparator { o1: String, o2: String ->
-            if (o1 == o2) {
-                return@Comparator 0
-            } else if (o1 == ANNET_ANNET) {
-                return@Comparator 1
-            } else if (o2 == ANNET_ANNET) {
-                return@Comparator -1
-            }
-            o1.compareTo(o2)
+    private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> = Comparator { o1, o2 ->
+        when {
+            o1 == o2 -> return@Comparator 0
+            o1 == ANNET_ANNET -> return@Comparator 1
+            o2 == ANNET_ANNET -> return@Comparator -1
+            else -> o1.compareTo(o2)
         }
     }
 }
