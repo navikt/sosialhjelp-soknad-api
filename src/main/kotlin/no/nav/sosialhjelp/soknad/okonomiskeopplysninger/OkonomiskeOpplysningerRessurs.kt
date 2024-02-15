@@ -150,9 +150,13 @@ class OkonomiskeOpplysningerRessurs(
             val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
             when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
-                    addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
+                    if (vedleggFrontend.rader != null) addAllInntekterToJsonOkonomiUtbetalinger(
+                        vedleggFrontend.rader,
+                        jsonOkonomi.opplysninger,
+                        UTBETALING_HUSBANKEN
+                    )
                 } else {
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
+                    if (vedleggFrontend.rader != null) addAllUtbetalingerToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.opplysninger, soknadType)
                 }
 
                 "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)

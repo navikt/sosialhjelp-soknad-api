@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRA
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
@@ -31,20 +32,13 @@ object OkonomiskeOpplysningerMapper {
     }
 
     fun addAllInntekterToJsonOkonomiUtbetalinger(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        opplysninger: JsonOkonomiopplysninger,
         soknadType: String
     ) {
-        jsonOkonomi.opplysninger.utbetaling
-            .firstOrNull { it.type == soknadType }
-            ?.let { inntekt ->
-                val inntekter = jsonOkonomi.opplysninger.utbetaling
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                inntekter.addAll(mapToUtbetalingList(vedleggFrontend.rader, inntekt, false))
-                jsonOkonomi.opplysninger.utbetaling = inntekter
-            }
-            ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+        val inntekt = opplysninger.utbetaling.firstOrNull { it.type == soknadType } ?: throw IkkeFunnetException("inntekt $soknadType finnes ikke i søknad")
+        opplysninger.utbetaling =
+            opplysninger.utbetaling.filter { it.type != soknadType }.plus(rader.map { mapToUtbetaling(it, inntekt.type, inntekt.tittel, false) })
     }
 
     fun addAllFormuerToJsonOkonomi(
@@ -126,20 +120,16 @@ object OkonomiskeOpplysningerMapper {
     }
 
     fun addAllUtbetalingerToJsonOkonomi(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        opplysninger: JsonOkonomiopplysninger,
         soknadType: String?
     ) {
-        jsonOkonomi.opplysninger.utbetaling
-            .firstOrNull { it.type == soknadType }
-            ?.let { eksisterendeUtbetaling ->
-                val utbetalinger = jsonOkonomi.opplysninger.utbetaling
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling, true))
-                jsonOkonomi.opplysninger.utbetaling = utbetalinger
-            }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+        val eksisterendeUtbetaling =
+            opplysninger.utbetaling.firstOrNull { it.type == soknadType } ?: throw IkkeFunnetException("Utbetaling $soknadType eksisterer ikke i søknad")
+
+        opplysninger.utbetaling = opplysninger.utbetaling
+            .filter { it.type != soknadType }
+            .plus(rader.map { mapToUtbetaling(it, eksisterendeUtbetaling.type, eksisterendeUtbetaling.tittel, true) })
     }
 
     private fun addBoliglanRenterToUtgifter(
@@ -169,23 +159,16 @@ object OkonomiskeOpplysningerMapper {
         .withNetto(rad.netto ?: rad.belop)
         .withOverstyrtAvBruker(false)
 
-    private fun mapToUtbetalingList(
-        rader: List<VedleggRadFrontend>?,
-        eksisterendeUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        brukBelop: Boolean
-    ): List<JsonOkonomiOpplysningUtbetaling> {
-        return rader?.map { mapToUtbetaling(it, eksisterendeUtbetaling, brukBelop) } ?: emptyList()
-    }
-
     private fun mapToUtbetaling(
         rad: VedleggRadFrontend,
-        eksisterendeUtbetaling: JsonOkonomiOpplysningUtbetaling,
+        type: String?,
+        tittel: String?,
         brukBelop: Boolean
     ): JsonOkonomiOpplysningUtbetaling {
         val jsonOkonomiOpplysningUtbetaling = JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.BRUKER)
-            .withType(eksisterendeUtbetaling.type)
-            .withTittel(eksisterendeUtbetaling.tittel)
+            .withType(type)
+            .withTittel(tittel)
             .withOverstyrtAvBruker(false)
         if (brukBelop) {
             jsonOkonomiOpplysningUtbetaling.withBelop(rad.belop)
