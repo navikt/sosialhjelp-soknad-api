@@ -31,7 +31,7 @@ object OkonomiskeOpplysningerMapper {
                 val inntekter = jsonOkonomi.oversikt.inntekt
                     .filter { it.type != soknadType }
                     .toMutableList()
-                inntekter.addAll(mapToInntektList(vedleggFrontend.rader, inntekt))
+                inntekter.addAll(vedleggFrontend.rader?.map { mapToInntekt(it, inntekt) } ?: emptyList())
                 jsonOkonomi.oversikt.inntekt = inntekter
             }
             ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
@@ -162,13 +162,6 @@ object OkonomiskeOpplysningerMapper {
                 utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, renter))
             }
             ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
-    }
-
-    private fun mapToInntektList(
-        rader: List<VedleggRadFrontend>?,
-        eksisterendeInntekt: JsonOkonomioversiktInntekt
-    ): List<JsonOkonomioversiktInntekt> {
-        return rader?.map { mapToInntekt(it, eksisterendeInntekt) } ?: emptyList()
     }
 
     private fun mapToInntekt(
