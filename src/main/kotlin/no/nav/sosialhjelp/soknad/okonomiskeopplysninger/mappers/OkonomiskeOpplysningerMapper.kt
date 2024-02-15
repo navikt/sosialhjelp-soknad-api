@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
@@ -15,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import org.apache.commons.lang3.StringUtils.isEmpty
@@ -60,30 +58,33 @@ object OkonomiskeOpplysningerMapper {
 
         oversikt.utgift = oversikt.utgift
             .filter { it.type != soknadType }
-            .plus(rader.map { mapToOversiktUtgift(it, oversiktUtgift) })
+            .plus(rader.map { mapToOversiktUtgift(it, oversiktUtgift.type, oversiktUtgift.tittel) })
 
         // Spesialtilfelle for boliglan. Må kjøre på nytt for å få med renter
         if (soknadType == UTGIFTER_BOLIGLAN_AVDRAG) {
-            val renter =
-                oversikt.utgift.firstOrNull { it.type == UTGIFTER_BOLIGLAN_RENTER } ?: throw IkkeFunnetException("renter for boliglån finnes ikke i søknaden")
-            oversikt.utgift = oversikt.utgift.filter { it.type == UTGIFTER_BOLIGLAN_RENTER }.plus(rader.map { mapToOversiktUtgift(it, renter) })
+            val renter = oversikt.utgift.firstOrNull { it.type == UTGIFTER_BOLIGLAN_RENTER }
+                ?: throw IkkeFunnetException("renter for boliglån finnes ikke i søknaden")
+            oversikt.utgift =
+                oversikt.utgift.filter { it.type == UTGIFTER_BOLIGLAN_RENTER }.plus(rader.map { mapToOversiktUtgift(it, renter.type, renter.tittel) })
         }
     }
 
     fun addAllOpplysningUtgifterToJsonOkonomi(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        vedleggType: VedleggType,
+        opplysninger: JsonOkonomiopplysninger,
         soknadType: String?
     ) {
-        var eksisterendeOpplysningUtgift = jsonOkonomi.opplysninger.utgift
-            .firstOrNull { it.type == soknadType }
+        var eksisterendeOpplysningUtgift = opplysninger.utgift.firstOrNull { it.type == soknadType }
 
-        if (vedleggFrontend.type == VedleggType.AnnetAnnet) {
+        if (vedleggType == VedleggType.AnnetAnnet) {
             eksisterendeOpplysningUtgift = JsonOkonomiOpplysningUtgift()
                 .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
                 .withTittel("Annen (brukerangitt): ")
-            val utgifter = jsonOkonomi.opplysninger.utgift
-            if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)) {
+            val utgifter = opplysninger.utgift
+
+            // Dersom AnnetAnnet kun har en tom rad, fjern utgiften
+            if (rader.size == 1 && rader[0].belop == null && isEmpty(rader[0].beskrivelse)) {
                 removeUtgiftIfPresentInOpplysninger(utgifter, soknadType)
                 return
             } else {
@@ -91,21 +92,12 @@ object OkonomiskeOpplysningerMapper {
             }
         }
 
-        eksisterendeOpplysningUtgift
-            ?.let { utgift ->
-                val utgifter = jsonOkonomi.opplysninger.utgift
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, utgift))
-                jsonOkonomi.opplysninger.utgift = utgifter
-            }
+        val utgift = eksisterendeOpplysningUtgift
             ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
-    }
 
-    private fun checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend: VedleggFrontend): Boolean {
-        return vedleggFrontend.rader?.size == 1 &&
-            vedleggFrontend.rader[0].belop == null &&
-            isEmpty(vedleggFrontend.rader[0].beskrivelse)
+        opplysninger.utgift = opplysninger.utgift
+            .filter { it.type != soknadType }
+            .plus(rader.map { mapToOppysningUtgift(it, utgift.tittel, utgift.type) })
     }
 
     fun addAllUtbetalingerToJsonOkonomi(
@@ -165,18 +157,20 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToOversiktUtgift(
         radFrontend: VedleggRadFrontend,
-        eksisterendeUtgift: JsonOkonomioversiktUtgift
-    ): JsonOkonomioversiktUtgift {
-        val tittel = eksisterendeUtgift.tittel
-        val typetittel = getTypetittel(tittel)
-        val type = eksisterendeUtgift.type
-        return JsonOkonomioversiktUtgift()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(type)
-            .withTittel(getTittelWithBeskrivelse(typetittel, radFrontend.beskrivelse))
-            .withBelop(if (type == UTGIFTER_BOLIGLAN_AVDRAG) radFrontend.avdrag else if (type == UTGIFTER_BOLIGLAN_RENTER) radFrontend.renter else radFrontend.belop)
-            .withOverstyrtAvBruker(false)
-    }
+        type: String?,
+        tittel: String?
+    ): JsonOkonomioversiktUtgift = JsonOkonomioversiktUtgift()
+        .withKilde(JsonKilde.BRUKER)
+        .withType(type)
+        .withTittel(getTittelWithBeskrivelse(getTypetittel(tittel), radFrontend.beskrivelse))
+        .withBelop(
+            when (type) {
+                UTGIFTER_BOLIGLAN_AVDRAG -> radFrontend.avdrag
+                UTGIFTER_BOLIGLAN_RENTER -> radFrontend.renter
+                else -> radFrontend.belop
+            }
+        )
+        .withOverstyrtAvBruker(false)
 
     private fun getTittelWithBeskrivelse(typetittel: String?, beskrivelse: String?): String? =
         if (beskrivelse != null) typetittel + beskrivelse else typetittel
@@ -187,25 +181,14 @@ object OkonomiskeOpplysningerMapper {
         else -> tittel.substring(0, tittel.indexOf(":") + 1) + " "
     }
 
-    private fun mapToOppysningUtgiftList(
-        rader: List<VedleggRadFrontend>?,
-        eksisterendeUtgift: JsonOkonomiOpplysningUtgift
-    ): List<JsonOkonomiOpplysningUtgift> {
-        return rader?.map { mapToOppysningUtgift(it, eksisterendeUtgift) } ?: emptyList()
-    }
-
     private fun mapToOppysningUtgift(
         radFrontend: VedleggRadFrontend,
-        eksisterendeUtgift: JsonOkonomiOpplysningUtgift
-    ): JsonOkonomiOpplysningUtgift {
-        val tittel = eksisterendeUtgift.tittel
-        val typetittel = getTypetittel(tittel)
-        val type = eksisterendeUtgift.type
-        return JsonOkonomiOpplysningUtgift()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(type)
-            .withTittel(getTittelWithBeskrivelse(typetittel, radFrontend.beskrivelse))
-            .withBelop(radFrontend.belop)
-            .withOverstyrtAvBruker(false)
-    }
+        tittel: String?,
+        type: String?
+    ): JsonOkonomiOpplysningUtgift = JsonOkonomiOpplysningUtgift()
+        .withKilde(JsonKilde.BRUKER)
+        .withType(type)
+        .withTittel(getTittelWithBeskrivelse(getTypetittel(tittel), radFrontend.beskrivelse))
+        .withBelop(radFrontend.belop)
+        .withOverstyrtAvBruker(false)
 }
