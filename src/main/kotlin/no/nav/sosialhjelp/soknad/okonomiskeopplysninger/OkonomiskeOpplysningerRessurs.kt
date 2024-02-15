@@ -161,7 +161,7 @@ class OkonomiskeOpplysningerRessurs(
 
                 "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
+                "formue" -> if (vedleggFrontend.rader != null) addAllFormuerToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.oversikt, soknadType)
                 "inntekt" -> if (vedleggFrontend.rader != null) addAllInntekterToJsonOkonomi(vedleggFrontend.rader, jsonOkonomi.oversikt, soknadType)
             }
         }

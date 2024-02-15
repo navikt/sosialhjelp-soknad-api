@@ -42,20 +42,12 @@ object OkonomiskeOpplysningerMapper {
     }
 
     fun addAllFormuerToJsonOkonomi(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        oversikt: JsonOkonomioversikt,
         soknadType: String?
     ) {
-        jsonOkonomi.oversikt.formue
-            .firstOrNull { it.type == soknadType }
-            ?.let { formue ->
-                val formuer = jsonOkonomi.oversikt.formue
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                formuer.addAll(mapToFormueList(vedleggFrontend.rader, formue))
-                jsonOkonomi.oversikt.formue = formuer
-            }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+        val formue = oversikt.formue.firstOrNull { it.type == soknadType } ?: throw IkkeFunnetException("formue $soknadType finnes ikke i søknad")
+        oversikt.formue = oversikt.formue.filter { it.type != soknadType }.plus(rader.map { mapToFormue(it, formue.type, formue.tittel) })
     }
 
     fun addAllOversiktUtgifterToJsonOkonomi(
@@ -178,24 +170,16 @@ object OkonomiskeOpplysningerMapper {
         return jsonOkonomiOpplysningUtbetaling
     }
 
-    private fun mapToFormueList(
-        rader: List<VedleggRadFrontend>?,
-        eksisterendeFormue: JsonOkonomioversiktFormue
-    ): List<JsonOkonomioversiktFormue> {
-        return rader?.map { mapToFormue(it, eksisterendeFormue) } ?: emptyList()
-    }
-
     private fun mapToFormue(
         radFrontend: VedleggRadFrontend,
-        eksisterendeFormue: JsonOkonomioversiktFormue
-    ): JsonOkonomioversiktFormue {
-        return JsonOkonomioversiktFormue()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(eksisterendeFormue.type)
-            .withTittel(eksisterendeFormue.tittel)
-            .withBelop(radFrontend.belop)
-            .withOverstyrtAvBruker(false)
-    }
+        type: String?,
+        tittel: String?,
+    ): JsonOkonomioversiktFormue = JsonOkonomioversiktFormue()
+        .withKilde(JsonKilde.BRUKER)
+        .withType(type)
+        .withTittel(tittel)
+        .withBelop(radFrontend.belop)
+        .withOverstyrtAvBruker(false)
 
     private fun mapToOversiktUtgiftList(
         rader: List<VedleggRadFrontend>?,
