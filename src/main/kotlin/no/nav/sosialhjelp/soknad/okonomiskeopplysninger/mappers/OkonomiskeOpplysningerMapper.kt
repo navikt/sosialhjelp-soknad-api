@@ -51,26 +51,23 @@ object OkonomiskeOpplysningerMapper {
     }
 
     fun addAllOversiktUtgifterToJsonOkonomi(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        oversikt: JsonOkonomioversikt,
         soknadType: String?
     ) {
-        jsonOkonomi.oversikt.utgift
-            .firstOrNull { it.type == soknadType }
-            ?.let { oversiktUtgift ->
-                val utgifter = jsonOkonomi.oversikt.utgift
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, oversiktUtgift))
-
-                // ---------- Spesialtilfelle for boliglan. Må kjøre på nytt for å få med renter ----------
-                if (soknadType == UTGIFTER_BOLIGLAN_AVDRAG) {
-                    addBoliglanRenterToUtgifter(vedleggFrontend, jsonOkonomi, utgifter)
-                }
-                // ----------------------------------------------------------------------------------------
-                jsonOkonomi.oversikt.utgift = utgifter
-            }
+        val oversiktUtgift = oversikt.utgift.firstOrNull { it.type == soknadType }
             ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+
+        oversikt.utgift = oversikt.utgift
+            .filter { it.type != soknadType }
+            .plus(rader.map { mapToOversiktUtgift(it, oversiktUtgift) })
+
+        // Spesialtilfelle for boliglan. Må kjøre på nytt for å få med renter
+        if (soknadType == UTGIFTER_BOLIGLAN_AVDRAG) {
+            val renter =
+                oversikt.utgift.firstOrNull { it.type == UTGIFTER_BOLIGLAN_RENTER } ?: throw IkkeFunnetException("renter for boliglån finnes ikke i søknaden")
+            oversikt.utgift = oversikt.utgift.filter { it.type == UTGIFTER_BOLIGLAN_RENTER }.plus(rader.map { mapToOversiktUtgift(it, renter) })
+        }
     }
 
     fun addAllOpplysningUtgifterToJsonOkonomi(
@@ -124,21 +121,6 @@ object OkonomiskeOpplysningerMapper {
             .plus(rader.map { mapToUtbetaling(it, eksisterendeUtbetaling.type, eksisterendeUtbetaling.tittel, true) })
     }
 
-    private fun addBoliglanRenterToUtgifter(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
-        utgifter: MutableList<JsonOkonomioversiktUtgift>
-    ) {
-        val soknadType = UTGIFTER_BOLIGLAN_RENTER
-        jsonOkonomi.oversikt.utgift
-            .firstOrNull { it.type == soknadType }
-            ?.let { renter ->
-                utgifter.removeAll(utgifter.filter { it.type == soknadType })
-                utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, renter))
-            }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
-    }
-
     private fun mapToInntekt(
         rad: VedleggRadFrontend,
         type: String?,
@@ -180,13 +162,6 @@ object OkonomiskeOpplysningerMapper {
         .withTittel(tittel)
         .withBelop(radFrontend.belop)
         .withOverstyrtAvBruker(false)
-
-    private fun mapToOversiktUtgiftList(
-        rader: List<VedleggRadFrontend>?,
-        eksisterendeUtgift: JsonOkonomioversiktUtgift
-    ): List<JsonOkonomioversiktUtgift> {
-        return rader?.map { mapToOversiktUtgift(it, eksisterendeUtgift) } ?: emptyList()
-    }
 
     private fun mapToOversiktUtgift(
         radFrontend: VedleggRadFrontend,
