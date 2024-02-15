@@ -178,12 +178,13 @@ object OkonomiskeOpplysningerMapper {
             .withOverstyrtAvBruker(false)
     }
 
-    private fun getTittelWithBeskrivelse(typetittel: String, beskrivelse: String?): String {
-        return if (beskrivelse != null) typetittel + beskrivelse else typetittel
-    }
+    private fun getTittelWithBeskrivelse(typetittel: String?, beskrivelse: String?): String? =
+        if (beskrivelse != null) typetittel + beskrivelse else typetittel
 
-    private fun getTypetittel(tittel: String): String {
-        return if (!tittel.contains(":")) tittel else tittel.substring(0, tittel.indexOf(":") + 1) + " "
+    private fun getTypetittel(tittel: String?): String? = when {
+        tittel == null -> null
+        !tittel.contains(":") -> tittel
+        else -> tittel.substring(0, tittel.indexOf(":") + 1) + " "
     }
 
     private fun mapToOppysningUtgiftList(
