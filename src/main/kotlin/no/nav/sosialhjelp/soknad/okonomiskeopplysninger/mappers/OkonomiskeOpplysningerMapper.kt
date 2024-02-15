@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRA
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
@@ -21,20 +22,12 @@ import org.apache.commons.lang3.StringUtils.isEmpty
 object OkonomiskeOpplysningerMapper {
 
     fun addAllInntekterToJsonOkonomi(
-        vedleggFrontend: VedleggFrontend,
-        jsonOkonomi: JsonOkonomi,
+        rader: List<VedleggRadFrontend>,
+        oversikt: JsonOkonomioversikt,
         soknadType: String?
     ) {
-        jsonOkonomi.oversikt.inntekt
-            .firstOrNull { it.type == soknadType }
-            ?.let { inntekt ->
-                val inntekter = jsonOkonomi.oversikt.inntekt
-                    .filter { it.type != soknadType }
-                    .toMutableList()
-                inntekter.addAll(vedleggFrontend.rader?.map { mapToInntekt(it, inntekt.type, inntekt.tittel) } ?: emptyList())
-                jsonOkonomi.oversikt.inntekt = inntekter
-            }
-            ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+        val inntekt = oversikt.inntekt.firstOrNull { it.type == soknadType } ?: throw IkkeFunnetException("inntekt $soknadType finnes ikke i søknad")
+        oversikt.inntekt = oversikt.inntekt.filter { it.type != soknadType }.plus(rader.map { mapToInntekt(it, inntekt.type, inntekt.tittel) })
     }
 
     fun addAllInntekterToJsonOkonomiUtbetalinger(
