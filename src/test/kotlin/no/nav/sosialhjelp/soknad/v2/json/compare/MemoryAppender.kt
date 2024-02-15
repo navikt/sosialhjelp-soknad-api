@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
 import java.util.*
-import java.util.stream.Collectors
 
 class MemoryAppender : ListAppender<ILoggingEvent>() {
 
