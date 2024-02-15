@@ -31,7 +31,7 @@ object OkonomiskeOpplysningerMapper {
                 val inntekter = jsonOkonomi.oversikt.inntekt
                     .filter { it.type != soknadType }
                     .toMutableList()
-                inntekter.addAll(vedleggFrontend.rader?.map { mapToInntekt(it, inntekt) } ?: emptyList())
+                inntekter.addAll(vedleggFrontend.rader?.map { mapToInntekt(it, inntekt.type, inntekt.tittel) } ?: emptyList())
                 jsonOkonomi.oversikt.inntekt = inntekter
             }
             ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
@@ -166,16 +166,15 @@ object OkonomiskeOpplysningerMapper {
 
     private fun mapToInntekt(
         rad: VedleggRadFrontend,
-        eksisterendeInntekt: JsonOkonomioversiktInntekt
-    ): JsonOkonomioversiktInntekt {
-        return JsonOkonomioversiktInntekt()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(eksisterendeInntekt.type)
-            .withTittel(eksisterendeInntekt.tittel)
-            .withBrutto(if (rad.brutto != null) rad.brutto else rad.belop)
-            .withNetto(if (rad.netto != null) rad.netto else rad.belop)
-            .withOverstyrtAvBruker(false)
-    }
+        type: String?,
+        tittel: String?,
+    ): JsonOkonomioversiktInntekt = JsonOkonomioversiktInntekt()
+        .withKilde(JsonKilde.BRUKER)
+        .withType(type)
+        .withTittel(tittel)
+        .withBrutto(rad.brutto ?: rad.belop)
+        .withNetto(rad.netto ?: rad.belop)
+        .withOverstyrtAvBruker(false)
 
     private fun mapToUtbetalingList(
         rader: List<VedleggRadFrontend>?,
