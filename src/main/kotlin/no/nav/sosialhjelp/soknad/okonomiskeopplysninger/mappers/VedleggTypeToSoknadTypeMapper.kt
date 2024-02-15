@@ -72,9 +72,4 @@ object VedleggTypeToSoknadTypeMapper {
         BarnebidragMottar, LonnslippArbeid, StudentVedtak -> "inntekt"
         else -> error("Vedleggstypen eksisterer ikke eller mangler mapping")
     }
-
-    // Følgende verdier var tidligere hardkodet som "false":
-    // OppholdstillatelOppholdstillatel, SamvarsavtaleBarn, HusleiekontraktHusleiekontrakt, HusleiekontraktKommunal, SkattemeldingSkattemelding
-    // Jeg har sjekket at dette er de eneste VedleggType som ikke er mappet til en SoknadJsonType.
-    fun isInSoknadJson(vedleggType: VedleggType?): Boolean = vedleggTypeToSoknadType.containsKey(vedleggType)
 }

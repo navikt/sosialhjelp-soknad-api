@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import java.time.LocalDateTime
@@ -71,8 +72,8 @@ object VedleggMapper {
     }
 
     private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: VedleggType): List<VedleggRadFrontend> {
-        if (!VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggType)) return emptyList()
-        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType]
+        if (!vedleggTypeToSoknadType.containsKey(vedleggType)) return emptyList()
+        val soknadType = vedleggTypeToSoknadType[vedleggType]
         val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
 
         // Spesialtilfelle for avdrag og renter
