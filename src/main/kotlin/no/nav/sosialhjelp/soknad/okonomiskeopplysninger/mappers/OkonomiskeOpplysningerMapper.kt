@@ -53,9 +53,7 @@ object OkonomiskeOpplysningerMapper {
         oversikt: JsonOkonomioversikt,
         soknadType: String?
     ) {
-        val oversiktUtgift = oversikt.utgift.firstOrNull { it.type == soknadType }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
-
+        val oversiktUtgift = oversikt.utgift.firstOrNull { it.type == soknadType } ?: throw IkkeFunnetException("Utgift $soknadType eksisterer ikke i søknad")
         oversikt.utgift = oversikt.utgift
             .filter { it.type != soknadType }
             .plus(rader.map { mapToOversiktUtgift(it, oversiktUtgift.type, oversiktUtgift.tittel) })
@@ -92,8 +90,7 @@ object OkonomiskeOpplysningerMapper {
             }
         }
 
-        val utgift = eksisterendeOpplysningUtgift
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+        val utgift = eksisterendeOpplysningUtgift ?: throw IkkeFunnetException("Utbetaling $soknadType eksisterer ikke i søknad")
 
         opplysninger.utgift = opplysninger.utgift
             .filter { it.type != soknadType }
