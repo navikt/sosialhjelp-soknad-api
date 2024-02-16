@@ -1,9 +1,7 @@
-package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
+package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,20 +16,18 @@ import java.util.*
 @Unprotected
 @RequestMapping("/soknad/{soknadId}/personalia/telefonnummer", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TelefonnummerController(
-    private val soknadService: SoknadService,
-    private val brukerdataService: BrukerdataService
+    private val kontaktService: KontaktService
 ) {
     @GetMapping
     fun getTelefonnummer(
         @PathVariable("soknadId") soknadId: UUID
     ): TelefonnummerDto {
-        val telefonRegister = soknadService.getSoknad(soknadId).eier.telefonnummer
-        val telefonBruker = brukerdataService.getBrukerdataPersonlig(soknadId)?.telefonnummer
-
-        return TelefonnummerDto(
-            telefonnummerRegister = telefonRegister,
-            telefonnummerBruker = telefonBruker
-        )
+        return kontaktService.getTelefonnummer(soknadId)?.let {
+            TelefonnummerDto(
+                telefonnummerRegister = it.register,
+                telefonnummerBruker = it.bruker
+            )
+        } ?: TelefonnummerDto()
     }
 
     @PutMapping
@@ -41,13 +37,13 @@ class TelefonnummerController(
     ): TelefonnummerDto {
         SoknadInputValidator(TelefonnummerInput::class)
             .validateIsNumber(soknadId, telefonnummerInput.telefonnummerBruker)
-        // TODO Validere gyldig telefonnummer ?
-        val brukerdata = brukerdataService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker)
 
-        return TelefonnummerDto(
-            telefonnummerRegister = soknadService.getSoknad(soknadId).eier.telefonnummer,
-            telefonnummerBruker = brukerdata.telefonnummer
-        )
+        return kontaktService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
+            TelefonnummerDto(
+                telefonnummerRegister = it.register,
+                telefonnummerBruker = it.bruker
+            )
+        }
     }
 }
 
@@ -56,6 +52,6 @@ data class TelefonnummerInput(
 )
 
 data class TelefonnummerDto(
-    val telefonnummerRegister: String?,
-    val telefonnummerBruker: String?
+    val telefonnummerRegister: String? = null,
+    val telefonnummerBruker: String? = null
 )

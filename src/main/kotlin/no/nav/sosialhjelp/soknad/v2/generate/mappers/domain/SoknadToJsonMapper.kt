@@ -1,22 +1,15 @@
 package no.nav.sosialhjelp.soknad.v2.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.v2.soknad.Eier
+import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
+import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.core.Ordered
@@ -38,105 +31,50 @@ class SoknadToJsonMapper(
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
-    internal companion object SoknadMapper {
+    internal companion object Mapper {
         fun doMapping(domainSoknad: Soknad, json: JsonInternalSoknad) {
             with(json) {
                 initializeObjects()
+
                 soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
-                soknad.data.personalia = domainSoknad.eier.toJsonPersonalia()
-                soknad.data.arbeid = domainSoknad.toJsonArbeid()
-                mottaker = domainSoknad.toJsonSoknadsMottaker1()
-                soknad.mottaker = domainSoknad.toJsonSoknadsMottaker2()
+                soknad.driftsinformasjon = domainSoknad.driftsinformasjon.toJsonDriftsinformasjon()
+                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
+                mottaker = domainSoknad.mottaker.toJsonSoknadsmottakerInternal()
+                soknad.mottaker = domainSoknad.mottaker.toJsonSoknadsmottaker()
             }
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
             soknad.data ?: soknad.withData(JsonData())
-            soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
+            soknad.driftsinformasjon ?: soknad.withDriftsinformasjon(JsonDriftsinformasjon())
         }
 
-        private fun Eier.toJsonPersonalia(): JsonPersonalia {
-            return JsonPersonalia()
-                .also {
-                    it.personIdentifikator = toJsonPersonIdentifikator()
-                    it.navn = toJsonNavn()
-                    it.nordiskBorger = toJsonNordiskBorger()
-                    it.statsborgerskap = toJsonStatsborgerskap()
-                    it.kontonummer = toJsonKontonummer()
-                    it.telefonnummer = toJsonTelefonnummer()
-                }
+        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
+            return JsonSoknadsmottaker()
+                .withOrganisasjonsnummer(orgnummer)
+                .withNavEnhetsnavn(enhetsnavn)
         }
 
-        private fun Eier.toJsonPersonIdentifikator(): JsonPersonIdentifikator {
-            return JsonPersonIdentifikator()
-                .withVerdi(personId)
+        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
+            return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
+                .withEnhetsnummer(enhetsnummer)
+                .withKommunenummer(kommunenummer)
+                .withNavEnhetsnavn(enhetsnavn)
         }
 
-        private fun Eier.toJsonNavn(): JsonSokernavn {
-            return JsonSokernavn()
-                .withFornavn(navn.fornavn)
-                .withMellomnavn(navn.mellomnavn)
-                .withEtternavn(navn.etternavn)
+        private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse? {
+            return if (hvaSokesOm == null && hvorforSoke == null) null
+            else
+                JsonBegrunnelse()
+                    .withHvaSokesOm(hvaSokesOm)
+                    .withHvorforSoke(hvorforSoke)
         }
 
-        private fun Eier.toJsonNordiskBorger(): JsonNordiskBorger {
-            return JsonNordiskBorger()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(nordiskBorger)
-        }
-
-        private fun Eier.toJsonStatsborgerskap(): JsonStatsborgerskap {
-            return JsonStatsborgerskap()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(statsborgerskap)
-        }
-
-        private fun Eier.toJsonKontonummer(): JsonKontonummer {
-            return JsonKontonummer()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(kontonummer)
-        }
-
-        private fun Eier.toJsonTelefonnummer(): JsonTelefonnummer {
-            return JsonTelefonnummer()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(telefonnummer)
-        }
-
-        private fun Soknad.toJsonArbeid(): JsonArbeid? {
-            return JsonArbeid()
-                .withForhold(arbeidsForhold.map { it.toJsonArbeidsforhold() })
-        }
-
-        private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
-            return JsonArbeidsforhold()
-                .withKilde(JsonKilde.SYSTEM)
-                .withArbeidsgivernavn(arbeidsgivernavn)
-                .withStillingstype(harFastStilling?.toJsonArbeidsforholdStillingtype())
-                .withStillingsprosent(fastStillingsprosent)
-                .withFom(start)
-                .withTom(slutt)
-        }
-
-        private fun Boolean.toJsonArbeidsforholdStillingtype(): JsonArbeidsforhold.Stillingstype {
-            return if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL
-        }
-
-        private fun Soknad.toJsonSoknadsMottaker1(): JsonSoknadsmottaker {
-            return navEnhet?.let {
-                JsonSoknadsmottaker()
-                    .withOrganisasjonsnummer(it.orgnummer)
-                    .withNavEnhetsnavn(it.enhetsnavn)
-            } ?: throw IllegalStateException("NavEnhet finnes ikke på soknad.")
-        }
-
-        private fun Soknad.toJsonSoknadsMottaker2(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker {
-            return navEnhet?.let {
-                no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
-                    .withEnhetsnummer(it.enhetsnummer)
-                    .withKommunenummer(it.kommunenummer)
-                    .withNavEnhetsnavn(it.enhetsnavn)
-            } ?: throw IllegalStateException("NavEnhet finnes ikke på soknad.")
+        private fun Driftsinformasjon.toJsonDriftsinformasjon(): JsonDriftsinformasjon? {
+            return JsonDriftsinformasjon()
+                .withUtbetalingerFraNavFeilet(utbetalingerFraNav)
+                .withInntektFraSkatteetatenFeilet(inntektFraSkatt)
+                .withStotteFraHusbankenFeilet(stotteFraHusbanken)
         }
     }
 }

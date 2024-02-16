@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
-import no.nav.sosialhjelp.soknad.v2.createSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -26,7 +26,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal slette lagret soknad`() {
-        val lagretSoknadId = createSoknad().let { soknadRepository.save(it).id }
+        val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
             ?: throw RuntimeException("Kunne ikke lagre soknad")
 
         webTestClient

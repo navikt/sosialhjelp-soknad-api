@@ -1,0 +1,103 @@
+package no.nav.sosialhjelp.soknad.v2.generate.mappers.domain
+
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
+import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
+import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Component
+import java.util.*
+
+@Component
+class LivssituasjonToJsonMapper(
+    private val livssituasjonRepository: LivssituasjonRepository
+) : DomainToJsonMapper {
+
+    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+        livssituasjonRepository.findByIdOrNull(soknadId)?.let {
+            doMapping(it, jsonInternalSoknad)
+        }
+    }
+
+    internal companion object Mapper {
+
+        fun doMapping(livssituasjon: Livssituasjon, json: JsonInternalSoknad) {
+
+            json.initializeObjects()
+
+            with(json.soknad.data) {
+
+                arbeid = livssituasjon.arbeid.toJsonArbeid()
+                utdanning = livssituasjon.utdanning.toJsonUtdanning()
+                bosituasjon = livssituasjon.bosituasjon.toJsonBosituasjon()
+            }
+        }
+    }
+}
+
+private fun Arbeid.toJsonArbeid(): JsonArbeid? {
+    return if (kommentar == null && arbeidsforhold.isEmpty()) null
+    else {
+        JsonArbeid()
+            .withKommentarTilArbeidsforhold(kommentar?.let { JsonKommentarTilArbeidsforhold().withVerdi(it) })
+            .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
+    }
+}
+
+private fun Utdanning.toJsonUtdanning(): JsonUtdanning? {
+    return erStudent?.let {
+        JsonUtdanning()
+            .withKilde(JsonKilde.BRUKER)
+            .withErStudent(it)
+            .withStudentgrad(if (!it) null else studentgrad?.toJsonStudentgrad())
+    }
+}
+
+private fun Studentgrad.toJsonStudentgrad() = JsonUtdanning.Studentgrad.fromValue(name.lowercase())
+
+private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
+    return if (botype == null && antallHusstand == null) null
+    else {
+        JsonBosituasjon()
+            .withBotype(botype?.toJsonBotype())
+            .withAntallPersoner(antallHusstand)
+    }
+}
+
+private fun Botype.toJsonBotype() = JsonBosituasjon.Botype.fromValue(name.lowercase())
+
+private fun JsonInternalSoknad.initializeObjects() {
+    soknad.data ?: soknad.withData(JsonData())
+    with(soknad.data) {
+        arbeid ?: withArbeid(JsonArbeid())
+        utdanning ?: withUtdanning(JsonUtdanning())
+        bosituasjon ?: withBosituasjon(JsonBosituasjon())
+    }
+}
+
+private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
+    return JsonArbeidsforhold()
+        .withKilde(JsonKilde.SYSTEM)
+        .withArbeidsgivernavn(arbeidsgivernavn)
+        .withStillingstype(harFastStilling?.toJsonArbeidsforholdStillingtype())
+        .withStillingsprosent(fastStillingsprosent)
+        .withFom(start)
+        .withTom(slutt)
+}
+
+private fun Boolean.toJsonArbeidsforholdStillingtype(): JsonArbeidsforhold.Stillingstype {
+    return if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL
+}

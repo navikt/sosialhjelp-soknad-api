@@ -1,21 +1,22 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.AdresseAdapter
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
-import no.nav.sosialhjelp.soknad.v2.soknad.Eier
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import no.nav.sosialhjelp.soknad.v2.shadow.adapters.ArbeidsforholdAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapters.KontaktAdapter
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
 
 @Component
 class SoknadV2RegisterDataAdapter(
-    private val soknadAdapter: SoknadAdapter,
-    private val adresseAdapter: AdresseAdapter,
+    private val soknadRepository: SoknadRepository,
+    private val arbeidsforholdAdapter: ArbeidsforholdAdapter,
+    private val kontaktAdapter: KontaktAdapter,
 ) : RegisterDataAdapter {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)

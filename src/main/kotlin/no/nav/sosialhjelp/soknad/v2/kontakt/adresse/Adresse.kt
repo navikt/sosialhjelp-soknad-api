@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.adresse
+package no.nav.sosialhjelp.soknad.v2.kontakt.adresse
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

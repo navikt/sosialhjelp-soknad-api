@@ -88,6 +88,7 @@ internal class SoknadServiceOldTest {
         val soknadMetadata: SoknadMetadata = mockk()
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
         every { soknadMetadataRepository.opprett(any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadata.behandlingsId } returns "123"
         every { registerDataAdapter.createSoknad(any(), any(), any()) } just runs
 

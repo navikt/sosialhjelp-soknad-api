@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormeltRepository
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.ArbeidDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.ArbeidInput
-import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataFormelt
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidDto
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +16,7 @@ import java.util.*
 class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
-    private lateinit var brukerdataFormeltRepository: BrukerdataFormeltRepository
+    private lateinit var livssituasjonRepository: LivssituasjonRepository
 
     private fun getPath(soknadId: UUID): String {
         return "/soknad/$soknadId/arbeid"
@@ -25,18 +25,18 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Hente arbeid skal returnere korrekte data`() {
 
-        val soknad = soknadRepository.save(createSoknad())
-        val brukerdataFormelt = brukerdataFormeltRepository.save(opprettBrukerdataFormelt(soknad.id!!))
+        val soknad = soknadRepository.save(opprettSoknad())
+        val livssituasjon = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
         val arbeidDto = doGet(
-            getPath(soknad.id!!),
+            getPath(soknad.id),
             ArbeidDto::class.java
         )
 
-        assertThat(arbeidDto.kommentar).isEqualTo(brukerdataFormelt.kommentarArbeidsforhold)
+        assertThat(arbeidDto.kommentar).isEqualTo(livssituasjon.arbeid.kommentar)
 
         arbeidDto.arbeidsforholdList.forEachIndexed { index, arbeidsforholdDto ->
-            with(soknad.arbeidsForhold[index]) {
+            with(livssituasjon.arbeid.arbeidsforhold[index]) {
                 assertThat(arbeidsforholdDto.arbeidsgivernavn).isEqualTo(arbeidsgivernavn)
                 assertThat(arbeidsforholdDto.orgnummer).isEqualTo(orgnummer)
                 assertThat(arbeidsforholdDto.start).isEqualTo(start)
@@ -49,30 +49,30 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere arbeid skal oppdatere databasen`() {
-        val soknad = soknadRepository.save(createSoknad())
-        brukerdataFormeltRepository.save(BrukerdataFormelt(soknadId = soknad.id!!))
+        val soknad = soknadRepository.save(opprettSoknad())
+        livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id))
 
         val input = ArbeidInput("Jeg synes ikke arbeid er så gøy lenger")
 
         doPut(
-            getPath(soknad.id!!),
+            getPath(soknad.id),
             input,
             ArbeidDto::class.java
         ).also {
             assertThat(it.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
 
-        brukerdataFormeltRepository.findByIdOrNull(soknad.id!!)?.let {
-            assertThat(it.kommentarArbeidsforhold).isEqualTo(input.kommentarTilArbeidsforhold)
+        livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.arbeid.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
     }
 
     @Test
     fun `Bruke tekst med ugyldige tegn skal gi feilmelding`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         doPutExpectError(
-            getPath(soknad.id!!),
+            getPath(soknad.id),
             ArbeidInput("En ny kommentar med rare tegn !#%&#¤&&"),
             HttpStatus.BAD_REQUEST
         )

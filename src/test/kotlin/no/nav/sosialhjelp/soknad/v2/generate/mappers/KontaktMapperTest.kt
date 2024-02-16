@@ -5,64 +5,69 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
-import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.AdresseToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.opprettAdresserSoknad
+import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.KontaktTilJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class AdresseMapperTest {
+class KontaktMapperTest {
 
-    private val mapper = AdresseToJsonMapper.AdresseMapper
+    private val mapper = KontaktTilJsonMapper.Mapper
 
     @Test
-    fun `Adresse-data skal mappes til JsonInternalSoknad`() {
+    fun `Kontakt skal mappes til JsonInternalSoknad`() {
 
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
-        val adresserSoknad = opprettAdresserSoknad(UUID.randomUUID())
+        val kontakt = opprettKontakt(UUID.randomUUID())
 
-        mapper.doMapping(adresserSoknad, json)
+        mapper.doMapping(kontakt, json)
 
-        with(json) {
-            assertMidlertidigAdresse(adresserSoknad.midlertidigAdresse)
-            assertFolkeregistrertAdresse(adresserSoknad.folkeregistrertAdresse)
-            assertOppholdsadresse(adresserSoknad)
+        with(json.soknad.data.personalia) {
+            assertTelefonnummerBruker(kontakt.telefonnummer)
+            assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrertAdresse)
+            assertOppholdsadresse(kontakt.adresser)
+            json.assertMidlertidigAdresse(kontakt.adresser.midlertidigAdresse)
         }
     }
 }
 
-private fun JsonInternalSoknad.assertOppholdsadresse(adresserSoknad: AdresserSoknad) {
-    val jsonOppholdsAdresse = soknad.data.personalia.oppholdsadresse
+private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnummer) {
+    assertThat(this.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
+    assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.bruker)
+}
 
-    adresserSoknad.brukerInput?.let {
-        when (adresserSoknad.brukerInput?.valgtAdresse) {
-            AdresseValg.FOLKEREGISTRERT -> jsonOppholdsAdresse.assertAdresse(adresserSoknad.folkeregistrertAdresse)
-            AdresseValg.MIDLERTIDIG -> jsonOppholdsAdresse.assertAdresse(adresserSoknad.midlertidigAdresse)
-            AdresseValg.SOKNAD -> jsonOppholdsAdresse.assertAdresse(it.brukerAdresse)
-            else -> throw IllegalStateException("Adressetype ikke stottet")
-        }
-    } ?: assertThat(jsonOppholdsAdresse).isNull()
+private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
+    when (adresser.adressevalg) {
+        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrertAdresse)
+        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidigAdresse)
+        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.brukerAdresse)
+        else -> throw IllegalStateException("AdresseValg ikke satt")
+    }
 }
 
 private fun JsonInternalSoknad.assertMidlertidigAdresse(midlertidigAdresseSoknad: Adresse?) {
     midlertidigAdresseSoknad?.let {
-        midlertidigAdresse.assertAdresse(it)
+        midlertidigAdresse.assertAdresse(midlertidigAdresseSoknad)
     }
         ?: assertThat(midlertidigAdresse).isNull()
 }
 
-private fun JsonInternalSoknad.assertFolkeregistrertAdresse(folkeregistrertAdresseSoknad: Adresse?) {
+private fun JsonPersonalia.assertFolkeregistrertAdresse(folkeregistrertAdresseSoknad: Adresse?) {
     folkeregistrertAdresseSoknad?.let {
-        soknad.data.personalia.folkeregistrertAdresse.assertAdresse(it)
+        folkeregistrertAdresse.assertAdresse(it)
     }
-        ?: assertThat(soknad.data.personalia.folkeregistrertAdresse).isNull()
+        ?: assertThat(folkeregistrertAdresse).isNull()
 }
 
 private fun JsonAdresse.assertAdresse(adresse: Adresse?) {

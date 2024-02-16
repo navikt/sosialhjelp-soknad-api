@@ -1,27 +1,26 @@
 CREATE TABLE soknad
 (
     id uuid primary key,
+    eier_person_id varchar(50) not null,
     opprettet timestamp not null,
     sist_endret timestamp,
     sendt_inn timestamp,
-    person_id varchar(30) not null,
-    fornavn varchar(255) not null,
-    mellomnavn varchar(255),
-    etternavn varchar(255) not null,
-    statsborgerskap varchar(50),
-    nordisk_borger boolean,
-    kontonummer varchar(30),
-    telefonnummer varchar(30)
+    hvorfor_soke text,
+    hva_sokes_om text,
+    utbetalinger_fra_nav bool,
+    inntekt_fra_skatt bool,
+    stotte_fra_husbanken bool
 );
 
-CREATE TABLE nav_enhet
+create table nav_enhet
 (
     soknad uuid primary key,
-    enhetsnavn text,
-    kommunenummer varchar(10),
-    kommunenavn varchar(50),
-    orgnummer varchar(30),
+    enhetsnavn varchar(255),
     enhetsnummer varchar(30),
+    kommunenummer varchar(30),
+    orgnummer varchar(30),
+    kommunenavn varchar(255),
+    constraint fk_navenhet_kontakt
     constraint fk_navenhet_soknad
         foreign key(soknad)
             references soknad(id) on delete cascade

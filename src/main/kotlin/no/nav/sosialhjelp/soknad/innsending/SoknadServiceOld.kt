@@ -41,6 +41,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -85,7 +86,7 @@ class SoknadServiceOld(
 
         prometheusMetricsService.reportStartSoknad(false)
 
-        val soknadUnderArbeid = SoknadUnderArbeid(
+        val soknad = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
             tilknyttetBehandlingsId = null,

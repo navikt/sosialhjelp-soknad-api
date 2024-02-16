@@ -27,23 +27,22 @@ class SendSoknadHandler(
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
-        val json = jsonGenerator.createJsonInternalSoknad(soknad.id!!)
+        val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        soknad.navEnhet?.let {
+        soknad.mottaker.let {
             log.info(
                 "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
                     "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}"
             )
         }
-            ?: throw IllegalStateException("NavEnhet for soknad ${soknad.id} finnes ikke.")
 
         val digisosId: UUID = try {
             // TODO Verdt å kikke litt på digisosApiV2Clienten da vi tilsynelatende håndterer feil manuelt
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = objectMapper.writeValueAsString(json.soknad),
                 tilleggsinformasjonJson = objectMapper.writeValueAsString(
-                    JsonTilleggsinformasjon(soknad.navEnhet?.enhetsnummer)
+                    JsonTilleggsinformasjon(soknad.mottaker.enhetsnummer)
                 ),
                 vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
                 dokumenter = getFilOpplastingList(json),

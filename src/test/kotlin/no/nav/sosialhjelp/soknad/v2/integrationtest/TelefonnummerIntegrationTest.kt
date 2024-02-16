@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerInput
-import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerDto
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
+import no.nav.sosialhjelp.soknad.v2.opprettKontakt
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,25 +14,25 @@ import org.springframework.http.HttpStatus
 class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
-    private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository
+    private lateinit var kontaktRepository: KontaktRepository
 
     @Test
     fun `Hente telefonnummer skal returnere lagret data`() {
-        val soknad = soknadRepository.save(createSoknad())
-        val brukerdata = brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
+        val soknad = soknadRepository.save(opprettSoknad())
+        val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
 
         doGet(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerDto::class.java
         ).also {
-            assertThat(it.telefonnummerRegister).isEqualTo(soknad.eier.telefonnummer)
-            assertThat(it.telefonnummerBruker).isEqualTo(brukerdata.telefonnummer)
+            assertThat(it.telefonnummerRegister).isEqualTo(kontakt.telefonnummer.register)
+            assertThat(it.telefonnummerBruker).isEqualTo(kontakt.telefonnummer.bruker)
         }
     }
 
     @Test
     fun `Oppdatere telefonnummer for bruker skal lagres i databasen`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         val telefonnummerInput = TelefonnummerInput(telefonnummerBruker = "32992311")
 
@@ -44,14 +44,14 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.telefonnummerBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
 
-        brukerdataPersonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.telefonnummer).isEqualTo(telefonnummerInput.telefonnummerBruker)
+        kontaktRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.telefonnummer.bruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
     }
 
     @Test
     fun `Oppdatere telefonnummer med annet enn siffer gir 400 BadRequest`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",

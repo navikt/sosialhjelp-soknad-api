@@ -9,44 +9,45 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
-import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class AdresseToJsonMapper(
-    private val adresseRepository: AdresseRepository
+class KontaktTilJsonMapper(
+    private val kontaktRepository: KontaktRepository
 ) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
 
-        val adresserSoknad = (
-            adresseRepository.findByIdOrNull(soknadId)
-                ?: throw IllegalStateException("Fant ikke Adresser")
-            )
+        val kontakt = kontaktRepository.findByIdOrNull(soknadId)
+            ?: throw IllegalStateException("Fant ikke Adresser")
 
-        doMapping(adresserSoknad, jsonInternalSoknad)
+        doMapping(kontakt, jsonInternalSoknad)
     }
 
-    internal companion object AdresseMapper {
+    internal companion object Mapper {
 
-        fun doMapping(adresserSoknad: AdresserSoknad, json: JsonInternalSoknad) {
-            val oppholdsadresse = adresserSoknad.getOppholdsadresse()
-            val valgtAdresse = adresserSoknad.brukerInput?.valgtAdresse
-                ?: throw IllegalStateException("Adressevalg er ikke satt for soknad")
+        fun doMapping(kontakt: Kontakt, json: JsonInternalSoknad) {
+            val oppholdsadresse = kontakt.adresser.getOppholdsadresse()
+            val adresseValg = kontakt.adresser.adressevalg
 
-            with(json) {
-                initializeObjects()
-                mapFolkeregistrertAdresse(adresserSoknad.folkeregistrertAdresse)
-                mapMidlertidigAdresse(adresserSoknad.midlertidigAdresse)
-                mapOppholdsadresse(oppholdsadresse, valgtAdresse)
+            json.initializeObjects()
+            json.midlertidigAdresse = kontakt.adresser.midlertidigAdresse?.toJsonAdresse()
+
+            with(json.soknad.data.personalia) {
+                telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
+                folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()
+                adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
             }
         }
 
@@ -55,24 +56,24 @@ class AdresseToJsonMapper(
             soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
         }
 
-        private fun JsonInternalSoknad.mapFolkeregistrertAdresse(folkeregistrertAdresse: Adresse?) {
-            folkeregistrertAdresse?.let {
-                soknad.data.personalia.folkeregistrertAdresse = it.toJsonAdresse()
-            }
+        private fun JsonPersonalia.mapOppholdsadresse(oppholdsadresse: Adresse, adresseValg: AdresseValg) {
+            this.oppholdsadresse = oppholdsadresse.toJsonAdresse()
+                .apply {
+                    this.kilde = if (adresseValg == AdresseValg.SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
+                    this.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
+                }
         }
 
-        private fun JsonInternalSoknad.mapMidlertidigAdresse(midlertidigAdresseSoknad: Adresse?) {
-            midlertidigAdresseSoknad?.let {
-                midlertidigAdresse = it.toJsonAdresse()
+        private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? {
+            return bruker?.let {
+                JsonTelefonnummer()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withVerdi(it)
             }
-        }
-
-        private fun JsonInternalSoknad.mapOppholdsadresse(oppholdsadresse: Adresse, adresseValg: AdresseValg) {
-            soknad.data.personalia.oppholdsadresse = oppholdsadresse.toJsonAdresse()
-                .also {
-                    it.kilde = if (adresseValg == AdresseValg.SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
-
-                    it.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
+                ?: register?.let {
+                    JsonTelefonnummer()
+                        .withKilde(JsonKilde.BRUKER)
+                        .withVerdi(it)
                 }
         }
 

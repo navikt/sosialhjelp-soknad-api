@@ -5,23 +5,25 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs
-import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.ArbeidController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.ArbeidInput
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BegrunnelseController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BegrunnelseDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BosituasjonController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BosituasjonDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.KontoInformasjonInput
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.KontonummerController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.TelefonnummerInput
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.UtdanningController
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.UtdanningDto
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
+import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerFrontend
+import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerController
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonDto
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningDto
+import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
+import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
+import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
+import org.slf4j.LoggerFactory
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
@@ -111,7 +113,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerRessurs.KontonummerInputDTO,
+        kontoInputDto: KontonummerInputDTO,
     ) {
         log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
 
@@ -119,21 +121,19 @@ class SoknadV2ControllerAdapter(
             with(kontoInputDto) {
                 if (harIkkeKonto != null || brukerutfyltVerdi != null) {
                     kontonummerController.updateKontoInformasjonBruker(
-                        UUID.fromString(soknadId),
-                        KontoInformasjonInput(
-                            harIkkeKonto = harIkkeKonto,
-                            kontonummerBruker = brukerutfyltVerdi
-                        )
+                        soknadId = UUID.fromString(soknadId),
+                    input = KontoInformasjonInput(
+                        harIkkeKonto = harIkkeKonto,
+                        kontonummerBruker = brukerutfyltVerdi
                     )
-                }
+                )}
             }
         }
             .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
-
     override fun updateTelefonnummer(
         soknadId: String,
-        telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend,
+        telefonnummerFrontend: TelefonnummerFrontend,
     ) {
         log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
 
@@ -147,20 +147,15 @@ class SoknadV2ControllerAdapter(
 
     override fun updateUtdanning(
         soknadId: String,
-        utdanningFrontend: UtdanningRessurs.UtdanningFrontend,
+        utdanningFrontend: UtdanningFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+log.info("NyModell: Oppdaterer Utdanning for $soknadId")
         runWithNewTransaction {
             utdanningFrontend.erStudent?.let {
                 utdanningController.updateUtdanning(
-                    UUID.fromString(soknadId),
-                    UtdanningDto(
-                        erStudent = it,
-                        studentgrad = utdanningFrontend.studengradErHeltid
-                            ?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID }
-                    )
-                )
-            }
+                    soknadId = UUID.fromString(soknadId),
+                utdanningDto = utdanningFrontend.toUtdanningDto()
+            )}
         }
             .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }
@@ -209,3 +204,10 @@ class SoknadV2ControllerAdapter(
         }
     }
 }
+
+private fun UtdanningFrontend.toUtdanningDto() = UtdanningDto(
+    erStudent = erStudent,
+    studentgrad = studengradErHeltid?.let {
+        if (it) Studentgrad.HELTID else Studentgrad.DELTID
+    }
+)

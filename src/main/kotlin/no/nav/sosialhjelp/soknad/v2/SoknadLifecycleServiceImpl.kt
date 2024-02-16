@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
@@ -20,8 +21,8 @@ class SoknadLifecycleServiceImpl(
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
 
-        val soknadId = registerDataFetcher.hentEierData().let {
-            soknadService.createSoknad(eier = it)
+        val soknadId = SubjectHandlerUtils.getUserIdFromToken().let {
+            soknadService.createSoknad(eierId = it)
         }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
@@ -46,7 +47,7 @@ class SoknadLifecycleServiceImpl(
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(
-                soknadService.getSoknad(soknadId).navEnhet?.enhetsnavn
+                soknadService.getSoknad(soknadId).mottaker.enhetsnavn
             )
         )
 
