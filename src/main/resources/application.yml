@@ -19,6 +19,11 @@ spring:
     multipart:
       max-file-size: 10MB
 
+#Todo utlede denne fra db navn
+postgres:
+  user:
+    role: soknadsosialhjelp-db-admin
+
 management:
   endpoints:
     web:

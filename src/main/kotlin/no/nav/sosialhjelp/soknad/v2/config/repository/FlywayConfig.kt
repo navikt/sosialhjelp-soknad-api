@@ -1,0 +1,22 @@
+package no.nav.sosialhjelp.soknad.v2.config.repository
+
+import org.flywaydb.core.api.configuration.FluentConfiguration
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
+
+@Profile("!test & !mock-alt")
+@Configuration
+@EnableJdbcRepositories
+class FlywayConfig(@Value("\${POSTGRES_USER_ROLE}") private val role: String) {
+
+    @Bean
+    fun setRole(): FlywayConfigurationCustomizer {
+        return FlywayConfigurationCustomizer { c: FluentConfiguration ->
+            c.initSql("SET ROLE \"$role\"")
+        }
+    }
+}
