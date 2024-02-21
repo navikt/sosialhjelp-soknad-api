@@ -49,7 +49,7 @@ class OpplastetVedleggRessurs(
             )
         ]
     )
-    @ApiResponse(responseCode = "204", description = "Filen ble ikke funnet (Bør være 404...)")
+    @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse,
@@ -62,7 +62,7 @@ class OpplastetVedleggRessurs(
                 val mimeType = detectMimeType(it.data)
                 ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
-            ?: ResponseEntity.noContent().build()
+            ?: ResponseEntity.notFound().build()
     }
 
     @GetMapping("/{behandlingsId}/{vedleggId}/fil")
@@ -76,7 +76,7 @@ class OpplastetVedleggRessurs(
             )
         ]
     )
-    @ApiResponse(responseCode = "204", description = "Filen ble ikke funnet (Bør være 404...)")
+    @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
@@ -102,7 +102,7 @@ class OpplastetVedleggRessurs(
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.notFound().build()
     }
 
     @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
