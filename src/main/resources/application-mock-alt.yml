@@ -1,19 +1,12 @@
 server:
   port: ${PORT:8181}
-
 spring:
+  docker:
+    compose:
+      enabled: true
+      file: compose/docker-compose-mock.yml
   flyway:
-    enabled: false
-  #    baseline-on-migrate: true
-  #    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-  #    user: sa
-  #    password:
-  #    driver-class-name: org.hsqldb.jdbcDriver
-  datasource:
-    driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-    username: sa
-    password:
+    enabled: true
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
@@ -90,7 +83,7 @@ springdoc:
 # redis
 redis_host: ${REDIS_HOST:localhost}
 redis_port: 6379
-redis_password: ${REDIS_PASSWORD:pw}
+redis_password: ${REDIS_PASSWORD:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81}
 
 # Feature toggles
 unleash_instance_id: mock

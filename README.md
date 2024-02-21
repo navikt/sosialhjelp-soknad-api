@@ -21,9 +21,14 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 ### Krav
 * Java (JDK) 21
 
-### Kjøring lokalt mot mock-alt
-Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
-Krever at sosialhjelp-mock-alt-api også kjører lokalt.
+### Kjøring lokalt
+For testsystem `mock` så kjører applikasjonen med profilene `mock-alt, log-kibana, no-redis`.\
+
+Lokalt kan man kjøre med profilene:
+* `no-redis` - som navnet sier, uten redis.
+* `log-console` - for logging til console
+* `mock-alt` - Starter database-container, men må kjøre opp `mock-alt-api` manuelt
+* `local` - kjører både opp databasecontainer, samt `mock-alt-api` og `mock-alt` (`mock-alt`-profil må også være aktiv)
 
 ### Tekster
 Tekstfiler finnes her: `src/main/resources`.
@@ -38,7 +43,5 @@ Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-suppor
 
 I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.
 
-
 ## Hvordan komme i gang
 Se [Felles dokumentasjon for våre backend apper](https://github.com/navikt/digisos/blob/main/digisosdokumentasjon/docs/utviklerdokumentasjon/kom%20igang%20med%20utvikling.md#backend-gradle) for generell dokumentasjon av våre backend-apper.
-

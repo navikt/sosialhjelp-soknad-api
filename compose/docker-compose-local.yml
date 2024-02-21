@@ -1,0 +1,54 @@
+version: '3.9'
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=soknad1234
+      - POSTGRES_USER=soknad
+      - POSTGRES_DB=soknad
+
+  sosialhjelp-mock-alt:
+    container_name: sosialhjelp-mock-alt
+    image: ghcr.io/navikt/sosialhjelp-mock-alt/sosialhjelp-mock-alt:latest
+    restart: always
+    ports:
+      - "3008:5000"
+    networks:
+      digisos.docker-internal:
+        aliases:
+          - sosialhjelp-mock-alt.digisos.docker-internal
+
+  sosialhjelp-mock-alt-api:
+    container_name: sosialhjelp-mock-alt-api
+    image: ghcr.io/navikt/sosialhjelp-mock-alt-api/sosialhjelp-mock-alt-api:latest
+    restart: always
+    ports:
+      - "8989:8989"
+    networks:
+      digisos.docker-internal:
+        aliases:
+          - sosialhjelp-mock-alt-api.digisos.docker-internal
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 http://localhost:8989/sosialhjelp/mock-alt-api/internal/isAlive" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  cache:
+    container_name: redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+
+#  sosialhjelp-soknad:
+#    container_name: soknad
+#    image: ghcr.io/navikt/sosialhjelp-mock-alt-api/sosialhjelp-mock-alt-api:latest
+
+networks:
+  digisos.docker-internal:

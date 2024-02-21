@@ -110,6 +110,9 @@ dependencies {
     // pdf
     implementation(libs.bundles.pdfbox)
 
+    // developmentOnly
+    developmentOnly(libs.spring.boot.docker.compose)
+
     // testcontainers
     testImplementation("org.testcontainers:postgresql:1.19.3")
     testImplementation("org.testcontainers:junit-jupiter:1.19.3")
