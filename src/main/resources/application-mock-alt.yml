@@ -5,6 +5,8 @@ spring:
     compose:
       enabled: true
       file: compose/docker-compose-mock.yml
+      profiles:
+        active: "mock-alt"
   flyway:
     enabled: true
 
