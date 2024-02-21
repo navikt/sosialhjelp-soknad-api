@@ -44,7 +44,7 @@ class OpplastetVedleggRessurs(
         responseCode = "200", description = "Filen ble funnet og returneres",
         content = [
             Content(
-                mediaType = MediaType.ALL_VALUE,
+                mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
                 schema = Schema(type = "string", format = "binary")
             )
         ]
@@ -71,7 +71,7 @@ class OpplastetVedleggRessurs(
         responseCode = "200", description = "Filen ble funnet og returneres",
         content = [
             Content(
-                mediaType = MediaType.ALL_VALUE,
+                mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
                 schema = Schema(type = "string", format = "binary")
             )
         ]
