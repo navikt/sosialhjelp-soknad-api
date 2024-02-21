@@ -63,7 +63,7 @@ object OkonomiskeOpplysningerMapper {
             val renter = oversikt.utgift.firstOrNull { it.type == UTGIFTER_BOLIGLAN_RENTER }
                 ?: throw IkkeFunnetException("renter for boliglån finnes ikke i søknaden")
             oversikt.utgift =
-                oversikt.utgift.filter { it.type == UTGIFTER_BOLIGLAN_RENTER }.plus(rader.map { mapToOversiktUtgift(it, renter.type, renter.tittel) })
+                oversikt.utgift.filter { it.type != UTGIFTER_BOLIGLAN_RENTER }.plus(rader.map { mapToOversiktUtgift(it, renter.type, renter.tittel) })
         }
     }
 
