@@ -25,7 +25,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = ["no-interceptor", "no-redis", "test"])
+@ActiveProfiles(profiles = ["no-interceptor", "no-redis", "test", "test-container"])
 class FileConverterIntegrationTest {
     private val endpoint: String = "/vedlegg/konverter"
 
