@@ -29,7 +29,7 @@ create table SOKNADMETADATA
     sistendretdato timestamp,
     innsendtdato timestamp,
     batchstatus varchar(255)
-)
+);
 
 create table OPPGAVE
 (

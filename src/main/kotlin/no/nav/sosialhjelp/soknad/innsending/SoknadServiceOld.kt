@@ -41,7 +41,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -60,7 +59,6 @@ import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
@@ -105,10 +103,9 @@ class SoknadServiceOld(
 
     private fun opprettSoknadMetadata(fnr: String): String {
         log.info("Starter søknad")
-        val id = soknadMetadataRepository.hentNesteId()
+//        val id = soknadMetadataRepository.hentNesteId()
         val soknadMetadata = SoknadMetadata(
-            id = id,
-            behandlingsId = lagBehandlingsId(id),
+            behandlingsId = UUID.randomUUID().toString(),
             fnr = fnr,
             skjema = SKJEMANUMMER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

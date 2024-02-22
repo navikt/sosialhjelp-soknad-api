@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.LocalDateTimeXmlAdapter
 import java.time.LocalDateTime
 
 data class Oppgave(
-    var id: Long,
+    var id: Long = 0,
     var behandlingsId: String,
     var type: String?,
     var status: Status,
