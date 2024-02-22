@@ -2,7 +2,7 @@ create table brukerdata_formelt
 (
     soknad_id uuid primary key,
     kommentar_arbeidsforhold text,
-    er_student bool,
+    er_student boolean,
     student_grad varchar(30),
     constraint fk_brukerdata_formelt_soknad
         foreign key(soknad_id)
@@ -14,7 +14,7 @@ create table samtykke
 (
     brukerdata_formelt uuid not null,
     type varchar(50) not null,
-    verdi bool,
+    verdi boolean,
     dato date,
     constraint samtykke_pk primary key(brukerdata_formelt, type),
     constraint fk_samtykke_brukerdata
