@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -18,7 +17,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
-@ActiveProfiles(profiles = ["no-redis", "test"])
+@ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class SoknadRessursEndpointIT {
 
     companion object {
@@ -41,7 +40,7 @@ class SoknadRessursEndpointIT {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     // TODO Dette gjelder vel ettersendelser, som vi ikke skal støtte lenger
     internal fun nektetTilgang_opprettEttersendelse() {
         val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
