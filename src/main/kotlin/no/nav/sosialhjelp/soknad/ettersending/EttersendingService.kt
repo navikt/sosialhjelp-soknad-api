@@ -24,6 +24,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.DAYS
+import java.util.*
 
 @Deprecated("SvarUt og denne type ettersending støttes ikke lenger")
 @Component
@@ -50,9 +51,10 @@ class EttersendingService(
 
     private fun opprettSoknadMetadataEttersendelse(ettersendesPaSoknad: SoknadMetadata): String {
         val id = soknadMetadataRepository.hentNesteId()
+
         val ettersendelse = SoknadMetadata(
-            id = id,
-            behandlingsId = lagBehandlingsId(id),
+            id = 0,
+            behandlingsId = UUID.randomUUID().toString(),
             tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
             fnr = ettersendesPaSoknad.fnr,
             skjema = ettersendesPaSoknad.skjema,

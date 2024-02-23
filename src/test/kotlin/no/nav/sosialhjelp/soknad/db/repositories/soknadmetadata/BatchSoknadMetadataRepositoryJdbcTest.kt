@@ -13,13 +13,14 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("no-redis", "test", "test-container")
 internal class BatchSoknadMetadataRepositoryJdbcTest {
     private val dagerGammelSoknad = 20
-    private val behandlingsId = "1100AAAAA"
+    private val behandlingsId get() = UUID.randomUUID().toString()
 
     @Autowired
     private lateinit var batchSoknadMetadataRepository: BatchSoknadMetadataRepository
@@ -73,18 +74,20 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     @Test
     internal fun `hentEldreEnn skal hente 20 siste`() {
         // oppretter noen SoknadMetadata som er nyere enn `antallDagerGammelt`
-        opprettSoknadMetadata(soknadMetadata(behandlingsId + "A", FERDIG, dagerGammelSoknad - 2))
-        opprettSoknadMetadata(soknadMetadata(behandlingsId + "B", FERDIG, dagerGammelSoknad - 1))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 2))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 1))
 
         // oppretter over 20 SoknadMetadata som er eldre enn `antallDagerGammelt`
-        (0..22).forEach {
-            opprettSoknadMetadata(soknadMetadata(behandlingsId + it, FERDIG, dagerGammelSoknad + it))
+        val oldSoknads = (0..22).map {
+            behandlingsId.also { id ->
+                opprettSoknadMetadata(soknadMetadata(id, FERDIG, dagerGammelSoknad + it))
+            }
         }
 
         val bolk = batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)
         assertThat(bolk).hasSize(20)
-        bolk.forEachIndexed { i, soknadMetadata ->
-            assertThat(soknadMetadata.behandlingsId).isEqualTo(behandlingsId + i)
+        bolk.forEach {
+            assertThat(oldSoknads).contains(it.behandlingsId)
         }
     }
 
@@ -100,7 +103,6 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
         dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
-            id = soknadMetadataRepository.hentNesteId(),
             behandlingsId = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

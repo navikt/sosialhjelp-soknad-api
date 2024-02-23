@@ -28,7 +28,8 @@ create table SOKNADMETADATA
     opprettetdato timestamp,
     sistendretdato timestamp,
     innsendtdato timestamp,
-    batchstatus varchar(255)
+    batchstatus varchar(255),
+    lest_ditt_nav boolean DEFAULT false NOT NULL
 );
 
 create table OPPGAVE

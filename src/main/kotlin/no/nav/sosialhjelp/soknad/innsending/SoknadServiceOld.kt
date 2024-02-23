@@ -78,8 +78,7 @@ class SoknadServiceOld(
     @Transactional
     fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-//        val behandlingsId = opprettSoknadMetadata(eier) // TODO NyModell Metadata
-        val behandlingsId = UUID.randomUUID().toString()
+        val behandlingsId = opprettSoknadMetadata(eier) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)
@@ -96,7 +95,6 @@ class SoknadServiceOld(
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
-        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 
@@ -105,10 +103,10 @@ class SoknadServiceOld(
 
     private fun opprettSoknadMetadata(fnr: String): String {
         log.info("Starter søknad")
-        val id = soknadMetadataRepository.hentNesteId()
+
         val soknadMetadata = SoknadMetadata(
-            id = id,
-            behandlingsId = lagBehandlingsId(id),
+            id = 0,
+            behandlingsId = UUID.randomUUID().toString(),
             fnr = fnr,
             skjema = SKJEMANUMMER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
