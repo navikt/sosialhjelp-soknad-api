@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime

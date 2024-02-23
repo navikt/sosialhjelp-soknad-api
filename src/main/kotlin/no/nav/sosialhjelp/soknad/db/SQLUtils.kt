@@ -10,7 +10,7 @@ object SQLUtils {
 
     fun limit(limit: Int): String {
 //        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
-            return "limit $limit"
+        return "limit $limit"
 //        } else {
 //            "and rownum <= $limit"
 //        }
