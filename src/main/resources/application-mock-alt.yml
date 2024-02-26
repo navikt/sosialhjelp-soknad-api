@@ -9,6 +9,9 @@ spring:
     url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
     username: sa
     password:
+  docker:
+    compose:
+      enabled: false
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
