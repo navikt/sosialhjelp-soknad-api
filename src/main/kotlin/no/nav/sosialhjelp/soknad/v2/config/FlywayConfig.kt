@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.config.repository
+package no.nav.sosialhjelp.soknad.v2.config
 
 import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.springframework.beans.factory.annotation.Value

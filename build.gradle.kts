@@ -71,6 +71,7 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
+    implementation(libs.vault.jdbc)
     runtimeOnly("org.flywaydb:flyway-database-hsqldb:10.8.1")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
 //    runtimeOnly(libs.ojdbc10)
