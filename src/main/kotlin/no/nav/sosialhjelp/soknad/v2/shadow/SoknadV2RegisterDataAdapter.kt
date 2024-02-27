@@ -21,7 +21,8 @@ class SoknadV2RegisterDataAdapter(
 
     override fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String) {
 
-        runCatching {
+        try {
+
             soknadAdapter.createNewSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
@@ -33,8 +34,26 @@ class SoknadV2RegisterDataAdapter(
                     )
                 )
             )
+
+        } catch (ignored: Exception) {
+//            log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", e)
         }
-            .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+
+
+//        runCatching {
+//            soknadAdapter.createNewSoknad(
+//                soknadId = UUID.fromString(behandlingsId),
+//                opprettetDato = opprettetDato,
+//                eier = Eier(
+//                    personId = eierId,
+//                    navn = Navn(
+//                        fornavn = "Ukjent",
+//                        etternavn = "Ukjent"
+//                    )
+//                )
+//            )
+//        }
+//            .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
     override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>) {
@@ -48,7 +67,8 @@ class SoknadV2RegisterDataAdapter(
     }
 
     override fun addAdresserRegister(behandlingsId: String, person: Person?) {
-        runCatching {
+
+        try {
             person?.let {
                 adresseAdapter.updateAdresserFraRegister(
                     soknadId = UUID.fromString(behandlingsId),
@@ -56,8 +76,19 @@ class SoknadV2RegisterDataAdapter(
                     midlertidigAdresse = it.oppholdsadresse,
                 )
             }
-        }
-            .onFailure { log.error("Ny modell: Kunne ikke legge til adresser fra register", it) }
+        } catch (ignored: Exception) {}
+
+
+//        runCatching {
+//            person?.let {
+//                adresseAdapter.updateAdresserFraRegister(
+//                    soknadId = UUID.fromString(behandlingsId),
+//                    folkeregistrertAdresse = it.bostedsadresse,
+//                    midlertidigAdresse = it.oppholdsadresse,
+//                )
+//            }
+//        }
+//            .onFailure { log.error("Ny modell: Kunne ikke legge til adresser fra register", it) }
     }
 
     override fun addTelefonnummerRegister(behandlingsId: String, telefonnummer: String?) {
