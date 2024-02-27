@@ -58,9 +58,9 @@ class AdresseSystemdata(
         midlertidigAdresse: JsonAdresse?
     ): Boolean {
         return (
-                folkeregistrertAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.FOLKEREGISTRERT == personalia.oppholdsadresse.adresseValg ||
-                        midlertidigAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.MIDLERTIDIG == personalia.oppholdsadresse.adresseValg
-                )
+            folkeregistrertAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.FOLKEREGISTRERT == personalia.oppholdsadresse.adresseValg ||
+                midlertidigAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.MIDLERTIDIG == personalia.oppholdsadresse.adresseValg
+            )
     }
 
     private fun updatePostadresse(

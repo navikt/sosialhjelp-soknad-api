@@ -63,7 +63,7 @@ class ArbeidRessurs(
 
         // NyModell
         kotlin.runCatching { controllerAdapter.updateArbeid(behandlingsId, arbeidFrontend) }
-            .onFailure {  }
+            .onFailure { }
 
         return getArbeidFromSoknad(behandlingsId)
     }
