@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,13 +17,14 @@ import java.util.*
 class SoknadV2RegisterDataAdapter(
     private val soknadAdapter: SoknadAdapter,
     private val adresseAdapter: AdresseAdapter,
+    private val transactionTemplate: TransactionTemplate
 ) : RegisterDataAdapter {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String) {
+        log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
-        try {
-
+        runCatching {
             soknadAdapter.createNewSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
@@ -34,29 +36,12 @@ class SoknadV2RegisterDataAdapter(
                     )
                 )
             )
-
-        } catch (ignored: Exception) {
-//            log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", e)
         }
-
-
-//        runCatching {
-//            soknadAdapter.createNewSoknad(
-//                soknadId = UUID.fromString(behandlingsId),
-//                opprettetDato = opprettetDato,
-//                eier = Eier(
-//                    personId = eierId,
-//                    navn = Navn(
-//                        fornavn = "Ukjent",
-//                        etternavn = "Ukjent"
-//                    )
-//                )
-//            )
-//        }
-//            .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+            .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
     override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>) {
+        log.info("NyModell: Legger til arbeidsforhold for $soknadId")
         runCatching {
             soknadAdapter.handleArbeidsforholdList(
                 UUID.fromString(soknadId),
@@ -67,32 +52,20 @@ class SoknadV2RegisterDataAdapter(
     }
 
     override fun addAdresserRegister(behandlingsId: String, person: Person?) {
+        log.info("NyModell: Legger til adresser for $behandlingsId")
 
-        try {
-            person?.let {
-                adresseAdapter.updateAdresserFraRegister(
-                    soknadId = UUID.fromString(behandlingsId),
-                    folkeregistrertAdresse = it.bostedsadresse,
-                    midlertidigAdresse = it.oppholdsadresse,
-                )
-            }
-        } catch (ignored: Exception) {}
-
-
-//        runCatching {
-//            person?.let {
-//                adresseAdapter.updateAdresserFraRegister(
-//                    soknadId = UUID.fromString(behandlingsId),
-//                    folkeregistrertAdresse = it.bostedsadresse,
-//                    midlertidigAdresse = it.oppholdsadresse,
-//                )
-//            }
-//        }
-//            .onFailure { log.error("Ny modell: Kunne ikke legge til adresser fra register", it) }
+        person?.let {
+            adresseAdapter.updateAdresserFraRegister(
+                soknadId = UUID.fromString(behandlingsId),
+                folkeregistrertAdresse = it.bostedsadresse,
+                midlertidigAdresse = it.oppholdsadresse,
+            )
+        }
     }
 
     override fun addTelefonnummerRegister(behandlingsId: String, telefonnummer: String?) {
-        runCatching {
+        log.info("NyModell: Legger til telefonnummer for $behandlingsId")
+        kotlin.runCatching {
             telefonnummer?.let { soknadAdapter.addTelefonnummer(UUID.fromString(behandlingsId), it) }
         }
             .onFailure { log.error("Kunne ikke legge til telefonnummer fra register", it) }

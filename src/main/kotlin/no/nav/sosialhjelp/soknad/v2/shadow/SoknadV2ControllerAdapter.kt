@@ -33,6 +33,8 @@ import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
 
 @Controller
@@ -45,6 +47,7 @@ class SoknadV2ControllerAdapter(
     private val utdanningController: UtdanningController,
     private val sivilstandController: SivilstandController,
     private val forsorgerpliktController: ForsorgerpliktController,
+    private val transactionTemplate: TransactionTemplate
 ) : ControllerAdapter {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -52,19 +55,23 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
-        kotlin.runCatching {
-            arbeidFrontend.kommentarTilArbeidsforhold?.let {
+        log.info("NyModell: Oppdaterer Arbeid for $soknadId")
+
+        arbeidFrontend.kommentarTilArbeidsforhold?.let {
+            runWithNewTransaction {
                 arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
             }
+                .onFailure { log.error("Ny Modell: Oppdatere arbeid feilet", it) }
         }
-            .onFailure { log.error("Ny Modell: Oppdatere arbeid feilet", it) }
     }
 
     override fun updateBegrunnelse(
         soknadId: String,
         begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
-        kotlin.runCatching {
+        log.info("NyModell: Oppdaterer Begrunnelse for $soknadId")
+
+        runWithNewTransaction {
             with(begrunnelseFrontend) {
                 if (hvaSokesOm != null || hvorforSoke != null) {
                     begrunnelseController.updateBegrunnelse(
@@ -84,8 +91,9 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
-        kotlin.runCatching {
+        log.info("NyModell: Oppdaterer Bosituasjon for $soknadId")
 
+        runWithNewTransaction {
             with(bosituasjonFrontend) {
                 if (botype != null || antallPersoner != null) {
                     bosituasjonController.updateBosituasjon(
@@ -105,7 +113,9 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         kontoInputDto: KontonummerRessurs.KontonummerInputDTO,
     ) {
-        kotlin.runCatching {
+        log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
+
+        runWithNewTransaction {
             with(kontoInputDto) {
                 if (harIkkeKonto != null || brukerutfyltVerdi != null) {
                     kontonummerController.updateKontoInformasjonBruker(
@@ -125,7 +135,9 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend,
     ) {
-        kotlin.runCatching {
+        log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
+
+        runWithNewTransaction {
             telefonnummerFrontend.brukerutfyltVerdi?.let {
                 telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
             }
@@ -137,7 +149,8 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         utdanningFrontend: UtdanningRessurs.UtdanningFrontend,
     ) {
-        kotlin.runCatching {
+        log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+        runWithNewTransaction {
             utdanningFrontend.erStudent?.let {
                 utdanningController.updateUtdanning(
                     UUID.fromString(soknadId),
@@ -153,6 +166,8 @@ class SoknadV2ControllerAdapter(
     }
 
     override fun updateSivilstand(soknadId: String, familieFrontend: SivilstatusFrontend) {
+        log.info("NyModell: Oppdaterer Sivilstatus for $soknadId")
+
         val sivilstandInput = familieFrontend.run {
             SivilstandInput(
                 sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
@@ -166,22 +181,31 @@ class SoknadV2ControllerAdapter(
                 },
             )
         }
-        kotlin.runCatching {
+        runWithNewTransaction {
             sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
         }
             .onFailure { log.error("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
     override fun updateForsorger(soknadId: String, forsorgerpliktFrontend: ForsorgerpliktFrontend) {
+        log.info("NyModell: Oppdaterer Forsorger for $soknadId")
+
         val forsorgerInput = forsorgerpliktFrontend.run {
             ForsorgerInput(
                 barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
                 ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) }
             )
         }
-        kotlin.runCatching {
+        runWithNewTransaction {
             forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
         }
             .onFailure { log.error("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
+    }
+
+    private fun runWithNewTransaction(function: () -> Unit): Result<Unit> {
+        return kotlin.runCatching {
+            transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+            transactionTemplate.execute { function.invoke() }
+        }
     }
 }

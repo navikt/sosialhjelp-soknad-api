@@ -34,11 +34,12 @@ object XsrfGenerator {
         }
     }
 
-    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockProfil: Boolean) {
+    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockAltProfile: Boolean) {
         val xsrfToken = generateXsrfToken(behandlingsId)
         val xsrfTokenYesterday = generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
         val valid = xsrfToken == givenToken || xsrfTokenYesterday == givenToken
-        if (!valid && !isMockProfil) {
+        // TODO Skal vi forholde oss til hvilken profil som er aktiv for å sjekke token?
+        if (!valid && !isMockAltProfile) {
             throw AuthorizationException("Feil token")
         }
     }

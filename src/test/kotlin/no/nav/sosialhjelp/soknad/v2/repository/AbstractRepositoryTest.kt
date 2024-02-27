@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
-@ActiveProfiles("test", "test-container")
+@ActiveProfiles("test", "mock-alt")
 abstract class AbstractRepositoryTest {
 
     @Autowired

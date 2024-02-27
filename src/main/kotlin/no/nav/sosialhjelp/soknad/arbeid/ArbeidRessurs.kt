@@ -62,7 +62,8 @@ class ArbeidRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
         // NyModell
-        controllerAdapter.updateArbeid(behandlingsId, arbeidFrontend)
+        kotlin.runCatching { controllerAdapter.updateArbeid(behandlingsId, arbeidFrontend) }
+            .onFailure {  }
 
         return getArbeidFromSoknad(behandlingsId)
     }

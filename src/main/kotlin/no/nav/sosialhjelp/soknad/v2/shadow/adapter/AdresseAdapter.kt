@@ -14,6 +14,8 @@ import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Component
@@ -21,6 +23,7 @@ class AdresseAdapter(
     private val adresseRepository: AdresseRepository,
     private val hentAdresseService: HentAdresseService
 ) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun updateAdresserFraRegister(
         soknadId: UUID,
         folkeregistrertAdresse: Bostedsadresse?,
@@ -32,9 +35,6 @@ class AdresseAdapter(
             midlertidigAdresse = midlertidigAdresse?.toV2Adresse()
         )
 
-        /* TODO I fremtiden ønsker vi å manipulere den lagrede entiteten direkte - men systemdata oppdateres litt i..
-        ... hytt og pine så det må gjøre en replace av hele entiteten.
-        */
         adresseRepository.findByIdOrNull(soknadId)?.brukerInput
             ?.let {
                 adresserSoknad.brukerInput = BrukerInputAdresse(

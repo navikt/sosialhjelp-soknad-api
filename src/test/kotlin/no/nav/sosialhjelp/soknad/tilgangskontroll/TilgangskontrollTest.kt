@@ -22,6 +22,7 @@ import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.core.env.Environment
 import java.time.LocalDateTime
 
 internal class TilgangskontrollTest {
@@ -29,8 +30,9 @@ internal class TilgangskontrollTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val personService: PersonService = mockk()
+    private val environment: Environment = mockk()
 
-    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService)
+    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService, environment)
 
     @BeforeEach
     fun setUp() {
