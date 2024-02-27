@@ -6,12 +6,12 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresseRepository
 import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
 import no.nav.sosialhjelp.soknad.v2.adresse.BrukerInputAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation

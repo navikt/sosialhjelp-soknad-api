@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.eier
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Column
@@ -26,12 +27,6 @@ data class Eier(
     @Embedded.Empty
     val kontonummer: Kontonummer = Kontonummer(),
 ) : SoknadBubble
-
-data class Navn(
-    val fornavn: String,
-    val mellomnavn: String? = null,
-    val etternavn: String,
-)
 
 data class Kontonummer(
     val harIkkeKonto: Boolean? = null,

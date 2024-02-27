@@ -4,9 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
-import no.nav.sosialhjelp.soknad.v2.eier.Navn
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.soknad.Eier
 import java.time.LocalDateTime
 import java.util.*
 

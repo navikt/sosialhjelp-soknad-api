@@ -86,7 +86,7 @@ class SoknadServiceOld(
 
         prometheusMetricsService.reportStartSoknad(false)
 
-        val soknad = SoknadUnderArbeid(
+        val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
             tilknyttetBehandlingsId = null,

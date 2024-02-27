@@ -8,22 +8,6 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
-import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerController
-import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidController
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonController
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonDto
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningDto
-import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
-import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
-import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
-import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
-import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
-import org.slf4j.LoggerFactory
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
@@ -32,7 +16,26 @@ import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerInput
 import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktController
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerController
+import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonDto
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.IkkeStudentInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningDto
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningInput
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
+import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
+import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.TransactionDefinition
@@ -117,17 +120,18 @@ class SoknadV2ControllerAdapter(
     ) {
         log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
 
-        runWithNewTransaction {
-            with(kontoInputDto) {
-                if (harIkkeKonto != null || brukerutfyltVerdi != null) {
-                    kontonummerController.updateKontoInformasjonBruker(
-                        soknadId = UUID.fromString(soknadId),
-                    input = KontoInformasjonInput(
-                        harIkkeKonto = harIkkeKonto,
-                        kontonummerBruker = brukerutfyltVerdi
-                    )
-                )}
+        val kontoInput = kontoInputDto.run {
+            when {
+                harIkkeKonto == true -> HarIkkeKontoInput(harIkkeKonto)
+                brukerutfyltVerdi != null -> KontonummerBrukerInput(brukerutfyltVerdi)
+                else -> return
             }
+        }
+        runWithNewTransaction {
+            kontonummerController.updateKontoInformasjonBruker(
+                soknadId = UUID.fromString(soknadId),
+                input = kontoInput
+            )
         }
             .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
@@ -149,13 +153,24 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         utdanningFrontend: UtdanningFrontend,
     ) {
-log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+        log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+
+        val utdanningInput = utdanningFrontend.run {
+            when {
+                erStudent == false -> IkkeStudentInput()
+                erStudent == true && studengradErHeltid != null -> {
+                    StudentgradInput(if (studengradErHeltid as Boolean) Studentgrad.HELTID else Studentgrad.DELTID)
+                }
+                else -> return
+            }
+        }
+
         runWithNewTransaction {
             utdanningFrontend.erStudent?.let {
                 utdanningController.updateUtdanning(
                     soknadId = UUID.fromString(soknadId),
-                utdanningDto = utdanningFrontend.toUtdanningDto()
-            )}
+                    input = utdanningInput
+                )}
         }
             .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }

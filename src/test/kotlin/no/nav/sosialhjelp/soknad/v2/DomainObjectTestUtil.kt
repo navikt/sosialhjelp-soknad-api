@@ -7,7 +7,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
-import no.nav.sosialhjelp.soknad.v2.eier.Navn
+import no.nav.sosialhjelp.soknad.v2.familie.Barn
+import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
+import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.familie.Familie
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
@@ -23,11 +27,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
-import no.nav.sosialhjelp.soknad.v2.familie.Barn
-import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
-import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.Familie
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
@@ -47,6 +46,16 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     }
 }
 
+fun createFamilie(
+    soknadId: UUID,
+    harForsorgerPlikt: Boolean? = null,
+    barnebidrag: Barnebidrag? = null,
+    sivilstatus: Sivilstatus? = null,
+    ansvar: List<Barn> = emptyList(),
+    ektefelle: Ektefelle? = null,
+) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
+
+
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
@@ -64,15 +73,6 @@ fun opprettSoknad(
         begrunnelse = begrunnelse,
         driftsinformasjon = driftsinformasjon,
     )
-}
-
-fun opprettLivssituasjon(
-    soknadId: UUID,
-    arbeid: Arbeid = opprettArbeid(),
-    utdanning: Utdanning = opprettUtdanning(),
-    bosituasjon: Bosituasjon = opprettBosituasjon()
-): Livssituasjon {
-    return Livssituasjon(soknadId, arbeid, utdanning, bosituasjon)
 }
 
 fun opprettArbeidsforholdList(
@@ -131,6 +131,26 @@ fun opprettNavn(
         etternavn = etternavn
     )
 }
+
+fun createBarn(
+    uuid: UUID = UUID.randomUUID(),
+    personId: String? = null,
+    navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
+    fodselsdato: String? = null,
+    borSammen: Boolean? = null,
+    folkeregistrertSammen: Boolean? = null,
+    deltBosted: Boolean? = null,
+    samvarsgrad: Int? = null,
+) = Barn(
+    uuid,
+    personId,
+    navn,
+    fodselsdato,
+    borSammen,
+    folkeregistrertSammen,
+    deltBosted,
+    samvarsgrad,
+)
 
 fun opprettMidlertidigAdresse(
     adresselinjer: List<String> = listOf(

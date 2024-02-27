@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.createBarn
 import no.nav.sosialhjelp.soknad.v2.createFamilie
-import no.nav.sosialhjelp.soknad.v2.createSoknad
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
@@ -14,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.toDomain
 import no.nav.sosialhjelp.soknad.v2.familie.toDto
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +26,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere familie`() {
-        val storedSoknad = soknadRepository.save(createSoknad())
+        val storedSoknad = soknadRepository.save(opprettSoknad())
         val storedFamilie = familieRepository.save(createFamilie(storedSoknad.id))
 
         doGet(
@@ -39,7 +39,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere familie med forsorger`() {
-        val storedSoknad = soknadRepository.save(createSoknad())
+        val storedSoknad = soknadRepository.save(opprettSoknad())
         familieRepository.save(
             createFamilie(
                 storedSoknad.id,
@@ -76,7 +76,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere familie med ektefelle`() {
-        val storedSoknad = soknadRepository.save(createSoknad())
+        val storedSoknad = soknadRepository.save(opprettSoknad())
         familieRepository.save(createFamilie(storedSoknad.id))
 
         val ektefelle = EktefelleInput(
