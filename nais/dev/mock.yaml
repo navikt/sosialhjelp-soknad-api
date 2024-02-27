@@ -51,7 +51,7 @@ spec:
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: "mock-alt,log-console,no-redis"
+      value: "mock-alt,log-kibana,no-redis"
     - name: PORT
       value: "8080"
     - name: AAREG_URL
