@@ -5,6 +5,7 @@ server:
   shutdown: graceful
   max-http-request-header-size: 16KB
 
+#TODO kan username og password fjernes når vault integrasjon er på plass? Kun brukes i lokal og test?
 spring:
   main:
     banner-mode: off
@@ -23,6 +24,8 @@ spring:
 postgres:
   user:
     role: soknadsosialhjelp-db-admin
+
+vault-mount-path: ${VAULT_MOUNT_PATH}
 
 management:
   endpoints:
