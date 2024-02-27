@@ -31,6 +31,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktControl
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import java.util.*
 
@@ -45,94 +46,114 @@ class SoknadV2ControllerAdapter(
     private val sivilstandController: SivilstandController,
     private val forsorgerpliktController: ForsorgerpliktController,
 ) : ControllerAdapter {
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     override fun updateArbeid(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
-        arbeidFrontend.kommentarTilArbeidsforhold?.let {
-            arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
+        kotlin.runCatching {
+            arbeidFrontend.kommentarTilArbeidsforhold?.let {
+                arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
+            }
         }
+            .onFailure { log.error("Ny Modell: Oppdatere arbeid feilet", it) }
     }
 
     override fun updateBegrunnelse(
         soknadId: String,
         begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
-        with(begrunnelseFrontend) {
-            if (hvaSokesOm != null || hvorforSoke != null) {
-                begrunnelseController.updateBegrunnelse(
-                    UUID.fromString(soknadId),
-                    BegrunnelseDto(
-                        hvaSokesOm = hvaSokesOm,
-                        hvorforSoke = hvorforSoke
+        kotlin.runCatching {
+            with(begrunnelseFrontend) {
+                if (hvaSokesOm != null || hvorforSoke != null) {
+                    begrunnelseController.updateBegrunnelse(
+                        UUID.fromString(soknadId),
+                        BegrunnelseDto(
+                            hvaSokesOm = hvaSokesOm,
+                            hvorforSoke = hvorforSoke
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny Modell: Oppdatere Begrunnelse feilet", it) }
     }
 
     override fun updateBosituasjon(
         soknadId: String,
         bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
-        with(bosituasjonFrontend) {
-            if (botype != null || antallPersoner != null) {
-                bosituasjonController.updateBosituasjon(
-                    UUID.fromString(soknadId),
-                    BosituasjonDto(
-                        botype = botype?.let { Botype.valueOf(it.name) },
-                        antallPersoner = antallPersoner
+        kotlin.runCatching {
+
+            with(bosituasjonFrontend) {
+                if (botype != null || antallPersoner != null) {
+                    bosituasjonController.updateBosituasjon(
+                        UUID.fromString(soknadId),
+                        BosituasjonDto(
+                            botype = botype?.let { Botype.valueOf(it.name) },
+                            antallPersoner = antallPersoner
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Bosituasjon feilet", it) }
     }
 
     override fun updateKontonummer(
         soknadId: String,
         kontoInputDto: KontonummerRessurs.KontonummerInputDTO,
     ) {
-        with(kontoInputDto) {
-            if (harIkkeKonto != null || brukerutfyltVerdi != null) {
-                kontonummerController.updateKontoInformasjonBruker(
-                    UUID.fromString(soknadId),
-                    KontoInformasjonInput(
-                        harIkkeKonto = harIkkeKonto,
-                        kontonummerBruker = brukerutfyltVerdi
+        kotlin.runCatching {
+            with(kontoInputDto) {
+                if (harIkkeKonto != null || brukerutfyltVerdi != null) {
+                    kontonummerController.updateKontoInformasjonBruker(
+                        UUID.fromString(soknadId),
+                        KontoInformasjonInput(
+                            harIkkeKonto = harIkkeKonto,
+                            kontonummerBruker = brukerutfyltVerdi
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
 
     override fun updateTelefonnummer(
         soknadId: String,
         telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend,
     ) {
-        telefonnummerFrontend.brukerutfyltVerdi?.let {
-            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
+        kotlin.runCatching {
+            telefonnummerFrontend.brukerutfyltVerdi?.let {
+                telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
+            }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
 
     override fun updateUtdanning(
         soknadId: String,
         utdanningFrontend: UtdanningRessurs.UtdanningFrontend,
     ) {
-
-        utdanningFrontend.erStudent?.let {
-            utdanningController.updateUtdanning(
-                UUID.fromString(soknadId),
-                UtdanningDto(
-                    erStudent = it,
-                    studentgrad = utdanningFrontend.studengradErHeltid
-                        ?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID }
+        kotlin.runCatching {
+            utdanningFrontend.erStudent?.let {
+                utdanningController.updateUtdanning(
+                    UUID.fromString(soknadId),
+                    UtdanningDto(
+                        erStudent = it,
+                        studentgrad = utdanningFrontend.studengradErHeltid
+                            ?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID }
+                    )
                 )
-            )
+            }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }
 
     override fun updateSivilstand(soknadId: String, familieFrontend: SivilstatusFrontend) {
-        val sivilstandInput = with(familieFrontend) {
+        val sivilstandInput = familieFrontend.run {
             SivilstandInput(
                 sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
                 ektefelle?.let {
@@ -145,18 +166,22 @@ class SoknadV2ControllerAdapter(
                 },
             )
         }
-        sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
+        kotlin.runCatching {
+            sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
+        }
+            .onFailure { log.error("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
     override fun updateForsorger(soknadId: String, forsorgerpliktFrontend: ForsorgerpliktFrontend) {
-        val forsorgerInput = with(forsorgerpliktFrontend) {
+        val forsorgerInput = forsorgerpliktFrontend.run {
             ForsorgerInput(
-                barnebidrag?.name?.let {
-                    Barnebidrag.valueOf(it)
-                },
+                barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
                 ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) }
             )
         }
-        forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
+        kotlin.runCatching {
+            forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
+        }
+            .onFailure { log.error("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
     }
 }
