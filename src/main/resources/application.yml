@@ -18,6 +18,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  docker:
+    compose:
+      enabled: false
 
 management:
   endpoints:
