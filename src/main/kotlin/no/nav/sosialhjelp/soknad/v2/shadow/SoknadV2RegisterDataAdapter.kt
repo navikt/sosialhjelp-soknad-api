@@ -17,7 +17,8 @@ class SoknadV2RegisterDataAdapter(
     private val soknadAdapter: SoknadAdapter,
     private val adresseAdapter: AdresseAdapter,
 ) : RegisterDataAdapter {
-    val log: Logger = LoggerFactory.getLogger(this::class.java)
+
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String) {
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
