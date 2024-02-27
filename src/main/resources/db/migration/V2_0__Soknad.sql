@@ -9,7 +9,7 @@ CREATE TABLE soknad
     mellomnavn varchar(255),
     etternavn varchar(255) not null,
     statsborgerskap varchar(50),
-    nordisk_borger bool,
+    nordisk_borger boolean,
     kontonummer varchar(30),
     telefonnummer varchar(30)
 );
@@ -36,7 +36,7 @@ CREATE TABLE arbeidsforhold
     start varchar(50),
     slutt varchar(50),
     fast_stillingsprosent numeric,
-    har_fast_stilling bool,
+    har_fast_stilling boolean,
     constraint pk_arbeidsforhold
         primary key(soknad_key, soknad),
     constraint fk_arbeidsforhold_soknad

@@ -26,8 +26,7 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            metadata.id,
+            "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
             metadata.tilknyttetBehandlingsId,
             metadata.skjema,

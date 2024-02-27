@@ -1,14 +1,15 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.toV2Eier
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.AdresseAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
 import no.nav.sosialhjelp.soknad.v2.soknad.Eier
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.util.*
 
 @Component
@@ -16,20 +17,25 @@ class SoknadV2RegisterDataAdapter(
     private val soknadAdapter: SoknadAdapter,
     private val adresseAdapter: AdresseAdapter,
 ) : RegisterDataAdapter {
-    override fun createSoknad(soknadUnderArbeid: SoknadUnderArbeid) {
-        with(soknadUnderArbeid) {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+
+    override fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String) {
+
+        val result = kotlin.runCatching {
             soknadAdapter.createNewSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
-                eier = toV2Eier()
-                    ?: Eier(
-                        personId = soknadUnderArbeid.eier,
-                        navn = Navn(
-                            fornavn = "Ukjent",
-                            etternavn = "Ukjent"
-                        )
+                eier = Eier(
+                    personId = eierId,
+                    navn = Navn(
+                        fornavn = "Ukjent",
+                        etternavn = "Ukjent"
                     )
+                )
             )
+        }
+        result.onFailure {
+            log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it)
         }
     }
 

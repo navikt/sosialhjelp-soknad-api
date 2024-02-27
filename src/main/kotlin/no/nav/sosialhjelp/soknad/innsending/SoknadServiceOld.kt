@@ -41,12 +41,12 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -73,13 +73,14 @@ class SoknadServiceOld(
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val clock: Clock
+    private val clock: Clock,
+    private val registerDataAdapter: RegisterDataAdapter
 ) {
     @Transactional
     fun startSoknad(token: String?): String {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-//        val behandlingsId = opprettSoknadMetadata(eier) // TODO NyModell Metadata
-        val behandlingsId = UUID.randomUUID().toString()
+        val eierId = SubjectHandlerUtils.getUserIdFromToken()
+        val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
+
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)
@@ -88,27 +89,33 @@ class SoknadServiceOld(
             versjon = 1L,
             behandlingsId = behandlingsId,
             tilknyttetBehandlingsId = null,
-            eier = eier,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            eier = eierId,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
 
+        // ny modell
+        registerDataAdapter.createSoknad(
+            behandlingsId,
+            soknadUnderArbeid.opprettetDato,
+            eierId
+        )
+
         // pga. nyModell - opprette soknad før systemdata-updater
-        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
         systemdataUpdater.update(soknadUnderArbeid)
-        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
         return behandlingsId
     }
 
     private fun opprettSoknadMetadata(fnr: String): String {
         log.info("Starter søknad")
-        val id = soknadMetadataRepository.hentNesteId()
+
         val soknadMetadata = SoknadMetadata(
-            id = id,
-            behandlingsId = lagBehandlingsId(id),
+            id = 0,
+            behandlingsId = UUID.randomUUID().toString(),
             fnr = fnr,
             skjema = SKJEMANUMMER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

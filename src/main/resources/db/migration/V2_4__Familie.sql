@@ -1,7 +1,7 @@
 CREATE TABLE familie
 (
     soknad_id          uuid primary key,
-    har_forsorgerplikt bool,
+    har_forsorgerplikt boolean,
     barnebidrag        varchar(30),
     sivilstatus        varchar(30),
     CONSTRAINT fk_familie_soknad
@@ -19,9 +19,9 @@ CREATE TABLE barn
     mellomnavn             varchar(255),
     etternavn              varchar(255) not null,
     fodselsdato            varchar(20),
-    bor_sammen             bool,
-    folkeregistrert_sammen bool,
-    delt_bosted            bool,
+    bor_sammen             boolean,
+    folkeregistrert_sammen boolean,
+    delt_bosted            boolean,
     samvarsgrad            numeric,
     CONSTRAINT fk_barn_familie
         FOREIGN KEY (familie)
@@ -37,10 +37,10 @@ CREATE TABLE ektefelle
     mellomnavn                    varchar(255),
     etternavn                     varchar(255) not null,
     fodselsdato                   varchar(20),
-    har_diskresjonskode           bool,
-    folkeregistrert_med_ektefelle bool,
-    bor_sammen                    bool,
-    kilde_er_system               bool         not null,
+    har_diskresjonskode           boolean,
+    folkeregistrert_med_ektefelle boolean,
+    bor_sammen                    boolean,
+    kilde_er_system               boolean not null,
     CONSTRAINT fk_ektefelle_familie
         FOREIGN KEY (familie)
             REFERENCES familie (soknad_id)

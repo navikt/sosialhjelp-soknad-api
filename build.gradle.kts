@@ -71,10 +71,14 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
+    runtimeOnly("org.flywaydb:flyway-database-hsqldb:10.8.1")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
 //    runtimeOnly(libs.ojdbc10)
-//    runtimeOnly(libs.hsqldb)
+    runtimeOnly(libs.hsqldb)
     runtimeOnly("org.postgresql:postgresql:42.7.1")
-    runtimeOnly("com.h2database:h2:2.2.224")
+//    runtimeOnly("com.h2database:h2:2.2.224")
+
+    developmentOnly(libs.spring.boot.docker.compose)
 
     // redis
     implementation(libs.lettuce.core)

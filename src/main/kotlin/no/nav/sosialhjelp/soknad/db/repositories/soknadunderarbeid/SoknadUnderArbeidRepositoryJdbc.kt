@@ -51,9 +51,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
         )
 
-        // NyModell
-        registerDataAdapter.createSoknad(soknadUnderArbeid)
-
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 

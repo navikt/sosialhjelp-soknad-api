@@ -3,17 +3,15 @@ server:
 
 spring:
   flyway:
-    enabled: false
-  #    baseline-on-migrate: true
-  #    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-  #    user: sa
-  #    password:
-  #    driver-class-name: org.hsqldb.jdbcDriver
+    enabled: true
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
     username: sa
     password:
+  docker:
+    compose:
+      enabled: false
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}

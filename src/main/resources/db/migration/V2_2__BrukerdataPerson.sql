@@ -3,7 +3,7 @@ create table brukerdata_person
     soknad_id uuid primary key,
     telefonnummer varchar(50),
     kontonummer varchar(50),
-    har_ikke_konto bool,
+    har_ikke_konto boolean,
     hvorfor_soke text,
     hva_sokes_om text,
     botype varchar(30),
