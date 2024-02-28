@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.shadow.adapters
+package no.nav.sosialhjelp.soknad.v2.shadow.adapter
 
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold

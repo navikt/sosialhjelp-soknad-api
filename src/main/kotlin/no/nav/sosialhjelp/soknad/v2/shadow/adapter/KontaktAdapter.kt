@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.shadow.adapters
+package no.nav.sosialhjelp.soknad.v2.shadow.adapter
 
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse

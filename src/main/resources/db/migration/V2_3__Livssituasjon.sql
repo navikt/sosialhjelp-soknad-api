@@ -3,7 +3,7 @@ create table livssituasjon
     soknad_id uuid primary key,
     botype varchar(30),
     antall_husstand numeric,
-    er_student bool,
+    er_student boolean,
     studentgrad varchar(30),
     kommentar_arbeidsforhold text,
     constraint fk_kontakt_soknad
@@ -20,7 +20,7 @@ create table arbeidsforhold
     start varchar(30),
     slutt varchar(30),
     fast_stillingsprosent numeric,
-    har_fast_stilling bool,
+    har_fast_stilling boolean,
     constraint pk_arbeidsforhold
         primary key (soknad_id, index),
     constraint fk_arbeidsforhold_livssituasjon
