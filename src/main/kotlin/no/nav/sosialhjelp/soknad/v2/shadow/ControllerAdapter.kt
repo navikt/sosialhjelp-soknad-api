@@ -6,9 +6,7 @@ import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerFrontend
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 
 interface ControllerAdapter {

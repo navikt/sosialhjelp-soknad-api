@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.ArbeidsforholdAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.KontaktAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

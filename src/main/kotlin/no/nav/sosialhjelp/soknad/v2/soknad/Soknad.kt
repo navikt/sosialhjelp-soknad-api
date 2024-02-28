@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.repository.ListCrudRepository

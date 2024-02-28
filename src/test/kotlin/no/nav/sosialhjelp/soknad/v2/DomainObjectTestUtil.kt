@@ -55,7 +55,6 @@ fun createFamilie(
     ektefelle: Ektefelle? = null,
 ) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
 
-
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),

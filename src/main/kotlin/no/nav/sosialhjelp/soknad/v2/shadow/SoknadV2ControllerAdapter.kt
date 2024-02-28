@@ -28,12 +28,10 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningDto
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningInput
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoInput
 import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
 import org.slf4j.LoggerFactory
@@ -170,7 +168,8 @@ class SoknadV2ControllerAdapter(
                 utdanningController.updateUtdanning(
                     soknadId = UUID.fromString(soknadId),
                     input = utdanningInput
-                )}
+                )
+            }
         }
             .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }
