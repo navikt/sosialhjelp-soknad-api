@@ -11,16 +11,3 @@ CREATE TABLE soknad
     inntekt_fra_skatt boolean,
     stotte_fra_husbanken boolean
 );
-
-create table nav_enhet
-(
-    soknad uuid primary key,
-    enhetsnavn varchar(255),
-    enhetsnummer varchar(30),
-    kommunenummer varchar(30),
-    orgnummer varchar(30),
-    kommunenavn varchar(255),
-    constraint fk_navenhet_soknad
-        foreign key(soknad)
-            references soknad(id) on delete cascade
-);

@@ -8,12 +8,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
@@ -24,7 +26,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class KontaktTilJsonMapper(
+class KontaktToJsonMapper(
     private val kontaktRepository: KontaktRepository
 ) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
@@ -49,6 +51,9 @@ class KontaktTilJsonMapper(
                 folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()
                 adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
             }
+
+            json.mottaker = kontakt.mottaker.toJsonSoknadsmottakerInternal()
+            json.soknad.mottaker = kontakt.mottaker.toJsonSoknadsmottaker()
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
@@ -65,12 +70,12 @@ class KontaktTilJsonMapper(
         }
 
         private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? {
-            return bruker?.let {
+            return fraBruker?.let {
                 JsonTelefonnummer()
                     .withKilde(JsonKilde.BRUKER)
                     .withVerdi(it)
             }
-                ?: register?.let {
+                ?: fraRegister?.let {
                     JsonTelefonnummer()
                         .withKilde(JsonKilde.BRUKER)
                         .withVerdi(it)
@@ -110,5 +115,18 @@ class KontaktTilJsonMapper(
         private fun UstrukturertAdresse.toJsonUstrukturertAdresse() = JsonUstrukturertAdresse()
             .withType(JsonAdresse.Type.USTRUKTURERT)
             .withAdresse(adresse)
+
+        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
+            return JsonSoknadsmottaker()
+                .withOrganisasjonsnummer(orgnummer)
+                .withNavEnhetsnavn(enhetsnavn)
+        }
+
+        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
+            return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
+                .withEnhetsnummer(enhetsnummer)
+                .withKommunenummer(kommunenummer)
+                .withNavEnhetsnavn(enhetsnavn)
+        }
     }
 }

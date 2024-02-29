@@ -20,13 +20,14 @@ data class Kontakt(
     val telefonnummer: Telefonnummer = Telefonnummer(),
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
+    val mottaker: NavEnhet = NavEnhet(),
 ) : SoknadBubble
 
 data class Telefonnummer(
     @Column("telefon_register")
-    val register: String? = null,
+    val fraRegister: String? = null,
     @Column("telefon_bruker")
-    val bruker: String? = null,
+    val fraBruker: String? = null,
 )
 
 data class Adresser(
@@ -53,3 +54,11 @@ enum class AdresseValg {
     MIDLERTIDIG,
     SOKNAD;
 }
+
+data class NavEnhet(
+    val enhetsnavn: String? = null,
+    val enhetsnummer: String? = null,
+    val kommunenummer: String? = null,
+    val orgnummer: String? = null,
+    val kommunenavn: String? = null,
+)

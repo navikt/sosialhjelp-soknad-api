@@ -12,8 +12,11 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.*
@@ -22,14 +25,17 @@ import java.util.*
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
-    private val jsonGenerator: JsonInternalSoknadGenerator
+    private val jsonGenerator: JsonInternalSoknadGenerator,
+    private val kontaktService: KontaktService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
         val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        soknad.mottaker.let {
+        val kontaktInformasjon = kontaktService.getKontaktInformasjon(soknad.id)
+
+        kontaktInformasjon?.mottaker?.let {
             log.info(
                 "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
@@ -38,11 +44,11 @@ class SendSoknadHandler(
         }
 
         val digisosId: UUID = try {
-            // TODO Verdt å kikke litt på digisosApiV2Clienten da vi tilsynelatende håndterer feil manuelt
+            // TODO Verdt å kikke litt på digisosApiV2Clienten
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = objectMapper.writeValueAsString(json.soknad),
                 tilleggsinformasjonJson = objectMapper.writeValueAsString(
-                    JsonTilleggsinformasjon(soknad.mottaker.enhetsnummer)
+                    JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer)
                 ),
                 vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
                 dokumenter = getFilOpplastingList(json),

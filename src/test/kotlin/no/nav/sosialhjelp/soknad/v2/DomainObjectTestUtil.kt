@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
@@ -30,7 +31,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
-import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
@@ -48,27 +48,37 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
 
 fun createFamilie(
     soknadId: UUID,
-    harForsorgerPlikt: Boolean? = null,
-    barnebidrag: Barnebidrag? = null,
-    sivilstatus: Sivilstatus? = null,
-    ansvar: List<Barn> = emptyList(),
-    ektefelle: Ektefelle? = null,
+    harForsorgerPlikt: Boolean? = true,
+    barnebidrag: Barnebidrag? = Barnebidrag.BEGGE,
+    sivilstatus: Sivilstatus? = Sivilstatus.GIFT,
+    ansvar: List<Barn> = listOf(createBarn()),
+    ektefelle: Ektefelle? = opprettEktefelle(),
 ) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
+
+fun opprettEktefelle(): Ektefelle {
+    return Ektefelle(
+        navn = Navn("Kone", null, "Konesen"),
+        fodselsdato = "432341",
+        personId = "1234512345",
+        folkeregistrertMedEktefelle = true,
+        borSammen = true,
+        kildeErSystem = true
+    )
+}
 
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
+    eierPersonId: String = "54352345353",
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
-    navEnhet: NavEnhet = opprettNavEnhet(),
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
     driftsinformasjon: Driftsinformasjon = Driftsinformasjon(false, false, false),
 ): Soknad {
     return Soknad(
         id = id,
-        eierPersonId = "54352345353",
+        eierPersonId = eierPersonId,
         tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
-        mottaker = navEnhet,
         begrunnelse = begrunnelse,
         driftsinformasjon = driftsinformasjon,
     )
@@ -99,8 +109,9 @@ fun opprettNavEnhet(
     navn: String = "NAV-kontoret",
     kommunenummer: String = "4314",
     orgnummer: String = "3414513515",
+    kommunenavn: String = "Nav-kommunen"
 ): NavEnhet {
-    return NavEnhet(enhetNr, navn, kommunenummer, orgnummer)
+    return NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)
 }
 
 fun opprettEier(
@@ -132,24 +143,15 @@ fun opprettNavn(
 }
 
 fun createBarn(
-    uuid: UUID = UUID.randomUUID(),
-    personId: String? = null,
+    familieKey: UUID = UUID.randomUUID(),
+    personId: String = "34243452342",
     navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
-    fodselsdato: String? = null,
-    borSammen: Boolean? = null,
-    folkeregistrertSammen: Boolean? = null,
-    deltBosted: Boolean? = null,
-    samvarsgrad: Int? = null,
-) = Barn(
-    uuid,
-    personId,
-    navn,
-    fodselsdato,
-    borSammen,
-    folkeregistrertSammen,
-    deltBosted,
-    samvarsgrad,
-)
+    fodselsdato: String = "342434",
+    borSammen: Boolean = true,
+    folkeregistrertSammen: Boolean = true,
+    deltBosted: Boolean = false,
+    samvarsgrad: Int = 100,
+) = Barn(familieKey, personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad,)
 
 fun opprettMidlertidigAdresse(
     adresselinjer: List<String> = listOf(
@@ -169,9 +171,10 @@ fun opprettKontakt(
         midlertidigAdresse = opprettMatrikkelAdresse(),
         brukerAdresse = opprettMidlertidigAdresse(),
         adressevalg = AdresseValg.FOLKEREGISTRERT,
-    )
+    ),
+    navEnhet: NavEnhet = opprettNavEnhet()
 ): Kontakt {
-    return Kontakt(soknadId, telefonnummer, adresser)
+    return Kontakt(soknadId, telefonnummer, adresser, navEnhet)
 }
 
 fun opprettAdresser(

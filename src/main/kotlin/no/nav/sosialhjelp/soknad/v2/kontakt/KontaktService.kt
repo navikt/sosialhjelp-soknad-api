@@ -9,32 +9,22 @@ import java.util.*
 class KontaktService(
     private val kontaktRepository: KontaktRepository
 ) {
-    fun getTelefonnummer(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
+    fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
     fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String): Telefonnummer {
-        return getEntity(soknadId).copy(
-            telefonnummer = Telefonnummer(bruker = telefonnummerBruker)
-        ).let {
-            kontaktRepository.save(it).telefonnummer
-        }
+        return getOrCreateKontakt(soknadId)
+            .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
+            .let { kontaktRepository.save(it) }
+            .telefonnummer
     }
 
-    fun getAdresser(soknadId: UUID): Adresser {
-        return kontaktRepository.findByIdOrNull(soknadId)?.adresser ?: Adresser()
+    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt {
+        return getOrCreateKontakt(soknadId)
+            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, brukerAdresse = brukerAdresse)) }
+            .let { kontaktRepository.save(it) }
     }
 
-    private fun getEntity(soknadId: UUID): Kontakt {
+    private fun getOrCreateKontakt(soknadId: UUID): Kontakt {
         return kontaktRepository.findByIdOrNull(soknadId) ?: kontaktRepository.save(Kontakt(soknadId))
-    }
-
-    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Adresser {
-        return getEntity(soknadId).copy(
-            adresser = getAdresser(soknadId).copy(
-                brukerAdresse = brukerAdresse,
-                adressevalg = adresseValg
-            )
-        ).let {
-            kontaktRepository.save(it).adresser
-        }
     }
 }

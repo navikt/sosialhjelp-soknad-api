@@ -77,7 +77,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Skal oppdatere familie med ektefelle`() {
         val storedSoknad = soknadRepository.save(opprettSoknad())
-        familieRepository.save(createFamilie(storedSoknad.id))
+        familieRepository.save(createFamilie(storedSoknad.id, ektefelle = null))
 
         val ektefelle = EktefelleInput(
             personId = "12345678",

@@ -8,9 +8,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.KontaktTilJsonMapper
+import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.KontaktToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
@@ -23,7 +24,7 @@ import java.util.*
 
 class KontaktMapperTest {
 
-    private val mapper = KontaktTilJsonMapper.Mapper
+    private val mapper = KontaktToJsonMapper.Mapper
 
     @Test
     fun `Kontakt skal mappes til JsonInternalSoknad`() {
@@ -33,18 +34,20 @@ class KontaktMapperTest {
 
         mapper.doMapping(kontakt, json)
 
+        json.assertMidlertidigAdresse(kontakt.adresser.midlertidigAdresse)
+        json.assertNavEnhet(kontakt.mottaker)
+
         with(json.soknad.data.personalia) {
             assertTelefonnummerBruker(kontakt.telefonnummer)
             assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrertAdresse)
             assertOppholdsadresse(kontakt.adresser)
-            json.assertMidlertidigAdresse(kontakt.adresser.midlertidigAdresse)
         }
     }
 }
 
 private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnummer) {
     assertThat(this.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
-    assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.bruker)
+    assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.fraBruker)
 }
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
@@ -102,4 +105,13 @@ private fun JsonMatrikkelAdresse.assertAdresse(matrikkelAdresse: MatrikkelAdress
 
 private fun JsonUstrukturertAdresse.assertAdresse(ustrukturertAdresse: UstrukturertAdresse) {
     assertThat(adresse).isEqualTo(ustrukturertAdresse.adresse)
+}
+
+private fun JsonInternalSoknad.assertNavEnhet(navEnhet: NavEnhet) {
+    assertThat(mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
+    assertThat(mottaker.organisasjonsnummer).isEqualTo(navEnhet.orgnummer)
+
+    assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
+    assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet.enhetsnummer)
+    assertThat(soknad.mottaker.kommunenummer).isEqualTo(navEnhet.kommunenummer)
 }

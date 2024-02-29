@@ -17,7 +17,6 @@ data class Soknad(
     @Id
     val id: UUID = UUID.randomUUID(),
     val eierPersonId: String,
-    val mottaker: NavEnhet = NavEnhet(),
     @Embedded.Empty
     val tidspunkt: Tidspunkt = Tidspunkt(),
     @Embedded.Empty
@@ -25,14 +24,6 @@ data class Soknad(
     @Embedded.Empty
     val driftsinformasjon: Driftsinformasjon = Driftsinformasjon(),
 ) : SoknadBubble { override val soknadId: UUID get() = id }
-
-data class NavEnhet(
-    val enhetsnavn: String? = null,
-    val enhetsnummer: String? = null,
-    val kommunenummer: String? = null,
-    val orgnummer: String? = null,
-    val kommunenavn: String? = null,
-)
 
 data class Tidspunkt(
     val opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),

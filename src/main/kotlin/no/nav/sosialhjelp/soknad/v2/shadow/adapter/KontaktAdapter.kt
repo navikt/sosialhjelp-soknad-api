@@ -33,7 +33,7 @@ class KontaktAdapter(
 
     fun addTelefonnummerRegister(soknadId: UUID, telefonnummer: String) {
         getEntity(soknadId).copy(
-            telefonnummer = Telefonnummer(register = telefonnummer)
+            telefonnummer = Telefonnummer(fraRegister = telefonnummer)
         ).also { kontaktRepository.save(it) }
     }
 

@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuper
 import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -24,22 +23,12 @@ class SoknadMapperTest {
         mapper.doMapping(soknad, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
-        jsonInternalSoknad.assertNavEnhet(soknad.mottaker)
         jsonInternalSoknad.assertBegrunnerlse(soknad.begrunnelse)
     }
+}
 
-    private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
-        assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
-    }
-
-    private fun JsonInternalSoknad.assertNavEnhet(navEnhet: NavEnhet) {
-        assertThat(mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
-        assertThat(mottaker.organisasjonsnummer).isEqualTo(navEnhet.orgnummer)
-
-        assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
-        assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet.enhetsnummer)
-        assertThat(soknad.mottaker.kommunenummer).isEqualTo(navEnhet.kommunenummer)
-    }
+private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
+    assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
 }
 
 private fun JsonInternalSoknad.assertBegrunnerlse(begrunnelse: Begrunnelse) {

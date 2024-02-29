@@ -22,12 +22,13 @@ class TelefonnummerController(
     fun getTelefonnummer(
         @PathVariable("soknadId") soknadId: UUID
     ): TelefonnummerDto {
-        return kontaktService.getTelefonnummer(soknadId)?.let {
-            TelefonnummerDto(
-                telefonnummerRegister = it.register,
-                telefonnummerBruker = it.bruker
-            )
-        } ?: TelefonnummerDto()
+        return kontaktService.getKontaktInformasjon(soknadId)?.telefonnummer
+            ?.let {
+                TelefonnummerDto(
+                    telefonnummerRegister = it.fraRegister,
+                    telefonnummerBruker = it.fraBruker
+                )
+            } ?: TelefonnummerDto()
     }
 
     @PutMapping
@@ -40,8 +41,8 @@ class TelefonnummerController(
 
         return kontaktService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
             TelefonnummerDto(
-                telefonnummerRegister = it.register,
-                telefonnummerBruker = it.bruker
+                telefonnummerRegister = it.fraRegister,
+                telefonnummerBruker = it.fraBruker
             )
         }
     }

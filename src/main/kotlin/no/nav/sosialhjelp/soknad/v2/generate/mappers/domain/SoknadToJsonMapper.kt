@@ -4,12 +4,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
-import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
-import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.core.Ordered
@@ -39,27 +37,12 @@ class SoknadToJsonMapper(
                 soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
                 soknad.driftsinformasjon = domainSoknad.driftsinformasjon.toJsonDriftsinformasjon()
                 soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
-                mottaker = domainSoknad.mottaker.toJsonSoknadsmottakerInternal()
-                soknad.mottaker = domainSoknad.mottaker.toJsonSoknadsmottaker()
             }
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
             soknad.data ?: soknad.withData(JsonData())
             soknad.driftsinformasjon ?: soknad.withDriftsinformasjon(JsonDriftsinformasjon())
-        }
-
-        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
-            return JsonSoknadsmottaker()
-                .withOrganisasjonsnummer(orgnummer)
-                .withNavEnhetsnavn(enhetsnavn)
-        }
-
-        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
-            return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
-                .withEnhetsnummer(enhetsnummer)
-                .withKommunenummer(kommunenummer)
-                .withNavEnhetsnavn(enhetsnavn)
         }
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse? {

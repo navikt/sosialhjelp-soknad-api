@@ -25,8 +25,8 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerDto::class.java
         ).also {
-            assertThat(it.telefonnummerRegister).isEqualTo(kontakt.telefonnummer.register)
-            assertThat(it.telefonnummerBruker).isEqualTo(kontakt.telefonnummer.bruker)
+            assertThat(it.telefonnummerRegister).isEqualTo(kontakt.telefonnummer.fraRegister)
+            assertThat(it.telefonnummerBruker).isEqualTo(kontakt.telefonnummer.fraBruker)
         }
     }
 
@@ -45,7 +45,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         }
 
         kontaktRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.telefonnummer.bruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
+            assertThat(it.telefonnummer.fraBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
     }
 
