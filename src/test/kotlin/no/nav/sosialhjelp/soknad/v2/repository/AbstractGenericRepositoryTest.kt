@@ -47,6 +47,9 @@ abstract class AbstractGenericRepositoryTest {
         )
     }
 
+    /**
+     * Merk at dette er en extension-funksjon for typer av UpsertRepository og ListCrudRepository
+     */
     protected fun <E : SoknadBubble, R> R.runCrudOperations(
         originalEntity: E,
         updatedEntity: E,
@@ -63,7 +66,7 @@ abstract class AbstractGenericRepositoryTest {
         val savedUpdatedEntity = save(updatedEntity)
         assertThat(savedUpdatedEntity).isNotEqualTo(savedOriginalEntity)
 
-        // slette soknads-entiteten skal også slette denne entiteten
+        // slette soknad-entiteten skal også slette denne entiteten
         soknadRepository.deleteById(originalEntity.soknadId)
         assertThat(this.existsById(originalEntity.soknadId)).isFalse()
 
