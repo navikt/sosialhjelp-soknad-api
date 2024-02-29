@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile
 @Configuration
 class HikariDataSourceConfig(
     @Value("\${spring.datasource.url}") private val dbUrl: String,
-    @Value("\${POSTGRES_USER_ROLE}") private val role: String,
+    @Value("\${postgres.user.role}") private val role: String,
     @Value("\${VAULT_MOUNT_PATH}") private val vaultMountPath: String
 ) {
 

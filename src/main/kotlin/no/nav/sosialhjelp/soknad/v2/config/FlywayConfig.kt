@@ -11,7 +11,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 @Profile("!test & !mock-alt")
 @Configuration
 @EnableJdbcRepositories
-class FlywayConfig(@Value("\${POSTGRES_USER_ROLE}") private val role: String) {
+class FlywayConfig(@Value("\${postgres.user.role}") private val role: String) {
 
     @Bean
     fun setRole(): FlywayConfigurationCustomizer {
