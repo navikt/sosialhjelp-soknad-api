@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.config
 
 import com.fasterxml.jackson.databind.DatabindException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.PostboksAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.PostboksAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter

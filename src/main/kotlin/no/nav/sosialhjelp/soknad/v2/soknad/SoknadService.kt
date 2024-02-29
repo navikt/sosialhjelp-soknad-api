@@ -21,8 +21,8 @@ class SoknadService(
     @Transactional(readOnly = true)
     fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
 
-    fun createSoknad(eier: Eier): UUID {
-        return soknadRepository.save(Soknad(eier = eier)).id
+    fun createSoknad(eierId: String): UUID {
+        return soknadRepository.save(Soknad(eierPersonId = eierId)).id
     }
 
     fun deleteSoknad(soknadId: UUID) {
@@ -43,6 +43,13 @@ class SoknadService(
         soknadRepository.deleteById(id)
 
         return digisosId
+    }
+
+    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Begrunnelse {
+        return getSoknadOrThrowException(soknadId)
+            .copy(begrunnelse = begrunnelse)
+            .also { soknadRepository.save(it) }
+            .begrunnelse
     }
 
     private fun getSoknadOrThrowException(soknadId: UUID): Soknad {

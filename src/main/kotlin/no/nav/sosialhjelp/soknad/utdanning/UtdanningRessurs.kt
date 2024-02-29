@@ -69,13 +69,6 @@ class UtdanningRessurs(
         controllerAdapter.updateUtdanning(behandlingsId, utdanningFrontend)
     }
 
-    data class UtdanningFrontend(
-        @Schema(nullable = true)
-        var erStudent: Boolean?,
-        @Schema(nullable = true)
-        var studengradErHeltid: Boolean?
-    )
-
     companion object {
         private fun toStudentgradErHeltid(studentgrad: Studentgrad?): Boolean? {
             return if (studentgrad == null) {
@@ -91,3 +84,10 @@ class UtdanningRessurs(
         }
     }
 }
+
+data class UtdanningFrontend(
+    @Schema(nullable = true)
+    var erStudent: Boolean?,
+    @Schema(nullable = true)
+    var studengradErHeltid: Boolean?
+)

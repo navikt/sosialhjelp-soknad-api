@@ -10,12 +10,8 @@ import kotlin.reflect.KClass
 class SoknadInputValidator(private val clazz: KClass<*>) {
 
     fun validateTextInput(id: UUID?, input: String) {
-        input.toList()
-            .forEach {
-                if (!it.isLetterOrDigit() && !it.isWhitespace()) {
-                    throw NotValidInputException(id, "$clazz - Ugyldige tegn i tekst")
-                }
-            }
+        if (!input.all { it.isLetterOrDigit() || it.isWhitespace() })
+            throw NotValidInputException(id, "$clazz - Ugyldige tegn i tekst")
     }
 
     fun validateAllInputNotNullOrEmpty(id: UUID, vararg input: Any?) {

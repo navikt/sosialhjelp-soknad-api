@@ -1,38 +1,31 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.BegrunnelseDto
-import no.nav.sosialhjelp.soknad.v2.createSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettBrukerdataPerson
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
 class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
-    @Autowired
-    private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository
-
     @Test
     fun `Hente begrunnelse skal returnere riktig data`() {
-        val soknad = soknadRepository.save(createSoknad())
-        val brukerdata = brukerdataPersonRepository.save(opprettBrukerdataPerson(soknad.id!!))
+        val soknad = soknadRepository.save(opprettSoknad())
 
         doGet(
             "/soknad/${soknad.id}/begrunnelse",
             BegrunnelseDto::class.java
         ).also {
-            assertThat(it.hvorforSoke).isEqualTo(brukerdata.begrunnelse?.hvorforSoke)
-            assertThat(it.hvaSokesOm).isEqualTo(brukerdata.begrunnelse?.hvaSokesOm)
+            assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse.hvorforSoke)
+            assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse.hvaSokesOm)
         }
     }
 
     @Test
     fun `Oppdatere begrunnelse skal lagres i databasen`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         val inputBegrunnelse = BegrunnelseDto(
             hvaSokesOm = "Jeg bare må ha penger",
@@ -45,16 +38,16 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             BegrunnelseDto::class.java
         )
 
-        brukerdataPersonRepository.findByIdOrNull(soknad.id!!)?.let {
-            assertThat(it.begrunnelse?.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
-            assertThat(it.begrunnelse?.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+        soknadRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
     }
 
     @Test
     fun `Oppdatere begrunnelse med ulovlige tegn skal gi 400 BadRequest`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         doPutExpectError(
             "/soknad/${soknad.id}/begrunnelse",
@@ -68,7 +61,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere begrunnelse med tomt innhold skal gi 400 BadRequest`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         doPutExpectError(
             "/soknad/${soknad.id}/begrunnelse",
@@ -100,7 +93,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Input hvor ett felt er tomt skal lagres i databasen`() {
-        val soknad = soknadRepository.save(createSoknad())
+        val soknad = soknadRepository.save(opprettSoknad())
 
         val inputBegrunnelse = BegrunnelseDto(
             hvaSokesOm = null,
@@ -113,9 +106,9 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             BegrunnelseDto::class.java
         )
 
-        brukerdataPersonRepository.findByIdOrNull(soknad.id!!)?.let {
-            assertThat(it.begrunnelse?.hvaSokesOm).isNull()
-            assertThat(it.begrunnelse?.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+        soknadRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.begrunnelse.hvaSokesOm).isNull()
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
     }

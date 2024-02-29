@@ -5,33 +5,32 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.adresse.AdresserSoknad
-import no.nav.sosialhjelp.soknad.v2.adresse.BrukerInputAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.adresse.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BeskrivelseAvAnnet
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Bosituasjon
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataFormelt
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
-import no.nav.sosialhjelp.soknad.v2.brukerdata.KontoInformasjonBruker
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Samtykke
-import no.nav.sosialhjelp.soknad.v2.brukerdata.SamtykkeType
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Studentgrad
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Utdanning
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.v2.soknad.Eier
-import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
@@ -47,21 +46,41 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     }
 }
 
-fun createSoknad(
+fun createFamilie(
+    soknadId: UUID,
+    harForsorgerPlikt: Boolean? = true,
+    barnebidrag: Barnebidrag? = Barnebidrag.BEGGE,
+    sivilstatus: Sivilstatus? = Sivilstatus.GIFT,
+    ansvar: List<Barn> = listOf(createBarn()),
+    ektefelle: Ektefelle? = opprettEktefelle(),
+) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
+
+fun opprettEktefelle(): Ektefelle {
+    return Ektefelle(
+        navn = Navn("Kone", null, "Konesen"),
+        fodselsdato = "432341",
+        personId = "1234512345",
+        folkeregistrertMedEktefelle = true,
+        borSammen = true,
+        kildeErSystem = true
+    )
+}
+
+fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
-    eier: Eier = createEier(),
+    eierPersonId: String = "54352345353",
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
-    navenhet: NavEnhet = opprettNavEnhet(),
-    arbeidsforholdList: List<Arbeidsforhold> = opprettArbeidsforholdList(),
+    begrunnelse: Begrunnelse = opprettBegrunnelse(),
+    driftsinformasjon: Driftsinformasjon = Driftsinformasjon(false, false, false),
 ): Soknad {
     return Soknad(
         id = id,
-        eier = eier,
+        eierPersonId = eierPersonId,
         tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
-        navEnhet = navenhet,
-        arbeidsForhold = arbeidsforholdList
+        begrunnelse = begrunnelse,
+        driftsinformasjon = driftsinformasjon,
     )
 }
 
@@ -69,7 +88,7 @@ fun opprettArbeidsforholdList(
     arbeidsforholdList: List<Arbeidsforhold> = listOf(
         opprettArbeidsforhold(),
         opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321")
-    ),
+    )
 ): List<Arbeidsforhold> {
     return arbeidsforholdList
 }
@@ -90,29 +109,28 @@ fun opprettNavEnhet(
     navn: String = "NAV-kontoret",
     kommunenummer: String = "4314",
     orgnummer: String = "3414513515",
+    kommunenavn: String = "Nav-kommunen"
 ): NavEnhet {
-    return NavEnhet(enhetNr, navn, kommunenummer, orgnummer)
+    return NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)
 }
 
-fun createEier(
-    personId: String = "12345612345",
+fun opprettEier(
+    soknadId: UUID,
     statsborgerskap: String? = "Norsk",
     nordiskBoolean: Boolean? = true,
-    kontonummer: String? = "12341212345",
-    navn: Navn = createNavn(),
-    telefonnummer: String? = "1234567123",
+    kontonummer: Kontonummer = Kontonummer(false, null, "43234323432"),
+    navn: Navn = opprettNavn(),
 ): Eier {
     return Eier(
-        personId = personId,
+        soknadId = soknadId,
         statsborgerskap = statsborgerskap,
         nordiskBorger = nordiskBoolean,
-        kontonummer = kontonummer,
         navn = navn,
-        telefonnummer = telefonnummer
+        kontonummer = kontonummer,
     )
 }
 
-fun createNavn(
+fun opprettNavn(
     fornavn: String = "Test",
     mellomnavn: String = "Tester",
     etternavn: String = "Testesen",
@@ -124,6 +142,17 @@ fun createNavn(
     )
 }
 
+fun createBarn(
+    familieKey: UUID = UUID.randomUUID(),
+    personId: String = "34243452342",
+    navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
+    fodselsdato: String = "342434",
+    borSammen: Boolean = true,
+    folkeregistrertSammen: Boolean = true,
+    deltBosted: Boolean = false,
+    samvarsgrad: Int = 100,
+) = Barn(familieKey, personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad,)
+
 fun opprettMidlertidigAdresse(
     adresselinjer: List<String> = listOf(
         "Bortiheiavegen 6",
@@ -134,45 +163,30 @@ fun opprettMidlertidigAdresse(
     return UstrukturertAdresse(adresse = adresselinjer)
 }
 
-fun opprettEier(
-    personId: String = "1234567890",
-    navn: Navn = opprettNavn(),
-    statsborgerskap: String? = "Norsk",
-    nordiskBorger: Boolean? = true,
-    telefonnummer: String? = "94342312",
-    kontonummer: String? = "12341212345",
-): Eier {
-    return Eier(
-        personId = personId,
-        navn = navn,
-        statsborgerskap = statsborgerskap,
-        nordiskBorger = nordiskBorger,
-        telefonnummer = telefonnummer,
-        kontonummer = kontonummer,
-    )
+fun opprettKontakt(
+    soknadId: UUID,
+    telefonnummer: Telefonnummer = Telefonnummer("98766554", "12345678"),
+    adresser: Adresser = Adresser(
+        folkeregistrertAdresse = opprettFolkeregistrertAdresse(),
+        midlertidigAdresse = opprettMatrikkelAdresse(),
+        brukerAdresse = opprettMidlertidigAdresse(),
+        adressevalg = AdresseValg.FOLKEREGISTRERT,
+    ),
+    navEnhet: NavEnhet = opprettNavEnhet()
+): Kontakt {
+    return Kontakt(soknadId, telefonnummer, adresser, navEnhet)
 }
 
-fun opprettAdresserSoknad(
-    soknadId: UUID,
+fun opprettAdresser(
     midlertidigAdresse: Adresse = opprettMidlertidigAdresse(),
     folkeregistrertAdresse: Adresse = opprettFolkeregistrertAdresse(),
-    brukerInput: BrukerInputAdresse = opprettBrukerInputAdresse(),
-): AdresserSoknad {
-    return AdresserSoknad(
-        soknadId = soknadId,
+    brukerAdresse: Adresse = opprettMatrikkelAdresse(),
+): Adresser {
+    return Adresser(
+        adressevalg = AdresseValg.FOLKEREGISTRERT,
         midlertidigAdresse = midlertidigAdresse,
         folkeregistrertAdresse = folkeregistrertAdresse,
-        brukerInput = brukerInput
-    )
-}
-
-fun opprettBrukerInputAdresse(
-    valgtAdresse: AdresseValg = AdresseValg.FOLKEREGISTRERT,
-    adresseBruker: Adresse = opprettMatrikkelAdresse(),
-): BrukerInputAdresse {
-    return BrukerInputAdresse(
-        valgtAdresse = valgtAdresse,
-        brukerAdresse = adresseBruker
+        brukerAdresse = brukerAdresse
     )
 }
 
@@ -206,28 +220,20 @@ fun opprettFolkeregistrertAdresse(
     )
 }
 
-fun opprettNavn(
-    fornavn: String = "Test",
-    mellomnavn: String? = "Tester",
-    etternavn: String = "Testesen",
-): Navn {
-    return Navn(
-        fornavn = fornavn,
-        mellomnavn = mellomnavn,
-        etternavn = etternavn
-    )
+fun opprettLivssituasjon(
+    soknadId: UUID,
+    arbeid: Arbeid = opprettArbeid(),
+    utdanning: Utdanning = opprettUtdanning(),
+    bosituasjon: Bosituasjon = opprettBosituasjon(),
+): Livssituasjon {
+    return Livssituasjon(soknadId, arbeid, utdanning, bosituasjon)
 }
 
-fun opprettBrukerdataFormelt(
-    soknadId: UUID,
-    kommentarTilArbeidsforhold: String = "Jeg er glad i jobben min",
-    samtykker: Set<Samtykke> = opprettSamtykker(),
-    beskrivelseAvAnnet: BeskrivelseAvAnnet = opprettBeskrivelseAvAnnet(),
-    utdanning: Utdanning = opprettUtdanning(),
-): BrukerdataFormelt {
-    return BrukerdataFormelt(
-        soknadId, kommentarTilArbeidsforhold, samtykker, beskrivelseAvAnnet, utdanning
-    )
+fun opprettArbeid(
+    kommentar: String? = "Jeg liker jobb",
+    arbeidsforhold: List<Arbeidsforhold> = opprettArbeidsforholdList()
+): Arbeid {
+    return Arbeid(kommentar, arbeidsforhold)
 }
 
 fun opprettUtdanning(
@@ -244,74 +250,9 @@ fun opprettBegrunnelse(
     return Begrunnelse(hvorforSoke, hvaSokesOm)
 }
 
-fun opprettSamtykker(
-    samtykker: Set<Samtykke> = setOf(
-        Samtykke(SamtykkeType.BOSTOTTE, null, null),
-        Samtykke(SamtykkeType.UTBETALING_SKATTEETATEN, null, null)
-    ),
-): Set<Samtykke> {
-    return samtykker
-}
-
-fun opprettBeskrivelseAvAnnet(
-    barneutgifter: String? = "Masse barneutgifter",
-    verdier: String? = "Ikke så mye verdier",
-    sparing: String? = "Har lite sparing",
-    utbetalinger: String? = "Det er få utbetalinger",
-    boutgifter: String? = "Sjukt med boutgifter",
-): BeskrivelseAvAnnet {
-    return BeskrivelseAvAnnet(barneutgifter, verdier, sparing, utbetalinger, boutgifter)
-}
-
-fun createFamilie(
-    soknadId: UUID,
-    harForsorgerPlikt: Boolean? = null,
-    barnebidrag: Barnebidrag? = null,
-    sivilstatus: Sivilstatus? = null,
-    ansvar: List<Barn> = emptyList(),
-    ektefelle: Ektefelle? = null,
-) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
-
-fun createBarn(
-    uuid: UUID = UUID.randomUUID(),
-    personId: String? = null,
-    navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
-    fodselsdato: String? = null,
-    borSammen: Boolean? = null,
-    folkeregistrertSammen: Boolean? = null,
-    deltBosted: Boolean? = null,
-    samvarsgrad: Int? = null,
-) = Barn(
-    uuid,
-    personId,
-    navn,
-    fodselsdato,
-    borSammen,
-    folkeregistrertSammen,
-    deltBosted,
-    samvarsgrad,
-)
-
-fun opprettBrukerdataPerson(
-    soknadId: UUID,
-    telefonnummer: String = "98412232",
-    begrunnelse: Begrunnelse = opprettBegrunnelse(),
-    bosituasjon: Bosituasjon = opprettBosituasjon(),
-    kontoInformasjonBruker: KontoInformasjonBruker = opprettKontoInformasjon(),
-): BrukerdataPerson {
-    return BrukerdataPerson(soknadId, telefonnummer, begrunnelse, bosituasjon, kontoInformasjonBruker)
-}
-
 fun opprettBosituasjon(
     botype: Botype = Botype.EIER,
     antallPersoner: Int = 3,
 ): Bosituasjon {
     return Bosituasjon(botype, antallPersoner)
-}
-
-fun opprettKontoInformasjon(
-    kontonummer: String = "41321342312",
-    harIkkeKonto: Boolean = false,
-): KontoInformasjonBruker {
-    return KontoInformasjonBruker(kontonummer, harIkkeKonto)
 }
