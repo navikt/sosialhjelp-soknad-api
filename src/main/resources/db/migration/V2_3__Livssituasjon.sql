@@ -6,7 +6,7 @@ create table livssituasjon
     er_student boolean,
     studentgrad varchar(30),
     kommentar_arbeidsforhold text,
-    constraint fk_kontakt_soknad
+    constraint fk_livssituasjon_soknad
         foreign key(soknad_id)
             references soknad(id) on delete cascade
 );
