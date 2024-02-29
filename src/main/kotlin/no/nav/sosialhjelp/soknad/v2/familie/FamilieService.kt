@@ -36,7 +36,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
                 ektefelle = ektefelle
             )
             familieRepository.save(updated)
-        } ?: error("Fant ingen familie å oppdatere")
+        } ?: error("Fant ingen familie å oppdatere") // TODO ikke sikkert det finnes på dette tidspunktet
     }
 }
 

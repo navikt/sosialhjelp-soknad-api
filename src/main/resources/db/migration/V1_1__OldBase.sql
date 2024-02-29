@@ -5,7 +5,7 @@ CREATE TABLE soknad_under_arbeid
     behandlingsid varchar(50) not null,
     tilknyttetbehandlingsid varchar(50),
     eier varchar(30) not null,
-    data bytea not null,
+    data text not null,
     status varchar(30) not null,
     opprettetdato timestamp not null,
     sistendretdato timestamp
@@ -18,8 +18,7 @@ create table SOKNADMETADATA
     tilknyttetBehandlingsId varchar(255),
     skjema varchar(255),
     fnr varchar(255),
-    hovedskjema bytea,
-    vedlegg bytea,
+    vedlegg text,
     orgnr varchar(255),
     navenhet varchar(255),
     fiksforsendelseid varchar(255),
