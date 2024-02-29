@@ -30,32 +30,32 @@ class CrudRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
     fun `CRUD Livssituasjon`() {
         livssituasjonRepository.runCrudOperations(
-            opprettLivssituasjon(soknad.id),
-            opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999))
+            originalEntity = opprettLivssituasjon(soknad.id),
+            updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999))
         )
     }
 
     @Test
     fun `CRUD Eier`() {
         eierRepository.runCrudOperations(
-            opprettEier(soknad.id),
-            opprettEier(soknad.id).copy(statsborgerskap = "SPANSK")
+            originalEntity = opprettEier(soknad.id),
+            updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK")
         )
     }
 
     @Test
     fun `CRUD Kontakt`() {
         kontaktRepository.runCrudOperations(
-            opprettKontakt(soknad.id),
-            opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199"))
+            originalEntity = opprettKontakt(soknad.id),
+            updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199"))
         )
     }
 
     @Test
     fun `CRUD Familie`() {
         familieRepository.runCrudOperations(
-            createFamilie(soknad.id),
-            createFamilie(soknad.id).copy(sivilstatus = null)
+            originalEntity = createFamilie(soknad.id),
+            updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null)
         )
     }
 }
