@@ -50,10 +50,10 @@ abstract class AbstractGenericRepositoryTest {
     /**
      * Merk at dette er en extension-funksjon for typer av UpsertRepository og ListCrudRepository
      */
-    protected fun <E : SoknadBubble, R> R.verifyCRUDOperations(
-        originalEntity: E,
-        updatedEntity: E,
-    ) where R : UpsertRepository<E>, R : ListCrudRepository<E, UUID> {
+    protected fun <Entity : SoknadBubble, Repo> Repo.verifyCRUDOperations(
+        originalEntity: Entity,
+        updatedEntity: Entity,
+    ) where Repo : UpsertRepository<Entity>, Repo : ListCrudRepository<Entity, UUID> {
 
         assertThat(originalEntity.soknadId).isEqualTo(updatedEntity.soknadId)
         assertThat(originalEntity).isNotEqualTo(updatedEntity)
