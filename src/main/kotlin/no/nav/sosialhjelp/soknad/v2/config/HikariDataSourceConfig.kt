@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile
 class HikariDataSourceConfig(
     @Value("\${spring.datasource.url}") private val dbUrl: String,
     @Value("\${postgres.user.role}") private val role: String,
-    @Value("\${VAULT_MOUNT_PATH}") private val vaultMountPath: String
+    @Value("\${vault-mount-path}") private val vaultMountPath: String
 ) {
 
     // TODO: sjekk ut evt mer config som minimumIdle, idleTimeout ++ hva må settes?
