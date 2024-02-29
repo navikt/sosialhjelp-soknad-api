@@ -7,10 +7,13 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 
 @Component
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 class SoknadAdapter(
     private val soknadRepository: SoknadRepository,
 ) {

@@ -12,7 +12,7 @@ import java.util.*
 @Repository
 interface AdresseRepository : UpsertRepository<AdresserSoknad>, ListCrudRepository<AdresserSoknad, UUID>
 
-@Table("adresser")
+@Table("ADRESSER")
 data class AdresserSoknad(
     @Id override val soknadId: UUID,
     val midlertidigAdresse: Adresse? = null,

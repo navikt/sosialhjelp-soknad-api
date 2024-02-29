@@ -19,6 +19,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  docker:
+    compose:
+      enabled: false
 
 #Todo utlede denne fra db navn
 postgres:

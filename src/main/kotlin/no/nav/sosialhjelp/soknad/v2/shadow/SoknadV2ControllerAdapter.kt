@@ -31,7 +31,10 @@ import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktControl
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
 import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
 
 @Controller
@@ -44,13 +47,21 @@ class SoknadV2ControllerAdapter(
     private val utdanningController: UtdanningController,
     private val sivilstandController: SivilstandController,
     private val forsorgerpliktController: ForsorgerpliktController,
+    private val transactionTemplate: TransactionTemplate
 ) : ControllerAdapter {
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     override fun updateArbeid(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
+        log.info("NyModell: Oppdaterer Arbeid for $soknadId")
+
         arbeidFrontend.kommentarTilArbeidsforhold?.let {
-            arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
+            runWithNewTransaction {
+                arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
+            }
+                .onFailure { log.error("Ny Modell: Oppdatere arbeid feilet", it) }
         }
     }
 
@@ -58,81 +69,106 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
-        with(begrunnelseFrontend) {
-            if (hvaSokesOm != null || hvorforSoke != null) {
-                begrunnelseController.updateBegrunnelse(
-                    UUID.fromString(soknadId),
-                    BegrunnelseDto(
-                        hvaSokesOm = hvaSokesOm,
-                        hvorforSoke = hvorforSoke
+        log.info("NyModell: Oppdaterer Begrunnelse for $soknadId")
+
+        runWithNewTransaction {
+            with(begrunnelseFrontend) {
+                if (hvaSokesOm != null || hvorforSoke != null) {
+                    begrunnelseController.updateBegrunnelse(
+                        UUID.fromString(soknadId),
+                        BegrunnelseDto(
+                            hvaSokesOm = hvaSokesOm,
+                            hvorforSoke = hvorforSoke
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny Modell: Oppdatere Begrunnelse feilet", it) }
     }
 
     override fun updateBosituasjon(
         soknadId: String,
         bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
-        with(bosituasjonFrontend) {
-            if (botype != null || antallPersoner != null) {
-                bosituasjonController.updateBosituasjon(
-                    UUID.fromString(soknadId),
-                    BosituasjonDto(
-                        botype = botype?.let { Botype.valueOf(it.name) },
-                        antallPersoner = antallPersoner
+        log.info("NyModell: Oppdaterer Bosituasjon for $soknadId")
+
+        runWithNewTransaction {
+            with(bosituasjonFrontend) {
+                if (botype != null || antallPersoner != null) {
+                    bosituasjonController.updateBosituasjon(
+                        UUID.fromString(soknadId),
+                        BosituasjonDto(
+                            botype = botype?.let { Botype.valueOf(it.name) },
+                            antallPersoner = antallPersoner
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Bosituasjon feilet", it) }
     }
 
     override fun updateKontonummer(
         soknadId: String,
         kontoInputDto: KontonummerRessurs.KontonummerInputDTO,
     ) {
-        with(kontoInputDto) {
-            if (harIkkeKonto != null || brukerutfyltVerdi != null) {
-                kontonummerController.updateKontoInformasjonBruker(
-                    UUID.fromString(soknadId),
-                    KontoInformasjonInput(
-                        harIkkeKonto = harIkkeKonto,
-                        kontonummerBruker = brukerutfyltVerdi
+        log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
+
+        runWithNewTransaction {
+            with(kontoInputDto) {
+                if (harIkkeKonto != null || brukerutfyltVerdi != null) {
+                    kontonummerController.updateKontoInformasjonBruker(
+                        UUID.fromString(soknadId),
+                        KontoInformasjonInput(
+                            harIkkeKonto = harIkkeKonto,
+                            kontonummerBruker = brukerutfyltVerdi
+                        )
                     )
-                )
+                }
             }
         }
+            .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
 
     override fun updateTelefonnummer(
         soknadId: String,
         telefonnummerFrontend: TelefonnummerRessurs.TelefonnummerFrontend,
     ) {
-        telefonnummerFrontend.brukerutfyltVerdi?.let {
-            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
+        log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
+
+        runWithNewTransaction {
+            telefonnummerFrontend.brukerutfyltVerdi?.let {
+                telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
+            }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
 
     override fun updateUtdanning(
         soknadId: String,
         utdanningFrontend: UtdanningRessurs.UtdanningFrontend,
     ) {
-
-        utdanningFrontend.erStudent?.let {
-            utdanningController.updateUtdanning(
-                UUID.fromString(soknadId),
-                UtdanningDto(
-                    erStudent = it,
-                    studentgrad = utdanningFrontend.studengradErHeltid
-                        ?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID }
+        log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+        runWithNewTransaction {
+            utdanningFrontend.erStudent?.let {
+                utdanningController.updateUtdanning(
+                    UUID.fromString(soknadId),
+                    UtdanningDto(
+                        erStudent = it,
+                        studentgrad = utdanningFrontend.studengradErHeltid
+                            ?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID }
+                    )
                 )
-            )
+            }
         }
+            .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }
 
     override fun updateSivilstand(soknadId: String, familieFrontend: SivilstatusFrontend) {
-        val sivilstandInput = with(familieFrontend) {
+        log.info("NyModell: Oppdaterer Sivilstatus for $soknadId")
+
+        val sivilstandInput = familieFrontend.run {
             SivilstandInput(
                 sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
                 ektefelle?.let {
@@ -145,18 +181,31 @@ class SoknadV2ControllerAdapter(
                 },
             )
         }
-        sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
+        runWithNewTransaction {
+            sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
+        }
+            .onFailure { log.error("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
     override fun updateForsorger(soknadId: String, forsorgerpliktFrontend: ForsorgerpliktFrontend) {
-        val forsorgerInput = with(forsorgerpliktFrontend) {
+        log.info("NyModell: Oppdaterer Forsorger for $soknadId")
+
+        val forsorgerInput = forsorgerpliktFrontend.run {
             ForsorgerInput(
-                barnebidrag?.name?.let {
-                    Barnebidrag.valueOf(it)
-                },
+                barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
                 ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) }
             )
         }
-        forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
+        runWithNewTransaction {
+            forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
+        }
+            .onFailure { log.error("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
+    }
+
+    private fun runWithNewTransaction(function: () -> Unit): Result<Unit> {
+        return kotlin.runCatching {
+            transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+            transactionTemplate.execute { function.invoke() }
+        }
     }
 }
