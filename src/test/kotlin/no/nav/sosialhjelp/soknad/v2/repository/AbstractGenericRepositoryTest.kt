@@ -50,7 +50,7 @@ abstract class AbstractGenericRepositoryTest {
     /**
      * Merk at dette er en extension-funksjon for typer av UpsertRepository og ListCrudRepository
      */
-    protected fun <E : SoknadBubble, R> R.runCrudOperations(
+    protected fun <E : SoknadBubble, R> R.verifyCRUDOperations(
         originalEntity: E,
         updatedEntity: E,
     ) where R : UpsertRepository<E>, R : ListCrudRepository<E, UUID> {

@@ -19,7 +19,7 @@ import java.util.*
 class CrudRepositoryTest : AbstractGenericRepositoryTest() {
 
     @Test
-    fun `CRUD Soknad`() {
+    fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
         UUID.randomUUID().let {
             soknadRepository.save(opprettSoknad(it))
@@ -28,32 +28,32 @@ class CrudRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `CRUD Livssituasjon`() {
-        livssituasjonRepository.runCrudOperations(
+    fun `Verifisere relevante CRUD-operasjoner for Livssituasjon`() {
+        livssituasjonRepository.verifyCRUDOperations(
             originalEntity = opprettLivssituasjon(soknad.id),
             updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999))
         )
     }
 
     @Test
-    fun `CRUD Eier`() {
-        eierRepository.runCrudOperations(
+    fun `Verifisere relevante CRUD-operasjoner for Eier`() {
+        eierRepository.verifyCRUDOperations(
             originalEntity = opprettEier(soknad.id),
             updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK")
         )
     }
 
     @Test
-    fun `CRUD Kontakt`() {
-        kontaktRepository.runCrudOperations(
+    fun `Verifisere relevante CRUD-operasjoner for Kontakt`() {
+        kontaktRepository.verifyCRUDOperations(
             originalEntity = opprettKontakt(soknad.id),
             updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199"))
         )
     }
 
     @Test
-    fun `CRUD Familie`() {
-        familieRepository.runCrudOperations(
+    fun `Verifisere relevante CRUD-operasjoner for Familie`() {
+        familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null)
         )
