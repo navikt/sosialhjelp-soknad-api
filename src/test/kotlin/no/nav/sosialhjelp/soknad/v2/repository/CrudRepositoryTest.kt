@@ -20,6 +20,7 @@ class CrudRepositoryTest : AbstractGenericRepositoryTest() {
 
     @Test
     fun `CRUD Soknad`() {
+        // for "rot"-objektet vil det ikke være constraints som må testes
         UUID.randomUUID().let {
             soknadRepository.save(opprettSoknad(it))
             soknadRepository.save(opprettSoknad(it).copy(eierPersonId = "NOE ANNET"))
