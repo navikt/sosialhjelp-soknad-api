@@ -55,20 +55,20 @@ abstract class AbstractGenericRepositoryTest {
         assertThat(originalEntity.soknadId).isEqualTo(updatedEntity.soknadId)
         assertThat(originalEntity).isNotEqualTo(updatedEntity)
 
-        save(originalEntity)
-        save(updatedEntity)
+        // lagre entitet
+        val savedOriginalEntity = save(originalEntity)
+        assertThat(existsById(originalEntity.soknadId)).isTrue()
 
-        deleteSoknadDeleteEntity(originalEntity)
-        errorWhenSoknadDoesntExist(originalEntity)
-    }
+        // oppdatere entitet
+        val savedUpdatedEntity = save(updatedEntity)
+        assertThat(savedUpdatedEntity).isNotEqualTo(savedOriginalEntity)
 
-    private fun <E : SoknadBubble, R : UpsertRepository<E>> R.errorWhenSoknadDoesntExist(entity: E) {
-        assertThatThrownBy { save(entity) }
+        // slette soknads-entiteten skal også slette denne entiteten
+        soknadRepository.deleteById(originalEntity.soknadId)
+        assertThat(this.existsById(originalEntity.soknadId)).isFalse()
+
+        // lagre en entitet uten eksisterende soknad-referanse skal feile
+        assertThatThrownBy { save(originalEntity) }
             .isInstanceOf(DbActionExecutionException::class.java)
-    }
-
-    private fun <E : SoknadBubble, R : ListCrudRepository<E, UUID>> R.deleteSoknadDeleteEntity(entity: E) {
-        soknadRepository.deleteById(entity.soknadId)
-        assertThat(this.existsById(entity.soknadId)).isFalse()
     }
 }
