@@ -13,7 +13,7 @@ spec:
       - type: POSTGRES_15
         name: soknad-mock-db-instance
         databases:
-          - name: soknad-mock-db
+          - name: postgres
             envVarPrefix: DB
   image: {{image}}
   port: 8080
