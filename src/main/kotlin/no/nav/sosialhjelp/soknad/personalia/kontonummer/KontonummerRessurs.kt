@@ -74,16 +74,6 @@ class KontonummerRessurs(
             get() = brukerutfyltVerdi != null || harIkkeKonto
     }
 
-    data class KontonummerInputDTO(
-        @Schema(nullable = true, description = "Kontonummer fra bruker")
-        @field:Pattern(regexp = "^\\d{11}$", message = "Kontonummer må være 11 siffer")
-        val brukerutfyltVerdi: String? = null,
-        @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
-        val harIkkeKonto: Boolean? = null,
-        @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
-        val brukerdefinert: Boolean? = null
-    )
-
     private fun loadKontonummer(behandlingsId: String): JsonKontonummer =
         soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
             .jsonInternalSoknad!!.soknad.data.personalia.kontonummer
@@ -121,3 +111,13 @@ class KontonummerRessurs(
         harIkkeKonto = kontonummer.harIkkeKonto ?: false
     )
 }
+
+data class KontonummerInputDTO(
+    @Schema(nullable = true, description = "Kontonummer fra bruker")
+    @field:Pattern(regexp = "^\\d{11}$", message = "Kontonummer må være 11 siffer")
+    val brukerutfyltVerdi: String? = null,
+    @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
+    val harIkkeKonto: Boolean? = null,
+    @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
+    val brukerdefinert: Boolean? = null
+)

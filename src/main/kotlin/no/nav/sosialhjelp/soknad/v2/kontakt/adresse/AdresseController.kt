@@ -1,8 +1,10 @@
-package no.nav.sosialhjelp.soknad.v2.adresse
+package no.nav.sosialhjelp.soknad.v2.kontakt.adresse
 
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.v2.soknad.NavEnhet
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,15 +19,14 @@ import java.util.*
 // @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val adresseService: AdresseService,
-    private val soknadService: SoknadService
+    private val kontaktService: KontaktService,
 ) {
     @GetMapping
     fun getAdresser(
         @PathVariable("soknadId") soknadId: UUID
     ): AdresserDto {
-        val navEnhet = soknadService.getSoknad(soknadId).navEnhet
-        return adresseService.getAdresserSoknad(soknadId).toAdresserDto(navEnhet)
+        return kontaktService.getKontaktInformasjon(soknadId)?.let { it.toAdresserDto() }
+            ?: AdresserDto()
     }
 
     @PutMapping
@@ -33,30 +34,26 @@ class AdresseController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput
     ): AdresserDto {
-        // TODO Validere format på adresse?
-
-        val adresser = adresseService.updateAdresseBruker(
-            soknadId = soknadId,
-            brukerInputAdresse = BrukerInputAdresse(
-                valgtAdresse = adresserInput.valgtAdresse,
-                brukerAdresse = adresserInput.adresseBruker
+        return kontaktService
+            .updateBrukerAdresse(
+                soknadId = soknadId,
+                adresseValg = adresserInput.adresseValg,
+                brukerAdresse = adresserInput.brukerAdresse
             )
-        )
-        val navEnhet = soknadService.getSoknad(soknadId).navEnhet
-        return adresser.toAdresserDto(navEnhet)
+            .toAdresserDto()
     }
 }
 
 data class AdresserInput(
-    val valgtAdresse: AdresseValg,
-    val adresseBruker: Adresse?
+    val adresseValg: AdresseValg,
+    val brukerAdresse: Adresse?
 )
 
 data class AdresserDto(
-    val valgtAdresse: AdresseValg? = null,
+    val adresseValg: AdresseValg? = null,
     val folkeregistrertAdresse: Adresse? = null,
     val midlertidigAdresse: Adresse? = null,
-    val adresseBruker: Adresse? = null,
+    val brukerAdresse: Adresse? = null,
     val navenhet: NavEnhetDto? = null,
 )
 
@@ -68,13 +65,13 @@ data class NavEnhetDto(
     val kommunenavn: String? = null,
 )
 
-fun AdresserSoknad.toAdresserDto(navenhet: NavEnhet?) =
+fun Kontakt.toAdresserDto() =
     AdresserDto(
-        valgtAdresse = brukerInput?.valgtAdresse,
-        adresseBruker = brukerInput?.brukerAdresse,
-        midlertidigAdresse = midlertidigAdresse,
-        folkeregistrertAdresse = folkeregistrertAdresse,
-        navenhet = navenhet?.toNavEnhetDto()
+        adresseValg = adresser.adressevalg,
+        brukerAdresse = adresser.brukerAdresse,
+        midlertidigAdresse = adresser.midlertidigAdresse,
+        folkeregistrertAdresse = adresser.folkeregistrertAdresse,
+        navenhet = mottaker.toNavEnhetDto()
     )
 
 fun NavEnhet.toNavEnhetDto(): NavEnhetDto {

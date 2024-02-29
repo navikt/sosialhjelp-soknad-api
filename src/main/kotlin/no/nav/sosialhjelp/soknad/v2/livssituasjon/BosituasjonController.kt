@@ -1,11 +1,7 @@
-package no.nav.sosialhjelp.soknad.v2.brukerdata.controller
+package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Bosituasjon
-import no.nav.sosialhjelp.soknad.v2.brukerdata.Botype
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,11 +16,11 @@ import java.util.*
 @Unprotected
 @RequestMapping("/soknad/{soknadId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonController(
-    private val brukerdataService: BrukerdataService
+    private val livssituasjonService: LivssituasjonService
 ) {
     @GetMapping
     fun getBosituasjon(@PathVariable("soknadId") soknadId: UUID): BosituasjonDto {
-        return brukerdataService.getBrukerdataPersonlig(soknadId)?.toBosituasjonDto()
+        return livssituasjonService.getLivssituasjon(soknadId)?.bosituasjon?.toBosituasjonDto()
             ?: BosituasjonDto()
     }
 
@@ -37,12 +33,10 @@ class BosituasjonController(
         SoknadInputValidator(BosituasjonDto::class)
             .validateAllInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
 
-        return brukerdataService.updateBosituasjon(
+        return livssituasjonService.updateBosituasjon(
             soknadId,
-            Bosituasjon(
-                botype = bosituasjonDto.botype,
-                antallHusstand = bosituasjonDto.antallPersoner
-            )
+            botype = bosituasjonDto.botype,
+            antallHusstand = bosituasjonDto.antallPersoner
         ).toBosituasjonDto()
     }
 }
@@ -52,7 +46,7 @@ data class BosituasjonDto(
     val antallPersoner: Int? = null
 )
 
-private fun BrukerdataPerson.toBosituasjonDto() = BosituasjonDto(
-    botype = bosituasjon?.botype,
-    antallPersoner = bosituasjon?.antallHusstand,
+fun Bosituasjon.toBosituasjonDto() = BosituasjonDto(
+    botype = this.botype,
+    antallPersoner = this.antallHusstand
 )

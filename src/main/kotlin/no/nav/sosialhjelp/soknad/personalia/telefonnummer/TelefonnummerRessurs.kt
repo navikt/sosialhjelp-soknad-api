@@ -78,11 +78,11 @@ class TelefonnummerRessurs(
             brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
         )
     }
-
-    data class TelefonnummerFrontend(
-        val brukerdefinert: Boolean = false,
-        val systemverdi: String? = null,
-        @Schema(nullable = true)
-        val brukerutfyltVerdi: String? = null
-    )
 }
+
+data class TelefonnummerFrontend(
+    val brukerdefinert: Boolean = false,
+    val systemverdi: String? = null,
+    @Schema(nullable = true)
+    val brukerutfyltVerdi: String? = null
+)

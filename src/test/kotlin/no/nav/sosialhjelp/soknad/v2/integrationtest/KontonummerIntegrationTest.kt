@@ -1,79 +1,76 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPerson
-import no.nav.sosialhjelp.soknad.v2.brukerdata.BrukerdataPersonRepository
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.KontoInformasjonDto
-import no.nav.sosialhjelp.soknad.v2.brukerdata.controller.KontoInformasjonInput
-import no.nav.sosialhjelp.soknad.v2.createEier
-import no.nav.sosialhjelp.soknad.v2.createSoknad
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
+import no.nav.sosialhjelp.soknad.v2.opprettEier
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoInformasjonDto
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
+import java.util.UUID
 
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
-    private lateinit var brukerdataPersonRepository: BrukerdataPersonRepository
+    private lateinit var eierRepository: EierRepository
 
     @Test
     fun `Hente kontonummer skal returnere lagrede data`() {
-        val soknad = soknadRepository.save(createSoknad())
-        val brukerdataPerson = brukerdataPersonRepository.save(BrukerdataPerson(soknad.id!!))
+        val soknad = soknadRepository.save(opprettSoknad())
+        val eier = eierRepository.save(opprettEier(soknad.id, soknad.eierPersonId))
 
         doGet(
             "/soknad/${soknad.id}/personalia/kontonummer",
             KontoInformasjonDto::class.java
         ).also {
-            assertThat(it.kontonummerBruker).isEqualTo(brukerdataPerson.kontoInformasjon?.kontonummer)
-            assertThat(it.kontonummerRegister).isEqualTo(soknad.eier.kontonummer)
-            assertThat(it.harIkkeKonto).isEqualTo(brukerdataPerson.kontoInformasjon?.harIkkeKonto)
+            assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer.bruker)
+            assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer.register)
+            assertThat(it.harIkkeKonto).isEqualTo(eier.kontonummer.harIkkeKonto)
         }
     }
 
     @Test
-    fun `Oppdatere kontoinfo skal lagres i databasen`() {
-        val soknad = soknadRepository.save(createSoknad())
+    fun `Oppdatere brukers kontonummer skal lagres i db`() {
+        val soknadId = createSoknadOgEier()
 
-        val kontoInformasjonInput = KontoInformasjonInput(
-            harIkkeKonto = false,
-            kontonummerBruker = "12341212345"
-        )
-
+        val input = KontonummerBrukerInput(kontonummer = "12345312345")
         doPut(
-            "/soknad/${soknad.id}/personalia/kontonummer",
-            kontoInformasjonInput,
+            "/soknad/$soknadId/personalia/kontonummer",
+            input,
             KontoInformasjonDto::class.java
         )
 
-        brukerdataPersonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.kontoInformasjon?.harIkkeKonto).isEqualTo(kontoInformasjonInput.harIkkeKonto)
-            assertThat(it.kontoInformasjon?.kontonummer).isEqualTo(kontoInformasjonInput.kontonummerBruker)
+        eierRepository.findByIdOrNull(soknadId)?.let {
+            assertThat(it.kontonummer.harIkkeKonto).isNull()
+            assertThat(it.kontonummer.bruker).isEqualTo(input.kontonummer)
         }
             ?: fail("Fant ikke brukerdata")
     }
 
     @Test
-    fun `HarIkkeKonto = true skal gi feil hvis det finnes et kontonummer`() {
-        val soknad = soknadRepository.save(createSoknad())
+    fun `Sette HarIkkeKonto skal lagres i basen, og kontonummerBruker == null`() {
+        val soknadId = createSoknadOgEier()
 
-        doPutExpectError(
-            "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoInformasjonInput(true, null),
-            HttpStatus.BAD_REQUEST
+        doPut(
+            "/soknad/$soknadId/personalia/kontonummer",
+            HarIkkeKontoInput(true),
+            KontoInformasjonDto::class.java
         )
+
+        eierRepository.findByIdOrNull(soknadId)?.let {
+            assertThat(it.kontonummer.harIkkeKonto).isTrue()
+            assertThat(it.kontonummer.bruker).isNull()
+        }
+            ?: fail("Fant ikke brukerdata")
     }
 
-    @Test
-    fun `HarIkkeKonto = false skal gi feil hvis det ikke finnes et kontonummer`() {
-        val soknad = soknadRepository.save(createSoknad(eier = createEier(kontonummer = null)))
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoInformasjonInput(false, null),
-            HttpStatus.BAD_REQUEST
-        )
+    private fun createSoknadOgEier(): UUID {
+        return soknadRepository.save(opprettSoknad(UUID.randomUUID()))
+            .also { eierRepository.save(opprettEier(it.id, it.eierPersonId)) }
+            .id
     }
 }

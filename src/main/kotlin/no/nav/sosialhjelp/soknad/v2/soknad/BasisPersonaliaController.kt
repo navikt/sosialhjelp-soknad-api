@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,21 +14,21 @@ import java.util.*
 // @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknad/{soknadId}/personalia/basisPersonalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BasisPersonaliaController(
-    private val soknadService: SoknadService
+    private val eierService: EierService
 ) {
     fun getBasisPersonalia(@PathVariable("soknadId") soknadId: UUID): PersonaliaDto {
-        return soknadService.getSoknad(soknadId).toPersonaliaDto()
+        return eierService.getEier(soknadId).toPersonaliaDto()
     }
 }
 
-private fun Soknad.toPersonaliaDto(): PersonaliaDto {
+private fun Eier.toPersonaliaDto(): PersonaliaDto {
     return PersonaliaDto(
         navn = NavnDto(
-            fornavn = eier.navn.fornavn,
-            mellomnavn = eier.navn.mellomnavn,
-            etternavn = eier.navn.etternavn
+            fornavn = navn.fornavn,
+            mellomnavn = navn.mellomnavn,
+            etternavn = navn.etternavn
         ),
-        statsborgerskap = eier.statsborgerskap
+        statsborgerskap = statsborgerskap
     )
 }
 

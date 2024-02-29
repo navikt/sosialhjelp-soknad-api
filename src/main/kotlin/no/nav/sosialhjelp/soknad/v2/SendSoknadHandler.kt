@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
@@ -22,28 +23,30 @@ import java.util.*
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
-    private val jsonGenerator: JsonInternalSoknadGenerator
+    private val jsonGenerator: JsonInternalSoknadGenerator,
+    private val kontaktService: KontaktService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
-        val json = jsonGenerator.createJsonInternalSoknad(soknad.id!!)
+        val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        soknad.navEnhet?.let {
+        val kontaktInformasjon = kontaktService.getKontaktInformasjon(soknad.id)
+
+        kontaktInformasjon?.mottaker?.let {
             log.info(
                 "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
                     "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}"
             )
         }
-            ?: throw IllegalStateException("NavEnhet for soknad ${soknad.id} finnes ikke.")
 
         val digisosId: UUID = try {
-            // TODO Verdt å kikke litt på digisosApiV2Clienten da vi tilsynelatende håndterer feil manuelt
+            // TODO Verdt å kikke litt på digisosApiV2Clienten
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = objectMapper.writeValueAsString(json.soknad),
                 tilleggsinformasjonJson = objectMapper.writeValueAsString(
-                    JsonTilleggsinformasjon(soknad.navEnhet?.enhetsnummer)
+                    JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer)
                 ),
                 vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
                 dokumenter = getFilOpplastingList(json),

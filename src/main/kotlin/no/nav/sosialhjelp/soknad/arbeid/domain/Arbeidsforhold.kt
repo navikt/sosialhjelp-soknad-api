@@ -10,8 +10,8 @@ data class Arbeidsforhold(
     val harFastStilling: Boolean?
 )
 
-fun Arbeidsforhold.toV2Arbeidsforhold(): no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold {
-    return no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold(
+fun Arbeidsforhold.toV2Arbeidsforhold(): no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold {
+    return no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold(
         orgnummer = this.orgnr,
         arbeidsgivernavn = this.arbeidsgivernavn,
         start = this.fom,

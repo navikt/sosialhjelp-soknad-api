@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
-import no.nav.sosialhjelp.soknad.v2.soknad.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import java.util.*
 
 interface RegisterDataFetcher {

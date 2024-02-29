@@ -56,9 +56,9 @@ class SoknadLifecycleController(
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
 
-        val (soknadId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
+        val (id, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
-        return SoknadSendtDto(soknadId, innsendingstidspunkt)
+        return SoknadSendtDto(id, innsendingstidspunkt)
     }
 
     @DeleteMapping("/{soknadId}")
