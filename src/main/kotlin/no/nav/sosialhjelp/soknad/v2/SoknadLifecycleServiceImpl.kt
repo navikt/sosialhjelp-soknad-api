@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
