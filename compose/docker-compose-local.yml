@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=soknad1234
       - POSTGRES_USER=soknad
-      - POSTGRES_DB=soknad
+      - POSTGRES_DB=soknaddb
 
   sosialhjelp-mock-alt:
     container_name: sosialhjelp-mock-alt

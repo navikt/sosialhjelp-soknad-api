@@ -1,4 +1,10 @@
 spring:
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    clean-disabled: false
+    clean-on-validation-error: true
+    default-schema: soknad
   docker:
     compose:
       enabled: true
