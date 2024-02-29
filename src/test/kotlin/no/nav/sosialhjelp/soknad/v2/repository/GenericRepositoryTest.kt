@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*
 
@@ -16,7 +17,7 @@ import java.util.*
  * 2. Sjekke at "delete on cascade" i databasen fungerer som forventet
  * 3. Sjekke at fremmednøkkel er korrekt koblet til eksisterende soknad
  */
-class CrudRepositoryTest : AbstractGenericRepositoryTest() {
+class GenericRepositoryTest : AbstractGenericRepositoryTest() {
 
     @Test
     fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
@@ -41,6 +42,12 @@ class CrudRepositoryTest : AbstractGenericRepositoryTest() {
             originalEntity = opprettEier(soknad.id),
             updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK")
         )
+    }
+
+    @Test
+    fun `Hente eiers personId skal returnere eierPersonId fra Soknad`() {
+        val eier = eierRepository.save(opprettEier(soknad.id))
+        Assertions.assertThat(eierRepository.getEierPersonId(eier.soknadId)).isEqualTo(soknad.eierPersonId)
     }
 
     @Test
