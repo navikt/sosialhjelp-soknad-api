@@ -154,4 +154,4 @@ spec:
     - name: VAULT_MOUNT_PATH
       value: postgresql/preprod-fss/
     - name: SOKNADSOSIALHJELPDATASOURCE_URL
-      value: jdbc:postgresql://dev-pg.intern.nav.no:5432/sosialhjelp-soknad-db
+      value: jdbc:postgresql://b27dbvl030.preprod.local:5432/sosialhjelp-soknad-db
