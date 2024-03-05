@@ -19,7 +19,7 @@ class SoknadAdapter(
             Soknad(
                 id = soknadId,
                 tidspunkt = Tidspunkt(opprettet = opprettetDato),
-                eierPersonId = eierPersonId
+                eierPersonId = eierPersonId,
             )
         )
     }

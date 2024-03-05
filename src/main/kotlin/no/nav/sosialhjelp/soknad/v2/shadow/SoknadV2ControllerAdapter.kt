@@ -80,8 +80,8 @@ class SoknadV2ControllerAdapter(
                     begrunnelseController.updateBegrunnelse(
                         UUID.fromString(soknadId),
                         BegrunnelseDto(
-                            hvaSokesOm = hvaSokesOm,
-                            hvorforSoke = hvorforSoke
+                            hvaSokesOm = hvaSokesOm ?: "",
+                            hvorforSoke = hvorforSoke ?: ""
                         )
                     )
                 }
@@ -218,10 +218,3 @@ class SoknadV2ControllerAdapter(
         }
     }
 }
-
-private fun UtdanningFrontend.toUtdanningDto() = UtdanningDto(
-    erStudent = erStudent,
-    studentgrad = studengradErHeltid?.let {
-        if (it) Studentgrad.HELTID else Studentgrad.DELTID
-    }
-)
