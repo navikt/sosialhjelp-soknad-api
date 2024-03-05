@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 
 @Profile("!test & !mock-alt")
 @Configuration
+@EnableJdbcRepositories
 class HikariDataSourceConfig(
     @Value("\${spring.datasource.url}") private val dbUrl: String,
     @Value("\${postgres.user.role}") private val role: String,
