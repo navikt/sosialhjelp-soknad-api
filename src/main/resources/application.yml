@@ -26,7 +26,7 @@ spring:
 #Todo utlede denne fra db navn
 postgres:
   user:
-    role: soknadsosialhjelp-db-admin
+    role: sosialhjelp-soknad-db-admin
 
 vault-mount-path: ${VAULT_MOUNT_PATH}
 
