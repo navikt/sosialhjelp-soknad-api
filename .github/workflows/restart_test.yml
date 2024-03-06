@@ -10,5 +10,5 @@ jobs:
     uses: navikt/sosialhjelp-ci/.github/workflows/restart_test-envs.yml@v2
     secrets: inherit
     with:
-      to-mock: true
+#      to-mock: true
       to-dev-fss: true
