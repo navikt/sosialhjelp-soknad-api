@@ -52,6 +52,8 @@ dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
 
+    developmentOnly(libs.spring.boot.docker.compose)
+
     // Coroutines
     implementation(libs.bundles.coroutines)
 
@@ -73,8 +75,6 @@ dependencies {
     implementation(libs.flyway.core)
     runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
     runtimeOnly("org.postgresql:postgresql:42.7.1")
-
-    developmentOnly(libs.spring.boot.docker.compose)
 
     // redis
     implementation(libs.lettuce.core)

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.springframework.data.annotation.Id
@@ -21,7 +21,7 @@ data class Kontakt(
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
     val mottaker: NavEnhet = NavEnhet(),
-) : SoknadBubble
+) : AggregateRoot
 
 data class Telefonnummer(
     @Column("telefon_register")

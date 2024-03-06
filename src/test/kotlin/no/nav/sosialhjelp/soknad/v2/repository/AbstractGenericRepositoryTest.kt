@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
@@ -50,7 +50,7 @@ abstract class AbstractGenericRepositoryTest {
     /**
      * Merk at dette er en extension-funksjon for typer av UpsertRepository og ListCrudRepository
      */
-    protected fun <Entity : SoknadBubble, Repo> Repo.verifyCRUDOperations(
+    protected fun <Entity : AggregateRoot, Repo> Repo.verifyCRUDOperations(
         originalEntity: Entity,
         updatedEntity: Entity,
     ) where Repo : UpsertRepository<Entity>, Repo : ListCrudRepository<Entity, UUID> {

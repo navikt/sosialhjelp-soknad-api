@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
@@ -23,7 +23,7 @@ data class Soknad(
     val begrunnelse: Begrunnelse? = null,
     @Embedded.Nullable
     val driftsinformasjon: Driftsinformasjon? = null,
-) : SoknadBubble { override val soknadId: UUID get() = id }
+) : AggregateRoot { override val soknadId: UUID get() = id }
 
 data class Tidspunkt(
     val opprettet: LocalDateTime,

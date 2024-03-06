@@ -8,14 +8,15 @@ spring:
     clean-disabled: false
     clean-on-validation-error: true
     default-schema: soknad
+  docker:
+    compose:
+      file: compose/docker-compose-local.yml
+      enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db?currentSchema=soknad
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  docker:
-    compose:
-      enabled: false
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}

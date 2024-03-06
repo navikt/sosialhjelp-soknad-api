@@ -76,10 +76,10 @@ class EierToJsonMapper(
             return when {
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(true)
-                bruker != null ->
-                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(bruker)
-                register != null ->
-                    JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(register)
+                fraBruker != null ->
+                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
+                fraRegister != null ->
+                    JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
                 else -> null
             }
         }
