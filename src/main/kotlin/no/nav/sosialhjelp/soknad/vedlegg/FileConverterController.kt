@@ -1,14 +1,16 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConverterService
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,8 +25,12 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/vedlegg/konverter")
 class FileConverterController(
     private val fileConverterService: FileConverterService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
+    private val meterRegistry: MeterRegistry
 ) {
+    private val pdfConversionSuccess = Counter.builder("soknad_pdf_conversion_success")
+    private val pdfConversionFailure = Counter.builder("soknad_pdf_conversion_failure")
+
     @Operation(summary = "Konverterer vedlegg til PDF")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ApiResponse(
@@ -39,21 +45,34 @@ class FileConverterController(
     fun konverterVedlegg(
         @RequestParam("file") file: MultipartFile,
     ): ResponseEntity<ByteArray> {
-        val filenameNotNull = file.validateFileName()
-        virusScanner.scan(filenameNotNull, file.bytes, "**KONVERTERING**", detectMimeType(file.bytes))
+        val upload = FileConversionUpload(file)
 
-        val (convertedName, pdfBytes) = fileConverterService.convertFileToPdf(filenameNotNull, file.bytes)
+        log.debug("Konverterer upload {} til PDF", upload)
+
+        val pdfBytes = try {
+            virusScanner.scan(upload.bytes, upload.mimeType)
+            val pdfBytes = fileConverterService.convertFileToPdf(upload.unconvertedName, upload.bytes)
+            pdfConversionSuccess.tag(TAG_FILE_TYPE, "${upload.mimeType}/${upload.extension}").register(meterRegistry).increment()
+            pdfBytes
+        } catch (e: Exception) {
+            pdfConversionFailure
+                .tag(TAG_FILE_TYPE, "${upload.mimeType}/${upload.extension}")
+                .tag(TAG_ERROR_CLASS, "${e::class}")
+                .register(meterRegistry)
+                .increment()
+            throw e
+        }
 
         return ResponseEntity
             .ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${convertedName}\"")
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${upload.convertedName}\"")
             .contentType(MediaType.parseMediaType(MimeTypes.APPLICATION_PDF))
             .body(pdfBytes)
     }
 
-    private fun MultipartFile.validateFileName(): String {
-        val filename = this.originalFilename ?: error("Filnavn er null")
-        if (filename.isBlank()) error("Filnavn er tomt")
-        return filename
+    companion object {
+        private const val TAG_FILE_TYPE = "mime_type"
+        private const val TAG_ERROR_CLASS = "error_class"
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }
