@@ -29,7 +29,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
                 val updatedBarn = updated.find { it.familieKey == uuid } ?: updated.find { it.personId == existing.personId }
 
-                when(updatedBarn != null) {
+                when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
                     false -> uuid to existing
                 }

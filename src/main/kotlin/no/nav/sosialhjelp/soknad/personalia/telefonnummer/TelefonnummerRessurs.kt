@@ -64,7 +64,6 @@ class TelefonnummerRessurs(
             behandlingsId?.let {
                 v2ControllerAdapter.updateTelefonnummer(it, telefonnummerFrontend.brukerutfyltVerdi)
             }
-
         } else {
             jsonTelefonnummer.kilde = JsonKilde.SYSTEM
             telefonnummerSystemdata.updateSystemdataIn(soknad)

@@ -132,7 +132,6 @@ class SoknadV2ControllerAdapter(
             .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
 
-
     override fun updateTelefonnummer(
         soknadId: String,
         telefonnummerBruker: String?,
