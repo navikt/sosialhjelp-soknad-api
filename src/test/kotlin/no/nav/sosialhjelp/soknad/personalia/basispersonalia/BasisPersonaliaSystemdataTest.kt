@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.basispersonalia
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
@@ -10,14 +12,17 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BasisPersonaliaSystemdataTest {
 
     private val personService: PersonService = mockk()
-    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService)
+    private val registerDataAdapter: RegisterDataAdapter = mockk()
+    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService, registerDataAdapter)
 
     private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
         versjon = 1L,
@@ -29,6 +34,11 @@ internal class BasisPersonaliaSystemdataTest {
         opprettetDato = LocalDateTime.now(),
         sistEndretDato = LocalDateTime.now()
     )
+
+    @BeforeEach
+    fun setup() {
+        every { registerDataAdapter.addBasisPersonalia(any(), any()) } just runs
+    }
 
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {

@@ -10,7 +10,6 @@ springdoc = "2.3.0"
 flyway_plugin = "10.8.1"
 flyway = "10.8.1"
 ojdbc_10 = "19.21.0.0"
-hsqldb = "2.7.2"
 lettuce = "6.3.0.RELEASE"
 token_validation = "4.0.3"
 java_jwt = "4.4.0"
@@ -35,7 +34,6 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
-spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines" }
@@ -67,12 +65,12 @@ unleash-client-java = { module = "io.getunleash:unleash-client-java", version.re
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
 tika-parsers-standard-package = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika_parsers" }
 ojdbc10 = { module = "com.oracle.database.jdbc:ojdbc10", version.ref = "ojdbc_10" }
-hsqldb = { module = "org.hsqldb:hsqldb", version.ref = "hsqldb" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons_text" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }
 pdfbox-io = { module = "org.apache.pdfbox:pdfbox-io", version.ref = "pdfbox" }
 
+spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 token-validation-spring-test = { module = "no.nav.security:token-validation-spring-test", version.ref = "token_validation" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -82,11 +80,9 @@ mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 spring-boot = [
     "spring-boot-starter-actuator",
     "spring-boot-starter-data-jdbc",
-    "spring-boot-starter-test",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
-    "spring-boot-docker-compose",
 ]
 
 coroutines = [

@@ -1,20 +1,20 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.ArbeidsforholdAdapter
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.KontaktAdapter
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.SoknadAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2KontaktAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2SoknadAdapter
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
 
+// TODO Fjerne ekstra abstraksjonslag med adaptere
 @Component
 class SoknadV2RegisterDataAdapter(
-    private val soknadAdapter: SoknadAdapter,
-    private val arbeidsforholdAdapter: ArbeidsforholdAdapter,
-    private val kontaktAdapter: KontaktAdapter,
+    private val v2SoknadAdapter: V2SoknadAdapter,
+    private val v2KontaktAdapter: V2KontaktAdapter,
 ) : RegisterDataAdapter {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -23,7 +23,7 @@ class SoknadV2RegisterDataAdapter(
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
-            soknadAdapter.createNewSoknad(
+            v2SoknadAdapter.createNewSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
                 eierPersonId = eierId
@@ -35,7 +35,7 @@ class SoknadV2RegisterDataAdapter(
     override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>) {
         log.info("NyModell: Legger til arbeidsforhold for $soknadId")
         kotlin.runCatching {
-            arbeidsforholdAdapter.saveArbeidsforhold(
+            v2SoknadAdapter.saveArbeidsforhold(
                 UUID.fromString(soknadId),
                 arbeidsforhold.map { it.toV2Arbeidsforhold() }
             )
@@ -43,26 +43,37 @@ class SoknadV2RegisterDataAdapter(
             .onFailure { log.error("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
     }
 
-    override fun addAdresserRegister(behandlingsId: String, person: Person?) {
-        log.info("NyModell: Legger til adresser for $behandlingsId")
+    override fun addAdresserRegister(soknadId: String, person: Person?) {
+        log.info("NyModell: Legger til adresser for $soknadId")
 
         person?.let {
             kotlin.runCatching {
-                kontaktAdapter.saveAdresser(
-                    soknadId = UUID.fromString(behandlingsId),
+                v2KontaktAdapter.saveAdresser(
+                    soknadId = UUID.fromString(soknadId),
                     bostedsadresse = it.bostedsadresse,
                     oppholdsadresse = it.oppholdsadresse,
                 )
             }
-                .onFailure { log.error("Legge til adresser feilet for $behandlingsId", it) }
+                .onFailure { log.error("NyModell: Legge til Adresser feilet for $soknadId", it) }
         }
     }
 
-    override fun addTelefonnummerRegister(behandlingsId: String, telefonnummer: String?) {
-        log.info("NyModell: Legger til telefonnummer for $behandlingsId")
+    override fun addTelefonnummerRegister(soknadId: String, telefonnummer: String?) {
+        log.info("NyModell: Legger til Telefonnummer for $soknadId")
         kotlin.runCatching {
-            telefonnummer?.let { kontaktAdapter.addTelefonnummerRegister(UUID.fromString(behandlingsId), it) }
+            telefonnummer?.let { v2KontaktAdapter.addTelefonnummerRegister(UUID.fromString(soknadId), it) }
         }
             .onFailure { log.error("Kunne ikke legge til telefonnummer fra register", it) }
+    }
+
+    override fun addBasisPersonalia(soknadId: String, personalia: JsonPersonalia) {
+        log.info("Ny modell: Legger til Eier")
+        kotlin.runCatching {
+            v2SoknadAdapter.createEier(
+                UUID.fromString(soknadId),
+                personalia
+            )
+        }
+            .onFailure { log.error("NyModell: Kunne ikke legge til ny Eier fra register", it) }
     }
 }

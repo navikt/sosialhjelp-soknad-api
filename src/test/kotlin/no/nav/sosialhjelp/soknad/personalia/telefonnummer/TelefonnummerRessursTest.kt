@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -32,13 +33,20 @@ internal class TelefonnummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val registerDataAdapter: RegisterDataAdapter = mockk()
     private val mobiltelefonService: MobiltelefonService = mockk()
+    private val controllerAdapter: ControllerAdapter = mockk()
+
     private val telefonnummerSystemdata: TelefonnummerSystemdata = TelefonnummerSystemdata(
         mobiltelefonService = mobiltelefonService,
         registerDataAdapter = registerDataAdapter
     )
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val telefonnummerRessurs =
-        TelefonnummerRessurs(tilgangskontroll, telefonnummerSystemdata, soknadUnderArbeidRepository)
+        TelefonnummerRessurs(
+            tilgangskontroll,
+            telefonnummerSystemdata,
+            soknadUnderArbeidRepository,
+            controllerAdapter
+        )
 
     @BeforeEach
     fun setUp() {
@@ -46,6 +54,7 @@ internal class TelefonnummerRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { mobiltelefonService.hent(any()) } returns TELEFONNUMMER_SYSTEM
         every { registerDataAdapter.addTelefonnummerRegister(any(), any()) } just runs
+        every { controllerAdapter.updateTelefonnummer(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 

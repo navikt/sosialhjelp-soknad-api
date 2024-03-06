@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import java.time.LocalDateTime
@@ -9,4 +10,5 @@ interface RegisterDataAdapter {
     fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<Arbeidsforhold>)
     fun addAdresserRegister(soknadId: String, person: Person?)
     fun addTelefonnummerRegister(soknadId: String, systemverdi: String?)
+    fun addBasisPersonalia(soknadId: String, personalia: JsonPersonalia)
 }

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -23,7 +23,7 @@ data class Livssituasjon(
     val utdanning: Utdanning = Utdanning(),
     @Embedded.Empty
     val bosituasjon: Bosituasjon = Bosituasjon(),
-) : SoknadBubble
+) : AggregateRoot
 
 data class Bosituasjon(
     val botype: Botype? = null,

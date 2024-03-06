@@ -46,10 +46,11 @@ class SoknadService(
     }
 
     fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Begrunnelse {
-        return getSoknadOrThrowException(soknadId)
-            .copy(begrunnelse = begrunnelse)
-            .also { soknadRepository.save(it) }
-            .begrunnelse
+        return getSoknadOrThrowException(soknadId).run {
+            copy(begrunnelse = begrunnelse)
+                .also { soknadRepository.save(it) }
+                .let { it.begrunnelse!! }
+        }
     }
 
     private fun getSoknadOrThrowException(soknadId: UUID): Soknad {

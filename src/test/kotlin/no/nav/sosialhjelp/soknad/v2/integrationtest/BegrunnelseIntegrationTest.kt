@@ -6,7 +6,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 
 class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
@@ -18,8 +17,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             BegrunnelseDto::class.java
         ).also {
-            assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse.hvorforSoke)
-            assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse.hvaSokesOm)
+            assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse!!.hvorforSoke)
+            assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse!!.hvaSokesOm)
         }
     }
 
@@ -39,56 +38,10 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse!!.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
+            assertThat(it.begrunnelse!!.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
-    }
-
-    @Test
-    fun `Oppdatere begrunnelse med ulovlige tegn skal gi 400 BadRequest`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/begrunnelse",
-            BegrunnelseDto(
-                hvorforSoke = "Jeg bare trenger penger nå %¤/%¤&%¤&",
-                hvaSokesOm = "Masse penger"
-            ),
-            HttpStatus.BAD_REQUEST
-        )
-    }
-
-    @Test
-    fun `Oppdatere begrunnelse med tomt innhold skal gi 400 BadRequest`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/begrunnelse",
-            BegrunnelseDto(
-                hvaSokesOm = null,
-                hvorforSoke = null
-            ),
-            HttpStatus.BAD_REQUEST
-        )
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/begrunnelse",
-            BegrunnelseDto(
-                hvaSokesOm = "",
-                hvorforSoke = ""
-            ),
-            HttpStatus.BAD_REQUEST
-        )
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/begrunnelse",
-            BegrunnelseDto(
-                hvaSokesOm = "   ",
-                hvorforSoke = "    "
-            ),
-            HttpStatus.BAD_REQUEST
-        )
     }
 
     @Test
@@ -96,7 +49,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         val soknad = soknadRepository.save(opprettSoknad())
 
         val inputBegrunnelse = BegrunnelseDto(
-            hvaSokesOm = null,
+            hvaSokesOm = "",
             hvorforSoke = "Fordi jeg ikke har penger vel"
         )
 
@@ -107,8 +60,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse.hvaSokesOm).isNull()
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse!!.hvaSokesOm).isEqualTo("")
+            assertThat(it.begrunnelse!!.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
     }

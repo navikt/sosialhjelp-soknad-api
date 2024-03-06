@@ -11,7 +11,7 @@ class KontaktService(
 ) {
     fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
-    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String): Telefonnummer {
+    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer {
         return getOrCreateKontakt(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
             .let { kontaktRepository.save(it) }

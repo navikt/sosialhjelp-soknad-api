@@ -36,8 +36,10 @@ class TelefonnummerController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) telefonnummerInput: TelefonnummerInput
     ): TelefonnummerDto {
-        SoknadInputValidator(TelefonnummerInput::class)
-            .validateIsNumber(soknadId, telefonnummerInput.telefonnummerBruker)
+        telefonnummerInput.telefonnummerBruker?.let {
+            SoknadInputValidator(TelefonnummerInput::class)
+                .validateIsNumber(soknadId, it)
+        }
 
         return kontaktService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
             TelefonnummerDto(
@@ -49,7 +51,7 @@ class TelefonnummerController(
 }
 
 data class TelefonnummerInput(
-    val telefonnummerBruker: String
+    val telefonnummerBruker: String? = null
 )
 
 data class TelefonnummerDto(

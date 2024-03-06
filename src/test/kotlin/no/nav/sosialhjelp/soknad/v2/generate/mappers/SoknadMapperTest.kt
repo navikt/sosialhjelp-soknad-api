@@ -23,7 +23,7 @@ class SoknadMapperTest {
         mapper.doMapping(soknad, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
-        jsonInternalSoknad.assertBegrunnerlse(soknad.begrunnelse)
+        jsonInternalSoknad.assertBegrunnelse(soknad.begrunnelse)
     }
 }
 
@@ -31,8 +31,11 @@ private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTi
     assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
 }
 
-private fun JsonInternalSoknad.assertBegrunnerlse(begrunnelse: Begrunnelse) {
-    assertThat(soknad.data.begrunnelse).isNotNull
-    assertThat(soknad.data.begrunnelse.hvaSokesOm).isEqualTo(begrunnelse.hvaSokesOm)
-    assertThat(soknad.data.begrunnelse.hvorforSoke).isEqualTo(begrunnelse.hvorforSoke)
+private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {
+    begrunnelse?.let {
+        assertThat(soknad.data.begrunnelse).isNotNull
+        assertThat(soknad.data.begrunnelse.hvaSokesOm).isEqualTo(it.hvaSokesOm)
+        assertThat(soknad.data.begrunnelse.hvorforSoke).isEqualTo(it.hvorforSoke)
+    }
+        ?: assertThat(soknad.data.begrunnelse).isNull()
 }

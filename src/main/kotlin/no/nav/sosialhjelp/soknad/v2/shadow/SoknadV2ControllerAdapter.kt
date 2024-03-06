@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
@@ -27,7 +26,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.IkkeStudentInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningDto
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
@@ -80,8 +78,8 @@ class SoknadV2ControllerAdapter(
                     begrunnelseController.updateBegrunnelse(
                         UUID.fromString(soknadId),
                         BegrunnelseDto(
-                            hvaSokesOm = hvaSokesOm,
-                            hvorforSoke = hvorforSoke
+                            hvaSokesOm = hvaSokesOm ?: "",
+                            hvorforSoke = hvorforSoke ?: ""
                         )
                     )
                 }
@@ -133,16 +131,15 @@ class SoknadV2ControllerAdapter(
         }
             .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
     }
+
     override fun updateTelefonnummer(
         soknadId: String,
-        telefonnummerFrontend: TelefonnummerFrontend,
+        telefonnummerBruker: String?,
     ) {
         log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
 
         runWithNewTransaction {
-            telefonnummerFrontend.brukerutfyltVerdi?.let {
-                telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput(it))
-            }
+            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput())
         }
             .onFailure { log.error("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
@@ -218,10 +215,3 @@ class SoknadV2ControllerAdapter(
         }
     }
 }
-
-private fun UtdanningFrontend.toUtdanningDto() = UtdanningDto(
-    erStudent = erStudent,
-    studentgrad = studengradErHeltid?.let {
-        if (it) Studentgrad.HELTID else Studentgrad.DELTID
-    }
-)

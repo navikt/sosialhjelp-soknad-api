@@ -47,8 +47,8 @@ class KontonummerController(
 private fun Kontonummer.toKontoInformasjonDto(): KontoInformasjonDto {
     return KontoInformasjonDto(
         harIkkeKonto = harIkkeKonto,
-        kontonummerRegister = register,
-        kontonummerBruker = bruker
+        kontonummerRegister = fraRegister,
+        kontonummerBruker = fraBruker
     )
 }
 
