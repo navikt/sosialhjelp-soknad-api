@@ -13,8 +13,5 @@ class FileConverterService(val fileConverter: FileConverter) {
         )
     }
 
-    private fun replaceExtension(name: String): String {
-        val extensionIndex = name.lastIndexOf(".")
-        return name.replace(name.substring(extensionIndex), ".pdf")
-    }
+    private fun replaceExtension(name: String) = name.substringBeforeLast(".") + ".pdf"
 }
