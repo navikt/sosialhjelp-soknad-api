@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 @Service
 class FileConverterService(val fileConverter: FileConverter) {
     fun convertFileToPdf(name: String, bytes: ByteArray): Pair<String, ByteArray> {
-        if (bytes.isEmpty()) throw IllegalStateException("Fil \"$name\" for konvertering er tom.")
+        check(!bytes.isEmpty()) { "Fil \"$name\" for konvertering er tom." }
 
         return Pair(
             replaceExtension(name),
