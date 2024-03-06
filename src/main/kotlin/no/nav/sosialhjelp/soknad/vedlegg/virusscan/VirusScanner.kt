@@ -19,14 +19,17 @@ class VirusScanner(
 ) {
 
     fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
-        if (enabled && isInfected(filnavn, data, behandlingsId, fileType)) {
+        if (!enabled) {
+            log.info("Virusscanning er ikke aktivert")
+            return
+        }
+
+        if (isInfected(filnavn, data, behandlingsId, fileType)) {
             throw OpplastingException(
                 "Fant virus i fil for behandlingsId $behandlingsId",
                 null,
                 "vedlegg.opplasting.feil.muligVirus"
             )
-        } else if (!enabled) {
-            log.info("Virusscanning er ikke aktivert")
         }
     }
 
