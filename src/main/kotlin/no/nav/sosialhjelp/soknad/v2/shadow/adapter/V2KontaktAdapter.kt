@@ -14,11 +14,14 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@Component
-class KontaktAdapter(
+@Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+class V2KontaktAdapter(
     private val kontaktRepository: KontaktRepository,
     private val hentAdresseService: HentAdresseService
 ) {
@@ -64,9 +67,7 @@ class KontaktAdapter(
 
     private fun Matrikkeladresse.toV2MatrikkelAdresse(): MatrikkelAdresse? {
         return matrikkelId?.let {
-
-            hentAdresseService.hentKartverketMatrikkelAdresse(it)
-                ?.toV2MatrikkelAdresse()
+            hentAdresseService.hentKartverketMatrikkelAdresse(it)?.toV2MatrikkelAdresse()
         }
     }
 

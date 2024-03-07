@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.eier
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.SoknadBubble
+import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
@@ -22,16 +22,16 @@ data class Eier(
     override val soknadId: UUID,
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,
-    @Embedded.Nullable
+    @Embedded.Empty
     val navn: Navn,
     @Embedded.Empty
     val kontonummer: Kontonummer = Kontonummer(),
-) : SoknadBubble
+) : AggregateRoot
 
 data class Kontonummer(
     val harIkkeKonto: Boolean? = null,
     @Column("konto_bruker")
-    val bruker: String? = null,
+    val fraBruker: String? = null,
     @Column("konto_register")
-    val register: String? = null,
+    val fraRegister: String? = null,
 )

@@ -18,15 +18,9 @@ class EierService(
         harIkkeKonto: Boolean? = null
     ): Kontonummer {
 
-        val eier = eierRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Eier finnes ikke")
-
-        return eier.kontonummer.copy(
-            harIkkeKonto = harIkkeKonto,
-            bruker = kontonummerBruker
-        ).also {
-            eierRepository
-                .save(eier.copy(kontonummer = it))
-        }
+        return getEier(soknadId)
+            .run { copy(kontonummer = kontonummer.copy(harIkkeKonto = harIkkeKonto, fraBruker = kontonummerBruker)) }
+            .let { eier -> eierRepository.save(eier) }
+            .kontonummer
     }
 }

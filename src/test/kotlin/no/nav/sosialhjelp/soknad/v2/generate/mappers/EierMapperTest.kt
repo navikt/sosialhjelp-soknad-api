@@ -43,7 +43,7 @@ class EierMapperTest {
             soknadId = UUID.randomUUID(),
             kontonummer = Kontonummer(
                 harIkkeKonto = true,
-                bruker = "blabla"
+                fraBruker = "blabla"
             )
         )
         mapper.doMapping(eier, json)
@@ -60,8 +60,8 @@ class EierMapperTest {
         val eier = opprettEier(
             soknadId = UUID.randomUUID(),
             kontonummer = Kontonummer(
-                bruker = "blabla",
-                register = "tjatja"
+                fraBruker = "blabla",
+                fraRegister = "tjatja"
             )
         )
         mapper.doMapping(eier, json)
@@ -69,7 +69,7 @@ class EierMapperTest {
         with(json.soknad.data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
             assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.bruker)
+            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraBruker)
         }
     }
 
@@ -78,7 +78,7 @@ class EierMapperTest {
         val eier = opprettEier(
             soknadId = UUID.randomUUID(),
             kontonummer = Kontonummer(
-                register = "blabla"
+                fraRegister = "blabla"
             )
         )
         mapper.doMapping(eier, json)
@@ -86,7 +86,7 @@ class EierMapperTest {
         with(json.soknad.data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
             assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.register)
+            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraRegister)
         }
     }
 

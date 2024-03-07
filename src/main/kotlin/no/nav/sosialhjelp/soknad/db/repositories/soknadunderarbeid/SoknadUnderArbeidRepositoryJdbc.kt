@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
-import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
@@ -171,11 +170,12 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
-    private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): ByteArray {
+    private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): String {
         return try {
-            val internalSoknad = writer.writeValueAsString(jsonInternalSoknad)
-            JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad)
-            internalSoknad.toByteArray(StandardCharsets.UTF_8)
+            writer.writeValueAsString(jsonInternalSoknad)
+                .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(it) }
+
+//            internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
             log.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e)
             throw RuntimeException(e)

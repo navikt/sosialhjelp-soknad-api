@@ -35,8 +35,8 @@ class SoknadToJsonMapper(
                 initializeObjects()
 
                 soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
-                soknad.driftsinformasjon = domainSoknad.driftsinformasjon.toJsonDriftsinformasjon()
-                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
+                soknad.driftsinformasjon = domainSoknad.driftsinformasjon?.toJsonDriftsinformasjon()
+                soknad.data.begrunnelse = domainSoknad.begrunnelse?.toJsonBegrunnelse()
             }
         }
 
@@ -45,12 +45,10 @@ class SoknadToJsonMapper(
             soknad.driftsinformasjon ?: soknad.withDriftsinformasjon(JsonDriftsinformasjon())
         }
 
-        private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse? {
-            return if (hvaSokesOm == null && hvorforSoke == null) null
-            else
-                JsonBegrunnelse()
-                    .withHvaSokesOm(hvaSokesOm)
-                    .withHvorforSoke(hvorforSoke)
+        private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse {
+            return JsonBegrunnelse()
+                .withHvaSokesOm(hvaSokesOm)
+                .withHvorforSoke(hvorforSoke)
         }
 
         private fun Driftsinformasjon.toJsonDriftsinformasjon(): JsonDriftsinformasjon? {
