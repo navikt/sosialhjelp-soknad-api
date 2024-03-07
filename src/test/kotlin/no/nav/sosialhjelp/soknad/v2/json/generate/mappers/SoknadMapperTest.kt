@@ -1,18 +1,18 @@
-package no.nav.sosialhjelp.soknad.v2.generate.mappers
+package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.generate.mappers.domain.SoknadToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class SoknadMapperTest {
 
-    private val mapper = SoknadToJsonMapper.Mapper
+    private val mapper = SoknadToJsonMapper
 
     @Test
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
@@ -20,7 +20,7 @@ class SoknadMapperTest {
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
         val soknad = opprettSoknad(sendtInn = now)
 
-        mapper.doMapping(soknad, jsonInternalSoknad)
+        SoknadToJsonMapper.doMapping(soknad, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
         jsonInternalSoknad.assertBegrunnelse(soknad.begrunnelse)
@@ -28,14 +28,14 @@ class SoknadMapperTest {
 }
 
 private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
-    assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
+    Assertions.assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
 }
 
 private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {
     begrunnelse?.let {
-        assertThat(soknad.data.begrunnelse).isNotNull
-        assertThat(soknad.data.begrunnelse.hvaSokesOm).isEqualTo(it.hvaSokesOm)
-        assertThat(soknad.data.begrunnelse.hvorforSoke).isEqualTo(it.hvorforSoke)
+        Assertions.assertThat(soknad.data.begrunnelse).isNotNull
+        Assertions.assertThat(soknad.data.begrunnelse.hvaSokesOm).isEqualTo(it.hvaSokesOm)
+        Assertions.assertThat(soknad.data.begrunnelse.hvorforSoke).isEqualTo(it.hvorforSoke)
     }
-        ?: assertThat(soknad.data.begrunnelse).isNull()
+        ?: Assertions.assertThat(soknad.data.begrunnelse).isNull()
 }

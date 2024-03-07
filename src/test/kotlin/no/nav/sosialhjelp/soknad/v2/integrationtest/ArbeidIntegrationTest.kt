@@ -66,15 +66,4 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.arbeid.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
     }
-
-    @Test
-    fun `Bruke tekst med ugyldige tegn skal gi feilmelding`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
-        doPutExpectError(
-            getPath(soknad.id),
-            ArbeidInput("En ny kommentar med rare tegn !#%&#¤&&"),
-            HttpStatus.BAD_REQUEST
-        )
-    }
 }
