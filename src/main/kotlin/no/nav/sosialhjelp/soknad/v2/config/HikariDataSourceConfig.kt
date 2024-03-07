@@ -11,7 +11,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 
 @Profile("!test & !mock-alt")
 @Configuration
-@EnableJdbcRepositories (basePackages = ["no.nav.sosialhjelp.soknad.v2"])
+@EnableJdbcRepositories(basePackages = ["no.nav.sosialhjelp.soknad.v2"])
 class HikariDataSourceConfig(
     @Value("\${spring.datasource.url}") private val dbUrl: String,
     @Value("\${postgres.user.role}") private val role: String,
