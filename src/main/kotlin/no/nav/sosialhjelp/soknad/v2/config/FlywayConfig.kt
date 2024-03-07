@@ -10,7 +10,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 
 @Profile("!test & !mock-alt")
 @Configuration
-@EnableJdbcRepositories
+@EnableJdbcRepositories(basePackages = ["no.nav.sosialhjelp.soknad.v2"])
 class FlywayConfig(@Value("\${postgres.user.role}") private val role: String) {
 
     @Bean
