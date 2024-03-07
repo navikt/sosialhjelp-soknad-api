@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Component
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(propagation = Propagation.NESTED)
 class V2SoknadAdapter(
     private val soknadRepository: SoknadRepository,
     private val livssituasjonRepository: LivssituasjonRepository,

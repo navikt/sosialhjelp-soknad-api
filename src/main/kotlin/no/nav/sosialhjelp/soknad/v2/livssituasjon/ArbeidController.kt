@@ -34,8 +34,6 @@ class ArbeidController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: ArbeidInput
     ): ArbeidDto {
-        input.validate(soknadId)
-
         return livssituasjonService.updateArbeid(soknadId, input.kommentarTilArbeidsforhold)
             .let {
                 ArbeidDto(
@@ -44,11 +42,6 @@ class ArbeidController(
                 )
             }
     }
-}
-
-private fun ArbeidInput.validate(soknadId: UUID) {
-    SoknadInputValidator(ArbeidInput::class)
-        .validateTextInput(soknadId, kommentarTilArbeidsforhold)
 }
 
 data class ArbeidDto(
