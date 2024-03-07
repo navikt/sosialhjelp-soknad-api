@@ -26,7 +26,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 @Component
-@Deprecated("Ny logikk erstattes i LifecycleService#sendSoknad")
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,

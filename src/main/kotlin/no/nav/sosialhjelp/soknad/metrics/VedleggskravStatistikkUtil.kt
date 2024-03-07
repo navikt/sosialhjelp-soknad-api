@@ -49,7 +49,6 @@ object VedleggskravStatistikkUtil {
         }
     }
 
-    @Deprecated("Bruker SoknadUnderArbeid - utgår med ny datamodell")
     fun genererOgLoggVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
@@ -58,7 +57,6 @@ object VedleggskravStatistikkUtil {
         log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
     }
 
-    @Deprecated("Bruker SoknadUnderArbeid - utgår med ny datamodell")
     fun genererVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
