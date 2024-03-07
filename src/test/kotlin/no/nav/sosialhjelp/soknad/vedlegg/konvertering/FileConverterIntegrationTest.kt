@@ -42,7 +42,7 @@ class FileConverterIntegrationTest {
 
     @BeforeEach
     fun setup() {
-        every { virusScanner.scan(any(), any(), any(), any()) } just runs
+        every { virusScanner.scan(any()) } just runs
     }
 
     @Test
