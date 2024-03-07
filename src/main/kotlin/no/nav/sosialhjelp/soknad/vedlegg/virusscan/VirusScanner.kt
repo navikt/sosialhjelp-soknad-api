@@ -17,14 +17,14 @@ class VirusScanner(
     private val virusScannerWebClient: WebClient,
     private val enabled: Boolean
 ) {
-    fun scan(data: ByteArray, fileType: String) {
+    fun scan(data: ByteArray) {
         if (!enabled) {
             log.info("Virusscanning er ikke aktivert")
             return
         }
 
-        // Filnavn brukes kun for testing i mock(!), og behandlingsId kun til logging
-        if (isInfected("N/A", data, "N/A", fileType)) {
+        // Filnavn brukes kun for testing i mock(!), og behandlingsId og fileType kun til logging
+        if (isInfected("N/A", data, "N/A", "N/A")) {
             throw OpplastingException("Fant virus i fil", null, "vedlegg.opplasting.feil.muligVirus")
         }
     }
