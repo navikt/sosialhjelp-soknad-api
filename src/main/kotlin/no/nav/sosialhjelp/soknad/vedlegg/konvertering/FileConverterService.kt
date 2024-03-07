@@ -15,7 +15,7 @@ class FileConverterService(
     private val pdfConversionFailure = Counter.builder("soknad_pdf_conversion_failure")
 
     fun convertFileToPdf(file: FileConversionUpload): ByteArray {
-        log.debug("Konverterer upload {} til PDF", file)
+        log.info("Konverterer upload {} til PDF", file)
 
         return runCatching {
             fileConverter.toPdf(file.unconvertedName, file.bytes)
