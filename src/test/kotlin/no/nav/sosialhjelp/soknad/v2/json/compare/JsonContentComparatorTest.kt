@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class JsonStructureComparatorTest {
+class JsonContentComparatorTest {
 
-    private val comparator = JsonStructureComparator(UUID.randomUUID())
+    private val comparator = ShadowProductionManager.JsonContentComparator(UUID.randomUUID())
     private var original: JsonInternalSoknad = createJsonInternalSoknad()
     private val logger = LoggerFactory.getLogger(JsonCompareErrorLogger::class.java)
 
