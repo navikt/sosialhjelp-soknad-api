@@ -14,6 +14,8 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,6 +33,8 @@ class AdresseRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping
     fun hentAdresser(
@@ -99,6 +103,10 @@ class AdresseRessurs(
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )?.also {
+            // TODO Ekstra logging
+            logger.info("Kommune fra internal.soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
+            logger.info("NavEnhetFrontend: $it")
+
             setNavEnhetAsMottaker(soknad, it, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
