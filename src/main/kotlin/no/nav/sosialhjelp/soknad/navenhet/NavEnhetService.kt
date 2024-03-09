@@ -21,6 +21,7 @@ import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -40,14 +41,28 @@ class NavEnhetService(
         valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
-        return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
-            try {
-                finnNavEnhetFraGT(eier, personalia)
-            } catch (e: Exception) {
-                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
-                finnNavEnhetFraAdresse(personalia, valg)
+        return (
+            if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
+                try {
+                    finnNavEnhetFraGT(eier, personalia)
+                } catch (e: Exception) {
+                    log.warn(
+                        "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                    )
+                    finnNavEnhetFraAdresse(personalia, valg)
+                }
+            } else finnNavEnhetFraAdresse(personalia, valg)
+            )
+            .also {
+                if (it != null) {
+                    if (it.kommuneNr != null && it.kommuneNr != soknad.mottaker.kommunenummer) {
+                        LoggerFactory.getLogger(this::class.java)
+                            .error(
+                                "Kommunenummer NavEnhet ($it) fra GT er ikke lik Mottaker.kommunenummer(${soknad.mottaker})"
+                            )
+                    }
+                }
             }
-        } else finnNavEnhetFraAdresse(personalia, valg)
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
