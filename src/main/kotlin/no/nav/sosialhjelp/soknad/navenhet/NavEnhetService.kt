@@ -54,7 +54,7 @@ class NavEnhetService(
             } else finnNavEnhetFraAdresse(personalia, valg)
             )
             .also {
-                if (it != null) {
+                if (it != null && soknad.mottaker.kommunenummer != null) {
                     if (it.kommuneNr != null && it.kommuneNr != soknad.mottaker.kommunenummer) {
                         LoggerFactory.getLogger(this::class.java)
                             .error(
