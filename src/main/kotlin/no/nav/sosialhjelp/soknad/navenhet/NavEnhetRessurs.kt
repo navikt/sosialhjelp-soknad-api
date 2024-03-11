@@ -38,7 +38,11 @@ class NavEnhetRessurs(
             ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
+
+        // TODO Ekstra logging
+        LoggerFactory.getLogger(this::class.java).info("Henter navEnhet path /navEnheter")
         val navEnhetFrontend = navEnhetService.getNavEnhet(eier, soknad, adresseValg)
+
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
@@ -66,9 +70,6 @@ class NavEnhetRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-
-        // TODO Ekstra logging
-        LoggerFactory.getLogger(this::class.java).info("PUT /navEnheter: $navEnhetFrontend")
 
         adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)

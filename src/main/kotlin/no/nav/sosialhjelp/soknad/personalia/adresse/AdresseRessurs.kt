@@ -49,6 +49,9 @@ class AdresseRessurs(
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
+
+        // TODO Ekstra logging
+        logger.info("Hender navEnhet - GET personalia/adresser")
         val navEnhet = try {
             navEnhetService.getNavEnhet(
                 eier,
@@ -98,13 +101,15 @@ class AdresseRessurs(
         personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        // TODO Ekstra logging
+        logger.info("Hender navEnhet - PUT personalia/adresser")
         val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )?.also {
             // TODO Ekstra logging
-            logger.info("Kommune fra internal.soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
+            logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
             logger.info("NavEnhetFrontend: $it")
 
             setNavEnhetAsMottaker(soknad, it, eier)
@@ -118,6 +123,8 @@ class AdresseRessurs(
         navEnhetFrontend: NavEnhetFrontend,
         eier: String
     ) {
+        // TODO Ekstra logging
+        logger.info("Setter NavEnhet as mottaker")
         soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
