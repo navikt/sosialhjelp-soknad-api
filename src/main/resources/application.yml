@@ -11,11 +11,11 @@ spring:
     banner-mode: off
   flyway:
     enabled: true
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
+#    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
+#    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
