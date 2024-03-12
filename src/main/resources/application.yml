@@ -5,7 +5,6 @@ server:
   shutdown: graceful
   max-http-request-header-size: 16KB
 
-#TODO kan username og password fjernes når vault integrasjon er på plass? Kun brukes i lokal og test?
 spring:
   main:
     banner-mode: off
@@ -14,8 +13,6 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-#    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-#    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
