@@ -41,7 +41,7 @@ data class Adresser(
             AdresseValg.FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
             AdresseValg.MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
             AdresseValg.SOKNAD -> brukerAdresse ?: valgtAdresseNullError(AdresseValg.SOKNAD)
-            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype")
+            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
     }
     private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing {
