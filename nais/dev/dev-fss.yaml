@@ -42,8 +42,8 @@ spec:
         - name: "ks:fiks"
   vault:
     enabled: true
-#    paths:
-#      - mountPath: /var/run/secrets/datasource
+    paths:
+      - mountPath: /var/run/secrets/datasource
 #        kvPath: /oracle/data/dev/creds/soknadsosialhjelp_q0-user
   tokenx:
     enabled: true
