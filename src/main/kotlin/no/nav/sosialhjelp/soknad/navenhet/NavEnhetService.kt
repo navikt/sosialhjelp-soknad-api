@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -51,7 +50,6 @@ class NavEnhetService(
                 finnNavEnhetFraAdresse(personalia, valg)
             }
         } else finnNavEnhetFraAdresse(personalia, valg)
-
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -101,11 +99,11 @@ class NavEnhetService(
         if (kommunenummer == "4601" || kommunenummer == "3907") {
             log.info(
                 "Finn Nav-enhet fra GT. Kommunenummer: $kommunenummer, " +
-                        "Geografisk tilknytning: $geografiskTilknytning, " +
-                        "NavEnhet - ${navEnhet?.navn}" +
-                        "Enhetsnummer: ${navEnhet?.enhetNr}" +
-                        "Sosialorg: ${navEnhet?.sosialOrgNr}" +
-                        "Kommunenavn: ${navEnhet?.kommunenavn}"
+                    "Geografisk tilknytning: $geografiskTilknytning, " +
+                    "NavEnhet - ${navEnhet?.navn}" +
+                    "Enhetsnummer: ${navEnhet?.enhetNr}" +
+                    "Sosialorg: ${navEnhet?.sosialOrgNr}" +
+                    "Kommunenavn: ${navEnhet?.kommunenavn}"
             )
         }
     }
