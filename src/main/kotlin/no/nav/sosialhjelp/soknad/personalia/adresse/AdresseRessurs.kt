@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,7 +30,8 @@ class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetService: NavEnhetService
+    private val navEnhetService: NavEnhetService,
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
 ) {
 
     @GetMapping
@@ -102,6 +104,14 @@ class AdresseRessurs(
             setNavEnhetAsMottaker(soknad, it, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
+
+        // Ny modell
+        soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
+            behandlingsId,
+            adresserFrontend,
+            navEnhetFrontend,
+        )
+
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 

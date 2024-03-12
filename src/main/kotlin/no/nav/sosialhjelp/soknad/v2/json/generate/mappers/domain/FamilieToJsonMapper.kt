@@ -15,24 +15,26 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.navn.toJson
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
-        val familie = familieRepository.findById(soknadId).getOrNull() ?: error("Fant ikke familie på soknadId $soknadId")
-        with(jsonInternalSoknad.soknad.data.familie) {
-            sivilstatus = JsonSivilstatus()
-                .withStatus(familie.sivilstatus?.toJson())
-                .withEktefelle(familie.ektefelle?.toJson())
-                .withBorSammenMed(familie.ektefelle?.borSammen)
-                .withFolkeregistrertMedEktefelle(familie.ektefelle?.folkeregistrertMedEktefelle)
-            forsorgerplikt = JsonForsorgerplikt()
-                .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(familie.harForsorgerplikt))
-                .withBarnebidrag(JsonBarnebidrag().withVerdi(familie.barnebidrag?.toJson()))
-                .withAnsvar(familie.ansvar.values.toJson())
+        familieRepository.findByIdOrNull(soknadId)?.let {
+
+            with(jsonInternalSoknad.soknad.data.familie) {
+                sivilstatus = JsonSivilstatus()
+                    .withStatus(it.sivilstatus?.toJson())
+                    .withEktefelle(it.ektefelle?.toJson())
+                    .withBorSammenMed(it.ektefelle?.borSammen)
+                    .withFolkeregistrertMedEktefelle(it.ektefelle?.folkeregistrertMedEktefelle)
+                forsorgerplikt = JsonForsorgerplikt()
+                    .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(it.harForsorgerplikt))
+                    .withBarnebidrag(JsonBarnebidrag().withVerdi(it.barnebidrag?.toJson()))
+                    .withAnsvar(it.ansvar.values.toJson())
+            }
         }
     }
 }
