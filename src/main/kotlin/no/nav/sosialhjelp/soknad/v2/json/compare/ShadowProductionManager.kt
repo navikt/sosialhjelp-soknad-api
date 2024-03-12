@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -14,29 +14,28 @@ import java.util.*
 class ShadowProductionManager(
     private val jsonGenerator: JsonInternalSoknadGenerator
 ) {
-    fun compareShadowProduction(soknadUnderArbeid: SoknadUnderArbeid) {
-        val logger = LoggerFactory.getLogger(this::class.java)
 
-        kotlin.runCatching {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
-            soknadUnderArbeid.jsonInternalSoknad?.let { original ->
-                val soknadId = UUID.fromString(soknadUnderArbeid.behandlingsId)
-                val shadowJson = jsonGenerator.createJsonInternalSoknad(soknadId)
+    fun createAndCompareShadowJson(soknadId: String, original: JsonInternalSoknad?) {
 
-                JsonContentComparator(soknadId).doCompareAndLogErrors(original, shadowJson)
+        original?.let {
+            kotlin.runCatching {
+                jsonGenerator.copyAndMerge(soknadId, original).let { shadow ->
+                    JsonContentComparator(soknadId).doCompareAndLogErrors(original, shadow)
+                }
             }
-                ?: logger.error("NyModell: Sammenlikning - Orginal Json er tom.")
-        }
-            .onFailure {
-                logger.error("NyModell: Sammenlikning - Exception i sammenlikning av Json", it)
-            }
+                .onFailure {
+                    logger.error("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                }
+        } ?: logger.error("NyModell : Sammenlikning : Original er null")
     }
 
-    class JsonContentComparator(
-        private val soknadId: UUID
-    ) {
+    internal class JsonContentComparator(soknadIdString: String) {
+
         private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         private val logger = LoggerFactory.getLogger(this::class.java)
+        private val soknadId: UUID = UUID.fromString(soknadIdString)
 
         fun <T : Any> doCompareAndLogErrors(original: T, other: T) {
             logger.info("$soknadId - *** COMPARING *** - baseClass: ${original::class.simpleName}")

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -13,6 +14,7 @@ import java.util.*
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>
 ) {
+
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
         val jsonSoknad = JsonInternalSoknad()
             .withSoknad(JsonSoknad())
@@ -27,16 +29,22 @@ class JsonInternalSoknadGenerator(
         return jsonSoknad
     }
 
-    fun copyAndMerge(soknadId: UUID, orgJson: JsonInternalSoknad): JsonInternalSoknad {
-        return copyJsonInternalSoknad(orgJson).also { json ->
-            mappers.forEach { it.mapToSoknad(soknadId, json) }
+    fun copyAndMerge(soknadId: String, original: JsonInternalSoknad): JsonInternalSoknad {
+        return copyJsonInternalSoknad(original).also { copy ->
+            mappers.forEach {
+                it.mapToSoknad(
+                    UUID.fromString(soknadId),
+                    copy
+                )
+            }
         }
     }
 
     private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad): JsonInternalSoknad {
-        return jacksonObjectMapper().run {
-            val jsonString = writeValueAsString(jsonSoknad)
-            readValue(jsonString, JsonInternalSoknad::class.java)
-        }
+        return JsonSosialhjelpObjectMapper.createObjectMapper()
+            .let {
+                val jsonString = it.writeValueAsString(jsonSoknad)
+                it.readValue(jsonString, JsonInternalSoknad::class.java)
+            }
     }
 }

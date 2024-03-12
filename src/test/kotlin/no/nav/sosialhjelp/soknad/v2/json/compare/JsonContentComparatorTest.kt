@@ -18,7 +18,7 @@ import java.util.*
 
 class JsonContentComparatorTest {
 
-    private val comparator = ShadowProductionManager.JsonContentComparator(UUID.randomUUID())
+    private val comparator = ShadowProductionManager.JsonContentComparator(UUID.randomUUID().toString())
     private var original: JsonInternalSoknad = createJsonInternalSoknad()
     private val logger = LoggerFactory.getLogger(JsonCompareErrorLogger::class.java)
 
