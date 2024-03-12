@@ -67,9 +67,13 @@ class NavEnhetRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody navEnhetFrontend: NavEnhetFrontend
     ) {
+
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        // TODO Ekstra logging
+        LoggerFactory.getLogger(this::class.java).warn("Setter navEnhet - PUT path /navEnheter")
 
         adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)

@@ -123,8 +123,6 @@ class AdresseRessurs(
         navEnhetFrontend: NavEnhetFrontend,
         eier: String
     ) {
-        // TODO Ekstra logging
-        logger.info("Setter NavEnhet as mottaker: $navEnhetFrontend")
         soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
