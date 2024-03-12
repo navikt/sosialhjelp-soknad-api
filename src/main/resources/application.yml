@@ -20,11 +20,6 @@ spring:
     compose:
       enabled: false
 
-logging:
-  level:
-    org.flywaydb: DEBUG
-
-#Todo utlede denne fra db navn
 postgres:
   user:
     role: sosialhjelp-soknad-db-admin
