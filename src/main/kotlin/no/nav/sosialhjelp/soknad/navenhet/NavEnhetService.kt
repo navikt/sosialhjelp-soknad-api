@@ -41,28 +41,17 @@ class NavEnhetService(
         valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
-        return (
-            if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
-                try {
-                    finnNavEnhetFraGT(eier, personalia)
-                } catch (e: Exception) {
-                    log.warn(
-                        "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
-                    )
-                    finnNavEnhetFraAdresse(personalia, valg)
-                }
-            } else finnNavEnhetFraAdresse(personalia, valg)
-            )
-            .also {
-                if (it != null && soknad.mottaker.kommunenummer != null) {
-                    if (it.kommuneNr != null && it.kommuneNr != soknad.mottaker.kommunenummer) {
-                        LoggerFactory.getLogger(this::class.java)
-                            .error(
-                                "Kommunenummer NavEnhet ($it) fra GT er ikke lik Mottaker.kommunenummer(${soknad.mottaker})"
-                            )
-                    }
-                }
+        return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
+            try {
+                finnNavEnhetFraGT(eier, personalia)
+            } catch (e: Exception) {
+                log.warn(
+                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                )
+                finnNavEnhetFraAdresse(personalia, valg)
             }
+        } else finnNavEnhetFraAdresse(personalia, valg)
+
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -112,11 +101,11 @@ class NavEnhetService(
         if (kommunenummer == "4601" || kommunenummer == "3907") {
             log.info(
                 "Finn Nav-enhet fra GT. Kommunenummer: $kommunenummer, " +
-                    "Geografisk tilknytning: $geografiskTilknytning, " +
-                    "NavEnhet - ${navEnhet?.navn}" +
-                    "Enhetsnummer: ${navEnhet?.enhetNr}" +
-                    "Sosialorg: ${navEnhet?.sosialOrgNr}" +
-                    "Kommunenavn: ${navEnhet?.kommunenavn}"
+                        "Geografisk tilknytning: $geografiskTilknytning, " +
+                        "NavEnhet - ${navEnhet?.navn}" +
+                        "Enhetsnummer: ${navEnhet?.enhetNr}" +
+                        "Sosialorg: ${navEnhet?.sosialOrgNr}" +
+                        "Kommunenavn: ${navEnhet?.kommunenavn}"
             )
         }
     }
