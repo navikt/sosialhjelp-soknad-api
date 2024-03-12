@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -26,7 +27,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 @Component
-@Deprecated("Ny logikk erstattes i LifecycleService#sendSoknad")
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
@@ -34,11 +34,11 @@ class DigisosApiService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val dokumentListeService: DokumentListeService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val clock: Clock
+    private val clock: Clock,
+    private val shadowProductionManager: ShadowProductionManager,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    @Deprecated("Gammel logikk. Se #LifecycleService")
     fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
@@ -79,6 +79,9 @@ class DigisosApiService(
 
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
+
+        // Nymodell - Skyggeproduksjon - Sammenlikning av filer
+        shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
         return digisosId

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.arbeid.domain
 
-@Deprecated("Erstattet med no.nav.sosialhjelp.soknad.v2.soknad.Arbeidsforhold")
 data class Arbeidsforhold(
     val orgnr: String?,
     val arbeidsgivernavn: String,

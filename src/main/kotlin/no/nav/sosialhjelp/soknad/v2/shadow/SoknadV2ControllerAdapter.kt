@@ -210,7 +210,7 @@ class SoknadV2ControllerAdapter(
 
     private fun runWithNewTransaction(function: () -> Unit): Result<Unit> {
         return kotlin.runCatching {
-            transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+            transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NESTED
             transactionTemplate.execute { function.invoke() }
         }
     }

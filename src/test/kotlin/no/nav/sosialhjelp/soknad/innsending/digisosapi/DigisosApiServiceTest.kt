@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -34,6 +35,7 @@ internal class DigisosApiServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+    private val shadowProductionManager: ShadowProductionManager = mockk(relaxed = true)
 
     private val digisosApiService = DigisosApiService(
         digisosApiV2Client,
@@ -42,7 +44,8 @@ internal class DigisosApiServiceTest {
         soknadMetadataRepository,
         dokumentListeService,
         prometheusMetricsService,
-        Clock.systemDefaultZone()
+        Clock.systemDefaultZone(),
+        shadowProductionManager,
     )
 
     private val eier = "12345678910"

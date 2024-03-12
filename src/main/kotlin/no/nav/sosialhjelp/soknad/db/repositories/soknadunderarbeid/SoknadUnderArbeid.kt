@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import java.time.LocalDateTime
 import java.util.*
 
-@Deprecated("Erstattes av no.nav.sosialhjelp.soknad.v2.soknad.Soknad")
 data class SoknadUnderArbeid(
     var soknadId: Long = 0L, // dummy verdi, settes i DB
     var versjon: Long,

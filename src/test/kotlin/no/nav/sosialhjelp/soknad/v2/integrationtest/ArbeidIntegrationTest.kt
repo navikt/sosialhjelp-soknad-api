@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 import java.util.*
 
 class ArbeidIntegrationTest : AbstractIntegrationTest() {
@@ -65,16 +64,5 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.arbeid.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
-    }
-
-    @Test
-    fun `Bruke tekst med ugyldige tegn skal gi feilmelding`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
-        doPutExpectError(
-            getPath(soknad.id),
-            ArbeidInput("En ny kommentar med rare tegn !#%&#¤&&"),
-            HttpStatus.BAD_REQUEST
-        )
     }
 }

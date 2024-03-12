@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(propagation = Propagation.NESTED)
 class V2KontaktAdapter(
     private val kontaktRepository: KontaktRepository,
     private val hentAdresseService: HentAdresseService
