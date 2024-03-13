@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
@@ -86,7 +87,7 @@ class SoknadUnderArbeidService(
 
     fun settInnsendingstidspunktPaSoknad(
         soknadUnderArbeid: SoknadUnderArbeid?,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now()
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
@@ -94,7 +95,8 @@ class SoknadUnderArbeidService(
         if (soknadUnderArbeid.erEttersendelse) {
             return
         }
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingsTidspunkt.toString()
+        val innsendingString = OffsetDateTime.of(innsendingsTidspunkt, ZoneOffset.UTC).toString()
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingString
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

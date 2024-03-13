@@ -13,6 +13,8 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 @Order(Ordered.HIGHEST_PRECEDENCE) // Sørger for at denne mapperen er den første som kjører
@@ -33,7 +35,8 @@ class SoknadToJsonMapper(
             with(json) {
                 initializeObjects()
 
-                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
+                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn
+                    ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
                 soknad.data.begrunnelse = domainSoknad.begrunnelse?.toJsonBegrunnelse()
             }
         }
