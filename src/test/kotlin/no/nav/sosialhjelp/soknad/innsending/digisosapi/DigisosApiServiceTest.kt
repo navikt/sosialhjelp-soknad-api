@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2RegisterDataAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 internal class DigisosApiServiceTest {
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
@@ -36,6 +38,7 @@ internal class DigisosApiServiceTest {
     private val dokumentListeService: DokumentListeService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val shadowProductionManager: ShadowProductionManager = mockk(relaxed = true)
+    private val v2RegisterDataAdapter: SoknadV2RegisterDataAdapter = mockk(relaxed = true)
 
     private val digisosApiService = DigisosApiService(
         digisosApiV2Client,
@@ -46,6 +49,7 @@ internal class DigisosApiServiceTest {
         prometheusMetricsService,
         Clock.systemDefaultZone(),
         shadowProductionManager,
+        v2RegisterDataAdapter
     )
 
     private val eier = "12345678910"
@@ -111,7 +115,7 @@ internal class DigisosApiServiceTest {
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
-        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
+        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any(), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)) } just runs
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
         every { soknadMetadataRepository.oppdater(any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs

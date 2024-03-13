@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -15,35 +16,28 @@ class JsonInternalSoknadGenerator(
 ) {
 
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
-        val jsonSoknad = JsonInternalSoknad()
+        return JsonInternalSoknad()
             .withSoknad(JsonSoknad())
             .withVedlegg(JsonVedleggSpesifikasjon())
             .withMottaker(JsonSoknadsmottaker())
             .withMidlertidigAdresse(JsonAdresse())
-
-        mappers.forEach { it.mapToSoknad(soknadId, jsonSoknad) }
-
-        // TODO Json-validering (finnes i filformat-biblioteket)
-
-        return jsonSoknad
+            .apply { mappers.forEach { it.mapToSoknad(soknadId, this) } }
+            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
     fun copyAndMerge(soknadId: String, original: JsonInternalSoknad): JsonInternalSoknad {
-        return copyJsonInternalSoknad(original).also { copy ->
-            mappers.forEach {
-                it.mapToSoknad(
-                    UUID.fromString(soknadId),
-                    copy
-                )
+        return copyJsonInternalSoknad(original)
+            .apply {
+                mappers.forEach { it.mapToSoknad(UUID.fromString(soknadId), this) }
             }
-        }
+            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
-    private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad): JsonInternalSoknad {
-        return JsonSosialhjelpObjectMapper.createObjectMapper()
-            .let {
-                val jsonString = it.writeValueAsString(jsonSoknad)
-                it.readValue(jsonString, JsonInternalSoknad::class.java)
-            }
+    private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad) = toObject(toJson(jsonSoknad))
+
+    private companion object {
+        private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+        private fun toJson(jsonInternalSoknad: JsonInternalSoknad) = objectMapper.writeValueAsString(jsonInternalSoknad)
+        private fun toObject(json: String) = objectMapper.readValue(json, JsonInternalSoknad::class.java)
     }
 }

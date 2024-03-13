@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.core.Ordered
@@ -35,7 +34,6 @@ class SoknadToJsonMapper(
                 initializeObjects()
 
                 soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn.toString()
-                soknad.driftsinformasjon = domainSoknad.driftsinformasjon?.toJsonDriftsinformasjon()
                 soknad.data.begrunnelse = domainSoknad.begrunnelse?.toJsonBegrunnelse()
             }
         }
@@ -49,13 +47,6 @@ class SoknadToJsonMapper(
             return JsonBegrunnelse()
                 .withHvaSokesOm(hvaSokesOm)
                 .withHvorforSoke(hvorforSoke)
-        }
-
-        private fun Driftsinformasjon.toJsonDriftsinformasjon(): JsonDriftsinformasjon? {
-            return JsonDriftsinformasjon()
-                .withUtbetalingerFraNavFeilet(utbetalingerFraNav)
-                .withInntektFraSkatteetatenFeilet(inntektFraSkatt)
-                .withStotteFraHusbankenFeilet(stotteFraHusbanken)
         }
     }
 }

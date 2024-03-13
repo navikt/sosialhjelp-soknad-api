@@ -76,4 +76,16 @@ class SoknadV2RegisterDataAdapter(
         }
             .onFailure { log.error("NyModell: Kunne ikke legge til ny Eier fra register", it) }
     }
+
+    override fun setInnsendingstidspunkt(soknadId: String, innsendingsTidspunkt: LocalDateTime) {
+        log.info("NyModell: Setter innsendingstidspunkt")
+
+        kotlin.runCatching {
+            v2SoknadAdapter.setInnsendingstidspunkt(
+                UUID.fromString(soknadId),
+                innsendingsTidspunkt
+            )
+        }
+            .onFailure { log.error("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+    }
 }

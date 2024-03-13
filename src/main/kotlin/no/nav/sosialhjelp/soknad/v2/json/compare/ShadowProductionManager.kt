@@ -21,8 +21,8 @@ class ShadowProductionManager(
 
         original?.let {
             kotlin.runCatching {
-                jsonGenerator.copyAndMerge(soknadId, original).let { shadow ->
-                    JsonContentComparator(soknadId).doCompareAndLogErrors(original, shadow)
+                jsonGenerator.copyAndMerge(soknadId, original).let { copy ->
+                    JsonContentComparator(soknadId).doCompareAndLogErrors(original, copy)
                 }
             }
                 .onFailure {

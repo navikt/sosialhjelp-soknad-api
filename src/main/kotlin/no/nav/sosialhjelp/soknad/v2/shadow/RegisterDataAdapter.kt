@@ -11,4 +11,5 @@ interface RegisterDataAdapter {
     fun addAdresserRegister(soknadId: String, person: Person?)
     fun addTelefonnummerRegister(soknadId: String, systemverdi: String?)
     fun addBasisPersonalia(soknadId: String, personalia: JsonPersonalia)
+    fun setInnsendingstidspunkt(soknadId: String, innsendingsTidspunkt: LocalDateTime)
 }

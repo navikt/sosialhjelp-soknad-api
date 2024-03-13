@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
+import no.nav.sosialhjelp.soknad.v2.soknad.findOrError
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
@@ -61,5 +62,11 @@ class V2SoknadAdapter(
                 )
             }
             .also { eier -> eierRepository.save(eier) }
+    }
+
+    fun setInnsendingstidspunkt(soknadId: UUID, innsendingsTidspunkt: LocalDateTime) {
+        soknadRepository.findOrError(soknadId)
+            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
+            .also { soknadRepository.save(it) }
     }
 }

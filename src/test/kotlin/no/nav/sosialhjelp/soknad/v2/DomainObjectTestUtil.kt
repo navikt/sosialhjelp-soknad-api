@@ -30,7 +30,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.soknad.Driftsinformasjon
+import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
@@ -73,14 +73,12 @@ fun opprettSoknad(
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
-    driftsinformasjon: Driftsinformasjon = Driftsinformasjon(false, false, false),
 ): Soknad {
     return Soknad(
         id = id,
         eierPersonId = eierPersonId,
         tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
         begrunnelse = begrunnelse,
-        driftsinformasjon = driftsinformasjon,
     )
 }
 
@@ -217,6 +215,20 @@ fun opprettFolkeregistrertAdresse(
     return VegAdresse(
         landkode, kommunenummer, adresselinjer, bolignummer,
         postnummer, poststed, gatenavn, husnummer, husbokstav
+    )
+}
+
+fun opprettIntegrasjonstatus(
+    soknadId: UUID,
+    feilUtbetalingerNav: Boolean = false,
+    feilInntektSkatteetaten: Boolean = false,
+    feilStotteHusbanken: Boolean = false,
+): Integrasjonstatus {
+    return Integrasjonstatus(
+        soknadId = soknadId,
+        feilUtbetalingerNav = feilUtbetalingerNav,
+        feilInntektSkatteetaten = feilInntektSkatteetaten,
+        feilStotteHusbanken = feilStotteHusbanken,
     )
 }
 

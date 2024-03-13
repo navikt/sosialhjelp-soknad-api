@@ -20,11 +20,13 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2RegisterDataAdapter
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class DigisosApiService(
@@ -36,6 +38,7 @@ class DigisosApiService(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val shadowProductionManager: ShadowProductionManager,
+    private val v2RegisterDataAdapter: SoknadV2RegisterDataAdapter,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -44,7 +47,12 @@ class DigisosApiService(
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
+        val innsendingsTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
+
+        // Ny modell
+        v2RegisterDataAdapter.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
+
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)

@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -37,6 +38,8 @@ abstract class AbstractGenericRepositoryTest {
     protected lateinit var kontaktRepository: KontaktRepository
     @Autowired
     protected lateinit var familieRepository: FamilieRepository
+    @Autowired
+    protected lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
     protected lateinit var soknad: Soknad
 

@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
@@ -83,14 +84,17 @@ class SoknadUnderArbeidService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
-    fun settInnsendingstidspunktPaSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
+    fun settInnsendingstidspunktPaSoknad(
+        soknadUnderArbeid: SoknadUnderArbeid?,
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now()
+    ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
         }
         if (soknadUnderArbeid.erEttersendelse) {
             return
         }
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingsTidspunkt.toString()
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

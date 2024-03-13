@@ -4,10 +4,11 @@ import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
+import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.*
 
@@ -23,8 +24,9 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
         UUID.randomUUID().let {
-            soknadRepository.save(opprettSoknad(it))
-            soknadRepository.save(opprettSoknad(it).copy(eierPersonId = "NOE ANNET"))
+            val original = soknadRepository.save(opprettSoknad(it))
+            val updated = soknadRepository.save(opprettSoknad(it).copy(eierPersonId = "NOE ANNET"))
+            assertThat(original).isNotEqualTo(updated)
         }
     }
 
@@ -47,7 +49,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
     fun `Hente eiers personId skal returnere eierPersonId fra Soknad`() {
         val eier = eierRepository.save(opprettEier(soknad.id))
-        Assertions.assertThat(eierRepository.getEierPersonId(eier.soknadId)).isEqualTo(soknad.eierPersonId)
+        assertThat(eierRepository.getEierPersonId(eier.soknadId)).isEqualTo(soknad.eierPersonId)
     }
 
     @Test
@@ -63,6 +65,14 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null)
+        )
+    }
+
+    @Test
+    fun `Verifisere relevante CRUD-operasjoner for Integrasjonstatus`() {
+        integrasjonstatusRepository.verifyCRUDOperations(
+            originalEntity = opprettIntegrasjonstatus(soknad.id),
+            updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true)
         )
     }
 }
