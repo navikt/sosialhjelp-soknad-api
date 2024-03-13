@@ -8,9 +8,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=soknad1234
-      - POSTGRES_USER=soknad
-      - POSTGRES_DB=soknaddb
+      - POSTGRES_PASSWORD=hunter2
+      - POSTGRES_USER=socknad-mock-user
+      - POSTGRES_DB=soknad-mock-db
+    networks:
+      digisos.docker-internal:
+        aliases:
+          - postgres.digisos.docker-internal
 
   sosialhjelp-mock-alt:
     profiles: [ full ]

@@ -7,7 +7,6 @@ spring:
     baseline-on-migrate: true
     clean-disabled: false
     clean-on-validation-error: true
-    default-schema: soknad
   docker:
     compose:
       file: compose/docker-compose-local.yml
@@ -15,11 +14,12 @@ spring:
       # Endre dette til "backing-services" om du vil kjøre mock-alt/mock-alt-api selv
       profiles:
         active: full
+      # Dersom database skal nullstilles hver gang applikasjonen starter:
+      #stop:
+      #  command=down
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db?currentSchema=soknad
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://db-mock-user:hunter2@$postgres.digisos.docker-internal/soknad-mock-db
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
