@@ -12,6 +12,9 @@ spring:
     compose:
       file: compose/docker-compose-local.yml
       enabled: true
+      # Endre dette til "backing-services" om du vil kjøre mock-alt/mock-alt-api selv
+      profiles:
+        active: full
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db?currentSchema=soknad
