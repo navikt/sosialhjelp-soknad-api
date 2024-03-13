@@ -22,7 +22,7 @@ services:
     image: ghcr.io/navikt/sosialhjelp-mock-alt/sosialhjelp-mock-alt:latest
     restart: always
     ports:
-      - "3008:5000"
+      - "3008:3008"
     networks:
       digisos.docker-internal:
         aliases:
