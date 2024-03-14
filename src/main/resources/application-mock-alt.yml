@@ -11,7 +11,7 @@ spring:
     compose:
       file: compose/docker-compose-local.yml
       enabled: true
-      # Endre dette til "backing-services" om du vil kjøre mock-alt/mock-alt-api selv
+      # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
       profiles:
         active: full
       # Dersom database skal nullstilles hver gang applikasjonen starter:
