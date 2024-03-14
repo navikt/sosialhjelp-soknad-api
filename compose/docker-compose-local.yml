@@ -2,6 +2,7 @@ version: '3.9'
 services:
 
   postgres:
+    profiles: [ backing-services, full ]
     image: postgres
     restart: always
     ports:
@@ -12,17 +13,19 @@ services:
       - POSTGRES_DB=soknaddb
 
   sosialhjelp-mock-alt:
+    profiles: [ full ]
     container_name: sosialhjelp-mock-alt
     image: ghcr.io/navikt/sosialhjelp-mock-alt/sosialhjelp-mock-alt:latest
     restart: always
     ports:
-      - "3008:5000"
+      - "3008:3008"
     networks:
       digisos.docker-internal:
         aliases:
           - sosialhjelp-mock-alt.digisos.docker-internal
 
   sosialhjelp-mock-alt-api:
+    profiles: [ backing-services, full ]
     container_name: sosialhjelp-mock-alt-api
     image: ghcr.io/navikt/sosialhjelp-mock-alt-api/sosialhjelp-mock-alt-api:latest
     restart: always
@@ -37,8 +40,10 @@ services:
       interval: 20s
       timeout: 10s
       retries: 10
+      start_period: 5s
 
   cache:
+    profiles: [ backing-services, full ]
     container_name: redis
     image: redis:6.2-alpine
     restart: always
