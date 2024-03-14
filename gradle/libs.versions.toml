@@ -26,6 +26,7 @@ tika_parsers = "2.9.1"
 commons_text = "1.11.0"
 ktlint = "0.45.2"
 mockk = "1.13.9"
+vault_jdbc = "1.3.10"
 versions = "0.50.0"
 
 [libraries]
@@ -44,6 +45,8 @@ soknadsosialhjelp-filformat = { module = "no.nav.sbl.dialogarena:soknadsosialhje
 sosialhjelp-common-api = { module = "no.nav.sosialhjelp:sosialhjelp-common-api", version.ref = "sosialhjelp_common" }
 sosialhjelp-common-selftest = { module = "no.nav.sosialhjelp:sosialhjelp-common-selftest", version.ref = "sosialhjelp_common" }
 sosialhjelp-common-kotlin-utils = { module = "no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils", version.ref = "sosialhjelp_common" }
+
+vault-jdbc = { module = "no.nav:vault-jdbc", version.ref = "vault_jdbc" }
 
 svarut-rest-klient = { module = "no.ks.fiks.svarut:svarut-rest-klient", version.ref = "fiks_svar_ut" }
 kryptering = { module = "no.ks.fiks:kryptering", version.ref = "fiks_kryptering" }
