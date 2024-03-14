@@ -24,9 +24,9 @@ class EierToJsonMapper(
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
 
         val eier = (
-                eierRepository.findByIdOrNull(soknadId)
-                    ?: throw IllegalStateException("Fant ikke Eier")
-                )
+            eierRepository.findByIdOrNull(soknadId)
+                ?: throw IllegalStateException("Fant ikke Eier")
+            )
 
         doMapping(eier, jsonInternalSoknad)
     }

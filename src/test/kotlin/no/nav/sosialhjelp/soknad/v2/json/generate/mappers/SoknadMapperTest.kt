@@ -14,8 +14,6 @@ import java.time.temporal.ChronoUnit
 
 class SoknadMapperTest {
 
-    private val mapper = SoknadToJsonMapper
-
     @Test
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()

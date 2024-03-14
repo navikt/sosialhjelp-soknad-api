@@ -13,7 +13,6 @@ import java.util.*
 
 class EierMapperTest {
 
-    private val mapper = EierToJsonMapper
     private lateinit var json: JsonInternalSoknad
 
     @BeforeEach
