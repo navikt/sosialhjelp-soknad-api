@@ -36,7 +36,7 @@ services:
         aliases:
           - sosialhjelp-mock-alt-api.digisos.docker-internal
     healthcheck:
-      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 http://localhost:8989/sosialhjelp/mock-alt-api/internal/isAlive" ]
+      test: [ "CMD", "curl", "--silent", "--fail", "http://localhost:8989/sosialhjelp/mock-alt-api/internal/isAlive" ]
       interval: 20s
       timeout: 10s
       retries: 10
