@@ -13,14 +13,18 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
   docker:
     compose:
       enabled: false
+
+postgres:
+  user:
+    role: sosialhjelp-soknad-db-admin
+
+vault-mount-path: ${VAULT_MOUNT_PATH}
 
 management:
   endpoints:

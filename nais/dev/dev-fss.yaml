@@ -42,9 +42,6 @@ spec:
         - name: "ks:fiks"
   vault:
     enabled: true
-    paths:
-      - mountPath: /var/run/secrets/datasource
-        kvPath: /oracle/data/dev/creds/soknadsosialhjelp_q0-user
   tokenx:
     enabled: true
   accessPolicy:
@@ -127,8 +124,6 @@ spec:
       value: "dev-fss"
     - name: SCHEDULER_DISABLE
       value: "false"
-    - name: SOKNADSOSIALHJELPDATASOURCE_URL
-      value: "jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/soknadsosialhjelp_q0"
     - name: SOKNAD_BOSTOTTE_URL
       value: "https://api.demo.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
@@ -151,3 +146,7 @@ spec:
       value: "true"
     - name: GOTENBERG_URL
       value: "https://konvertering-til-pdf.intern.dev.nav.no/"
+    - name: VAULT_MOUNT_PATH
+      value: postgresql/preprod-fss/
+    - name: SOKNADSOSIALHJELPDATASOURCE_URL
+      value: jdbc:postgresql://b27dbvl030.preprod.local:5432/sosialhjelp-soknad-db
