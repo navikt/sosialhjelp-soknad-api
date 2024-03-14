@@ -69,7 +69,7 @@ class EierMapperTest {
         with(json.soknad.data.personalia) {
             Assertions.assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
             Assertions.assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraBruker)
+            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer!!.fraBruker)
         }
     }
 
@@ -86,7 +86,7 @@ class EierMapperTest {
         with(json.soknad.data.personalia) {
             Assertions.assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
             Assertions.assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraRegister)
+            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer!!.fraRegister)
         }
     }
 

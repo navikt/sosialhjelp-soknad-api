@@ -8,6 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 class SoknadMapperTest {
@@ -17,7 +19,7 @@ class SoknadMapperTest {
     @Test
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
-        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         val soknad = opprettSoknad(sendtInn = now)
 
         SoknadToJsonMapper.doMapping(soknad, jsonInternalSoknad)
@@ -28,7 +30,8 @@ class SoknadMapperTest {
 }
 
 private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
-    Assertions.assertThat(soknad.innsendingstidspunkt).isEqualTo(tidspunkt.toString())
+    val offsetDateTime = OffsetDateTime.of(tidspunkt, ZoneOffset.UTC)
+    Assertions.assertThat(soknad.innsendingstidspunkt).isEqualTo(offsetDateTime.toString())
 }
 
 private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {

@@ -27,8 +27,8 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/utdanning",
             UtdanningDto::class.java
         ).also {
-            assertThat(it.erStudent).isEqualTo(brukerdata.utdanning.erStudent)
-            assertThat(it.studentgrad).isEqualTo(brukerdata.utdanning.studentgrad)
+            assertThat(it.erStudent).isEqualTo(brukerdata.utdanning!!.erStudent)
+            assertThat(it.studentgrad).isEqualTo(brukerdata.utdanning!!.studentgrad)
         }
     }
 
@@ -45,8 +45,8 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.utdanning.erStudent).isFalse()
-            assertThat(it.utdanning.studentgrad).isNull()
+            assertThat(it.utdanning!!.erStudent).isFalse()
+            assertThat(it.utdanning!!.studentgrad).isNull()
         }
             ?: fail("Utdanning finnes ikke")
     }
@@ -64,8 +64,8 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.utdanning.erStudent).isTrue()
-            assertThat(it.utdanning.studentgrad).isEqualTo(input.studentgrad)
+            assertThat(it.utdanning!!.erStudent).isTrue()
+            assertThat(it.utdanning!!.studentgrad).isEqualTo(input.studentgrad)
         }
             ?: fail("Utdanning finnes ikke")
     }

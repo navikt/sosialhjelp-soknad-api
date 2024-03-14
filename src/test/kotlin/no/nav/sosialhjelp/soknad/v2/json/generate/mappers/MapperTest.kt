@@ -15,7 +15,6 @@ import java.util.*
 
 class MapperTest {
 
-    private val mapper = LivssituasjonToJsonMapper
     private lateinit var json: JsonInternalSoknad
 
     @BeforeEach
@@ -30,7 +29,7 @@ class MapperTest {
             .arbeid
 
         with(json.soknad.data) {
-            Assertions.assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid.kommentar)
+            Assertions.assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid!!.kommentar)
             this.arbeid.forhold.forEachIndexed { index, json ->
                 json.assertArbeidsforhold(arbeid.arbeidsforhold[index])
             }
@@ -44,7 +43,7 @@ class MapperTest {
             .utdanning
 
         with(json.soknad.data) {
-            Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning.erStudent)
+            Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
             Assertions.assertThat(this.utdanning.studentgrad.name).isEqualTo(utdanning.studentgrad?.name)
         }
     }
@@ -59,7 +58,7 @@ class MapperTest {
             .utdanning
 
         with(json.soknad.data) {
-            Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning.erStudent)
+            Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
             Assertions.assertThat(this.utdanning.studentgrad).isNull()
         }
     }
@@ -71,7 +70,7 @@ class MapperTest {
             .bosituasjon
 
         with(json.soknad.data) {
-            Assertions.assertThat(this.bosituasjon.botype.name).isEqualTo(bosituasjon.botype?.name)
+            Assertions.assertThat(this.bosituasjon.botype.name).isEqualTo(bosituasjon!!.botype?.name)
             Assertions.assertThat(this.bosituasjon.antallPersoner).isEqualTo(bosituasjon.antallHusstand)
         }
     }

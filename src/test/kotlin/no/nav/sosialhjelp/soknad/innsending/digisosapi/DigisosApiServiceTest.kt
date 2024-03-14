@@ -60,6 +60,7 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any(), any()) } just runs
     }
 
     @AfterEach
