@@ -24,9 +24,9 @@ class EierToJsonMapper(
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
 
         val eier = (
-            eierRepository.findByIdOrNull(soknadId)
-                ?: throw IllegalStateException("Fant ikke Eier")
-            )
+                eierRepository.findByIdOrNull(soknadId)
+                    ?: throw IllegalStateException("Fant ikke Eier")
+                )
 
         doMapping(eier, jsonInternalSoknad)
     }
@@ -36,18 +36,22 @@ class EierToJsonMapper(
         fun doMapping(eier: Eier, json: JsonInternalSoknad) {
 
             json.initializeObjects()
-            with(json.soknad.data.personalia) {
 
+            with(json.soknad.data.personalia) {
                 this.navn = eier.navn.toJsonSokerNavn()
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
-                this.kontonummer = eier.kontonummer.toJsonKontonummer()
+
+                eier.kontonummer?.let {
+                    this.kontonummer = it.toJsonKontonummer()
+                }
             }
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
             soknad.data ?: soknad.withData(JsonData())
             soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
+            soknad.data.personalia.kontonummer ?: soknad.data.personalia.withKontonummer(JsonKontonummer())
         }
 
         private fun Navn.toJsonSokerNavn(): JsonSokernavn {
@@ -75,7 +79,7 @@ class EierToJsonMapper(
         private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? {
             return when {
                 harIkkeKonto == true ->
-                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(true)
+                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
                 fraBruker != null ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
                 fraRegister != null ->

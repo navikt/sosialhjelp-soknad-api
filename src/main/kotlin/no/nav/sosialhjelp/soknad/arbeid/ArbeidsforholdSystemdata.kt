@@ -42,7 +42,7 @@ class ArbeidsforholdSystemdata(
             null
         }
         // NyModell
-        registerDataAdapter.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds ?: emptyList())
+        registerDataAdapter.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds)
         return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
     }
 

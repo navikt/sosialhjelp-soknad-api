@@ -19,8 +19,11 @@ class EierService(
     ): Kontonummer {
 
         return getEier(soknadId)
-            .run { copy(kontonummer = kontonummer.copy(harIkkeKonto = harIkkeKonto, fraBruker = kontonummerBruker)) }
+            .run {
+                val kontonummer = this.kontonummer ?: Kontonummer()
+                copy(kontonummer = kontonummer.copy(harIkkeKonto = harIkkeKonto, fraBruker = kontonummerBruker))
+            }
             .let { eier -> eierRepository.save(eier) }
-            .kontonummer
+            .kontonummer!!
     }
 }

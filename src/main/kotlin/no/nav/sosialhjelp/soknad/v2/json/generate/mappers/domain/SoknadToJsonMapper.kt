@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -37,13 +36,17 @@ class SoknadToJsonMapper(
 
                 soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn
                     ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
-                soknad.data.begrunnelse = domainSoknad.begrunnelse?.toJsonBegrunnelse()
+
+                domainSoknad.begrunnelse?.let {
+                    soknad.data.begrunnelse = it.toJsonBegrunnelse()
+                }
             }
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
             soknad.data ?: soknad.withData(JsonData())
-            soknad.driftsinformasjon ?: soknad.withDriftsinformasjon(JsonDriftsinformasjon())
+            // required i json-modellen (validering)
+            soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
         }
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse {

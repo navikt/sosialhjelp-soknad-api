@@ -17,12 +17,12 @@ interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRep
 data class Livssituasjon(
     @Id
     override val soknadId: UUID,
-    @Embedded.Empty
-    val arbeid: Arbeid = Arbeid(),
-    @Embedded.Empty
-    val utdanning: Utdanning = Utdanning(),
-    @Embedded.Empty
-    val bosituasjon: Bosituasjon = Bosituasjon(),
+    @Embedded.Nullable
+    val arbeid: Arbeid? = null,
+    @Embedded.Nullable
+    val utdanning: Utdanning? = null,
+    @Embedded.Nullable
+    val bosituasjon: Bosituasjon? = null,
 ) : AggregateRoot
 
 data class Bosituasjon(

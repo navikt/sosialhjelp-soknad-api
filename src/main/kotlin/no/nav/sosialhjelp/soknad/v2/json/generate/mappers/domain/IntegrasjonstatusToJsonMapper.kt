@@ -14,16 +14,18 @@ class IntegrasjonstatusToJsonMapper(
     private val integrasjonstatusRepository: IntegrasjonstatusRepository
 ) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+        val integrasjonstatus = integrasjonstatusRepository.findByIdOrNull(soknadId) ?: Integrasjonstatus(soknadId)
+
         doMapping(
-            integrasjonstatus = integrasjonstatusRepository.findByIdOrNull(soknadId),
-            jsonInternalSoknad
+            integrasjonstatus = integrasjonstatus,
+            json = jsonInternalSoknad
         )
     }
 
     internal companion object Mapper {
 
-        fun doMapping(integrasjonstatus: Integrasjonstatus?, json: JsonInternalSoknad) {
-            json.soknad.driftsinformasjon = integrasjonstatus?.toJsonDriftsinformasjon()
+        fun doMapping(integrasjonstatus: Integrasjonstatus, json: JsonInternalSoknad) {
+            json.soknad.driftsinformasjon = integrasjonstatus.toJsonDriftsinformasjon()
         }
 
         private fun Integrasjonstatus.toJsonDriftsinformasjon(): JsonDriftsinformasjon {

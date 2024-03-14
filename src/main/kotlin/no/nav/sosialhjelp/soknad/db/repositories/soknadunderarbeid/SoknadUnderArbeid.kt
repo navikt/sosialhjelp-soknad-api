@@ -35,7 +35,7 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
         soknadId = soknadId,
         statsborgerskap = statsborgerskap?.verdi,
         nordiskBorger = nordiskBorger?.verdi,
-        kontonummer = kontonummer?.let { Kontonummer(fraRegister = it.verdi) } ?: Kontonummer(),
+        kontonummer = kontonummer?.let { Kontonummer(fraRegister = it.verdi) },
         navn = Navn(
             fornavn = navn.fornavn,
             mellomnavn = navn.mellomnavn,

@@ -32,15 +32,18 @@ class SoknadV2RegisterDataAdapter(
             .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
-    override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>) {
-        log.info("NyModell: Legger til arbeidsforhold for $soknadId")
-        kotlin.runCatching {
-            v2SoknadAdapter.saveArbeidsforhold(
-                UUID.fromString(soknadId),
-                arbeidsforhold.map { it.toV2Arbeidsforhold() }
-            )
+    override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?) {
+        arbeidsforhold?.let {
+            log.info("NyModell: Legger til arbeidsforhold for $soknadId")
+
+            kotlin.runCatching {
+                v2SoknadAdapter.saveArbeidsforhold(
+                    UUID.fromString(soknadId),
+                    it.map { it.toV2Arbeidsforhold() }
+                )
+            }
+                .onFailure { log.error("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
         }
-            .onFailure { log.error("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
     }
 
     override fun addAdresserRegister(soknadId: String, person: Person?) {

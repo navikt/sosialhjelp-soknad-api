@@ -37,11 +37,14 @@ class V2SoknadAdapter(
     }
 
     fun saveArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>) {
-        getLivssituasjon(soknadId).run {
-            copy(
-                arbeid = Arbeid(arbeidsforhold = arbeidsforhold),
-            )
-        }.also { livssituasjonRepository.save(it) }
+        if (arbeidsforhold.isNotEmpty()) {
+
+            getLivssituasjon(soknadId)
+                .run {
+                    copy(arbeid = Arbeid(arbeidsforhold = arbeidsforhold),)
+                }
+                .also { livssituasjonRepository.save(it) }
+        }
     }
 
     private fun getLivssituasjon(soknadId: UUID) = livssituasjonRepository.findByIdOrNull(soknadId)

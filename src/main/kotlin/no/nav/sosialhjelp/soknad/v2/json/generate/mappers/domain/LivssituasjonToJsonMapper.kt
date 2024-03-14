@@ -36,15 +36,26 @@ class LivssituasjonToJsonMapper(
 
         fun doMapping(livssituasjon: Livssituasjon, json: JsonInternalSoknad) {
 
+            // noen felter forventes i validering
             json.initializeObjects()
 
             with(json.soknad.data) {
 
-                arbeid = livssituasjon.arbeid.toJsonArbeid()
-                utdanning = livssituasjon.utdanning.toJsonUtdanning()
-                bosituasjon = livssituasjon.bosituasjon.toJsonBosituasjon()
+                livssituasjon.arbeid?.let { this.arbeid = it.toJsonArbeid() }
+                livssituasjon.utdanning?.let { this.utdanning = it.toJsonUtdanning() }
+                livssituasjon.bosituasjon?.let { this.bosituasjon = it.toJsonBosituasjon() }
             }
         }
+    }
+}
+
+// Disse er `required` i filformatet å må eksistere (hvis det skal validere)
+private fun JsonInternalSoknad.initializeObjects() {
+    soknad.data ?: soknad.withData(JsonData())
+    with(soknad.data) {
+        arbeid ?: withArbeid(JsonArbeid())
+        utdanning ?: withUtdanning(JsonUtdanning())
+        bosituasjon ?: withBosituasjon(JsonBosituasjon())
     }
 }
 
@@ -79,15 +90,6 @@ private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
 
 private fun Botype.toJsonBotype() = JsonBosituasjon.Botype.fromValue(name.lowercase())
 
-private fun JsonInternalSoknad.initializeObjects() {
-    soknad.data ?: soknad.withData(JsonData())
-    with(soknad.data) {
-        arbeid ?: withArbeid(JsonArbeid())
-        utdanning ?: withUtdanning(JsonUtdanning())
-        bosituasjon ?: withBosituasjon(JsonBosituasjon())
-    }
-}
-
 private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
     return JsonArbeidsforhold()
         .withKilde(JsonKilde.SYSTEM)
@@ -96,6 +98,7 @@ private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
         .withStillingsprosent(fastStillingsprosent)
         .withFom(start)
         .withTom(slutt)
+        .withOverstyrtAvBruker(false)
 }
 
 private fun Boolean.toJsonArbeidsforholdStillingtype(): JsonArbeidsforhold.Stillingstype {

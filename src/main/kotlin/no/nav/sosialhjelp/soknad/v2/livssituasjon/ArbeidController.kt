@@ -22,8 +22,8 @@ class ArbeidController(
     fun getArbeid(@PathVariable("soknadId") soknadId: UUID): ArbeidDto {
         return livssituasjonService.getLivssituasjon(soknadId)?.let {
             ArbeidDto(
-                arbeidsforholdList = it.arbeid.arbeidsforhold.map { list -> list.toArbeidsforholdDto() },
-                kommentar = it.arbeid.kommentar
+                arbeidsforholdList = it.arbeid?.arbeidsforhold?.map { list -> list.toArbeidsforholdDto() } ?: emptyList(),
+                kommentar = it.arbeid?.kommentar
             )
         } ?: ArbeidDto()
     }

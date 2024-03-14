@@ -44,11 +44,11 @@ class KontaktToJsonMapper(
             val adresseValg = kontakt.adresser.adressevalg
 
             json.initializeObjects()
-            json.midlertidigAdresse = kontakt.adresser.midlertidigAdresse?.toJsonAdresse()
+            json.midlertidigAdresse = kontakt.adresser.midlertidigAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
 
             with(json.soknad.data.personalia) {
                 telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
-                folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()
+                folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
                 adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
             }
 

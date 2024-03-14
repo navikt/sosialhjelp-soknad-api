@@ -24,8 +24,8 @@ data class Eier(
     val nordiskBorger: Boolean? = null,
     @Embedded.Empty
     val navn: Navn,
-    @Embedded.Empty
-    val kontonummer: Kontonummer = Kontonummer(),
+    @Embedded.Nullable
+    val kontonummer: Kontonummer? = null,
 ) : AggregateRoot
 
 data class Kontonummer(
