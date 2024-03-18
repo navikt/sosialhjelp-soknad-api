@@ -6,6 +6,10 @@ server:
   max-http-request-header-size: 16KB
 
 spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD:pw}
+      host: ${REDIS_HOST}
   main:
     banner-mode: off
   flyway:

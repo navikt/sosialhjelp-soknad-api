@@ -32,12 +32,13 @@ class KodeverkClient(
                 )
             )
         }
+        .baseUrl(kodeverkUrl)
         .build()
 
     fun hentKodeverk(kodeverksnavn: String): KodeverkDto = runCatching {
         webClient.get()
             .uri { builder ->
-                builder.path("$kodeverkUrl/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
+                builder.path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
                     .queryParam("ekskluderUgyldige", "true")
                     .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
                     .build(kodeverksnavn)
