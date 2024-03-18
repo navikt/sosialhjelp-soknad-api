@@ -14,9 +14,9 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
