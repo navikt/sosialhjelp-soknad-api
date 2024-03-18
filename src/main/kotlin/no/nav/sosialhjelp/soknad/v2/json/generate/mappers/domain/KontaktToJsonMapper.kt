@@ -77,7 +77,7 @@ class KontaktToJsonMapper(
             }
                 ?: fraRegister?.let {
                     JsonTelefonnummer()
-                        .withKilde(JsonKilde.BRUKER)
+                        .withKilde(JsonKilde.SYSTEM)
                         .withVerdi(it)
                 }
         }

@@ -72,7 +72,7 @@ class EierToJsonMapper(
 
         private fun Eier.toJsonStatsborgerskap(): JsonStatsborgerskap? {
             return statsborgerskap?.let {
-                JsonStatsborgerskap().withKilde(JsonKilde.BRUKER).withVerdi(it)
+                JsonStatsborgerskap().withKilde(JsonKilde.SYSTEM).withVerdi(it)
             }
         }
 
