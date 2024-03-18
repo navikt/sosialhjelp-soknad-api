@@ -34,7 +34,12 @@ class GeografiskTilknytningClient(
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
-        hentFraCache(ident)?.let { return it }
+        hentFraCache(ident)?.let {
+            // TODO Ekstra logging
+            log.info("Henter geografisk tilknytning fra cache: $it")
+
+            return it
+        }
 
         try {
             val response: String =
@@ -50,7 +55,12 @@ class GeografiskTilknytningClient(
             val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
             pdlResponse.checkForPdlApiErrors()
             return pdlResponse.data.hentGeografiskTilknytning
-                ?.also { lagreTilCache(ident, it) }
+                ?.also {
+                    // TODO Ekstra logging
+                    log.info("Lagrer geografisk tilknytning til cache: $it")
+
+                    lagreTilCache(ident, it)
+                }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {

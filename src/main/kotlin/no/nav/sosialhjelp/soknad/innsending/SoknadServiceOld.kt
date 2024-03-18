@@ -124,11 +124,12 @@ class SoknadServiceOld(
             sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(soknadMetadata)
-        return soknadMetadata.behandlingsId
+        return soknadMetadata.behandlingsId.also {
+            log.info("Starter søknad $it")
+        }
     }
 
     @Transactional
-    @Deprecated("For SvarUT.")
     fun sendSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

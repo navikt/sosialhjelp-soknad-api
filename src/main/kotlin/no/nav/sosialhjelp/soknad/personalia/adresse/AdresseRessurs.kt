@@ -14,6 +14,8 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,6 +36,8 @@ class AdresseRessurs(
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
 ) {
 
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     @GetMapping
     fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String
@@ -47,6 +51,9 @@ class AdresseRessurs(
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
+
+        // TODO Ekstra logging
+        logger.info("Hender navEnhet - GET personalia/adresser")
         val navEnhet = try {
             navEnhetService.getNavEnhet(
                 eier,
@@ -96,11 +103,17 @@ class AdresseRessurs(
         personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        // TODO Ekstra logging
+        logger.info("Hender navEnhet - PUT personalia/adresser")
         val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )?.also {
+            // TODO Ekstra logging
+            logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
+            logger.info("NavEnhetFrontend: $it")
+
             setNavEnhetAsMottaker(soknad, it, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }

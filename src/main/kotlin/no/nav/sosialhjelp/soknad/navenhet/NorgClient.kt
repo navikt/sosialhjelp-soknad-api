@@ -36,6 +36,8 @@ class NorgClient(
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
+        // TODO Ekstra logging
+        log.info("Henter NavEnhet fra norg for gt: $geografiskTilknytning")
         return try {
             webClient.get()
                 .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)

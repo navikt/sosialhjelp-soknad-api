@@ -44,7 +44,9 @@ class NavEnhetService(
             try {
                 finnNavEnhetFraGT(eier, personalia)
             } catch (e: Exception) {
-                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
+                log.warn(
+                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                )
                 finnNavEnhetFraAdresse(personalia, valg)
             }
         } else finnNavEnhetFraAdresse(personalia, valg)
@@ -68,9 +70,13 @@ class NavEnhetService(
         ident: String,
         personalia: JsonPersonalia
     ): NavEnhetFrontend? {
+        // TODO Ekstra logging
+        log.info("Finner Nav-enhet fra GT")
         val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        // TODO Ekstra logging
+        logUtDiverseInfo(kommunenummer, geografiskTilknytning, navEnhet)
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
     }
 
@@ -78,10 +84,28 @@ class NavEnhetService(
         personalia: JsonPersonalia,
         valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
+        // TODO Ekstra logging
+        log.info("Finner Nav-enhet fra adresse")
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
         val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        // TODO Ekstra logging
+        logUtDiverseInfo(adresseForslag.kommunenummer, geografiskTilknytning, navEnhet)
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, adresseForslag.kommunenummer)
+    }
+
+    // TODO ekstra logging
+    private fun logUtDiverseInfo(kommunenummer: String?, geografiskTilknytning: String?, navEnhet: NavEnhet?) {
+        if (kommunenummer == "4601" || kommunenummer == "3907") {
+            log.info(
+                "Finn Nav-enhet fra GT. Kommunenummer: $kommunenummer, " +
+                    "Geografisk tilknytning: $geografiskTilknytning, " +
+                    "NavEnhet - ${navEnhet?.navn}" +
+                    "Enhetsnummer: ${navEnhet?.enhetNr}" +
+                    "Sosialorg: ${navEnhet?.sosialOrgNr}" +
+                    "Kommunenavn: ${navEnhet?.kommunenavn}"
+            )
+        }
     }
 
     private fun mapToNavEnhetFrontend(
