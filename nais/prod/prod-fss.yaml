@@ -97,7 +97,7 @@ spec:
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.ks.no/"
     - name: KODEVERK_URL
-      value: "https://kodeverk.intern.nav.no/api/v1/kodeverk"
+      value: "https://kodeverk-api.nav.no"
     - name: KRR_AUDIENCE
       value: "prod-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
