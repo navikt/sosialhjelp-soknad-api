@@ -148,5 +148,7 @@ spec:
       value: "https://konvertering-til-pdf.intern.dev.nav.no/"
     - name: VAULT_MOUNT_PATH
       value: postgresql/preprod-fss/
-    - name: SOKNADSOSIALHJELPDATASOURCE_URL
-      value: jdbc:postgresql://b27dbvl030.preprod.local:5432/sosialhjelp-soknad-db
+    - name: SOKNADSOSIALHJELP_DB_NAVN
+      value: sosialhjelp-soknad-db
+    - name: POSTGRES_DATASOURCE_URL
+      value: jdbc:postgresql://b27dbvl030.preprod.local:5432/
