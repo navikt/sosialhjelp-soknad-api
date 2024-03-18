@@ -23,13 +23,17 @@ class FileConverterService(
             .onSuccess { pdfBytes ->
                 check(pdfBytes.isNotEmpty()) { "Konvertert fil [$file] er tom." }
                 pdfConversionSuccess
-                    .tag(TAG_FILE_TYPE, "${file.mimeType}/${file.extension}")
+                    .tag(TAG_TIKA_MIME_TYPE, file.mimeType)
+                    .tag(TAG_CLIENT_MIME_TYPE, file.file.contentType ?: "undefined")
+                    .tag(TAG_FILE_EXTENSION, file.extension)
                     .register(meterRegistry)
                     .increment()
             }.onFailure { e ->
                 log.error("Feil ved konvertering av fil [$file]", e)
                 pdfConversionFailure
-                    .tag(TAG_FILE_TYPE, "${file.mimeType}/${file.extension}")
+                    .tag(TAG_TIKA_MIME_TYPE, file.mimeType)
+                    .tag(TAG_CLIENT_MIME_TYPE, file.file.contentType ?: "undefined")
+                    .tag(TAG_FILE_EXTENSION, file.extension)
                     .tag(TAG_ERROR_CLASS, "${e::class}")
                     .register(meterRegistry)
                     .increment()
@@ -37,7 +41,9 @@ class FileConverterService(
     }
 
     companion object {
-        private const val TAG_FILE_TYPE = "mime_type"
+        private const val TAG_TIKA_MIME_TYPE = "tika_mime_type"
+        private const val TAG_CLIENT_MIME_TYPE = "client_mime_type"
+        private const val TAG_FILE_EXTENSION = "file_extension"
         private const val TAG_ERROR_CLASS = "error_class"
         private val log = LoggerFactory.getLogger(this::class.java)
     }
