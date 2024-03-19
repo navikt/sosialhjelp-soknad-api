@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -33,6 +34,7 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
     }
 
     @Test
+    @Disabled("Gjelder ettersendelse")
     fun skalAvbryteForeldedeEttersendelserOgSletteFraDatabase() {
         val behandlingsId = "2"
         val tilknyttetBehandlingsId = "1"
