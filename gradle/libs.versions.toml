@@ -28,6 +28,7 @@ commons_text = "1.11.0"
 ktlint = "0.45.2"
 mockk = "1.13.9"
 versions = "0.50.0"
+resilience4j = "2.2.0"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
@@ -35,8 +36,13 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
 spring-boot-starter-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
+
+resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
+resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
+resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "coroutines" }
@@ -82,6 +88,7 @@ mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
+    "spring-boot-starter-aop",
     "spring-boot-starter-cache",
     "spring-boot-starter-jdbc",
     "spring-boot-starter-redis",
@@ -89,6 +96,12 @@ spring-boot = [
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
+]
+
+resilience4j = [
+    "resilience4j-kotlin",
+    "resilience4j-retry",
+    "resilience4j-spring-boot3"
 ]
 
 coroutines = [
