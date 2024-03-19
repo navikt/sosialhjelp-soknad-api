@@ -186,6 +186,8 @@ class SoknadServiceOld(
 
     @Transactional
     fun avbrytSoknad(behandlingsId: String, steg: String) {
+        log.info("Soknad avbrutt av bruker - slettes")
+
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
@@ -196,6 +198,9 @@ class SoknadServiceOld(
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
                 prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse, steg)
             }
+
+        // ny modell
+        registerDataAdapter.slettSoknad(behandlingsId)
     }
 
     fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {

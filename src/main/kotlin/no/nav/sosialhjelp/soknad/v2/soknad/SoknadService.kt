@@ -53,6 +53,11 @@ class SoknadService(
         }
     }
 
+    fun slettSoknad(soknadId: UUID) {
+        soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
+            ?: log.warn("Soknad V2 finnes ikke: $soknadId")
+    }
+
     private fun getSoknadOrThrowException(soknadId: UUID): Soknad {
         return soknadRepository.findByIdOrNull(soknadId)
             ?: throw IkkeFunnetException("Soknad finnes ikke")
