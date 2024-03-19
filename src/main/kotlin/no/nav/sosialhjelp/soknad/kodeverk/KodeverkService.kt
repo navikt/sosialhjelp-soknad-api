@@ -5,16 +5,20 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDataService.Companion.Landkode
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDataService.Companion.Postnummer
 import org.springframework.stereotype.Service
 
+/**
+ * På sikt bør også grensesnittet til KodeverkService revideres så vi ikke bare returnerer null dersom noe går galt her - vi vil jo helst vite om det!
+ *
+ */
 @Service
 class KodeverkService(
     private val kodeverkDataService: KodeverkDataService,
 ) {
-    fun getKommunenavn(kommunenummer: String): String? = kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer]
-    fun gjettKommunenummer(kommunenavn: String): String? {
+    fun getKommunenavn(kommunenummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrNull()
+    fun gjettKommunenummer(kommunenavn: String): String? = runCatching {
         val kommuner = kodeverkDataService.hentKodeverk(Kommuner)
-        return kommuner.keys.firstOrNull { key -> kommuner[key] == kommunenavn }
-    }
+        kommuner.keys.firstOrNull { key -> kommuner[key] == kommunenavn }
+    }.getOrNull()
 
-    fun getPoststed(postnummer: String): String? = kodeverkDataService.hentKodeverk(Postnummer)[postnummer]
-    fun getLand(landkode: String): String? = kodeverkDataService.hentKodeverk(Landkoder)[landkode]
+    fun getPoststed(postnummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Postnummer)[postnummer] }.getOrNull()
+    fun getLand(landkode: String): String? = runCatching { kodeverkDataService.hentKodeverk(Landkoder)[landkode] }.getOrNull()
 }
