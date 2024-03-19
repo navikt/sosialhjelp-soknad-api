@@ -93,7 +93,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
@@ -105,11 +105,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
-        verify(exactly = 1) { soknadService.startSoknad("") }
+        verify(exactly = 1) { soknadService.startSoknad() }
     }
 
     @Test
