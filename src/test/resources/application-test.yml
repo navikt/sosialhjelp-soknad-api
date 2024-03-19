@@ -8,6 +8,11 @@ spring:
     url: jdbc:hsqldb:mem:sendsoknad
     username: sa
     password:
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts: 1
 
 # Andre properties
 sendsoknad.batch.enabled: false
