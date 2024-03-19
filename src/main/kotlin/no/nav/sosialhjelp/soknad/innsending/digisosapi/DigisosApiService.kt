@@ -92,6 +92,10 @@ class DigisosApiService(
         shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
+
+        // Ny Modell
+        v2RegisterDataAdapter.slettSoknad(soknadUnderArbeid.behandlingsId)
+
         return digisosId
     }
 

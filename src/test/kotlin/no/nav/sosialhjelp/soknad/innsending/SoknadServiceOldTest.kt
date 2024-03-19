@@ -49,7 +49,7 @@ internal class SoknadServiceOldTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val registerDataAdapter: RegisterDataAdapter = mockk()
+    private val registerDataAdapter: RegisterDataAdapter = mockk(relaxed = true)
 
     private val soknadServiceOld = SoknadServiceOld(
         oppgaveHandterer,

@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2KontaktAdapter
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2SoknadAdapter
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -15,6 +16,7 @@ import java.util.*
 class SoknadV2RegisterDataAdapter(
     private val v2SoknadAdapter: V2SoknadAdapter,
     private val v2KontaktAdapter: V2KontaktAdapter,
+    private val soknadService: SoknadService,
 ) : RegisterDataAdapter {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -90,5 +92,14 @@ class SoknadV2RegisterDataAdapter(
             )
         }
             .onFailure { log.error("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+    }
+
+    override fun slettSoknad(behandlingsId: String) {
+        log.info("NyModell: Sletter SoknadV2")
+
+        kotlin.runCatching {
+            soknadService.slettSoknad(UUID.fromString(behandlingsId))
+        }
+            .onFailure { log.error("NyModell: Kunne ikke slette Soknad V2") }
     }
 }
