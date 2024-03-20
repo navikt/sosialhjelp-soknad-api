@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -38,7 +38,7 @@ class DigisosApiService(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val shadowProductionManager: ShadowProductionManager,
-    private val v2RegisterDataAdapter: SoknadV2RegisterDataAdapter,
+    private val v2AdapterService: V2AdapterService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -51,7 +51,7 @@ class DigisosApiService(
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
 
         // Ny modell
-        v2RegisterDataAdapter.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
+        v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
 
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
@@ -94,7 +94,7 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         // Ny Modell
-        v2RegisterDataAdapter.slettSoknad(soknadUnderArbeid.behandlingsId)
+        v2AdapterService.slettSoknad(soknadUnderArbeid.behandlingsId)
 
         return digisosId
     }

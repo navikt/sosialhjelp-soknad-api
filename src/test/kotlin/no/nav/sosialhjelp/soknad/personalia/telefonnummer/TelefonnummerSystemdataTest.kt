@@ -10,7 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,12 +19,12 @@ import java.time.LocalDateTime
 internal class TelefonnummerSystemdataTest {
 
     private val mobiltelefonService: MobiltelefonService = mockk()
-    private val registerDataAdapter: RegisterDataAdapter = mockk()
-    private val telefonnummerSystemdata = TelefonnummerSystemdata(mobiltelefonService, registerDataAdapter)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val telefonnummerSystemdata = TelefonnummerSystemdata(mobiltelefonService, v2AdapterService)
 
     @BeforeEach
     fun setup() {
-        every { registerDataAdapter.addTelefonnummerRegister(any(), any()) } just runs
+        every { v2AdapterService.updateTelefonRegister(any(), any()) } just runs
     }
 
     @Test

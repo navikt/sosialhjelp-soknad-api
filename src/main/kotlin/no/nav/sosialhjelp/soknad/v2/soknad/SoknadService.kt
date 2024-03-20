@@ -21,8 +21,18 @@ class SoknadService(
     @Transactional(readOnly = true)
     fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
 
-    fun createSoknad(eierId: String): UUID {
-        return soknadRepository.save(Soknad(eierPersonId = eierId)).id
+    fun createSoknad(
+        eierId: String,
+        soknadId: UUID? = null,
+        opprettetDato: LocalDateTime? = null,
+    ): UUID {
+        return Soknad(
+            id = soknadId ?: UUID.randomUUID(),
+            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+            eierPersonId = eierId
+        )
+            .let { soknadRepository.save(it) }
+            .id
     }
 
     fun deleteSoknad(soknadId: UUID) {
@@ -56,6 +66,20 @@ class SoknadService(
     fun slettSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
             ?: log.warn("Soknad V2 finnes ikke: $soknadId")
+    }
+
+    fun setInnsendingstidspunkt(
+        soknadId: UUID,
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    ) {
+        soknadRepository.findByIdOrNull(soknadId)
+            ?.run {
+                this.tidspunkt
+                    .copy(sendtInn = innsendingsTidspunkt)
+                    .let { tidCopy -> this.copy(tidspunkt = tidCopy) }
+                    .let { sokCopy -> soknadRepository.save(sokCopy) }
+            }
+            ?: log.error("Fant ikke Soknad V2")
     }
 
     private fun getSoknadOrThrowException(soknadId: UUID): Soknad {

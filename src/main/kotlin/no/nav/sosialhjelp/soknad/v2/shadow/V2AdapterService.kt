@@ -5,12 +5,12 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import java.time.LocalDateTime
 
-interface RegisterDataAdapter {
+interface V2AdapterService {
     fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String)
     fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<Arbeidsforhold>?)
     fun addAdresserRegister(soknadId: String, person: Person?)
-    fun addTelefonnummerRegister(soknadId: String, systemverdi: String?)
-    fun addBasisPersonalia(soknadId: String, personalia: JsonPersonalia)
+    fun updateTelefonRegister(soknadId: String, telefonnummer: String?)
+    fun updateEier(soknadId: String, personalia: JsonPersonalia)
     fun setInnsendingstidspunkt(soknadId: String, innsendingsTidspunkt: LocalDateTime)
     fun slettSoknad(behandlingsId: String)
 }

@@ -6,49 +6,17 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
-import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
-@Service
-@Transactional(propagation = Propagation.NESTED)
-class V2KontaktAdapter(
-    private val kontaktRepository: KontaktRepository,
-    private val hentAdresseService: HentAdresseService
-) {
-    fun saveAdresser(soknadId: UUID, bostedsadresse: Bostedsadresse?, oppholdsadresse: Oppholdsadresse?) {
-        getEntity(soknadId).copy(
-            adresser = Adresser(
-                folkeregistrertAdresse = bostedsadresse?.toV2Adresse(),
-                midlertidigAdresse = oppholdsadresse?.toV2Adresse(),
-            )
-        ).also { kontaktRepository.save(it) }
+object V2AdresseAdapter {
+
+    fun Bostedsadresse.toV2Adresse(hentAdresseService: HentAdresseService): Adresse? {
+        return vegadresse?.toV2VegAdresse() ?: matrikkeladresse?.toV2MatrikkelAdresse(hentAdresseService)
     }
 
-    fun addTelefonnummerRegister(soknadId: UUID, telefonnummer: String) {
-        getEntity(soknadId).copy(
-            telefonnummer = Telefonnummer(fraRegister = telefonnummer)
-        ).also { kontaktRepository.save(it) }
-    }
-
-    private fun getEntity(soknadId: UUID) = kontaktRepository
-        .findByIdOrNull(soknadId) ?: Kontakt(soknadId)
-
-    private fun Bostedsadresse.toV2Adresse(): Adresse? {
-        return vegadresse?.toV2VegAdresse()
-            ?: matrikkeladresse?.toV2MatrikkelAdresse()
-    }
-
-    private fun Oppholdsadresse.toV2Adresse(): Adresse? {
+    fun Oppholdsadresse.toV2Adresse(): Adresse? {
         return vegadresse?.toV2VegAdresse()
     }
 
@@ -65,7 +33,7 @@ class V2KontaktAdapter(
         )
     }
 
-    private fun Matrikkeladresse.toV2MatrikkelAdresse(): MatrikkelAdresse? {
+    private fun Matrikkeladresse.toV2MatrikkelAdresse(hentAdresseService: HentAdresseService): MatrikkelAdresse? {
         return matrikkelId?.let {
             hentAdresseService.hentKartverketMatrikkelAdresse(it)?.toV2MatrikkelAdresse()
         }
