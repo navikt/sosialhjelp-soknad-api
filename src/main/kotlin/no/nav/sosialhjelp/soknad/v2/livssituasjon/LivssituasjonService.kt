@@ -12,13 +12,6 @@ class LivssituasjonService(
         return repository.findByIdOrNull(soknadId)
     }
 
-    fun updateArbeid(soknadId: UUID, kommentarTilArbeidsforhold: String): Arbeid {
-        return getOrCreateLivssituasjon(soknadId)
-            .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
-            .let { repository.save(it) }
-            .arbeid!!
-    }
-
     fun updateBosituasjon(soknadId: UUID, botype: Botype?, antallHusstand: Int?): Bosituasjon {
         return getOrCreateLivssituasjon(soknadId)
             .copy(bosituasjon = Bosituasjon(botype = botype, antallHusstand = antallHusstand))
@@ -31,6 +24,23 @@ class LivssituasjonService(
             .run { copy(utdanning = Utdanning(erStudent = erStudent, studentgrad = studentgrad)) }
             .also { repository.save(it) }
             .utdanning!!
+    }
+
+    fun updateKommentarTilArbeid(soknadId: UUID, kommentarTilArbeidsforhold: String): Arbeid {
+        return getOrCreateLivssituasjon(soknadId)
+            .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
+            .let { repository.save(it) }
+            .arbeid!!
+    }
+
+    fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>): Arbeid {
+        return getOrCreateLivssituasjon(soknadId)
+            .run {
+                (this.arbeid ?: Arbeid())
+                    .let { arb -> this.copy(arbeid = arb.copy(arbeidsforhold = arbeidsforhold)) }
+                    .let { livs -> repository.save(livs) }
+            }
+            .arbeid ?: error("Arbeid kunne ikke lagres")
     }
 
     private fun getOrCreateLivssituasjon(soknadId: UUID) =

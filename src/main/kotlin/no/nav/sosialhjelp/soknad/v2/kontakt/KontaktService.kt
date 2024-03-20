@@ -12,19 +12,30 @@ class KontaktService(
     fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
     fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer {
-        return getOrCreateKontakt(soknadId)
+        return kontaktRepository.getOrCreateKontakt(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
     }
 
     fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt {
-        return getOrCreateKontakt(soknadId)
+        return kontaktRepository.getOrCreateKontakt(soknadId)
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, brukerAdresse = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
     }
 
-    private fun getOrCreateKontakt(soknadId: UUID): Kontakt {
-        return kontaktRepository.findByIdOrNull(soknadId) ?: kontaktRepository.save(Kontakt(soknadId))
+    fun saveAdresserRegister(
+        soknadId: UUID,
+        folkeregistrertAdresse: Adresse?,
+        midlertidigAdresse: Adresse?
+    ) {
     }
+
+    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String?) {
+        TODO("Not yet implemented")
+    }
+}
+
+private fun KontaktRepository.getOrCreateKontakt(soknadId: UUID): Kontakt {
+    return findByIdOrNull(soknadId) ?: save(Kontakt(soknadId))
 }

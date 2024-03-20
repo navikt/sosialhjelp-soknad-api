@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,12 +30,12 @@ internal class AdresseSystemdataTest {
 
     private val personService: PersonService = mockk()
     private val hentAdresseService: HentAdresseService = mockk()
-    private val registerDataAdapter: RegisterDataAdapter = mockk()
-    private val adresseSystemdata = AdresseSystemdata(personService, hentAdresseService, registerDataAdapter)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val adresseSystemdata = AdresseSystemdata(personService, hentAdresseService, v2AdapterService)
 
     @BeforeEach
     fun setup() {
-        every { registerDataAdapter.addAdresserRegister(any(), any()) } just runs
+        every { v2AdapterService.addAdresserRegister(any(), any()) } just runs
     }
 
     @Test

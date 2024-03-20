@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,8 +21,8 @@ import java.time.LocalDateTime
 internal class BasisPersonaliaSystemdataTest {
 
     private val personService: PersonService = mockk()
-    private val registerDataAdapter: RegisterDataAdapter = mockk()
-    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService, registerDataAdapter)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService, v2AdapterService)
 
     private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
         versjon = 1L,
@@ -37,7 +37,7 @@ internal class BasisPersonaliaSystemdataTest {
 
     @BeforeEach
     fun setup() {
-        every { registerDataAdapter.addBasisPersonalia(any(), any()) } just runs
+        every { v2AdapterService.updateEier(any(), any()) } just runs
     }
 
     @Test

@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.tekster.TextService
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -32,15 +32,15 @@ internal class ArbeidsforholdSystemdataTest {
     private val arbeidsforholdService: ArbeidsforholdService = mockk()
     private val textService: TextService = mockk()
     private val skattbarInntektService: SkattbarInntektService = mockk()
-    private val registerDataAdapter: RegisterDataAdapter = mockk()
+    private val v2AdapterService: V2AdapterService = mockk()
 
-    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService, registerDataAdapter)
+    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService, v2AdapterService)
     private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, mockk(), textService)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-        every { registerDataAdapter.addArbeidsforholdList(any(), any()) } just runs
+        every { v2AdapterService.addArbeidsforholdList(any(), any()) } just runs
     }
 
     @Test

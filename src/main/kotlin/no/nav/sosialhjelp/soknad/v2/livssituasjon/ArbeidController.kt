@@ -33,7 +33,7 @@ class ArbeidController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: ArbeidInput
     ): ArbeidDto {
-        return livssituasjonService.updateArbeid(soknadId, input.kommentarTilArbeidsforhold)
+        return livssituasjonService.updateKommentarTilArbeid(soknadId, input.kommentarTilArbeidsforhold)
             .let {
                 ArbeidDto(
                     arbeidsforholdList = it.arbeidsforhold.map { list -> list.toArbeidsforholdDto() },

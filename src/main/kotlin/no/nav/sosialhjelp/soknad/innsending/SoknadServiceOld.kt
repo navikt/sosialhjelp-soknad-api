@@ -46,7 +46,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -74,7 +74,7 @@ class SoknadServiceOld(
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val registerDataAdapter: RegisterDataAdapter
+    private val v2AdapterService: V2AdapterService
 ) {
     @Transactional
     fun startSoknad(token: String?): String {
@@ -97,7 +97,7 @@ class SoknadServiceOld(
         )
 
         // ny modell
-        registerDataAdapter.createSoknad(
+        v2AdapterService.createSoknad(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId
@@ -200,7 +200,7 @@ class SoknadServiceOld(
             }
 
         // ny modell
-        registerDataAdapter.slettSoknad(behandlingsId)
+        v2AdapterService.slettSoknad(behandlingsId)
     }
 
     fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {

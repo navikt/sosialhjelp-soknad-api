@@ -10,13 +10,13 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.RegisterDataAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.stereotype.Component
 
 @Component
 class BasisPersonaliaSystemdata(
     private val personService: PersonService,
-    private val registerDataAdapter: RegisterDataAdapter,
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -30,7 +30,7 @@ class BasisPersonaliaSystemdata(
         personalia.nordiskBorger = systemPersonalia.nordiskBorger
 
         // ny modell
-        registerDataAdapter.addBasisPersonalia(
+        v2AdapterService.updateEier(
             soknadUnderArbeid.behandlingsId,
             personalia
         )
