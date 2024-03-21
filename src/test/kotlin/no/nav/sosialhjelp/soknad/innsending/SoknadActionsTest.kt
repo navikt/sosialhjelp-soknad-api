@@ -94,29 +94,6 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
-        val behandlingsId = "ettersendelsePaaSvarUtSoknad"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        val soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "behandlingsId",
-            fnr = EIER,
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-        every { soknadService.sendSoknad(behandlingsId) } just runs
-
-        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
-            .isInstanceOf(IllegalStateException::class.java)
-    }
-
-    @Test
     fun sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
         val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
@@ -175,7 +152,6 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
-        every { soknadService.sendSoknad(any()) } just runs
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
             .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
@@ -189,7 +165,6 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        every { soknadService.sendSoknad(any()) } just runs
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
             .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)

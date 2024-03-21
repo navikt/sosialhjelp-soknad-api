@@ -5,10 +5,12 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.junit.jupiter.api.BeforeEach
@@ -41,7 +43,14 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             behandlingsId = "behandlingsId1",
             tilknyttetBehandlingsId = null,
             eier = "11111111111",
-            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
+            jsonInternalSoknad = SoknadService
+                .createEmptyJsonInternalSoknad("11111111111")
+                .apply {
+                    vedlegg.vedlegg.add(
+                        JsonVedlegg()
+                            .withStatus(VedleggStatus.LastetOpp.toString())
+                    )
+                },
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
@@ -53,17 +62,23 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             behandlingsId = "behandlingsId2",
             tilknyttetBehandlingsId = null,
             eier = "11111111111",
-            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
+            jsonInternalSoknad = SoknadService
+                .createEmptyJsonInternalSoknad("11111111111")
+                .apply {
+                    vedlegg.vedlegg.add(
+                        JsonVedlegg()
+                            .withStatus(VedleggStatus.LastetOpp.toString())
+                    )
+                },
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
 
-        every { batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch() } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
+        every { batchSoknadUnderArbeidRepository.hentUtgatteSoknaderForBatch() } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
-        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
 
         scheduler.slettGamleSoknadUnderArbeid()

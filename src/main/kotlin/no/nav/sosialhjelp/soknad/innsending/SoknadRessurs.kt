@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadRessurs(
     private val soknadService: SoknadService,
-    private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,

@@ -58,16 +58,6 @@ class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
-        // TODO Returnerer alltid false
-        if (isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
-            error("Ettersendelse på søknad sendt via SvarUt - skal aldri forekomme")
-        }
-
-        // TODO Returnerer alltid false
-        if (soknadUnderArbeid.erEttersendelse) {
-            error("Ettersendelse - skal aldri forekomme")
-        }
-
         log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
@@ -97,14 +87,9 @@ class SoknadActions(
 
         addHendelseTypeAndHendelseReferanse(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
-            isSoknad = !soknadUnderArbeid.erEttersendelse
+            isSoknad = true
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-    }
-
-    @Deprecated("SvarUt støttes ikke")
-    private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        return false
     }
 
     companion object {

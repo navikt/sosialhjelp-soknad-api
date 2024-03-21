@@ -4,9 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -31,9 +28,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Autowired
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
@@ -55,7 +49,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid?.soknadId).isNotNull
         assertThat(soknadUnderArbeid?.versjon).isEqualTo(1L)
         assertThat(soknadUnderArbeid?.behandlingsId).isEqualTo(BEHANDLINGSID)
-        assertThat(soknadUnderArbeid?.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
+        assertThat(soknadUnderArbeid?.tilknyttetBehandlingsId).isNull()
         assertThat(soknadUnderArbeid?.eier).isEqualTo(EIER)
         assertThat(soknadUnderArbeid?.jsonInternalSoknad).isNotNull
         assertThat(soknadUnderArbeid?.status).isEqualTo(SoknadUnderArbeidStatus.UNDER_ARBEID)
@@ -136,13 +130,9 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
         val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(
-            lagOpplastetVedlegg(soknadUnderArbeidId),
-            EIER
-        )
+
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {
@@ -155,17 +145,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
             sistEndretDato = SIST_ENDRET_DATO
-        )
-    }
-
-    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg(
-            eier = EIER,
-            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = soknadId,
-            filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
         )
     }
 

@@ -53,9 +53,8 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSoknadMottaker(isEttersendelse: Boolean, navEnhet: String) {
+    fun reportSoknadMottaker(navEnhet: String) {
         soknadMottakerCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
             .tag(TAG_MOTTAKER, navEnhet)
             .register(meterRegistry)
             .increment()
@@ -87,9 +86,8 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
+    fun reportAvbruttSoknad(steg: String) {
         avbruttSoknadCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
             .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()

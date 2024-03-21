@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -41,7 +40,6 @@ import java.time.LocalDateTime
 internal class SoknadRessursTest {
 
     private val soknadService: SoknadService = mockk()
-    private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val systemdata: SystemdataUpdater = mockk()
@@ -50,7 +48,6 @@ internal class SoknadRessursTest {
 
     private val ressurs = SoknadRessurs(
         soknadService,
-        ettersendingService,
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
         systemdata,
@@ -111,37 +108,6 @@ internal class SoknadRessursTest {
         ressurs.opprettSoknad(null, response, "")
 
         verify(exactly = 1) { soknadService.startSoknad() }
-    }
-
-    @Test
-    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
-    fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
-        val response: HttpServletResponse = mockk()
-        every { response.addCookie(any()) } just runs
-        every {
-            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(any(), any())
-        } returns null
-        every { ettersendingService.startEttersendelse(any()) } returns "ettersendtId"
-
-        ressurs.opprettSoknad(BEHANDLINGSID, response, "")
-
-        verify(exactly = 1) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
-    }
-
-    @Test
-    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
-    fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
-        val response: HttpServletResponse = mockk()
-        every { response.addCookie(any()) } just runs
-        every {
-            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, any())
-        } returns createSoknadUnderArbeid(EIER)
-
-        ressurs.opprettSoknad(BEHANDLINGSID, response, "")
-
-        verify(exactly = 0) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
     }
 
     @Test

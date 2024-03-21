@@ -73,10 +73,10 @@ class DigisosApiService(
             throw e
         }
 
-        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
         prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
         return digisosId
