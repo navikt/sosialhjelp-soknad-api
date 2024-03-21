@@ -16,6 +16,9 @@ object Constants {
     const val HEADER_INTEGRASJON_ID = "IntegrasjonId"
     const val HEADER_INTEGRASJON_PASSORD = "IntegrasjonPassord"
 
+    const val HEADER_BEHANDLINGSNUMMER = "behandlingsnummer"
+    const val BEHANDLINGSNUMMER_SOKNAD = "B484"
+
     const val TEMA_KOM = "KOM"
 
     const val BEARER = "Bearer "
