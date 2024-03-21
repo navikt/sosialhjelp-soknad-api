@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.adresseforslag
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
-import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import org.slf4j.LoggerFactory.getLogger
@@ -23,12 +22,15 @@ class AdresseforslagClient(
     private val azureadService: AzureadService,
 ) {
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(baseurl).defaultHeader(AUTHORIZATION, BEARER + azureAdToken()).build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(baseurl).build()
     internal val graphQlClient = HttpGraphQlClient.builder(webClient).build()
 
     @CircuitBreaker(name = "adresseforslag")
     fun getAdresseforslag(fritekst: String): Mono<AdresseCompletionResult> =
-        graphQlClient.documentName("forslagAdresse")
+        graphQlClient.mutate()
+            .header(AUTHORIZATION, "Bearer ${azureAdToken()}")
+            .build()
+            .documentName("forslagAdresse")
             .variable("fritekst", fritekst)
             .retrieve("forslagAdresse")
             .toEntity(AdresseCompletionResult::class.java)
