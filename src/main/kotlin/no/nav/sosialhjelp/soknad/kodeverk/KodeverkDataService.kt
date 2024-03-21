@@ -17,8 +17,8 @@ class KodeverkDataService(
         this.betydninger.map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRÅK_NORSK_BOKMÅL)?.term }.toMap()
 
     companion object {
-        val Postnummer = "postnummer"
-        val Kommuner = "kommuner"
-        val Landkoder = "landkoder"
+        val Postnummer = "Postnummer"
+        val Kommuner = "Kommuner"
+        val Landkoder = "Landkoder"
     }
 }
