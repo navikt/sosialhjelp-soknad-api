@@ -37,22 +37,7 @@ data class CompletionAdresse(
     val matrikkeladresse: MatrikkeladresseResult?
 )
 
-data class AdresseCompletionData(
-    val forslagAdresse: AdresseCompletionResult?
-)
-
 data class AdresseCompletionResult(
-    val suggestions: List<String> = emptyList(),
+    val suggestions: List<String>,
     val addressFound: CompletionAdresse?
-)
-
-data class AdresseForslagParameters(
-    val completionField: String,
-    val maxSuggestions: Int?,
-    val fieldValues: List<CompletionFieldValue>
-)
-
-data class CompletionFieldValue(
-    val fieldName: String,
-    val fieldValue: String?
 )

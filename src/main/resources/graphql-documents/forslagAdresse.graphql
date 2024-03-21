@@ -1,13 +1,13 @@
-query (
-    $completionField: String!
-    $fieldValues: [CompletionFieldValue]!
-    $maxSuggestions: Int
+query forslagAdresse (
+    $fritekst: String!
 ) {
     forslagAdresse(
         parameters: {
-            completionField: $completionField
-            fieldValues: $fieldValues
-            maxSuggestions: $maxSuggestions
+            completionField: "vegadresse.fritekst"
+            fieldValues: [
+                { fieldName: "vegadresse.fritekst", fieldValue: $fritekst },
+            ]
+            maxSuggestions: 10
         }
     ) {
         suggestions
