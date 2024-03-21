@@ -47,19 +47,22 @@ class GotenbergClient(
             .uri(baseUrl + LIBRE_OFFICE_ROUTE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$filename\"")
             .body(BodyInserters.fromMultipartData(multipartBody))
-            .exchangeToMono { evaluateClientResponse(filename, it) }
+            .exchangeToMono { evaluateClientResponse(it) }
             .block() ?: throw IllegalStateException("[$trace] Innhold i konvertert fil \"$filename\" er null.")
     }
 
-    private fun evaluateClientResponse(filename: String, response: ClientResponse): Mono<ByteArray> {
+    private fun evaluateClientResponse(response: ClientResponse): Mono<ByteArray> {
         trace = response.headers().header(GOTENBERG_TRACE_HEADER).first()
-        log.info("[$trace] Konverterer fil \"$filename\"")
+        log.info("[$trace] Konverterer fil")
 
-        return if (response.statusCode().is2xxSuccessful) { response.bodyToMono(ByteArray::class.java) } else {
+        return if (response.statusCode().is2xxSuccessful) {
+            response.bodyToMono(ByteArray::class.java)
+        } else {
             response.bodyToMono(String::class.java)
                 .flatMap { body -> Mono.error(FileConverterException(response.statusCode(), body, trace)) }
         }
     }
+
     private fun buildWebClient(): WebClient {
         return unproxiedWebClientBuilder(webClientBuilder)
             .baseUrl(baseUrl)
@@ -82,6 +85,8 @@ class GotenbergClient(
         override fun isEmpty(): Boolean = bytes.isEmpty()
         override fun getSize() = bytes.size.toLong()
         override fun getBytes() = bytes
-        override fun transferTo(dest: File) { FileUtils.writeByteArrayToFile(dest, bytes) }
+        override fun transferTo(dest: File) {
+            FileUtils.writeByteArrayToFile(dest, bytes)
+        }
     }
 }

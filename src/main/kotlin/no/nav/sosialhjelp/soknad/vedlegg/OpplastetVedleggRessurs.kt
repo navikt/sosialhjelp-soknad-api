@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -35,6 +39,17 @@ class OpplastetVedleggRessurs(
 ) {
 
     @GetMapping("/{vedleggId}/fil")
+    @Operation(operationId = "getVedleggFilSvarut", summary = "Henter et gitt vedlegg (kun SVARUT)")
+    @ApiResponse(
+        responseCode = "200", description = "Filen ble funnet og returneres",
+        content = [
+            Content(
+                mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                schema = Schema(type = "string", format = "binary")
+            )
+        ]
+    )
+    @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse,
@@ -47,10 +62,21 @@ class OpplastetVedleggRessurs(
                 val mimeType = detectMimeType(it.data)
                 ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
-            ?: ResponseEntity.noContent().build()
+            ?: ResponseEntity.notFound().build()
     }
 
     @GetMapping("/{behandlingsId}/{vedleggId}/fil")
+    @Operation(summary = "Henter et gitt vedlegg")
+    @ApiResponse(
+        responseCode = "200", description = "Filen ble funnet og returneres",
+        content = [
+            Content(
+                mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                schema = Schema(type = "string", format = "binary")
+            )
+        ]
+    )
+    @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
@@ -76,7 +102,7 @@ class OpplastetVedleggRessurs(
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.notFound().build()
     }
 
     @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])

@@ -74,7 +74,7 @@ class SoknadService(
     private val clock: Clock
 ) {
     @Transactional
-    fun startSoknad(token: String?): String {
+    fun startSoknad(): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eier)
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)

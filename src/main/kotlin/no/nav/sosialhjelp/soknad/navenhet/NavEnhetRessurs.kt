@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -26,6 +27,7 @@ class NavEnhetRessurs(
     private val adresseRessurs: AdresseRessurs
 ) {
 
+    @Deprecated("Brukes ikke")
     @GetMapping("/navEnheter")
     fun getNavEnheter(
         @PathVariable("behandlingsId") behandlingsId: String
@@ -36,7 +38,11 @@ class NavEnhetRessurs(
             ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
+
+        // TODO Ekstra logging
+        LoggerFactory.getLogger(this::class.java).info("Henter navEnhet path /navEnheter")
         val navEnhetFrontend = navEnhetService.getNavEnhet(eier, soknad, adresseValg)
+
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
@@ -61,9 +67,14 @@ class NavEnhetRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody navEnhetFrontend: NavEnhetFrontend
     ) {
+
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        // TODO Ekstra logging
+        LoggerFactory.getLogger(this::class.java).warn("Setter navEnhet - PUT path /navEnheter")
+
         adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }

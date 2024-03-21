@@ -44,7 +44,9 @@ class NavEnhetService(
             try {
                 finnNavEnhetFraGT(eier, personalia)
             } catch (e: Exception) {
-                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
+                log.warn(
+                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                )
                 finnNavEnhetFraAdresse(personalia, valg)
             }
         } else finnNavEnhetFraAdresse(personalia, valg)
@@ -68,6 +70,8 @@ class NavEnhetService(
         ident: String,
         personalia: JsonPersonalia
     ): NavEnhetFrontend? {
+        // TODO Ekstra logging
+        log.info("Finner Nav-enhet fra GT")
         val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
@@ -80,6 +84,8 @@ class NavEnhetService(
         personalia: JsonPersonalia,
         valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
+        // TODO Ekstra logging
+        log.info("Finner Nav-enhet fra adresse")
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
         val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
