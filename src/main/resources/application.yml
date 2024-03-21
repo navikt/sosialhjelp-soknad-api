@@ -27,6 +27,11 @@ spring:
     multipart:
       max-file-size: 10MB
 
+digisos:
+  cache:
+    kodeverk:
+      time-to-live: 86400 # 24 timer
+
 management:
   endpoints:
     web:
