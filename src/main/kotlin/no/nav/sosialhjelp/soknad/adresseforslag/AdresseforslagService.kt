@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
-import no.nav.sosialhjelp.soknad.pdl.forslagadresse.AdresseCompletionResult
+import no.nav.sosialhjelp.soknad.pdl.types.AdresseCompletionResult
 import org.springframework.stereotype.Component
 
 @Component

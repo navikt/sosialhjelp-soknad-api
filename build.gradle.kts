@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.versions)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.flyway)
-    alias(libs.plugins.graphql.kotlin)
+    alias(libs.plugins.dgs.codegen)
 }
 
 java {
@@ -118,9 +118,6 @@ dependencies {
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
-
-    // GraphQL client
-    implementation(libs.graphql.kotlin.spring.client)
 }
 
 group = "no.nav.sosialhjelp"
@@ -169,9 +166,18 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     }
 }
 
-graphql {
-    client {
-        schemaFile = file("src/main/resources/graphql/pdl-api-schema.graphqls")
-        packageName = "no.nav.sosialhjelp.soknad.pdl"
+tasks.withType<com.netflix.graphql.dgs.codegen.gradle.GenerateJavaTask> {
+    generateClientv2 = true
+    schemaPaths = mutableListOf("$projectDir/src/main/resources/graphql")
+    packageName = "no.nav.sosialhjelp.soknad.pdl"
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "com.graphql-java" && requested.name == "graphql-java") {
+                useVersion("20.7") // Use the version compatible with all your dependencies
+            }
+        }
     }
 }

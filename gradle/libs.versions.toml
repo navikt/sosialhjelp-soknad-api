@@ -30,6 +30,7 @@ mockk = "1.13.9"
 versions = "0.50.0"
 resilience4j = "2.2.0"
 graphql-kotlin = "7.0.2"
+dgs-codegen = "6.1.5"
 
 [libraries]
 spring-boot-starter-graphql = { module = "org.springframework.boot:spring-boot-starter-graphql", version.ref = "spring-boot" }
@@ -85,12 +86,11 @@ resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", v
 resilience4j-reactor = { module = "io.github.resilience4j:resilience4j-reactor", version.ref = "resilience4j" }
 resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
 
-graphql-kotlin-spring-client = { module = "com.expediagroup:graphql-kotlin-spring-client", version.ref = "graphql-kotlin" }
-
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
     "spring-boot-starter-jdbc",
+    "spring-boot-starter-graphql",
     "spring-boot-starter-test",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
@@ -135,4 +135,4 @@ kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref 
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.1" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway_plugin" }
-graphql-kotlin = { id = "com.expediagroup.graphql", version.ref = "graphql-kotlin" }
+dgs-codegen = { id = "com.netflix.dgs.codegen", version.ref = "dgs-codegen" }

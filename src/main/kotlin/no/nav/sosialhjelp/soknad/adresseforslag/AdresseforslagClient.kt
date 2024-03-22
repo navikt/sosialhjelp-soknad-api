@@ -1,21 +1,18 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
-import com.expediagroup.graphql.client.spring.GraphQLWebClient
-import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import com.expediagroup.graphql.client.types.GraphQLClientResponse
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
-import kotlinx.coroutines.reactor.mono
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import no.nav.sosialhjelp.soknad.pdl.ForslagAdresse
-import no.nav.sosialhjelp.soknad.pdl.forslagadresse.AdresseCompletionResult
+import no.nav.sosialhjelp.soknad.pdl.types.AdresseCompletionResult
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.graphql.client.FieldAccessException
+import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
-import no.nav.sosialhjelp.soknad.pdl.ForslagAdresse.Variables as Variables
 
 @Component
 class AdresseforslagClient(
@@ -24,24 +21,24 @@ class AdresseforslagClient(
     webClientBuilder: WebClient.Builder,
     private val azureadService: AzureadService,
 ) {
-    internal val graphClient = GraphQLWebClient(url = baseurl, builder = unproxiedWebClientBuilder(webClientBuilder))
-
-    internal fun <T : Any> executeQuery(request: GraphQLClientRequest<T>): Mono<GraphQLClientResponse<T>> =
-        mono {
-            val token = azureadService.getSystemToken(pdlScope)
-            graphClient.execute(request) { header(AUTHORIZATION, "Bearer $token") }
-        }
+    private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(baseurl).build()
+    internal val graphQlClient = HttpGraphQlClient.builder(webClient).build()
 
     @CircuitBreaker(name = "adresseforslag")
     fun getAdresseforslag(fritekst: String): Mono<AdresseCompletionResult> =
-        executeQuery(ForslagAdresse(Variables(fritekst)))
-            .flatMap {
-                if (it.errors != null) log.warn("PDL adresseForslag errors: {}", it.errors)
-                if (it.data?.forslagAdresse == null) Mono.error(Exception("adresseForslag er null"))
-                else Mono.just(it.data!!.forslagAdresse!!)
-            }.onErrorResume {
-                log.error("PDL adresseForslag feil: {}", it.message)
-                Mono.error(it)
+        graphQlClient.mutate()
+            .header(AUTHORIZATION, "Bearer ${azureAdToken()}")
+            .build()
+            .documentName("forslagAdresse")
+            .variable("fritekst", fritekst)
+            .retrieve("forslagAdresse")
+            .toEntity(AdresseCompletionResult::class.java)
+            .doOnError {
+                when {
+                    it is FieldAccessException -> log.warn("PDL adresseForslag GraphQL-feil: ${it.message}")
+                    else -> log.error("PDL adresseForslag feil: ${it.message}")
+                }
             }
 
     companion object {
