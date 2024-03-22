@@ -40,14 +40,20 @@ class ExceptionMapper(
                 log.warn("Feilet opplasting", e)
                 ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
             }
+
             is OpplastingException -> {
                 log.warn("Feilet opplasting", e)
                 ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             }
+
             is SamletVedleggStorrelseForStorException -> {
-                log.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.", e)
+                log.warn(
+                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
+                    e
+                )
                 ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             }
+
             is AuthorizationException -> {
                 log.warn("Ikke tilgang til ressurs", e)
                 return ResponseEntity
@@ -55,6 +61,7 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
             }
+
             is SoknadAlleredeSendtException -> {
                 log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
                 return ResponseEntity
@@ -62,18 +69,22 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
             }
+
             is IkkeFunnetException -> {
                 log.warn(e.message, e)
                 ResponseEntity.status(HttpStatus.NOT_FOUND)
             }
+
             is EttersendelseSendtForSentException -> {
                 log.info("REST-kall feilet: ${e.message}", e)
                 ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
+
             is TjenesteUtilgjengeligException -> {
                 log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
                 ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
+
             is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -86,6 +97,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is SendingTilKommuneErIkkeAktivertException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -98,6 +110,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is SendingTilKommuneUtilgjengeligException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -110,6 +123,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is SoknadenHarNedetidException -> {
                 log.warn(e.message, e)
                 return ResponseEntity
@@ -122,6 +136,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is PdfGenereringException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -134,6 +149,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is SoknadUnderArbeidIkkeFunnetException -> {
                 log.warn(e.message, e)
                 return ResponseEntity
@@ -146,11 +162,13 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is PdlApiException -> {
                 log.error("Kall til PDL feilet", e)
                 ResponseEntity.internalServerError()
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
+
             is DuplikatFilException -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
                 return ResponseEntity
@@ -163,6 +181,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is KonverteringTilPdfException -> {
                 log.error("Konverteringsfeil: ${e.message}", e)
                 return ResponseEntity
@@ -175,8 +194,9 @@ class ExceptionMapper(
                         )
                     )
             }
+
             is FileConverterException -> {
-                log.error("Filkonverteringsfeil: ${e.message}", e)
+                log.warn("Filkonverteringsfeil: ${e.message}", e)
 
                 return ResponseEntity
                     .status(
@@ -191,6 +211,7 @@ class ExceptionMapper(
                         )
                     )
             }
+
             else -> {
                 log.error("REST-kall feilet", e)
                 ResponseEntity.internalServerError()
@@ -209,13 +230,16 @@ class ExceptionMapper(
                         log.debug(e.message, e)
                         return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
                     }
+
                     HttpStatus.FORBIDDEN -> {
                         log.debug(e.message, e)
                         return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
                     }
+
                     HttpStatus.NOT_FOUND -> {
                         log.warn(e.message, e)
                     }
+
                     else -> {
                         log.error(e.message, e)
                     }
@@ -225,6 +249,7 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(WEB_APPLICATION_ERROR, "Noe uventet feilet"))
             }
+
             is SamtidigOppdateringException -> {
                 log.warn(e.message, e)
                 ResponseEntity
@@ -232,6 +257,7 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(WEB_APPLICATION_ERROR, "Samtidig oppdatering av søknad"))
             }
+
             else -> {
                 log.error("Noe uventet feilet: ${e.message}", e)
 

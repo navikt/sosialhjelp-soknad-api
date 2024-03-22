@@ -34,6 +34,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -93,7 +94,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
@@ -105,14 +106,15 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadService.startSoknad(any()) } returns "null"
+        every { soknadService.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 
-        verify(exactly = 1) { soknadService.startSoknad("") }
+        verify(exactly = 1) { soknadService.startSoknad() }
     }
 
     @Test
+    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
     fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
@@ -128,6 +130,7 @@ internal class SoknadRessursTest {
     }
 
     @Test
+    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
     fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
@@ -278,6 +281,7 @@ internal class SoknadRessursTest {
     }
 
     @Test
+    @Disabled("I seg selv ikke veldig god test, men heller ikke relevant")
     fun opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
