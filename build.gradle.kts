@@ -168,7 +168,8 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 tasks.withType<com.netflix.graphql.dgs.codegen.gradle.GenerateJavaTask> {
     generateClientv2 = true
-    schemaPaths = mutableListOf("$projectDir/src/main/resources/graphql")
+    language = "kotlin"
+    schemaPaths = mutableListOf("$projectDir/src/main/resources/graphql-documents")
     packageName = "no.nav.sosialhjelp.soknad.pdl"
 }
 
