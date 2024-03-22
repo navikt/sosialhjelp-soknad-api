@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
-import no.nav.sosialhjelp.soknad.adresseforslag.domain.AdresseCompletionResult
-import org.springframework.cache.annotation.Cacheable
+import no.nav.sosialhjelp.soknad.pdl.forslagadresse.AdresseCompletionResult
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,7 +12,6 @@ class AdresseforslagService(
      */
     private val MINIMUM_ADRESS_SEARCH_LENGTH = 3
 
-    @Cacheable("adresseforslag")
     fun find(substring: String): AdresseCompletionResult? = when {
         (substring.length <= MINIMUM_ADRESS_SEARCH_LENGTH) -> null
         else -> adresseforslagClient.getAdresseforslag(substring).block()

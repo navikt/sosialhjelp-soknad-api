@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.versions)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.flyway)
+    alias(libs.plugins.graphql.kotlin)
 }
 
 java {
@@ -20,6 +21,7 @@ java {
 
 ktlint {
     this.version.set(libs.versions.ktlint)
+    filter { exclude { it.file.toString().contains("build/generated") } }
 }
 
 flyway {
@@ -116,6 +118,9 @@ dependencies {
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
+
+    // GraphQL client
+    implementation(libs.graphql.kotlin.spring.client)
 }
 
 group = "no.nav.sosialhjelp"
@@ -161,5 +166,12 @@ fun String.isNonStable(): Boolean {
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
     rejectVersionIf {
         candidate.version.isNonStable() && !currentVersion.isNonStable()
+    }
+}
+
+graphql {
+    client {
+        schemaFile = file("src/main/resources/graphql-documents/pdl-api-schema.graphqls")
+        packageName = "no.nav.sosialhjelp.soknad.pdl"
     }
 }
