@@ -177,7 +177,7 @@ configurations.all {
     resolutionStrategy {
         eachDependency {
             if (requested.group == "com.graphql-java" && requested.name == "graphql-java") {
-                useVersion("20.7") // Use the version compatible with all your dependencies
+                useVersion("20.7") // For at spring-boot og DGS Codegen skal være enige
             }
         }
     }
