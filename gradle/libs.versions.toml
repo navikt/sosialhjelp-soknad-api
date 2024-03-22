@@ -29,7 +29,6 @@ ktlint = "0.45.2"
 mockk = "1.13.9"
 versions = "0.50.0"
 resilience4j = "2.2.0"
-graphql-kotlin = "7.0.2"
 dgs-codegen = "6.1.5"
 
 [libraries]
