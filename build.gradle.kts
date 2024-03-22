@@ -171,7 +171,7 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 graphql {
     client {
-        schemaFile = file("src/main/resources/graphql-documents/pdl-api-schema.graphqls")
+        schemaFile = file("src/main/resources/graphql/pdl-api-schema.graphqls")
         packageName = "no.nav.sosialhjelp.soknad.pdl"
     }
 }

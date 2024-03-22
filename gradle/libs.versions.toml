@@ -90,7 +90,6 @@ graphql-kotlin-spring-client = { module = "com.expediagroup:graphql-kotlin-sprin
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
-    "spring-boot-starter-graphql",
     "spring-boot-starter-jdbc",
     "spring-boot-starter-test",
     "spring-boot-starter-validation",
