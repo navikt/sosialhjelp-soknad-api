@@ -12,5 +12,7 @@ class CacheMetricsConfig(
     val cacheManager: CacheManager
 ) {
     @EventListener(ApplicationStartedEvent::class)
-    fun addCachesToMetrics() = cacheMetricsRegistrar.bindCacheToRegistry(cacheManager.getCache("kodeverk"))
+    fun addCachesToMetrics() = cacheManager.cacheNames.forEach {
+        cacheMetricsRegistrar.bindCacheToRegistry(cacheManager.getCache(it))
+    }
 }
