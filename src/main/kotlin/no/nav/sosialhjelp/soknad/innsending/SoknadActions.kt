@@ -3,20 +3,17 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
@@ -61,15 +58,14 @@ class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
+        // TODO Returnerer alltid false
         if (isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
-            log.info("BehandlingsId $behandlingsId sendes til SvarUt.")
-            soknadService.sendSoknad(behandlingsId)
-            return SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
+            error("Ettersendelse på søknad sendt via SvarUt - skal aldri forekomme")
         }
 
+        // TODO Returnerer alltid false
         if (soknadUnderArbeid.erEttersendelse) {
-            log.error("Ettersendelse $behandlingsId blir forsøkt sendt med soknad-api selv om den tiknyttede søknaden ble sendt til Fiks-Digisos-api. Dette skal ikke skje, disse skal sendes via innsyn-api.")
-            throw IllegalStateException("Ettersendelse på søknad sendt via fiks-digisos-api skal sendes via innsyn-api")
+            error("Ettersendelse - skal aldri forekomme")
         }
 
         log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
@@ -79,27 +75,16 @@ class SoknadActions(
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
         return when (kommuneStatus) {
-            KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
+            FIKS_NEDETID_OG_TOM_CACHE ->
                 throw SendingTilKommuneUtilgjengeligException("Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
-            }
-
-            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> {
-                if (!KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)) {
-                    throw SendingTilKommuneErIkkeAktivertException("Sending til kommune $kommunenummer er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner")
-                }
-                log.info("BehandlingsId $behandlingsId sendes til SvarUt (sfa. Fiks-konfigurasjon).")
-                soknadService.sendSoknad(behandlingsId)
-                SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
-            }
-
+            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT ->
+                throw SendingTilKommuneUtilgjengeligException("Manglende eller feil konfigurasjon. (SvarUt)")
+            SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER ->
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
                 SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
-            }
-
-            SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
             }
         }
     }
@@ -117,10 +102,9 @@ class SoknadActions(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
+    @Deprecated("SvarUt støttes ikke")
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        if (!soknadUnderArbeid.erEttersendelse) return false
-        val soknadensMetadata = soknadMetadataRepository.hent(soknadUnderArbeid.tilknyttetBehandlingsId)
-        return soknadensMetadata != null && soknadensMetadata.status != SENDT_MED_DIGISOS_API
+        return false
     }
 
     companion object {

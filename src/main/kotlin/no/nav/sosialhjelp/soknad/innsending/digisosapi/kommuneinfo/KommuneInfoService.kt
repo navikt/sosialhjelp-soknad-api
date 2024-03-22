@@ -79,7 +79,18 @@ class KommuneInfoService(
         val kommuneInfoMap = hentAlleKommuneInfo()
         val kommuneInfo = hentFraCacheEllerServer(kommunenummer)
         if (withLogging) {
-            log.info("Kommuneinfo for $kommunenummer: $kommuneInfo")
+            kommuneInfo?.let {
+                log.info(
+                    "Kommuneinfo for $kommunenummer: " +
+                        ", kanMottaSoknader: ${it.kanMottaSoknader} " +
+                        ", kanOppdatereStatus: ${it.kanOppdatereStatus} " +
+                        ", harMidlertidigDeaktivertMottak: ${it.harMidlertidigDeaktivertMottak} " +
+                        ", harMidlertidigDeaktivertOppdateringer: ${it.harMidlertidigDeaktivertOppdateringer}  " +
+                        ", behandlingsansvarlig: ${it.behandlingsansvarlig} " +
+                        ", harNksTilgang: ${it.harNksTilgang} " +
+                        ", kommunenummer: ${it.kommunenummer} "
+                )
+            }
         }
         return when {
             kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE

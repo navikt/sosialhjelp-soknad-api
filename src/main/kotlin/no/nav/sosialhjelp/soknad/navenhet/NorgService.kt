@@ -35,6 +35,8 @@ class NorgService(
         if (skalBrukeCache(gt)) {
             val cached = hentFraCache(gt)
             if (cached != null) {
+                // TODO Ekstra logging
+                log.info("Bruker norg-enhet fra cache: $cached")
                 return cached
             }
         }
@@ -55,6 +57,8 @@ class NorgService(
         try {
             val navEnhetDto = norgClient.hentNavEnhetForGeografiskTilknytning(gt)
             if (navEnhetDto != null) {
+                // TODO Ekstra logging
+                log.info("Bruker NavEnhet fra Norg: $navEnhetDto")
                 return navEnhetDto
             }
         } catch (e: TjenesteUtilgjengeligException) {

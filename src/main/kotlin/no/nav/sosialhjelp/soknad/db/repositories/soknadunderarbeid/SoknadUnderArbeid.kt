@@ -14,7 +14,8 @@ data class SoknadUnderArbeid(
     var opprettetDato: LocalDateTime,
     var sistEndretDato: LocalDateTime
 ) {
-    val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
+    @Deprecated("SvarUt og denne type ettersendelse støttes ikke lenger")
+    val erEttersendelse: Boolean get() = false
 }
 
 enum class SoknadUnderArbeidStatus {
