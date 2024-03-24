@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
-import no.nav.sosialhjelp.soknad.pdl.types.AdresseCompletionResult
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,8 +11,8 @@ class AdresseforslagService(
      */
     private val MINIMUM_ADRESS_SEARCH_LENGTH = 3
 
-    fun find(substring: String): AdresseCompletionResult? = when {
-        (substring.length <= MINIMUM_ADRESS_SEARCH_LENGTH) -> null
-        else -> adresseforslagClient.getAdresseforslag(substring).block()
+    fun search(fritekst: String): AdresseforslagResponse? = when {
+        (fritekst.length <= MINIMUM_ADRESS_SEARCH_LENGTH) -> null
+        else -> adresseforslagClient.getAdresseforslag(fritekst).block()
     }
 }

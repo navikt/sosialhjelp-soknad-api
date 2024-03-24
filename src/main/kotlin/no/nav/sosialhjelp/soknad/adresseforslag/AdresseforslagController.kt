@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.pdl.types.AdresseCompletionResult
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController
 class AdresseforslagController(private val adresseforslagService: AdresseforslagService) {
     @GetMapping()
     fun adresseForslag(
-        @RequestParam("sokestreng") sokestreng: String
-    ): AdresseCompletionResult? = adresseforslagService.find(sokestreng)
+        @RequestParam("fritekst") fritekst: String
+    ): AdresseforslagResponse? = adresseforslagService.search(fritekst)
 }

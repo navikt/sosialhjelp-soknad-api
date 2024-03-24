@@ -1,10 +1,12 @@
 package no.nav.sosialhjelp.soknad.adresseforslag
 
+import com.netflix.graphql.dgs.client.codegen.GraphQLQueryRequest
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import no.nav.sosialhjelp.soknad.pdl.types.AdresseCompletionResult
+import no.nav.sosialhjelp.soknad.pdl.client.ForslagAdresseGraphQLQuery
+import no.nav.sosialhjelp.soknad.pdl.client.ForslagAdresseProjectionRoot
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.graphql.client.FieldAccessException
@@ -23,17 +25,17 @@ class AdresseforslagClient(
 ) {
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(baseurl).build()
-    internal val graphQlClient = HttpGraphQlClient.builder(webClient).build()
+    private fun getGraphQlClient() = HttpGraphQlClient.builder(webClient).header(AUTHORIZATION, "Bearer ${azureAdToken()}").build()
 
     @CircuitBreaker(name = "adresseforslag")
-    fun getAdresseforslag(fritekst: String): Mono<AdresseCompletionResult> =
-        graphQlClient.mutate()
-            .header(AUTHORIZATION, "Bearer ${azureAdToken()}")
-            .build()
-            .documentName("forslagAdresse")
+    fun getAdresseforslag(fritekst: String): Mono<AdresseforslagResponse> =
+        getGraphQlClient()
+            // Flyten her blir litt penere i spring-graphql 1.3.0.
+            // se https://github.com/spring-projects/spring-graphql/issues/846
+            .document(adresseforslagRequest)
             .variable("fritekst", fritekst)
-            .retrieve("forslagAdresse")
-            .toEntity(AdresseCompletionResult::class.java)
+            .retrieve(adresseforslagQuery.getOperationName())
+            .toEntity(AdresseforslagResponse::class.java)
             .doOnError {
                 when {
                     it is FieldAccessException -> log.warn("PDL adresseForslag GraphQL-feil: ${it.message}")
@@ -42,6 +44,12 @@ class AdresseforslagClient(
             }
 
     companion object {
+        private val adresseforslagQuery = ForslagAdresseGraphQLQuery()
+        private val adresseforslagRequest = GraphQLQueryRequest(
+            adresseforslagQuery,
+            ForslagAdresseProjectionRoot<Nothing, Nothing>().suggestions().addressFound()
+        ).serialize()
+
         private val log = getLogger(AdresseforslagClient::class.java)
     }
 }
