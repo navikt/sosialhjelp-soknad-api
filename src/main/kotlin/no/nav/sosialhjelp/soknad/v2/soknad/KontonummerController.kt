@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-// @ProtectionSelvbetjeningHigh
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/personalia/kontonummer")
 class KontonummerController(
     private val eierService: EierService

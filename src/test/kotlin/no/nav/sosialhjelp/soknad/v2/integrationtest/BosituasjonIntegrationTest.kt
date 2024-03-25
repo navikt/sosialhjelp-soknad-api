@@ -43,7 +43,8 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/${soknad.id}/bosituasjon",
             bosituasjonInput,
-            BosituasjonDto::class.java
+            BosituasjonDto::class.java,
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
@@ -60,7 +61,8 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/bosituasjon",
             BosituasjonDto(),
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
+            soknad.id,
         )
     }
 
@@ -71,7 +73,8 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/${soknad.id}/bosituasjon",
             BosituasjonDto(antallPersoner = 3),
-            BosituasjonDto::class.java
+            BosituasjonDto::class.java,
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {

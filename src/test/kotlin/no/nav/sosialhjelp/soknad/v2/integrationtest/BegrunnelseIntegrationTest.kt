@@ -34,7 +34,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
             inputBegrunnelse,
-            BegrunnelseDto::class.java
+            BegrunnelseDto::class.java,
+            soknad.id
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
@@ -56,7 +57,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
             inputBegrunnelse,
-            BegrunnelseDto::class.java
+            BegrunnelseDto::class.java,
+            soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {

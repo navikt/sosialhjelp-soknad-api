@@ -55,7 +55,8 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
-            responseBodyClass = AdresserDto::class.java
+            responseBodyClass = AdresserDto::class.java,
+            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {

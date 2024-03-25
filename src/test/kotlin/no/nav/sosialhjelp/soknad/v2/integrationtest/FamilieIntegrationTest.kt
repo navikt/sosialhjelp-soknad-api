@@ -58,7 +58,8 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
-            Unit::class.java
+            Unit::class.java,
+            storedSoknad.id,
         )
 
         familieRepository.findById(
@@ -90,7 +91,8 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
             forsorgerInput,
-            Unit::class.java
+            Unit::class.java,
+            storedSoknad.id,
         )
 
         familieRepository.findById(

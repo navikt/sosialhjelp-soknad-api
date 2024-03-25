@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie.sivilstatus
 
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleDto
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SivilstandController(private val familieService: FamilieService) {
     @GetMapping

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import org.springframework.http.MediaType
@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-@Unprotected
-// @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/personalia/basisPersonalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BasisPersonaliaController(
     private val eierService: EierService
