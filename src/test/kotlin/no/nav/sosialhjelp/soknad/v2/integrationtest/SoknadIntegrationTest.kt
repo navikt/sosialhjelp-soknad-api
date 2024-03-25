@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
+import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
@@ -32,7 +33,8 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             .delete()
             .uri("/soknad/$lagretSoknadId")
             .accept(MediaType.APPLICATION_JSON)
-//            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token.serialize())
+            .header("Authorization", "BEARER ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(lagretSoknadId.toString(), id = token.jwtClaimsSet.subject))
             .exchange()
             .expectStatus().isNoContent
 
@@ -42,11 +44,13 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Slette soknad som ikke finnes skal gi 404`() {
 
+        val randomUUID = UUID.randomUUID()
         webTestClient
             .delete()
-            .uri("/soknad/${UUID.randomUUID()}")
+            .uri("/soknad/$randomUUID")
             .accept(MediaType.APPLICATION_JSON)
-//            .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token.serialize())
+            .header("Authorization", "BEARER ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(randomUUID.toString(), id = token.jwtClaimsSet.subject))
             .exchange()
             .expectStatus().isNotFound
             .expectBody(Feilmelding::class.java)

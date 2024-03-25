@@ -41,7 +41,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             input,
-            KontoInformasjonDto::class.java
+            KontoInformasjonDto::class.java,
+            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
@@ -58,7 +59,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             HarIkkeKontoInput(true),
-            KontoInformasjonDto::class.java
+            KontoInformasjonDto::class.java,
+            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {

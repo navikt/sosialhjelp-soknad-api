@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.familie
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
+import kotlin.jvm.optionals.getOrDefault
 
 @Component
 class FamilieService(private val familieRepository: FamilieRepository) {
@@ -38,17 +38,17 @@ class FamilieService(private val familieRepository: FamilieRepository) {
     }
 
     fun updateSivilstand(soknadId: UUID, sivilstatus: Sivilstatus?, ektefelle: Ektefelle?): Familie {
-        return familieRepository.findById(soknadId).getOrNull()?.also {
+        return familieRepository.findById(soknadId).getOrDefault(Familie(soknadId)).also {
             if (it.sivilstatus == Sivilstatus.GIFT && it.ektefelle?.kildeErSystem == true) {
                 error("Kan ikke oppdatere ektefelle når ektefelle er innhentet fra folkeregisteret")
             }
-        }?.let { familie ->
+        }.let { familie ->
             val updated = familie.copy(
                 sivilstatus = sivilstatus,
                 ektefelle = ektefelle
             )
             familieRepository.save(updated)
-        } ?: error("Fant ingen familie å oppdatere") // TODO ikke sikkert det finnes på dette tidspunktet
+        }
     }
 }
 

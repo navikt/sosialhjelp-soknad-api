@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt
 
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.BarnDto
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ForsorgerpliktController(private val familieService: FamilieService) {
 

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-// @ProtectionSelvbetjeningHigh
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArbeidController(
     private val livssituasjonService: LivssituasjonService,

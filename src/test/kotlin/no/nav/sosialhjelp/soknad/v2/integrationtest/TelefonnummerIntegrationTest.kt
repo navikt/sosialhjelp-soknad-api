@@ -39,7 +39,8 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
-            TelefonnummerDto::class.java
+            TelefonnummerDto::class.java,
+            soknad.id,
         ).also {
             assertThat(it.telefonnummerBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
@@ -56,7 +57,8 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
         doPutExpectError(
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerInput("asb23231"),
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
+            soknad.id,
         )
     }
 }
