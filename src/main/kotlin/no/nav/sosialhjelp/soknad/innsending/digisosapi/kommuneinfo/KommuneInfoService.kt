@@ -81,15 +81,15 @@ class KommuneInfoService(
             kommuneInfo?.let {
                 log.info(
                     "Kommuneinfo for $kommunenummer: " +
-                        ", kanMottaSoknader: ${it.kanMottaSoknader} " +
-                        ", kanOppdatereStatus: ${it.kanOppdatereStatus} " +
-                        ", harMidlertidigDeaktivertMottak: ${it.harMidlertidigDeaktivertMottak} " +
-                        ", harMidlertidigDeaktivertOppdateringer: ${it.harMidlertidigDeaktivertOppdateringer}  " +
-                        ", behandlingsansvarlig: ${it.behandlingsansvarlig} " +
-                        ", harNksTilgang: ${it.harNksTilgang} " +
-                        ", kommunenummer: ${it.kommunenummer} "
+                            ", kanMottaSoknader: ${it.kanMottaSoknader} " +
+                            ", kanOppdatereStatus: ${it.kanOppdatereStatus} " +
+                            ", harMidlertidigDeaktivertMottak: ${it.harMidlertidigDeaktivertMottak} " +
+                            ", harMidlertidigDeaktivertOppdateringer: ${it.harMidlertidigDeaktivertOppdateringer}  " +
+                            ", behandlingsansvarlig: ${it.behandlingsansvarlig} " +
+                            ", harNksTilgang: ${it.harNksTilgang} " +
+                            ", kommunenummer: ${it.kommunenummer} "
                 )
-            }
+            } ?: log.error("Kommune: $kommunenummer mangler konfigurasjon.")
         }
         return when {
             kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
