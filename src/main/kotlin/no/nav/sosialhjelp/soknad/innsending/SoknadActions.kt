@@ -59,6 +59,7 @@ class SoknadActions(
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
 
+        // TODO Hvis kommunen ikke har konfigurasjon eller ikke kan motta søknader, bør dette sjekkes opp før bruker starter
         val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
