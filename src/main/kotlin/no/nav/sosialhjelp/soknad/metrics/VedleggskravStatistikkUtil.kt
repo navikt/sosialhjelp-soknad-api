@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 
@@ -14,19 +13,15 @@ object VedleggskravStatistikkUtil {
     private val mapper = jacksonObjectMapper()
 
     fun genererOgLoggVedleggskravStatistikk(
-        soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
     ) {
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeid, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
     }
 
     fun genererVedleggskravStatistikk(
-        soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
     ): VedleggskravStatistikk {
-        val isEttersendelse = soknadUnderArbeid.erEttersendelse
-
         var antallInnsendt = 0
         var antallLevertTidligere = 0
         var antallIkkeLevert = 0
@@ -44,7 +39,7 @@ object VedleggskravStatistikkUtil {
         }
 
         return VedleggskravStatistikk(
-            sendetype = if (isEttersendelse) "ettersendelse" else "soknad",
+            sendetype = "soknad",
             totaltAntall = totaltAntall,
             antallInnsendt = antallInnsendt,
             antallLevertTidligere = antallLevertTidligere,

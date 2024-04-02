@@ -16,7 +16,7 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
             soknadId = rs.getLong("soknad_under_arbeid_id"),
             versjon = rs.getLong("versjon"),
             behandlingsId = rs.getString("behandlingsid"),
-            tilknyttetBehandlingsId = rs.getString("tilknyttetbehandlingsid"),
+            tilknyttetBehandlingsId = null,
             eier = rs.getString("eier"),
             jsonInternalSoknad = mapDataToJsonInternalSoknad(rs.getBytes("data")),
             status = SoknadUnderArbeidStatus.valueOf(rs.getString("status")),

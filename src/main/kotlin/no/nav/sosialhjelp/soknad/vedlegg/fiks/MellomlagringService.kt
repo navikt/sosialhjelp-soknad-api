@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
@@ -123,26 +122,18 @@ class MellomlagringService(
 
     fun deleteAllVedlegg(behandlingsId: String) {
         val navEksternId = getNavEksternId(behandlingsId)
-        val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-        if (mellomlagredeVedlegg.isNullOrEmpty()) {
-            log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
-        } else {
-            mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
-        }
+
+        mellomlagringClient.getMellomlagredeVedlegg(navEksternId)
+            ?.let {
+                when (it.mellomlagringMetadataList.isNullOrEmpty()) {
+                    true -> log.error("Ingen mellomlagrede vedlegg funnet sletting vedlegg: $behandlingsId")
+                    false -> mellomlagringClient.deleteAllVedlegg(navEksternId)
+                }
+            }
     }
 
     private fun getNavEksternId(behandlingsId: String) =
         if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-
-    fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        val kanSoknadSendesMedDigisosApi = try {
-            soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid.behandlingsId)
-        } catch (e: Exception) {
-            false
-        }
-        return kanSoknadSendesMedDigisosApi
-    }
 
     companion object {
         private val log by logger()

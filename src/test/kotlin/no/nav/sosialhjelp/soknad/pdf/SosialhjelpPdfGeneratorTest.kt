@@ -19,9 +19,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
@@ -53,29 +50,6 @@ internal class SosialhjelpPdfGeneratorTest {
         val pdfUtils = PdfUtils(navMessageSource)
 
         sosialhjelpPdfGenerator = SosialhjelpPdfGenerator(navMessageSource, textHelpers, pdfUtils)
-    }
-
-    @Test
-    fun generateEttersendelsePdfWithValidJson() {
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-
-        val vedleggSpesifikasjon = JsonVedleggSpesifikasjon()
-            .withVedlegg(
-                mutableListOf(
-                    JsonVedlegg()
-                        .withStatus("LastetOpp")
-                        .withType("annet")
-                        .withTilleggsinfo("annet")
-                        .withFiler(
-                            mutableListOf(
-                                JsonFiler().withFilnavn("Fil1.pdf")
-                            )
-                        )
-                )
-            )
-        internalSoknad.vedlegg = vedleggSpesifikasjon
-
-        sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234")
     }
 
     @Test
@@ -202,25 +176,6 @@ internal class SosialhjelpPdfGeneratorTest {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
 
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
-        val file = File("pdfaTest.pdf")
-
-        FileUtils.writeByteArrayToFile(file, bytes)
-
-        try {
-            val validationResult = PreflightParser.validate(file)
-            assertThat(validationResult.isValid).isTrue
-        } catch (e: SyntaxValidationException) {
-            fail<Any>("Exception when checking validity of pdf/a. ", e)
-        } finally {
-            file.deleteOnExit()
-        }
-    }
-
-    @Test
-    fun skalGenerereEttersendelsePdfA() {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
-
-        val bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(jsonInternalSoknad, "pdfaTest")
         val file = File("pdfaTest.pdf")
 
         FileUtils.writeByteArrayToFile(file, bytes)

@@ -52,20 +52,6 @@ class NavEnhetService(
         } else finnNavEnhetFraAdresse(personalia, valg)
     }
 
-    fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
-        val kommunenummer = soknadsmottaker.kommunenummer
-        return NavEnhetFrontend(
-            enhetsnr = soknadsmottaker.enhetsnummer,
-            enhetsnavn = getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
-            kommunenavn = getKommunenavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
-            kommuneNr = kommunenummer,
-            isMottakDeaktivert = !isDigisosKommune(kommunenummer),
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
-            orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
-            valgt = true
-        )
-    }
-
     private fun finnNavEnhetFraGT(
         ident: String,
         personalia: JsonPersonalia
@@ -121,18 +107,16 @@ class NavEnhetService(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-        val isDigisosKommune = isDigisosKommune(kommunenummer)
-        val sosialOrgnr = navEnhet.sosialOrgNr.takeIf { isDigisosKommune }
-        val enhetNr = navEnhet.enhetNr.takeIf { isDigisosKommune }
+
+        val enhetNr = navEnhet.enhetNr
         val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
         return NavEnhetFrontend(
             enhetsnr = enhetNr,
             enhetsnavn = navEnhet.navn,
             kommunenavn = kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn),
-            orgnr = sosialOrgnr,
             valgt = enhetNr != null,
             kommuneNr = kommunenummer,
-            isMottakDeaktivert = !isDigisosKommune,
+            isMottakDeaktivert = false,
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
         )
     }
@@ -154,17 +138,11 @@ class NavEnhetService(
         }
     }
 
-    private fun isDigisosKommune(kommunenummer: String): Boolean {
-        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer)
-        val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
-        return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
-    }
-
     private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? {
+        // TODO - Spesialtilfelle
         return if (BydelFordelingService.BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
             bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
-            // flere special cases her?
             adresseForslag.geografiskTilknytning
         }
     }

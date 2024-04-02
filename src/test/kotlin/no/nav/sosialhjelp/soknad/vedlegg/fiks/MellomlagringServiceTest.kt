@@ -15,7 +15,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -177,8 +176,8 @@ internal class MellomlagringServiceTest {
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType("hei|på deg").type)
-                            .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
+                            .withType("hei")
+                            .withTilleggsinfo("på deg")
                             .withStatus("VedleggKreves")
                     )
                 )

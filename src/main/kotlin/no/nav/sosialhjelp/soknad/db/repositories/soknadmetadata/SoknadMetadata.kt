@@ -22,7 +22,9 @@ data class SoknadMetadata(
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false
 ) {
-    val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
+    init {
+        tilknyttetBehandlingsId = null
+    }
 }
 
 @XmlRootElement
@@ -44,7 +46,7 @@ data class VedleggMetadata(
 )
 
 enum class SoknadMetadataType {
-    SEND_SOKNAD_KOMMUNAL, SEND_SOKNAD_KOMMUNAL_ETTERSENDING
+    SEND_SOKNAD_KOMMUNAL
 }
 
 enum class SoknadMetadataInnsendingStatus {

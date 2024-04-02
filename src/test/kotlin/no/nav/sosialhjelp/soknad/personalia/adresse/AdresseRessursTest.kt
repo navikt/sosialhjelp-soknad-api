@@ -160,10 +160,6 @@ internal class AdresseRessursTest {
         assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
         val navEnhetFrontend = navEnheter.first()
-        val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
-        assertThat(mottaker).isNotNull
-        assertThat(mottaker?.navEnhetsnavn).contains(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn)
-        assertThat(mottaker?.organisasjonsnummer).isEqualTo(navEnhetFrontend.orgnr)
 
         val soknadsmottaker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker
         val kombinertnavn = soknadsmottaker.navEnhetsnavn

@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
@@ -77,15 +76,13 @@ internal class VedleggUtilsTest {
     @Test
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
 
-        val vedleggType = OpplastetVedleggType("hei|på deg")
-
         val soknadUnderArbeid = createSoknadUnderArbeid(
             JsonInternalSoknad().withVedlegg(
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(vedleggType.type)
-                            .withTilleggsinfo(vedleggType.tilleggsinfo)
+                            .withType("hei")
+                            .withTilleggsinfo("på deg")
                             .withStatus("VedleggKreves")
                     )
                 )

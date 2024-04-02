@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet.dto
 
 data class NavEnhetFrontend(
-    val orgnr: String?,
+    val orgnr: String? = null,
     val enhetsnr: String?,
     val enhetsnavn: String,
     val kommunenavn: String?,

@@ -45,20 +45,21 @@ class SlettSoknadUnderArbeidScheduler(
     }
 
     private fun slett() {
-        val soknadUnderArbeidIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
-        soknadUnderArbeidIdList.forEach { soknadUnderArbeidId ->
-            if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
-                return
-            }
-            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
-                    mellomlagringService.deleteAllVedlegg(it.behandlingsId)
+        batchSoknadUnderArbeidRepository.hentUtgatteSoknaderForBatch()
+            .forEach { id ->
+                if (harGaattForLangTid()) {
+                    logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
+                    return
                 }
+
+                batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(id)?.let {
+                    if (it.hasMellomlagredeVedlegg()) {
+                        mellomlagringService.deleteAllVedlegg(it.behandlingsId)
+                    }
+                }
+                batchSoknadUnderArbeidRepository.slettSoknad(id)
+                vellykket++
             }
-            batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
-            vellykket++
-        }
     }
 
     private fun harGaattForLangTid(): Boolean {

@@ -28,10 +28,9 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SOKNADER_VIA_DIGISOS_API
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -51,11 +50,9 @@ internal class SoknadActionsTest {
     private val nedetidService: NedetidService = mockk()
 
     private val actions = SoknadActions(
-        soknadService,
         kommuneInfoService,
         tilgangskontroll,
         soknadUnderArbeidRepository,
-        soknadMetadataRepository,
         digisosApiService,
         nedetidService
     )
@@ -94,69 +91,10 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
-        val behandlingsId = "ettersendelsePaaSvarUtSoknad"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        val soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "behandlingsId",
-            fnr = EIER,
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-        every { soknadService.sendSoknad(behandlingsId) } just runs
-
-        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
-            .isInstanceOf(IllegalStateException::class.java)
-    }
-
-    @Test
-    fun sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
-        val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
-    }
-
-    @Test
-    fun sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
-        val behandlingsId = "ettersendelsePaaDigisosApiSoknad"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        val soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "behandlingsId",
-            fnr = EIER,
-            status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
-    }
-
-    @Test
     fun sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         val behandlingsId = "fiksNedetidOgTomCache"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns FIKS_NEDETID_OG_TOM_CACHE
@@ -171,25 +109,10 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
         val behandlingsId = "kommuneUtenKonfigurasjon"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
-        every { soknadService.sendSoknad(any()) } just runs
-
-        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
-            .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
-    }
-
-    @Test
-    fun sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
-        val behandlingsId = "kommuneMedSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        every { soknadService.sendSoknad(any()) } just runs
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
             .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
@@ -202,7 +125,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SOKNADER_VIA_DIGISOS_API
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
 
         actions.sendSoknad(behandlingsId, token)
@@ -217,24 +140,9 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
-
-        verify { digisosApiService wasNot called }
-    }
-
-    @Test
-    fun sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
-        val behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-
-        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
         verify { digisosApiService wasNot called }
@@ -255,7 +163,7 @@ internal class SoknadActionsTest {
     companion object {
         private lateinit var EIER: String
 
-        private const val KOMMUNE_I_SVARUT_LISTEN = "0301"
+        private const val KOMMUNE = "0301"
 
         private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
             return SoknadUnderArbeid(

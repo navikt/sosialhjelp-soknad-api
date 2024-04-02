@@ -29,5 +29,3 @@ class SoknadUnderArbeidIkkeFunnetException(message: String?) : SosialhjelpSoknad
 class AuthorizationException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class SoknadAlleredeSendtException(message: String?) : SosialhjelpSoknadApiException(message)
-
-class EttersendelseSendtForSentException(message: String?) : SosialhjelpSoknadApiException(message)

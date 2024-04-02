@@ -93,15 +93,6 @@ class SoknadMetadataRepositoryJdbc(
         }
     }
 
-    override fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
-            soknadMetadataRowMapper,
-            fnr,
-            SoknadMetadataInnsendingStatus.FERDIG.name
-        )
-    }
-
     override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
         return jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",

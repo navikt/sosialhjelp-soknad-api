@@ -2,9 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -28,9 +25,6 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Autowired
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @Autowired
     private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
 
     @AfterEach
@@ -45,7 +39,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
         val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
-        val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        val soknader = batchSoknadUnderArbeidRepository.hentUtgatteSoknaderForBatch()
         assertThat(soknader).hasSize(1)
         assertThat(soknader[0]).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
     }
@@ -55,10 +49,8 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
         val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
         batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
@@ -71,17 +63,6 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
             sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5)
-        )
-    }
-
-    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg(
-            eier = EIER,
-            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = soknadId,
-            filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
         )
     }
 

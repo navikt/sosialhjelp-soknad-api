@@ -9,13 +9,11 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -33,16 +31,12 @@ class OkonomiskeOpplysningerRessursTest {
 
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
-    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
 
     private val okonomiskeOpplysningerRessurs = OkonomiskeOpplysningerRessurs(
         tilgangskontroll = tilgangskontroll,
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        opplastetVedleggRepository = opplastetVedleggRepository,
         mellomlagringService = mellomlagringService,
-        soknadUnderArbeidService = soknadUnderArbeidService
     )
 
     private val behandlingsId = "123"
@@ -93,7 +87,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
             MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
@@ -149,7 +142,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         // kun 1 mellomlagret fil - 1 færre enn soknad.json over viser
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
@@ -188,7 +180,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
             MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123")

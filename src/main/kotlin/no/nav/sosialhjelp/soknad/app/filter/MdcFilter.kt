@@ -47,9 +47,6 @@ class MdcFilter : OncePerRequestFilter() {
         if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {
             return requestURI.substringAfter("${SOKNAD_API_BASEURL}innsendte/")
         }
-        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}ettersendteVedlegg/(.*)"))) {
-            return requestURI.substringAfter("${SOKNAD_API_BASEURL}ettersendteVedlegg/")
-        }
         /*
         Skal matche disse:
         /opplastetVedlegg/{behandlingsId}/{vedleggId}/fil GET

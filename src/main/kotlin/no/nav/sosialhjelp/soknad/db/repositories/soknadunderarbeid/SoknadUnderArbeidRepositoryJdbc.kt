@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.SQLUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -25,7 +24,6 @@ import java.util.Date
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
 
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
@@ -40,11 +38,10 @@ class SoknadUnderArbeidRepositoryJdbc(
             Long::class.java
         )
         jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
+            "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
             soknadUnderArbeidId,
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.tilknyttetBehandlingsId,
             soknadUnderArbeid.eier,
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),
@@ -78,19 +75,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeidRowMapper,
             eier,
             behandlingsId
-        ).firstOrNull()
-    }
-
-    override fun hentEttersendingMedTilknyttetBehandlingsId(
-        tilknyttetBehandlingsId: String,
-        eier: String,
-    ): SoknadUnderArbeid? {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            eier,
-            tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
         ).firstOrNull()
     }
 
@@ -144,12 +128,10 @@ class SoknadUnderArbeidRepositoryJdbc(
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
-                val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                     eier,
-                    soknadUnderArbeidId
+                    soknadUnderArbeid.soknadId
                 )
             }
         })

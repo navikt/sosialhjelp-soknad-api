@@ -6,11 +6,9 @@ import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableExcepti
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConverterException
 import org.springframework.beans.factory.annotation.Value
@@ -40,20 +38,10 @@ class ExceptionMapper(
                 log.warn("Feilet opplasting", e)
                 ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
             }
-
             is OpplastingException -> {
                 log.warn("Feilet opplasting", e)
                 ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             }
-
-            is SamletVedleggStorrelseForStorException -> {
-                log.warn(
-                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
-                    e
-                )
-                ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-            }
-
             is AuthorizationException -> {
                 log.warn("Ikke tilgang til ressurs", e)
                 return ResponseEntity
@@ -61,7 +49,6 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
             }
-
             is SoknadAlleredeSendtException -> {
                 log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
                 return ResponseEntity
@@ -69,22 +56,14 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
             }
-
             is IkkeFunnetException -> {
                 log.warn(e.message, e)
                 ResponseEntity.status(HttpStatus.NOT_FOUND)
             }
-
-            is EttersendelseSendtForSentException -> {
-                log.info("REST-kall feilet: ${e.message}", e)
-                ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
-
             is TjenesteUtilgjengeligException -> {
                 log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
                 ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
-
             is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -97,7 +76,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is SendingTilKommuneErIkkeAktivertException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -110,7 +88,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is SendingTilKommuneUtilgjengeligException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -123,7 +100,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is SoknadenHarNedetidException -> {
                 log.warn(e.message, e)
                 return ResponseEntity
@@ -136,7 +112,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is PdfGenereringException -> {
                 log.error(e.message, e)
                 return ResponseEntity
@@ -145,11 +120,10 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "pdf_generering",
-                            message = "Innsending av søknad eller ettersendelse feilet"
+                            message = "Innsending av søknad feilet"
                         )
                     )
             }
-
             is SoknadUnderArbeidIkkeFunnetException -> {
                 log.warn(e.message, e)
                 return ResponseEntity
@@ -162,13 +136,11 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is PdlApiException -> {
                 log.error("Kall til PDL feilet", e)
                 ResponseEntity.internalServerError()
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
-
             is DuplikatFilException -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
                 return ResponseEntity
@@ -181,7 +153,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is KonverteringTilPdfException -> {
                 log.error("Konverteringsfeil: ${e.message}", e)
                 return ResponseEntity
@@ -194,7 +165,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             is FileConverterException -> {
                 log.warn("Filkonverteringsfeil: ${e.message}", e)
 
@@ -211,7 +181,6 @@ class ExceptionMapper(
                         )
                     )
             }
-
             else -> {
                 log.error("REST-kall feilet", e)
                 ResponseEntity.internalServerError()
@@ -230,16 +199,13 @@ class ExceptionMapper(
                         log.debug(e.message, e)
                         return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
                     }
-
                     HttpStatus.FORBIDDEN -> {
                         log.debug(e.message, e)
                         return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
                     }
-
                     HttpStatus.NOT_FOUND -> {
                         log.warn(e.message, e)
                     }
-
                     else -> {
                         log.error(e.message, e)
                     }
@@ -249,7 +215,6 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(WEB_APPLICATION_ERROR, "Noe uventet feilet"))
             }
-
             is SamtidigOppdateringException -> {
                 log.warn(e.message, e)
                 ResponseEntity
@@ -257,7 +222,6 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(WEB_APPLICATION_ERROR, "Samtidig oppdatering av søknad"))
             }
-
             else -> {
                 log.error("Noe uventet feilet: ${e.message}", e)
 

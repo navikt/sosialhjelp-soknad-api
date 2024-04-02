@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -35,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadRessurs(
     private val soknadService: SoknadService,
-    private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,
@@ -127,9 +124,7 @@ class SoknadRessurs(
 
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
-        @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Map<String, String> {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")

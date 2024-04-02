@@ -4,6 +4,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
@@ -61,7 +63,7 @@ class AvbrytAutomatiskScheduler(
             val behandlingsId = soknadMetadata.behandlingsId
 
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
+                if (it.hasMellomlagredeVedlegg()) {
                     mellomlagringService.deleteAllVedlegg(behandlingsId)
                 }
                 batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
@@ -91,4 +93,12 @@ class AvbrytAutomatiskScheduler(
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10
         private const val DAGER_GAMMELT = 7 * 2
     }
+}
+
+fun SoknadUnderArbeid.hasMellomlagredeVedlegg(): Boolean {
+    return jsonInternalSoknad?.vedlegg?.vedlegg
+        ?.let {
+            it.any { VedleggStatus.LastetOpp.toString() == it.status }
+        }
+        ?: false
 }

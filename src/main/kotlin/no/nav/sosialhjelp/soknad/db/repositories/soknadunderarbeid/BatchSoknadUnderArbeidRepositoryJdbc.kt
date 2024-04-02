@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -19,7 +18,6 @@ import java.time.LocalDateTime
 class BatchSoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
 ) : BatchSoknadUnderArbeidRepository {
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
@@ -40,7 +38,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {
+    override fun hentUtgatteSoknaderForBatch(): List<Long> {
         val datoMinusFjortenDager = LocalDateTime.now().minusDays(14)
         return jdbcTemplate.query(
             "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < ? and STATUS = ?",
@@ -56,20 +54,11 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
                 if (soknadUnderArbeidId == null) {
                     throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
                 }
-                batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?",
                     soknadUnderArbeidId
                 )
             }
         })
-    }
-
-    override fun hentForeldedeEttersendelser(): List<SoknadUnderArbeid> {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
-        )
     }
 }

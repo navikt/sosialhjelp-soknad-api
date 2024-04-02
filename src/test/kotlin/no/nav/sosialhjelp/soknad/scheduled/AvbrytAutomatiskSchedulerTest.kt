@@ -6,6 +6,7 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -16,6 +17,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
@@ -72,8 +74,6 @@ internal class AvbrytAutomatiskSchedulerTest {
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
 
-        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid) } returns false
-
         scheduler.avbrytGamleSoknader()
 
         verify { soknadMetadataRepository.oppdater(soknadMetadataSlot.captured) }
@@ -93,7 +93,16 @@ internal class AvbrytAutomatiskSchedulerTest {
             behandlingsId = BEHANDLINGS_ID,
             tilknyttetBehandlingsId = null,
             eier = "11111111111",
-            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
+            jsonInternalSoknad = SoknadService
+                .createEmptyJsonInternalSoknad("11111111111")
+                .apply {
+                    this.vedlegg.vedlegg.add(
+                        JsonVedlegg()
+                            .withType("type")
+                            .withTilleggsinfo("tillegg")
+                            .withStatus(VedleggStatus.LastetOpp.toString())
+                    )
+                },
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
@@ -111,8 +120,10 @@ internal class AvbrytAutomatiskSchedulerTest {
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
 
-        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
+
+        every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
+        every { batchSoknadMetadataRepository.leggTilbakeBatch(any()) } just runs
 
         scheduler.avbrytGamleSoknader()
 

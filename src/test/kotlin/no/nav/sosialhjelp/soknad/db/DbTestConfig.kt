@@ -1,10 +1,6 @@
 package no.nav.sosialhjelp.soknad.db
 
 import no.nav.sosialhjelp.soknad.app.config.MockAltTestDbConfig
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -13,9 +9,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -46,46 +39,19 @@ class DbTestConfig {
     }
 
     @Bean
-    fun soknadMetadataMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataMigrationRepository {
-        return SoknadMetadataMigrationRepository(jdbcTemplate)
-    }
-
-    @Bean
     fun soknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
-        opplastetVedleggRepository: OpplastetVedleggRepository
     ): SoknadUnderArbeidRepository {
-        return SoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, opplastetVedleggRepository)
-    }
-
-    @Bean
-    fun soknadUnderArbeidMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadUnderArbeidMigrationRepository {
-        return SoknadUnderArbeidMigrationRepository(jdbcTemplate)
-    }
-
-    @Bean
-    fun opplastetVedleggRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggRepository {
-        return OpplastetVedleggRepositoryJdbc(jdbcTemplate)
-    }
-
-    @Bean
-    fun opplastetVedleggMigrationRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggMigrationRepository {
-        return OpplastetVedleggMigrationRepository(jdbcTemplate)
+        return SoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate)
     }
 
     @Bean
     fun batchSoknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
-        batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
     ): BatchSoknadUnderArbeidRepository {
-        return BatchSoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, batchOpplastetVedleggRepository)
-    }
-
-    @Bean
-    fun batchOpplastetVedleggRepository(jdbcTemplate: JdbcTemplate): BatchOpplastetVedleggRepository {
-        return BatchOpplastetVedleggRepositoryJdbc(jdbcTemplate)
+        return BatchSoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate)
     }
 
     @Bean

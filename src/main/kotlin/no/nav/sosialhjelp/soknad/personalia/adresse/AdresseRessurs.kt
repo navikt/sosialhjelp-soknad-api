@@ -123,10 +123,6 @@ class AdresseRessurs(
         navEnhetFrontend: NavEnhetFrontend,
         eier: String
     ) {
-        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
-            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
-
         soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
