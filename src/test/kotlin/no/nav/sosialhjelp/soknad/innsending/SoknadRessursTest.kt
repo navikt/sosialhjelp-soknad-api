@@ -94,7 +94,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadServiceOld.startSoknad(any()) } returns "null"
+        every { soknadServiceOld.startSoknad() } returns "null"
 
         ressurs.opprettSoknad(null, response, "")
 

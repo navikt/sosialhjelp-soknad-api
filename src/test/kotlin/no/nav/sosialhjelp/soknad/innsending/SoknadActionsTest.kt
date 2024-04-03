@@ -37,6 +37,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -94,6 +95,7 @@ internal class SoknadActionsTest {
     }
 
     @Test
+    @Disabled("Denne type ettersendelse støttes ikke lenger")
     fun sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
         val behandlingsId = "ettersendelsePaaSvarUtSoknad"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
