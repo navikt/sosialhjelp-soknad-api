@@ -112,7 +112,7 @@ class NavEnhetService(
             kommunenavn = kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn),
             valgt = enhetNr != null,
             kommuneNr = kommunenummer,
-            isMottakDeaktivert = false,
+            isMottakDeaktivert = kommuneInfoService.kanMottaSoknader(kommunenummer),
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
         )
     }
