@@ -112,7 +112,8 @@ class NavEnhetService(
             kommunenavn = kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn),
             valgt = enhetNr != null,
             kommuneNr = kommunenummer,
-            isMottakDeaktivert = kommuneInfoService.kanMottaSoknader(kommunenummer),
+            // TODO Bør skrives på en annen måte isteden for å reversere en boolean slik
+            isMottakDeaktivert = !kommuneInfoService.kanMottaSoknader(kommunenummer),
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
         )
     }
