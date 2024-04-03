@@ -59,9 +59,6 @@ spec:
         - application: dittnav-api
           namespace: min-side
           cluster: dev-gcp
-        - application: sosialhjelp-innsyn-api
-        - application: sosialhjelp-innsyn-api-dev
-          cluster: dev-gcp
         - application: tms-utkast
           namespace: min-side
           cluster: dev-gcp

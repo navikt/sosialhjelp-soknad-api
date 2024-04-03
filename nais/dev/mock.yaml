@@ -28,9 +28,6 @@ spec:
     max: 1
   webproxy: false
   accessPolicy:
-    inbound:
-      rules:
-        - application: sosialhjelp-innsyn-api-mock
     outbound:
       external:
         - host: "digisos.ekstern.dev.nav.no"

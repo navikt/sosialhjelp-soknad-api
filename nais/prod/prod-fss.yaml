@@ -59,9 +59,6 @@ spec:
         - application: dittnav-api
           namespace: min-side
           cluster: prod-gcp
-        - application: sosialhjelp-innsyn-api
-          namespace: teamdigisos
-          cluster: prod-fss
         - application: tms-utkast
           namespace: min-side
           cluster: prod-gcp
