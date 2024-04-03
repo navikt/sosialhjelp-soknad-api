@@ -46,7 +46,10 @@ class ExceptionMapper(
                 ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             }
             is SamletVedleggStorrelseForStorException -> {
-                log.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.", e)
+                log.warn(
+                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
+                    e
+                )
                 ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
             }
             is AuthorizationException -> {
@@ -177,7 +180,7 @@ class ExceptionMapper(
                     )
             }
             is FileConverterException -> {
-                log.error("Filkonverteringsfeil: ${e.message}", e)
+                log.warn("Filkonverteringsfeil: ${e.message}", e)
 
                 return ResponseEntity
                     .status(

@@ -29,6 +29,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.InputStream
 import java.time.LocalDateTime
@@ -114,6 +115,7 @@ internal class FiksSenderTest {
     }
 
     @Test
+    @Disabled("Gjelder ettersendelse")
     fun createForsendelseSetterRiktigTittelForEttersendelse() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.tilknyttetBehandlingsId = "12345"
@@ -154,6 +156,7 @@ internal class FiksSenderTest {
     }
 
     @Test
+    @Disabled("Gjelder ettersendelse")
     fun hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()

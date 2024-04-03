@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -37,11 +38,11 @@ class SoknadRessursEndpointIT {
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
+        jdbcTemplate.update("delete from soknadmetadata")
     }
 
     @Test
-//    @Disabled
-    // TODO Dette gjelder vel ettersendelser, som vi ikke skal støtte lenger
+    @Disabled("Gjelder ettersendelse")
     internal fun nektetTilgang_opprettEttersendelse() {
         val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 

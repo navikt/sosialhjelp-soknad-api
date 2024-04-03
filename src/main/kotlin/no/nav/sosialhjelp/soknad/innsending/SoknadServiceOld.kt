@@ -77,10 +77,9 @@ class SoknadServiceOld(
     private val v2AdapterService: V2AdapterService
 ) {
     @Transactional
-    fun startSoknad(token: String?): String {
+    fun startSoknad(): String {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
-
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)

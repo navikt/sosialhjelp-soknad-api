@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
@@ -35,6 +34,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -114,7 +114,8 @@ internal class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, token)
 
-        verify(exactly = 1) { soknadServiceOld.sendSoknad(behandlingsId) }
+        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
+            .isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
@@ -178,9 +179,8 @@ internal class SoknadActionsTest {
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
         every { soknadServiceOld.sendSoknad(any()) } just runs
 
-        actions.sendSoknad(behandlingsId, token)
-
-        verify(exactly = 1) { soknadServiceOld.sendSoknad(behandlingsId) }
+        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
+            .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
     }
 
     @Test
@@ -193,9 +193,8 @@ internal class SoknadActionsTest {
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         every { soknadServiceOld.sendSoknad(any()) } just runs
 
-        actions.sendSoknad(behandlingsId, token)
-
-        verify(exactly = 1) { soknadServiceOld.sendSoknad(behandlingsId) }
+        assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
+            .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
     }
 
     @Test
@@ -237,7 +236,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
 
-        assertThatExceptionOfType(SendingTilKommuneErIkkeAktivertException::class.java)
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
         verify { digisosApiService wasNot called }

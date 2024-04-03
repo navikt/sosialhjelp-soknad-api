@@ -132,28 +132,17 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Map<String, String> {
         if (nedetidService.isInnenforNedetid) {
-            throw SoknadenHarNedetidException(
-                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
-            )
+            throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
-        if (tilknyttetBehandlingsId == null) {
-            tilgangskontroll.verifiserAtBrukerHarTilgang()
-        } else {
-            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(tilknyttetBehandlingsId)
-        }
-        val result: MutableMap<String, String> = HashMap()
-        val opprettetBehandlingsId: String = if (tilknyttetBehandlingsId == null) {
-            soknadServiceOld.startSoknad(token)
-        } else {
-            val eier = getUserIdFromToken()
-            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)
-                ?.behandlingsId
-                ?: ettersendingService.startEttersendelse(tilknyttetBehandlingsId)
-        }
-        result["brukerBehandlingId"] = opprettetBehandlingsId
-        response.addCookie(xsrfCookie(opprettetBehandlingsId))
-        response.addCookie(xsrfCookieMedBehandlingsid(opprettetBehandlingsId))
-        return result
+        tilgangskontroll.verifiserAtBrukerHarTilgang()
+
+        return soknadServiceOld.startSoknad()
+            .let {
+                response.addCookie(xsrfCookie(it))
+                response.addCookie(xsrfCookieMedBehandlingsid(it))
+
+                mapOf("brukerBehandlingId" to it)
+            }
     }
 
     @DeleteMapping("/{behandlingsId}")
