@@ -1,7 +1,7 @@
 [versions]
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 spring-boot = "3.2.4"
-coroutines = "1.7.3"
+coroutines = "1.8.0"
 filformat = "1.2023.07.11-15.37-bb76af3d1843"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
 fiks_svar_ut = "4.0.0"
@@ -26,7 +26,7 @@ tika = "2.9.1"
 tika_parsers = "2.9.1"
 commons_text = "1.11.0"
 ktlint = "0.45.2"
-mockk = "1.13.9"
+mockk = "1.13.10"
 versions = "0.50.0"
 
 [libraries]
