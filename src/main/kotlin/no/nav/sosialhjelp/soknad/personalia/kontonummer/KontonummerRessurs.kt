@@ -46,7 +46,8 @@ class KontonummerRessurs(
     @PutMapping
     fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody @Valid kontoDTO: KontonummerInputDTO
+        @RequestBody @Valid
+        kontoDTO: KontonummerInputDTO
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
@@ -61,7 +62,7 @@ class KontonummerRessurs(
         @Schema(nullable = true, description = "Kontonummer fra bruker")
         val brukerutfyltVerdi: String? = null,
         @Schema(nullable = false, description = "Bruker oppgir at de ikke har konto")
-        val harIkkeKonto: Boolean = false,
+        val harIkkeKonto: Boolean = false
     ) {
         @Deprecated("Unødvendig, utled av annen data")
         val brukerdefinert: Boolean

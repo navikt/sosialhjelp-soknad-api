@@ -43,11 +43,15 @@ class AnnenFormue {
             Sporsmal(
                 tittel = "inntekt.eierandeler.sporsmal",
                 erUtfylt = harUtfyltAnnenFormueSporsmal,
-                felt = if (harUtfyltAnnenFormueSporsmal) booleanVerdiFelt(
-                    harSvartJaAnnenFormue,
-                    "inntekt.eierandeler.true",
-                    "inntekt.eierandeler.false"
-                ) else null
+                felt = if (harUtfyltAnnenFormueSporsmal) {
+                    booleanVerdiFelt(
+                        harSvartJaAnnenFormue,
+                        "inntekt.eierandeler.true",
+                        "inntekt.eierandeler.false"
+                    )
+                } else {
+                    null
+                }
             )
         )
         if (harSvartJaAnnenFormue) {
@@ -67,12 +71,16 @@ class AnnenFormue {
                     Sporsmal(
                         tittel = "inntekt.eierandeler.true.type.annet.true.beskrivelse.label",
                         erUtfylt = harUtfyltAnnetFelt,
-                        felt = if (harUtfyltAnnetFelt) listOf(
-                            Felt(
-                                type = Type.TEKST,
-                                svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) }
+                        felt = if (harUtfyltAnnetFelt) {
+                            listOf(
+                                Felt(
+                                    type = Type.TEKST,
+                                    svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) }
+                                )
                             )
-                        ) else null
+                        } else {
+                            null
+                        }
                     )
                 )
             }

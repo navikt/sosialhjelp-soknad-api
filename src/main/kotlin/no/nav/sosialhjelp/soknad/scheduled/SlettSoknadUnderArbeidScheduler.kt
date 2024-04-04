@@ -15,7 +15,7 @@ class SlettSoknadUnderArbeidScheduler(
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val leaderElection: LeaderElection,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val mellomlagringService: MellomlagringService
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0

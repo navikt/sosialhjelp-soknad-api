@@ -61,7 +61,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     private fun okonomiOgVedleggAvsnitt(
         okonomi: JsonOkonomi,
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        vedleggInfo: List<OppsummeringVedleggInfo>,
+        vedleggInfo: List<OppsummeringVedleggInfo>
     ): List<Avsnitt> {
         val inntektAvsnitt = Avsnitt(
             tittel = "inntektbolk.tittel",
@@ -294,7 +294,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
 
     private fun vedleggSporsmal(
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        vedleggInfo: List<OppsummeringVedleggInfo>,
+        vedleggInfo: List<OppsummeringVedleggInfo>
     ): List<Sporsmal> {
         return vedleggSpesifikasjon.vedlegg
             .map {
@@ -372,6 +372,6 @@ class OkonomiskeOpplysningerOgVedleggSteg {
 
     data class OppsummeringVedleggInfo(
         val filnavn: String,
-        val id: String,
+        val id: String
     )
 }

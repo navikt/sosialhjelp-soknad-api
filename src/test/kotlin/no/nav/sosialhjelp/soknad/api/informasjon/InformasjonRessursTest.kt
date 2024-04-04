@@ -40,7 +40,7 @@ internal class InformasjonRessursTest {
         adresseSokService = mockk(),
         personService = personService,
         soknadMetadataRepository = soknadMetadataRepository,
-        pabegynteSoknaderService = pabegynteSoknaderService,
+        pabegynteSoknaderService = pabegynteSoknaderService
     )
 
     @BeforeEach

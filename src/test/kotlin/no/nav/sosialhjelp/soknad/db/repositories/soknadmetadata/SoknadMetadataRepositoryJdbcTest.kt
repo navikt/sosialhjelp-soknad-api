@@ -49,7 +49,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int,
+        dagerSiden: Int
     ): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
@@ -61,7 +61,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            lest = false,
+            lest = false
         )
     }
 

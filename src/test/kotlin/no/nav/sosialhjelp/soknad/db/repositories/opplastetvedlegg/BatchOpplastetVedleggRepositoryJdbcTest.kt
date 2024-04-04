@@ -42,7 +42,8 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
         )
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(
-                lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER
+                lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3),
+                EIER
             )
         batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID)
         assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
@@ -53,7 +54,7 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
     private fun lagOpplastetVedlegg(
         eier: String = EIER,
         type: String = TYPE,
-        soknadId: Long = SOKNADID,
+        soknadId: Long = SOKNADID
     ): OpplastetVedlegg {
         return OpplastetVedlegg(
             eier = eier,

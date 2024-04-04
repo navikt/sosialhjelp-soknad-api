@@ -33,23 +33,31 @@ class BosituasjonSteg {
         val hvordanBorDuSporsmal = Sporsmal(
             tittel = "bosituasjon.sporsmal",
             erUtfylt = harUtfyltHvorBorDu,
-            felt = if (harUtfyltHvorBorDu) listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(botypeToTekstKey(bosituasjon.botype), SvarType.LOCALE_TEKST)
+            felt = if (harUtfyltHvorBorDu) {
+                listOf(
+                    Felt(
+                        type = Type.CHECKBOX,
+                        svar = createSvar(botypeToTekstKey(bosituasjon.botype), SvarType.LOCALE_TEKST)
+                    )
                 )
-            ) else null
+            } else {
+                null
+            }
         )
 
         val hvorMangeBorSammenSporsmal = Sporsmal(
             tittel = "bosituasjon.antallpersoner.sporsmal",
             erUtfylt = harUtfyltHvorMangeBorSammen,
-            felt = if (harUtfyltHvorMangeBorSammen) listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar = createSvar(bosituasjon.antallPersoner.toString(), SvarType.TEKST)
+            felt = if (harUtfyltHvorMangeBorSammen) {
+                listOf(
+                    Felt(
+                        type = Type.TEKST,
+                        svar = createSvar(bosituasjon.antallPersoner.toString(), SvarType.TEKST)
+                    )
                 )
-            ) else null
+            } else {
+                null
+            }
         )
         return listOf(
             hvordanBorDuSporsmal,

@@ -1,2 +1,2 @@
 [*.{kt,kts}]
-disabled_rules = trailing-comma
+ktlint_disabled_rules = trailing-comma
