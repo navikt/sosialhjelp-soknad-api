@@ -74,7 +74,6 @@ no.nav.security.jwt.issuer:
   selvbetjening:
     discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
     accepted_audience: someaudience
-    cookie_name: localhost-idtoken
     proxyurl:
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
