@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.9.22"
-spring-boot = "3.2.1"
+spring-boot = "3.2.4"
 coroutines = "1.7.3"
 filformat = "1.2023.07.11-15.37-bb76af3d1843"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
@@ -81,7 +81,6 @@ mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 spring-boot = [
     "spring-boot-starter-actuator",
     "spring-boot-starter-jdbc",
-    "spring-boot-starter-test",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
