@@ -17,11 +17,13 @@ class NedetidService(
     private fun getNedetid(time: String?): LocalDateTime? {
         return if (time.isNullOrEmpty()) {
             null
-        } else try {
-            LocalDateTime.parse(time, dateTimeFormatter)
-        } catch (e: DateTimeParseException) {
-            log.error("Klarte ikke parse $time. Skal være på formatet: $nedetidFormat")
-            null
+        } else {
+            try {
+                LocalDateTime.parse(time, dateTimeFormatter)
+            } catch (e: DateTimeParseException) {
+                log.error("Klarte ikke parse $time. Skal være på formatet: $nedetidFormat")
+                null
+            }
         }
     }
 

@@ -197,7 +197,7 @@ class SoknadService(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,
-        token: String?,
+        token: String?
     ) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -325,7 +325,7 @@ class SoknadService(
                 filnavn = jsonVedlegg.type,
                 status = Vedleggstatus.valueOf(jsonVedlegg.status),
                 hendelseType = jsonVedlegg.hendelseType,
-                hendelseReferanse = jsonVedlegg.hendelseReferanse,
+                hendelseReferanse = jsonVedlegg.hendelseReferanse
 
             )
         }

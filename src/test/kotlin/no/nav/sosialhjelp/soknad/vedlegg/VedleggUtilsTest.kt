@@ -60,7 +60,6 @@ internal class VedleggUtilsTest {
 
     @Test
     fun `Validering av PDF-fil gir riktig TikaType`() {
-
         val file = PDF_FILE
         val parts = file.name.split(".")
         val navn = parts[0]
@@ -76,7 +75,6 @@ internal class VedleggUtilsTest {
 
     @Test
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
-
         val vedleggType = OpplastetVedleggType("hei|på deg")
 
         val soknadUnderArbeid = createSoknadUnderArbeid(

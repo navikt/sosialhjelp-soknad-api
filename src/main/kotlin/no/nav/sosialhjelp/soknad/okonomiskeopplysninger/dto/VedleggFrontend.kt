@@ -12,7 +12,7 @@ data class VedleggFrontend(
     @Schema(description = "Vedlegg er levert inn utenom denne søknaden (f. eks. levert til NAV-kontor)")
     val alleredeLevert: Boolean? = null,
     @Schema(readOnly = true)
-    val filer: List<FilFrontend>?,
+    val filer: List<FilFrontend>?
 )
 
 data class VedleggRadFrontend(

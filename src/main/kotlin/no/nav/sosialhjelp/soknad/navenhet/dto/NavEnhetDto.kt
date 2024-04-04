@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(
     val navn: String,
-    val enhetNr: String,
+    val enhetNr: String
 )
 
 fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {

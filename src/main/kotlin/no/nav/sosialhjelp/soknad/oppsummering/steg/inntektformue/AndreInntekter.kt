@@ -55,12 +55,16 @@ class AndreInntekter {
                         tittel = "inntekt.inntekter.true.type.annet",
                         erUtfylt = harUtfyltAnnetFelt,
                         felt = beskrivelseAvAnnet?.let {
-                            if (harUtfyltAnnetFelt) listOf(
-                                Felt(
-                                    type = Type.TEKST,
-                                    svar = createSvar(it.utbetaling, SvarType.TEKST)
+                            if (harUtfyltAnnetFelt) {
+                                listOf(
+                                    Felt(
+                                        type = Type.TEKST,
+                                        svar = createSvar(it.utbetaling, SvarType.TEKST)
+                                    )
                                 )
-                            ) else null
+                            } else {
+                                null
+                            }
                         }
                     )
                 )

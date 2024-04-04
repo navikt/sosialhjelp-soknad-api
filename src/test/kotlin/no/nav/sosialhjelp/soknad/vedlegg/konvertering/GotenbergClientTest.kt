@@ -17,7 +17,6 @@ class GotenbergClientTest {
     @Disabled("Brukes for manuel feilsøking")
     @Test
     fun testGotenbergClient() {
-
         val file = ExampleFileRepository.EXCEL_FILE
 
         val pdf = fileConverter.toPdf(file.name, file.readBytes())

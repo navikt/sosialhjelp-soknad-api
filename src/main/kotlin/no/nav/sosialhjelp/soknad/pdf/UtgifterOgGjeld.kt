@@ -11,7 +11,7 @@ object UtgifterOgGjeld {
         pdfUtils: PdfUtils,
         okonomi: JsonOkonomi?,
         soknad: JsonSoknad,
-        utvidetSoknad: Boolean,
+        utvidetSoknad: Boolean
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("utgifterbolk.tittel"))
         pdf.addBlankLine()

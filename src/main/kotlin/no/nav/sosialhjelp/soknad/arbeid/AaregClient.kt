@@ -32,7 +32,7 @@ class AaregClient(
     @Value("\${aareg_url}") private val aaregUrl: String,
     @Value("\${aareg_audience}") private val aaregAudience: String,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) {
     private val arbeidsforholdMapper: ObjectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)

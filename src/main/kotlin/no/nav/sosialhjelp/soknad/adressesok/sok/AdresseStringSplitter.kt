@@ -8,10 +8,12 @@ object AdresseStringSplitter {
     fun toSokedata(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
         return if (isAddressTooShortOrNull(adresse)) {
             Sokedata(adresse = adresse)
-        } else firstNonNull(
-            fullstendigGateadresseMatch(kodeverkService, adresse!!),
-            Sokedata(adresse = adresse)
-        )
+        } else {
+            firstNonNull(
+                fullstendigGateadresseMatch(kodeverkService, adresse!!),
+                Sokedata(adresse = adresse)
+            )
+        }
     }
 
     private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? {
@@ -33,7 +35,9 @@ object AdresseStringSplitter {
     private fun getKommunenummer(kodeverkService: KodeverkService?, kommunenavn: String?): String? {
         return if (kommunenavn != null && kommunenavn.trim { it <= ' ' }.isNotEmpty() && kodeverkService != null) {
             kodeverkService.gjettKommunenummer(kommunenavn)
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun firstNonNull(vararg elems: Sokedata?): Sokedata? {

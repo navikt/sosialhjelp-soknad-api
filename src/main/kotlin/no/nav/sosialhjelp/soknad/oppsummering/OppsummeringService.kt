@@ -30,7 +30,7 @@ class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()

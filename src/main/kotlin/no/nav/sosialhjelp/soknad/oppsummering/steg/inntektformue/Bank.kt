@@ -49,12 +49,16 @@ class Bank {
                 Sporsmal(
                     tittel = "inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label",
                     erUtfylt = harUtfyltAnnetFelt,
-                    felt = if (harUtfyltAnnetFelt) listOf(
-                        Felt(
-                            type = Type.TEKST,
-                            svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) }
+                    felt = if (harUtfyltAnnetFelt) {
+                        listOf(
+                            Felt(
+                                type = Type.TEKST,
+                                svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) }
+                            )
                         )
-                    ) else null
+                    } else {
+                        null
+                    }
                 )
             )
         }

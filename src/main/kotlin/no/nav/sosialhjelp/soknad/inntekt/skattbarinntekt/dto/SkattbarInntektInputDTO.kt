@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull
 data class SkattbarInntektInputDTO(
     @NotNull
     @Schema(description = "Samtykke til å hente skattbar inntekt fra skatteetaten", example = "true", nullable = true)
-    val samtykke: Boolean,
+    val samtykke: Boolean
 )
