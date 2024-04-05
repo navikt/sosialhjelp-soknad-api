@@ -46,7 +46,7 @@ class SystemregistrertInntektRessurs(
 
     data class SysteminntekterFrontend(
         val systeminntekter: List<SysteminntektFrontend>? = null,
-        val utbetalingerFraNavFeilet: Boolean? = null,
+        val utbetalingerFraNavFeilet: Boolean? = null
     )
 
     data class SysteminntektFrontend(

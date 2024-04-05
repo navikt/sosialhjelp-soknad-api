@@ -9,5 +9,5 @@ data class SoknadOversiktDto(
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     val sistOppdatert: Date? = null,
     val kilde: String? = null,
-    val url: String? = null,
+    val url: String? = null
 )

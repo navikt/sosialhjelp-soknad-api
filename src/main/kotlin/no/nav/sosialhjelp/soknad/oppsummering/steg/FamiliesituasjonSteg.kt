@@ -74,12 +74,16 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.sivilstatus.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST)
+            felt = if (erUtfylt) {
+                listOf(
+                    Felt(
+                        type = Type.CHECKBOX,
+                        svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST)
+                    )
                 )
-            ) else null
+            } else {
+                null
+            }
         )
     }
 
@@ -127,7 +131,9 @@ class FamiliesituasjonSteg {
     private fun personnummerFraFnr(ektefelle: JsonEktefelle): String? {
         return if (ektefelle.personIdentifikator != null && ektefelle.personIdentifikator.length == 11) {
             ektefelle.personIdentifikator.substring(6, 11)
-        } else ektefelle.personIdentifikator
+        } else {
+            ektefelle.personIdentifikator
+        }
     }
 
     private fun borSammenMedSvar(sivilstatus: JsonSivilstatus): String? {
@@ -253,11 +259,15 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "system.familie.barn.true.barn.deltbosted.sporsmal",
             erUtfylt = harUtfyltDeltBostedSporsmal,
-            felt = if (harUtfyltDeltBostedSporsmal) StegUtils.booleanVerdiFelt(
-                harSvartJaDeltBosted,
-                "system.familie.barn.true.barn.deltbosted.true",
-                "system.familie.barn.true.barn.deltbosted.false"
-            ) else null
+            felt = if (harUtfyltDeltBostedSporsmal) {
+                StegUtils.booleanVerdiFelt(
+                    harSvartJaDeltBosted,
+                    "system.familie.barn.true.barn.deltbosted.true",
+                    "system.familie.barn.true.barn.deltbosted.false"
+                )
+            } else {
+                null
+            }
         )
     }
 
@@ -266,12 +276,16 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.barn.true.barnebidrag.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST)
+            felt = if (erUtfylt) {
+                listOf(
+                    Felt(
+                        type = Type.CHECKBOX,
+                        svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST)
+                    )
                 )
-            ) else null
+            } else {
+                null
+            }
         )
     }
 

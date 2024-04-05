@@ -120,7 +120,9 @@ object VedleggUtils {
         val fileExtension = filnavn.substring(sisteIndexForPunktum)
         return if (!isValidFileExtension(fileExtension)) {
             null
-        } else fileExtension
+        } else {
+            fileExtension
+        }
     }
 
     private fun isValidFileExtension(fileExtension: String): Boolean {
@@ -179,7 +181,9 @@ object VedleggUtils {
         }
         return if (TikaFileType.PDF == fileType) {
             ".pdf".equals(fileExtension, ignoreCase = true)
-        } else false
+        } else {
+            false
+        }
     }
 
     fun getByteArray(file: MultipartFile): ByteArray {

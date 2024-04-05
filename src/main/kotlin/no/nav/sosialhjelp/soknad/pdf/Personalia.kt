@@ -19,7 +19,7 @@ object Personalia {
         textHelpers: TextHelpers,
         jsonPersonalia: JsonPersonalia,
         midlertidigAdresse: JsonAdresse?,
-        utvidetSoknad: Boolean,
+        utvidetSoknad: Boolean
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.tittel"))
         pdf.addBlankLine()
@@ -155,7 +155,7 @@ object Personalia {
 
     private fun adresseTilTekst(
         it: JsonAdresse,
-        pdfUtils: PdfUtils,
+        pdfUtils: PdfUtils
     ) = when (it.type) {
         JsonAdresse.Type.GATEADRESSE -> jsonGateAdresseToString(it as JsonGateAdresse)
         JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)

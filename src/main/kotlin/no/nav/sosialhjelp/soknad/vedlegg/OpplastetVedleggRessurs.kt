@@ -41,7 +41,8 @@ class OpplastetVedleggRessurs(
     @GetMapping("/{vedleggId}/fil")
     @Operation(operationId = "getVedleggFilSvarut", summary = "Henter et gitt vedlegg (kun SVARUT)")
     @ApiResponse(
-        responseCode = "200", description = "Filen ble funnet og returneres",
+        responseCode = "200",
+        description = "Filen ble funnet og returneres",
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
@@ -52,7 +53,7 @@ class OpplastetVedleggRessurs(
     @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("vedleggId") vedleggId: String,
-        response: HttpServletResponse,
+        response: HttpServletResponse
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
@@ -68,7 +69,8 @@ class OpplastetVedleggRessurs(
     @GetMapping("/{behandlingsId}/{vedleggId}/fil")
     @Operation(summary = "Henter et gitt vedlegg")
     @ApiResponse(
-        responseCode = "200", description = "Filen ble funnet og returneres",
+        responseCode = "200",
+        description = "Filen ble funnet og returneres",
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
@@ -109,7 +111,7 @@ class OpplastetVedleggRessurs(
     fun saveVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("type") vedleggstype: String,
-        @RequestParam("file") fil: MultipartFile,
+        @RequestParam("file") fil: MultipartFile
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
@@ -135,7 +137,7 @@ class OpplastetVedleggRessurs(
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
     fun deleteVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @PathVariable("vedleggId") vedleggId: String,
+        @PathVariable("vedleggId") vedleggId: String
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val erMellomlagret = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)

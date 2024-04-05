@@ -31,7 +31,7 @@ class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val pabegynteSoknaderService: PabegynteSoknaderService
 ) {
     companion object {
         private val log by logger()
@@ -94,6 +94,6 @@ class InformasjonRessurs(
         @Schema(description = "Påbegynte men ikke innleverte søknader")
         val open: List<PabegyntSoknad>,
         @Schema(description = "Antall nylig innsendte søknader")
-        val numRecentlySent: Int,
+        val numRecentlySent: Int
     )
 }

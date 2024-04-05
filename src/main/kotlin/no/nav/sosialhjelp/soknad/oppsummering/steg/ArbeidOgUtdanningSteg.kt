@@ -106,11 +106,15 @@ class ArbeidOgUtdanningSteg {
             Sporsmal(
                 tittel = "dinsituasjon.studerer.sporsmal",
                 erUtfylt = erUtdanningUtfylt,
-                felt = if (erUtdanningUtfylt) booleanVerdiFelt(
-                    erStudent,
-                    "dinsituasjon.studerer.true",
-                    "dinsituasjon.studerer.false"
-                ) else null
+                felt = if (erUtdanningUtfylt) {
+                    booleanVerdiFelt(
+                        erStudent,
+                        "dinsituasjon.studerer.true",
+                        "dinsituasjon.studerer.false"
+                    )
+                } else {
+                    null
+                }
             )
         )
         if (erStudent) {
@@ -118,11 +122,15 @@ class ArbeidOgUtdanningSteg {
                 Sporsmal(
                     tittel = "dinsituasjon.studerer.true.grad.sporsmal",
                     erUtfylt = erStudentgradUtfylt,
-                    felt = if (erStudentgradUtfylt) booleanVerdiFelt(
-                        Studentgrad.HELTID == utdanning.studentgrad,
-                        "dinsituasjon.studerer.true.grad.heltid",
-                        "dinsituasjon.studerer.true.grad.deltid"
-                    ) else null
+                    felt = if (erStudentgradUtfylt) {
+                        booleanVerdiFelt(
+                            Studentgrad.HELTID == utdanning.studentgrad,
+                            "dinsituasjon.studerer.true.grad.heltid",
+                            "dinsituasjon.studerer.true.grad.deltid"
+                        )
+                    } else {
+                        null
+                    }
                 )
             )
         }

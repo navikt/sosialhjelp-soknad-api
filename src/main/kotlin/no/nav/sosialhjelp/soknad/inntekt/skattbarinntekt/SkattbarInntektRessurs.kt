@@ -47,7 +47,7 @@ class SkattbarInntektRessurs(
     @Deprecated("POST skal ikke ha side effects; bruk PUT mot skattbarinntektogforskuddstrekk")
     fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody samtykke: Boolean,
+        @RequestBody samtykke: Boolean
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, samtykke)
@@ -56,7 +56,8 @@ class SkattbarInntektRessurs(
     @PutMapping
     fun putSkatteetatenSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody @Valid input: SkattbarInntektInputDTO,
+        @RequestBody @Valid
+        input: SkattbarInntektInputDTO
     ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, input.samtykke)
@@ -105,7 +106,8 @@ class SkattbarInntektRessurs(
 
         if (samtykkeFraSoknad(internal) != samtykke) {
             removeBekreftelserIfPresent(
-                internal.soknad.data.okonomi.opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE
+                internal.soknad.data.okonomi.opplysninger,
+                UTBETALING_SKATTEETATEN_SAMTYKKE
             )
             setBekreftelse(
                 internal.soknad.data.okonomi.opplysninger,
@@ -155,6 +157,10 @@ class SkattbarInntektRessurs(
         organisasjon: JsonOrganisasjon?,
         periode: Pair<String, String>
     ) = Organisasjon(
-        utbetalinger, organisasjon?.navn ?: "Uten organisasjonsnummer", organisasjon?.organisasjonsnummer ?: "", periode.first, periode.second
+        utbetalinger,
+        organisasjon?.navn ?: "Uten organisasjonsnummer",
+        organisasjon?.organisasjonsnummer ?: "",
+        periode.first,
+        periode.second
     )
 }

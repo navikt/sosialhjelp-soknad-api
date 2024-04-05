@@ -36,7 +36,7 @@ object KommuneTilNavEnhetMapper {
         "3043" to "Gol", // Ål
         "3044" to "Gol", // Hol
         "5058" to "Osen", // Åfjord
-        "1121" to "Klepp", // Time
+        "1121" to "Klepp" // Time
     )
 
     private val PROD_ORGANISASJONSNUMMER: Map<String, String> = mapOf(
@@ -206,7 +206,7 @@ object KommuneTilNavEnhetMapper {
         "1120" to "974549611", // Klepp og Time
         "0901" to "964977402", // Risør
         "0904" to "994161105", // Grimstad
-        "1940" to "976979958", // Gáivuotna/Kåfjord
+        "1940" to "976979958" // Gáivuotna/Kåfjord
     )
 
     private val TEST_ORGANISASJONSNUMMER: Map<String, String> = mapOf(
@@ -238,7 +238,7 @@ object KommuneTilNavEnhetMapper {
         "0516" to "910229567", // Nord-Fron - OBS: Sendes til vårt orgnummer i FIKS!
         "0519" to "910229567", // Sør-Fron - OBS: Sendes til vårt orgnummer i FIKS!
         "0520" to "910229567", // Ringebu - OBS: Sendes til vårt orgnummer i FIKS!
-        "1517" to "910229567", // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
+        "1517" to "910229567" // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
     )
 
     fun getOrganisasjonsnummer(enhetNr: String?): String? {

@@ -17,7 +17,7 @@ object InntektOgFormue {
         pdfUtils: PdfUtils,
         okonomi: JsonOkonomi?,
         soknad: JsonSoknad,
-        utvidetSoknad: Boolean,
+        utvidetSoknad: Boolean
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("inntektbolk.tittel"))
         pdf.addBlankLine()
@@ -439,7 +439,9 @@ object InntektOgFormue {
             }
             if (sak.vedtaksstatus == null) {
                 "Avslag: ${sak.beskrivelse}"
-            } else "Vedtatt"
+            } else {
+                "Vedtatt"
+            }
         } else {
             "Under behandling"
         }

@@ -67,7 +67,6 @@ class NavEnhetRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody navEnhetFrontend: NavEnhetFrontend
     ) {
-
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
