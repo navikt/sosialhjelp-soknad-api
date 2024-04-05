@@ -17,7 +17,6 @@ class SlettSoknaderScheduler(
 
     @Scheduled(cron = "@yearly")
     fun slettAlleSoknaderUnderArbeid1Jan() {
-
         if (leaderElection.isLeader()) {
             log.info("Starter sletting av alle soknader under arbeid")
 

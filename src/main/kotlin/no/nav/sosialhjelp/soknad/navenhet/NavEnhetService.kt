@@ -37,7 +37,7 @@ class NavEnhetService(
     fun getNavEnhet(
         eier: String,
         soknad: JsonSoknad,
-        valg: JsonAdresseValg?,
+        valg: JsonAdresseValg?
     ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
         return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
@@ -45,11 +45,13 @@ class NavEnhetService(
                 finnNavEnhetFraGT(eier, personalia)
             } catch (e: Exception) {
                 log.warn(
-                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse"
                 )
                 finnNavEnhetFraAdresse(personalia, valg)
             }
-        } else finnNavEnhetFraAdresse(personalia, valg)
+        } else {
+            finnNavEnhetFraAdresse(personalia, valg)
+        }
     }
 
     fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
@@ -82,7 +84,7 @@ class NavEnhetService(
 
     private fun finnNavEnhetFraAdresse(
         personalia: JsonPersonalia,
-        valg: JsonAdresseValg?,
+        valg: JsonAdresseValg?
     ): NavEnhetFrontend? {
         // TODO Ekstra logging
         log.info("Finner Nav-enhet fra adresse")

@@ -59,7 +59,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -90,7 +90,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -118,7 +118,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -145,7 +145,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -176,7 +176,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person

@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     private val redisService: RedisService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) {
 
     private val kodeverkMapper: ObjectMapper = jacksonObjectMapper()

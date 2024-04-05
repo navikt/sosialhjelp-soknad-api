@@ -57,7 +57,7 @@ object VedleggMapper {
     fun mapMellomlagredeVedleggToVedleggFrontend(
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
-        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
     ): VedleggFrontend {
         val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
         val vedleggType = getVedleggType(vedlegg)
@@ -219,7 +219,7 @@ object VedleggMapper {
 
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
         jsonVedlegg: JsonVedlegg,
-        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
     ): List<FilFrontend> {
         return jsonVedlegg.filer
             .map { fil: JsonFiler ->

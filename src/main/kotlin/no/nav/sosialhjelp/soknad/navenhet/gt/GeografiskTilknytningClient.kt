@@ -32,7 +32,7 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {

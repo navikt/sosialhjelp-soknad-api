@@ -217,7 +217,7 @@ internal class AdresseSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = null,
             bostedsadresse = bostedsadresse,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
     }
 
@@ -234,7 +234,7 @@ internal class AdresseSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = null,
             bostedsadresse = bostedsadresse,
-            oppholdsadresse = oppholdsadresse,
+            oppholdsadresse = oppholdsadresse
         )
     }
 

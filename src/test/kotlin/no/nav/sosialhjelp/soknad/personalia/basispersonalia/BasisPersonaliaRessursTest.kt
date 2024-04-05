@@ -123,9 +123,13 @@ internal class BasisPersonaliaRessursTest {
                     .withEtternavn(ETTERNAVN)
             )
             .withStatsborgerskap(
-                if (!withStatsborgerskap) null else JsonStatsborgerskap()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(NORSK_STATSBORGERSKAP)
+                if (!withStatsborgerskap) {
+                    null
+                } else {
+                    JsonStatsborgerskap()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(NORSK_STATSBORGERSKAP)
+                }
             )
         return soknadUnderArbeid
     }

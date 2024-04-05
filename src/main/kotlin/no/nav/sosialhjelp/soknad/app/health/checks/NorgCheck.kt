@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class NorgCheck(
     @Value("\${norg_url}") private val norgUrl: String,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : DependencyCheck {
 
     override val type = DependencyType.REST

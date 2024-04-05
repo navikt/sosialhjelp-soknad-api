@@ -76,12 +76,14 @@ class FamilieSystemdata(
         val status = JsonSivilstatus.Status.fromValue(person.sivilstatus)
         return if (JsonSivilstatus.Status.GIFT != status || ektefelle == null) {
             null
-        } else JsonSivilstatus()
-            .withKilde(JsonKilde.SYSTEM)
-            .withStatus(status)
-            .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
-            .withEktefelleHarDiskresjonskode(ektefelle.ikkeTilgangTilEktefelle)
-            .withFolkeregistrertMedEktefelle(ektefelle.folkeregistrertSammen)
+        } else {
+            JsonSivilstatus()
+                .withKilde(JsonKilde.SYSTEM)
+                .withStatus(status)
+                .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
+                .withEktefelleHarDiskresjonskode(ektefelle.ikkeTilgangTilEktefelle)
+                .withFolkeregistrertMedEktefelle(ektefelle.folkeregistrertSammen)
+        }
     }
 
     private fun innhentSystemverdiForsorgerplikt(personIdentifikator: String): JsonForsorgerplikt {
@@ -131,10 +133,12 @@ class FamilieSystemdata(
                         .withMellomnavn("")
                         .withEtternavn("")
                 )
-            } else JsonEktefelle()
-                .withNavn(mapToJsonNavn(ektefelle))
-                .withFodselsdato(ektefelle.fodselsdato?.toString())
-                .withPersonIdentifikator(ektefelle.fnr)
+            } else {
+                JsonEktefelle()
+                    .withNavn(mapToJsonNavn(ektefelle))
+                    .withFodselsdato(ektefelle.fodselsdato?.toString())
+                    .withPersonIdentifikator(ektefelle.fnr)
+            }
         }
 
         private fun mapToJsonNavn(ektefelle: Ektefelle): JsonNavn {

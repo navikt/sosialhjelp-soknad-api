@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @Component
 class SoknadUnderArbeidService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kommuneInfoService: KommuneInfoService,
+    private val kommuneInfoService: KommuneInfoService
 ) {
 
     fun sjekkDuplikate(behandlingsId: String, filnavn: String) {
@@ -64,7 +64,7 @@ class SoknadUnderArbeidService(
         sha512: String,
         behandlingsId: String,
         vedleggstype: String,
-        filnavn: String,
+        filnavn: String
     ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
@@ -136,7 +136,9 @@ class SoknadUnderArbeidService(
             val now = OffsetDateTime.now(ZoneOffset.UTC)
             return if (now.nano == 0) {
                 now.plusNanos(1000000).toString()
-            } else now.toString()
+            } else {
+                now.toString()
+            }
         }
 
         private val log by logger()

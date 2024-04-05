@@ -16,7 +16,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class KodeverkCheck(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : DependencyCheck {
 
     override val type = DependencyType.REST

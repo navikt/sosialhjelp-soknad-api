@@ -40,7 +40,7 @@ class OpplastetVedleggService(
             vedleggType = OpplastetVedleggType(vedleggstype),
             data = data,
             soknadId = soknadUnderArbeid.soknadId,
-            filnavn = filnavn,
+            filnavn = filnavn
         ).also {
             opplastetVedleggRepository.opprettVedlegg(it, eier())
             soknadUnderArbeidService.oppdaterSoknadUnderArbeid(

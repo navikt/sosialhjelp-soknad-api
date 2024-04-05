@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class DigisosApiCheck(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    private val kommuneInfoClient: KommuneInfoClient,
+    private val kommuneInfoClient: KommuneInfoClient
 ) : DependencyCheck {
 
     override val type = DependencyType.REST

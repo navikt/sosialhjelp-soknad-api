@@ -58,11 +58,15 @@ class UtgifterOgGjeldSteg {
             Sporsmal(
                 tittel = "utgifter.boutgift.sporsmal",
                 erUtfylt = erBoutgifterUtfylt,
-                felt = if (erBoutgifterUtfylt) StegUtils.booleanVerdiFelt(
-                    harBoutgifter,
-                    "utgifter.boutgift.true",
-                    "utgifter.boutgift.false"
-                ) else null
+                felt = if (erBoutgifterUtfylt) {
+                    StegUtils.booleanVerdiFelt(
+                        harBoutgifter,
+                        "utgifter.boutgift.true",
+                        "utgifter.boutgift.false"
+                    )
+                } else {
+                    null
+                }
             )
         )
         if (erBoutgifterUtfylt && harBoutgifter) {
@@ -99,11 +103,15 @@ class UtgifterOgGjeldSteg {
             Sporsmal(
                 tittel = "utgifter.barn.sporsmal",
                 erUtfylt = erBarneutgifterUtfylt,
-                felt = if (erBarneutgifterUtfylt) StegUtils.booleanVerdiFelt(
-                    harBarneutgifter,
-                    "utgifter.barn.true",
-                    "utgifter.barn.false"
-                ) else null
+                felt = if (erBarneutgifterUtfylt) {
+                    StegUtils.booleanVerdiFelt(
+                        harBarneutgifter,
+                        "utgifter.barn.true",
+                        "utgifter.barn.false"
+                    )
+                } else {
+                    null
+                }
             )
         )
         if (erBarneutgifterUtfylt && harBarneutgifter) {
