@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val textService: TextService,
-    private val v2AdapterService: V2AdapterService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {

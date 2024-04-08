@@ -13,7 +13,7 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie", produces = [MediaType.APPLICATION_JSON_VALUE])
 class FamilieController(
-    private val familieService: FamilieService,
+    private val familieService: FamilieService
 ) {
     @GetMapping
     fun getFamilie(@PathVariable soknadId: UUID): FamilieDto? = familieService.findFamilie(soknadId)?.toDto()
@@ -24,14 +24,14 @@ data class FamilieDto(
     val barnebidrag: Barnebidrag? = null,
     val sivilstatus: Sivilstatus? = null,
     val ansvar: List<BarnDto> = emptyList(),
-    val ektefelle: EktefelleDto? = null,
+    val ektefelle: EktefelleDto? = null
 )
 
 data class EktefelleInput(
     val personId: String?,
     val navn: Navn,
     val fodselsdato: String? = null,
-    val borSammen: Boolean? = null,
+    val borSammen: Boolean? = null
 )
 
 data class BarnDto(
@@ -41,7 +41,7 @@ data class BarnDto(
     val borSammen: Boolean? = null,
     val folkeregistrertSammen: Boolean? = null,
     val deltBosted: Boolean? = null,
-    val samvarsgrad: Int? = null,
+    val samvarsgrad: Int? = null
 )
 
 data class EktefelleDto(
@@ -50,13 +50,13 @@ data class EktefelleDto(
     val fodselsdato: String?,
     val harDiskresjonskode: Boolean? = null,
     val folkeregistrertMedEktefelle: Boolean? = null,
-    val borSammen: Boolean? = null,
+    val borSammen: Boolean? = null
 )
 
 data class BarnInput(
     val uuid: UUID?,
     val personId: String? = null,
-    val deltBosted: Boolean? = null,
+    val deltBosted: Boolean? = null
 )
 
 fun Barn.toDto() = BarnDto(familieKey, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)

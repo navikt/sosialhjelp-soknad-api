@@ -38,7 +38,7 @@ class DigisosApiService(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val shadowProductionManager: ShadowProductionManager,
-    private val v2AdapterService: V2AdapterService,
+    private val v2AdapterService: V2AdapterService
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 

@@ -20,14 +20,14 @@ data class Kontakt(
     val telefonnummer: Telefonnummer = Telefonnummer(),
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
-    val mottaker: NavEnhet = NavEnhet(),
+    val mottaker: NavEnhet = NavEnhet()
 ) : AggregateRoot
 
 data class Telefonnummer(
     @Column("telefon_register")
     val fraRegister: String? = null,
     @Column("telefon_bruker")
-    val fraBruker: String? = null,
+    val fraBruker: String? = null
 )
 
 data class Adresser(
@@ -60,5 +60,5 @@ data class NavEnhet(
     val enhetsnummer: String? = null,
     val kommunenummer: String? = null,
     val orgnummer: String? = null,
-    val kommunenavn: String? = null,
+    val kommunenavn: String? = null
 )

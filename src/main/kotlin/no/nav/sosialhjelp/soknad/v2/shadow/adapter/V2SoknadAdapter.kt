@@ -24,24 +24,23 @@ import java.util.*
 class V2SoknadAdapter(
     private val soknadRepository: SoknadRepository,
     private val livssituasjonRepository: LivssituasjonRepository,
-    private val eierRepository: EierRepository,
+    private val eierRepository: EierRepository
 ) {
     fun createNewSoknad(soknadId: UUID, opprettetDato: LocalDateTime, eierPersonId: String) {
         soknadRepository.save(
             Soknad(
                 id = soknadId,
                 tidspunkt = Tidspunkt(opprettet = opprettetDato),
-                eierPersonId = eierPersonId,
+                eierPersonId = eierPersonId
             )
         )
     }
 
     fun saveArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>) {
         if (arbeidsforhold.isNotEmpty()) {
-
             getLivssituasjon(soknadId)
                 .run {
-                    copy(arbeid = Arbeid(arbeidsforhold = arbeidsforhold),)
+                    copy(arbeid = Arbeid(arbeidsforhold = arbeidsforhold))
                 }
                 .also { livssituasjonRepository.save(it) }
         }

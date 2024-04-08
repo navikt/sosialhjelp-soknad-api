@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 class AdresseSystemdata(
     private val personService: PersonService,
     private val hentAdresseService: HentAdresseService,
-    private val v2AdapterService: V2AdapterService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {

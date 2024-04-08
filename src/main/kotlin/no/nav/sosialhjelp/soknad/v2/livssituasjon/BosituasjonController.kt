@@ -28,7 +28,6 @@ class BosituasjonController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody bosituasjonDto: BosituasjonDto
     ): BosituasjonDto {
-
         SoknadInputValidator(BosituasjonDto::class)
             .validateAllInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
 

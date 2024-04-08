@@ -17,7 +17,6 @@ class EierService(
         kontonummerBruker: String? = null,
         harIkkeKonto: Boolean? = null
     ): Kontonummer {
-
         return getEier(soknadId)
             .run {
                 val kontonummer = this.kontonummer ?: Kontonummer()

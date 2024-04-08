@@ -62,7 +62,6 @@ class JsonContentComparatorTest {
 
     @Test
     fun `Adresseinformasjon skal ikke finnes i logg etter sammenlikning`() {
-
         val originalAdresse = createGateAdresse()
         val other = copyJsonClass(originalAdresse).apply {
             gatenavn = "En helt annen gate"

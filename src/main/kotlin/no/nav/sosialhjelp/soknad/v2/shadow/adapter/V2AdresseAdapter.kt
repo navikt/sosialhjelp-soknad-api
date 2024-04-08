@@ -29,7 +29,7 @@ object V2AdresseAdapter {
             poststed = this.poststed,
             gatenavn = this.adressenavn,
             husnummer = this.husnummer.toString(),
-            husbokstav = this.husbokstav,
+            husbokstav = this.husbokstav
         )
     }
 
@@ -46,7 +46,7 @@ object V2AdresseAdapter {
             bruksnummer = bruksnummer!!,
             festenummer = festenummer,
             seksjonsnummer = seksjonsnummer,
-            undernummer = undernummer,
+            undernummer = undernummer
         )
     }
 }

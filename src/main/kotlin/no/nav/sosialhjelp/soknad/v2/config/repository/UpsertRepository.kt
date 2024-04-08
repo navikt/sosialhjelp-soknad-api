@@ -16,7 +16,6 @@ class UpsertRepositoryImpl<T : AggregateRoot>(
     private val template: JdbcAggregateTemplate
 ) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
-
         return template.run {
             when {
                 existsById(s.soknadId, s.javaClass) -> update(s)

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class TelefonnummerSystemdata(
     private val mobiltelefonService: MobiltelefonService,
-    private val v2AdapterService: V2AdapterService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {

@@ -42,7 +42,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             input,
             KontoInformasjonDto::class.java,
-            soknadId,
+            soknadId
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
@@ -60,7 +60,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             HarIkkeKontoInput(true),
             KontoInformasjonDto::class.java,
-            soknadId,
+            soknadId
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {

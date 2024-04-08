@@ -12,7 +12,6 @@ class FamilieService(private val familieRepository: FamilieRepository) {
     }
 
     fun updateForsorger(soknadId: UUID, barnebidrag: Barnebidrag?, updated: List<Barn>): Familie {
-
         return (findFamilie(soknadId) ?: Familie(soknadId))
             .run {
                 copy(
@@ -23,7 +22,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
             .let { familieRepository.save(it) }
     }
 
-    private fun mapAnsvar(existing: Map<UUID, Barn>, updated: List<Barn>,): Map<UUID, Barn> {
+    private fun mapAnsvar(existing: Map<UUID, Barn>, updated: List<Barn>): Map<UUID, Barn> {
         return existing
             .map { (uuid, existing) ->
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs

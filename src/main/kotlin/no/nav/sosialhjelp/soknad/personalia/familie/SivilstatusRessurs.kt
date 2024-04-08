@@ -32,14 +32,14 @@ import java.text.SimpleDateFormat
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
 
     private val log by logger()
 
     @GetMapping
     fun hentSivilstatus(
-        @PathVariable("behandlingsId") behandlingsId: String,
+        @PathVariable("behandlingsId") behandlingsId: String
     ): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -53,7 +53,7 @@ class SivilstatusRessurs(
     @PutMapping
     fun updateSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody sivilstatusFrontend: SivilstatusFrontend,
+        @RequestBody sivilstatusFrontend: SivilstatusFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 

@@ -18,7 +18,7 @@ import java.util.*
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val kontaktService: KontaktService,
+    private val kontaktService: KontaktService
 ) {
     @GetMapping
     fun getAdresser(
@@ -53,7 +53,7 @@ data class AdresserDto(
     val folkeregistrertAdresse: Adresse? = null,
     val midlertidigAdresse: Adresse? = null,
     val brukerAdresse: Adresse? = null,
-    val navenhet: NavEnhetDto? = null,
+    val navenhet: NavEnhetDto? = null
 )
 
 data class NavEnhetDto(
@@ -61,7 +61,7 @@ data class NavEnhetDto(
     val orgnummer: String? = null,
     val enhetsnummer: String? = null,
     val kommunenummer: String? = null,
-    val kommunenavn: String? = null,
+    val kommunenavn: String? = null
 )
 
 fun Kontakt.toAdresserDto() =
@@ -78,6 +78,6 @@ fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
-        kommunenummer = kommunenummer,
+        kommunenummer = kommunenummer
     )
 }

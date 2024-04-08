@@ -30,14 +30,19 @@ abstract class AbstractGenericRepositoryTest {
 
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
+
     @Autowired
     protected lateinit var livssituasjonRepository: LivssituasjonRepository
+
     @Autowired
     protected lateinit var eierRepository: EierRepository
+
     @Autowired
     protected lateinit var kontaktRepository: KontaktRepository
+
     @Autowired
     protected lateinit var familieRepository: FamilieRepository
+
     @Autowired
     protected lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
@@ -55,9 +60,8 @@ abstract class AbstractGenericRepositoryTest {
      */
     protected fun <Entity : AggregateRoot, Repo> Repo.verifyCRUDOperations(
         originalEntity: Entity,
-        updatedEntity: Entity,
+        updatedEntity: Entity
     ) where Repo : UpsertRepository<Entity>, Repo : ListCrudRepository<Entity, UUID> {
-
         assertThat(originalEntity.soknadId).isEqualTo(updatedEntity.soknadId)
         assertThat(originalEntity).isNotEqualTo(updatedEntity)
 

@@ -30,7 +30,6 @@ class KontaktToJsonMapper(
     private val kontaktRepository: KontaktRepository
 ) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
-
         val kontakt = kontaktRepository.findByIdOrNull(soknadId)
             ?: throw IllegalStateException("Fant ikke Adresser")
 

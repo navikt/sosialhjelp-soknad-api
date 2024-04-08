@@ -24,7 +24,6 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente arbeid skal returnere korrekte data`() {
-
         val soknad = soknadRepository.save(opprettSoknad())
         val livssituasjon = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
@@ -34,7 +33,6 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
         )
 
         livssituasjon.arbeid?.let {
-
             assertThat(arbeidDto.kommentar).isEqualTo(it.kommentar)
 
             arbeidDto.arbeidsforholdList.forEachIndexed { index, arbeidsforholdDto ->

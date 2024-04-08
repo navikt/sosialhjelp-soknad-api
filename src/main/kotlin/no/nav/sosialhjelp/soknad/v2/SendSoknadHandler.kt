@@ -24,7 +24,7 @@ class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val kontaktService: KontaktService,
+    private val kontaktService: KontaktService
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -63,7 +63,6 @@ class SendSoknadHandler(
     }
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
-
         // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer..
         // TODO ...overens med antall vedlegg hos mellomlagring
 //        val mellomlagredeVedlegg = mellomlagringService.getAllVedlegg(soknadUnderArbeid.behandlingsId)

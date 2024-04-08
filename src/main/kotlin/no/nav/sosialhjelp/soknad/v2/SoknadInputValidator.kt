@@ -11,8 +11,9 @@ class SoknadInputValidator(private val clazz: KClass<*>) {
 
     fun validateTextInput(id: UUID?, input: String) {
         // TODO må støtte andre "normale" tegn som !,.% etc.
-        if (!input.all { it.isLetterOrDigit() || it.isWhitespace() })
+        if (!input.all { it.isLetterOrDigit() || it.isWhitespace() }) {
             throw NotValidInputException(id, "$clazz - Ugyldige tegn i tekst")
+        }
     }
 
     fun validateAllInputNotNullOrEmpty(id: UUID, vararg input: Any?) {
@@ -23,8 +24,11 @@ class SoknadInputValidator(private val clazz: KClass<*>) {
 
     private fun isVariableNullOrEmpty(variable: Any?): Boolean {
         return variable?.let {
-            if (variable is String) variable.isEmpty() || variable.isBlank()
-            else false
+            if (variable is String) {
+                variable.isEmpty() || variable.isBlank()
+            } else {
+                false
+            }
         }
             ?: true
     }

@@ -25,7 +25,7 @@ data class Eier(
     @Embedded.Empty
     val navn: Navn,
     @Embedded.Nullable
-    val kontonummer: Kontonummer? = null,
+    val kontonummer: Kontonummer? = null
 ) : AggregateRoot
 
 data class Kontonummer(
@@ -33,5 +33,5 @@ data class Kontonummer(
     @Column("konto_bruker")
     val fraBruker: String? = null,
     @Column("konto_register")
-    val fraRegister: String? = null,
+    val fraRegister: String? = null
 )

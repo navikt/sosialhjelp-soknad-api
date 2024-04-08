@@ -16,6 +16,6 @@ fun Arbeidsforhold.toV2Arbeidsforhold(): no.nav.sosialhjelp.soknad.v2.livssituas
         start = this.fom,
         slutt = this.tom,
         fastStillingsprosent = this.fastStillingsprosent?.toInt(),
-        harFastStilling = this.harFastStilling,
+        harFastStilling = this.harFastStilling
     )
 }

@@ -14,7 +14,7 @@ import java.util.*
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArbeidController(
-    private val livssituasjonService: LivssituasjonService,
+    private val livssituasjonService: LivssituasjonService
 ) {
 
     @GetMapping

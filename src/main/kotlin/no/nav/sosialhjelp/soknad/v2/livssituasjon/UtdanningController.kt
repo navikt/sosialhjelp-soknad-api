@@ -26,7 +26,7 @@ class UtdanningController(
     @PutMapping
     fun updateUtdanning(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: UtdanningInput,
+        @RequestBody input: UtdanningInput
     ): UtdanningDto {
         return when (input) {
             is IkkeStudentInput ->
@@ -40,7 +40,7 @@ class UtdanningController(
 
 data class UtdanningDto(
     val erStudent: Boolean? = null,
-    val studentgrad: Studentgrad? = null,
+    val studentgrad: Studentgrad? = null
 )
 
 private fun Utdanning.toUtdanningDto() = UtdanningDto(
@@ -50,11 +50,11 @@ private fun Utdanning.toUtdanningDto() = UtdanningDto(
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
+    include = JsonTypeInfo.As.PROPERTY
 )
 @JsonSubTypes(
     JsonSubTypes.Type(IkkeStudentInput::class),
-    JsonSubTypes.Type(StudentgradInput::class),
+    JsonSubTypes.Type(StudentgradInput::class)
 )
 interface UtdanningInput
 
