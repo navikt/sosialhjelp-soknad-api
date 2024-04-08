@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.adressesok
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -31,7 +29,6 @@ class AdressesokClient(
         return try {
             val response = baseRequest
                 .header(AUTHORIZATION, BEARER + azureAdToken())
-                .header(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
                 .bodyValue(PdlRequest(ADRESSE_SOK, variables))
                 .retrieve()
                 .bodyToMono<String>()
