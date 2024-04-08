@@ -23,7 +23,6 @@ import java.util.UUID
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
         familieRepository.findByIdOrNull(soknadId)?.let {
-
             with(jsonInternalSoknad.soknad.data.familie) {
                 sivilstatus = JsonSivilstatus()
                     .withStatus(it.sivilstatus?.toJson())

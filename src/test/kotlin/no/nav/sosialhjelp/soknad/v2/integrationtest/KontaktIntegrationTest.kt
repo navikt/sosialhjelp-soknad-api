@@ -22,7 +22,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere alle adresser for soknad`() {
-
         val soknad = soknadRepository.save(opprettSoknad())
         val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
 
@@ -56,7 +55,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id,
+            lagretSoknad.id
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {

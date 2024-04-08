@@ -11,7 +11,7 @@ import java.time.LocalDate
 private const val QUERY_PARAMS = "?fra={fra}&til={til}"
 
 class HusbankenClient(
-    private val webClient: WebClient,
+    private val webClient: WebClient
 ) {
     private val log by logger()
 

@@ -51,7 +51,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
         val barnInput = BarnInput(
             uuid = UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
-            deltBosted = true,
+            deltBosted = true
         )
         val forsorgerInput = ForsorgerInput(Barnebidrag.BETALER, listOf(barnInput))
 
@@ -59,7 +59,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
             Unit::class.java,
-            storedSoknad.id,
+            storedSoknad.id
         )
 
         familieRepository.findById(
@@ -84,7 +84,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             personId = "12345678",
             navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
             fodselsdato = "10101900",
-            borSammen = true,
+            borSammen = true
         )
         val forsorgerInput = SivilstandInput(Sivilstatus.GIFT, ektefelle)
 
@@ -92,7 +92,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
             forsorgerInput,
             Unit::class.java,
-            storedSoknad.id,
+            storedSoknad.id
         )
 
         familieRepository.findById(

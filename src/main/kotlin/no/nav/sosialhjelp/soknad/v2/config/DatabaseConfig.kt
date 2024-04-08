@@ -32,7 +32,6 @@ class DatabaseConfig(
 
     @Bean
     fun setRole(): FlywayConfigurationCustomizer {
-
         return FlywayConfigurationCustomizer { c: FluentConfiguration ->
             c.initSql("SET ROLE \"$role\"")
         }

@@ -58,7 +58,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateArbeid(
         soknadId: String,
-        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
+        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest
     ) {
         log.info("NyModell: Oppdaterer Arbeid for $soknadId")
 
@@ -72,7 +72,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBegrunnelse(
         soknadId: String,
-        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
+        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend
     ) {
         log.info("NyModell: Oppdaterer Begrunnelse for $soknadId")
 
@@ -94,7 +94,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBosituasjon(
         soknadId: String,
-        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
+        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend
     ) {
         log.info("NyModell: Oppdaterer Bosituasjon for $soknadId")
 
@@ -116,7 +116,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerInputDTO,
+        kontoInputDto: KontonummerInputDTO
     ) {
         log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
 
@@ -138,7 +138,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateTelefonnummer(
         soknadId: String,
-        telefonnummerBruker: String?,
+        telefonnummerBruker: String?
     ) {
         log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
 
@@ -150,7 +150,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateUtdanning(
         soknadId: String,
-        utdanningFrontend: UtdanningFrontend,
+        utdanningFrontend: UtdanningFrontend
     ) {
         log.info("NyModell: Oppdaterer Utdanning for $soknadId")
 
@@ -188,7 +188,7 @@ class SoknadV2ControllerAdapter(
                         ektefelle.fodselsdato,
                         familieFrontend.borSammenMed
                     )
-                },
+                }
             )
         }
         runWithNestedTransaction {

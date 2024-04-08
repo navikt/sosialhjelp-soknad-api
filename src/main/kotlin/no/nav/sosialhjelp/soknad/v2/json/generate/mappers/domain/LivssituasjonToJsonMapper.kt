@@ -35,12 +35,10 @@ class LivssituasjonToJsonMapper(
     internal companion object Mapper {
 
         fun doMapping(livssituasjon: Livssituasjon, json: JsonInternalSoknad) {
-
             // noen felter forventes i validering
             json.initializeObjects()
 
             with(json.soknad.data) {
-
                 livssituasjon.arbeid?.let { this.arbeid = it.toJsonArbeid() }
                 livssituasjon.utdanning?.let { this.utdanning = it.toJsonUtdanning() }
                 livssituasjon.bosituasjon?.let { this.bosituasjon = it.toJsonBosituasjon() }
@@ -60,8 +58,9 @@ private fun JsonInternalSoknad.initializeObjects() {
 }
 
 private fun Arbeid.toJsonArbeid(): JsonArbeid? {
-    return if (kommentar == null && arbeidsforhold.isEmpty()) null
-    else {
+    return if (kommentar == null && arbeidsforhold.isEmpty()) {
+        null
+    } else {
         JsonArbeid()
             .withKommentarTilArbeidsforhold(kommentar?.let { JsonKommentarTilArbeidsforhold().withVerdi(it) })
             .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
@@ -80,8 +79,9 @@ private fun Utdanning.toJsonUtdanning(): JsonUtdanning? {
 private fun Studentgrad.toJsonStudentgrad() = JsonUtdanning.Studentgrad.fromValue(name.lowercase())
 
 private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
-    return if (botype == null && antallHusstand == null) null
-    else {
+    return if (botype == null && antallHusstand == null) {
+        null
+    } else {
         JsonBosituasjon()
             .withBotype(botype?.toJsonBotype())
             .withAntallPersoner(antallHusstand)

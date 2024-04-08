@@ -35,7 +35,10 @@ internal class KontonummerRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
     private val kontonummerRessurs = KontonummerRessurs(
-        tilgangskontroll, soknadUnderArbeidRepository, kontonummerService, controllerAdapter
+        tilgangskontroll,
+        soknadUnderArbeidRepository,
+        kontonummerService,
+        controllerAdapter
     )
 
     @BeforeEach

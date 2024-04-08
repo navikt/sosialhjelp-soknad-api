@@ -14,7 +14,6 @@ class JsonCompareErrorLogger(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun logAllErrors() {
-
         getFieldFailures().forEach { logError(it) }
         getFieldMissing().forEach { logError(it) }
         getArraySizeErrorList().forEach { logError(it) }

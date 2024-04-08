@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentBegrunnelse(

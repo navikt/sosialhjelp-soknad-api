@@ -24,7 +24,7 @@ class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerService: KontonummerService,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentKontonummer(

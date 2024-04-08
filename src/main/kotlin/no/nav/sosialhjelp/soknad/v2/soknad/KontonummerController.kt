@@ -59,11 +59,11 @@ data class KontoInformasjonDto(
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
+    include = JsonTypeInfo.As.PROPERTY
 )
 @JsonSubTypes(
     JsonSubTypes.Type(HarIkkeKontoInput::class),
-    JsonSubTypes.Type(KontonummerBrukerInput::class),
+    JsonSubTypes.Type(KontonummerBrukerInput::class)
 )
 interface KontoInput
 

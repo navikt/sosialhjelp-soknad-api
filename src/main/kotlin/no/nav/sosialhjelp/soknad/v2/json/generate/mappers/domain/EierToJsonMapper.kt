@@ -22,7 +22,6 @@ class EierToJsonMapper(
     private val eierRepository: EierRepository
 ) : DomainToJsonMapper {
     override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
-
         val eier = (
             eierRepository.findByIdOrNull(soknadId)
                 ?: throw IllegalStateException("Fant ikke Eier")
@@ -34,7 +33,6 @@ class EierToJsonMapper(
     internal companion object Mapper {
 
         fun doMapping(eier: Eier, json: JsonInternalSoknad) {
-
             json.initializeObjects()
 
             with(json.soknad.data.personalia) {

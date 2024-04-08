@@ -18,7 +18,6 @@ class ShadowProductionManager(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun createAndCompareShadowJson(soknadId: String, original: JsonInternalSoknad?) {
-
         original?.let {
             kotlin.runCatching {
                 jsonGenerator.copyAndMerge(soknadId, original).let { copy ->

@@ -43,7 +43,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Slette soknad som ikke finnes skal gi 404`() {
-
         val randomUUID = UUID.randomUUID()
         webTestClient
             .delete()

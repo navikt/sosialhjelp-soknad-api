@@ -46,13 +46,13 @@ class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val textService: TextService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
     private val log by logger()
 
     @GetMapping
     fun hentForsorgerplikt(
-        @PathVariable("behandlingsId") behandlingsId: String,
+        @PathVariable("behandlingsId") behandlingsId: String
     ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = eier()
@@ -66,7 +66,7 @@ class ForsorgerpliktRessurs(
     @PutMapping
     fun updateForsorgerplikt(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend,
+        @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
@@ -88,7 +88,7 @@ class ForsorgerpliktRessurs(
     private fun updateBarnebidrag(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
         jsonInternalSoknad: JsonInternalSoknad,
-        forsorgerplikt: JsonForsorgerplikt,
+        forsorgerplikt: JsonForsorgerplikt
     ) {
         val barnebidragType = "barnebidrag"
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
@@ -134,7 +134,7 @@ class ForsorgerpliktRessurs(
     private fun updateAnsvarAndHarForsorgerplikt(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
         jsonInternalSoknad: JsonInternalSoknad,
-        forsorgerplikt: JsonForsorgerplikt,
+        forsorgerplikt: JsonForsorgerplikt
     ) {
         val systemAnsvar: List<JsonAnsvar> =
             when (forsorgerplikt.ansvar) {

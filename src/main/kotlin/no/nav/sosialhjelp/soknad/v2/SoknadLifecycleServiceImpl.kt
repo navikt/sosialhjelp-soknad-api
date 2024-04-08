@@ -17,7 +17,7 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val registerDataFetcher: RegisterDataFetcher,
     private val soknadService: SoknadService,
-    private val kontaktService: KontaktService,
+    private val kontaktService: KontaktService
 ) : SoknadLifecycleService {
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()

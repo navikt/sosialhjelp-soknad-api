@@ -24,7 +24,7 @@ class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentTelefonnummer(

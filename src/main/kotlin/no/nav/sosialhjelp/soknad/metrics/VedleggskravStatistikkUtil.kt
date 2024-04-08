@@ -16,7 +16,6 @@ object VedleggskravStatistikkUtil {
     private val mapper = jacksonObjectMapper()
 
     fun genererVedleggskravStatistikk(json: JsonInternalSoknad): VedleggskravStatistikk {
-
         val vedleggList = convertToVedleggMetadataListe(json).vedleggListe
 
         var antallInnsendt = 0
@@ -100,7 +99,7 @@ object VedleggskravStatistikkUtil {
                     skjema = it.type,
                     tillegg = it.tilleggsinfo,
                     filnavn = it.type,
-                    status = Vedleggstatus.valueOf(it.status),
+                    status = Vedleggstatus.valueOf(it.status)
                 )
             }.toMutableList()
         return vedleggMetadataListe

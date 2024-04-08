@@ -33,7 +33,7 @@ class AdresseRessurs(
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -122,7 +122,7 @@ class AdresseRessurs(
         soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
             behandlingsId,
             adresserFrontend,
-            navEnhetFrontend,
+            navEnhetFrontend
         )
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()

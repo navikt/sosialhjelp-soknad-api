@@ -58,7 +58,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             inputBegrunnelse,
             BegrunnelseDto::class.java,
-            soknad.id,
+            soknad.id
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {

@@ -25,7 +25,7 @@ class SoknadV2AdapterService(
     private val livssituasjonService: LivssituasjonService,
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService,
+    private val eierService: EierService
 ) : V2AdapterService {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -65,7 +65,7 @@ class SoknadV2AdapterService(
                 kontaktService.saveAdresserRegister(
                     soknadId = UUID.fromString(soknadId),
                     folkeregistrertAdresse = it.bostedsadresse?.toV2Adresse(hentAdresseService),
-                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
+                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse()
                 )
             }
                 .onFailure { log.error("NyModell: Legge til Adresser feilet for $soknadId", it) }
@@ -119,9 +119,9 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
         navn = Navn(
             fornavn = this.navn.fornavn,
             mellomnavn = this.navn.mellomnavn,
-            etternavn = this.navn.etternavn,
+            etternavn = this.navn.etternavn
         ),
         statsborgerskap = this.statsborgerskap.verdi,
-        nordiskBorger = this.nordiskBorger.verdi,
+        nordiskBorger = this.nordiskBorger.verdi
     )
 }

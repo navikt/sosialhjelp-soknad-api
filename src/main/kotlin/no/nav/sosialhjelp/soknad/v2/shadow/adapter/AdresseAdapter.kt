@@ -66,7 +66,7 @@ class AdresseAdapter(
             adresselinjer = tilleggsnavn?.let { listOf(it) } ?: emptyList(),
             bolignummer = bruksenhetsnummer,
             poststed = poststed,
-            gatenavn = adressenavn,
+            gatenavn = adressenavn
         )
     }
 

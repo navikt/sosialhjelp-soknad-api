@@ -22,7 +22,7 @@ data class Livssituasjon(
     @Embedded.Nullable
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
-    val bosituasjon: Bosituasjon? = null,
+    val bosituasjon: Bosituasjon? = null
 ) : AggregateRoot
 
 data class Bosituasjon(
@@ -39,7 +39,7 @@ data class Arbeid(
     @Column("kommentar_arbeidsforhold")
     val kommentar: String? = null,
     @MappedCollection(idColumn = "soknad_id", keyColumn = "index")
-    val arbeidsforhold: List<Arbeidsforhold> = emptyList(),
+    val arbeidsforhold: List<Arbeidsforhold> = emptyList()
 )
 
 data class Arbeidsforhold(

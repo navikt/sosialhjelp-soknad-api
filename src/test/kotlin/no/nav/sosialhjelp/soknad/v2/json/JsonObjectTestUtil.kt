@@ -163,7 +163,7 @@ fun createJsonForsorgerplikt(): JsonForsorgerplikt {
 fun createJsonAnsvarListe(): List<JsonAnsvar> {
     return listOf(
         createJsonAnsvar("01011054251", "2010-01-01", "Jentebarn", "Nordmann"),
-        createJsonAnsvar("01011542323", "2015-01-01", "Guttebarn", "Nordmann"),
+        createJsonAnsvar("01011542323", "2015-01-01", "Guttebarn", "Nordmann")
     )
 }
 
@@ -197,7 +197,7 @@ fun createJsonArbeid(): JsonArbeid? {
 fun createJsonArbeidsforholdList(): List<JsonArbeidsforhold> {
     return listOf(
         createJsonArbeidsforhold("Skatteetaten", "2010-01-01", "2015-12-31"),
-        createJsonArbeidsforhold("NAV", "2016-01-01", null),
+        createJsonArbeidsforhold("NAV", "2016-01-01", null)
     )
 }
 
@@ -272,7 +272,7 @@ fun createOpplysningUtbetalingKomponentList(): List<JsonOkonomiOpplysningUtbetal
             this.satsType = "Prosent"
             this.satsBelop = 0.25
             this.satsAntall = 2.00
-        },
+        }
     )
 }
 
@@ -384,7 +384,7 @@ fun createOkonomiOversiktUtgiftList(): List<JsonOkonomioversiktUtgift> {
             this.tittel = "Båtutgifter"
             this.belop = 5000
             this.overstyrtAvBruker = false
-        },
+        }
     )
 }
 
@@ -405,7 +405,7 @@ fun createOkonomiOversiktInntektList(): List<JsonOkonomioversiktInntekt> {
             this.brutto = 1000
             this.netto = 800
             this.overstyrtAvBruker = false
-        },
+        }
     )
 }
 
@@ -424,7 +424,7 @@ fun createOkonomiOversiktFormueList(): List<JsonOkonomioversiktFormue> {
             this.tittel = "Bil"
             this.belop = 50000
             this.overstyrtAvBruker = false
-        },
+        }
     )
 }
 
@@ -477,7 +477,7 @@ fun createJsonVedleggSpesifikasjon(): JsonVedleggSpesifikasjon {
                     JsonFiler().apply {
                         this.sha512 = UUID.randomUUID().toString()
                         this.filnavn = "vedlegg.pdf"
-                    },
+                    }
                 )
             },
             JsonVedlegg().apply {
@@ -494,9 +494,9 @@ fun createJsonVedleggSpesifikasjon(): JsonVedleggSpesifikasjon {
                     JsonFiler().apply {
                         this.sha512 = UUID.randomUUID().toString()
                         this.filnavn = "lonnsslipp_juni.pdf"
-                    },
+                    }
                 )
-            },
+            }
         )
     }
 }

@@ -24,7 +24,7 @@ class SoknadService(
     fun createSoknad(
         eierId: String,
         soknadId: UUID? = null,
-        opprettetDato: LocalDateTime? = null,
+        opprettetDato: LocalDateTime? = null
     ): UUID {
         return Soknad(
             id = soknadId ?: UUID.randomUUID(),

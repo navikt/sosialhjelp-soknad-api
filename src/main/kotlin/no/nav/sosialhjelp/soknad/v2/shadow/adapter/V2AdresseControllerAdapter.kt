@@ -20,9 +20,9 @@ import java.util.*
 @Component
 class V2AdresseControllerAdapter(
     private val adresseController: AdresseController,
-    private val kontaktRepository: KontaktRepository,
+    private val kontaktRepository: KontaktRepository
 ) {
-    fun updateAdresse(soknadId: UUID, adresseValg: JsonAdresseValg, adresseSoknad: AdresseFrontend?,) {
+    fun updateAdresse(soknadId: UUID, adresseValg: JsonAdresseValg, adresseSoknad: AdresseFrontend?) {
         AdresserInput(
             adresseValg = adresseValg.toAdresseValg(),
             brukerAdresse = adresseSoknad?.toAdresse()
@@ -45,7 +45,7 @@ private fun NavEnhetFrontend.toNavEnhet(): NavEnhet {
         kommunenavn = kommunenavn,
         enhetsnavn = enhetsnavn,
         enhetsnummer = enhetsnr,
-        orgnummer = orgnr,
+        orgnummer = orgnr
     )
 }
 
@@ -75,6 +75,6 @@ private fun GateadresseFrontend.toV2Adresse(): Adresse {
         poststed = poststed,
         gatenavn = gatenavn,
         husnummer = husnummer,
-        husbokstav = husbokstav,
+        husbokstav = husbokstav
     )
 }

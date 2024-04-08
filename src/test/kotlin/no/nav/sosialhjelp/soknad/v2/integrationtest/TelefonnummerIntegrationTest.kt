@@ -40,7 +40,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
             TelefonnummerDto::class.java,
-            soknad.id,
+            soknad.id
         ).also {
             assertThat(it.telefonnummerBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
@@ -58,7 +58,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerInput("asb23231"),
             HttpStatus.BAD_REQUEST,
-            soknad.id,
+            soknad.id
         )
     }
 }

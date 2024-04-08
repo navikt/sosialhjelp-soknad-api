@@ -28,7 +28,6 @@ class KontaktMapperTest {
 
     @Test
     fun `Kontakt skal mappes til JsonInternalSoknad`() {
-
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
         val kontakt = opprettKontakt(UUID.randomUUID())
 

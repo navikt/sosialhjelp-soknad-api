@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String): BosituasjonFrontend {
