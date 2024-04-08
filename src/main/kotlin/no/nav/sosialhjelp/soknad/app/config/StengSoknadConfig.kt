@@ -13,7 +13,7 @@ import java.time.Month
 
 @Profile("!test")
 @Configuration
-class StengSoknadConfig: WebMvcConfigurer {
+class StengSoknadConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(StengSoknadInterceptor)
