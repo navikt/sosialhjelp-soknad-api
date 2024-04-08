@@ -62,7 +62,7 @@ class EttersendingService(
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
             status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(clock),
-            sistEndretDato = LocalDateTime.now(clock),
+            sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(ettersendelse)
         return ettersendelse.behandlingsId
@@ -139,7 +139,7 @@ class EttersendingService(
                 "soknadens dato: ${soknad.innsendtDato?.format(dateTimeFormatter)}, " +
                 "frist($ETTERSENDELSE_FRIST_DAGER dager): ${frist?.format(dateTimeFormatter)}. " +
                 "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
-                "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
+                "Antall nyere søknader denne brukeren har: $antallNyereSoknader"
         )
     }
 

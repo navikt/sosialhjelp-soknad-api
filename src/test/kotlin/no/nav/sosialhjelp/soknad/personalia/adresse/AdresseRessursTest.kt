@@ -350,11 +350,13 @@ internal class AdresseRessursTest {
     private fun getSelectedAdresse(valg: JsonAdresseValg?): JsonAdresse? {
         return if (valg == null) {
             null
-        } else when (valg) {
-            JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
-            JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
-            JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
-            else -> null
+        } else {
+            when (valg) {
+                JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
+                JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
+                JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
+                else -> null
+            }
         }
     }
 

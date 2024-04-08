@@ -22,12 +22,13 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/vedlegg/konverter")
 class FileConverterController(
     private val fileConverterService: FileConverterService,
-    private val virusScanner: VirusScanner,
+    private val virusScanner: VirusScanner
 ) {
     @Operation(summary = "Konverterer vedlegg til PDF")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ApiResponse(
-        responseCode = "200", description = "Vedlegg konvertert til PDF",
+        responseCode = "200",
+        description = "Vedlegg konvertert til PDF",
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_PDF_VALUE,
@@ -36,7 +37,7 @@ class FileConverterController(
         ]
     )
     fun konverterVedlegg(
-        @RequestParam("file") file: MultipartFile,
+        @RequestParam("file") file: MultipartFile
     ): ResponseEntity<ByteArray> {
         val upload = FileConversionUpload(file)
 

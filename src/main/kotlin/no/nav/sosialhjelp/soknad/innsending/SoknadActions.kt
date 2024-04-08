@@ -40,7 +40,7 @@ class SoknadActions(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val digisosApiService: DigisosApiService,
-    private val nedetidService: NedetidService,
+    private val nedetidService: NedetidService
 ) {
     @PostMapping("/send")
     fun sendSoknad(

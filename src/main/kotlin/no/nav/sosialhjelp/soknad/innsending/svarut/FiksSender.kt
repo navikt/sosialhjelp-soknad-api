@@ -88,7 +88,9 @@ class FiksSender(
         return if (soknadMetadata.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
                 .withId(UUID.fromString(innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)))
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun validerAtEttersendelseSinSoknadHarForsendelseId(

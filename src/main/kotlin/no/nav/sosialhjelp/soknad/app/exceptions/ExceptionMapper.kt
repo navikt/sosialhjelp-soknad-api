@@ -184,8 +184,11 @@ class ExceptionMapper(
 
                 return ResponseEntity
                     .status(
-                        if (e.httpStatus.is4xxClientError) HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                        else HttpStatus.SERVICE_UNAVAILABLE
+                        if (e.httpStatus.is4xxClientError) {
+                            HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                        } else {
+                            HttpStatus.SERVICE_UNAVAILABLE
+                        }
                     )
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(

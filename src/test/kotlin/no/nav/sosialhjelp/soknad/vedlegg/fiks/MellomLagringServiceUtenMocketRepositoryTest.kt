@@ -54,7 +54,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-
         mockkObject(SubjectHandlerUtils)
         mockkObject(VedleggUtils)
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns lagMellomlagringDto()
@@ -72,7 +71,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } just runs
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
@@ -99,7 +97,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal ikke oppdatere soknad_under_arbeid med filer i vedlegg hvis feil kaller mot FIKS`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } throws (IllegalStateException("feil"))
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)

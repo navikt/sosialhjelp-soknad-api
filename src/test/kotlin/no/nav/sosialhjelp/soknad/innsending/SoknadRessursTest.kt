@@ -297,7 +297,7 @@ internal class SoknadRessursTest {
 
         private fun createSoknadUnderArbeid(
             eier: String,
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier)
         ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,

@@ -158,7 +158,7 @@ class SoknadLockManager(
     data class TimestampedLock(
         val mutex: Mutex = Mutex(),
         val clock: Clock = Clock.systemDefaultZone(),
-        val timestamp: ZonedDateTime = ZonedDateTime.now(clock),
+        val timestamp: ZonedDateTime = ZonedDateTime.now(clock)
     ) {
         private var lastLockAttempt: Long = 0L
 

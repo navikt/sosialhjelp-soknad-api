@@ -91,10 +91,12 @@ class SivilstatusRessurs(
     private fun mapToJsonEktefelle(ektefelle: EktefelleFrontend?): JsonEktefelle? {
         return if (ektefelle == null) {
             null
-        } else JsonEktefelle()
-            .withNavn(mapToJsonNavn(ektefelle.navn))
-            .withFodselsdato(ektefelle.fodselsdato)
-            .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer))
+        } else {
+            JsonEktefelle()
+                .withNavn(mapToJsonNavn(ektefelle.navn))
+                .withFodselsdato(ektefelle.fodselsdato)
+                .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer))
+        }
     }
 
     private fun getFnr(fodselsdato: String?, personnummer: String?): String? {

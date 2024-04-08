@@ -73,7 +73,9 @@ class UtdanningRessurs(
         private fun toStudentgradErHeltid(studentgrad: Studentgrad?): Boolean? {
             return if (studentgrad == null) {
                 null
-            } else studentgrad == Studentgrad.HELTID
+            } else {
+                studentgrad == Studentgrad.HELTID
+            }
         }
 
         private fun toStudentgrad(studentgrad: Boolean?): Studentgrad? {

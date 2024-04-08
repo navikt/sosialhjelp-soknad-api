@@ -43,7 +43,8 @@ internal class MellomlagringServiceTest {
     private val kommuneInfoService: KommuneInfoService = mockk()
 
     private val soknadUnderArbeidService = SoknadUnderArbeidService(
-        soknadUnderArbeidRepository, kommuneInfoService
+        soknadUnderArbeidRepository,
+        kommuneInfoService
     )
 
     private val mellomlagringService = MellomlagringService(
@@ -72,14 +73,12 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere tom liste når det ikke finnes innslag for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
     }
 
     @Test
     internal fun `skal returnere tom liste når det ikke finnes vedlegg for gitt behandlingsid`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = null
@@ -89,7 +88,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere liste med vedlegg når det finnes mellomlagrede vedlegg`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -103,7 +101,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal ikke finne vedlegg for id dersom behandlingsid ikke finnes i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getVedlegg("behandlingsId", "vedleggId")).isNull()
         verify(exactly = 0) { mellomlagringClient.getVedlegg(any(), any()) }
@@ -111,7 +108,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere 0 vedlegg dersom det ikke ligger vedlegg for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = null
@@ -122,7 +118,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere 0 vedlegg dersom vedleggid ikke finnes i liste over vedlegg`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -135,7 +130,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     internal fun `skal returnere riktig vedlegg dersom vedleggsid finnes for behandlingsid i mellomlager`() {
-
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto(
             navEksternRefId = "behandlingsId",
             mellomlagringMetadataList = listOf(
@@ -150,7 +144,6 @@ internal class MellomlagringServiceTest {
 
     @Test
     fun `Test uploade fil som ikke stottes`() {
-
         val behandlingsId = "123"
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 

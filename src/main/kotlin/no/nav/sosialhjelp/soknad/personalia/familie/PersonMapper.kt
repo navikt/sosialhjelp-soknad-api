@@ -13,10 +13,12 @@ object PersonMapper {
     fun mapToJsonNavn(navn: NavnFrontend?): JsonNavn? {
         return if (navn == null) {
             null
-        } else JsonNavn()
-            .withFornavn(navn.fornavn ?: "")
-            .withMellomnavn(navn.mellomnavn ?: "")
-            .withEtternavn(navn.etternavn ?: "")
+        } else {
+            JsonNavn()
+                .withFornavn(navn.fornavn ?: "")
+                .withMellomnavn(navn.mellomnavn ?: "")
+                .withEtternavn(navn.etternavn ?: "")
+        }
     }
 
     fun fulltNavn(navn: JsonNavn): String {

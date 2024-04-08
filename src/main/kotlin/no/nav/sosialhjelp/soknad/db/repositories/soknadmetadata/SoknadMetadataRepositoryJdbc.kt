@@ -138,7 +138,7 @@ class SoknadMetadataRepositoryJdbc(
 
     override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
         fnr: String,
-        tidsgrense: LocalDateTime,
+        tidsgrense: LocalDateTime
     ): List<SoknadMetadata> {
         return jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",

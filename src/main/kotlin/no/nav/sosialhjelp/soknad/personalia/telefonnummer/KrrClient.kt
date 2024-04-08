@@ -29,7 +29,7 @@ class KrrClient(
     @Value("\${krr_scope}") private val krrScope: String,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
 

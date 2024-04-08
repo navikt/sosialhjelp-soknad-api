@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class KrrService(
     private val krrClient: KrrClient,
-    private val redisService: RedisService,
+    private val redisService: RedisService
 ) {
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
