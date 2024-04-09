@@ -18,9 +18,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs.UtdanningFrontend
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -32,13 +32,15 @@ internal class UtdanningRessursTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
+    private val controllerAdapter: ControllerAdapter = mockk()
 
-    private val utdanningRessurs = UtdanningRessurs(tilgangskontroll, soknadUnderArbeidRepository)
+    private val utdanningRessurs = UtdanningRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
 
     @BeforeEach
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { controllerAdapter.updateUtdanning(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 

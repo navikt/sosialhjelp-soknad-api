@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
@@ -9,6 +8,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -17,11 +17,16 @@ import org.springframework.web.context.request.ServletRequestAttributes
 class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val environment: Environment
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
-        XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId, MiljoUtils.isMockAltProfil())
+        XsrfGenerator.sjekkXsrfToken(
+            request.getHeader("X-XSRF-TOKEN"),
+            behandlingsId,
+            environment.activeProfiles.contains("mock-alt")
+        )
         verifiserBrukerHarTilgangTilSoknad(behandlingsId)
     }
 

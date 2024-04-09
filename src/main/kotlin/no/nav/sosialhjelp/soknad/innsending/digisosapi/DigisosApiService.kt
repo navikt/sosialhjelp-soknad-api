@@ -19,11 +19,14 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class DigisosApiService(
@@ -33,7 +36,9 @@ class DigisosApiService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val dokumentListeService: DokumentListeService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val clock: Clock
+    private val clock: Clock,
+    private val shadowProductionManager: ShadowProductionManager,
+    private val v2AdapterService: V2AdapterService
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -42,7 +47,12 @@ class DigisosApiService(
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
+        val innsendingsTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
+
+        // Ny modell
+        v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
+
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
@@ -69,16 +79,23 @@ class DigisosApiService(
                 token = token
             )
         } catch (e: Exception) {
-            prometheusMetricsService.reportFeiletMedDigisosApi()
+            prometheusMetricsService.reportFeilet()
             throw e
         }
 
         genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendtMedDigisosApi()
+        prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
 
+        // Nymodell - Skyggeproduksjon - Sammenlikning av filer
+        shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)
+
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
+
+        // Ny Modell
+        v2AdapterService.slettSoknad(soknadUnderArbeid.behandlingsId)
+
         return digisosId
     }
 

@@ -1,23 +1,22 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Transactional
+@ActiveProfiles("no-redis", "test", "test-container")
 internal class SoknadMetadataRepositoryJdbcTest {
 
-    private val behandlingsId = "1100AAAAA"
+    private val behandlingsId = UUID.randomUUID().toString()
 
     @Autowired
     private lateinit var soknadMetadataRepository: SoknadMetadataRepository
@@ -52,7 +51,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
         dagerSiden: Int
     ): SoknadMetadata {
         return SoknadMetadata(
-            id = soknadMetadataRepository.hentNesteId(),
+            id = 0,
             behandlingsId = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

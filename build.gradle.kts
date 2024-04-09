@@ -52,6 +52,10 @@ dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
 
+    developmentOnly(libs.spring.boot.docker.compose)
+
+    implementation("org.skyscreamer:jsonassert:1.5.1")
+
     // Coroutines
     implementation(libs.bundles.coroutines)
 
@@ -71,8 +75,9 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    runtimeOnly(libs.ojdbc10)
-    runtimeOnly(libs.hsqldb)
+    implementation(libs.vault.jdbc)
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
+    runtimeOnly("org.postgresql:postgresql:42.7.1")
 
     // redis
     implementation(libs.lettuce.core)
@@ -108,11 +113,16 @@ dependencies {
     // pdf
     implementation(libs.bundles.pdfbox)
 
+    // testcontainers
+    testImplementation("org.testcontainers:postgresql:1.19.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 group = "no.nav.sosialhjelp"

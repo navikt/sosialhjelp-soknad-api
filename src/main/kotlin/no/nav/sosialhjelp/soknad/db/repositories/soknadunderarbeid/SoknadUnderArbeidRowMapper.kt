@@ -18,14 +18,14 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
             behandlingsId = rs.getString("behandlingsid"),
             tilknyttetBehandlingsId = rs.getString("tilknyttetbehandlingsid"),
             eier = rs.getString("eier"),
-            jsonInternalSoknad = mapDataToJsonInternalSoknad(rs.getBytes("data")),
+            jsonInternalSoknad = mapDataToJsonInternalSoknad(rs.getString("data")),
             status = SoknadUnderArbeidStatus.valueOf(rs.getString("status")),
             opprettetDato = rs.getTimestamp("opprettetdato").toLocalDateTime(),
             sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime()
         )
     }
 
-    private fun mapDataToJsonInternalSoknad(data: ByteArray?): JsonInternalSoknad? {
+    private fun mapDataToJsonInternalSoknad(data: String?): JsonInternalSoknad? {
         return data?.let {
             try {
                 mapper.readValue(data, JsonInternalSoknad::class.java)

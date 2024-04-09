@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -9,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -18,7 +20,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -26,7 +30,13 @@ internal class AdresseSystemdataTest {
 
     private val personService: PersonService = mockk()
     private val hentAdresseService: HentAdresseService = mockk()
-    private val adresseSystemdata = AdresseSystemdata(personService, hentAdresseService)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val adresseSystemdata = AdresseSystemdata(personService, hentAdresseService, v2AdapterService)
+
+    @BeforeEach
+    fun setup() {
+        every { v2AdapterService.addAdresserRegister(any(), any()) } just runs
+    }
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
@@ -102,7 +112,7 @@ internal class AdresseSystemdataTest {
             gaardsnummer = "gaardsnummer",
             bruksnummer = "H0101",
             festenummer = "F4",
-            seksjonsunmmer = null,
+            seksjonsnummer = null,
             undernummer = "under1",
             bydelsnummer = "030107"
         )
@@ -120,7 +130,7 @@ internal class AdresseSystemdataTest {
         assertThat(matrikkeladresse.gaardsnummer).isEqualTo(kartverketMatrikkelAdresse.gaardsnummer)
         assertThat(matrikkeladresse.bruksnummer).isEqualTo(kartverketMatrikkelAdresse.bruksnummer)
         assertThat(matrikkeladresse.festenummer).isEqualTo(kartverketMatrikkelAdresse.festenummer)
-        assertThat(matrikkeladresse.seksjonsnummer).isEqualTo(kartverketMatrikkelAdresse.seksjonsunmmer)
+        assertThat(matrikkeladresse.seksjonsnummer).isEqualTo(kartverketMatrikkelAdresse.seksjonsnummer)
         assertThat(matrikkeladresse.undernummer).isEqualTo(kartverketMatrikkelAdresse.undernummer)
     }
 

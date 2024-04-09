@@ -8,7 +8,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -17,12 +17,12 @@ import java.time.LocalDateTime
 
 internal class SlettForeldedeEttersendelserSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
-    private val soknadService: SoknadService = mockk()
+    private val soknadServiceOld: SoknadServiceOld = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
 
     private val scheduler = SlettForeldedeEttersendelserScheduler(
         leaderElection,
-        soknadService,
+        soknadServiceOld,
         batchSoknadUnderArbeidRepository,
         batchEnabled = true,
         schedulerDisabled = false
@@ -52,12 +52,12 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
         )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
-        every { soknadService.settSoknadMetadataAvbrutt(any(), any()) } just runs
+        every { soknadServiceOld.settSoknadMetadataAvbrutt(any(), any()) } just runs
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
 
         scheduler.slettForeldedeEttersendelser()
 
-        verify { soknadService.settSoknadMetadataAvbrutt(behandlingsId, true) }
+        verify { soknadServiceOld.settSoknadMetadataAvbrutt(behandlingsId, true) }
         verify { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
     }
 
@@ -81,7 +81,7 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
 
         scheduler.slettForeldedeEttersendelser()
 
-        verify(exactly = 0) { soknadService.settSoknadMetadataAvbrutt(behandlingsId, true) }
+        verify(exactly = 0) { soknadServiceOld.settSoknadMetadataAvbrutt(behandlingsId, true) }
         verify(exactly = 0) { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
     }
 }

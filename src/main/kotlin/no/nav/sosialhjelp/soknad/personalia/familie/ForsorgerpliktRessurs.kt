@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
@@ -28,6 +29,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -43,8 +45,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val textService: TextService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val controllerAdapter: ControllerAdapter
 ) {
+    private val log by logger()
+
     @GetMapping
     fun hentForsorgerplikt(
         @PathVariable("behandlingsId") behandlingsId: String
@@ -73,6 +78,11 @@ class ForsorgerpliktRessurs(
         updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+        runCatching {
+            controllerAdapter.updateForsorger(behandlingsId, forsorgerpliktFrontend)
+        }.onFailure {
+            log.error("Noe feilet under oppdatering av forsorgerplikt i ny datamodell", it)
+        }
     }
 
     private fun updateBarnebidrag(

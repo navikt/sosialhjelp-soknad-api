@@ -17,6 +17,6 @@ class DbCheck(
     override val importance = Importance.CRITICAL
 
     override fun doCheck() {
-        jdbcTemplate.queryForList("select * from dual")
+        jdbcTemplate.queryForList("select 1")
     }
 }

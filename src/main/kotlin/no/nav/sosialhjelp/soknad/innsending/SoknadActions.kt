@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadActions(
-    private val soknadService: SoknadService,
+    private val soknadServiceOld: SoknadServiceOld,
     private val kommuneInfoService: KommuneInfoService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,

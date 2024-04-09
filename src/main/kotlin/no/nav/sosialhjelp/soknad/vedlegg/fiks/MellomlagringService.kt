@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
+import java.util.*
 
 @Component
 class MellomlagringService(
@@ -132,6 +133,11 @@ class MellomlagringService(
         }
     }
 
+    fun deleteAll(soknadId: UUID) {
+        mellomlagringClient.deleteAllVedlegg(soknadId.toString())
+    }
+
+    // TODO Kan formålet gjøres annerledes (miljøvariable etc.) for å unngå miljøspesifikk logikk i koden
     private fun getNavEksternId(behandlingsId: String) =
         if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 

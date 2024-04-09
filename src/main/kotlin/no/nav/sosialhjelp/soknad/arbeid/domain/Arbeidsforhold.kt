@@ -8,3 +8,14 @@ data class Arbeidsforhold(
     val fastStillingsprosent: Long? = 0L,
     val harFastStilling: Boolean?
 )
+
+fun Arbeidsforhold.toV2Arbeidsforhold(): no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold {
+    return no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold(
+        orgnummer = this.orgnr,
+        arbeidsgivernavn = this.arbeidsgivernavn,
+        start = this.fom,
+        slutt = this.tom,
+        fastStillingsprosent = this.fastStillingsprosent?.toInt(),
+        harFastStilling = this.harFastStilling
+    )
+}

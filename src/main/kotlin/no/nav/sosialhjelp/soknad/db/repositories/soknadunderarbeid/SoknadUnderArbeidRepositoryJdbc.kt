@@ -8,18 +8,17 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
-import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
+@Deprecated("Gammel logikk - nye søknader skal håndteres via SoknadRepository")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 class SoknadUnderArbeidRepositoryJdbc(
@@ -33,15 +32,12 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
+    @Deprecated("Gammel logikk. Nye søknader skal lagres via SoknadRepository")
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
-        val soknadUnderArbeidId = jdbcTemplate.queryForObject(
-            SQLUtils.selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"),
-            Long::class.java
-        )
+
         jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?,?)",
-            soknadUnderArbeidId,
+            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
             soknadUnderArbeid.tilknyttetBehandlingsId,
@@ -51,9 +47,11 @@ class SoknadUnderArbeidRepositoryJdbc(
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
         )
-        return soknadUnderArbeidId
+
+        return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
@@ -63,6 +61,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -72,6 +71,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -81,6 +81,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
         eier: String
@@ -94,6 +95,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Deprecated("Gammelt repository")
     override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -125,6 +127,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         soknadUnderArbeid.sistEndretDato = sistEndretDato
     }
 
+    @Deprecated("Gammelt repository")
     override fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
@@ -140,12 +143,12 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
+    @Deprecated("Gammelt repository")
     override fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
                 val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                     eier,
@@ -167,11 +170,12 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
-    private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): ByteArray {
+    private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): String {
         return try {
-            val internalSoknad = writer.writeValueAsString(jsonInternalSoknad)
-            JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad)
-            internalSoknad.toByteArray(StandardCharsets.UTF_8)
+            writer.writeValueAsString(jsonInternalSoknad)
+                .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(it) }
+
+//            internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
             log.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e)
             throw RuntimeException(e)

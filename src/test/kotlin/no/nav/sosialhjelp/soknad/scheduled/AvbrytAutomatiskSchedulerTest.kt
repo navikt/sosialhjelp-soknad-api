@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataTy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
@@ -93,7 +93,7 @@ internal class AvbrytAutomatiskSchedulerTest {
             behandlingsId = BEHANDLINGS_ID,
             tilknyttetBehandlingsId = null,
             eier = "11111111111",
-            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
+            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
