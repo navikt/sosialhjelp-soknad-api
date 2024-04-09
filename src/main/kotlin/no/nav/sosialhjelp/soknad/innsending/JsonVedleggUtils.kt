@@ -23,7 +23,7 @@ object JsonVedleggUtils {
     /** Returnerer vedleggene fra SoknadUnderArbeid som er av samme type som vedleggFrontend */
     fun vedleggByFrontendType(
         soknad: SoknadUnderArbeid,
-        type: VedleggType,
+        type: VedleggType
     ): List<JsonVedlegg> =
         getVedleggFromInternalSoknad(soknad).filter { isSameVedleggType(it, type) }
 
@@ -32,7 +32,7 @@ object JsonVedleggUtils {
 
     fun addHendelseTypeAndHendelseReferanse(
         jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        isSoknad: Boolean,
+        isSoknad: Boolean
     ) {
         jsonVedleggSpesifikasjon.vedlegg.forEach {
             if (isVedleggskravAnnet(it)) {

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
@@ -17,6 +18,7 @@ class SoknadMetadataRepositoryJdbc(
 ) : SoknadMetadataRepository {
 
     private val antallRowMapper = RowMapper { rs: ResultSet, _: Int -> rs.getInt("antall") }
+    private val mapper = jacksonObjectMapper()
 
     override fun hentNesteId(): Long {
         return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
@@ -26,13 +28,13 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            metadata.id,
+            "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
             metadata.tilknyttetBehandlingsId,
             metadata.skjema,
             metadata.fnr,
-            metadata.vedlegg?.let { JAXB.marshal(it) },
+            metadata.vedlegg?.let { mapper.writeValueAsString(it) },
+//            metadata.vedlegg?.let { JAXB.marshal(it) },
             metadata.orgnr,
             metadata.navEnhet,
             metadata.fiksForsendelseId,
@@ -51,7 +53,8 @@ class SoknadMetadataRepositoryJdbc(
             metadata?.tilknyttetBehandlingsId,
             metadata?.skjema,
             metadata?.fnr,
-            metadata?.vedlegg?.let { JAXB.marshal(it) },
+            metadata?.vedlegg?.let { mapper.writeValueAsString(it) },
+//            metadata?.vedlegg?.let { JAXB.marshal(it) },
             metadata?.orgnr,
             metadata?.navEnhet,
             metadata?.fiksForsendelseId,
@@ -135,7 +138,7 @@ class SoknadMetadataRepositoryJdbc(
 
     override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
         fnr: String,
-        tidsgrense: LocalDateTime,
+        tidsgrense: LocalDateTime
     ): List<SoknadMetadata> {
         return jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",

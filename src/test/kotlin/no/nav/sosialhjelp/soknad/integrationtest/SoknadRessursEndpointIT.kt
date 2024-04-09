@@ -18,7 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
-@ActiveProfiles(profiles = ["no-redis", "test"])
+@ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class SoknadRessursEndpointIT {
 
     companion object {

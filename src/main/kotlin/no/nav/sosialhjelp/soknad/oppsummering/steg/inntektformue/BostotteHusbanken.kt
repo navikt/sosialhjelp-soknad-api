@@ -42,11 +42,15 @@ class BostotteHusbanken {
             Sporsmal(
                 tittel = "inntekt.bostotte.sporsmal.sporsmal",
                 erUtfylt = harUtfyltBostotteSporsmal,
-                felt = if (harUtfyltBostotteSporsmal) booleanVerdiFelt(
-                    harSvartJaBostotte,
-                    "inntekt.bostotte.sporsmal.true",
-                    "inntekt.bostotte.sporsmal.false"
-                ) else null
+                felt = if (harUtfyltBostotteSporsmal) {
+                    booleanVerdiFelt(
+                        harSvartJaBostotte,
+                        "inntekt.bostotte.sporsmal.true",
+                        "inntekt.bostotte.sporsmal.false"
+                    )
+                } else {
+                    null
+                }
             )
         )
         if (harSvartJaBostotte && fikkFeilMotHusbanken) {

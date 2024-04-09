@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto.BasisPersonaliaFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -123,9 +123,13 @@ internal class BasisPersonaliaRessursTest {
                     .withEtternavn(ETTERNAVN)
             )
             .withStatsborgerskap(
-                if (!withStatsborgerskap) null else JsonStatsborgerskap()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(NORSK_STATSBORGERSKAP)
+                if (!withStatsborgerskap) {
+                    null
+                } else {
+                    JsonStatsborgerskap()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(NORSK_STATSBORGERSKAP)
+                }
             )
         return soknadUnderArbeid
     }

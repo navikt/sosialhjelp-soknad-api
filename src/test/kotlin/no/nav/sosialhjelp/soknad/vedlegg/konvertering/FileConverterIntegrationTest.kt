@@ -1,43 +1,38 @@
 package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
-import io.mockk.mockk
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
+import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.http.client.reactive.ClientHttpRequest
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = ["no-interceptor", "no-redis", "test"])
-class FileConverterIntegrationTest {
+class FileConverterIntegrationTest : AbstractIntegrationTest() {
     private val endpoint: String = "/vedlegg/konverter"
 
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @Autowired
+    @MockkBean
     private lateinit var virusScanner: VirusScanner
 
-    @Autowired
+    @MockkBean
     private lateinit var fileConverter: FileConverter
 
     @BeforeEach
@@ -105,11 +100,5 @@ class FileConverterIntegrationTest {
             builder.part("file", it.resource)
             builder.build()
         }
-    }
-
-    @TestConfiguration
-    class FileConverterTestConfig {
-        @Bean
-        fun fileConverter() = mockk<FileConverter>()
     }
 }

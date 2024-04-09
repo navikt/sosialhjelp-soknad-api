@@ -7,8 +7,14 @@ metadata:
     team: teamdigisos
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
-    nais.io/run-as-user: "1001"
 spec:
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_15
+        name: soknad-mock-db-instance
+        databases:
+          - name: soknad-mock-db
+            envVarPrefix: DB
   image: {{image}}
   port: 8080
   liveness:

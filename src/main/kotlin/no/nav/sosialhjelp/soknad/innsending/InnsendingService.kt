@@ -10,17 +10,23 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val soknadMetadataRepository: SoknadMetadataRepository,
+    private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     fun oppdaterSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid?) {
         check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
-        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
+
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
+            soknadUnderArbeid,
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        )
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
     }

@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class OrganisasjonClient(
     @Value("\${ereg_url}") private val eregUrl: String,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()

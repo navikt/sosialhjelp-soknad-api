@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/utdanning", produces = [APPLICATION_JSON_VALUE])
 class UtdanningRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val controllerAdapter: ControllerAdapter
 ) {
 
     @GetMapping
@@ -62,20 +64,18 @@ class UtdanningRessurs(
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-    }
 
-    data class UtdanningFrontend(
-        @Schema(nullable = true)
-        var erStudent: Boolean?,
-        @Schema(nullable = true)
-        var studengradErHeltid: Boolean?
-    )
+        // NyModell
+        controllerAdapter.updateUtdanning(behandlingsId, utdanningFrontend)
+    }
 
     companion object {
         private fun toStudentgradErHeltid(studentgrad: Studentgrad?): Boolean? {
             return if (studentgrad == null) {
                 null
-            } else studentgrad == Studentgrad.HELTID
+            } else {
+                studentgrad == Studentgrad.HELTID
+            }
         }
 
         private fun toStudentgrad(studentgrad: Boolean?): Studentgrad? {
@@ -86,3 +86,10 @@ class UtdanningRessurs(
         }
     }
 }
+
+data class UtdanningFrontend(
+    @Schema(nullable = true)
+    var erStudent: Boolean?,
+    @Schema(nullable = true)
+    var studengradErHeltid: Boolean?
+)

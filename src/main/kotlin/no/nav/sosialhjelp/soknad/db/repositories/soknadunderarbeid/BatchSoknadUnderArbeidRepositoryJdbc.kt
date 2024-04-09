@@ -56,7 +56,6 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
                 if (soknadUnderArbeidId == null) {
                     throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
                 }
-                batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?",
                     soknadUnderArbeidId

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
@@ -22,7 +24,7 @@ import java.time.Duration
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
-    private val baseurl: String,
+    private val baseurl: String
 ) {
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
 
@@ -35,9 +37,11 @@ abstract class PdlClient(
         .codecs {
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
         }
+        .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
         .build()
 
-    protected val pdlRetry: RetryBackoffSpec = Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
+    protected val pdlRetry: RetryBackoffSpec =
+        Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
 
     fun ping() {
         pdlWebClient.options()
@@ -56,7 +60,7 @@ abstract class PdlClient(
             .uri(baseurl)
             .accept(MediaType.APPLICATION_JSON)
 
-    protected inline fun <reified T>parse(response: String): T {
+    protected inline fun <reified T> parse(response: String): T {
         return try {
             pdlMapper.readValue(response)
         } catch (e: MismatchedInputException) {

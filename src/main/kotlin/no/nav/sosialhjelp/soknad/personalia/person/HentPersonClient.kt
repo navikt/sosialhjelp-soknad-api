@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
@@ -66,7 +64,6 @@ class HentPersonClientImpl(
         return try {
             val response = hentPersonRequest
                 .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                .header(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
                 .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
                 .retrieve()
                 .bodyToMono<String>()

@@ -10,11 +10,13 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.stereotype.Component
 
 @Component
 class BasisPersonaliaSystemdata(
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -26,6 +28,12 @@ class BasisPersonaliaSystemdata(
         personalia.navn = systemPersonalia.navn
         personalia.statsborgerskap = systemPersonalia.statsborgerskap
         personalia.nordiskBorger = systemPersonalia.nordiskBorger
+
+        // ny modell
+        v2AdapterService.updateEier(
+            soknadUnderArbeid.behandlingsId,
+            personalia
+        )
     }
 
     private fun innhentSystemBasisPersonalia(personIdentifikator: String): JsonPersonalia? {
@@ -59,9 +67,11 @@ class BasisPersonaliaSystemdata(
         val statsborgerskap = prioritertStatsborgerskap(person)
         return if (statsborgerskap == null || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
             null
-        } else JsonStatsborgerskap()
-            .withKilde(JsonKilde.SYSTEM)
-            .withVerdi(statsborgerskap)
+        } else {
+            JsonStatsborgerskap()
+                .withKilde(JsonKilde.SYSTEM)
+                .withVerdi(statsborgerskap)
+        }
     }
 
     private fun mapToJsonNordiskBorger(person: Person): JsonNordiskBorger? {
@@ -98,9 +108,11 @@ class BasisPersonaliaSystemdata(
         fun erNordiskBorger(statsborgerskap: String?): Boolean? {
             return if (statsborgerskap == null || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
                 null
-            } else when (statsborgerskap) {
-                NOR, SWE, FRO, ISL, DNK, FIN -> true
-                else -> false
+            } else {
+                when (statsborgerskap) {
+                    NOR, SWE, FRO, ISL, DNK, FIN -> true
+                    else -> false
+                }
             }
         }
     }

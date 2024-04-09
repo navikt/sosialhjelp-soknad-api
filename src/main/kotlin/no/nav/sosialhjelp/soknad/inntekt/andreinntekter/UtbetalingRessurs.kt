@@ -107,6 +107,7 @@ class UtbetalingRessurs(
                     .withBarneutgifter("")
             )
         }
+        // TODO Er dette eneste vi fyller ut av denne? Er den nødvendig ref. beskrivelse på Json-objektet?
         opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
     }
 

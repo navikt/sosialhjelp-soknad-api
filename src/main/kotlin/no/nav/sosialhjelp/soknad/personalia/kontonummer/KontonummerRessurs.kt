@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -22,7 +23,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kontonummerService: KontonummerService
+    private val kontonummerService: KontonummerService,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentKontonummer(
@@ -46,11 +48,16 @@ class KontonummerRessurs(
     @PutMapping
     fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody @Valid kontoDTO: KontonummerInputDTO
+        @RequestBody @Valid
+        kontoDTO: KontonummerInputDTO
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
         storeKontonummer(behandlingsId, kontoDAO)
+
+        // NyModell
+        controllerAdapter.updateKontonummer(behandlingsId, kontoDTO)
+
         return mapDAOtoDTO(kontoDAO)
     }
 
@@ -61,22 +68,12 @@ class KontonummerRessurs(
         @Schema(nullable = true, description = "Kontonummer fra bruker")
         val brukerutfyltVerdi: String? = null,
         @Schema(nullable = false, description = "Bruker oppgir at de ikke har konto")
-        val harIkkeKonto: Boolean = false,
+        val harIkkeKonto: Boolean = false
     ) {
         @Deprecated("Unødvendig, utled av annen data")
         val brukerdefinert: Boolean
             get() = brukerutfyltVerdi != null || harIkkeKonto
     }
-
-    data class KontonummerInputDTO(
-        @Schema(nullable = true, description = "Kontonummer fra bruker")
-        @field:Pattern(regexp = "^\\d{11}$", message = "Kontonummer må være 11 siffer")
-        val brukerutfyltVerdi: String? = null,
-        @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
-        val harIkkeKonto: Boolean? = null,
-        @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
-        val brukerdefinert: Boolean? = null
-    )
 
     private fun loadKontonummer(behandlingsId: String): JsonKontonummer =
         soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
@@ -115,3 +112,13 @@ class KontonummerRessurs(
         harIkkeKonto = kontonummer.harIkkeKonto ?: false
     )
 }
+
+data class KontonummerInputDTO(
+    @Schema(nullable = true, description = "Kontonummer fra bruker")
+    @field:Pattern(regexp = "^\\d{11}$", message = "Kontonummer må være 11 siffer")
+    val brukerutfyltVerdi: String? = null,
+    @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
+    val harIkkeKonto: Boolean? = null,
+    @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
+    val brukerdefinert: Boolean? = null
+)

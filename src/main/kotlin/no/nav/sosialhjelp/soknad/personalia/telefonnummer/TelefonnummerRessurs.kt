@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,7 +23,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val controllerAdapter: ControllerAdapter
 ) {
     @GetMapping
     fun hentTelefonnummer(
@@ -57,6 +59,11 @@ class TelefonnummerRessurs(
                 jsonTelefonnummer.kilde = JsonKilde.BRUKER
                 jsonTelefonnummer.verdi = telefonnummerFrontend.brukerutfyltVerdi
             }
+
+            // Ny modell
+            behandlingsId?.let {
+                controllerAdapter.updateTelefonnummer(it, telefonnummerFrontend.brukerutfyltVerdi)
+            }
         } else {
             jsonTelefonnummer.kilde = JsonKilde.SYSTEM
             telefonnummerSystemdata.updateSystemdataIn(soknad)
@@ -78,11 +85,11 @@ class TelefonnummerRessurs(
             brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
         )
     }
-
-    data class TelefonnummerFrontend(
-        val brukerdefinert: Boolean = false,
-        val systemverdi: String? = null,
-        @Schema(nullable = true)
-        val brukerutfyltVerdi: String? = null
-    )
 }
+
+data class TelefonnummerFrontend(
+    val brukerdefinert: Boolean = false,
+    val systemverdi: String? = null,
+    @Schema(nullable = true)
+    val brukerutfyltVerdi: String? = null
+)

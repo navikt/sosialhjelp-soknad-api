@@ -18,7 +18,7 @@ data class Utbetaling(
     val utbetaltTilKonto: Bankkonto?,
     val utbetalingsmetode: String?,
     val utbetalingsstatus: String?,
-    val ytelseListe: List<Ytelse> = emptyList(),
+    val ytelseListe: List<Ytelse> = emptyList()
 )
 
 data class Ytelse(
@@ -33,13 +33,13 @@ data class Ytelse(
     val trekkListe: List<Trekk>? = null,
     val ytelseskomponentListe: List<Ytelseskomponent>? = null,
     val bilagsnummer: String?,
-    val refundertForOrg: Aktoer?,
+    val refundertForOrg: Aktoer?
 )
 
 data class Aktoer(
     val aktoertype: Aktoertype,
     val ident: String,
-    val navn: String?,
+    val navn: String?
 )
 
 data class Ytelseskomponent(
@@ -47,7 +47,7 @@ data class Ytelseskomponent(
     val satsbeloep: BigDecimal?,
     val satstype: String?,
     val satsantall: Double?,
-    val ytelseskomponentbeloep: BigDecimal?,
+    val ytelseskomponentbeloep: BigDecimal?
 )
 
 data class Skatt(val skattebeloep: BigDecimal?)
@@ -55,21 +55,21 @@ data class Skatt(val skattebeloep: BigDecimal?)
 data class Trekk(
     val trekktype: String?,
     val trekkbeloep: BigDecimal?,
-    val kreditor: String?,
+    val kreditor: String?
 )
 
 data class Bankkonto(
     val kontonummer: String,
-    val kontotype: String,
+    val kontotype: String
 )
 
 data class Periode(
     val fom: LocalDate,
-    val tom: LocalDate,
+    val tom: LocalDate
 )
 
 enum class Aktoertype {
     PERSON,
     ORGANISASJON,
-    SAMHANDLER,
+    SAMHANDLER
 }

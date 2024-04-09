@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockkObject
@@ -22,21 +23,19 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [MellomLagringServiceTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("no-redis", "test", "test-container")
 internal class MellomLagringServiceUtenMocketRepositoryTest {
 
-    @Autowired
+    @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
 
     @Autowired
@@ -45,7 +44,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
-    @Autowired
+    @MockkBean
     private lateinit var virusScanner: VirusScanner
 
     @Autowired
@@ -55,7 +54,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-
         mockkObject(SubjectHandlerUtils)
         mockkObject(VedleggUtils)
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns lagMellomlagringDto()
@@ -66,7 +64,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @AfterEach
     fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
         jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
         unmockkObject(SubjectHandlerUtils)
         unmockkObject(VedleggUtils)
@@ -74,7 +71,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } just runs
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
@@ -101,7 +97,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal ikke oppdatere soknad_under_arbeid med filer i vedlegg hvis feil kaller mot FIKS`() {
-
         every { mellomlagringClient.postVedlegg(any(), any()) } throws (IllegalStateException("feil"))
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
@@ -166,7 +161,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         private const val FILNAVN = "EksempelPDF_123"
         private const val ORIGINALT_FILNAVN = "EksempelPDF"
         private val VEDLEGGSTYPE = VedleggType.AnnetAnnet
-        private const val BEHANDLINGSID = "1100020"
+        private val BEHANDLINGSID = UUID.randomUUID().toString()
         private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS)
         private val SIST_ENDRET_DATO = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)

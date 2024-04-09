@@ -1,49 +1,31 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.db.DbTestConfig
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Transactional
+@ActiveProfiles("no-redis", "test", "test-container")
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
-
-    @Autowired
-    private lateinit var jdbcTemplate: JdbcTemplate
 
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Autowired
-    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
-
-    @Autowired
     private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
-
-    @AfterEach
-    fun tearDown() {
-        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
-    }
 
     @Test
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
         val skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13)
         val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
-        val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
+        val skalSlettes = lagSoknadUnderArbeid(UUID.randomUUID().toString(), 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
         val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
@@ -54,11 +36,10 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
         val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
-        soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
-        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
+            ?: throw RuntimeException("Kunne ikke finne søknad")
+
+        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
@@ -74,20 +55,9 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         )
     }
 
-    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg(
-            eier = EIER,
-            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = soknadId,
-            filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
-        )
-    }
-
     companion object {
         private const val EIER = "12345678901"
-        private const val BEHANDLINGSID = "1100020"
+        private val BEHANDLINGSID = UUID.randomUUID().toString()
         private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val JSON_INTERNAL_SOKNAD = JsonInternalSoknad()
     }

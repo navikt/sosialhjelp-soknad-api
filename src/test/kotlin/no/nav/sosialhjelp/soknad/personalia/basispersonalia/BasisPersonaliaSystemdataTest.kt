@@ -1,23 +1,28 @@
 package no.nav.sosialhjelp.soknad.personalia.basispersonalia
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BasisPersonaliaSystemdataTest {
 
     private val personService: PersonService = mockk()
-    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService, v2AdapterService)
 
     private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
         versjon = 1L,
@@ -29,6 +34,11 @@ internal class BasisPersonaliaSystemdataTest {
         opprettetDato = LocalDateTime.now(),
         sistEndretDato = LocalDateTime.now()
     )
+
+    @BeforeEach
+    fun setup() {
+        every { v2AdapterService.updateEier(any(), any()) } just runs
+    }
 
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {
@@ -59,7 +69,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -90,7 +100,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -118,7 +128,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -145,7 +155,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
@@ -176,7 +186,7 @@ internal class BasisPersonaliaSystemdataTest {
             statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
             ektefelle = null,
             bostedsadresse = null,
-            oppholdsadresse = null,
+            oppholdsadresse = null
         )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person

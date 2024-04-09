@@ -22,7 +22,7 @@ interface MaskinportenClient {
 class MaskinportenClientImpl(
     private val webClient: WebClient,
     maskinportenProperties: MaskinportenProperties,
-    private val wellKnown: WellKnown,
+    private val wellKnown: WellKnown
 ) : MaskinportenClient {
 
     private var cachedToken: SignedJWT? = null

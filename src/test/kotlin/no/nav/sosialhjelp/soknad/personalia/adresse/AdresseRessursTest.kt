@@ -22,7 +22,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
@@ -32,6 +32,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -45,12 +46,14 @@ internal class AdresseRessursTest {
     private val adresseSystemdata: AdresseSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val navEnhetService: NavEnhetService = mockk()
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
 
     private val adresseRessurs = AdresseRessurs(
         tilgangskontroll,
         adresseSystemdata,
         soknadUnderArbeidRepository,
-        navEnhetService
+        navEnhetService,
+        soknadV2ControllerAdapter
     )
 
     @BeforeEach
@@ -58,6 +61,7 @@ internal class AdresseRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        every { soknadV2ControllerAdapter.updateAdresseOgNavEnhet(any(), any(), any()) } just runs
     }
 
     @AfterEach
@@ -73,7 +77,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -92,7 +96,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -111,7 +115,7 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
 
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(
@@ -129,7 +133,7 @@ internal class AdresseRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(null)
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns null
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns null
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
         assertThatAdresserAreCorrectlyConverted(adresserFrontend, null, null, null)
     }
@@ -177,7 +181,7 @@ internal class AdresseRessursTest {
     @Test
     fun `putAdresse skal sette oppholdsAdresse lik midlertidigAdresse og returnere tilhorendeNavenhet`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+        every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
@@ -346,11 +350,13 @@ internal class AdresseRessursTest {
     private fun getSelectedAdresse(valg: JsonAdresseValg?): JsonAdresse? {
         return if (valg == null) {
             null
-        } else when (valg) {
-            JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
-            JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
-            JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
-            else -> null
+        } else {
+            when (valg) {
+                JsonAdresseValg.FOLKEREGISTRERT -> JSON_SYS_MATRIKKELADRESSE
+                JsonAdresseValg.MIDLERTIDIG -> JSON_SYS_USTRUKTURERT_ADRESSE
+                JsonAdresseValg.SOKNAD -> JSON_BRUKER_GATE_ADRESSE
+                else -> null
+            }
         }
     }
 

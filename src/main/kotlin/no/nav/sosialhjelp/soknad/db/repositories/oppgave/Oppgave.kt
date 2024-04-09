@@ -42,7 +42,7 @@ data class FiksData(
     var dokumentInfoer: List<DokumentInfo>? = null,
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter::class)
     var innsendtDato: LocalDateTime? = null,
-    var ettersendelsePa: String? = null,
+    var ettersendelsePa: String? = null
 )
 
 @XmlRootElement

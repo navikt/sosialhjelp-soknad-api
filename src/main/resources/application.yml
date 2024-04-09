@@ -14,18 +14,22 @@ spring:
     banner-mode: off
   flyway:
     enabled: true
-    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-    user: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
   datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
-    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_DATASOURCE_URL}${SOKNADSOSIALHJELP_DB_NAVN}
   servlet:
     multipart:
       max-file-size: 10MB
+  docker:
+    compose:
+      enabled: false
+
+postgres:
+  user:
+    role: ${SOKNADSOSIALHJELP_DB_NAVN}-admin
+
+
+vault-mount-path: ${VAULT_MOUNT_PATH}
 
 digisos:
   cache:

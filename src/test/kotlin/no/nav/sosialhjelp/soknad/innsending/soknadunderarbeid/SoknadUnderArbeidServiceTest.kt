@@ -17,6 +17,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 internal class SoknadUnderArbeidServiceTest {
 
@@ -28,12 +29,14 @@ internal class SoknadUnderArbeidServiceTest {
     fun settInnsendingstidspunktPaSoknadSkalHandtereEttersendelse() {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
-        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(lagSoknadUnderArbeidForEttersendelse())
+        soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
+            lagSoknadUnderArbeidForEttersendelse(),
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        )
     }
 
     @Test
     internal fun `skalSoknadSendesMedDigisosApi - alle scenarier`() {
-
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         // false - soknadUnderArbeid er ettersendelse

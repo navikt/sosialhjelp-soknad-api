@@ -22,14 +22,16 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
 class SoknadUnderArbeidService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kommuneInfoService: KommuneInfoService,
+    private val kommuneInfoService: KommuneInfoService
 ) {
 
     fun sjekkDuplikate(behandlingsId: String, filnavn: String) {
@@ -64,7 +66,7 @@ class SoknadUnderArbeidService(
         sha512: String,
         behandlingsId: String,
         vedleggstype: String,
-        filnavn: String,
+        filnavn: String
     ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
@@ -83,14 +85,18 @@ class SoknadUnderArbeidService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
-    fun settInnsendingstidspunktPaSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
+    fun settInnsendingstidspunktPaSoknad(
+        soknadUnderArbeid: SoknadUnderArbeid?,
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
         }
         if (soknadUnderArbeid.erEttersendelse) {
             return
         }
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
+        val innsendingString = OffsetDateTime.of(innsendingsTidspunkt, ZoneOffset.UTC).toString()
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingString
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 
@@ -136,7 +142,9 @@ class SoknadUnderArbeidService(
             val now = OffsetDateTime.now(ZoneOffset.UTC)
             return if (now.nano == 0) {
                 now.plusNanos(1000000).toString()
-            } else now.toString()
+            } else {
+                now.toString()
+            }
         }
 
         private val log by logger()

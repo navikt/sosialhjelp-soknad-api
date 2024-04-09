@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -31,7 +32,8 @@ class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetService: NavEnhetService
+    private val navEnhetService: NavEnhetService,
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -48,7 +50,7 @@ class AdresseRessurs(
         val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
+        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
 
         // TODO Ekstra logging
         logger.info("Hender navEnhet - GET personalia/adresser")
@@ -90,7 +92,7 @@ class AdresseRessurs(
 
             JsonAdresseValg.MIDLERTIDIG ->
                 personalia.oppholdsadresse =
-                    adresseSystemdata.innhentMidlertidigAdresse(eier)
+                    adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(eier)
 
             JsonAdresseValg.SOKNAD ->
                 personalia.oppholdsadresse =
@@ -115,6 +117,14 @@ class AdresseRessurs(
             setNavEnhetAsMottaker(soknad, it, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
+
+        // Ny modell
+        soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
+            behandlingsId,
+            adresserFrontend,
+            navEnhetFrontend
+        )
+
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
@@ -139,6 +149,8 @@ class AdresseRessurs(
         }
         return if (oppholdsadresse.type == JsonAdresse.Type.MATRIKKELADRESSE) {
             null
-        } else adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+        } else {
+            adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+        }
     }
 }

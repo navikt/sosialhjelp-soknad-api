@@ -24,7 +24,7 @@ data class FiksDataDto(
     val mottakerNavn: String?,
     val dokumentInfoer: List<DokumentInfoDto>?,
     val innsendtDato: LocalDateTime?,
-    val ettersendelsePa: String?,
+    val ettersendelsePa: String?
 )
 
 data class DokumentInfoDto(

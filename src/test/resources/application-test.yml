@@ -17,6 +17,7 @@ resilience4j:
       default:
         max-attempts: 1
 
+
 # Andre properties
 sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
@@ -28,7 +29,6 @@ no.nav.security.jwt.issuer:
   selvbetjening:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
     accepted_audience: someaudience
-    cookie_name: localhost-idtoken
     proxyurl:
   tokenx:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
