@@ -37,6 +37,7 @@ abstract class PdlClient(
         .codecs {
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
         }
+        .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
         .build()
 
     protected val pdlRetry: RetryBackoffSpec =
@@ -46,7 +47,6 @@ abstract class PdlClient(
         pdlWebClient.options()
             .uri(baseurl)
             .header(HEADER_CALL_ID, callId)
-            .header(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
             .retrieve()
             .onStatus({ it.value() != 200 }) {
                 Mono.error(RuntimeException("PDL - ping feiler: ${it.statusCode()}"))

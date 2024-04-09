@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.navenhet.gt
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentGeografiskTilknytningDto
@@ -48,7 +46,6 @@ class GeografiskTilknytningClient(
                 baseRequest
                     .header(HEADER_TEMA, TEMA_KOM)
                     .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                    .header(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
                     .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
                     .retrieve()
                     .bodyToMono<String>()

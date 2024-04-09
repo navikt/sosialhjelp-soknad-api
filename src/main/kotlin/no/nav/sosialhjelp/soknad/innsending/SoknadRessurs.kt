@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadRessurs(
-    private val soknadService: SoknadService,
+    private val soknadServiceOld: SoknadServiceOld,
     private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -50,7 +50,7 @@ class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         response.addCookie(xsrfCookie(behandlingsId))
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId))
-        soknadService.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
+        soknadServiceOld.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
         return true
     }
 
@@ -96,7 +96,7 @@ class SoknadRessurs(
             .any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi == true }
         val harSkatteetatenSamtykke = samtykker
             .any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi == true }
-        soknadService.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+        soknadServiceOld.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
     }
 
     @GetMapping("/{behandlingsId}/hentSamtykker")
@@ -136,7 +136,7 @@ class SoknadRessurs(
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        return soknadService.startSoknad()
+        return soknadServiceOld.startSoknad()
             .let {
                 response.addCookie(xsrfCookie(it))
                 response.addCookie(xsrfCookieMedBehandlingsid(it))
@@ -152,7 +152,7 @@ class SoknadRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
-        soknadService.avbrytSoknad(behandlingsId, steg)
+        soknadServiceOld.avbrytSoknad(behandlingsId, steg)
     }
 
     companion object {

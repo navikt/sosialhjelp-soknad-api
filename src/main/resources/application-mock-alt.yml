@@ -3,17 +3,25 @@ server:
 
 spring:
   flyway:
-    enabled: false
-  #    baseline-on-migrate: true
-  #    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-  #    user: sa
-  #    password:
-  #    driver-class-name: org.hsqldb.jdbcDriver
+    enabled: true
+    baseline-on-migrate: true
+    clean-disabled: false
+    clean-on-validation-error: true
+  docker:
+    compose:
+      file: compose/docker-compose-local.yml
+      enabled: true
+      # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
+      profiles:
+        active: full
+      # Dersom database skal nullstilles hver gang applikasjonen starter:
+      #stop:
+      #  command=down
   datasource:
-    driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-    username: sa
-    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}

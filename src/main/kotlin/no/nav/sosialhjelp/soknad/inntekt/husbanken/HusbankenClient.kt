@@ -8,9 +8,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
+private const val QUERY_PARAMS = "?fra={fra}&til={til}"
+
 class HusbankenClient(
     private val webClient: WebClient
 ) {
+    private val log by logger()
 
     fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
@@ -43,7 +46,5 @@ class HusbankenClient(
     }
 
     companion object {
-        private val log by logger()
-        private const val QUERY_PARAMS = "?fra={fra}&til={til}"
     }
 }

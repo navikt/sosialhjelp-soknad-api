@@ -31,3 +31,9 @@ class AuthorizationException(message: String?) : SosialhjelpSoknadApiException(m
 class SoknadAlleredeSendtException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class EttersendelseSendtForSentException(message: String?) : SosialhjelpSoknadApiException(message)
+
+class FeilVedSendingTilFiksException(
+    message: String?,
+    e: Exception?,
+    id: String?
+) : SosialhjelpSoknadApiException(message, e, id)

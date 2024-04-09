@@ -18,7 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
-@ActiveProfiles(profiles = ["no-redis", "test"])
+@ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class MineSakerMetadataRessursEndpointIT {
 
     companion object {
@@ -41,6 +41,8 @@ class MineSakerMetadataRessursEndpointIT {
     }
 
     @Test
+//    @Disabled
+    // TODO: Skal denne logikken leve videre, eller gjøres dette via innsyn-api
     internal fun innsendte_skalGi401UtenToken() {
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 
@@ -52,6 +54,8 @@ class MineSakerMetadataRessursEndpointIT {
     }
 
     @Test
+//    @Disabled
+    // TODO: Skal denne logikken leve videre, eller gjøres dette via innsyn-api
     internal fun innsendte_skalGi401MedAnnenIssuer() {
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 

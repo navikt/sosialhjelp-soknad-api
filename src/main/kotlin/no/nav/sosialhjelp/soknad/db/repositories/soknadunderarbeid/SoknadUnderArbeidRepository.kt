@@ -5,6 +5,8 @@ interface SoknadUnderArbeidRepository {
     fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid?
     fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid
     fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid?
+
+    @Deprecated("Ettersendelse og SvarUt er ikke lenger i bruk")
     fun hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId: String, eier: String): SoknadUnderArbeid?
     fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String)
     fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String)

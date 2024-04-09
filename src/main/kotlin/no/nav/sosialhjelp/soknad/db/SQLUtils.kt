@@ -9,11 +9,11 @@ object SQLUtils {
     const val DIALECT_PROPERTY = "sqldialect"
 
     fun limit(limit: Int): String {
-        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
-            "limit $limit"
-        } else {
-            "and rownum <= $limit"
-        }
+//        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+        return "limit $limit"
+//        } else {
+//            "and rownum <= $limit"
+//        }
     }
 
     fun selectNextSequenceValue(sequence: String): String {

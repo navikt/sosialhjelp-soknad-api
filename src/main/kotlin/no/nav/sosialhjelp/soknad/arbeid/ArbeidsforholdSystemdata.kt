@@ -17,29 +17,32 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
 class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
-    private val textService: TextService
+    private val textService: TextService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val eier = soknadUnderArbeid.eier
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
-        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier) ?: emptyList()
+        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(soknadUnderArbeid) ?: emptyList()
         updateVedleggForventninger(internalSoknad, textService)
     }
 
-    private fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
+    private fun innhentSystemArbeidsforhold(soknadUnderArbeid: SoknadUnderArbeid): List<JsonArbeidsforhold>? {
         val arbeidsforholds: List<Arbeidsforhold>? = try {
-            arbeidsforholdService.hentArbeidsforhold(personIdentifikator)
+            arbeidsforholdService.hentArbeidsforhold(soknadUnderArbeid.eier)
         } catch (e: Exception) {
             LOG.warn("Kunne ikke hente arbeidsforhold", e)
             null
         }
+        // NyModell
+        v2AdapterService.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds)
         return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
     }
 

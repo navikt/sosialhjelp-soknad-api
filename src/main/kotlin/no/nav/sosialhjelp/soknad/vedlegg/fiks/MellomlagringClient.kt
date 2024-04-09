@@ -25,7 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.util.Collections
+import java.util.*
 import java.util.concurrent.Future
 
 interface MellomlagringClient {

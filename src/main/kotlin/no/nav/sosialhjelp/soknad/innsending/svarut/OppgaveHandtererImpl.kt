@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import kotlin.math.pow
@@ -26,7 +25,7 @@ class OppgaveHandtererImpl(
     private val leaderElection: LeaderElection
 ) : OppgaveHandterer {
 
-    @Scheduled(fixedDelay = PROSESS_RATE)
+//    @Scheduled(fixedDelay = PROSESS_RATE)
     fun prosesserOppgaver() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
@@ -52,7 +51,7 @@ class OppgaveHandtererImpl(
         }
     }
 
-    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
+//    @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     fun retryStuckUnderArbeid() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
@@ -70,7 +69,7 @@ class OppgaveHandtererImpl(
         }
     }
 
-    @Scheduled(fixedRate = RAPPORTER_RATE)
+//    @Scheduled(fixedRate = RAPPORTER_RATE)
     fun rapporterFeilede() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
