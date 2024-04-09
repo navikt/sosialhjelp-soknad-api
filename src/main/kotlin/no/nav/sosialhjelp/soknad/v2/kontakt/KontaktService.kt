@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
@@ -9,6 +10,8 @@ import java.util.*
 class KontaktService(
     private val kontaktRepository: KontaktRepository
 ) {
+    private val logger = LoggerFactory.getLogger(KontaktService::class.java)
+
     fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
     fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer {
@@ -19,6 +22,12 @@ class KontaktService(
     }
 
     fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt {
+        logger.info(
+            "Oppdaterer adresse for $soknadId. " +
+                "Adressevalg: $adresseValg, " +
+                "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}"
+        )
+
         return kontaktRepository.getOrCreateKontakt(soknadId)
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, brukerAdresse = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
@@ -29,6 +38,22 @@ class KontaktService(
         folkeregistrertAdresse: Adresse?,
         midlertidigAdresse: Adresse?
     ) {
+        logger.info(
+            "Legger til adresser for $soknadId. " +
+                "Folkeregistrert: ${folkeregistrertAdresse?.let { "Funnet" }} " +
+                "Midlertidig: ${midlertidigAdresse?.let { "Funnet" }}"
+        )
+
+        kontaktRepository.getOrCreateKontakt(soknadId)
+            .run {
+                copy(
+                    adresser = adresser.copy(
+                        folkeregistrertAdresse = folkeregistrertAdresse,
+                        midlertidigAdresse = midlertidigAdresse
+                    )
+                )
+            }
+            .also { kontaktRepository.save(it) }
     }
 
     fun updateTelefonRegister(soknadId: UUID, telefonRegister: String) {
