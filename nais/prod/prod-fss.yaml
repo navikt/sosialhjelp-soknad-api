@@ -123,8 +123,6 @@ spec:
       value: "prod"
     - name: SCHEDULER_DISABLE
       value: "false"
-    - name: SOKNADSOSIALHJELPDATASOURCE_URL
-      value: "jdbc:oracle:thin:@a01dbfl050.adeo.no:1521/soknadsosialhjelp"
     - name: SOKNAD_BOSTOTTE_URL
       value: "https://api.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
