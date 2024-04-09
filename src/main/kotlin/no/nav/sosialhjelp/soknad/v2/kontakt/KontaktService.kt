@@ -31,8 +31,10 @@ class KontaktService(
     ) {
     }
 
-    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String?) {
-        TODO("Not yet implemented")
+    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String) {
+        kontaktRepository.getOrCreateKontakt(soknadId)
+            .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
+            .also { kontaktRepository.save(it) }
     }
 }
 
