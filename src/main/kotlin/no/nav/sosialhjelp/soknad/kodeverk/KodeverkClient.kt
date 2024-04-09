@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder)
         .codecs {
@@ -51,8 +51,11 @@ class KodeverkClient(
             .bodyToMono<KodeverkDto>()
             .block() ?: error("Kodeverk - ugyldig data")
     }.onFailure { e ->
-        if (e is WebClientResponseException) log.warn("Kodeverk - ${e.statusCode}", e)
-        else log.error("Kodeverk - noe uventet feilet", e)
+        if (e is WebClientResponseException) {
+            log.warn("Kodeverk - ${e.statusCode}", e)
+        } else {
+            log.error("Kodeverk - noe uventet feilet", e)
+        }
     }.getOrThrow()
 
     companion object {

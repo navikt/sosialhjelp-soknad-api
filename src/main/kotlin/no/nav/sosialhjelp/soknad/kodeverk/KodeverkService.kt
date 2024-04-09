@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
  */
 @Service
 class KodeverkService(
-    private val kodeverkDataService: KodeverkDataService,
+    private val kodeverkDataService: KodeverkDataService
 ) {
     fun getKommunenavn(kommunenummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrNull()
     fun gjettKommunenummer(kommunenavn: String): String? = runCatching {

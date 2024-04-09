@@ -8,7 +8,7 @@ typealias Kodeverk = Map<String, String?>
 
 @Service
 class KodeverkDataService(
-    private val kodeverkClient: KodeverkClient,
+    private val kodeverkClient: KodeverkClient
 ) {
     @Cacheable("kodeverk")
     fun hentKodeverk(kodeverkNavn: String): Kodeverk = kodeverkClient.hentKodeverk(kodeverkNavn).toMap()

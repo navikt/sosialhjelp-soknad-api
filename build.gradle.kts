@@ -58,7 +58,7 @@ dependencies {
     developmentOnly(libs.spring.boot.docker.compose)
 
     implementation("org.skyscreamer:jsonassert:1.5.1")
-    
+
     // Coroutines
     implementation(libs.bundles.coroutines)
 
