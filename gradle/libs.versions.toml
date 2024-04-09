@@ -35,7 +35,7 @@ resilience4j = "2.2.0"
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
-spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
+spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
@@ -96,7 +96,6 @@ spring-boot = [
     "spring-boot-starter-jdbc",
     "spring-boot-starter-redis",
     "spring-boot-starter-test",
-    "spring-boot-starter-data-jdbc",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
@@ -137,5 +136,5 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }
-versions = {id = "com.github.ben-manes.versions", version.ref = "versions"}
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway_plugin" }
