@@ -113,7 +113,7 @@ object OkonomiskeOpplysningerMapper {
     private fun mapToInntekt(
         rad: VedleggRadFrontend,
         type: String?,
-        tittel: String?,
+        tittel: String?
     ): JsonOkonomioversiktInntekt = JsonOkonomioversiktInntekt()
         .withKilde(JsonKilde.BRUKER)
         .withType(type)
@@ -144,7 +144,7 @@ object OkonomiskeOpplysningerMapper {
     private fun mapToFormue(
         radFrontend: VedleggRadFrontend,
         type: String?,
-        tittel: String?,
+        tittel: String?
     ): JsonOkonomioversiktFormue = JsonOkonomioversiktFormue()
         .withKilde(JsonKilde.BRUKER)
         .withType(type)
