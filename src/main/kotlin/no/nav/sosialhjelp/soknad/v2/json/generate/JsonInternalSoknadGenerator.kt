@@ -7,6 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -14,6 +16,8 @@ import java.util.*
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
 
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
         return JsonInternalSoknad()
@@ -30,7 +34,14 @@ class JsonInternalSoknadGenerator(
             .apply {
                 mappers.forEach { it.mapToSoknad(UUID.fromString(soknadId), this) }
             }
-            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
+            .also {
+                kotlin.runCatching {
+                    JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
+                }
+                    .onFailure {
+                        logger.warn("Feil i sammenlikning av json", it)
+                    }
+            }
     }
 
     private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad) = toObject(toJson(jsonSoknad))
