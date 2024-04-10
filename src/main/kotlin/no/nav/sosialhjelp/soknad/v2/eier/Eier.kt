@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -17,6 +18,7 @@ interface EierRepository : UpsertRepository<Eier>, ListCrudRepository<Eier, UUID
     fun getEierPersonId(soknadId: UUID): String
 }
 
+@Table
 data class Eier(
     @Id
     override val soknadId: UUID,
