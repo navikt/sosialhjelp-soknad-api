@@ -7,13 +7,16 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.v2.soknad.OldIdFormatSupportHandler
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
@@ -44,6 +47,7 @@ class DigisosApiV2Client(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
+    private val oldIdFormatSupportHandler: OldIdFormatSupportHandler,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
 ) {
@@ -134,8 +138,17 @@ class DigisosApiV2Client(
 
         val startTime = System.currentTimeMillis()
         try {
+            // TODO MIDLERTIDIG - legger ved ID på gammelt format som behandlingsId inntil Oslo kan håndtere
+            var idOldFormat: String = oldIdFormatSupportHandler.findByUUID(behandlingsId)?.idOldFormat
+                ?: oldIdFormatSupportHandler.createAndMap(behandlingsId).idOldFormat
+
+            if (MiljoUtils.isNonProduction()) {
+                idOldFormat = SenderUtils.createPrefixedBehandlingsId(idOldFormat)
+                log.error("SKAL IKKE SKJE I PROD - ID med prefiks: $idOldFormat")
+            }
+
             val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
+                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, idOldFormat)
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
@@ -146,6 +159,12 @@ class DigisosApiV2Client(
 
             val digisosId = Utils.stripVekkFnutter(response)
             log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")
+
+            // TODO MIDLERTIDIG - Knytter ID til ID på gammelt format - se over
+            idOldFormat?.let {
+                log.warn("MIDLERTIDIG ID-FIKS: Soknad med id $behandlingsId ble sendt med: $idOldFormat")
+            }
+
             return digisosId
         } catch (e: WebClientResponseException) {
             val errorResponse = e.responseBodyAsString
