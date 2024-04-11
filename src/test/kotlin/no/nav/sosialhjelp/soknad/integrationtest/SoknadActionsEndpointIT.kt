@@ -5,7 +5,10 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.OldIdFormatSupportHandler
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,9 +43,20 @@ class SoknadActionsEndpointIT {
     @Autowired
     private lateinit var soknadRepository: SoknadRepository
 
+    @Autowired
+    private lateinit var oldIdFormatSupportHandler: OldIdFormatSupportHandler
+
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
+    }
+
+    @Test
+    fun `Ny soknad skal opprette id-map for gammelt id-format`() {
+        opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)?.let {
+            Assertions.assertThat(oldIdFormatSupportHandler.findByUUID(it)).isNotNull
+        }
+            ?: fail("Feil i test")
     }
 
     @Test
