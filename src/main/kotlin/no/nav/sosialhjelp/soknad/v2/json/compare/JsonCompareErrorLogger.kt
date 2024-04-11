@@ -22,8 +22,8 @@ class JsonCompareErrorLogger(
 
         logErrors(errorList)
     }
-
     private fun logErrors(errors: List<ErrorRow>) {
+
         val stringBuilder = StringBuilder()
 
         errors.forEach {
