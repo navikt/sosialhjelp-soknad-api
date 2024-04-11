@@ -7,8 +7,10 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -137,8 +139,12 @@ class DigisosApiV2Client(
         val startTime = System.currentTimeMillis()
         try {
             // TODO MIDLERTIDIG - legger ved ID på gammelt format som behandlingsId inntil Oslo kan håndtere
-            val idOldFormat: String = oldIdFormatSupportHandler.findByUUID(behandlingsId)?.idOldFormat
+            var idOldFormat: String = oldIdFormatSupportHandler.findByUUID(behandlingsId)?.idOldFormat
                 ?: oldIdFormatSupportHandler.createAndMap(behandlingsId).idOldFormat
+
+            if (MiljoUtils.isNonProduction()) {
+                idOldFormat = SenderUtils.createPrefixedBehandlingsId(idOldFormat)
+            }
 
             val response = fiksWebClient.post()
                 .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, idOldFormat)
