@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.graphql.client.FieldAccessException
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono
 class AdressesokClient(
     private val pdlGraphQlClientBuilder: PdlGraphQlClientBuilder
 ) {
+    @CircuitBreaker(name = "pdl")
     fun getAdressesokResult(variables: Map<String, Any>): Mono<AdressesokResultDto> =
         pdlGraphQlClientBuilder
             .buildAzureAdClient()
