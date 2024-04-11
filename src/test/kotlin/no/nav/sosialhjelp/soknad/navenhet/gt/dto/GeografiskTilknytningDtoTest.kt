@@ -23,10 +23,10 @@ class GeografiskTilknytningDtoTest {
     }
 
     companion object {
-        val bydelsDto = GeografiskTilknytningDto(GtType.BYDEL, "030108", null, null)
-        val kommuneDto = GeografiskTilknytningDto(GtType.KOMMUNE, null, "0301", null)
+        val bydelsDto = GeografiskTilknytningDto(gtType = GtType.BYDEL, gtKommune = null, gtBydel = "030108", gtLand = null)
+        val kommuneDto = GeografiskTilknytningDto(gtType = GtType.KOMMUNE, gtKommune = "0301", gtBydel = null, gtLand = null)
 
         // nb: usikker på den konkrete verdien for gtLand i dette tilfellet
-        val utlandDto = GeografiskTilknytningDto(GtType.UTLAND, null, null, "Sverige")
+        val utlandDto = GeografiskTilknytningDto(gtType = GtType.UTLAND, gtKommune = null, gtBydel = null, gtLand = "Sverige")
     }
 }
