@@ -3,6 +3,15 @@ spring:
     enabled: false
   main:
     allow-bean-definition-overriding: true
+  cache:
+    type: simple
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts: 1
+
 
 # Andre properties
 sendsoknad.batch.enabled: false
@@ -67,7 +76,7 @@ clamav_url: virusscan_not_enabled
 
 fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
 
-  # Feature-toggles
+# Feature-toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:local}
 virusscan_enabled: false
 scheduler.disable: false
@@ -78,7 +87,7 @@ nedetid.slutt: 21.11.2020 15:00:00
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS:integrasjonsid_fiks}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}
 
-  # redis
+# redis
 redis_host: localhost
 redis_port: 6379
 redis_password: foobar

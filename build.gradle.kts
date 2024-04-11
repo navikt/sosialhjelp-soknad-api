@@ -52,6 +52,9 @@ dependencies {
     // Spring
     implementation(libs.bundles.spring.boot)
 
+    // Resilience4j (Retry, CircuitBreaker, ...)
+    implementation(libs.bundles.resilience4j)
+
     developmentOnly(libs.spring.boot.docker.compose)
 
     implementation("org.skyscreamer:jsonassert:1.5.1")

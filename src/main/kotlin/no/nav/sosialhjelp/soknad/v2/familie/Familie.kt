@@ -4,8 +4,10 @@ import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
+import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
+@Table
 data class Familie(
     @Id
     override val soknadId: UUID,

@@ -2,6 +2,10 @@ server:
   port: ${PORT:8181}
 
 spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD:pw}
+      host: ${REDIS_HOST:localhost}
   flyway:
     enabled: true
     baseline-on-migrate: true

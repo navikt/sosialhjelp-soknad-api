@@ -6,6 +6,10 @@ server:
   max-http-request-header-size: 16KB
 
 spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD:pw}
+      host: ${REDIS_HOST}
   main:
     banner-mode: off
   flyway:
@@ -26,6 +30,11 @@ postgres:
 
 
 vault-mount-path: ${VAULT_MOUNT_PATH}
+
+digisos:
+  cache:
+    kodeverk:
+      time-to-live: 86400 # 24 timer
 
 management:
   endpoints:
@@ -116,3 +125,12 @@ feature.fiks.kryptering.enabled: true
 #Nedetid
 nedetid.start: ${NEDETID_START}
 nedetid.slutt: ${NEDETID_SLUTT}
+
+resilience4j:
+  retry:
+    instances:
+      kodeverk:
+        base-config: default
+    configs:
+      default:
+        max-attempts: 5
