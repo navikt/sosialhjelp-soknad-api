@@ -23,7 +23,7 @@ class JsonContentComparatorTest {
     private val logger = LoggerFactory.getLogger(JsonCompareErrorLogger::class.java)
 
     private val logInMemoryAppender = object : ListAppender<ILoggingEvent>() {
-        fun getErrors(): List<ILoggingEvent> = list.filter { it.level == Level.ERROR }
+        fun getErrors(): List<ILoggingEvent> = list.filter { it.level == Level.WARN }
     }
 
     @BeforeEach
