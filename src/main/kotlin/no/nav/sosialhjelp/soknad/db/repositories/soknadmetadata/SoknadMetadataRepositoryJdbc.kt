@@ -31,21 +31,21 @@ class SoknadMetadataRepositoryJdbc(
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
             "INSERT INTO soknadmetadata (" +
-                    "behandlingsid, " +
-                    "id_gammelt_format, " +
-                    "tilknyttetBehandlingsId, " +
-                    "skjema, " +
-                    "fnr, " +
-                    "vedlegg, " +
-                    "orgnr, " +
-                    "navenhet, " +
-                    "fiksforsendelseid, " +
-                    "soknadtype, " +
-                    "innsendingstatus, " +
-                    "opprettetdato, " +
-                    "sistendretdato, " +
-                    "innsendtdato) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "behandlingsid, " +
+                "id_gammelt_format, " +
+                "tilknyttetBehandlingsId, " +
+                "skjema, " +
+                "fnr, " +
+                "vedlegg, " +
+                "orgnr, " +
+                "navenhet, " +
+                "fiksforsendelseid, " +
+                "soknadtype, " +
+                "innsendingstatus, " +
+                "opprettetdato, " +
+                "sistendretdato, " +
+                "innsendtdato) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
             metadata.idGammeltFormat,
             metadata.tilknyttetBehandlingsId,
@@ -67,18 +67,18 @@ class SoknadMetadataRepositoryJdbc(
     override fun oppdater(metadata: SoknadMetadata?) {
         jdbcTemplate.update(
             "UPDATE soknadmetadata " +
-                    "SET tilknyttetBehandlingsId = ?, " +
-                    "skjema = ?, " +
-                    "fnr = ?, " +
-                    "vedlegg = ?, " +
-                    "orgnr = ?, " +
-                    "navenhet = ?, " +
-                    "fiksforsendelseid = ?, " +
-                    "soknadtype = ?, " +
-                    "innsendingstatus = ?, " +
-                    "sistendretdato = ?, " +
-                    "innsendtdato = ? " +
-                    "WHERE id = ?",
+                "SET tilknyttetBehandlingsId = ?, " +
+                "skjema = ?, " +
+                "fnr = ?, " +
+                "vedlegg = ?, " +
+                "orgnr = ?, " +
+                "navenhet = ?, " +
+                "fiksforsendelseid = ?, " +
+                "soknadtype = ?, " +
+                "innsendingstatus = ?, " +
+                "sistendretdato = ?, " +
+                "innsendtdato = ? " +
+                "WHERE id = ?",
             metadata?.tilknyttetBehandlingsId,
             metadata?.skjema,
             metadata?.fnr,
