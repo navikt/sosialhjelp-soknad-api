@@ -14,22 +14,12 @@ class JsonCompareErrorLogger(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun logAllErrors() {
-        val errorList: MutableList<ErrorRow> = mutableListOf()
-
-        errorList.addAll(getFieldFailures())
-        errorList.addAll(getFieldMissing())
-        errorList.addAll(getArraySizeErrorList())
-
-        logErrors(errorList)
+        getFieldFailures().forEach { logError(it) }
+        getFieldMissing().forEach { logError(it) }
+        getArraySizeErrorList().forEach { logError(it) }
     }
-    private fun logErrors(errors: List<ErrorRow>) {
-
-        val stringBuilder = StringBuilder()
-
-        errors.forEach {
-            stringBuilder.append("<< $soknadId ${it.type} ${it.message} >>,")
-        }
-        logger.warn(stringBuilder.toString())
+    private fun logError(error: ErrorRow) {
+        logger.error("$soknadId - ${error.type} - ${error.message}")
     }
 
     private fun getFieldFailures(): List<ErrorRow> {
