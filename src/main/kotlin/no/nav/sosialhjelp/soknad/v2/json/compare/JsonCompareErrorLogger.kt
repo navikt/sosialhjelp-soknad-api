@@ -19,7 +19,7 @@ class JsonCompareErrorLogger(
         getArraySizeErrorList().forEach { logError(it) }
     }
     private fun logError(error: ErrorRow) {
-        logger.error("$soknadId - ${error.type} - ${error.message}")
+        logger.warn("$soknadId - ${error.type} - ${error.message}")
     }
 
     private fun getFieldFailures(): List<ErrorRow> {
