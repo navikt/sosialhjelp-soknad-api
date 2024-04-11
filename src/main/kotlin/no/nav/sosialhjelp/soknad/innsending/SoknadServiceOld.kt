@@ -41,6 +41,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -87,7 +88,6 @@ class SoknadServiceOld(
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = null,
             eier = eierId,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
@@ -112,9 +112,12 @@ class SoknadServiceOld(
     private fun opprettSoknadMetadata(fnr: String): String {
         log.info("Starter søknad")
 
+        val nextId = soknadMetadataRepository.hentNesteId()
+
         val soknadMetadata = SoknadMetadata(
             id = 0,
             behandlingsId = UUID.randomUUID().toString(),
+            idGammeltFormat = lagBehandlingsId(nextId),
             fnr = fnr,
             skjema = SKJEMANUMMER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
@@ -123,9 +126,8 @@ class SoknadServiceOld(
             sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(soknadMetadata)
-        return soknadMetadata.behandlingsId.also {
-            log.info("Starter søknad $it")
-        }
+        return soknadMetadata.behandlingsId
+            .also { log.info("Starter søknad $it") }
     }
 
     @Transactional

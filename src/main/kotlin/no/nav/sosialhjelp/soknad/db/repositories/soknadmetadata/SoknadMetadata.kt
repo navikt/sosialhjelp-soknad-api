@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 data class SoknadMetadata(
     var id: Long = 0,
     var behandlingsId: String,
+    var idGammeltFormat: String,
     var tilknyttetBehandlingsId: String? = null,
     var fnr: String,
     var skjema: String? = null,
@@ -22,7 +23,8 @@ data class SoknadMetadata(
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false
 ) {
-    val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
+    @Deprecated("Ettersendelse via SvarUt støttes ikke lenger")
+    val erEttersendelse: Boolean get() = false
 }
 
 @XmlRootElement

@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
@@ -49,11 +50,12 @@ class EttersendingService(
     }
 
     private fun opprettSoknadMetadataEttersendelse(ettersendesPaSoknad: SoknadMetadata): String {
-        val id = soknadMetadataRepository.hentNesteId()
+        val nextId = soknadMetadataRepository.hentNesteId()
 
         val ettersendelse = SoknadMetadata(
             id = 0,
             behandlingsId = UUID.randomUUID().toString(),
+            idGammeltFormat = SenderUtils.lagBehandlingsId(nextId),
             tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
             fnr = ettersendesPaSoknad.fnr,
             skjema = ettersendesPaSoknad.skjema,

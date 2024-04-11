@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
@@ -21,20 +20,38 @@ class SoknadMetadataRepositoryJdbc(
     private val mapper = jacksonObjectMapper()
 
     override fun hentNesteId(): Long {
-        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
+        return jdbcTemplate.queryForObject(
+            "SELECT nextval('id_sequence')",
+            Long::class.java
+        )
             ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
     }
 
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO soknadmetadata (" +
+                    "behandlingsid, " +
+                    "id_gammelt_format, " +
+                    "tilknyttetBehandlingsId, " +
+                    "skjema, " +
+                    "fnr, " +
+                    "vedlegg, " +
+                    "orgnr, " +
+                    "navenhet, " +
+                    "fiksforsendelseid, " +
+                    "soknadtype, " +
+                    "innsendingstatus, " +
+                    "opprettetdato, " +
+                    "sistendretdato, " +
+                    "innsendtdato) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
+            metadata.idGammeltFormat,
             metadata.tilknyttetBehandlingsId,
             metadata.skjema,
             metadata.fnr,
             metadata.vedlegg?.let { mapper.writeValueAsString(it) },
-//            metadata.vedlegg?.let { JAXB.marshal(it) },
             metadata.orgnr,
             metadata.navEnhet,
             metadata.fiksForsendelseId,
@@ -49,12 +66,23 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun oppdater(metadata: SoknadMetadata?) {
         jdbcTemplate.update(
-            "UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
+            "UPDATE soknadmetadata " +
+                    "SET tilknyttetBehandlingsId = ?, " +
+                    "skjema = ?, " +
+                    "fnr = ?, " +
+                    "vedlegg = ?, " +
+                    "orgnr = ?, " +
+                    "navenhet = ?, " +
+                    "fiksforsendelseid = ?, " +
+                    "soknadtype = ?, " +
+                    "innsendingstatus = ?, " +
+                    "sistendretdato = ?, " +
+                    "innsendtdato = ? " +
+                    "WHERE id = ?",
             metadata?.tilknyttetBehandlingsId,
             metadata?.skjema,
             metadata?.fnr,
             metadata?.vedlegg?.let { mapper.writeValueAsString(it) },
-//            metadata?.vedlegg?.let { JAXB.marshal(it) },
             metadata?.orgnr,
             metadata?.navEnhet,
             metadata?.fiksForsendelseId,

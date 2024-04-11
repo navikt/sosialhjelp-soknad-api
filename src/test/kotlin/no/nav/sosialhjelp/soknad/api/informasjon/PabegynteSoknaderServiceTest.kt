@@ -26,6 +26,7 @@ internal class PabegynteSoknaderServiceTest {
         val soknadMetadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "id",
+            idGammeltFormat = "id",
             fnr = "fnr",
             opprettetDato = now,
             sistEndretDato = now,

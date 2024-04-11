@@ -116,6 +116,7 @@ internal class TilgangskontrollTest {
         val metadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "123",
+            idGammeltFormat = "123",
             fnr = userId,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
@@ -132,6 +133,7 @@ internal class TilgangskontrollTest {
         val metadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "123",
+            idGammeltFormat = "123",
             fnr = "other_user",
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()

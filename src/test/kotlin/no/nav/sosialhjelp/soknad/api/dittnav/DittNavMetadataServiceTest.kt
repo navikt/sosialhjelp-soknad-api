@@ -25,6 +25,7 @@ internal class DittNavMetadataServiceTest {
         id = 0L,
         fnr = "12345",
         behandlingsId = "beh123",
+        idGammeltFormat = "beh123",
         status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
         type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
         opprettetDato = LocalDateTime.now().minusDays(10),

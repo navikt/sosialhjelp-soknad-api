@@ -38,25 +38,25 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
     @Test
     fun hentForBatchSkalIkkeReturnereFerdige() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNull()
     }
 
     @Test
     fun hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, AVBRUTT_AUTOMATISK, dagerGammelSoknad))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, AVBRUTT_AUTOMATISK, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNull()
     }
 
     @Test
     fun hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, AVBRUTT_AV_BRUKER, dagerGammelSoknad))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, AVBRUTT_AV_BRUKER, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNull()
     }
 
     @Test
     fun hentForBatchBrukerEndringstidspunkt() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, UNDER_ARBEID, dagerGammelSoknad))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, UNDER_ARBEID, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotNull
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNull()
     }
@@ -64,7 +64,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     @Test
     fun hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
         for (status in listOf(UNDER_ARBEID, FERDIG, AVBRUTT_AUTOMATISK, AVBRUTT_AV_BRUKER)) {
-            opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad))
+            opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, status, dagerGammelSoknad))
             assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isNotEmpty
             assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isEmpty()
             batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(behandlingsId))
@@ -74,13 +74,13 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     @Test
     internal fun `hentEldreEnn skal hente 20 siste`() {
         // oppretter noen SoknadMetadata som er nyere enn `antallDagerGammelt`
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 2))
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 1))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 2))
+        opprettSoknadMetadata(lagSoknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 1))
 
         // oppretter over 20 SoknadMetadata som er eldre enn `antallDagerGammelt`
         val oldSoknads = (0..22).map {
             behandlingsId.also { id ->
-                opprettSoknadMetadata(soknadMetadata(id, FERDIG, dagerGammelSoknad + it))
+                opprettSoknadMetadata(lagSoknadMetadata(id, FERDIG, dagerGammelSoknad + it))
             }
         }
 
@@ -97,13 +97,14 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
         batchSoknadMetadataRepository.leggTilbakeBatch(lagretSoknadMetadata!!.id)
     }
 
-    private fun soknadMetadata(
+    private fun lagSoknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int
     ): SoknadMetadata {
         return SoknadMetadata(
             behandlingsId = behandlingsId,
+            idGammeltFormat = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             skjema = "",

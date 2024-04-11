@@ -184,6 +184,7 @@ internal class SoknadServiceOldTest {
         return SoknadMetadata(
             id = 0L,
             behandlingsId = BEHANDLINGSID,
+            idGammeltFormat = BEHANDLINGSID,
             fnr = EIER,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()

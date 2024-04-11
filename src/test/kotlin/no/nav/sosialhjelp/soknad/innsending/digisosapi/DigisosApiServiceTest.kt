@@ -109,6 +109,7 @@ internal class DigisosApiServiceTest {
         val soknadMetadata = SoknadMetadata(
             id = 1L,
             behandlingsId = "behandlingsid",
+            idGammeltFormat = "behandlingsid",
             fnr = "12345678910",
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()

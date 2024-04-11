@@ -13,6 +13,7 @@ object SoknadMetadataRowMapper {
         SoknadMetadata(
             id = rs.getLong("id"),
             behandlingsId = rs.getString("behandlingsid"),
+            idGammeltFormat = rs.getString("id_gammelt_format"),
             tilknyttetBehandlingsId = rs.getString("tilknyttetBehandlingsId"),
             fnr = rs.getString("fnr"),
             skjema = rs.getString("skjema"),
@@ -20,7 +21,6 @@ object SoknadMetadataRowMapper {
             navEnhet = rs.getString("navenhet"),
             fiksForsendelseId = rs.getString("fiksforsendelseid"),
             vedlegg = rs.getString("vedlegg")?.let { mapper.readValue(it, VedleggMetadataListe::class.java) },
-//            vedlegg = rs.getString("vedlegg")?.let { JAXB.unmarshal(it, VedleggMetadataListe::class.java) },
             type = SoknadMetadataType.valueOf(rs.getString("soknadtype")),
             status = SoknadMetadataInnsendingStatus.valueOf(rs.getString("innsendingstatus")),
             opprettetDato = SQLUtils.timestampTilTid(rs.getTimestamp("opprettetdato")),

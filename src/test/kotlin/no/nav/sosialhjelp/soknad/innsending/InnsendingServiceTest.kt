@@ -112,6 +112,7 @@ internal class InnsendingServiceTest {
         return SoknadMetadata(
             id = 0L,
             behandlingsId = BEHANDLINGSID,
+            idGammeltFormat = BEHANDLINGSID,
             fnr = EIER,
             orgnr = ORGNR_METADATA,
             navEnhet = NAVENHETSNAVN_METADATA,

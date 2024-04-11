@@ -26,6 +26,7 @@ internal class SoknadOversiktServiceTest {
     private val soknadMetadata = SoknadMetadata(
         id = 0L,
         behandlingsId = "beh123",
+        idGammeltFormat = "beh123",
         fnr = "12345",
         type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
         status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,

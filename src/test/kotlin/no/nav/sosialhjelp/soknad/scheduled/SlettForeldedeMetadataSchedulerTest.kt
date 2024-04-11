@@ -96,6 +96,7 @@ internal class SlettForeldedeMetadataSchedulerTest {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
             behandlingsId = behandlingsId,
+            idGammeltFormat = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             skjema = "",

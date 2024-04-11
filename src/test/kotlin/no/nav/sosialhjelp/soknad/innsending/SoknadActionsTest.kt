@@ -104,6 +104,7 @@ internal class SoknadActionsTest {
         val soknadMetadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "behandlingsId",
+            idGammeltFormat = "behandlingsId",
             fnr = EIER,
             status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
@@ -143,6 +144,7 @@ internal class SoknadActionsTest {
         val soknadMetadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "behandlingsId",
+            idGammeltFormat = "behandlingsId",
             fnr = EIER,
             status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
             opprettetDato = LocalDateTime.now(),

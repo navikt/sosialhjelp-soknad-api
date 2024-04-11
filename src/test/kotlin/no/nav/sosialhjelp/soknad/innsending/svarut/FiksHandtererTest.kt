@@ -118,6 +118,7 @@ internal class FiksHandtererTest {
         return SoknadMetadata(
             id = 1L,
             behandlingsId = BEHANDLINGSID,
+            idGammeltFormat = BEHANDLINGSID,
             fnr = AVSENDER,
             orgnr = "orgnr",
             navEnhet = NAVENHETSNAVN,

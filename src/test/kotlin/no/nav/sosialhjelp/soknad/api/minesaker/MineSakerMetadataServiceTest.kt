@@ -18,6 +18,7 @@ internal class MineSakerMetadataServiceTest {
         val soknadMetadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "beh123",
+            idGammeltFormat = "beh123",
             fnr = "12345",
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             opprettetDato = LocalDateTime.now(),

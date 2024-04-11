@@ -132,6 +132,7 @@ internal class FiksSenderTest {
     }
 
     @Test
+    @Disabled("Ettersendelse via SvarUt støttes ikke lenger")
     fun opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
         every { innsendingService.finnFiksForsendelseIdForEttersendelse(any()) } returns null
@@ -234,6 +235,7 @@ internal class FiksSenderTest {
         return SoknadMetadata(
             id = 1L,
             behandlingsId = BEHANDLINGSID,
+            idGammeltFormat = BEHANDLINGSID,
             tilknyttetBehandlingsId = null,
             fnr = EIER,
             fiksForsendelseId = null,
