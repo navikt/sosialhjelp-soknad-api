@@ -13,31 +13,20 @@ fun unproxiedHttpClient(): HttpClient = HttpClient
     .newConnection()
     .resolver(DefaultAddressResolverGroup.INSTANCE)
 
-fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Builder {
-    return webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .filter(mdcExchangeFilter)
-}
+fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Builder = webClientBuilder
+    .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
+    .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
+    .filter(mdcExchangeFilter)
 
-fun proxiedWebClientBuilder(webClientBuilder: WebClient.Builder, proxiedHttpClient: HttpClient): WebClient.Builder {
-    return webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .filter(mdcExchangeFilter)
-}
+fun proxiedWebClientBuilder(webClientBuilder: WebClient.Builder, proxiedHttpClient: HttpClient): WebClient.Builder = webClientBuilder
+    .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
+    .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
+    .filter(mdcExchangeFilter)
 
+/**
+ * MDC = Mapped Diagnostic Context. Kopierer fra tråden som gjorde requesten til reactor-threads som håndterer respons.
+ */
 val mdcExchangeFilter = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
-    // Kopierer MDC-context inn til reactor threads
-    val map: Map<String, String>? = MDC.getCopyOfContextMap()
-    next.exchange(request)
-        .doOnNext {
-            if (map != null) {
-                MDC.setContextMap(map)
-            }
-        }
+    val copyFromFirstThread = MDC.getCopyOfContextMap()
+    next.exchange(request).doOnNext { copyFromFirstThread?.let { MDC.setContextMap(it) } }
 }
