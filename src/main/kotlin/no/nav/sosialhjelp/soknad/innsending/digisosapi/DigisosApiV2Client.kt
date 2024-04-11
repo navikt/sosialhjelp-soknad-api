@@ -141,7 +141,7 @@ class DigisosApiV2Client(
                 ?: oldIdFormatSupportHandler.createAndMap(behandlingsId).idOldFormat
 
             val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}",kommunenummer,idOldFormat)
+                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, idOldFormat)
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
