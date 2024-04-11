@@ -41,13 +41,13 @@ services:
       retries: 10
       start_period: 30s
 
-  cache:
+  redis:
     container_name: redis
-    image: redis:6.2-alpine
+    image: redis:7.2-alpine
     restart: always
     ports:
       - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass pw
+    command: redis-server --save 20 1 --loglevel debug
 
 networks:
   digisos.docker-internal:
