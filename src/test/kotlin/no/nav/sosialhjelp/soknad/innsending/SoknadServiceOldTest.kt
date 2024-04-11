@@ -30,6 +30,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
+import no.nav.sosialhjelp.soknad.v2.soknad.OldIdFormatSupportHandler
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -50,6 +51,7 @@ internal class SoknadServiceOldTest {
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
+    private val oldIdFormatSupportHandler: OldIdFormatSupportHandler = mockk(relaxed = true)
 
     private val soknadServiceOld = SoknadServiceOld(
         oppgaveHandterer,
@@ -62,7 +64,8 @@ internal class SoknadServiceOldTest {
         mellomlagringService,
         prometheusMetricsService,
         Clock.systemDefaultZone(),
-        v2AdapterService
+        v2AdapterService,
+        oldIdFormatSupportHandler
     )
 
     @BeforeEach
