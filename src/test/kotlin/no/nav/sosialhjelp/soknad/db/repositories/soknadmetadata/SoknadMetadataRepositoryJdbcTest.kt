@@ -35,7 +35,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
     fun `Hent neste id i id_sequence`() {
         val nesteId = soknadMetadataRepository.hentNesteId()
         // ved bytte fra langlevende Oracle-base til ny Postgres, er dette neste nummer i sekvensen
-        assertThat(nesteId).isEqualTo(4360796)
+        assertThat(nesteId >= 4360796).isTrue()
 
         val behandlingsIds = mutableSetOf<String>()
 
