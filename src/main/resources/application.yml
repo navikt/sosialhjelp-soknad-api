@@ -33,6 +33,8 @@ vault-mount-path: ${VAULT_MOUNT_PATH}
 
 digisos:
   cache:
+    geografiskTilknytningForIdent:
+      time-to-live: 1800 # 30 minutter
     kodeverk:
       time-to-live: 86400 # 24 timer
 
@@ -127,6 +129,15 @@ nedetid.start: ${NEDETID_START}
 nedetid.slutt: ${NEDETID_SLUTT}
 
 resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        # Settes høyt under innkjøring, default er at 50% av requests kan feile.
+        failureRateThreshold: 75
+    instances:
+      pdl:
+        # Endre dette til true når koden er kjørt inn
+        registerHealthIndicator: false
   retry:
     instances:
       kodeverk:

@@ -16,12 +16,14 @@ class CacheConfig {
     @Bean
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
-        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long
+        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
+        @Value("\${digisos.cache.geografiskTilknytningForIdent.time-to-live}") geografiskTilknytningForIdentTTL: Long
     ): CacheManager = RedisCacheManager.builder(redisConnectionFactory)
         .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
         .withInitialCacheConfigurations(
             mapOf(
-                "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL))
+                "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
+                "geografiskTilknytningForIdent" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(geografiskTilknytningForIdentTTL))
             )
         )
         .enableStatistics()
