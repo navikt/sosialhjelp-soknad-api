@@ -15,11 +15,10 @@ import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 
 @Configuration
 class JdbcConverterConfig : AbstractJdbcConfiguration() {
-
     override fun userConverters(): MutableList<*> {
         return mutableListOf(
             AdresseToJsonConverter,
-            JsonToAdresseConverter
+            JsonToAdresseConverter,
         )
     }
 
@@ -34,18 +33,20 @@ class JdbcConverterConfig : AbstractJdbcConfiguration() {
     }
 
     private object JsonToAdresseMapper {
-        val adresseTyper = setOf(
-            VegAdresse::class.java,
-            MatrikkelAdresse::class.java,
-            PostboksAdresse::class.java,
-            UstrukturertAdresse::class.java
-        )
+        val adresseTyper =
+            setOf(
+                VegAdresse::class.java,
+                MatrikkelAdresse::class.java,
+                PostboksAdresse::class.java,
+                UstrukturertAdresse::class.java,
+            )
 
         fun map(json: String): Adresse {
             adresseTyper.forEach {
                 try {
                     return mapper.readValue(json, it)
-                } catch (ignored: DatabindException) {}
+                } catch (ignored: DatabindException) {
+                }
             }
             throw IllegalArgumentException("Kunne ikke mappe adresse")
         }

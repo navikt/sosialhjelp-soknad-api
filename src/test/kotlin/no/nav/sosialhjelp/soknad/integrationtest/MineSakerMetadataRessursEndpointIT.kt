@@ -20,7 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @AutoConfigureWebTestClient(timeout = "PT30S")
 @ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class MineSakerMetadataRessursEndpointIT {
-
     companion object {
         private const val BRUKER = "11111111111"
     }

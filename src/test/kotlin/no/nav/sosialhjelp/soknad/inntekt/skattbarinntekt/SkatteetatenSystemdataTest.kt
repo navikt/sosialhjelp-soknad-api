@@ -165,7 +165,10 @@ internal class SkatteetatenSystemdataTest {
         return jsonInternalSoknad
     }
 
-    private fun setSamtykke(jsonInternalSoknad: JsonInternalSoknad, harSamtykke: Boolean) {
+    private fun setSamtykke(
+        jsonInternalSoknad: JsonInternalSoknad,
+        harSamtykke: Boolean,
+    ) {
         val bekreftelser = jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
         bekreftelser.removeIf { it.type.equals(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) }
         bekreftelser
@@ -174,14 +177,14 @@ internal class SkatteetatenSystemdataTest {
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
                     .withVerdi(harSamtykke)
-                    .withTittel("beskrivelse")
+                    .withTittel("beskrivelse"),
             )
     }
 
     private fun assertThatUtbetalingIsCorrectlyConverted(
         utbetaling: Utbetaling,
         jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        type: String
+        type: String,
     ) {
         // todo belop, netto og andretrekk er null, men assertion gir NPE?
         assertThat(jsonUtbetaling.type).isEqualTo(type)
@@ -201,10 +204,11 @@ internal class SkatteetatenSystemdataTest {
 
     companion object {
         private const val EIER = "12345678901"
-        private val JSON_OKONOMI_OPPLYSNING_UTBETALING = JsonOkonomiOpplysningUtbetaling()
-            .withKilde(JsonKilde.BRUKER)
-            .withType("Vaffelsalg")
-            .withBelop(1000000)
+        private val JSON_OKONOMI_OPPLYSNING_UTBETALING =
+            JsonOkonomiOpplysningUtbetaling()
+                .withKilde(JsonKilde.BRUKER)
+                .withType("Vaffelsalg")
+                .withBelop(1000000)
         private val PERIODE_FOM = LocalDate.now().minusDays(40)
         private val PERIODE_TOM = LocalDate.now().minusDays(10)
         private const val TITTEL = "Onkel Skrue penger"
@@ -223,7 +227,9 @@ internal class SkatteetatenSystemdataTest {
         private val SKATTBAR_UTBETALING_FRA_PRIVATPERSON =
             Utbetaling("skatteopplysninger", BRUTTO_2, SKATT_2, PERIODE_FOM, PERIODE_TOM, TITTEL_2, PERSONNR)
 
-        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+        private fun createSoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
@@ -232,7 +238,7 @@ internal class SkatteetatenSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

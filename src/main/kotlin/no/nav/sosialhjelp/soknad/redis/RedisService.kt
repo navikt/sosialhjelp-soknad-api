@@ -8,18 +8,34 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 interface RedisService {
-    fun get(key: String, requestedClass: Class<*>): Any?
+    fun get(
+        key: String,
+        requestedClass: Class<*>,
+    ): Any?
+
     fun getString(key: String): String?
+
     fun getKommuneInfos(): Map<String, KommuneInfo>?
-    fun setex(key: String, value: ByteArray, timeToLiveSeconds: Long)
-    fun set(key: String, value: ByteArray)
+
+    fun setex(
+        key: String,
+        value: ByteArray,
+        timeToLiveSeconds: Long,
+    )
+
+    fun set(
+        key: String,
+        value: ByteArray,
+    )
 }
 
 class RedisServiceImpl(
-    private val redisStore: RedisStore
+    private val redisStore: RedisStore,
 ) : RedisService {
-
-    override fun get(key: String, requestedClass: Class<*>): Any? {
+    override fun get(
+        key: String,
+        requestedClass: Class<*>,
+    ): Any? {
         val value = redisStore.get(key)
 
         return if (value != null) {
@@ -44,17 +60,27 @@ class RedisServiceImpl(
         return RedisUtils.toKommuneInfoMap(value)
     }
 
-    override fun setex(key: String, value: ByteArray, timeToLiveSeconds: Long) {
+    override fun setex(
+        key: String,
+        value: ByteArray,
+        timeToLiveSeconds: Long,
+    ) {
         val result = redisStore.setex(key, value, timeToLiveSeconds)
         handleResponse(key, result)
     }
 
-    override fun set(key: String, value: ByteArray) {
+    override fun set(
+        key: String,
+        value: ByteArray,
+    ) {
         val result = redisStore.set(key, value)
         handleResponse(key, result)
     }
 
-    private fun handleResponse(key: String, result: String?) {
+    private fun handleResponse(
+        key: String,
+        result: String?,
+    ) {
         if (result != null && result.equals("OK", ignoreCase = true)) {
             log.debug("Redis put OK, key=${maskerFnr(key)}")
         } else {
@@ -68,8 +94,10 @@ class RedisServiceImpl(
 }
 
 class NoRedisService : RedisService {
-
-    override fun get(key: String, requestedClass: Class<*>): Any? {
+    override fun get(
+        key: String,
+        requestedClass: Class<*>,
+    ): Any? {
         return null
     }
 
@@ -81,11 +109,18 @@ class NoRedisService : RedisService {
         return null
     }
 
-    override fun setex(key: String, value: ByteArray, timeToLiveSeconds: Long) {
+    override fun setex(
+        key: String,
+        value: ByteArray,
+        timeToLiveSeconds: Long,
+    ) {
         // nothing
     }
 
-    override fun set(key: String, value: ByteArray) {
+    override fun set(
+        key: String,
+        value: ByteArray,
+    ) {
         // nothing
     }
 }

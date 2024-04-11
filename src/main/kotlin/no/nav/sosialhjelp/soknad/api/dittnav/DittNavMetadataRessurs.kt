@@ -18,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL])
+@ProtectedWithClaims(
+    issuer = TOKENX,
+    combineWithOr = true,
+    claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL],
+)
 @RequestMapping("/dittnav", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
-    private val dittNavMetadataService: DittNavMetadataService
+    private val dittNavMetadataService: DittNavMetadataService,
 ) {
     @GetMapping("/pabegynte/aktive")
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
@@ -37,7 +41,7 @@ class DittNavMetadataRessurs(
 
     @PostMapping("/pabegynte/lest")
     fun settLestForPabegyntSoknad(
-        @RequestBody dto: MarkerPabegyntSoknadSomLestDto
+        @RequestBody dto: MarkerPabegyntSoknadSomLestDto,
     ): Boolean {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = dto.grupperingsId

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test
 // @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 // @ActiveProfiles(profiles = ["no-interceptor", "no-redis", "test"])
 class GotenbergClientTest {
-
-//    @Autowired
+    //    @Autowired
     private lateinit var fileConverter: FileConverter
 
     @Disabled("Brukes for manuel feilsøking")

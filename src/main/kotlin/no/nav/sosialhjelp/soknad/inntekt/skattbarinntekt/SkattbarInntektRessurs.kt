@@ -35,10 +35,12 @@ class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
-    fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
+    fun hentSkattbareInntekter(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getSkattbarInntekt(behandlingsId)
     }
@@ -47,7 +49,7 @@ class SkattbarInntektRessurs(
     @Deprecated("POST skal ikke ha side effects; bruk PUT mot skattbarinntektogforskuddstrekk")
     fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody samtykke: Boolean
+        @RequestBody samtykke: Boolean,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, samtykke)
@@ -57,7 +59,7 @@ class SkattbarInntektRessurs(
     fun putSkatteetatenSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody @Valid
-        input: SkattbarInntektInputDTO
+        input: SkattbarInntektInputDTO,
     ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, input.samtykke)
@@ -68,52 +70,57 @@ class SkattbarInntektRessurs(
     private fun getSkattbarInntekt(behandlingsId: String): SkattbarInntektFrontend {
         val soknad = internalFraSoknad(fetchSoknad(behandlingsId))
 
-        val inntektFraSkatteetaten = skatteetatUtbetalingerFraSoknad(soknad)
-            // Sort by periodeFom (String); newest first. groupBy retains ordering.
-            .sortedByDescending { it.periodeFom }
-            // Group transactions as Map<periodeFom, List<JsonOkonomiOpplysningUtbetaling>>
-            .groupBy { it.periodeFom }
-            // Collection<List<JsonOkonomiOpplysningUtbetaling>>
-            .values
-            // List<SkattbarInntektOgForskuddstrekk>
-            .map { it.transformToFrontend() }
+        val inntektFraSkatteetaten =
+            skatteetatUtbetalingerFraSoknad(soknad)
+                // Sort by periodeFom (String); newest first. groupBy retains ordering.
+                .sortedByDescending { it.periodeFom }
+                // Group transactions as Map<periodeFom, List<JsonOkonomiOpplysningUtbetaling>>
+                .groupBy { it.periodeFom }
+                // Collection<List<JsonOkonomiOpplysningUtbetaling>>
+                .values
+                // List<SkattbarInntektOgForskuddstrekk>
+                .map { it.transformToFrontend() }
 
         return SkattbarInntektFrontend(
             inntektFraSkatteetaten = inntektFraSkatteetaten,
             inntektFraSkatteetatenFeilet = soknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
             samtykke = samtykkeFraSoknad(soknad),
-            samtykkeTidspunkt = samtykkeDatoFraSoknad(soknad)
+            samtykkeTidspunkt = samtykkeDatoFraSoknad(soknad),
         )
     }
 
     /** Mapper JsonOkonomiOpplysningUtbetaling til SkattbarInntektOgForskuddstrekk for frontend. */
     private fun List<JsonOkonomiOpplysningUtbetaling>.transformToFrontend() =
         SkattbarInntektOgForskuddstrekk(
-            organisasjoner = this.groupBy { it.organisasjon }.map { (organisasjon, utbetalinger) ->
-                mapTilOrganisasjon(
-                    utbetalinger = mapTilUtbetalinger(utbetalinger),
-                    organisasjon = organisasjon,
-                    periode = utbetalinger.first().periode()
-                )
-            }
+            organisasjoner =
+                this.groupBy { it.organisasjon }.map { (organisasjon, utbetalinger) ->
+                    mapTilOrganisasjon(
+                        utbetalinger = mapTilUtbetalinger(utbetalinger),
+                        organisasjon = organisasjon,
+                        periode = utbetalinger.first().periode(),
+                    )
+                },
         )
 
     private fun JsonOkonomiOpplysningUtbetaling.periode(): Pair<String, String> = Pair(periodeFom, periodeTom)
 
-    private fun setSamtykkeIfChanged(behandlingsId: String, samtykke: Boolean) {
+    private fun setSamtykkeIfChanged(
+        behandlingsId: String,
+        samtykke: Boolean,
+    ) {
         val soknad = fetchSoknad(behandlingsId)
         val internal = internalFraSoknad(soknad)
 
         if (samtykkeFraSoknad(internal) != samtykke) {
             removeBekreftelserIfPresent(
                 internal.soknad.data.okonomi.opplysninger,
-                UTBETALING_SKATTEETATEN_SAMTYKKE
+                UTBETALING_SKATTEETATEN_SAMTYKKE,
             )
             setBekreftelse(
                 internal.soknad.data.okonomi.opplysninger,
                 UTBETALING_SKATTEETATEN_SAMTYKKE,
                 samtykke,
-                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke")
+                textService.getJsonOkonomiTittel("utbetalinger.skattbar.samtykke"),
             )
             skatteetatenSystemdata.updateSystemdataIn(soknad)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, getBrukerPid())
@@ -121,11 +128,14 @@ class SkattbarInntektRessurs(
     }
 
     /** Snarvei for SoknadUnderArbeid fra behandlingsId. Sjekker aktiv brukers eierskap. */
-    private fun fetchSoknad(behandlingsId: String): SoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, getBrukerPid())
+    private fun fetchSoknad(behandlingsId: String): SoknadUnderArbeid =
+        soknadUnderArbeidRepository.hentSoknad(behandlingsId, getBrukerPid())
 
     /** Snarvei for å hente it jsonInternalSoknad fra SoknadUnderArbeid og bekrefte at den ikke er null */
     private fun internalFraSoknad(soknad: SoknadUnderArbeid): JsonInternalSoknad =
-        soknad.jsonInternalSoknad ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        soknad.jsonInternalSoknad ?: throw IllegalStateException(
+            "Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null",
+        )
 
     /**
      * Henter utbetalinger fra Skatteetaten fra søknaden.
@@ -145,22 +155,23 @@ class SkattbarInntektRessurs(
      * Henter dato for sist samtykke ble gitt for å hente fra Skatteetaten
      */
     private fun samtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? =
-        soknad.soknad.data.okonomi.opplysninger.bekreftelse.filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE && it.verdi }.map { it.bekreftelsesDato }
+        soknad.soknad.data.okonomi.opplysninger.bekreftelse.filter {
+            it.type == UTBETALING_SKATTEETATEN_SAMTYKKE && it.verdi
+        }.map { it.bekreftelsesDato }
             .sortedByDescending { it }.firstOrNull()
 
-    private fun mapTilUtbetalinger(
-        utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
-    ) = utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
+    private fun mapTilUtbetalinger(utbetalinger: List<JsonOkonomiOpplysningUtbetaling>) =
+        utbetalinger.map { Utbetaling(it.brutto, it.skattetrekk, it.tittel) }
 
     private fun mapTilOrganisasjon(
         utbetalinger: List<Utbetaling>,
         organisasjon: JsonOrganisasjon?,
-        periode: Pair<String, String>
+        periode: Pair<String, String>,
     ) = Organisasjon(
         utbetalinger,
         organisasjon?.navn ?: "Uten organisasjonsnummer",
         organisasjon?.organisasjonsnummer ?: "",
         periode.first,
-        periode.second
+        periode.second,
     )
 }

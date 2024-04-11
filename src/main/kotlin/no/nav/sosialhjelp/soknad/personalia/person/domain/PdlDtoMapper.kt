@@ -24,9 +24,8 @@ import java.time.Period
 @Component
 class PdlDtoMapper(
     private val kodeverkService: KodeverkService,
-    private val helper: MapperHelper
+    private val helper: MapperHelper,
 ) {
-
     companion object {
         const val NOR = "NOR"
         const val DOED = "DOED"
@@ -42,11 +41,14 @@ class PdlDtoMapper(
                 SivilstandType.REGISTRERT_PARTNER to "gift",
                 SivilstandType.SEPARERT_PARTNER to "separert",
                 SivilstandType.SKILT_PARTNER to "skilt",
-                SivilstandType.GJENLEVENDE_PARTNER to "enke"
+                SivilstandType.GJENLEVENDE_PARTNER to "enke",
             )
     }
 
-    fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
+    fun personDtoToDomain(
+        personDto: PersonDto?,
+        ident: String,
+    ): Person? {
         return if (personDto == null) {
             null
         } else {
@@ -59,13 +61,21 @@ class PdlDtoMapper(
                 findStatsborgerskap(personDto.statsborgerskap),
                 null,
                 mapToBostedsadresse(personDto.bostedsadresse),
-                mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse)
+                mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
             )
         }
     }
 
-    fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
-        if (barnDto == null || hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
+    fun barnDtoToDomain(
+        barnDto: BarnDto?,
+        barnIdent: String,
+        personDto: PersonDto,
+    ): Barn? {
+        if (barnDto == null ||
+            hasAdressebeskyttelse(
+                barnDto.adressebeskyttelse,
+            ) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)
+        ) {
             return null
         }
         return Barn(
@@ -74,11 +84,15 @@ class PdlDtoMapper(
             findEtternavn(barnDto.navn),
             barnIdent,
             findFodselsdato(barnDto.foedsel),
-            isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse)
+            isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse),
         )
     }
 
-    fun ektefelleDtoToDomain(ektefelleDto: EktefelleDto?, ektefelleIdent: String, personDto: PersonDto): Ektefelle? {
+    fun ektefelleDtoToDomain(
+        ektefelleDto: EktefelleDto?,
+        ektefelleIdent: String,
+        personDto: PersonDto,
+    ): Ektefelle? {
         if (ektefelleDto == null) {
             return null
         }
@@ -92,7 +106,7 @@ class PdlDtoMapper(
                 findFodselsdato(ektefelleDto.foedsel),
                 ektefelleIdent,
                 isFolkeregistrertSammen(personDto.bostedsadresse, ektefelleDto.bostedsadresse),
-                false
+                false,
             )
         }
     }
@@ -152,7 +166,7 @@ class PdlDtoMapper(
 
     private fun isFolkeregistrertSammen(
         personBostedsadresse: List<BostedsadresseDto>?,
-        barnEllerEktefelleBostedsadresse: List<BostedsadresseDto>?
+        barnEllerEktefelleBostedsadresse: List<BostedsadresseDto>?,
     ): Boolean {
         val bostedsadressePerson = findBostedsadresse(personBostedsadresse)
         val bostedsadresseBarnEllerEktefelle = findBostedsadresse(barnEllerEktefelleBostedsadresse)
@@ -199,7 +213,10 @@ class PdlDtoMapper(
         return bostedsadresseDto?.matrikkeladresse?.matrikkelId != null
     }
 
-    private fun isEqualVegadresser(adr1: VegadresseDto, adr2: VegadresseDto): Boolean {
+    private fun isEqualVegadresser(
+        adr1: VegadresseDto,
+        adr2: VegadresseDto,
+    ): Boolean {
         return (
             adr1.adressenavn == adr2.adressenavn &&
                 adr1.husnummer == adr2.husnummer &&
@@ -209,10 +226,13 @@ class PdlDtoMapper(
                 adr1.kommunenummer == adr2.kommunenummer &&
                 adr1.bruksenhetsnummer == adr2.bruksenhetsnummer &&
                 adr1.bydelsnummer == adr2.bydelsnummer
-            )
+        )
     }
 
-    private fun isEqualVegadresserWithoutKommunenummer(adr1: VegadresseDto, adr2: VegadresseDto): Boolean {
+    private fun isEqualVegadresserWithoutKommunenummer(
+        adr1: VegadresseDto,
+        adr2: VegadresseDto,
+    ): Boolean {
         return (
             adr1.adressenavn == adr2.adressenavn &&
                 adr1.husnummer == adr2.husnummer &&
@@ -220,7 +240,7 @@ class PdlDtoMapper(
                 adr1.tilleggsnavn == adr2.tilleggsnavn &&
                 adr1.postnummer == adr2.postnummer &&
                 adr1.bruksenhetsnummer == adr2.bruksenhetsnummer
-            )
+        )
     }
 
     private fun mapToBostedsadresse(dtos: List<BostedsadresseDto>?): Bostedsadresse? {
@@ -229,14 +249,14 @@ class PdlDtoMapper(
                 Bostedsadresse(
                     it.coAdressenavn,
                     it.vegadresse?.let { adr -> mapToVegadresse(adr) },
-                    it.matrikkeladresse?.let { adr -> mapToMatrikkeladresse(adr) }
+                    it.matrikkeladresse?.let { adr -> mapToMatrikkeladresse(adr) },
                 )
             } ?: return null
     }
 
     private fun mapToOppholdssadresse(
         dtos: List<OppholdsadresseDto>?,
-        bostedsadresseDtos: List<BostedsadresseDto>?
+        bostedsadresseDtos: List<BostedsadresseDto>?,
     ): Oppholdsadresse? {
         if (dtos.isNullOrEmpty()) {
             return null
@@ -253,7 +273,7 @@ class PdlDtoMapper(
 
     private fun filterVegadresseNotEqualToBostedsadresse(
         bostedsadresseDtos: List<BostedsadresseDto>?,
-        dtoVegadresse: VegadresseDto
+        dtoVegadresse: VegadresseDto,
     ): Boolean {
         if (bostedsadresseDtos.isNullOrEmpty()) {
             return true
@@ -278,7 +298,7 @@ class PdlDtoMapper(
             getPoststed(dto.postnummer),
             dto.kommunenummer,
             dto.bruksenhetsnummer,
-            dto.bydelsnummer
+            dto.bydelsnummer,
         )
     }
 
@@ -291,7 +311,7 @@ class PdlDtoMapper(
             getPoststed(dto.postnummer),
             dto.tilleggsnavn,
             dto.kommunenummer,
-            dto.bruksenhetsnummer
+            dto.bruksenhetsnummer,
         )
     }
 }

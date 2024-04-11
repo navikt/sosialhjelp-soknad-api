@@ -9,5 +9,5 @@ data class Utbetaling(
     val periodeFom: LocalDate,
     val periodeTom: LocalDate,
     var tittel: String,
-    val orgnummer: String
+    val orgnummer: String,
 )

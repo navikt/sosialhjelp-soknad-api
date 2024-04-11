@@ -47,7 +47,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BoutgiftRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
@@ -99,8 +98,8 @@ internal class BoutgiftRessursTest {
                     UTGIFTER_OPPVARMING,
                     UTGIFTER_BOLIGLAN_AVDRAG,
                     UTGIFTER_BOLIGLAN_RENTER,
-                    UTGIFTER_ANNET_BO
-                )
+                    UTGIFTER_ANNET_BO,
+                ),
             )
 
         val boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID)
@@ -126,15 +125,16 @@ internal class BoutgiftRessursTest {
     fun boutgifterSkalReturnereSkalViseInfoLikFalseDersomManHarBostotteSakerEllerUtbetalinger() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte = JsonBostotte()
-            .withSaker(listOf(JsonBostotteSak().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)))
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte =
+            JsonBostotte()
+                .withSaker(listOf(JsonBostotteSak().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)))
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling =
             listOf(JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN))
         setBekreftelse(
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger,
             BOSTOTTE_SAMTYKKE,
             true,
-            "Test samtykke!"
+            "Test samtykke!",
         )
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
 
@@ -151,7 +151,7 @@ internal class BoutgiftRessursTest {
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger,
             BOSTOTTE_SAMTYKKE,
             true,
-            "Test samtykke!"
+            "Test samtykke!",
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false))
@@ -168,7 +168,7 @@ internal class BoutgiftRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(
                 JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false),
-                JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE_SAMTYKKE).withVerdi(false)
+                JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE_SAMTYKKE).withVerdi(false),
             )
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
 
@@ -182,7 +182,7 @@ internal class BoutgiftRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBoutgifter(
                 true,
-                listOf(UTGIFTER_HUSLEIE, UTGIFTER_STROM, UTGIFTER_KOMMUNAL_AVGIFT, UTGIFTER_ANNET_BO)
+                listOf(UTGIFTER_HUSLEIE, UTGIFTER_STROM, UTGIFTER_KOMMUNAL_AVGIFT, UTGIFTER_ANNET_BO),
             )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -209,15 +209,16 @@ internal class BoutgiftRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val boutgifterFrontend = BoutgifterFrontend(
-            bekreftelse = true,
-            husleie = true,
-            strom = true,
-            kommunalAvgift = false,
-            oppvarming = false,
-            boliglan = false,
-            annet = false
-        )
+        val boutgifterFrontend =
+            BoutgifterFrontend(
+                bekreftelse = true,
+                husleie = true,
+                strom = true,
+                kommunalAvgift = false,
+                oppvarming = false,
+                boliglan = false,
+                annet = false,
+            )
         boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -245,15 +246,16 @@ internal class BoutgiftRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val boutgifterFrontend = BoutgifterFrontend(
-            bekreftelse = true,
-            husleie = true,
-            strom = true,
-            kommunalAvgift = true,
-            oppvarming = true,
-            boliglan = true,
-            annet = true
-        )
+        val boutgifterFrontend =
+            BoutgifterFrontend(
+                bekreftelse = true,
+                husleie = true,
+                strom = true,
+                kommunalAvgift = true,
+                oppvarming = true,
+                boliglan = true,
+                annet = true,
+            )
         boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -296,7 +298,7 @@ internal class BoutgiftRessursTest {
 
     private fun createJsonInternalSoknadWithBoutgifter(
         harUtgifter: Boolean,
-        utgiftstyper: List<String>
+        utgiftstyper: List<String>,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift> = ArrayList()
@@ -307,23 +309,29 @@ internal class BoutgiftRessursTest {
                     JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
-            } else if (utgiftstype == UTGIFTER_STROM || utgiftstype == UTGIFTER_OPPVARMING || utgiftstype == UTGIFTER_KOMMUNAL_AVGIFT || utgiftstype == UTGIFTER_ANNET_BO) {
+            } else if (
+                utgiftstype == UTGIFTER_STROM ||
+                utgiftstype == UTGIFTER_OPPVARMING ||
+                utgiftstype == UTGIFTER_KOMMUNAL_AVGIFT ||
+                utgiftstype == UTGIFTER_ANNET_BO
+            ) {
                 opplysningUtgifter.add(
                     JsonOkonomiOpplysningUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
             }
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
-            JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
-                .withVerdi(harUtgifter)
-        )
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+            listOf(
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
+                    .withVerdi(harUtgifter),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
         return soknadUnderArbeid
@@ -342,7 +350,7 @@ internal class BoutgiftRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

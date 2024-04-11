@@ -11,22 +11,22 @@ import org.springframework.context.annotation.Configuration
 class UnleashConfig(
     @Value("\${unleash_env}") private val environment: String,
     @Value("\${unleash_server_api_url}") private val baseurl: String,
-    @Value("\${unleash_server_api_token}") private val apiToken: String
+    @Value("\${unleash_server_api_token}") private val apiToken: String,
 ) {
-
     @Bean
     fun unleashClient(): Unleash {
         val byInstanceIdStrategy = ByInstanceIdStrategy(environment)
-        val config = UnleashConfig.builder()
-            .appName("sosialhjelp-soknad-api")
-            .environment(environment)
-            .unleashAPI("$baseurl/api")
-            .apiKey(apiToken)
-            .build()
+        val config =
+            UnleashConfig.builder()
+                .appName("sosialhjelp-soknad-api")
+                .environment(environment)
+                .unleashAPI("$baseurl/api")
+                .apiKey(apiToken)
+                .build()
 
         return DefaultUnleash(
             config,
-            byInstanceIdStrategy
+            byInstanceIdStrategy,
         )
     }
 

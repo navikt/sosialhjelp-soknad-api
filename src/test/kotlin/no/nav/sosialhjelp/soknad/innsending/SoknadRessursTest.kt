@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class SoknadRessursTest {
-
     private val soknadServiceOld: SoknadServiceOld = mockk()
     private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
@@ -48,15 +47,16 @@ internal class SoknadRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val nedetidService: NedetidService = mockk()
 
-    private val ressurs = SoknadRessurs(
-        soknadServiceOld,
-        ettersendingService,
-        soknadUnderArbeidService,
-        soknadUnderArbeidRepository,
-        systemdata,
-        tilgangskontroll,
-        nedetidService
-    )
+    private val ressurs =
+        SoknadRessurs(
+            soknadServiceOld,
+            ettersendingService,
+            soknadUnderArbeidService,
+            soknadUnderArbeidRepository,
+            systemdata,
+            tilgangskontroll,
+            nedetidService,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -283,7 +283,11 @@ internal class SoknadRessursTest {
     @Test
     @Disabled("I seg selv ikke veldig god test, men heller ikke relevant")
     fun opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
+        every {
+            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(
+                BEHANDLINGSID,
+            )
+        } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }
@@ -297,7 +301,7 @@ internal class SoknadRessursTest {
 
         private fun createSoknadUnderArbeid(
             eier: String,
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier)
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
         ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
@@ -307,7 +311,7 @@ internal class SoknadRessursTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

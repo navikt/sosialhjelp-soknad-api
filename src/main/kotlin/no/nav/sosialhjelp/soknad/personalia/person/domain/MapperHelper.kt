@@ -12,7 +12,6 @@ import java.time.LocalDateTime
 
 @Component
 class MapperHelper {
-
     companion object {
         private val log = LoggerFactory.getLogger(MapperHelper::class.java)
 
@@ -81,7 +80,10 @@ class MapperHelper {
         return getEndringstidspunktOrNull(navnDto.metadata, navnDto.folkeregistermetadata)
     }
 
-    private fun getEndringstidspunktOrNull(metadata: MetadataDto, folkeregistermetadata: FolkeregisterMetadataDto?): LocalDateTime? {
+    private fun getEndringstidspunktOrNull(
+        metadata: MetadataDto,
+        folkeregistermetadata: FolkeregisterMetadataDto?,
+    ): LocalDateTime? {
         return if (metadata.master.equals(FREG, ignoreCase = true)) {
             folkeregistermetadata?.ajourholdstidspunkt
         } else {
@@ -93,11 +95,17 @@ class MapperHelper {
         return metadata.endringer.maxByOrNull { it.registrert }
     }
 
-    private fun flereSivilstanderRegistrertSamtidig(first: SivilstandDto, list: List<SivilstandDto>): Boolean {
+    private fun flereSivilstanderRegistrertSamtidig(
+        first: SivilstandDto,
+        list: List<SivilstandDto>,
+    ): Boolean {
         return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
     }
 
-    private fun flereNavnRegistrertSamtidig(first: NavnDto, list: List<NavnDto>): Boolean {
+    private fun flereNavnRegistrertSamtidig(
+        first: NavnDto,
+        list: List<NavnDto>,
+    ): Boolean {
         return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
     }
 

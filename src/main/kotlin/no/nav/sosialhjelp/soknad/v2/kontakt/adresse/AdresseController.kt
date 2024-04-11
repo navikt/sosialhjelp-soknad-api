@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val kontaktService: KontaktService
+    private val kontaktService: KontaktService,
 ) {
     @GetMapping
     fun getAdresser(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): AdresserDto {
         return kontaktService.getKontaktInformasjon(soknadId)?.let { it.toAdresserDto() }
             ?: AdresserDto()
@@ -31,13 +31,13 @@ class AdresseController(
     @PutMapping
     fun updateAdresser(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) adresserInput: AdresserInput
+        @RequestBody(required = true) adresserInput: AdresserInput,
     ): AdresserDto {
         return kontaktService
             .updateBrukerAdresse(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
-                brukerAdresse = adresserInput.brukerAdresse
+                brukerAdresse = adresserInput.brukerAdresse,
             )
             .toAdresserDto()
     }
@@ -45,7 +45,7 @@ class AdresseController(
 
 data class AdresserInput(
     val adresseValg: AdresseValg,
-    val brukerAdresse: Adresse?
+    val brukerAdresse: Adresse?,
 )
 
 data class AdresserDto(
@@ -53,7 +53,7 @@ data class AdresserDto(
     val folkeregistrertAdresse: Adresse? = null,
     val midlertidigAdresse: Adresse? = null,
     val brukerAdresse: Adresse? = null,
-    val navenhet: NavEnhetDto? = null
+    val navenhet: NavEnhetDto? = null,
 )
 
 data class NavEnhetDto(
@@ -61,7 +61,7 @@ data class NavEnhetDto(
     val orgnummer: String? = null,
     val enhetsnummer: String? = null,
     val kommunenummer: String? = null,
-    val kommunenavn: String? = null
+    val kommunenavn: String? = null,
 )
 
 fun Kontakt.toAdresserDto() =
@@ -70,7 +70,7 @@ fun Kontakt.toAdresserDto() =
         brukerAdresse = adresser.brukerAdresse,
         midlertidigAdresse = adresser.midlertidigAdresse,
         folkeregistrertAdresse = adresser.folkeregistrertAdresse,
-        navenhet = mottaker.toNavEnhetDto()
+        navenhet = mottaker.toNavEnhetDto(),
     )
 
 fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
@@ -78,6 +78,6 @@ fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
-        kommunenummer = kommunenummer
+        kommunenummer = kommunenummer,
     )
 }

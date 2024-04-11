@@ -9,11 +9,15 @@ import org.springframework.util.LinkedMultiValueMap
 import java.util.regex.Pattern
 
 object Utils {
-    val digisosObjectMapper = JsonSosialhjelpObjectMapper
-        .createObjectMapper()
-        .registerKotlinModule()
+    val digisosObjectMapper =
+        JsonSosialhjelpObjectMapper
+            .createObjectMapper()
+            .registerKotlinModule()
 
-    fun getDigisosIdFromResponse(errorResponse: String, behandlingsId: String): String? {
+    fun getDigisosIdFromResponse(
+        errorResponse: String,
+        behandlingsId: String,
+    ): String? {
         if (errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
             val p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$")
             val m = p.matcher(errorResponse)
@@ -28,11 +32,17 @@ object Utils {
         return tekstMedFnutt.replace("\"", "")
     }
 
-    fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
+    fun createHttpEntity(
+        body: Any,
+        name: String,
+        filename: String?,
+        contentType: String,
+    ): HttpEntity<Any> {
         val headerMap = LinkedMultiValueMap<String, String>()
-        val builder: ContentDisposition.Builder = ContentDisposition
-            .builder("form-data")
-            .name(name)
+        val builder: ContentDisposition.Builder =
+            ContentDisposition
+                .builder("form-data")
+                .name(name)
         val contentDisposition: ContentDisposition =
             if (filename == null) builder.build() else builder.filename(filename).build()
 

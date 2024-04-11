@@ -20,10 +20,9 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 class KontaktMapperTest {
-
     private val mapper = KontaktToJsonMapper
 
     @Test

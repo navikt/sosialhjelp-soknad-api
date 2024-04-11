@@ -1,22 +1,27 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-import java.util.*
+import java.util.UUID
 import kotlin.reflect.KClass
 
 /**
  * Felles valideringslogikk på tvers av klasser
  */
 class SoknadInputValidator(private val clazz: KClass<*>) {
-
-    fun validateTextInput(id: UUID?, input: String) {
+    fun validateTextInput(
+        id: UUID?,
+        input: String,
+    ) {
         // TODO må støtte andre "normale" tegn som !,.% etc.
         if (!input.all { it.isLetterOrDigit() || it.isWhitespace() }) {
             throw NotValidInputException(id, "$clazz - Ugyldige tegn i tekst")
         }
     }
 
-    fun validateAllInputNotNullOrEmpty(id: UUID, vararg input: Any?) {
+    fun validateAllInputNotNullOrEmpty(
+        id: UUID,
+        vararg input: Any?,
+    ) {
         if (input.all { isVariableNullOrEmpty(it) }) {
             throw NotValidInputException(id, "$clazz - Input er tom")
         }
@@ -33,7 +38,10 @@ class SoknadInputValidator(private val clazz: KClass<*>) {
             ?: true
     }
 
-    fun validateIsNumber(soknadId: UUID, number: String) {
+    fun validateIsNumber(
+        soknadId: UUID,
+        number: String,
+    ) {
         if (number.toList().any { !it.isDigit() }) {
             throw NotValidInputException(soknadId, "$clazz - Kun siffer er tillat i input")
         }

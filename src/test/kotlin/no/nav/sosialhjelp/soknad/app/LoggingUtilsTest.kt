@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class LoggingUtilsTest {
-
     @Test
     fun skalFjerne_alleFnr_fraFeilmelding() {
         val str = "12121212121 feilmelding som har flere fnr 12345678911 og 11111111111"

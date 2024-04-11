@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
  */
 class VirusScanner(
     private val virusScannerWebClient: WebClient,
-    private val enabled: Boolean
+    private val enabled: Boolean,
 ) {
     fun scan(data: ByteArray) {
         if (!enabled) {
@@ -29,7 +29,12 @@ class VirusScanner(
         }
     }
 
-    fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
+    fun scan(
+        filnavn: String,
+        data: ByteArray,
+        behandlingsId: String,
+        fileType: String,
+    ) {
         if (!enabled) {
             log.info("Virusscanning er ikke aktivert")
             return
@@ -40,19 +45,25 @@ class VirusScanner(
         }
     }
 
-    private fun isInfected(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String): Boolean {
+    private fun isInfected(
+        filnavn: String,
+        data: ByteArray,
+        behandlingsId: String,
+        fileType: String,
+    ): Boolean {
         try {
             if (MiljoUtils.isNonProduction() && filnavn.startsWith("virustest")) {
                 return true
             }
             log.info("Scanner ${data.size} bytes for fileType $fileType (fra Tika)")
 
-            val scanResults = virusScannerWebClient.put()
-                .body(BodyInserters.fromValue(data))
-                .retrieve()
-                .bodyToMono<Array<ScanResult>>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block()
+            val scanResults =
+                virusScannerWebClient.put()
+                    .body(BodyInserters.fromValue(data))
+                    .retrieve()
+                    .bodyToMono<Array<ScanResult>>()
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                    .block()
 
             if (scanResults == null) {
                 log.warn("Uventet respons for behandlingsId=$behandlingsId, scanResults=null")

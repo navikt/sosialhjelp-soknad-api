@@ -27,24 +27,28 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
-
     private val log by logger()
 
     @GetMapping
     fun hentSivilstatus(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
 
         return mapToSivilstatusFrontend(jsonSivilstatus)
@@ -53,14 +57,15 @@ class SivilstatusRessurs(
     @PutMapping
     fun updateSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody sivilstatusFrontend: SivilstatusFrontend
+        @RequestBody sivilstatusFrontend: SivilstatusFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val familie = jsonInternalSoknad.soknad.data.familie
         if (familie.sivilstatus == null) {
             jsonInternalSoknad.soknad.data.familie.sivilstatus = JsonSivilstatus()
@@ -84,7 +89,7 @@ class SivilstatusRessurs(
         return EktefelleFrontend(
             navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn, fulltNavn(navn)),
             fodselsdato = jsonEktefelle.fodselsdato,
-            personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator)
+            personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator),
         )
     }
 
@@ -99,7 +104,10 @@ class SivilstatusRessurs(
         }
     }
 
-    private fun getFnr(fodselsdato: String?, personnummer: String?): String? {
+    private fun getFnr(
+        fodselsdato: String?,
+        personnummer: String?,
+    ): String? {
         if (fodselsdato == null || personnummer == null) {
             return null
         }
@@ -116,7 +124,7 @@ class SivilstatusRessurs(
             ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
             harDiskresjonskode = jsonSivilstatus.ektefelleHarDiskresjonskode,
             borSammenMed = jsonSivilstatus.borSammenMed,
-            erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle
+            erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle,
         )
     }
 

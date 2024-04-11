@@ -14,7 +14,6 @@ import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletResponse
 
 internal class CORSFilterTest {
-
     private val corsFilter = CORSFilter()
 
     private val filterChain = MockFilterChain()

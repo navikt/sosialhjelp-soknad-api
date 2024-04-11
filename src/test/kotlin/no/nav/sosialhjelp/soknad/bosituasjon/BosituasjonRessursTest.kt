@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BosituasjonRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
@@ -132,17 +131,21 @@ internal class BosituasjonRessursTest {
         verify { soknadUnderArbeidRepository wasNot called }
     }
 
-    private fun createJsonInternalSoknadWithBosituasjon(botype: Botype?, antallPersoner: Int?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+    private fun createJsonInternalSoknadWithBosituasjon(
+        botype: Botype?,
+        antallPersoner: Int?,
+    ): SoknadUnderArbeid {
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.bosituasjon
             .withKilde(JsonKildeBruker.BRUKER)

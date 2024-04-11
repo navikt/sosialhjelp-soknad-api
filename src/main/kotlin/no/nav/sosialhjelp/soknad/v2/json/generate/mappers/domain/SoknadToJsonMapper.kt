@@ -14,14 +14,17 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.util.*
+import java.util.UUID
 
 @Order(Ordered.HIGHEST_PRECEDENCE) // Sørger for at denne mapperen er den første som kjører
 @Component
 class SoknadToJsonMapper(
-    private val soknadRepository: SoknadRepository
+    private val soknadRepository: SoknadRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         soknadRepository.findByIdOrNull(soknadId)?.let {
             doMapping(it, jsonInternalSoknad)
         }
@@ -29,12 +32,16 @@ class SoknadToJsonMapper(
     }
 
     internal companion object Mapper {
-        fun doMapping(domainSoknad: Soknad, json: JsonInternalSoknad) {
+        fun doMapping(
+            domainSoknad: Soknad,
+            json: JsonInternalSoknad,
+        ) {
             with(json) {
                 initializeObjects()
 
-                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn
-                    ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
+                soknad.innsendingstidspunkt =
+                    domainSoknad.tidspunkt.sendtInn
+                        ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
 
                 domainSoknad.begrunnelse?.let {
                     soknad.data.begrunnelse = it.toJsonBegrunnelse()

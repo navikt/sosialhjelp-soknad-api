@@ -20,13 +20,14 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
     private val soknadServiceOld: SoknadServiceOld = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
 
-    private val scheduler = SlettForeldedeEttersendelserScheduler(
-        leaderElection,
-        soknadServiceOld,
-        batchSoknadUnderArbeidRepository,
-        batchEnabled = true,
-        schedulerDisabled = false
-    )
+    private val scheduler =
+        SlettForeldedeEttersendelserScheduler(
+            leaderElection,
+            soknadServiceOld,
+            batchSoknadUnderArbeidRepository,
+            batchEnabled = true,
+            schedulerDisabled = false,
+        )
 
     @BeforeEach
     fun setup() {
@@ -39,17 +40,18 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
         val behandlingsId = "2"
         val tilknyttetBehandlingsId = "1"
         val soknadId: Long = 2
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            soknadId = soknadId,
-            versjon = 1L,
-            behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
-            eier = "11111111111",
-            jsonInternalSoknad = null,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                soknadId = soknadId,
+                versjon = 1L,
+                behandlingsId = behandlingsId,
+                tilknyttetBehandlingsId = tilknyttetBehandlingsId,
+                eier = "11111111111",
+                jsonInternalSoknad = null,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
         every { soknadServiceOld.settSoknadMetadataAvbrutt(any(), any()) } just runs
@@ -65,17 +67,18 @@ internal class SlettForeldedeEttersendelserSchedulerTest {
     fun skalIkkeAvbryteSoknadUnderArbeidOgSletteFraDatabaseDersomDetIkkeErEttersendelse() {
         val behandlingsId = "2"
         val soknadId: Long = 2
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            soknadId = soknadId,
-            versjon = 1L,
-            behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = null,
-            eier = "11111111111",
-            jsonInternalSoknad = null,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                soknadId = soknadId,
+                versjon = 1L,
+                behandlingsId = behandlingsId,
+                tilknyttetBehandlingsId = null,
+                eier = "11111111111",
+                jsonInternalSoknad = null,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
 

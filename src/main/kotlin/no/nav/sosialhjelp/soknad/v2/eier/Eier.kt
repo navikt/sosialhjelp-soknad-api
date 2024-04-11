@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 interface EierRepository : UpsertRepository<Eier>, ListCrudRepository<Eier, UUID> {
@@ -27,7 +27,7 @@ data class Eier(
     @Embedded.Empty
     val navn: Navn,
     @Embedded.Nullable
-    val kontonummer: Kontonummer? = null
+    val kontonummer: Kontonummer? = null,
 ) : AggregateRoot
 
 data class Kontonummer(
@@ -35,5 +35,5 @@ data class Kontonummer(
     @Column("konto_bruker")
     val fraBruker: String? = null,
     @Column("konto_register")
-    val fraRegister: String? = null
+    val fraRegister: String? = null,
 )

@@ -9,5 +9,5 @@ data class NavEnhetFrontend(
     val behandlingsansvarlig: String? = null,
     val valgt: Boolean? = null,
     val isMottakMidlertidigDeaktivert: Boolean? = null,
-    val isMottakDeaktivert: Boolean? = null
+    val isMottakDeaktivert: Boolean? = null,
 )

@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 /**
  * Formålet med testklassen:
@@ -19,7 +19,6 @@ import java.util.*
  * 3. Sjekke at fremmednøkkel er korrekt koblet til eksisterende soknad
  */
 class GenericRepositoryTest : AbstractGenericRepositoryTest() {
-
     @Test
     fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
@@ -34,7 +33,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Livssituasjon`() {
         livssituasjonRepository.verifyCRUDOperations(
             originalEntity = opprettLivssituasjon(soknad.id),
-            updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999))
+            updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999)),
         )
     }
 
@@ -42,7 +41,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Eier`() {
         eierRepository.verifyCRUDOperations(
             originalEntity = opprettEier(soknad.id),
-            updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK")
+            updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK"),
         )
     }
 
@@ -56,7 +55,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Kontakt`() {
         kontaktRepository.verifyCRUDOperations(
             originalEntity = opprettKontakt(soknad.id),
-            updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199"))
+            updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199")),
         )
     }
 
@@ -64,7 +63,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Familie`() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
-            updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null)
+            updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null),
         )
     }
 
@@ -72,7 +71,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Integrasjonstatus`() {
         integrasjonstatusRepository.verifyCRUDOperations(
             originalEntity = opprettIntegrasjonstatus(soknad.id),
-            updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true)
+            updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true),
         )
     }
 }

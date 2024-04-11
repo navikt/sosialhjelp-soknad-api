@@ -8,28 +8,36 @@ import org.springframework.stereotype.Repository
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 class OpplastetVedleggRepositoryJdbc(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) : OpplastetVedleggRepository {
-
-    override fun hentVedlegg(uuid: String?, eier: String): OpplastetVedlegg? {
+    override fun hentVedlegg(
+        uuid: String?,
+        eier: String,
+    ): OpplastetVedlegg? {
         return jdbcTemplate.query(
             "select * from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
             opplastetVedleggRowMapper,
             eier,
-            uuid
+            uuid,
         ).firstOrNull()
     }
 
-    override fun hentVedleggForSoknad(soknadId: Long, eier: String?): List<OpplastetVedlegg> {
+    override fun hentVedleggForSoknad(
+        soknadId: Long,
+        eier: String?,
+    ): List<OpplastetVedlegg> {
         return jdbcTemplate.query(
             "select * from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             opplastetVedleggRowMapper,
             eier,
-            soknadId
+            soknadId,
         )
     }
 
-    override fun opprettVedlegg(opplastetVedlegg: OpplastetVedlegg, eier: String): String {
+    override fun opprettVedlegg(
+        opplastetVedlegg: OpplastetVedlegg,
+        eier: String,
+    ): String {
         if (!eier.equals(opplastetVedlegg.eier, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med vedleggets eier")
         }
@@ -41,29 +49,38 @@ class OpplastetVedleggRepositoryJdbc(
             opplastetVedlegg.data,
             opplastetVedlegg.soknadId,
             opplastetVedlegg.filnavn,
-            opplastetVedlegg.sha512
+            opplastetVedlegg.sha512,
         )
         return opplastetVedlegg.uuid
     }
 
-    override fun slettVedlegg(uuid: String?, eier: String) {
+    override fun slettVedlegg(
+        uuid: String?,
+        eier: String,
+    ) {
         jdbcTemplate.update("delete from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?", eier, uuid)
     }
 
-    override fun slettAlleVedleggForSoknad(soknadId: Long, eier: String) {
+    override fun slettAlleVedleggForSoknad(
+        soknadId: Long,
+        eier: String,
+    ) {
         jdbcTemplate.update(
             "delete from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             eier,
-            soknadId
+            soknadId,
         )
     }
 
-    override fun hentSamletVedleggStorrelse(soknadId: Long, eier: String): Int {
+    override fun hentSamletVedleggStorrelse(
+        soknadId: Long,
+        eier: String,
+    ): Int {
         if (jdbcTemplate.queryForObject(
                 "select count(*) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                 Int::class.java,
                 eier,
-                soknadId
+                soknadId,
             ) > 0
         ) {
             val blobSize = SQLUtils.blobSizeQuery()
@@ -71,7 +88,7 @@ class OpplastetVedleggRepositoryJdbc(
                 "select sum($blobSize) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                 Int::class.java,
                 eier,
-                soknadId
+                soknadId,
             )
         }
         return 0

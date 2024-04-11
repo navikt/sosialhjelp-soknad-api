@@ -15,15 +15,16 @@ internal class MineSakerMetadataServiceTest {
 
     @Test
     fun skalHenteInnsendteSoknaderForBruker() {
-        val soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "beh123",
-            fnr = "12345",
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now(),
-            innsendtDato = LocalDateTime.now()
-        )
+        val soknadMetadata =
+            SoknadMetadata(
+                id = 0L,
+                behandlingsId = "beh123",
+                fnr = "12345",
+                type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+                innsendtDato = LocalDateTime.now(),
+            )
 
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
 

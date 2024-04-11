@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
@@ -25,39 +25,48 @@ class SoknadV2AdapterService(
     private val livssituasjonService: LivssituasjonService,
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService
+    private val eierService: EierService,
 ) : V2AdapterService {
-
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun createSoknad(behandlingsId: String, opprettetDato: LocalDateTime, eierId: String) {
+    override fun createSoknad(
+        behandlingsId: String,
+        opprettetDato: LocalDateTime,
+        eierId: String,
+    ) {
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
             soknadService.createSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
-                eierId = eierId
+                eierId = eierId,
             )
         }
             .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
-    override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?) {
+    override fun addArbeidsforholdList(
+        soknadId: String,
+        arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?,
+    ) {
         arbeidsforhold?.let {
             log.info("NyModell: Legger til arbeidsforhold for $soknadId")
 
             kotlin.runCatching {
                 livssituasjonService.updateArbeidsforhold(
                     UUID.fromString(soknadId),
-                    it.map { it.toV2Arbeidsforhold() }
+                    it.map { it.toV2Arbeidsforhold() },
                 )
             }
                 .onFailure { log.error("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
         }
     }
 
-    override fun addAdresserRegister(soknadId: String, person: Person?) {
+    override fun addAdresserRegister(
+        soknadId: String,
+        person: Person?,
+    ) {
         log.info("NyModell: Legger til adresser for $soknadId")
 
         person?.let {
@@ -65,14 +74,17 @@ class SoknadV2AdapterService(
                 kontaktService.saveAdresserRegister(
                     soknadId = UUID.fromString(soknadId),
                     folkeregistrertAdresse = it.bostedsadresse?.toV2Adresse(hentAdresseService),
-                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse()
+                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
                 )
             }
                 .onFailure { log.error("NyModell: Legge til Adresser feilet for $soknadId", it) }
         }
     }
 
-    override fun updateTelefonRegister(soknadId: String, telefonnummer: String?) {
+    override fun updateTelefonRegister(
+        soknadId: String,
+        telefonnummer: String?,
+    ) {
         log.info("NyModell: Legger til Telefonnummer for $soknadId")
 
         telefonnummer?.let {
@@ -83,7 +95,10 @@ class SoknadV2AdapterService(
         }
     }
 
-    override fun updateEier(soknadId: String, personalia: JsonPersonalia) {
+    override fun updateEier(
+        soknadId: String,
+        personalia: JsonPersonalia,
+    ) {
         log.info("Ny modell: Legger til Eier")
         kotlin.runCatching {
             eierService.updateEier(personalia.toV2Eier(UUID.fromString(soknadId)))
@@ -91,13 +106,16 @@ class SoknadV2AdapterService(
             .onFailure { log.error("NyModell: Kunne ikke legge til ny Eier fra register", it) }
     }
 
-    override fun setInnsendingstidspunkt(soknadId: String, innsendingsTidspunkt: LocalDateTime) {
+    override fun setInnsendingstidspunkt(
+        soknadId: String,
+        innsendingsTidspunkt: LocalDateTime,
+    ) {
         log.info("NyModell: Setter innsendingstidspunkt")
 
         kotlin.runCatching {
             soknadService.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
-                innsendingsTidspunkt
+                innsendingsTidspunkt,
             )
         }
             .onFailure { log.error("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
@@ -116,12 +134,13 @@ class SoknadV2AdapterService(
 private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
     return Eier(
         soknadId = soknadId,
-        navn = Navn(
-            fornavn = this.navn.fornavn,
-            mellomnavn = this.navn.mellomnavn,
-            etternavn = this.navn.etternavn
-        ),
+        navn =
+            Navn(
+                fornavn = this.navn.fornavn,
+                mellomnavn = this.navn.mellomnavn,
+                etternavn = this.navn.etternavn,
+            ),
         statsborgerskap = this.statsborgerskap.verdi,
-        nordiskBorger = this.nordiskBorger.verdi
+        nordiskBorger = this.nordiskBorger.verdi,
     )
 }

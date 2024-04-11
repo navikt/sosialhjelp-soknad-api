@@ -9,13 +9,12 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("no-redis", "test", "test-container")
 internal class SoknadMetadataRepositoryJdbcTest {
-
     private val behandlingsId = UUID.randomUUID().toString()
 
     @Autowired
@@ -48,7 +47,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             id = 0,
@@ -60,7 +59,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            lest = false
+            lest = false,
         )
     }
 

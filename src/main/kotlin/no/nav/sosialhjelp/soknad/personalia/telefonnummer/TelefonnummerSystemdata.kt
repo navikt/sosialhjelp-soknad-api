@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component
 @Component
 class TelefonnummerSystemdata(
     private val mobiltelefonService: MobiltelefonService,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
 
@@ -51,7 +50,10 @@ class TelefonnummerSystemdata(
     companion object {
         private val log by logger()
 
-        private fun getTelefonnummer(systemverdi: String?, telefonnummer: JsonTelefonnummer?): JsonTelefonnummer? {
+        private fun getTelefonnummer(
+            systemverdi: String?,
+            telefonnummer: JsonTelefonnummer?,
+        ): JsonTelefonnummer? {
             return when {
                 systemverdi == null -> null
                 telefonnummer != null -> telefonnummer.withVerdi(systemverdi)

@@ -30,9 +30,8 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
-
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
         hentFraCache(ident)?.let {
             // TODO Ekstra logging
@@ -69,30 +68,34 @@ class GeografiskTilknytningClient(
         }
     }
 
-    private fun tokenXtoken(ident: String) = runBlocking {
-        tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
-    }
+    private fun tokenXtoken(ident: String) =
+        runBlocking {
+            tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
+        }
 
     private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
         return redisService.get(
             GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
-            GeografiskTilknytningDto::class.java
+            GeografiskTilknytningDto::class.java,
         ) as? GeografiskTilknytningDto
     }
 
     private fun variables(ident: String): Map<String, Any> = mapOf("ident" to ident)
 
-    private fun lagreTilCache(ident: String, geografiskTilknytningDto: GeografiskTilknytningDto) {
+    private fun lagreTilCache(
+        ident: String,
+        geografiskTilknytningDto: GeografiskTilknytningDto,
+    ) {
         try {
             redisService.setex(
                 GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
                 pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
-                PDL_CACHE_SECONDS
+                PDL_CACHE_SECONDS,
             )
         } catch (e: JsonProcessingException) {
             log.error(
                 "Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - ${geografiskTilknytningDto.javaClass.name}",
-                e
+                e,
             )
         }
     }

@@ -16,9 +16,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class EregCheck(
     @Value("\${ereg_url}") private val eregUrl: String,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : DependencyCheck {
-
     override val type = DependencyType.REST
     override val name = "Ereg"
     override val address = eregUrl

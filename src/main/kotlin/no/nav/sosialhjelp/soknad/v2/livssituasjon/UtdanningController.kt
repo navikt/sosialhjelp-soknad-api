@@ -10,23 +10,25 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/utdanning", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtdanningController(
-    private val livssituasjonService: LivssituasjonService
+    private val livssituasjonService: LivssituasjonService,
 ) {
     @GetMapping
-    fun getUtdanning(@PathVariable("soknadId") soknadId: UUID): UtdanningDto? {
+    fun getUtdanning(
+        @PathVariable("soknadId") soknadId: UUID,
+    ): UtdanningDto? {
         return livssituasjonService.getLivssituasjon(soknadId)?.utdanning?.toUtdanningDto()
     }
 
     @PutMapping
     fun updateUtdanning(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: UtdanningInput
+        @RequestBody input: UtdanningInput,
     ): UtdanningDto {
         return when (input) {
             is IkkeStudentInput ->
@@ -40,28 +42,29 @@ class UtdanningController(
 
 data class UtdanningDto(
     val erStudent: Boolean? = null,
-    val studentgrad: Studentgrad? = null
+    val studentgrad: Studentgrad? = null,
 )
 
-private fun Utdanning.toUtdanningDto() = UtdanningDto(
-    erStudent = erStudent,
-    studentgrad = studentgrad
-)
+private fun Utdanning.toUtdanningDto() =
+    UtdanningDto(
+        erStudent = erStudent,
+        studentgrad = studentgrad,
+    )
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY
+    include = JsonTypeInfo.As.PROPERTY,
 )
 @JsonSubTypes(
     JsonSubTypes.Type(IkkeStudentInput::class),
-    JsonSubTypes.Type(StudentgradInput::class)
+    JsonSubTypes.Type(StudentgradInput::class),
 )
 interface UtdanningInput
 
 data class IkkeStudentInput(
-    val verdi: Int = 1
+    val verdi: Int = 1,
 ) : UtdanningInput
 
 data class StudentgradInput(
-    val studentgrad: Studentgrad
+    val studentgrad: Studentgrad,
 ) : UtdanningInput

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class FiksHandtererTest {
-
     private val fiksSender: FiksSender = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
@@ -71,7 +70,11 @@ internal class FiksHandtererTest {
     fun kjorerKjedeSelvOmFeilerForsteGang() {
         // Feks. dersom en ettersendelse sin svarPaForsendelseId er null
         every { innsendingService.hentSoknadMetadata(BEHANDLINGSID, AVSENDER) } returns lagSoknadMetadataEttersendelse()
-        every { fiksSender.sendTilFiks(any()) } throws IllegalStateException("Ettersendelse har svarPaForsendelseId null") andThen FIKSFORSENDELSEID
+        every {
+            fiksSender.sendTilFiks(
+                any(),
+            )
+        } throws IllegalStateException("Ettersendelse har svarPaForsendelseId null") andThen FIKSFORSENDELSEID
         val oppgave = opprettOppgave()
         try {
             fiksHandterer.eksekver(oppgave)
@@ -110,7 +113,7 @@ internal class FiksHandtererTest {
             opprettet = LocalDateTime.now(),
             sistKjort = null,
             nesteForsok = LocalDateTime.now(),
-            retries = 0
+            retries = 0,
         )
     }
 
@@ -123,7 +126,7 @@ internal class FiksHandtererTest {
             navEnhet = NAVENHETSNAVN,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
-            innsendtDato = null
+            innsendtDato = null,
         )
     }
 

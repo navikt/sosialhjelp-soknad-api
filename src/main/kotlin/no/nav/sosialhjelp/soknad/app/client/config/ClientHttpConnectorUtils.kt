@@ -9,9 +9,10 @@ import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
-fun unproxiedHttpClient(): HttpClient = HttpClient
-    .newConnection()
-    .resolver(DefaultAddressResolverGroup.INSTANCE)
+fun unproxiedHttpClient(): HttpClient =
+    HttpClient
+        .newConnection()
+        .resolver(DefaultAddressResolverGroup.INSTANCE)
 
 fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Builder {
     return webClientBuilder
@@ -22,7 +23,10 @@ fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Bu
         .filter(mdcExchangeFilter)
 }
 
-fun proxiedWebClientBuilder(webClientBuilder: WebClient.Builder, proxiedHttpClient: HttpClient): WebClient.Builder {
+fun proxiedWebClientBuilder(
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
+): WebClient.Builder {
     return webClientBuilder
         .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
         .codecs {
@@ -31,13 +35,14 @@ fun proxiedWebClientBuilder(webClientBuilder: WebClient.Builder, proxiedHttpClie
         .filter(mdcExchangeFilter)
 }
 
-val mdcExchangeFilter = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
-    // Kopierer MDC-context inn til reactor threads
-    val map: Map<String, String>? = MDC.getCopyOfContextMap()
-    next.exchange(request)
-        .doOnNext {
-            if (map != null) {
-                MDC.setContextMap(map)
+val mdcExchangeFilter =
+    ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
+        // Kopierer MDC-context inn til reactor threads
+        val map: Map<String, String>? = MDC.getCopyOfContextMap()
+        next.exchange(request)
+            .doOnNext {
+                if (map != null) {
+                    MDC.setContextMap(map)
+                }
             }
-        }
-}
+    }

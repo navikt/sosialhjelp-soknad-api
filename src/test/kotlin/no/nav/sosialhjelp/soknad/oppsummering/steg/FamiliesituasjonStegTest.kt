@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test
 import java.lang.Boolean.TRUE
 
 internal class FamiliesituasjonStegTest {
-
     private val steg = FamiliesituasjonSteg()
 
     @Test
@@ -40,9 +39,10 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun brukerUtfyltSivilstatus_ulikGift() {
-        val ugift = JsonSivilstatus()
-            .withKilde(JsonKilde.BRUKER)
-            .withStatus(JsonSivilstatus.Status.UGIFT)
+        val ugift =
+            JsonSivilstatus()
+                .withKilde(JsonKilde.BRUKER)
+                .withStatus(JsonSivilstatus.Status.UGIFT)
         val soknad = createSoknad(ugift, null)
 
         val res = steg.get(soknad)
@@ -57,16 +57,17 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun brukerUtfyltSivilstatus_ektefelle_manglerFelter() {
-        val gift = JsonSivilstatus()
-            .withKilde(JsonKilde.BRUKER)
-            .withStatus(JsonSivilstatus.Status.GIFT)
-            .withEktefelle(
-                JsonEktefelle()
-                    .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
-                    .withFodselsdato(null)
-                    .withPersonIdentifikator(null)
-            )
-            .withBorSammenMed(true)
+        val gift =
+            JsonSivilstatus()
+                .withKilde(JsonKilde.BRUKER)
+                .withStatus(JsonSivilstatus.Status.GIFT)
+                .withEktefelle(
+                    JsonEktefelle()
+                        .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
+                        .withFodselsdato(null)
+                        .withPersonIdentifikator(null),
+                )
+                .withBorSammenMed(true)
         val soknad = createSoknad(gift, null)
 
         val res = steg.get(soknad)
@@ -82,15 +83,18 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap!!["familie.sivilstatus.gift.ektefelle.navn.label"]!!.value).isEqualTo("Gul Knapp")
         assertThat(labelSvarMap["familie.sivilstatus.gift.ektefelle.fnr.label"]!!.value).isNull()
         assertThat(labelSvarMap["familie.sivilstatus.gift.ektefelle.pnr.label"]!!.value).isNull()
-        assertThat(labelSvarMap["familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"]!!.value).isEqualTo("familie.sivilstatus.gift.ektefelle.borsammen.true")
+        assertThat(
+            labelSvarMap["familie.sivilstatus.gift.ektefelle.borsammen.sporsmal"]!!.value,
+        ).isEqualTo("familie.sivilstatus.gift.ektefelle.borsammen.true")
     }
 
     @Test
     fun systemSivilstatus_ektefelleMedAdressebeskyttelse() {
-        val giftMedAdressebeskyttelse = JsonSivilstatus()
-            .withKilde(JsonKilde.SYSTEM)
-            .withStatus(JsonSivilstatus.Status.GIFT)
-            .withEktefelleHarDiskresjonskode(true)
+        val giftMedAdressebeskyttelse =
+            JsonSivilstatus()
+                .withKilde(JsonKilde.SYSTEM)
+                .withStatus(JsonSivilstatus.Status.GIFT)
+                .withEktefelleHarDiskresjonskode(true)
         val soknad = createSoknad(giftMedAdressebeskyttelse, null)
 
         val res = steg.get(soknad)
@@ -100,21 +104,27 @@ internal class FamiliesituasjonStegTest {
         val sivilstatusSporsmal = res.avsnitt[0].sporsmal[0]
         assertThat(sivilstatusSporsmal.erUtfylt).isTrue
         assertThat(sivilstatusSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(sivilstatusSporsmal.felt!![0], Type.SYSTEMDATA, SvarType.LOCALE_TEKST, "system.familie.sivilstatus.ikkeTilgang.label")
+        validateFeltMedSvar(
+            sivilstatusSporsmal.felt!![0],
+            Type.SYSTEMDATA,
+            SvarType.LOCALE_TEKST,
+            "system.familie.sivilstatus.ikkeTilgang.label",
+        )
     }
 
     @Test
     fun systemSivilstatus_ektefelle() {
-        val giftMedAdressebeskyttelse = JsonSivilstatus()
-            .withKilde(JsonKilde.SYSTEM)
-            .withStatus(JsonSivilstatus.Status.GIFT)
-            .withEktefelle(
-                JsonEktefelle()
-                    .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
-                    .withFodselsdato("1999-12-31")
-                    .withPersonIdentifikator("11111111111")
-            )
-            .withFolkeregistrertMedEktefelle(true)
+        val giftMedAdressebeskyttelse =
+            JsonSivilstatus()
+                .withKilde(JsonKilde.SYSTEM)
+                .withStatus(JsonSivilstatus.Status.GIFT)
+                .withEktefelle(
+                    JsonEktefelle()
+                        .withNavn(JsonNavn().withFornavn("Gul").withEtternavn("Knapp"))
+                        .withFodselsdato("1999-12-31")
+                        .withPersonIdentifikator("11111111111"),
+                )
+                .withFolkeregistrertMedEktefelle(true)
         val soknad = createSoknad(giftMedAdressebeskyttelse, null)
 
         val res = steg.get(soknad)
@@ -130,7 +140,9 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap).hasSize(3)
         assertThat(labelSvarMap!!["system.familie.sivilstatus.gift.ektefelle.navn"]!!.value).isEqualTo("Gul Knapp")
         assertThat(labelSvarMap["system.familie.sivilstatus.gift.ektefelle.fodselsdato"]!!.value).isEqualTo("1999-12-31")
-        assertThat(labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"]!!.value).isEqualTo("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true")
+        assertThat(
+            labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"]!!.value,
+        ).isEqualTo("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true")
     }
 
     @Test
@@ -144,32 +156,38 @@ internal class FamiliesituasjonStegTest {
 
         val forsorgerpliktSporsmal = res.avsnitt[1].sporsmal[0]
         assertThat(forsorgerpliktSporsmal.erUtfylt).isTrue
-        validateFeltMedSvar(forsorgerpliktSporsmal.felt!![0], Type.SYSTEMDATA, SvarType.LOCALE_TEKST, "familierelasjon.ingen_registrerte_barn_tekst")
+        validateFeltMedSvar(
+            forsorgerpliktSporsmal.felt!![0],
+            Type.SYSTEMDATA,
+            SvarType.LOCALE_TEKST,
+            "familierelasjon.ingen_registrerte_barn_tekst",
+        )
     }
 
     @Test
     fun harSystemBarn_ikkeUtfyltDeltBosted_ikkeUtfyltBarnebidrag() {
-        val forsorgerplikt = JsonForsorgerplikt()
-            .withHarForsorgerplikt(
-                JsonHarForsorgerplikt()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(TRUE)
-            )
-            .withAnsvar(
-                listOf(
-                    JsonAnsvar()
-                        .withBarn(
-                            JsonBarn()
-                                .withKilde(JsonKilde.SYSTEM)
-                                .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
-                                .withFodselsdato("2020-02-02")
-                                .withPersonIdentifikator("11111111111")
-                        )
-                        .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(TRUE))
-                        .withHarDeltBosted(null)
+        val forsorgerplikt =
+            JsonForsorgerplikt()
+                .withHarForsorgerplikt(
+                    JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(TRUE),
                 )
-            )
-            .withBarnebidrag(null)
+                .withAnsvar(
+                    listOf(
+                        JsonAnsvar()
+                            .withBarn(
+                                JsonBarn()
+                                    .withKilde(JsonKilde.SYSTEM)
+                                    .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
+                                    .withFodselsdato("2020-02-02")
+                                    .withPersonIdentifikator("11111111111"),
+                            )
+                            .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(TRUE))
+                            .withHarDeltBosted(null),
+                    ),
+                )
+                .withBarnebidrag(null)
         val soknad = createSoknad(null, forsorgerplikt)
 
         val res = steg.get(soknad)
@@ -186,7 +204,9 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap).hasSize(3)
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
-        assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
+        assertThat(
+            labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value,
+        ).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isFalse
@@ -199,36 +219,37 @@ internal class FamiliesituasjonStegTest {
 
     @Test
     fun harSystemBarn_utfyltDeltBosted_utfyltBarnebidrag() {
-        val forsorgerplikt = JsonForsorgerplikt()
-            .withHarForsorgerplikt(
-                JsonHarForsorgerplikt()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(TRUE)
-            )
-            .withAnsvar(
-                listOf(
-                    JsonAnsvar()
-                        .withBarn(
-                            JsonBarn()
-                                .withKilde(JsonKilde.SYSTEM)
-                                .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
-                                .withFodselsdato("2020-02-02")
-                                .withPersonIdentifikator("11111111111")
-                        )
-                        .withErFolkeregistrertSammen(
-                            JsonErFolkeregistrertSammen()
-                                .withVerdi(TRUE)
-                        )
-                        .withHarDeltBosted(
-                            JsonHarDeltBosted()
-                                .withVerdi(TRUE)
-                        )
+        val forsorgerplikt =
+            JsonForsorgerplikt()
+                .withHarForsorgerplikt(
+                    JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(TRUE),
                 )
-            )
-            .withBarnebidrag(
-                JsonBarnebidrag()
-                    .withVerdi(JsonBarnebidrag.Verdi.BETALER)
-            )
+                .withAnsvar(
+                    listOf(
+                        JsonAnsvar()
+                            .withBarn(
+                                JsonBarn()
+                                    .withKilde(JsonKilde.SYSTEM)
+                                    .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
+                                    .withFodselsdato("2020-02-02")
+                                    .withPersonIdentifikator("11111111111"),
+                            )
+                            .withErFolkeregistrertSammen(
+                                JsonErFolkeregistrertSammen()
+                                    .withVerdi(TRUE),
+                            )
+                            .withHarDeltBosted(
+                                JsonHarDeltBosted()
+                                    .withVerdi(TRUE),
+                            ),
+                    ),
+                )
+                .withBarnebidrag(
+                    JsonBarnebidrag()
+                        .withVerdi(JsonBarnebidrag.Verdi.BETALER),
+                )
         val soknad = createSoknad(null, forsorgerplikt)
 
         val res = steg.get(soknad)
@@ -243,7 +264,12 @@ internal class FamiliesituasjonStegTest {
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isTrue
         assertThat(deltBostedSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(deltBostedSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "system.familie.barn.true.barn.deltbosted.true")
+        validateFeltMedSvar(
+            deltBostedSporsmal.felt!![0],
+            Type.CHECKBOX,
+            SvarType.LOCALE_TEKST,
+            "system.familie.barn.true.barn.deltbosted.true",
+        )
 
         val barnebidragSporsmal = forsorgerpliktSporsmal[2]
         assertThat(barnebidragSporsmal.erUtfylt).isTrue
@@ -251,7 +277,10 @@ internal class FamiliesituasjonStegTest {
         validateFeltMedSvar(barnebidragSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "familie.barn.true.barnebidrag.betaler")
     }
 
-    private fun createSoknad(sivilstatus: JsonSivilstatus?, forsorgerplikt: JsonForsorgerplikt?): JsonInternalSoknad {
+    private fun createSoknad(
+        sivilstatus: JsonSivilstatus?,
+        forsorgerplikt: JsonForsorgerplikt?,
+    ): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()
@@ -260,9 +289,9 @@ internal class FamiliesituasjonStegTest {
                             .withFamilie(
                                 JsonFamilie()
                                     .withSivilstatus(sivilstatus)
-                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt())
-                            )
-                    )
+                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt()),
+                            ),
+                    ),
             )
     }
 }

@@ -9,7 +9,7 @@ data class AdresserFrontendInput(
     val valg: JsonAdresseValg?,
     val folkeregistrert: AdresseFrontend? = null,
     val midlertidig: AdresseFrontend? = null,
-    val soknad: AdresseFrontend? = null
+    val soknad: AdresseFrontend? = null,
 )
 
 data class AdresserFrontend(
@@ -17,7 +17,7 @@ data class AdresserFrontend(
     val folkeregistrert: AdresseFrontend? = null,
     val midlertidig: AdresseFrontend? = null,
     val soknad: AdresseFrontend? = null,
-    val navEnhet: NavEnhetFrontend? = null
+    val navEnhet: NavEnhetFrontend? = null,
 )
 
 @Schema(nullable = true)
@@ -25,7 +25,7 @@ data class AdresseFrontend(
     val type: JsonAdresse.Type? = null,
     val gateadresse: GateadresseFrontend? = null,
     val matrikkeladresse: MatrikkeladresseFrontend? = null,
-    val ustrukturert: UstrukturertAdresseFrontend? = null
+    val ustrukturert: UstrukturertAdresseFrontend? = null,
 )
 
 data class GateadresseFrontend(
@@ -37,7 +37,7 @@ data class GateadresseFrontend(
     val poststed: String? = null,
     val gatenavn: String? = null,
     val husnummer: String? = null,
-    val husbokstav: String? = null
+    val husbokstav: String? = null,
 )
 
 data class MatrikkeladresseFrontend(
@@ -46,9 +46,9 @@ data class MatrikkeladresseFrontend(
     val bruksnummer: String? = null,
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
-    val undernummer: String? = null
+    val undernummer: String? = null,
 )
 
 data class UstrukturertAdresseFrontend(
-    val adresse: List<String>? = null
+    val adresse: List<String>? = null,
 )

@@ -11,10 +11,9 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import java.util.*
+import java.util.UUID
 
 class ArbeidIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
@@ -27,10 +26,11 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
         val soknad = soknadRepository.save(opprettSoknad())
         val livssituasjon = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
-        val arbeidDto = doGet(
-            getPath(soknad.id),
-            ArbeidDto::class.java
-        )
+        val arbeidDto =
+            doGet(
+                getPath(soknad.id),
+                ArbeidDto::class.java,
+            )
 
         livssituasjon.arbeid?.let {
             assertThat(arbeidDto.kommentar).isEqualTo(it.kommentar)
@@ -60,7 +60,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
             getPath(soknad.id),
             input,
             ArbeidDto::class.java,
-            soknad.id
+            soknad.id,
         ).also {
             assertThat(it.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }

@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(
     val navn: String,
-    val enhetNr: String
+    val enhetNr: String,
 )
 
 fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
@@ -13,11 +13,14 @@ fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
         enhetNr = enhetNr,
         navn = navn,
         kommunenavn = null,
-        sosialOrgNr = getSosialOrgNr(enhetNr, gt)
+        sosialOrgNr = getSosialOrgNr(enhetNr, gt),
     )
 }
 
-private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
+private fun getSosialOrgNr(
+    enhetNr: String?,
+    gt: String,
+): String? {
     return when {
         enhetNr == "0513" && gt == "3434" -> {
             /*
@@ -25,7 +28,7 @@ private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
 
                 Lom og Skjåk har samme enhetsnummer. Derfor vil alle søknader bli sendt til Skjåk når vi henter organisajonsnummer basert på enhetNr.
                 Dette er en midlertidig fix for å få denne casen til å fungere.
-                */
+             */
             "974592274"
         }
         enhetNr == "0511" && gt == "3432" -> "964949204"

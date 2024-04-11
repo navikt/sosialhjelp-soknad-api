@@ -12,9 +12,8 @@ interface LeaderElection {
 }
 
 class LeaderElectionImpl(
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : LeaderElection {
-
     private val electorPath: String? = System.getenv(ELECTOR_PATH)
     private val webClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl("http://$electorPath").build()
 
@@ -30,10 +29,11 @@ class LeaderElectionImpl(
         val now = LocalDateTime.now()
         if (leader == null || lastCallTime.isBefore(now.minusMinutes(2))) {
             try {
-                val response = webClient.get()
-                    .retrieve()
-                    .bodyToMono(String::class.java)
-                    .block()
+                val response =
+                    webClient.get()
+                        .retrieve()
+                        .bodyToMono(String::class.java)
+                        .block()
                 leader = jacksonObjectMapper().readTree(response).get("name").asText()
                 lastCallTime = now
             } catch (e: Exception) {
@@ -51,7 +51,6 @@ class LeaderElectionImpl(
 }
 
 class NoLeaderElection : LeaderElection {
-
     override fun isLeader(): Boolean {
         return true
     }

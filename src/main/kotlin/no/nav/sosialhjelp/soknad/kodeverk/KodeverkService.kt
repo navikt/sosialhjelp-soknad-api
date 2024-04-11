@@ -11,14 +11,18 @@ import org.springframework.stereotype.Service
  */
 @Service
 class KodeverkService(
-    private val kodeverkDataService: KodeverkDataService
+    private val kodeverkDataService: KodeverkDataService,
 ) {
-    fun getKommunenavn(kommunenummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrNull()
-    fun gjettKommunenummer(kommunenavn: String): String? = runCatching {
-        val kommuner = kodeverkDataService.hentKodeverk(Kommuner)
-        kommuner.keys.firstOrNull { key -> kommuner[key] == kommunenavn }
-    }.getOrNull()
+    fun getKommunenavn(kommunenummer: String): String? =
+        runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrNull()
+
+    fun gjettKommunenummer(kommunenavn: String): String? =
+        runCatching {
+            val kommuner = kodeverkDataService.hentKodeverk(Kommuner)
+            kommuner.keys.firstOrNull { key -> kommuner[key] == kommunenavn }
+        }.getOrNull()
 
     fun getPoststed(postnummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Postnummer)[postnummer] }.getOrNull()
+
     fun getLand(landkode: String): String? = runCatching { kodeverkDataService.hentKodeverk(Landkoder)[landkode] }.getOrNull()
 }

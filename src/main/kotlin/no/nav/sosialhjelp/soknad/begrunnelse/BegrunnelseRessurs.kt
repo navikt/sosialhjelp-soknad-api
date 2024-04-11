@@ -16,21 +16,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentBegrunnelse(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): BegrunnelseFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val begrunnelse = soknad.soknad.data.begrunnelse
         return BegrunnelseFrontend(begrunnelse.hvaSokesOm, begrunnelse.hvorforSoke)
     }
@@ -38,13 +43,14 @@ class BegrunnelseRessurs(
     @PutMapping
     fun updateBegrunnelse(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody begrunnelseFrontend: BegrunnelseFrontend
+        @RequestBody begrunnelseFrontend: BegrunnelseFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
         begrunnelse.kilde = JsonKildeBruker.BRUKER
         begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
@@ -57,6 +63,6 @@ class BegrunnelseRessurs(
 
     data class BegrunnelseFrontend(
         val hvaSokesOm: String?,
-        val hvorforSoke: String?
+        val hvorforSoke: String?,
     )
 }

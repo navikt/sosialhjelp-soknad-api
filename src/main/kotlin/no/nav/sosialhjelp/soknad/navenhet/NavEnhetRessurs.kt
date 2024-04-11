@@ -18,24 +18,28 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/personalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val adresseRessurs: AdresseRessurs
+    private val adresseRessurs: AdresseRessurs,
 ) {
-
     @Deprecated("Brukes ikke")
     @GetMapping("/navEnheter")
     fun getNavEnheter(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): List<NavEnhetFrontend> {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
-            ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
+                ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
 
@@ -48,12 +52,13 @@ class NavEnhetRessurs(
 
     @GetMapping("/navEnhet")
     fun getValgtNavEnhet(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): NavEnhetFrontend? {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
-            ?: throw IllegalStateException("Kan ikke hente valgtNavEnhet hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknadsmottaker =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
+                ?: throw IllegalStateException("Kan ikke hente valgtNavEnhet hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         return if (soknadsmottaker.kommunenummer.isNullOrEmpty() || soknadsmottaker.navEnhetsnavn.isNullOrEmpty()) {
             null
@@ -65,7 +70,7 @@ class NavEnhetRessurs(
     @PutMapping("/navEnheter")
     fun putNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody navEnhetFrontend: NavEnhetFrontend
+        @RequestBody navEnhetFrontend: NavEnhetFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

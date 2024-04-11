@@ -19,21 +19,21 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BasisPersonaliaSystemdataTest {
-
     private val personService: PersonService = mockk()
     private val v2AdapterService: V2AdapterService = mockk()
     private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService, v2AdapterService)
 
-    private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
-        versjon = 1L,
-        behandlingsId = "BEHANDLINGSID",
-        tilknyttetBehandlingsId = null,
-        eier = EIER,
-        jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-        status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-        opprettetDato = LocalDateTime.now(),
-        sistEndretDato = LocalDateTime.now()
-    )
+    private val defaultSoknadUnderArbeid =
+        SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "BEHANDLINGSID",
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now(),
+        )
 
     @BeforeEach
     fun setup() {
@@ -60,17 +60,18 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalOppdatereNordiskPersonalia() {
-        val person = Person(
-            fornavn = FORNAVN,
-            mellomnavn = MELLOMNAVN,
-            etternavn = ETTERNAVN,
-            fnr = EIER,
-            sivilstatus = "ugift",
-            statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val person =
+            Person(
+                fornavn = FORNAVN,
+                mellomnavn = MELLOMNAVN,
+                etternavn = ETTERNAVN,
+                fnr = EIER,
+                sivilstatus = "ugift",
+                statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
@@ -91,17 +92,18 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalPrioritereNorskOverNordiskStatsborgerskap() {
-        val person = Person(
-            fornavn = FORNAVN,
-            mellomnavn = MELLOMNAVN,
-            etternavn = ETTERNAVN,
-            fnr = EIER,
-            sivilstatus = "ugift",
-            statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val person =
+            Person(
+                fornavn = FORNAVN,
+                mellomnavn = MELLOMNAVN,
+                etternavn = ETTERNAVN,
+                fnr = EIER,
+                sivilstatus = "ugift",
+                statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
@@ -116,20 +118,22 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalPrioritereNordiskStatsborgerskap() {
-        val person = Person(
-            fornavn = FORNAVN,
-            mellomnavn = MELLOMNAVN,
-            etternavn = ETTERNAVN,
-            fnr = EIER,
-            sivilstatus = "ugift",
-            statsborgerskap = listOf(
-                IKKE_NORDISK_STATSBORGERSKAP,
-                NORDISK_STATSBORGERSKAP
-            ),
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val person =
+            Person(
+                fornavn = FORNAVN,
+                mellomnavn = MELLOMNAVN,
+                etternavn = ETTERNAVN,
+                fnr = EIER,
+                sivilstatus = "ugift",
+                statsborgerskap =
+                    listOf(
+                        IKKE_NORDISK_STATSBORGERSKAP,
+                        NORDISK_STATSBORGERSKAP,
+                    ),
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
@@ -144,19 +148,21 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalOppdatereIkkeNordiskPersonalia() {
-        val person = Person(
-            fornavn = FORNAVN,
-            mellomnavn = MELLOMNAVN,
-            etternavn = ETTERNAVN,
-            fnr = EIER,
-            sivilstatus = "ugift",
-            statsborgerskap = listOf(
-                IKKE_NORDISK_STATSBORGERSKAP
-            ),
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val person =
+            Person(
+                fornavn = FORNAVN,
+                mellomnavn = MELLOMNAVN,
+                etternavn = ETTERNAVN,
+                fnr = EIER,
+                sivilstatus = "ugift",
+                statsborgerskap =
+                    listOf(
+                        IKKE_NORDISK_STATSBORGERSKAP,
+                    ),
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
@@ -177,17 +183,18 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent() {
-        val person = Person(
-            fornavn = FORNAVN,
-            mellomnavn = MELLOMNAVN,
-            etternavn = ETTERNAVN,
-            fnr = EIER,
-            sivilstatus = "ugift",
-            statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val person =
+            Person(
+                fornavn = FORNAVN,
+                mellomnavn = MELLOMNAVN,
+                etternavn = ETTERNAVN,
+                fnr = EIER,
+                sivilstatus = "ugift",
+                statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
         val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 

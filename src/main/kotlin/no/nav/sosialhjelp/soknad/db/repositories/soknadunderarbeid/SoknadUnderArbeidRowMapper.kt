@@ -8,10 +8,12 @@ import java.io.IOException
 import java.sql.ResultSet
 
 class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
-
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    override fun mapRow(rs: ResultSet, rowNum: Int): SoknadUnderArbeid {
+    override fun mapRow(
+        rs: ResultSet,
+        rowNum: Int,
+    ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             soknadId = rs.getLong("soknad_under_arbeid_id"),
             versjon = rs.getLong("versjon"),
@@ -21,7 +23,7 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
             jsonInternalSoknad = mapDataToJsonInternalSoknad(rs.getString("data")),
             status = SoknadUnderArbeidStatus.valueOf(rs.getString("status")),
             opprettetDato = rs.getTimestamp("opprettetdato").toLocalDateTime(),
-            sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime()
+            sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime(),
         )
     }
 

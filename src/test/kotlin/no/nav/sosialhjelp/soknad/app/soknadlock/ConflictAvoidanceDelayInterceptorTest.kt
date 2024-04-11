@@ -16,7 +16,6 @@ import org.springframework.web.servlet.HandlerMapping
 
 @ExtendWith(SpringExtension::class)
 internal class ConflictAvoidanceDelayInterceptorTest {
-
     private val soknadLockManager = mockk<SoknadLockManager>()
 
     private lateinit var request: HttpServletRequest
@@ -38,7 +37,10 @@ internal class ConflictAvoidanceDelayInterceptorTest {
         every { soknadLockManager.enabled } returns true
     }
 
-    private fun mockBehandlingsId(request: HttpServletRequest, behandlingsId: String?) {
+    private fun mockBehandlingsId(
+        request: HttpServletRequest,
+        behandlingsId: String?,
+    ) {
         every {
             request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)
         } returns mapOf("behandlingsId" to behandlingsId)

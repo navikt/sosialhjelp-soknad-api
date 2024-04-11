@@ -34,9 +34,8 @@ class SvarUtClient(
     @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
     private val basicAuthentication: String
         get() {
             if (svarutUsername == null || svarutPassword == null) {
@@ -46,22 +45,23 @@ class SvarUtClient(
             return "Basic " + DatatypeConverter.printBase64Binary(token.toByteArray(StandardCharsets.UTF_8))
         }
 
-    private val svarUtWebClient = webClientBuilder
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SVARUT_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SVARUT_TIMEOUT.toLong()))
+    private val svarUtWebClient =
+        webClientBuilder
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    proxiedHttpClient
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SVARUT_TIMEOUT)
+                        .responseTimeout(Duration.ofMillis(SVARUT_TIMEOUT.toLong())),
+                ),
             )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-        }
-        .defaultHeader(AUTHORIZATION, basicAuthentication)
-        .filter(mdcExchangeFilter)
-        .build()
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
+            }
+            .defaultHeader(AUTHORIZATION, basicAuthentication)
+            .filter(mdcExchangeFilter)
+            .build()
 
     fun ping() {
         svarUtWebClient.get()
@@ -74,12 +74,26 @@ class SvarUtClient(
             .block()
     }
 
-    fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
+    fun sendForsendelse(
+        forsendelse: Forsendelse,
+        data: Map<String, InputStream>,
+    ): ForsendelsesId? {
         return try {
             val body = LinkedMultiValueMap<String, Any>()
-            body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
+            body.add(
+                "forsendelse",
+                createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE),
+            )
             forsendelse.dokumenter.forEach {
-                body.add("filer", createHttpEntity(ByteArrayResource(IOUtils.toByteArray(data[it.filnavn])), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                body.add(
+                    "filer",
+                    createHttpEntity(
+                        ByteArrayResource(IOUtils.toByteArray(data[it.filnavn])),
+                        "filer",
+                        it.filnavn,
+                        MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                    ),
+                )
             }
 
             svarUtWebClient.post()

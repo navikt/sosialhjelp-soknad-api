@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class FilDetectionUtilsTest {
-
     @Test
     fun `Test detect returnerer pdf`() {
         val tikaType = getAndDetectExampleFile(PDF_FILE)

@@ -11,7 +11,7 @@ object ArbeidOgUtdanning {
         pdfUtils: PdfUtils,
         arbeid: JsonArbeid?,
         utdanning: JsonUtdanning?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("arbeidbolk.tittel"))
         pdf.addBlankLine()

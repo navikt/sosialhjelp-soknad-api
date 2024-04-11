@@ -18,9 +18,8 @@ class MigrationService(
     private val soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository,
     private val soknadUnderArbeidMigrationRepository: SoknadUnderArbeidMigrationRepository,
     private val opplastetVedleggMigrationRepository: OpplastetVedleggMigrationRepository,
-    private val oppgaveRepository: OppgaveRepository
+    private val oppgaveRepository: OppgaveRepository,
 ) {
-
     fun getNext(sistEndretDato: LocalDateTime): ReplicationDto? {
         log.info("Henter dto for migrering, neste soknadMetadata med sistEndretDato nyere enn $sistEndretDato")
 
@@ -34,7 +33,7 @@ class MigrationService(
             behandlingsId = behandlingsId,
             soknadMetadata = soknadMetadata.toDto(),
             soknadUnderArbeid = getSoknadUnderArbeid(behandlingsId),
-            oppgave = getOppgave(behandlingsId)
+            oppgave = getOppgave(behandlingsId),
         )
     }
 
@@ -43,7 +42,7 @@ class MigrationService(
             soknadMetadataSum = soknadMetadataMigrationRepository.count(),
             soknadUnderArbeidSum = soknadUnderArbeidMigrationRepository.count(),
             opplastetVedleggSum = opplastetVedleggMigrationRepository.count(),
-            oppgaveSum = oppgaveRepository.count()
+            oppgaveSum = oppgaveRepository.count(),
         )
     }
 

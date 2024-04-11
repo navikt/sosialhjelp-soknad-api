@@ -4,5 +4,5 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 
 enum class BostotteMottaker(val value: String) {
     KOMMUNE(JsonOkonomiOpplysningUtbetaling.Mottaker.KOMMUNE.value()),
-    HUSSTAND(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND.value());
+    HUSSTAND(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND.value()),
 }

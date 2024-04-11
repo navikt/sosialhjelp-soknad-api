@@ -22,19 +22,18 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harValgtFormueType
 
 class AnnenFormue {
-
     fun getAvsnitt(okonomi: JsonOkonomi): Avsnitt {
         val oversikt = okonomi.oversikt
         val opplysninger = okonomi.opplysninger
         return Avsnitt(
             tittel = "opplysninger.formue.annen.undertittel",
-            sporsmal = annenFormueSporsmal(oversikt, opplysninger)
+            sporsmal = annenFormueSporsmal(oversikt, opplysninger),
         )
     }
 
     private fun annenFormueSporsmal(
         oversikt: JsonOkonomioversikt?,
-        opplysninger: JsonOkonomiopplysninger
+        opplysninger: JsonOkonomiopplysninger,
     ): List<Sporsmal> {
         val harUtfyltAnnenFormueSporsmal = harBekreftelse(opplysninger, BEKREFTELSE_VERDI)
         val harSvartJaAnnenFormue = harBekreftelseTrue(opplysninger, BEKREFTELSE_VERDI)
@@ -43,16 +42,17 @@ class AnnenFormue {
             Sporsmal(
                 tittel = "inntekt.eierandeler.sporsmal",
                 erUtfylt = harUtfyltAnnenFormueSporsmal,
-                felt = if (harUtfyltAnnenFormueSporsmal) {
-                    booleanVerdiFelt(
-                        harSvartJaAnnenFormue,
-                        "inntekt.eierandeler.true",
-                        "inntekt.eierandeler.false"
-                    )
-                } else {
-                    null
-                }
-            )
+                felt =
+                    if (harUtfyltAnnenFormueSporsmal) {
+                        booleanVerdiFelt(
+                            harSvartJaAnnenFormue,
+                            "inntekt.eierandeler.true",
+                            "inntekt.eierandeler.false",
+                        )
+                    } else {
+                        null
+                    },
+            ),
         )
         if (harSvartJaAnnenFormue) {
             val harSvartHvaEierDuSporsmal = oversikt?.formue?.any { formueTyper.contains(it.type) } ?: false
@@ -60,8 +60,8 @@ class AnnenFormue {
                 Sporsmal(
                     tittel = "inntekt.eierandeler.true.type.sporsmal",
                     erUtfylt = harSvartHvaEierDuSporsmal,
-                    felt = if (harSvartHvaEierDuSporsmal) annenFormueFelter(oversikt) else null
-                )
+                    felt = if (harSvartHvaEierDuSporsmal) annenFormueFelter(oversikt) else null,
+                ),
             )
             if (harValgtFormueType(oversikt, VERDI_ANNET)) {
                 val beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet
@@ -71,17 +71,18 @@ class AnnenFormue {
                     Sporsmal(
                         tittel = "inntekt.eierandeler.true.type.annet.true.beskrivelse.label",
                         erUtfylt = harUtfyltAnnetFelt,
-                        felt = if (harUtfyltAnnetFelt) {
-                            listOf(
-                                Felt(
-                                    type = Type.TEKST,
-                                    svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) }
+                        felt =
+                            if (harUtfyltAnnetFelt) {
+                                listOf(
+                                    Felt(
+                                        type = Type.TEKST,
+                                        svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) },
+                                    ),
                                 )
-                            )
-                        } else {
-                            null
-                        }
-                    )
+                            } else {
+                                null
+                            },
+                    ),
                 )
             }
         }
@@ -99,12 +100,13 @@ class AnnenFormue {
     }
 
     companion object {
-        private val formueTyper = listOf(
-            VERDI_BOLIG,
-            VERDI_CAMPINGVOGN,
-            VERDI_KJORETOY,
-            VERDI_FRITIDSEIENDOM,
-            VERDI_ANNET
-        )
+        private val formueTyper =
+            listOf(
+                VERDI_BOLIG,
+                VERDI_CAMPINGVOGN,
+                VERDI_KJORETOY,
+                VERDI_FRITIDSEIENDOM,
+                VERDI_ANNET,
+            )
     }
 }

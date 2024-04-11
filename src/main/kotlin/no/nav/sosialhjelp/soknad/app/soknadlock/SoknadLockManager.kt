@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class SoknadLockManager(
     private val lockMetrics: SoknadLockPushMetrics,
-    private val clock: Clock = Clock.systemDefaultZone()
+    private val clock: Clock = Clock.systemDefaultZone(),
 ) {
     // Om denne er false, er hele SoknadLockDelayInterceptor inaktiv.
     var enabled: Boolean = true
@@ -63,9 +63,10 @@ class SoknadLockManager(
     fun getLock(behandlingsId: String): TimestampedLock? {
         val lock = lockMap.computeIfAbsent(behandlingsId) { TimestampedLock(clock = clock) }
 
-        val getLock = runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { lock.lock() } } }
-            .onFailure { lockMetrics.reportLockTimeout() }
-            .onSuccess { lockMetrics.reportLockAcquireLatency(lock.nanosecondsSinceLockRequest) }
+        val getLock =
+            runCatching { runBlocking { withTimeout(LOCK_TIMEOUT_MS) { lock.lock() } } }
+                .onFailure { lockMetrics.reportLockTimeout() }
+                .onSuccess { lockMetrics.reportLockAcquireLatency(lock.nanosecondsSinceLockRequest) }
 
         if (isLockMapDueForPruning()) pruneLocks()
 
@@ -88,14 +89,15 @@ class SoknadLockManager(
         expiredLocks.forEach { (behandlingsId, timestampedLock) ->
             // Dersom lockMap.remove kaster NPE, har den allerede blitt fjernet - det skal ikke kunne skje.
             // Det som derimot kan skje er at verdien endrer seg fordi låsen er blitt fornyet, da hopper vi bare videre.
-            val removed = runCatching {
-                lockMap.remove(behandlingsId, timestampedLock)
-            }.onSuccess {
-                if (!it) log.warn("lockMap endret under pruneLocks") // Denne bør fjernes når koden er kjørt inn.
-            }.getOrElse {
-                log.warn("i pruneLocks har $behandlingsId forsvunnet, skal ikke kunne skje", it)
-                false
-            }
+            val removed =
+                runCatching {
+                    lockMap.remove(behandlingsId, timestampedLock)
+                }.onSuccess {
+                    if (!it) log.warn("lockMap endret under pruneLocks") // Denne bør fjernes når koden er kjørt inn.
+                }.getOrElse {
+                    log.warn("i pruneLocks har $behandlingsId forsvunnet, skal ikke kunne skje", it)
+                    false
+                }
 
             if (removed) {
                 timestampedLock.let {
@@ -139,26 +141,27 @@ class SoknadLockManager(
      *
      * @return true dersom det er på tide å kjøre pruneLocks, ellers false.
      */
-    private fun isLockMapDueForPruning(): Boolean = runBlocking {
-        try {
-            withTimeout(PRUNE_LOCK_TIMEOUT_MS) {
-                lastPruneMutex.withLock {
-                    val now = ZonedDateTime.now(clock)
-                    val isDueForPrune = now.isAfter(lastPrune.plusMinutes(REQUEST_PRUNE_INTERVAL_MINUTES))
-                    if (isDueForPrune) lastPrune = now
-                    isDueForPrune
+    private fun isLockMapDueForPruning(): Boolean =
+        runBlocking {
+            try {
+                withTimeout(PRUNE_LOCK_TIMEOUT_MS) {
+                    lastPruneMutex.withLock {
+                        val now = ZonedDateTime.now(clock)
+                        val isDueForPrune = now.isAfter(lastPrune.plusMinutes(REQUEST_PRUNE_INTERVAL_MINUTES))
+                        if (isDueForPrune) lastPrune = now
+                        isDueForPrune
+                    }
                 }
+            } catch (e: TimeoutCancellationException) {
+                log.error("timeout for pruneMutex, skal ikke skje")
+                false
             }
-        } catch (e: TimeoutCancellationException) {
-            log.error("timeout for pruneMutex, skal ikke skje")
-            false
         }
-    }
 
     data class TimestampedLock(
         val mutex: Mutex = Mutex(),
         val clock: Clock = Clock.systemDefaultZone(),
-        val timestamp: ZonedDateTime = ZonedDateTime.now(clock)
+        val timestamp: ZonedDateTime = ZonedDateTime.now(clock),
     ) {
         private var lastLockAttempt: Long = 0L
 

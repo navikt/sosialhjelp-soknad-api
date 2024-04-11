@@ -20,13 +20,16 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 object VedleggUtils {
-
     private val log by logger()
 
-    fun behandleFilOgReturnerFildata(filnavn: String, bytes: ByteArray): Pair<String, ByteArray> {
+    fun behandleFilOgReturnerFildata(
+        filnavn: String,
+        bytes: ByteArray,
+    ): Pair<String, ByteArray> {
         // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
         val uuidRandom = UUID.randomUUID()
 
@@ -44,7 +47,11 @@ object VedleggUtils {
         return Hex.toHexString(sha512.digest())
     }
 
-    fun lagFilnavn(opplastetNavn: String, fileType: TikaFileType, uuid: UUID): String {
+    fun lagFilnavn(
+        opplastetNavn: String,
+        fileType: TikaFileType,
+        uuid: UUID,
+    ): String {
         var filnavn = opplastetNavn
         val fileExtension = findFileExtension(opplastetNavn)
 
@@ -60,13 +67,14 @@ object VedleggUtils {
             log.warn("Klarte ikke å URIdecode fil med navn $filnavn", e)
         }
 
-        filnavn = filnavn
-            .replace("æ", "e")
-            .replace("ø", "o")
-            .replace("å", "a")
-            .replace("Æ", "E")
-            .replace("Ø", "O")
-            .replace("Å", "A")
+        filnavn =
+            filnavn
+                .replace("æ", "e")
+                .replace("ø", "o")
+                .replace("å", "a")
+                .replace("Æ", "E")
+                .replace("Ø", "O")
+                .replace("Å", "A")
 
         filnavn = filnavn.replace("[^a-zA-Z0-9_-]".toRegex(), "")
 
@@ -75,17 +83,21 @@ object VedleggUtils {
         }
 
         filnavn += "-" + uuid.toString().split("-").toTypedArray()[0]
-        filnavn += if (!fileExtension.isNullOrEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
-            fileExtension
-        } else {
-            log.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")
-            fileType.extension
-        }
+        filnavn +=
+            if (!fileExtension.isNullOrEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
+                fileExtension
+            } else {
+                log.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")
+                fileType.extension
+            }
 
         return filnavn
     }
 
-    fun validerFil(data: ByteArray, filnavn: String): TikaFileType {
+    fun validerFil(
+        data: ByteArray,
+        filnavn: String,
+    ): TikaFileType {
         val mimeType = FileDetectionUtils.detectMimeType(data)
         val fileType = FileDetectionUtils.mapToTikaType(mimeType)
 
@@ -94,7 +106,7 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Mimetype var $mimeType, filtype var $filType",
                 null,
-                "opplasting.feilmelding.feiltype"
+                "opplasting.feilmelding.feiltype",
             )
         }
         if (fileType == TikaFileType.JPEG || fileType == TikaFileType.PNG) {
@@ -106,10 +118,15 @@ object VedleggUtils {
         return fileType
     }
 
-    fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
+    fun finnVedleggEllerKastException(
+        vedleggstype: String,
+        soknadUnderArbeid: SoknadUnderArbeid,
+    ): JsonVedlegg {
         return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException(
+                "Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?",
+            )
     }
 
     private fun findFileExtension(filnavn: String): String? {
@@ -140,7 +157,7 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Filtype var $fileExtension",
                 null,
-                "opplasting.feilmelding.feiltype"
+                "opplasting.feilmelding.feiltype",
             )
         }
     }
@@ -157,7 +174,7 @@ object VedleggUtils {
                         throw UgyldigOpplastingTypeException(
                             "PDF kan ikke være kryptert.",
                             null,
-                            "opplasting.feilmelding.pdf.kryptert"
+                            "opplasting.feilmelding.pdf.kryptert",
                         )
                     }
                 }
@@ -165,14 +182,17 @@ object VedleggUtils {
             throw UgyldigOpplastingTypeException(
                 "PDF kan ikke være krypert.",
                 null,
-                "opplasting.feilmelding.pdf.kryptert"
+                "opplasting.feilmelding.pdf.kryptert",
             )
         } catch (e: IOException) {
             throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
     }
 
-    private fun erTikaOgFileExtensionEnige(fileExtension: String, fileType: TikaFileType): Boolean {
+    private fun erTikaOgFileExtensionEnige(
+        fileExtension: String,
+        fileType: TikaFileType,
+    ): Boolean {
         if (TikaFileType.JPEG == fileType) {
             return ".jpg".equals(fileExtension, ignoreCase = true) || ".jpeg".equals(fileExtension, ignoreCase = true)
         }

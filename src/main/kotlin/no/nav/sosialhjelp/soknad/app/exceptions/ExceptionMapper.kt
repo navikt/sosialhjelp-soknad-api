@@ -31,192 +31,192 @@ import java.net.URI
 
 @ControllerAdvice
 class ExceptionMapper(
-    @Value("\${loginservice.url}") private val loginserviceUrl: String
+    @Value("\${loginservice.url}") private val loginserviceUrl: String,
 ) : ResponseEntityExceptionHandler() {
-
     @ExceptionHandler
     fun handleSoknadApiException(e: SosialhjelpSoknadApiException): ResponseEntity<Feilmelding> {
-        val response = when (e) {
-            is UgyldigOpplastingTypeException -> {
-                log.warn("Feilet opplasting", e)
-                ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-            }
-            is OpplastingException -> {
-                log.warn("Feilet opplasting", e)
-                ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-            }
-            is SamletVedleggStorrelseForStorException -> {
-                log.warn(
-                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
-                    e
-                )
-                ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-            }
-            is AuthorizationException -> {
-                log.warn("Ikke tilgang til ressurs", e)
-                return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
-            }
-            is SoknadAlleredeSendtException -> {
-                log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
-                return ResponseEntity
-                    .status(HttpStatus.GONE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
-            }
-            is IkkeFunnetException -> {
-                log.warn(e.message, e)
-                ResponseEntity.status(HttpStatus.NOT_FOUND)
-            }
-            is EttersendelseSendtForSentException -> {
-                log.info("REST-kall feilet: ${e.message}", e)
-                ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
-            is TjenesteUtilgjengeligException -> {
-                log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
-                ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
-            is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
-                log.error(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "innsending_midlertidig_utilgjengelig",
-                            message = "Tjenesten er midlertidig utilgjengelig hos kommunen"
-                        )
+        val response =
+            when (e) {
+                is UgyldigOpplastingTypeException -> {
+                    log.warn("Feilet opplasting", e)
+                    ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                }
+                is OpplastingException -> {
+                    log.warn("Feilet opplasting", e)
+                    ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                }
+                is SamletVedleggStorrelseForStorException -> {
+                    log.warn(
+                        "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
+                        e,
                     )
-            }
-            is SendingTilKommuneErIkkeAktivertException -> {
-                log.error(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "innsending_ikke_aktivert",
-                            message = "Tjenesten er ikke aktivert hos kommunen"
+                    ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                }
+                is AuthorizationException -> {
+                    log.warn("Ikke tilgang til ressurs", e)
+                    return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
+                }
+                is SoknadAlleredeSendtException -> {
+                    log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
+                    return ResponseEntity
+                        .status(HttpStatus.GONE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
+                }
+                is IkkeFunnetException -> {
+                    log.warn(e.message, e)
+                    ResponseEntity.status(HttpStatus.NOT_FOUND)
+                }
+                is EttersendelseSendtForSentException -> {
+                    log.info("REST-kall feilet: ${e.message}", e)
+                    ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                }
+                is TjenesteUtilgjengeligException -> {
+                    log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
+                    ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                }
+                is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
+                    log.error(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "innsending_midlertidig_utilgjengelig",
+                                message = "Tjenesten er midlertidig utilgjengelig hos kommunen",
+                            ),
                         )
-                    )
-            }
-            is SendingTilKommuneUtilgjengeligException -> {
-                log.error(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "innsending_ikke_tilgjengelig",
-                            message = "Tjenesten er midlertidig ikke tilgjengelig"
+                }
+                is SendingTilKommuneErIkkeAktivertException -> {
+                    log.error(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "innsending_ikke_aktivert",
+                                message = "Tjenesten er ikke aktivert hos kommunen",
+                            ),
                         )
-                    )
-            }
-            is SoknadenHarNedetidException -> {
-                log.warn(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "nedetid",
-                            message = "Søknaden har planlagt nedetid nå"
+                }
+                is SendingTilKommuneUtilgjengeligException -> {
+                    log.error(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "innsending_ikke_tilgjengelig",
+                                message = "Tjenesten er midlertidig ikke tilgjengelig",
+                            ),
                         )
-                    )
-            }
-            is PdfGenereringException -> {
-                log.error(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "pdf_generering",
-                            message = "Innsending av søknad eller ettersendelse feilet"
+                }
+                is SoknadenHarNedetidException -> {
+                    log.warn(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "nedetid",
+                                message = "Søknaden har planlagt nedetid nå",
+                            ),
                         )
-                    )
-            }
-            is SoknadUnderArbeidIkkeFunnetException -> {
-                log.warn(e.message, e)
-                return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "soknad_not_found",
-                            message = "Ingen søknad med denne behandlingsId funnet"
+                }
+                is PdfGenereringException -> {
+                    log.error(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "pdf_generering",
+                                message = "Innsending av søknad eller ettersendelse feilet",
+                            ),
                         )
-                    )
-            }
-            is PdlApiException -> {
-                log.error("Kall til PDL feilet", e)
-                ResponseEntity.internalServerError()
-                    .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
-            is DuplikatFilException -> {
-                log.info("Bruker lastet opp allerede opplastet fil")
-                return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "duplikat_fil",
-                            message = "Fil er allerede lastet opp"
+                }
+                is SoknadUnderArbeidIkkeFunnetException -> {
+                    log.warn(e.message, e)
+                    return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "soknad_not_found",
+                                message = "Ingen søknad med denne behandlingsId funnet",
+                            ),
                         )
-                    )
-            }
-            is KonverteringTilPdfException -> {
-                log.error("Konverteringsfeil: ${e.message}", e)
-                return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "konvertering_til_pdf_error",
-                            message = "Feil ved konvertering: ${e.message}"
+                }
+                is PdlApiException -> {
+                    log.error("Kall til PDL feilet", e)
+                    ResponseEntity.internalServerError()
+                        .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                }
+                is DuplikatFilException -> {
+                    log.info("Bruker lastet opp allerede opplastet fil")
+                    return ResponseEntity
+                        .status(HttpStatus.NOT_ACCEPTABLE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "duplikat_fil",
+                                message = "Fil er allerede lastet opp",
+                            ),
                         )
-                    )
-            }
-            is FileConverterException -> {
-                log.warn("Filkonverteringsfeil: ${e.message}", e)
+                }
+                is KonverteringTilPdfException -> {
+                    log.error("Konverteringsfeil: ${e.message}", e)
+                    return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "konvertering_til_pdf_error",
+                                message = "Feil ved konvertering: ${e.message}",
+                            ),
+                        )
+                }
+                is FileConverterException -> {
+                    log.warn("Filkonverteringsfeil: ${e.message}", e)
 
-                return ResponseEntity
-                    .status(
-                        if (e.httpStatus.is4xxClientError) {
-                            HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                        } else {
-                            HttpStatus.SERVICE_UNAVAILABLE
-                        }
-                    )
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "filkonvertering_error",
-                            message = "${e.message}"
+                    return ResponseEntity
+                        .status(
+                            if (e.httpStatus.is4xxClientError) {
+                                HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                            } else {
+                                HttpStatus.SERVICE_UNAVAILABLE
+                            },
                         )
-                    )
-            }
-            is NotValidInputException -> {
-                log.error("Ugyldige input: ${e.message}, id: ${e.id}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = "filkonvertering_error",
+                                message = "${e.message}",
+                            ),
+                        )
+                }
+                is NotValidInputException -> {
+                    log.error("Ugyldige input: ${e.message}, id: ${e.id}")
 
-                return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = e.id,
-                            message = e.message
+                    return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                            Feilmelding(
+                                id = e.id,
+                                message = e.message,
+                            ),
                         )
-                    )
+                }
+                else -> {
+                    log.error("REST-kall feilet", e)
+                    ResponseEntity.internalServerError()
+                        .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
+                }
             }
-            else -> {
-                log.error("REST-kall feilet", e)
-                ResponseEntity.internalServerError()
-                    .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
-        }
         return response.contentType(MediaType.APPLICATION_JSON).body(Feilmelding(e.id, e.message))
     }
 
@@ -284,7 +284,7 @@ class ExceptionMapper(
         ex: MaxUploadSizeExceededException,
         headers: HttpHeaders,
         status: HttpStatusCode,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         log.warn("Feilet opplasting", ex)
         return ResponseEntity
@@ -293,8 +293,8 @@ class ExceptionMapper(
             .body(
                 Feilmelding(
                     id = "vedlegg.opplasting.feil.forStor",
-                    message = "Kunne ikke lagre fil fordi total filstørrelse er for stor"
-                )
+                    message = "Kunne ikke lagre fil fordi total filstørrelse er for stor",
+                ),
             )
     }
 

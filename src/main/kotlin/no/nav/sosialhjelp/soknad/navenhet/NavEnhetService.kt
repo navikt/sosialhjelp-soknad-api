@@ -31,13 +31,12 @@ class NavEnhetService(
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService,
-    private val unleash: Unleash
+    private val unleash: Unleash,
 ) {
-
     fun getNavEnhet(
         eier: String,
         soknad: JsonSoknad,
-        valg: JsonAdresseValg?
+        valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
         return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
@@ -45,7 +44,7 @@ class NavEnhetService(
                 finnNavEnhetFraGT(eier, personalia)
             } catch (e: Exception) {
                 log.warn(
-                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse"
+                    "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
                 )
                 finnNavEnhetFraAdresse(personalia, valg)
             }
@@ -64,13 +63,13 @@ class NavEnhetService(
             isMottakDeaktivert = !isDigisosKommune(kommunenummer),
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
             orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
-            valgt = true
+            valgt = true,
         )
     }
 
     private fun finnNavEnhetFraGT(
         ident: String,
-        personalia: JsonPersonalia
+        personalia: JsonPersonalia,
     ): NavEnhetFrontend? {
         // TODO Ekstra logging
         log.info("Finner Nav-enhet fra GT")
@@ -84,7 +83,7 @@ class NavEnhetService(
 
     private fun finnNavEnhetFraAdresse(
         personalia: JsonPersonalia,
-        valg: JsonAdresseValg?
+        valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
         // TODO Ekstra logging
         log.info("Finner Nav-enhet fra adresse")
@@ -97,7 +96,11 @@ class NavEnhetService(
     }
 
     // TODO ekstra logging
-    private fun logUtDiverseInfo(kommunenummer: String?, geografiskTilknytning: String?, navEnhet: NavEnhet?) {
+    private fun logUtDiverseInfo(
+        kommunenummer: String?,
+        geografiskTilknytning: String?,
+        navEnhet: NavEnhet?,
+    ) {
         if (kommunenummer == "4601" || kommunenummer == "3907") {
             log.info(
                 "Finn Nav-enhet fra GT. Kommunenummer: $kommunenummer, " +
@@ -105,7 +108,7 @@ class NavEnhetService(
                     "NavEnhet - ${navEnhet?.navn}" +
                     "Enhetsnummer: ${navEnhet?.enhetNr}" +
                     "Sosialorg: ${navEnhet?.sosialOrgNr}" +
-                    "Kommunenavn: ${navEnhet?.kommunenavn}"
+                    "Kommunenavn: ${navEnhet?.kommunenavn}",
             )
         }
     }
@@ -113,7 +116,7 @@ class NavEnhetService(
     private fun mapToNavEnhetFrontend(
         navEnhet: NavEnhet?,
         geografiskTilknytning: String?,
-        kommunenummer: String?
+        kommunenummer: String?,
     ): NavEnhetFrontend? {
         if (navEnhet == null) {
             log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: $kommunenummer")
@@ -135,7 +138,7 @@ class NavEnhetService(
             valgt = enhetNr != null,
             kommuneNr = kommunenummer,
             isMottakDeaktivert = !isDigisosKommune,
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
+            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
         )
     }
 

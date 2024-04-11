@@ -17,7 +17,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 internal class KommuneInfoServiceTest {
-
     private val kommuneInfoClient: KommuneInfoClient = mockk()
     private val redisService: RedisService = mockk()
 
@@ -29,27 +28,29 @@ internal class KommuneInfoServiceTest {
         private const val KOMMUNENR_MED_KONFIG = "2222"
     }
 
-    private val kommuneInfo = KommuneInfo(
-        kommunenummer = KOMMUNENR,
-        kanMottaSoknader = false,
-        kanOppdatereStatus = false,
-        harMidlertidigDeaktivertMottak = false,
-        harMidlertidigDeaktivertOppdateringer = false,
-        kontaktpersoner = null,
-        harNksTilgang = false,
-        behandlingsansvarlig = null
-    )
+    private val kommuneInfo =
+        KommuneInfo(
+            kommunenummer = KOMMUNENR,
+            kanMottaSoknader = false,
+            kanOppdatereStatus = false,
+            harMidlertidigDeaktivertMottak = false,
+            harMidlertidigDeaktivertOppdateringer = false,
+            kontaktpersoner = null,
+            harNksTilgang = false,
+            behandlingsansvarlig = null,
+        )
 
-    private val kommuneInfoMedKonfig = KommuneInfo(
-        kommunenummer = KOMMUNENR_MED_KONFIG,
-        kanMottaSoknader = true,
-        kanOppdatereStatus = true,
-        harMidlertidigDeaktivertMottak = true,
-        harMidlertidigDeaktivertOppdateringer = true,
-        kontaktpersoner = null,
-        harNksTilgang = true,
-        behandlingsansvarlig = null
-    )
+    private val kommuneInfoMedKonfig =
+        KommuneInfo(
+            kommunenummer = KOMMUNENR_MED_KONFIG,
+            kanMottaSoknader = true,
+            kanOppdatereStatus = true,
+            harMidlertidigDeaktivertMottak = true,
+            harMidlertidigDeaktivertOppdateringer = true,
+            kontaktpersoner = null,
+            harNksTilgang = true,
+            behandlingsansvarlig = null,
+        )
 
     @BeforeEach
     internal fun setUp() {
@@ -137,7 +138,9 @@ internal class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 3 = 0011)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
+        every {
+            kommuneInfoClient.getAll()
+        } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
@@ -149,19 +152,33 @@ internal class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert innsyn (permutasjon 5 = 0101)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertOppdateringer = true))
+        every {
+            kommuneInfoClient.getAll()
+        } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak (permutasjon 6 = 0110)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true))
+        every { kommuneInfoClient.getAll() } returns
+            listOf(
+                kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true),
+            )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 7 = 0111)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
+        every {
+            kommuneInfoClient.getAll()
+        } returns
+            listOf(
+                kommuneInfo.copy(
+                    kanOppdatereStatus = true,
+                    harMidlertidigDeaktivertMottak = true,
+                    harMidlertidigDeaktivertOppdateringer = true,
+                ),
+            )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
@@ -215,7 +232,9 @@ internal class KommuneInfoServiceTest {
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
 
         // Inkl. deaktivert innsyn (permutasjon 11 = 1011)
-        every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = false, harMidlertidigDeaktivertOppdateringer = true))
+        every {
+            kommuneInfoClient.getAll()
+        } returns listOf(kommuneInfo.copy(kanOppdatereStatus = false, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
@@ -224,7 +243,13 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
         // Case 6 (permutasjon 15 = 1111)
-        val kommuneInfo = kommuneInfo.copy(kanMottaSoknader = true, kanOppdatereStatus = true, harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true)
+        val kommuneInfo =
+            kommuneInfo.copy(
+                kanMottaSoknader = true,
+                kanOppdatereStatus = true,
+                harMidlertidigDeaktivertMottak = true,
+                harMidlertidigDeaktivertOppdateringer = true,
+            )
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         val kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
@@ -260,8 +285,9 @@ internal class KommuneInfoServiceTest {
     internal fun skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
         val kommuneInfoMap = mapOf(KOMMUNENR to kommuneInfo)
 
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(2)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns
+            LocalDateTime.now().minusMinutes(2)
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { redisService.getKommuneInfos() } returns kommuneInfoMap
 
         kommuneInfoService.kanMottaSoknader(KOMMUNENR)
@@ -272,8 +298,9 @@ internal class KommuneInfoServiceTest {
 
     @Test
     internal fun skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns
+            LocalDateTime.now().minusMinutes(12)
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         kommuneInfoService.kanMottaSoknader(KOMMUNENR)
@@ -286,8 +313,9 @@ internal class KommuneInfoServiceTest {
     internal fun hentKommuneInfoFraFiksFeiler_brukCache() {
         val kommuneInfoMap = mapOf(KOMMUNENR to kommuneInfo.copy(kanMottaSoknader = true))
 
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns
+            LocalDateTime.now().minusMinutes(12)
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll() } returns emptyList()
         every { redisService.getKommuneInfos() } returns kommuneInfoMap
 
@@ -301,8 +329,9 @@ internal class KommuneInfoServiceTest {
 
     @Test
     internal fun hentKommuneInfoFraFiksFeiler_cacheErTom() {
-        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12)
-            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns
+            LocalDateTime.now().minusMinutes(12)
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll() } returns emptyList()
         every { redisService.getKommuneInfos() } returns null
 

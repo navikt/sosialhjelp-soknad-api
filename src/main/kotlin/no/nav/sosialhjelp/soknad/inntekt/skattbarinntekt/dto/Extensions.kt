@@ -61,15 +61,16 @@ fun SkattbarInntekt?.getForskuddstrekk(): List<Utbetaling> {
             val tom = kalenderManed.atEndOfMonth()
             it.forskuddstrekk
                 .forEach { ft ->
-                    val utbetaling = Utbetaling(
-                        type = "skatteopplysninger",
-                        brutto = 0.0,
-                        skattetrekk = ft.beloep?.toDouble() ?: 0.0,
-                        periodeFom = fom,
-                        periodeTom = tom,
-                        tittel = "Forskuddstrekk",
-                        orgnummer = it.opplysningspliktigId
-                    )
+                    val utbetaling =
+                        Utbetaling(
+                            type = "skatteopplysninger",
+                            brutto = 0.0,
+                            skattetrekk = ft.beloep?.toDouble() ?: 0.0,
+                            periodeFom = fom,
+                            periodeTom = tom,
+                            tittel = "Forskuddstrekk",
+                            orgnummer = it.opplysningspliktigId,
+                        )
                     forskuddstrekk.add(utbetaling)
                 }
         }
@@ -81,7 +82,7 @@ private fun getUtbetaling(
     fom: LocalDate,
     tom: LocalDate,
     inntekt: Inntekt,
-    tittel: String
+    tittel: String,
 ): Utbetaling {
     return Utbetaling(
         type = "skatteopplysninger",
@@ -90,7 +91,7 @@ private fun getUtbetaling(
         periodeFom = fom,
         periodeTom = tom,
         tittel = tittel,
-        orgnummer = oppgaveInntektsmottaker.opplysningspliktigId
+        orgnummer = oppgaveInntektsmottaker.opplysningspliktigId,
     )
 }
 

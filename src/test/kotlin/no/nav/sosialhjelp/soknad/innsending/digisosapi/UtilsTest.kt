@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class UtilsTest {
-
     @Test
     fun getDigisosId_whenFinnesAllerede_shouldReturnIdTest() {
         val testresponse =

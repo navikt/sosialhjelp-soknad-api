@@ -13,7 +13,7 @@ object Familie {
         pdf: PdfGenerator,
         pdfUtils: PdfUtils,
         familie: JsonFamilie?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         // Familie
         pdf.skrivH4Bold(pdfUtils.getTekst("familiebolk.tittel"))
@@ -48,12 +48,27 @@ object Familie {
                                 if (!utvidetSoknad) {
                                     pdf.skrivTekstBold(pdfUtils.getTekst("system.familie.sivilstatus.infotekst"))
                                 }
-                                pdfUtils.skrivTekstMedGuard(pdf, getJsonNavnTekst(ektefelle.navn), "system.familie.sivilstatus.gift.ektefelle.navn")
-                                pdfUtils.skrivTekstMedGuard(pdf, formaterDato(ektefelle.fodselsdato, DATO_FORMAT), "system.familie.sivilstatus.gift.ektefelle.fodselsdato")
+                                pdfUtils.skrivTekstMedGuard(
+                                    pdf,
+                                    getJsonNavnTekst(ektefelle.navn),
+                                    "system.familie.sivilstatus.gift.ektefelle.navn",
+                                )
+                                pdfUtils.skrivTekstMedGuard(
+                                    pdf,
+                                    formaterDato(ektefelle.fodselsdato, DATO_FORMAT),
+                                    "system.familie.sivilstatus.gift.ektefelle.fodselsdato",
+                                )
 
                                 sivilstatus.folkeregistrertMedEktefelle?.let {
-                                    val folkeregistrertTekst = pdfUtils.getTekst("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.$it")
-                                    pdfUtils.skrivTekstMedGuard(pdf, folkeregistrertTekst, "system.familie.sivilstatus.gift.ektefelle.folkereg")
+                                    val folkeregistrertTekst =
+                                        pdfUtils.getTekst(
+                                            "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.$it",
+                                        )
+                                    pdfUtils.skrivTekstMedGuard(
+                                        pdf,
+                                        folkeregistrertTekst,
+                                        "system.familie.sivilstatus.gift.ektefelle.folkereg",
+                                    )
                                 }
                             }
                         }
@@ -81,16 +96,38 @@ object Familie {
                         if (ektefelle != null && status == JsonSivilstatus.Status.GIFT) {
                             pdf.skrivTekstBold(pdfUtils.getTekst("familie.sivilstatus.gift.ektefelle.sporsmal"))
 
-                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.navn.fornavn, "familie.sivilstatus.gift.ektefelle.fornavn.label")
-                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.navn.mellomnavn, "familie.sivilstatus.gift.ektefelle.mellomnavn.label")
-                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.navn.etternavn, "familie.sivilstatus.gift.ektefelle.etternavn.label")
+                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                pdf,
+                                ektefelle.navn.fornavn,
+                                "familie.sivilstatus.gift.ektefelle.fornavn.label",
+                            )
+                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                pdf,
+                                ektefelle.navn.mellomnavn,
+                                "familie.sivilstatus.gift.ektefelle.mellomnavn.label",
+                            )
+                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                pdf,
+                                ektefelle.navn.etternavn,
+                                "familie.sivilstatus.gift.ektefelle.etternavn.label",
+                            )
 
                             ektefelle.fodselsdato
-                                ?.let { pdfUtils.skrivTekstMedGuard(pdf, formaterDato(it, DATO_FORMAT), "familie.sivilstatus.gift.ektefelle.fnr.label") }
+                                ?.let {
+                                    pdfUtils.skrivTekstMedGuard(
+                                        pdf,
+                                        formaterDato(it, DATO_FORMAT),
+                                        "familie.sivilstatus.gift.ektefelle.fnr.label",
+                                    )
+                                }
                                 ?: pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.fnr.label")
 
                             if (ektefelle.personIdentifikator != null && ektefelle.personIdentifikator.length == 11) {
-                                pdfUtils.skrivTekstMedGuard(pdf, ektefelle.personIdentifikator.substring(6, 11), "familie.sivilstatus.gift.ektefelle.pnr.label")
+                                pdfUtils.skrivTekstMedGuard(
+                                    pdf,
+                                    ektefelle.personIdentifikator.substring(6, 11),
+                                    "familie.sivilstatus.gift.ektefelle.pnr.label",
+                                )
                             } else {
                                 pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.pnr.label")
                             }
@@ -98,7 +135,13 @@ object Familie {
                             pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, ektefelle.personIdentifikator, "personalia.fnr")
 
                             sivilstatus.borSammenMed
-                                ?.let { pdfUtils.skrivTekstMedGuard(pdf, pdfUtils.getTekst("familie.sivilstatus.gift.ektefelle.borsammen.$it"), "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal") }
+                                ?.let {
+                                    pdfUtils.skrivTekstMedGuard(
+                                        pdf,
+                                        pdfUtils.getTekst("familie.sivilstatus.gift.ektefelle.borsammen.$it"),
+                                        "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal",
+                                    )
+                                }
                                 ?: pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "familie.sivilstatus.gift.ektefelle.borsammen.sporsmal")
 
                             if (utvidetSoknad) {
@@ -133,7 +176,9 @@ object Familie {
                 if (utvidetSoknad) {
                     pdf.skrivTekst(pdfUtils.getTekst("familierelasjon.ingress_folkeregisteret"))
                     val antallBarnFraFolkeregisteret = forsorgerplikt.ansvar.count { it.barn.kilde == JsonKilde.SYSTEM }
-                    pdf.skrivTekst("${pdfUtils.getTekst("familierelasjon.ingress_forsorger")} $antallBarnFraFolkeregisteret barn under 18år")
+                    pdf.skrivTekst(
+                        "${pdfUtils.getTekst("familierelasjon.ingress_forsorger")} $antallBarnFraFolkeregisteret barn under 18år",
+                    )
                 }
 
                 // TODO: Finnes ikke i handlebarkode?
@@ -167,7 +212,12 @@ object Familie {
         pdf.addBlankLine()
     }
 
-    private fun leggTilBarn(pdf: PdfGenerator, pdfUtils: PdfUtils, utvidetSoknad: Boolean, listeOverAnsvar: List<JsonAnsvar>) {
+    private fun leggTilBarn(
+        pdf: PdfGenerator,
+        pdfUtils: PdfUtils,
+        utvidetSoknad: Boolean,
+        listeOverAnsvar: List<JsonAnsvar>,
+    ) {
         listeOverAnsvar.forEach { ansvar ->
             val barn = ansvar.barn
             if (barn.kilde == JsonKilde.SYSTEM && barn.harDiskresjonskode == null || !barn.harDiskresjonskode) {
@@ -200,12 +250,18 @@ object Familie {
         pdfUtils: PdfUtils,
         ansvar: JsonAnsvar,
         erFolkeregistrertSammenVerdi: Boolean,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         // Har barnet delt bosted
         if (erFolkeregistrertSammenVerdi) {
             ansvar.harDeltBosted
-                ?.let { pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, pdfUtils.getTekst("system.familie.barn.true.barn.deltbosted." + it.verdi), "system.familie.barn.true.barn.deltbosted.sporsmal") }
+                ?.let {
+                    pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                        pdf,
+                        pdfUtils.getTekst("system.familie.barn.true.barn.deltbosted." + it.verdi),
+                        "system.familie.barn.true.barn.deltbosted.sporsmal",
+                    )
+                }
                 ?: pdfUtils.skrivIkkeUtfyltMedGuard(pdf, "system.familie.barn.true.barn.deltbosted.sporsmal")
 
             if (utvidetSoknad) {

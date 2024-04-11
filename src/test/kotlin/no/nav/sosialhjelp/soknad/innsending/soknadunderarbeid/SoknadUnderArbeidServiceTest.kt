@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 internal class SoknadUnderArbeidServiceTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val soknadUnderArbeidService = SoknadUnderArbeidService(soknadUnderArbeidRepository, kommuneInfoService)
@@ -31,7 +30,7 @@ internal class SoknadUnderArbeidServiceTest {
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
             lagSoknadUnderArbeidForEttersendelse(),
-            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
         )
     }
 
@@ -58,7 +57,11 @@ internal class SoknadUnderArbeidServiceTest {
             .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // kast feil - midlertidig nedetid for kommune
-        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+        every {
+            kommuneInfoService.getKommuneStatus(
+                "1234",
+            )
+        } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
@@ -81,7 +84,7 @@ internal class SoknadUnderArbeidServiceTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 

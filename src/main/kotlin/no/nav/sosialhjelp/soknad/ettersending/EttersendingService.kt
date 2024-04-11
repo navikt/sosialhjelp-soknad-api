@@ -23,14 +23,14 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
+import java.util.UUID
 
 @Deprecated("SvarUt og denne type ettersending støttes ikke lenger")
 @Component
 class EttersendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val clock: Clock
+    private val clock: Clock,
 ) {
     @Deprecated("SvarUt og denne type ettersending støttes ikke lenger")
     fun startEttersendelse(behandlingsIdDetEttersendesPaa: String?): String {
@@ -51,19 +51,20 @@ class EttersendingService(
     private fun opprettSoknadMetadataEttersendelse(ettersendesPaSoknad: SoknadMetadata): String {
         val id = soknadMetadataRepository.hentNesteId()
 
-        val ettersendelse = SoknadMetadata(
-            id = 0,
-            behandlingsId = UUID.randomUUID().toString(),
-            tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
-            fnr = ettersendesPaSoknad.fnr,
-            skjema = ettersendesPaSoknad.skjema,
-            orgnr = ettersendesPaSoknad.orgnr,
-            navEnhet = ettersendesPaSoknad.navEnhet,
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(clock),
-            sistEndretDato = LocalDateTime.now(clock)
-        )
+        val ettersendelse =
+            SoknadMetadata(
+                id = 0,
+                behandlingsId = UUID.randomUUID().toString(),
+                tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
+                fnr = ettersendesPaSoknad.fnr,
+                skjema = ettersendesPaSoknad.skjema,
+                orgnr = ettersendesPaSoknad.orgnr,
+                navEnhet = ettersendesPaSoknad.navEnhet,
+                type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
+                status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(clock),
+                sistEndretDato = LocalDateTime.now(clock),
+            )
         soknadMetadataRepository.opprett(ettersendelse)
         return ettersendelse.behandlingsId
     }
@@ -71,27 +72,29 @@ class EttersendingService(
     private fun lagreSoknadILokalDb(
         originalSoknad: SoknadMetadata,
         nyBehandlingsId: String,
-        manglendeJsonVedlegg: List<JsonVedlegg>
+        manglendeJsonVedlegg: List<JsonVedlegg>,
     ) {
-        val ettersendingSoknad = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = nyBehandlingsId,
-            tilknyttetBehandlingsId = originalSoknad.behandlingsId,
-            eier = originalSoknad.fnr,
-            jsonInternalSoknad = JsonInternalSoknad()
-                .withVedlegg(
-                    JsonVedleggSpesifikasjon()
-                        .withVedlegg(manglendeJsonVedlegg)
-                )
-                .withMottaker(
-                    JsonSoknadsmottaker()
-                        .withOrganisasjonsnummer(originalSoknad.orgnr)
-                        .withNavEnhetsnavn(originalSoknad.navEnhet)
-                ),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val ettersendingSoknad =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = nyBehandlingsId,
+                tilknyttetBehandlingsId = originalSoknad.behandlingsId,
+                eier = originalSoknad.fnr,
+                jsonInternalSoknad =
+                    JsonInternalSoknad()
+                        .withVedlegg(
+                            JsonVedleggSpesifikasjon()
+                                .withVedlegg(manglendeJsonVedlegg),
+                        )
+                        .withMottaker(
+                            JsonSoknadsmottaker()
+                                .withOrganisasjonsnummer(originalSoknad.orgnr)
+                                .withNavEnhetsnavn(originalSoknad.navEnhet),
+                        ),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr)
     }
@@ -109,8 +112,9 @@ class EttersendingService(
     }
 
     private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata {
-        var soknad = soknadMetadataRepository.hent(behandlingsId)
-            ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
+        var soknad =
+            soknadMetadataRepository.hent(behandlingsId)
+                ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
         if (soknad.type == SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknadMetadataRepository.hent(soknad.tilknyttetBehandlingsId)?.let { soknad = it }
@@ -125,10 +129,11 @@ class EttersendingService(
     }
 
     private fun throwDetailedExceptionForEttersendelserEtterFrist(soknad: SoknadMetadata) {
-        val dagerEtterFrist = DAYS.between(
-            soknad.innsendtDato,
-            LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
-        )
+        val dagerEtterFrist =
+            DAYS.between(
+                soknad.innsendtDato,
+                LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()),
+            )
         val frist = soknad.innsendtDato?.plusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
         val dateTimeFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy HH:mm:ss")
         val antallEttersendelser = hentAntallEttersendelserSendtPaSoknad(soknad.behandlingsId)
@@ -139,7 +144,7 @@ class EttersendingService(
                 "soknadens dato: ${soknad.innsendtDato?.format(dateTimeFormatter)}, " +
                 "frist($ETTERSENDELSE_FRIST_DAGER dager): ${frist?.format(dateTimeFormatter)}. " +
                 "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
-                "Antall nyere søknader denne brukeren har: $antallNyereSoknader"
+                "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
         )
     }
 
@@ -156,22 +161,27 @@ class EttersendingService(
     }
 
     private fun lagListeOverVedlegg(nyesteSoknad: SoknadMetadata): List<VedleggMetadata> {
-        val manglendeVedlegg = nyesteSoknad.vedlegg?.vedleggListe
-            ?.filter { it.status == Vedleggstatus.VedleggKreves }
-            ?.toMutableList() ?: mutableListOf()
+        val manglendeVedlegg =
+            nyesteSoknad.vedlegg?.vedleggListe
+                ?.filter { it.status == Vedleggstatus.VedleggKreves }
+                ?.toMutableList() ?: mutableListOf()
 
         if (manglendeVedlegg.none { isVedleggskravAnnet(it) }) {
-            val annetVedlegg = VedleggMetadata(
-                skjema = "annet",
-                tillegg = "annet",
-                hendelseType = JsonVedlegg.HendelseType.BRUKER
-            )
+            val annetVedlegg =
+                VedleggMetadata(
+                    skjema = "annet",
+                    tillegg = "annet",
+                    hendelseType = JsonVedlegg.HendelseType.BRUKER,
+                )
             manglendeVedlegg.add(annetVedlegg)
         }
         return manglendeVedlegg
     }
 
-    private fun hentAntallInnsendteSoknaderEtterTidspunkt(fnr: String?, tidspunkt: LocalDateTime?): Int {
+    private fun hentAntallInnsendteSoknaderEtterTidspunkt(
+        fnr: String?,
+        tidspunkt: LocalDateTime?,
+    ): Int {
         return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt) ?: 0
     }
 

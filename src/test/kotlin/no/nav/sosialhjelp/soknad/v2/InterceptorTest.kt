@@ -18,7 +18,6 @@ import org.springframework.web.reactive.function.BodyInserters
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class InterceptorTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var familieRepository: FamilieRepository
 
@@ -27,17 +26,22 @@ class InterceptorTest : AbstractIntegrationTest() {
         val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
         val token = mockOAuth2Server.issueToken("selvbetjening", "abc", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
 
-        val result = webTestClient.put()
-            .uri("/soknad/${soknad.id}/familie/sivilstatus")
-            .accept(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.id.toString(), id = token.jwtClaimsSet.subject))
-            .body(BodyInserters.fromValue(SivilstandInput(Sivilstatus.GIFT, EktefelleInput("123", Navn(fornavn = "Ola", etternavn = "Nordmann")))))
-            .exchange()
-            .expectStatus().isForbidden
-            .expectBody(AuthorizationException::class.java)
-            .returnResult()
-            .responseBody!!
+        val result =
+            webTestClient.put()
+                .uri("/soknad/${soknad.id}/familie/sivilstatus")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer ${token.serialize()}")
+                .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.id.toString(), id = token.jwtClaimsSet.subject))
+                .body(
+                    BodyInserters.fromValue(
+                        SivilstandInput(Sivilstatus.GIFT, EktefelleInput("123", Navn(fornavn = "Ola", etternavn = "Nordmann"))),
+                    ),
+                )
+                .exchange()
+                .expectStatus().isForbidden
+                .expectBody(AuthorizationException::class.java)
+                .returnResult()
+                .responseBody!!
 
         assertThat(result.message).isEqualTo("Ikke tilgang til ressurs")
     }
@@ -45,14 +49,24 @@ class InterceptorTest : AbstractIntegrationTest() {
     @Test
     fun `PUT til familie skal ikke kaste exception hvis bruker har tilgang`() {
         val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
-        val token = mockOAuth2Server.issueToken("selvbetjening", "69691337420", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        val token =
+            mockOAuth2Server.issueToken(
+                "selvbetjening",
+                "69691337420",
+                "someaudience",
+                claims = mapOf("acr" to "idporten-loa-high"),
+            )
 
         webTestClient.put()
             .uri("/soknad/${soknad.id}/familie/sivilstatus")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.id.toString(), id = token.jwtClaimsSet.subject))
-            .body(BodyInserters.fromValue(SivilstandInput(Sivilstatus.GIFT, EktefelleInput("121337", Navn(fornavn = "Ola", etternavn = "Nordmann")))))
+            .body(
+                BodyInserters.fromValue(
+                    SivilstandInput(Sivilstatus.GIFT, EktefelleInput("121337", Navn(fornavn = "Ola", etternavn = "Nordmann"))),
+                ),
+            )
             .exchange()
             .expectStatus().isOk
             .expectBody(Any::class.java)

@@ -26,41 +26,43 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class PersonServiceTest {
-
     companion object {
         private const val BARN_IDENT = "11111111111"
         private const val EKTEFELLE_IDENT = "22222222222"
         private const val FDAT_IDENT = "11122200000"
     }
 
-    private val person = Person(
-        fornavn = "fornavn",
-        mellomnavn = "mellomnavn",
-        etternavn = "etternavn",
-        fnr = "fnr",
-        sivilstatus = "ugift",
-        statsborgerskap = emptyList(),
-        ektefelle = null,
-        bostedsadresse = null,
-        oppholdsadresse = null
-    )
-    private val ektefelle = Ektefelle(
-        fornavn = "fornavn",
-        mellomnavn = null,
-        etternavn = "etternavn",
-        fodselsdato = LocalDate.now(),
-        fnr = "fnr2",
-        folkeregistrertSammen = true,
-        ikkeTilgangTilEktefelle = false
-    )
-    private val barn = Barn(
-        fornavn = "fornavn",
-        mellomnavn = null,
-        etternavn = "etternavn",
-        fnr = "barnident",
-        fodselsdato = null,
-        folkeregistrertSammen = true
-    )
+    private val person =
+        Person(
+            fornavn = "fornavn",
+            mellomnavn = "mellomnavn",
+            etternavn = "etternavn",
+            fnr = "fnr",
+            sivilstatus = "ugift",
+            statsborgerskap = emptyList(),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
+        )
+    private val ektefelle =
+        Ektefelle(
+            fornavn = "fornavn",
+            mellomnavn = null,
+            etternavn = "etternavn",
+            fodselsdato = LocalDate.now(),
+            fnr = "fnr2",
+            folkeregistrertSammen = true,
+            ikkeTilgangTilEktefelle = false,
+        )
+    private val barn =
+        Barn(
+            fornavn = "fornavn",
+            mellomnavn = null,
+            etternavn = "etternavn",
+            fnr = "barnident",
+            fodselsdato = null,
+            folkeregistrertSammen = true,
+        )
 
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
@@ -71,12 +73,14 @@ internal class PersonServiceTest {
     private val mockEktefelleDto = mockk<EktefelleDto>()
     private val mockBarnDto = mockk<BarnDto>()
 
-    private val defaultMetadataDto = MetadataDto(
-        master = "PDL",
-        endringer = listOf(
-            EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type")
+    private val defaultMetadataDto =
+        MetadataDto(
+            master = "PDL",
+            endringer =
+                listOf(
+                    EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type"),
+                ),
         )
-    )
 
     @BeforeEach
     internal fun setUp() {
@@ -87,14 +91,15 @@ internal class PersonServiceTest {
     fun skalHentePersonMedEktefelle() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
-        every { mockPersonDto.sivilstand } returns listOf(
-            SivilstandDto(
-                type = SivilstandType.GIFT,
-                relatertVedSivilstand = EKTEFELLE_IDENT,
-                metadata = defaultMetadataDto,
-                folkeregistermetadata = null
+        every { mockPersonDto.sivilstand } returns
+            listOf(
+                SivilstandDto(
+                    type = SivilstandType.GIFT,
+                    relatertVedSivilstand = EKTEFELLE_IDENT,
+                    metadata = defaultMetadataDto,
+                    folkeregistermetadata = null,
+                ),
             )
-        )
         every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
         every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
 
@@ -106,14 +111,15 @@ internal class PersonServiceTest {
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
-        every { mockPersonDto.sivilstand } returns listOf(
-            SivilstandDto(
-                type = SivilstandType.GIFT,
-                relatertVedSivilstand = null,
-                metadata = defaultMetadataDto,
-                folkeregistermetadata = null
+        every { mockPersonDto.sivilstand } returns
+            listOf(
+                SivilstandDto(
+                    type = SivilstandType.GIFT,
+                    relatertVedSivilstand = null,
+                    metadata = defaultMetadataDto,
+                    folkeregistermetadata = null,
+                ),
             )
-        )
 
         val result = personService.hentPerson("ident")
         assertThat(result!!.ektefelle).isNull()
@@ -126,14 +132,15 @@ internal class PersonServiceTest {
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mapper.personDtoToDomain(any(), any()) } returns person
-        every { mockPersonDto.sivilstand } returns listOf(
-            SivilstandDto(
-                type = SivilstandType.GIFT,
-                relatertVedSivilstand = FDAT_IDENT,
-                metadata = defaultMetadataDto,
-                folkeregistermetadata = null
+        every { mockPersonDto.sivilstand } returns
+            listOf(
+                SivilstandDto(
+                    type = SivilstandType.GIFT,
+                    relatertVedSivilstand = FDAT_IDENT,
+                    metadata = defaultMetadataDto,
+                    folkeregistermetadata = null,
+                ),
             )
-        )
 
         val result = personService.hentPerson("ident")
         assertThat(result!!.ektefelle).isNull()

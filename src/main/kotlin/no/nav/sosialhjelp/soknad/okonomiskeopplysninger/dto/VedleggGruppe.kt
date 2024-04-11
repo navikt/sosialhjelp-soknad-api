@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 import com.fasterxml.jackson.annotation.JsonValue
 
 enum class VedleggGruppe(
-    @JsonValue val stringName: String
+    @JsonValue val stringName: String,
 ) {
     AndreUtgifter("andre utgifter"),
     Arbeid("arbeid"),
@@ -12,7 +12,8 @@ enum class VedleggGruppe(
     GenerelleVedlegg("generelle vedlegg"),
     Inntekt("inntekt"),
     Statsborgerskap("statsborgerskap"),
-    Utgifter("utgifter");
+    Utgifter("utgifter"),
+    ;
 
     override fun toString(): String {
         return stringName

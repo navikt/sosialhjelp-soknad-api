@@ -41,20 +41,20 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class AdresseRessursTest {
-
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val adresseSystemdata: AdresseSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val navEnhetService: NavEnhetService = mockk()
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
 
-    private val adresseRessurs = AdresseRessurs(
-        tilgangskontroll,
-        adresseSystemdata,
-        soknadUnderArbeidRepository,
-        navEnhetService,
-        soknadV2ControllerAdapter
-    )
+    private val adresseRessurs =
+        AdresseRessurs(
+            tilgangskontroll,
+            adresseSystemdata,
+            soknadUnderArbeidRepository,
+            navEnhetService,
+            soknadV2ControllerAdapter,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -84,7 +84,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_BRUKER_GATE_ADRESSE
+            JSON_BRUKER_GATE_ADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -103,7 +103,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_SYS_MATRIKKELADRESSE
+            JSON_SYS_MATRIKKELADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -122,7 +122,7 @@ internal class AdresseRessursTest {
             adresserFrontend,
             JSON_SYS_MATRIKKELADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
-            JSON_SYS_USTRUKTURERT_ADRESSE
+            JSON_SYS_USTRUKTURERT_ADRESSE,
         )
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
@@ -161,7 +161,11 @@ internal class AdresseRessursTest {
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
-        assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+        assertThat(
+            oppholdsadresse,
+        ).isEqualTo(
+            adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT),
+        )
 
         val navEnhetFrontend = navEnheter.first()
         val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
@@ -193,10 +197,11 @@ internal class AdresseRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontendInput(
-            valg = JsonAdresseValg.MIDLERTIDIG,
-            soknad = AdresseFrontend()
-        )
+        val adresserFrontend =
+            AdresserFrontendInput(
+                valg = JsonAdresseValg.MIDLERTIDIG,
+                soknad = AdresseFrontend(),
+            )
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -221,13 +226,15 @@ internal class AdresseRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontendInput = AdresserFrontendInput(
-            valg = JsonAdresseValg.SOKNAD,
-            soknad = AdresseFrontend(
-                type = JsonAdresse.Type.GATEADRESSE,
-                gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata")
+        val adresserFrontendInput =
+            AdresserFrontendInput(
+                valg = JsonAdresseValg.SOKNAD,
+                soknad =
+                    AdresseFrontend(
+                        type = JsonAdresse.Type.GATEADRESSE,
+                        gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata"),
+                    ),
             )
-        )
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -262,32 +269,38 @@ internal class AdresseRessursTest {
         adresserFrontend: AdresserFrontend,
         folkeregAdresse: JsonAdresse?,
         midlertidigAdresse: JsonAdresse?,
-        valgtAdresse: JsonAdresse?
+        valgtAdresse: JsonAdresse?,
     ) {
         assertThatAdresseIsCorrectlyConverted(adresserFrontend.folkeregistrert, folkeregAdresse)
         assertThatAdresseIsCorrectlyConverted(adresserFrontend.midlertidig, midlertidigAdresse)
         assertThatAdresseIsCorrectlyConverted(adresserFrontend.soknad, valgtAdresse)
     }
 
-    private fun assertThatAdresseIsCorrectlyConverted(adresseFrontend: AdresseFrontend?, jsonAdresse: JsonAdresse?) {
+    private fun assertThatAdresseIsCorrectlyConverted(
+        adresseFrontend: AdresseFrontend?,
+        jsonAdresse: JsonAdresse?,
+    ) {
         if (adresseFrontend == null) {
             assertThat(jsonAdresse).isNull()
             return
         }
         assertThat(adresseFrontend.type).isEqualTo(jsonAdresse!!.type)
         when (jsonAdresse.type) {
-            JsonAdresse.Type.GATEADRESSE -> assertThatGateadresseIsCorrectlyConverted(
-                adresseFrontend.gateadresse!!,
-                jsonAdresse
-            )
-            JsonAdresse.Type.MATRIKKELADRESSE -> assertThatMatrikkeladresseIsCorrectlyConverted(
-                adresseFrontend.matrikkeladresse!!,
-                jsonAdresse
-            )
-            JsonAdresse.Type.USTRUKTURERT -> assertThatUstrukturertAdresseIsCorrectlyConverted(
-                adresseFrontend.ustrukturert!!,
-                jsonAdresse
-            )
+            JsonAdresse.Type.GATEADRESSE ->
+                assertThatGateadresseIsCorrectlyConverted(
+                    adresseFrontend.gateadresse!!,
+                    jsonAdresse,
+                )
+            JsonAdresse.Type.MATRIKKELADRESSE ->
+                assertThatMatrikkeladresseIsCorrectlyConverted(
+                    adresseFrontend.matrikkeladresse!!,
+                    jsonAdresse,
+                )
+            JsonAdresse.Type.USTRUKTURERT ->
+                assertThatUstrukturertAdresseIsCorrectlyConverted(
+                    adresseFrontend.ustrukturert!!,
+                    jsonAdresse,
+                )
             else -> {
                 assertThat(jsonAdresse).isNull()
                 assertThat(adresseFrontend.gateadresse).isNull()
@@ -297,7 +310,10 @@ internal class AdresseRessursTest {
         }
     }
 
-    private fun assertThatGateadresseIsCorrectlyConverted(gateadresse: GateadresseFrontend, jsonAdresse: JsonAdresse?) {
+    private fun assertThatGateadresseIsCorrectlyConverted(
+        gateadresse: GateadresseFrontend,
+        jsonAdresse: JsonAdresse?,
+    ) {
         val jsonGateAdresse = jsonAdresse as JsonGateAdresse?
         assertThat(gateadresse.landkode).isEqualTo(jsonGateAdresse?.landkode)
         assertThat(gateadresse.kommunenummer).isEqualTo(jsonGateAdresse?.kommunenummer)
@@ -312,7 +328,7 @@ internal class AdresseRessursTest {
 
     private fun assertThatMatrikkeladresseIsCorrectlyConverted(
         matrikkeladresse: MatrikkeladresseFrontend,
-        jsonAdresse: JsonAdresse?
+        jsonAdresse: JsonAdresse?,
     ) {
         val jsonMatrikkelAdresse = jsonAdresse as JsonMatrikkelAdresse?
         assertThat(matrikkeladresse.kommunenummer).isEqualTo(jsonMatrikkelAdresse?.kommunenummer)
@@ -325,23 +341,24 @@ internal class AdresseRessursTest {
 
     private fun assertThatUstrukturertAdresseIsCorrectlyConverted(
         ustrukturertAdresse: UstrukturertAdresseFrontend,
-        jsonAdresse: JsonAdresse?
+        jsonAdresse: JsonAdresse?,
     ) {
         val jsonUstrukturertAdresse = jsonAdresse as JsonUstrukturertAdresse?
         assertThat(ustrukturertAdresse.adresse).isEqualTo(jsonUstrukturertAdresse?.adresse)
     }
 
     private fun createJsonInternalSoknadWithOppholdsadresse(valg: JsonAdresseValg?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(getSelectedAdresse(valg))
         return soknadUnderArbeid
@@ -362,30 +379,33 @@ internal class AdresseRessursTest {
 
     companion object {
         private const val BEHANDLINGSID = "123"
-        private val JSON_SYS_MATRIKKELADRESSE: JsonAdresse = JsonMatrikkelAdresse()
-            .withKilde(JsonKilde.SYSTEM)
-            .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-            .withKommunenummer("321")
-            .withGaardsnummer("314")
-            .withBruksnummer("15")
-            .withFestenummer("92")
-            .withSeksjonsnummer("65")
-            .withUndernummer("36")
-        private val JSON_SYS_USTRUKTURERT_ADRESSE: JsonAdresse = JsonUstrukturertAdresse()
-            .withKilde(JsonKilde.SYSTEM)
-            .withType(JsonAdresse.Type.USTRUKTURERT).withAdresse(listOf("Trenger", "Strukturgata", "3"))
-        private val JSON_BRUKER_GATE_ADRESSE: JsonAdresse = JsonGateAdresse()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withLandkode("NOR")
-            .withKommunenummer("123")
-            .withAdresselinjer(null)
-            .withBolignummer("1")
-            .withPostnummer("2")
-            .withPoststed("Oslo")
-            .withGatenavn("Sanntidsgata")
-            .withHusnummer("1337")
-            .withHusbokstav("A")
+        private val JSON_SYS_MATRIKKELADRESSE: JsonAdresse =
+            JsonMatrikkelAdresse()
+                .withKilde(JsonKilde.SYSTEM)
+                .withType(JsonAdresse.Type.MATRIKKELADRESSE)
+                .withKommunenummer("321")
+                .withGaardsnummer("314")
+                .withBruksnummer("15")
+                .withFestenummer("92")
+                .withSeksjonsnummer("65")
+                .withUndernummer("36")
+        private val JSON_SYS_USTRUKTURERT_ADRESSE: JsonAdresse =
+            JsonUstrukturertAdresse()
+                .withKilde(JsonKilde.SYSTEM)
+                .withType(JsonAdresse.Type.USTRUKTURERT).withAdresse(listOf("Trenger", "Strukturgata", "3"))
+        private val JSON_BRUKER_GATE_ADRESSE: JsonAdresse =
+            JsonGateAdresse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withLandkode("NOR")
+                .withKommunenummer("123")
+                .withAdresselinjer(null)
+                .withBolignummer("1")
+                .withPostnummer("2")
+                .withPoststed("Oslo")
+                .withGatenavn("Sanntidsgata")
+                .withHusnummer("1337")
+                .withHusbokstav("A")
         private const val EIER = "123456789101"
     }
 }

@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class StudielanRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
@@ -126,10 +125,12 @@ internal class StudielanRessursTest {
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
-            .okonomi.opplysninger.bekreftelse
-        val inntekt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
-            .okonomi.oversikt.inntekt
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
+                .okonomi.opplysninger.bekreftelse
+        val inntekt =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
+                .okonomi.oversikt.inntekt
         assertThat(inntekt[0].type).isEqualTo(SoknadJsonTyper.STUDIELAN)
 
         val studielan = bekreftelser[0]
@@ -184,7 +185,7 @@ internal class StudielanRessursTest {
 
     private fun createJsonInternalSoknadWithErStudentStudielanBekreftelse(
         erStudent: Boolean?,
-        verdi: Boolean?
+        verdi: Boolean?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.withBekreftelse(
@@ -192,8 +193,8 @@ internal class StudielanRessursTest {
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(SoknadJsonTyper.STUDIELAN)
-                    .withVerdi(verdi)
-            )
+                    .withVerdi(verdi),
+            ),
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning.erStudent = erStudent
         return soknadUnderArbeid
@@ -212,7 +213,7 @@ internal class StudielanRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

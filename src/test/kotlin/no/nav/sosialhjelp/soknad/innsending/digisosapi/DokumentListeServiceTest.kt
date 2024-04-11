@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class DokumentListeServiceTest {
-
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
 
@@ -23,16 +22,17 @@ internal class DokumentListeServiceTest {
 
     @Test
     fun `skal lage opplastingsListe med dokumenter for soknad`() {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "behandlingsid",
-            tilknyttetBehandlingsId = null,
-            eier = eier,
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = eier,
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)

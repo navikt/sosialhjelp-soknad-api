@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets
 
 @Configuration
 class PdlIntegrationTestConfig {
-
     /**
      * overskriver pdlHentPersonConsumer for itester
      */
@@ -33,11 +32,11 @@ class PdlIntegrationTestConfig {
 }
 
 class HentPersonClientMock : HentPersonClient {
-
-    val mapper: ObjectMapper = jacksonObjectMapper()
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    val mapper: ObjectMapper =
+        jacksonObjectMapper()
+            .registerKotlinModule()
+            .registerModule(JavaTimeModule())
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 
     override fun hentPerson(ident: String): PersonDto? {
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json")

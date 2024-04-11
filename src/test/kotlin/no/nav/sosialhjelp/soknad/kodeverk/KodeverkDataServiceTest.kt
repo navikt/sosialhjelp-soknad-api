@@ -25,12 +25,13 @@ class KodeverkDataServiceTest : KodeverkTestClass() {
         clearAllMocks()
     }
 
-    private fun prepareMockWebServerResponse(kodeverkNavn: String) = mockWebServer.enqueue(
-        MockResponse()
-            .setResponseCode(200)
-            .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .setBody(IOUtils.toString(ClassLoader.getSystemResourceAsStream("kodeverk/$kodeverkNavn.json"), StandardCharsets.UTF_8))
-    )
+    private fun prepareMockWebServerResponse(kodeverkNavn: String) =
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setBody(IOUtils.toString(ClassLoader.getSystemResourceAsStream("kodeverk/$kodeverkNavn.json"), StandardCharsets.UTF_8)),
+        )
 
     @Test
     fun hentKommuner() {

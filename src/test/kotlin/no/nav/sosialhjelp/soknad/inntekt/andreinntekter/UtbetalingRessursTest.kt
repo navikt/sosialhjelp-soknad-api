@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class UtbetalingRessursTest {
-
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
@@ -86,11 +85,12 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            null
-        )
+        } returns
+            createJsonInternalSoknadWithUtbetalinger(
+                true,
+                listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
+                null,
+            )
 
         val utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID)
         assertThat(utbetalingerFrontend.bekreftelse).isTrue
@@ -120,11 +120,12 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
-        )
+        } returns
+            createJsonInternalSoknadWithUtbetalinger(
+                true,
+                listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
+                "Lottogevinst",
+            )
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -145,11 +146,12 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
-        )
+        } returns
+            createJsonInternalSoknadWithUtbetalinger(
+                true,
+                listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
+                "Lottogevinst",
+            )
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -177,13 +179,14 @@ internal class UtbetalingRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val utbetalingerFrontend = UtbetalingerFrontend(
-            bekreftelse = true,
-            utbytte = false,
-            salg = true,
-            forsikring = true,
-            annet = false
-        )
+        val utbetalingerFrontend =
+            UtbetalingerFrontend(
+                bekreftelse = true,
+                utbytte = false,
+                salg = true,
+                forsikring = true,
+                annet = false,
+            )
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -209,13 +212,14 @@ internal class UtbetalingRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val utbetalingerFrontend = UtbetalingerFrontend(
-            bekreftelse = true,
-            utbytte = true,
-            salg = true,
-            forsikring = true,
-            annet = true
-        )
+        val utbetalingerFrontend =
+            UtbetalingerFrontend(
+                bekreftelse = true,
+                utbytte = true,
+                salg = true,
+                forsikring = true,
+                annet = true,
+            )
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -276,7 +280,7 @@ internal class UtbetalingRessursTest {
     private fun createJsonInternalSoknadWithUtbetalinger(
         harUtbetalinger: Boolean,
         utbetalingTyper: List<String>,
-        beskrivelseAvAnnet: String?
+        beskrivelseAvAnnet: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
@@ -285,15 +289,16 @@ internal class UtbetalingRessursTest {
                 JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(utbetaling)
-                    .withTittel("tittel")
+                    .withTittel("tittel"),
             )
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
-            JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
-                .withVerdi(harUtbetalinger)
-        )
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+            listOf(
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
+                    .withVerdi(harUtbetalinger),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
             JsonOkonomibeskrivelserAvAnnet().withUtbetaling(beskrivelseAvAnnet)
@@ -309,7 +314,7 @@ internal class UtbetalingRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

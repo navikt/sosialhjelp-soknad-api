@@ -59,7 +59,7 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
-import java.util.*
+import java.util.UUID
 import kotlin.collections.ArrayList
 
 @Component
@@ -74,7 +74,7 @@ class SoknadServiceOld(
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) {
     @Transactional
     fun startSoknad(): String {
@@ -84,22 +84,23 @@ class SoknadServiceOld(
 
         prometheusMetricsService.reportStartSoknad(false)
 
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = null,
-            eier = eierId,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = behandlingsId,
+                tilknyttetBehandlingsId = null,
+                eier = eierId,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         // ny modell
         v2AdapterService.createSoknad(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
-            eierId
+            eierId,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
@@ -112,16 +113,17 @@ class SoknadServiceOld(
     private fun opprettSoknadMetadata(fnr: String): String {
         log.info("Starter søknad")
 
-        val soknadMetadata = SoknadMetadata(
-            id = 0,
-            behandlingsId = UUID.randomUUID().toString(),
-            fnr = fnr,
-            skjema = SKJEMANUMMER,
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(clock),
-            sistEndretDato = LocalDateTime.now(clock)
-        )
+        val soknadMetadata =
+            SoknadMetadata(
+                id = 0,
+                behandlingsId = UUID.randomUUID().toString(),
+                fnr = fnr,
+                skjema = SKJEMANUMMER,
+                type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+                status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(clock),
+                sistEndretDato = LocalDateTime.now(clock),
+            )
         soknadMetadataRepository.opprett(soknadMetadata)
         return soknadMetadata.behandlingsId.also {
             log.info("Starter søknad $it")
@@ -163,7 +165,10 @@ class SoknadServiceOld(
         }
     }
 
-    private fun finnAlderPaaDataFor(soknadUnderArbeid: SoknadUnderArbeid, type: String): String {
+    private fun finnAlderPaaDataFor(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        type: String,
+    ): String {
         val bekreftelsesDatoStreng =
             soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
                 ?.firstOrNull { it.type == type && it.verdi }
@@ -184,7 +189,10 @@ class SoknadServiceOld(
     }
 
     @Transactional
-    fun avbrytSoknad(behandlingsId: String, steg: String) {
+    fun avbrytSoknad(
+        behandlingsId: String,
+        steg: String,
+    ) {
         log.info("Soknad avbrutt av bruker - slettes")
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -202,7 +210,10 @@ class SoknadServiceOld(
         v2AdapterService.slettSoknad(behandlingsId)
     }
 
-    fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
+    fun settSoknadMetadataAvbrutt(
+        behandlingsId: String?,
+        avbruttAutomatisk: Boolean,
+    ) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
         metadata?.status = if (avbruttAutomatisk) SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK else SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
         metadata?.sistEndretDato = LocalDateTime.now(clock)
@@ -214,7 +225,7 @@ class SoknadServiceOld(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,
-        token: String?
+        token: String?,
     ) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -230,7 +241,7 @@ class SoknadServiceOld(
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ) {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.vedlegg = vedlegg
@@ -270,38 +281,38 @@ class SoknadServiceOld(
                                     .withPersonIdentifikator(
                                         JsonPersonIdentifikator()
                                             .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                            .withVerdi(eier)
+                                            .withVerdi(eier),
                                     )
                                     .withNavn(
                                         JsonSokernavn()
                                             .withKilde(JsonSokernavn.Kilde.SYSTEM)
                                             .withFornavn("")
                                             .withMellomnavn("")
-                                            .withEtternavn("")
+                                            .withEtternavn(""),
                                     )
                                     .withKontonummer(
                                         JsonKontonummer()
-                                            .withKilde(JsonKilde.SYSTEM)
-                                    )
+                                            .withKilde(JsonKilde.SYSTEM),
+                                    ),
                             )
                             .withArbeid(JsonArbeid())
                             .withUtdanning(
                                 JsonUtdanning()
-                                    .withKilde(JsonKilde.BRUKER)
+                                    .withKilde(JsonKilde.BRUKER),
                             )
                             .withFamilie(
                                 JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt())
+                                    .withForsorgerplikt(JsonForsorgerplikt()),
                             )
                             .withBegrunnelse(
                                 JsonBegrunnelse()
                                     .withKilde(JsonKildeBruker.BRUKER)
                                     .withHvorforSoke("")
-                                    .withHvaSokesOm("")
+                                    .withHvaSokesOm(""),
                             )
                             .withBosituasjon(
                                 JsonBosituasjon()
-                                    .withKilde(JsonKildeBruker.BRUKER)
+                                    .withKilde(JsonKildeBruker.BRUKER),
                             )
                             .withOkonomi(
                                 JsonOkonomi()
@@ -310,28 +321,28 @@ class SoknadServiceOld(
                                             .withUtbetaling(ArrayList())
                                             .withUtgift(ArrayList())
                                             .withBostotte(JsonBostotte())
-                                            .withBekreftelse(ArrayList())
+                                            .withBekreftelse(ArrayList()),
                                     )
                                     .withOversikt(
                                         JsonOkonomioversikt()
                                             .withInntekt(ArrayList())
                                             .withUtgift(ArrayList())
-                                            .withFormue(ArrayList())
-                                    )
-                            )
+                                            .withFormue(ArrayList()),
+                                    ),
+                            ),
                     )
                     .withMottaker(
                         JsonSoknadsmottaker()
                             .withNavEnhetsnavn("")
-                            .withEnhetsnummer("")
+                            .withEnhetsnummer(""),
                     )
                     .withDriftsinformasjon(
                         JsonDriftsinformasjon()
                             .withUtbetalingerFraNavFeilet(false)
                             .withInntektFraSkatteetatenFeilet(false)
-                            .withStotteFraHusbankenFeilet(false)
+                            .withStotteFraHusbankenFeilet(false),
                     )
-                    .withKompatibilitet(ArrayList())
+                    .withKompatibilitet(ArrayList()),
             ).withVedlegg(JsonVedleggSpesifikasjon())
         }
 
@@ -342,8 +353,7 @@ class SoknadServiceOld(
                 filnavn = jsonVedlegg.type,
                 status = Vedleggstatus.valueOf(jsonVedlegg.status),
                 hendelseType = jsonVedlegg.hendelseType,
-                hendelseReferanse = jsonVedlegg.hendelseReferanse
-
+                hendelseReferanse = jsonVedlegg.hendelseReferanse,
             )
         }
     }

@@ -23,19 +23,20 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class ArbeidRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentArbeid(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getArbeidFromSoknad(behandlingsId)
     }
 
     private fun getArbeidFromSoknad(behandlingsId: String): ArbeidsforholdResponse {
-        val intern = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val intern =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val kommentarTilArbeidsforhold = intern.soknad.data.arbeid.kommentarTilArbeidsforhold?.verdi
         val forhold = intern.soknad.data.arbeid?.forhold?.map { mapToArbeidsforholdFrontend(it) } ?: emptyList()
 
@@ -45,20 +46,22 @@ class ArbeidRessurs(
     @PutMapping
     fun updateArbeid(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody arbeidFrontend: ArbeidsforholdRequest
+        @RequestBody arbeidFrontend: ArbeidsforholdRequest,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val arbeid = jsonInternalSoknad.soknad.data.arbeid
 
-        arbeid.kommentarTilArbeidsforhold = arbeidFrontend.kommentarTilArbeidsforhold?.takeIf { it.isNotBlank() }?.let {
-            JsonKommentarTilArbeidsforhold().apply {
-                kilde = JsonKildeBruker.BRUKER
-                verdi = it
+        arbeid.kommentarTilArbeidsforhold =
+            arbeidFrontend.kommentarTilArbeidsforhold?.takeIf { it.isNotBlank() }?.let {
+                JsonKommentarTilArbeidsforhold().apply {
+                    kilde = JsonKildeBruker.BRUKER
+                    verdi = it
+                }
             }
-        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
         // NyModell
@@ -68,22 +71,23 @@ class ArbeidRessurs(
         return getArbeidFromSoknad(behandlingsId)
     }
 
-    private fun mapToArbeidsforholdFrontend(arbeidsforhold: JsonArbeidsforhold) = ArbeidsforholdFrontend(
-        arbeidsforhold.arbeidsgivernavn,
-        arbeidsforhold.fom,
-        arbeidsforhold.tom,
-        arbeidsforhold.stillingstype?.let { isStillingstypeHeltid(it) },
-        arbeidsforhold.stillingsprosent,
-        java.lang.Boolean.FALSE
-    )
+    private fun mapToArbeidsforholdFrontend(arbeidsforhold: JsonArbeidsforhold) =
+        ArbeidsforholdFrontend(
+            arbeidsforhold.arbeidsgivernavn,
+            arbeidsforhold.fom,
+            arbeidsforhold.tom,
+            arbeidsforhold.stillingstype?.let { isStillingstypeHeltid(it) },
+            arbeidsforhold.stillingsprosent,
+            java.lang.Boolean.FALSE,
+        )
 
     data class ArbeidsforholdResponse(
         val arbeidsforhold: List<ArbeidsforholdFrontend>,
-        val kommentarTilArbeidsforhold: String?
+        val kommentarTilArbeidsforhold: String?,
     )
 
     data class ArbeidsforholdRequest(
-        val kommentarTilArbeidsforhold: String?
+        val kommentarTilArbeidsforhold: String?,
     )
 
     data class ArbeidsforholdFrontend(
@@ -92,7 +96,7 @@ class ArbeidRessurs(
         var tom: String?,
         var stillingstypeErHeltid: Boolean?,
         var stillingsprosent: Int?,
-        var overstyrtAvBruker: Boolean?
+        var overstyrtAvBruker: Boolean?,
     )
 
     companion object {

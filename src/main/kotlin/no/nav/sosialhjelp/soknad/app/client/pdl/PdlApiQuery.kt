@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets
 import java.util.stream.Collectors
 
 object PdlApiQuery {
-
     val HENT_PERSON = readGraphQLQueryFromFile("graphql/pdl-person-query.graphql")
     val HENT_BARN = readGraphQLQueryFromFile("graphql/pdl-barn-query.graphql")
     val HENT_EKTEFELLE = readGraphQLQueryFromFile("graphql/pdl-ektefelle-query.graphql")

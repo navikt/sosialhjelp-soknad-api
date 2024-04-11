@@ -4,7 +4,6 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 
 object SQLUtils {
-
     private const val HSQLDB = "hsqldb"
     const val DIALECT_PROPERTY = "sqldialect"
 

@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class MineSakerMetadataService(
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     fun hentInnsendteSoknader(fnr: String): List<InnsendtSoknadDto> {
         val innsendteSoknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
@@ -22,8 +22,8 @@ class MineSakerMetadataService(
                     InnsendtSoknadDto(
                         TEMA_NAVN,
                         TEMA_KODE_KOM,
-                        toUtc(it, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                    )
+                        toUtc(it, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    ),
                 )
             } ?: emptyList()
     }

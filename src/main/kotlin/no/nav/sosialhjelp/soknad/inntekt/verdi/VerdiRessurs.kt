@@ -28,21 +28,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/inntekt/verdier", produces = [MediaType.APPLICATION_JSON_VALUE])
 class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentVerdier(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): VerdierFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = soknad.soknad.data.okonomi
 
         if (okonomi.opplysninger.bekreftelse == null) {
@@ -56,34 +61,38 @@ class VerdiRessurs(
             kjoretoy = hasVerdiType(okonomi.oversikt, VERDI_KJORETOY),
             fritidseiendom = hasVerdiType(okonomi.oversikt, VERDI_FRITIDSEIENDOM),
             annet = hasVerdiType(okonomi.oversikt, VERDI_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi
+            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi,
         )
     }
 
     @PutMapping
     fun updateVerdier(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody verdierFrontend: VerdierFrontend
+        @RequestBody verdierFrontend: VerdierFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
         setBekreftelse(
             okonomi.opplysninger,
             BEKREFTELSE_VERDI,
             verdierFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.eierandeler")
+            textService.getJsonOkonomiTittel("inntekt.eierandeler"),
         )
         setVerdier(okonomi.oversikt, verdierFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun setVerdier(oversikt: JsonOkonomioversikt, verdierFrontend: VerdierFrontend) {
+    private fun setVerdier(
+        oversikt: JsonOkonomioversikt,
+        verdierFrontend: VerdierFrontend,
+    ) {
         val verdier = oversikt.formue
         var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_BOLIG])
         addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig)
@@ -97,7 +106,10 @@ class VerdiRessurs(
         addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet)
     }
 
-    private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, verdierFrontend: VerdierFrontend) {
+    private fun setBeskrivelseAvAnnet(
+        opplysninger: JsonOkonomiopplysninger,
+        verdierFrontend: VerdierFrontend,
+    ) {
         if (opplysninger.beskrivelseAvAnnet == null) {
             opplysninger.withBeskrivelseAvAnnet(
                 JsonOkonomibeskrivelserAvAnnet()
@@ -106,7 +118,7 @@ class VerdiRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         opplysninger.beskrivelseAvAnnet.verdi = verdierFrontend.beskrivelseAvAnnet ?: ""
@@ -116,7 +128,10 @@ class VerdiRessurs(
         return opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_VERDI }?.verdi
     }
 
-    private fun hasVerdiType(oversikt: JsonOkonomioversikt, type: String): Boolean {
+    private fun hasVerdiType(
+        oversikt: JsonOkonomioversikt,
+        type: String,
+    ): Boolean {
         return oversikt.formue.any { it.type == type }
     }
 
@@ -127,6 +142,6 @@ class VerdiRessurs(
         var kjoretoy: Boolean = false,
         var fritidseiendom: Boolean = false,
         var annet: Boolean = false,
-        var beskrivelseAvAnnet: String? = null
+        var beskrivelseAvAnnet: String? = null,
     )
 }

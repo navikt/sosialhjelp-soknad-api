@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class BydelFordelingServiceTest {
-
     companion object {
         private const val TESTVEIEN = "testveien"
         private const val TESTGATEN = "testgaten"
@@ -50,8 +49,23 @@ internal class BydelFordelingServiceTest {
         assertThat(bydelTil).isEqualTo(BYDEL_MARKA_OSLO)
     }
 
-    private fun createAdresseForslag(adresse: String, husnummer: String): AdresseForslag {
-        return AdresseForslag(adresse, husnummer, null, null, null, null, null, BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
+    private fun createAdresseForslag(
+        adresse: String,
+        husnummer: String,
+    ): AdresseForslag {
+        return AdresseForslag(
+            adresse,
+            husnummer,
+            null,
+            null,
+            null,
+            null,
+            null,
+            BYDEL_MARKA_OSLO,
+            null,
+            null,
+            AdresseForslagType.GATEADRESSE,
+        )
     }
 
     private fun markaBydelFordeling(): List<BydelFordeling> {
@@ -62,30 +76,30 @@ internal class BydelFordelingServiceTest {
                 listOf(Husnummerfordeling(1, 9999, HusnummerfordelingType.ALL)),
                 BYDEL_MARKA_OSLO,
                 BYDEL_GRORUD,
-                "Grorud"
+                "Grorud",
             ),
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
                 listOf(
                     Husnummerfordeling(1, 99, HusnummerfordelingType.ODD),
-                    Husnummerfordeling(2, 100, HusnummerfordelingType.EVEN)
+                    Husnummerfordeling(2, 100, HusnummerfordelingType.EVEN),
                 ),
                 BYDEL_MARKA_OSLO,
                 BYDEL_VESTRE_AKER,
-                "Vestre Aker"
+                "Vestre Aker",
             ),
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
                 listOf(
                     Husnummerfordeling(101, 9999, HusnummerfordelingType.ODD),
-                    Husnummerfordeling(102, 9999, HusnummerfordelingType.EVEN)
+                    Husnummerfordeling(102, 9999, HusnummerfordelingType.EVEN),
                 ),
                 BYDEL_MARKA_OSLO,
                 BYDEL_NORDRE_AKER,
-                "Nordre Aker"
-            )
+                "Nordre Aker",
+            ),
         )
     }
 }

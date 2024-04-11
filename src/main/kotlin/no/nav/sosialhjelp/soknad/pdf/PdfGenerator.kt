@@ -28,9 +28,18 @@ class PdfGenerator {
     private var currentStream: PDPageContentStream = PDPageContentStream(document, currentPage)
     private var y = calculateStartY()
 
-    private val fontRegular: PDFont = ClassPathResource(REGULAR).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
-    private val fontBold: PDFont = ClassPathResource(BOLD).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
-    private val fontKursiv: PDFont = ClassPathResource(KURSIV).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
+    private val fontRegular: PDFont =
+        ClassPathResource(REGULAR).inputStream.use {
+            PDType0Font.load(document, it)
+        } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
+    private val fontBold: PDFont =
+        ClassPathResource(BOLD).inputStream.use {
+            PDType0Font.load(document, it)
+        } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
+    private val fontKursiv: PDFont =
+        ClassPathResource(KURSIV).inputStream.use {
+            PDType0Font.load(document, it)
+        } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
 
     private val xmp = XMPMetadata()
     private val pdfaid = XMPSchemaPDFAId(xmp)
@@ -101,7 +110,10 @@ class PdfGenerator {
         addParagraph(text, fontKursiv, FONT_PLAIN_SIZE.toFloat(), MARGIN)
     }
 
-    fun skrivTekstMedInnrykk(text: String?, innrykk: Int) {
+    fun skrivTekstMedInnrykk(
+        text: String?,
+        innrykk: Int,
+    ) {
         addParagraph(text, fontRegular, FONT_PLAIN_SIZE.toFloat(), innrykk)
     }
 
@@ -156,7 +168,12 @@ class PdfGenerator {
         currentStream.closeAndStroke()
     }
 
-    private fun addParagraph(text: String?, font: PDFont, fontSize: Float, margin: Int) {
+    private fun addParagraph(
+        text: String?,
+        font: PDFont,
+        fontSize: Float,
+        margin: Int,
+    ) {
         val lines = parseLines(text, font, fontSize)
         currentStream.setFont(font, fontSize)
         currentStream.beginText()
@@ -181,31 +198,41 @@ class PdfGenerator {
         currentStream.endText()
     }
 
-    private fun addCenteredParagraph(heading: String?, font: PDFont, fontSize: Float, leadingPercentage: Float) {
+    private fun addCenteredParagraph(
+        heading: String?,
+        font: PDFont,
+        fontSize: Float,
+        leadingPercentage: Float,
+    ) {
         val lines = parseLines(heading, font, fontSize)
         currentStream.beginText()
         currentStream.setFont(font, fontSize)
 
         var prevX = 0f
         for (i in lines.indices) {
-            prevX = if (i == 0) {
-                val lineWidth = font.getStringWidth(lines[i]) / 1000 * fontSize
-                val startX = (MEDIA_BOX.width - lineWidth) / 2
-                currentStream.newLineAtOffset(startX, y)
-                startX
-            } else {
-                val lineWidth = font.getStringWidth(lines[i]) / 1000 * fontSize
-                val startX = (MEDIA_BOX.width - lineWidth) / 2
-                currentStream.newLineAtOffset(startX - prevX, -leadingPercentage * fontSize)
-                startX
-            }
+            prevX =
+                if (i == 0) {
+                    val lineWidth = font.getStringWidth(lines[i]) / 1000 * fontSize
+                    val startX = (MEDIA_BOX.width - lineWidth) / 2
+                    currentStream.newLineAtOffset(startX, y)
+                    startX
+                } else {
+                    val lineWidth = font.getStringWidth(lines[i]) / 1000 * fontSize
+                    val startX = (MEDIA_BOX.width - lineWidth) / 2
+                    currentStream.newLineAtOffset(startX - prevX, -leadingPercentage * fontSize)
+                    startX
+                }
             currentStream.showText(lines[i])
         }
         currentStream.endText()
         y -= lines.size * fontSize
     }
 
-    private fun parseLines(inputText: String?, font: PDFont, fontSize: Float): List<String> {
+    private fun parseLines(
+        inputText: String?,
+        font: PDFont,
+        fontSize: Float,
+    ): List<String> {
         var text = inputText
         val lines: MutableList<String> = ArrayList()
         if (text == null) {

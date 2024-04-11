@@ -23,22 +23,28 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class KontaktToJsonMapper(
-    private val kontaktRepository: KontaktRepository
+    private val kontaktRepository: KontaktRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
-        val kontakt = kontaktRepository.findByIdOrNull(soknadId)
-            ?: throw IllegalStateException("Fant ikke Adresser")
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
+        val kontakt =
+            kontaktRepository.findByIdOrNull(soknadId)
+                ?: throw IllegalStateException("Fant ikke Adresser")
 
         doMapping(kontakt, jsonInternalSoknad)
     }
 
     internal companion object Mapper {
-
-        fun doMapping(kontakt: Kontakt, json: JsonInternalSoknad) {
+        fun doMapping(
+            kontakt: Kontakt,
+            json: JsonInternalSoknad,
+        ) {
             val oppholdsadresse = kontakt.adresser.getOppholdsadresse()
             val adresseValg = kontakt.adresser.adressevalg
 
@@ -60,12 +66,21 @@ class KontaktToJsonMapper(
             soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
         }
 
-        private fun JsonPersonalia.mapOppholdsadresse(oppholdsadresse: Adresse, adresseValg: AdresseValg) {
-            this.oppholdsadresse = oppholdsadresse.toJsonAdresse()
-                .apply {
-                    this.kilde = if (adresseValg == AdresseValg.SOKNAD) { JsonKilde.BRUKER } else { JsonKilde.SYSTEM }
-                    this.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
-                }
+        private fun JsonPersonalia.mapOppholdsadresse(
+            oppholdsadresse: Adresse,
+            adresseValg: AdresseValg,
+        ) {
+            this.oppholdsadresse =
+                oppholdsadresse.toJsonAdresse()
+                    .apply {
+                        this.kilde =
+                            if (adresseValg == AdresseValg.SOKNAD) {
+                                JsonKilde.BRUKER
+                            } else {
+                                JsonKilde.SYSTEM
+                            }
+                        this.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
+                    }
         }
 
         private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? {
@@ -90,30 +105,33 @@ class KontaktToJsonMapper(
             }
         }
 
-        private fun VegAdresse.toJsonGateAdresse() = JsonGateAdresse()
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withLandkode(landkode)
-            .withKommunenummer(kommunenummer)
-            .withAdresselinjer(adresselinjer)
-            .withBolignummer(bolignummer)
-            .withPostnummer(postnummer)
-            .withPoststed(poststed)
-            .withGatenavn(gatenavn)
-            .withHusnummer(husnummer)
-            .withHusbokstav(husbokstav)
+        private fun VegAdresse.toJsonGateAdresse() =
+            JsonGateAdresse()
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withLandkode(landkode)
+                .withKommunenummer(kommunenummer)
+                .withAdresselinjer(adresselinjer)
+                .withBolignummer(bolignummer)
+                .withPostnummer(postnummer)
+                .withPoststed(poststed)
+                .withGatenavn(gatenavn)
+                .withHusnummer(husnummer)
+                .withHusbokstav(husbokstav)
 
-        private fun MatrikkelAdresse.toJsonMatrikkelAdresse() = JsonMatrikkelAdresse()
-            .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-            .withKommunenummer(kommunenummer)
-            .withGaardsnummer(gaardsnummer)
-            .withBruksnummer(bruksnummer)
-            .withFestenummer(festenummer)
-            .withSeksjonsnummer(seksjonsnummer)
-            .withUndernummer(undernummer)
+        private fun MatrikkelAdresse.toJsonMatrikkelAdresse() =
+            JsonMatrikkelAdresse()
+                .withType(JsonAdresse.Type.MATRIKKELADRESSE)
+                .withKommunenummer(kommunenummer)
+                .withGaardsnummer(gaardsnummer)
+                .withBruksnummer(bruksnummer)
+                .withFestenummer(festenummer)
+                .withSeksjonsnummer(seksjonsnummer)
+                .withUndernummer(undernummer)
 
-        private fun UstrukturertAdresse.toJsonUstrukturertAdresse() = JsonUstrukturertAdresse()
-            .withType(JsonAdresse.Type.USTRUKTURERT)
-            .withAdresse(adresse)
+        private fun UstrukturertAdresse.toJsonUstrukturertAdresse() =
+            JsonUstrukturertAdresse()
+                .withType(JsonAdresse.Type.USTRUKTURERT)
+                .withAdresse(adresse)
 
         private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
             return JsonSoknadsmottaker()

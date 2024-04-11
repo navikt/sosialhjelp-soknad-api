@@ -6,5 +6,5 @@ data class Sokedata(
     val husbokstav: String? = null,
     val postnummer: String? = null,
     val poststed: String? = null,
-    val kommunenummer: String? = null
+    val kommunenummer: String? = null,
 )

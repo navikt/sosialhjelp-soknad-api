@@ -12,7 +12,7 @@ data class VedleggFrontend(
     @Schema(description = "Vedlegg er levert inn utenom denne søknaden (f. eks. levert til NAV-kontor)")
     val alleredeLevert: Boolean? = null,
     @Schema(readOnly = true)
-    val filer: List<FilFrontend>?
+    val filer: List<FilFrontend>?,
 )
 
 data class VedleggRadFrontend(
@@ -27,7 +27,7 @@ data class VedleggRadFrontend(
     @Schema(nullable = true)
     val avdrag: Int? = null,
     @Schema(nullable = true)
-    var renter: Int? = null
+    var renter: Int? = null,
 )
 
 /**
@@ -50,5 +50,5 @@ enum class VedleggStatus {
     VedleggKreves,
 
     /** Bruker indikerer dokumentasjon er sendt inn på annen måte */
-    VedleggAlleredeSendt;
+    VedleggAlleredeSendt,
 }

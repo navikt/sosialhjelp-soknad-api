@@ -26,27 +26,31 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/personalia/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter
+    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
 ) {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping
     fun hentAdresser(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
@@ -54,15 +58,16 @@ class AdresseRessurs(
 
         // TODO Ekstra logging
         logger.info("Hender navEnhet - GET personalia/adresser")
-        val navEnhet = try {
-            navEnhetService.getNavEnhet(
-                eier,
-                jsonInternalSoknad.soknad,
-                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg
-            )
-        } catch (e: Exception) {
-            null
-        }
+        val navEnhet =
+            try {
+                navEnhetService.getNavEnhet(
+                    eier,
+                    jsonInternalSoknad.soknad,
+                    jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg,
+                )
+            } catch (e: Exception) {
+                null
+            }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
@@ -70,20 +75,21 @@ class AdresseRessurs(
             sysFolkeregistrertAdresse,
             sysMidlertidigAdresse,
             jsonOppholdsadresse,
-            navEnhet
+            navEnhet,
         )
     }
 
     @PutMapping
     fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody adresserFrontend: AdresserFrontendInput
+        @RequestBody adresserFrontend: AdresserFrontendInput,
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personalia = jsonInternalSoknad.soknad.data.personalia
         when (adresserFrontend.valg) {
             JsonAdresseValg.FOLKEREGISTRERT ->
@@ -105,24 +111,25 @@ class AdresseRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         // TODO Ekstra logging
         logger.info("Hender navEnhet - PUT personalia/adresser")
-        val navEnhetFrontend = navEnhetService.getNavEnhet(
-            eier,
-            jsonInternalSoknad.soknad,
-            adresserFrontend.valg
-        )?.also {
-            // TODO Ekstra logging
-            logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
-            logger.info("NavEnhetFrontend: $it")
+        val navEnhetFrontend =
+            navEnhetService.getNavEnhet(
+                eier,
+                jsonInternalSoknad.soknad,
+                adresserFrontend.valg,
+            )?.also {
+                // TODO Ekstra logging
+                logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
+                logger.info("NavEnhetFrontend: $it")
 
-            setNavEnhetAsMottaker(soknad, it, eier)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        }
+                setNavEnhetAsMottaker(soknad, it, eier)
+                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            }
 
         // Ny modell
         soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
             behandlingsId,
             adresserFrontend,
-            navEnhetFrontend
+            navEnhetFrontend,
         )
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
@@ -131,16 +138,18 @@ class AdresseRessurs(
     fun setNavEnhetAsMottaker(
         soknad: SoknadUnderArbeid,
         navEnhetFrontend: NavEnhetFrontend,
-        eier: String
+        eier: String,
     ) {
-        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
-            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+        soknad.jsonInternalSoknad?.mottaker =
+            no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+                .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
 
-        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
-            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
-            .withKommunenummer(navEnhetFrontend.kommuneNr)
+        soknad.jsonInternalSoknad?.soknad?.mottaker =
+            JsonSoknadsmottaker()
+                .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+                .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+                .withKommunenummer(navEnhetFrontend.kommuneNr)
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {

@@ -12,7 +12,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
 class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 
@@ -23,7 +22,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/personalia/telefonnummer",
-            TelefonnummerDto::class.java
+            TelefonnummerDto::class.java,
         ).also {
             assertThat(it.telefonnummerRegister).isEqualTo(kontakt.telefonnummer.fraRegister)
             assertThat(it.telefonnummerBruker).isEqualTo(kontakt.telefonnummer.fraBruker)
@@ -40,7 +39,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             telefonnummerInput,
             TelefonnummerDto::class.java,
-            soknad.id
+            soknad.id,
         ).also {
             assertThat(it.telefonnummerBruker).isEqualTo(telefonnummerInput.telefonnummerBruker)
         }
@@ -58,7 +57,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/telefonnummer",
             TelefonnummerInput("asb23231"),
             HttpStatus.BAD_REQUEST,
-            soknad.id
+            soknad.id,
         )
     }
 }

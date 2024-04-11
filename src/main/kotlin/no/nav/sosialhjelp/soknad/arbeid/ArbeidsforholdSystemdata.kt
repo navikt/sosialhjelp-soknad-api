@@ -25,9 +25,8 @@ import org.springframework.stereotype.Component
 class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val textService: TextService,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
         internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(soknadUnderArbeid) ?: emptyList()
@@ -35,12 +34,13 @@ class ArbeidsforholdSystemdata(
     }
 
     private fun innhentSystemArbeidsforhold(soknadUnderArbeid: SoknadUnderArbeid): List<JsonArbeidsforhold>? {
-        val arbeidsforholds: List<Arbeidsforhold>? = try {
-            arbeidsforholdService.hentArbeidsforhold(soknadUnderArbeid.eier)
-        } catch (e: Exception) {
-            LOG.warn("Kunne ikke hente arbeidsforhold", e)
-            null
-        }
+        val arbeidsforholds: List<Arbeidsforhold>? =
+            try {
+                arbeidsforholdService.hentArbeidsforhold(soknadUnderArbeid.eier)
+            } catch (e: Exception) {
+                LOG.warn("Kunne ikke hente arbeidsforhold", e)
+                null
+            }
         // NyModell
         v2AdapterService.addArbeidsforholdList(soknadUnderArbeid.behandlingsId, arbeidsforholds)
         return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
@@ -60,7 +60,10 @@ class ArbeidsforholdSystemdata(
     companion object {
         private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
 
-        fun updateVedleggForventninger(internalSoknad: JsonInternalSoknad, textService: TextService) {
+        fun updateVedleggForventninger(
+            internalSoknad: JsonInternalSoknad,
+            textService: TextService,
+        ) {
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
@@ -78,7 +81,10 @@ class ArbeidsforholdSystemdata(
             }
         }
 
-        private fun typeIsInList(jsonVedleggs: List<JsonVedlegg>, vedleggstype: String): Boolean {
+        private fun typeIsInList(
+            jsonVedleggs: List<JsonVedlegg>,
+            vedleggstype: String,
+        ): Boolean {
             return jsonVedleggs.any { it.type == vedleggstype }
         }
 

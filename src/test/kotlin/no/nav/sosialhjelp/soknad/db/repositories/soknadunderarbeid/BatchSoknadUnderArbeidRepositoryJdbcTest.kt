@@ -8,13 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("no-redis", "test", "test-container")
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
-
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
@@ -35,14 +34,18 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
-            ?: throw RuntimeException("Kunne ikke finne søknad")
+        val soknadUnderArbeidId =
+            soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+                ?: throw RuntimeException("Kunne ikke finne søknad")
 
         batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
     }
 
-    private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
+    private fun lagSoknadUnderArbeid(
+        behandlingsId: String,
+        antallDagerSiden: Int,
+    ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
@@ -51,7 +54,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
-            sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5)
+            sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
         )
     }
 

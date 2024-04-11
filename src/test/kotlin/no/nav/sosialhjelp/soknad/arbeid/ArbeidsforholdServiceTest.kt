@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 internal class ArbeidsforholdServiceTest {
-
     private val aaregClient: AaregClient = mockk()
     private val organisasjonService: OrganisasjonService = mockk()
     private val unleash: Unleash = mockk()
@@ -31,11 +30,12 @@ internal class ArbeidsforholdServiceTest {
     private val tom = LocalDate.now()
 
     private val arbeidsgiverOrganisasjon = OrganisasjonDto(organisasjonsnummer = orgnr, type = "Organisasjon")
-    private val arbeidsgiverPerson = PersonDto(
-        offentligIdent = "arbeidsgiver_fnr",
-        aktoerId = "aktoerid",
-        type = "Person"
-    )
+    private val arbeidsgiverPerson =
+        PersonDto(
+            offentligIdent = "arbeidsgiver_fnr",
+            aktoerId = "aktoerid",
+            type = "Person",
+        )
     private val arbeidstaker = PersonDto(offentligIdent = "arbeidstaker_fnr", aktoerId = "aktoerid", type = "Person")
 
     @BeforeEach
@@ -99,7 +99,11 @@ internal class ArbeidsforholdServiceTest {
         assertThat(arbeidsforhold.tom).isNull()
     }
 
-    private fun createArbeidsforhold(erArbeidsgiverOrganisasjon: Boolean, fom: LocalDate, tom: LocalDate?): ArbeidsforholdDto {
+    private fun createArbeidsforhold(
+        erArbeidsgiverOrganisasjon: Boolean,
+        fom: LocalDate,
+        tom: LocalDate?,
+    ): ArbeidsforholdDto {
         val ansettelsesperiodeDto = AnsettelsesperiodeDto(PeriodeDto(fom, tom))
         val arbeidsavtaleDto = ArbeidsavtaleDto(100.0)
         return ArbeidsforholdDto(
@@ -107,7 +111,7 @@ internal class ArbeidsforholdServiceTest {
             listOf(arbeidsavtaleDto),
             "arbeidsforholdId",
             if (erArbeidsgiverOrganisasjon) arbeidsgiverOrganisasjon else arbeidsgiverPerson,
-            arbeidstaker
+            arbeidstaker,
         )
     }
 
@@ -119,7 +123,7 @@ internal class ArbeidsforholdServiceTest {
             arbeidsavtaler,
             "arbeidsforholdId",
             arbeidsgiverOrganisasjon,
-            arbeidstaker
+            arbeidstaker,
         )
     }
 }

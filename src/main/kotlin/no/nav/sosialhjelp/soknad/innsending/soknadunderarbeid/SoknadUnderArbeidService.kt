@@ -31,27 +31,38 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @Component
 class SoknadUnderArbeidService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kommuneInfoService: KommuneInfoService
+    private val kommuneInfoService: KommuneInfoService,
 ) {
-
-    fun sjekkDuplikate(behandlingsId: String, filnavn: String) {
+    fun sjekkDuplikate(
+        behandlingsId: String,
+        filnavn: String,
+    ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
-        val jsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-            .firstOrNull {
-                it.filer.any { jsonFile -> jsonFile.filnavn == filnavn }
-            }
-        if (jsonVedlegg != null) { throw DuplikatFilException("Fil finnes allerede.") }
+        val jsonVedlegg =
+            JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+                .firstOrNull {
+                    it.filer.any { jsonFile -> jsonFile.filnavn == filnavn }
+                }
+        if (jsonVedlegg != null) {
+            throw DuplikatFilException("Fil finnes allerede.")
+        }
     }
 
-    fun fjernVedleggFraInternalSoknad(behandlingsId: String, aktueltVedlegg: MellomlagringDokumentInfo) {
+    fun fjernVedleggFraInternalSoknad(
+        behandlingsId: String,
+        aktueltVedlegg: MellomlagringDokumentInfo,
+    ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
-        val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-            .firstOrNull {
-                it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
-            }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+        val jsonVedlegg: JsonVedlegg =
+            JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+                .firstOrNull {
+                    it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
+                }
+                ?: throw IkkeFunnetException(
+                    "Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?",
+                )
 
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
@@ -66,7 +77,7 @@ class SoknadUnderArbeidService(
         sha512: String,
         behandlingsId: String,
         vedleggstype: String,
-        filnavn: String
+        filnavn: String,
     ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
@@ -80,14 +91,14 @@ class SoknadUnderArbeidService(
             .filer.add(
                 JsonFiler()
                     .withFilnavn(filnavn)
-                    .withSha512(sha512)
+                    .withSha512(sha512),
             )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
     fun settInnsendingstidspunktPaSoknad(
         soknadUnderArbeid: SoknadUnderArbeid?,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
@@ -122,17 +133,22 @@ class SoknadUnderArbeidService(
             return false
         }
 
-        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false") }
+        val kommunenummer =
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+                ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false") }
 
         return when (kommuneInfoService.getKommuneStatus(kommunenummer)) {
             FIKS_NEDETID_OG_TOM_CACHE -> {
-                throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
+                throw SendingTilKommuneUtilgjengeligException(
+                    "Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
+                )
             }
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException(
+                    "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
+                )
             }
         }
     }

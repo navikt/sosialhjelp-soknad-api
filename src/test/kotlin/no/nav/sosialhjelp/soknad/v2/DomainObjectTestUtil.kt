@@ -35,7 +35,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     return JsonInternalSoknad().apply {
@@ -52,7 +52,7 @@ fun createFamilie(
     barnebidrag: Barnebidrag? = Barnebidrag.BEGGE,
     sivilstatus: Sivilstatus? = Sivilstatus.GIFT,
     ansvar: List<Barn> = listOf(createBarn()),
-    ektefelle: Ektefelle? = opprettEktefelle()
+    ektefelle: Ektefelle? = opprettEktefelle(),
 ) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
 
 fun opprettEktefelle(): Ektefelle {
@@ -62,7 +62,7 @@ fun opprettEktefelle(): Ektefelle {
         personId = "1234512345",
         folkeregistrertMedEktefelle = true,
         borSammen = true,
-        kildeErSystem = true
+        kildeErSystem = true,
     )
 }
 
@@ -72,21 +72,22 @@ fun opprettSoknad(
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
-    begrunnelse: Begrunnelse = opprettBegrunnelse()
+    begrunnelse: Begrunnelse = opprettBegrunnelse(),
 ): Soknad {
     return Soknad(
         id = id,
         eierPersonId = eierPersonId,
         tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
-        begrunnelse = begrunnelse
+        begrunnelse = begrunnelse,
     )
 }
 
 fun opprettArbeidsforholdList(
-    arbeidsforholdList: List<Arbeidsforhold> = listOf(
-        opprettArbeidsforhold(),
-        opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321")
-    )
+    arbeidsforholdList: List<Arbeidsforhold> =
+        listOf(
+            opprettArbeidsforhold(),
+            opprettArbeidsforhold(arbeidsgivernavn = "Annen arbeidsgive", orgnummer = "0987654321"),
+        ),
 ): List<Arbeidsforhold> {
     return arbeidsforholdList
 }
@@ -97,7 +98,7 @@ fun opprettArbeidsforhold(
     start: String? = "01012010",
     slutt: String? = "01012020",
     fastStillingsprosent: Int? = 100,
-    harFastStilling: Boolean? = true
+    harFastStilling: Boolean? = true,
 ): Arbeidsforhold {
     return Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent, harFastStilling)
 }
@@ -107,7 +108,7 @@ fun opprettNavEnhet(
     navn: String = "NAV-kontoret",
     kommunenummer: String = "4314",
     orgnummer: String = "3414513515",
-    kommunenavn: String = "Nav-kommunen"
+    kommunenavn: String = "Nav-kommunen",
 ): NavEnhet {
     return NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)
 }
@@ -117,26 +118,26 @@ fun opprettEier(
     statsborgerskap: String? = "Norsk",
     nordiskBoolean: Boolean? = true,
     kontonummer: Kontonummer = Kontonummer(false, null, "43234323432"),
-    navn: Navn = opprettNavn()
+    navn: Navn = opprettNavn(),
 ): Eier {
     return Eier(
         soknadId = soknadId,
         statsborgerskap = statsborgerskap,
         nordiskBorger = nordiskBoolean,
         navn = navn,
-        kontonummer = kontonummer
+        kontonummer = kontonummer,
     )
 }
 
 fun opprettNavn(
     fornavn: String = "Test",
     mellomnavn: String = "Tester",
-    etternavn: String = "Testesen"
+    etternavn: String = "Testesen",
 ): Navn {
     return Navn(
         fornavn = fornavn,
         mellomnavn = mellomnavn,
-        etternavn = etternavn
+        etternavn = etternavn,
     )
 }
 
@@ -148,15 +149,16 @@ fun createBarn(
     borSammen: Boolean = true,
     folkeregistrertSammen: Boolean = true,
     deltBosted: Boolean = false,
-    samvarsgrad: Int = 100
+    samvarsgrad: Int = 100,
 ) = Barn(familieKey, personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)
 
 fun opprettMidlertidigAdresse(
-    adresselinjer: List<String> = listOf(
-        "Bortiheiavegen 6",
-        "2855 Poststed",
-        "Norge"
-    )
+    adresselinjer: List<String> =
+        listOf(
+            "Bortiheiavegen 6",
+            "2855 Poststed",
+            "Norge",
+        ),
 ): Adresse {
     return UstrukturertAdresse(adresse = adresselinjer)
 }
@@ -164,13 +166,14 @@ fun opprettMidlertidigAdresse(
 fun opprettKontakt(
     soknadId: UUID,
     telefonnummer: Telefonnummer = Telefonnummer("98766554", "12345678"),
-    adresser: Adresser = Adresser(
-        folkeregistrertAdresse = opprettFolkeregistrertAdresse(),
-        midlertidigAdresse = opprettMatrikkelAdresse(),
-        brukerAdresse = opprettMidlertidigAdresse(),
-        adressevalg = AdresseValg.FOLKEREGISTRERT
-    ),
-    navEnhet: NavEnhet = opprettNavEnhet()
+    adresser: Adresser =
+        Adresser(
+            folkeregistrertAdresse = opprettFolkeregistrertAdresse(),
+            midlertidigAdresse = opprettMatrikkelAdresse(),
+            brukerAdresse = opprettMidlertidigAdresse(),
+            adressevalg = AdresseValg.FOLKEREGISTRERT,
+        ),
+    navEnhet: NavEnhet = opprettNavEnhet(),
 ): Kontakt {
     return Kontakt(soknadId, telefonnummer, adresser, navEnhet)
 }
@@ -178,13 +181,13 @@ fun opprettKontakt(
 fun opprettAdresser(
     midlertidigAdresse: Adresse = opprettMidlertidigAdresse(),
     folkeregistrertAdresse: Adresse = opprettFolkeregistrertAdresse(),
-    brukerAdresse: Adresse = opprettMatrikkelAdresse()
+    brukerAdresse: Adresse = opprettMatrikkelAdresse(),
 ): Adresser {
     return Adresser(
         adressevalg = AdresseValg.FOLKEREGISTRERT,
         midlertidigAdresse = midlertidigAdresse,
         folkeregistrertAdresse = folkeregistrertAdresse,
-        brukerAdresse = brukerAdresse
+        brukerAdresse = brukerAdresse,
     )
 }
 
@@ -194,7 +197,7 @@ fun opprettMatrikkelAdresse(
     bruksnummer: String = "31",
     festenummer: String? = null,
     seksjonsnummer: String? = null,
-    undernummer: String? = null
+    undernummer: String? = null,
 ): MatrikkelAdresse {
     return MatrikkelAdresse(
         kommunenummer,
@@ -202,7 +205,7 @@ fun opprettMatrikkelAdresse(
         bruksnummer,
         festenummer,
         seksjonsnummer,
-        undernummer
+        undernummer,
     )
 }
 
@@ -215,11 +218,18 @@ fun opprettFolkeregistrertAdresse(
     poststed: String? = "Poststedet",
     gatenavn: String? = "Vegadresseveien",
     husnummer: String? = "8",
-    husbokstav: String? = "b"
+    husbokstav: String? = "b",
 ): Adresse {
     return VegAdresse(
-        landkode, kommunenummer, adresselinjer, bolignummer,
-        postnummer, poststed, gatenavn, husnummer, husbokstav
+        landkode,
+        kommunenummer,
+        adresselinjer,
+        bolignummer,
+        postnummer,
+        poststed,
+        gatenavn,
+        husnummer,
+        husbokstav,
     )
 }
 
@@ -227,13 +237,13 @@ fun opprettIntegrasjonstatus(
     soknadId: UUID,
     feilUtbetalingerNav: Boolean = false,
     feilInntektSkatteetaten: Boolean = false,
-    feilStotteHusbanken: Boolean = false
+    feilStotteHusbanken: Boolean = false,
 ): Integrasjonstatus {
     return Integrasjonstatus(
         soknadId = soknadId,
         feilUtbetalingerNav = feilUtbetalingerNav,
         feilInntektSkatteetaten = feilInntektSkatteetaten,
-        feilStotteHusbanken = feilStotteHusbanken
+        feilStotteHusbanken = feilStotteHusbanken,
     )
 }
 
@@ -241,35 +251,35 @@ fun opprettLivssituasjon(
     soknadId: UUID,
     arbeid: Arbeid = opprettArbeid(),
     utdanning: Utdanning = opprettUtdanning(),
-    bosituasjon: Bosituasjon = opprettBosituasjon()
+    bosituasjon: Bosituasjon = opprettBosituasjon(),
 ): Livssituasjon {
     return Livssituasjon(soknadId, arbeid, utdanning, bosituasjon)
 }
 
 fun opprettArbeid(
     kommentar: String? = "Jeg liker jobb",
-    arbeidsforhold: List<Arbeidsforhold> = opprettArbeidsforholdList()
+    arbeidsforhold: List<Arbeidsforhold> = opprettArbeidsforholdList(),
 ): Arbeid {
     return Arbeid(kommentar, arbeidsforhold)
 }
 
 fun opprettUtdanning(
     erStudent: Boolean = true,
-    studentGrad: Studentgrad = Studentgrad.HELTID
+    studentGrad: Studentgrad = Studentgrad.HELTID,
 ): Utdanning {
     return Utdanning(erStudent, studentGrad)
 }
 
 fun opprettBegrunnelse(
     hvorforSoke: String = "Trenger penger",
-    hvaSokesOm: String = "Jeg søker om penger"
+    hvaSokesOm: String = "Jeg søker om penger",
 ): Begrunnelse {
     return Begrunnelse(hvorforSoke, hvaSokesOm)
 }
 
 fun opprettBosituasjon(
     botype: Botype = Botype.EIER,
-    antallPersoner: Int = 3
+    antallPersoner: Int = 3,
 ): Bosituasjon {
     return Bosituasjon(botype, antallPersoner)
 }

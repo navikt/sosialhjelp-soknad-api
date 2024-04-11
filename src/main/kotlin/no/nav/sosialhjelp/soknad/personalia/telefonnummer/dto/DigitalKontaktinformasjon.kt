@@ -5,5 +5,5 @@ data class DigitalKontaktinformasjon(
     val aktiv: Boolean,
     val kanVarsles: Boolean?,
     val reservert: Boolean?,
-    val mobiltelefonnummer: String?
+    val mobiltelefonnummer: String?,
 )

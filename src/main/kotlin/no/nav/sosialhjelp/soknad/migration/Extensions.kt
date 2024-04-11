@@ -20,7 +20,6 @@ import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataListeDto
 
 object Extensions {
-
     fun SoknadMetadata.toDto(): SoknadMetadataDto {
         return SoknadMetadataDto(
             id = id,
@@ -37,13 +36,13 @@ object Extensions {
             opprettetDato = opprettetDato,
             sistEndretDato = sistEndretDato,
             innsendtDato = innsendtDato,
-            lest = lest
+            lest = lest,
         )
     }
 
     fun VedleggMetadataListe.toDto(): VedleggMetadataListeDto {
         return VedleggMetadataListeDto(
-            vedleggListe = vedleggListe.map { it.toDto() }
+            vedleggListe = vedleggListe.map { it.toDto() },
         )
     }
 
@@ -57,7 +56,7 @@ object Extensions {
             skjema = skjema,
             tillegg = tillegg,
             hendelseType = hendelseType,
-            hendelseReferanse = hendelseReferanse
+            hendelseReferanse = hendelseReferanse,
         )
     }
 
@@ -73,7 +72,7 @@ object Extensions {
             opprettet = opprettet,
             sistKjort = sistKjort,
             nesteForsok = nesteForsok,
-            retries = retries
+            retries = retries,
         )
     }
 
@@ -85,7 +84,7 @@ object Extensions {
             mottakerNavn = mottakerNavn,
             dokumentInfoer = dokumentInfoer?.map { it.toDto() },
             innsendtDato = innsendtDato,
-            ettersendelsePa = ettersendelsePa
+            ettersendelsePa = ettersendelsePa,
         )
     }
 
@@ -94,14 +93,14 @@ object Extensions {
             uuid = uuid,
             filnavn = filnavn,
             mimetype = mimetype,
-            ekskluderesFraPrint = ekskluderesFraPrint
+            ekskluderesFraPrint = ekskluderesFraPrint,
         )
     }
 
     fun FiksResultat.toDto(): FiksResultatDto {
         return FiksResultatDto(
             fiksForsendelsesId = fiksForsendelsesId,
-            feilmelding = feilmelding
+            feilmelding = feilmelding,
         )
     }
 
@@ -116,7 +115,7 @@ object Extensions {
             status = status,
             opprettetDato = opprettetDato,
             sistEndretDato = sistEndretDato,
-            opplastetVedleggList = vedlegg.map { it.toDto() }
+            opplastetVedleggList = vedlegg.map { it.toDto() },
         )
     }
 
@@ -128,7 +127,7 @@ object Extensions {
             data = data,
             soknadId = soknadId,
             filnavn = filnavn,
-            sha512 = sha512
+            sha512 = sha512,
         )
     }
 }

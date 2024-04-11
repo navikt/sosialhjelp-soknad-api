@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class MobiltelefonService(
-    private val krrService: KrrService
+    private val krrService: KrrService,
 ) {
-
     fun hent(ident: String): String? {
         val digitalKontaktinformasjon = krrService.getDigitalKontaktinformasjon(ident)
         if (digitalKontaktinformasjon == null) {

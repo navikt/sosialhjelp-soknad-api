@@ -21,17 +21,20 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
-    fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String): BosituasjonFrontend {
+    fun hentBosituasjon(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getBosituasjonFromSoknad(behandlingsId)
     }
 
     private fun getBosituasjonFromSoknad(behandlingsId: String): BosituasjonFrontend {
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val bosituasjon = soknad.soknad.data.bosituasjon
         return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
     }
@@ -39,13 +42,14 @@ class BosituasjonRessurs(
     @PutMapping
     fun updateBosituasjon(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody bosituasjonFrontend: BosituasjonFrontend
+        @RequestBody bosituasjonFrontend: BosituasjonFrontend,
     ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = eier()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val bosituasjon = jsonInternalSoknad.soknad.data.bosituasjon
         bosituasjon.kilde = JsonKildeBruker.BRUKER
         if (bosituasjonFrontend.botype != null) {
@@ -62,6 +66,6 @@ class BosituasjonRessurs(
 
     data class BosituasjonFrontend(
         var botype: Botype?,
-        var antallPersoner: Int?
+        var antallPersoner: Int?,
     )
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class HusbankenCheck(
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
-    private val husbankenClient: HusbankenClient
+    private val husbankenClient: HusbankenClient,
 ) : DependencyCheck {
     override val type = DependencyType.REST
     override val name = "Husbanken"

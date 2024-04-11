@@ -11,9 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Profile("!no-interceptor")
 class WebConfig(
     private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
-    private val soknadAccessInterceptor: SoknadAccessInterceptor
+    private val soknadAccessInterceptor: SoknadAccessInterceptor,
 ) : WebMvcConfigurer {
-
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(conflictAvoidanceDelayInterceptor)
         registry.addInterceptor(soknadAccessInterceptor)

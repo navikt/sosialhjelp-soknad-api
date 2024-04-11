@@ -29,11 +29,12 @@ class FiksSender(
     private val innsendingService: InnsendingService,
     sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
-    private val svarUtService: SvarUtService
+    private val svarUtService: SvarUtService,
 ) {
-    private val fakeUtskriftsConfig = UtskriftsKonfigurasjon()
-        .withUtskriftMedFarger(true)
-        .withTosidig(true)
+    private val fakeUtskriftsConfig =
+        UtskriftsKonfigurasjon()
+            .withUtskriftMedFarger(true)
+            .withTosidig(true)
 
     private val fiksDokumentHelper = FiksDokumentHelper(krypteringEnabled, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator)
 
@@ -43,19 +44,23 @@ class FiksSender(
         return svarUtService.send(forsendelse, filnavnInputStreamMap)
     }
 
-    fun createForsendelse(soknadMetadata: SoknadMetadata, map: HashMap<String, InputStream>): Forsendelse {
+    fun createForsendelse(
+        soknadMetadata: SoknadMetadata,
+        map: HashMap<String, InputStream>,
+    ): Forsendelse {
         val soknadUnderArbeid = innsendingService.hentSoknadUnderArbeid(soknadMetadata.behandlingsId, soknadMetadata.fnr)
         val svarPaForsendelseId = getSvarPaForsendelseId(soknadMetadata, soknadUnderArbeid)
-        val fakeAdresse = PostAdresse()
-            .withNavn(soknadMetadata.navEnhet)
-            .withPostNummer("0000")
-            .withPostSted("Ikke send")
+        val fakeAdresse =
+            PostAdresse()
+                .withNavn(soknadMetadata.navEnhet)
+                .withPostNummer("0000")
+                .withPostSted("Ikke send")
         validerAtEttersendelseSinSoknadHarForsendelseId(soknadMetadata, svarPaForsendelseId)
         return Forsendelse()
             .withMottaker(
                 Adresse()
                     .withDigitalAdresse(Digitaladresse().withOrganisasjonsNummer(soknadMetadata.orgnr))
-                    .withPostAdresse(fakeAdresse)
+                    .withPostAdresse(fakeAdresse),
             )
             .withAvgivendeSystem("digisos_avsender")
             .withForsendelsesType("nav.digisos")
@@ -69,7 +74,7 @@ class FiksSender(
             .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, map))
             .withMetadataFraAvleverendeSystem(
                 NoarkMetadataFraAvleverendeSaksSystem()
-                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate()))
+                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate())),
             )
     }
 
@@ -83,7 +88,7 @@ class FiksSender(
 
     private fun getSvarPaForsendelseId(
         soknadMetadata: SoknadMetadata,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ): ForsendelsesId? {
         return if (soknadMetadata.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
@@ -95,7 +100,7 @@ class FiksSender(
 
     private fun validerAtEttersendelseSinSoknadHarForsendelseId(
         soknadMetadata: SoknadMetadata,
-        svarPaForsendelseId: ForsendelsesId?
+        svarPaForsendelseId: ForsendelsesId?,
     ) {
         check(!(soknadMetadata.erEttersendelse && svarPaForsendelseId?.id?.toString().isNullOrEmpty())) {
             "Ettersendelse med behandlingsId " + soknadMetadata.behandlingsId +
@@ -104,7 +109,10 @@ class FiksSender(
         }
     }
 
-    fun hentDokumenterFraSoknad(soknadUnderArbeid: SoknadUnderArbeid, map: HashMap<String, InputStream>): List<Dokument> {
+    fun hentDokumenterFraSoknad(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        map: HashMap<String, InputStream>,
+    ): List<Dokument> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
             throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
@@ -120,8 +128,8 @@ class FiksSender(
                 fiksDokumentHelper.lagDokumentForEttersendelsePdf(
                     internalSoknad,
                     soknadUnderArbeid.eier,
-                    map
-                )
+                    map,
+                ),
             )
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, map))
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf(map))
@@ -141,14 +149,17 @@ class FiksSender(
         val antallFiksDokumenter = fiksDokumenter.size
         log.info("Antall vedlegg: $antallFiksDokumenter. Antall vedlegg lastet opp av bruker: $antallVedleggForsendelse")
         try {
-            val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg
-                .filter { jsonVedlegg: JsonVedlegg -> jsonVedlegg.status == "LastetOpp" }
+            val opplastedeVedleggstyper =
+                internalSoknad.vedlegg.vedlegg
+                    .filter { jsonVedlegg: JsonVedlegg -> jsonVedlegg.status == "LastetOpp" }
             var antallBrukerOpplastedeVedlegg = 0
             for (vedlegg in opplastedeVedleggstyper) {
                 antallBrukerOpplastedeVedlegg += vedlegg.filer.size
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse}")
+                log.warn(
+                    "Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse}",
+                )
             }
         } catch (e: RuntimeException) {
             log.debug("Ignored exception")

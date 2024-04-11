@@ -24,12 +24,15 @@ class FiksDokumentHelper(
     private val skalKryptere: Boolean,
     private val dokumentKrypterer: DokumentKrypterer,
     private val innsendingService: InnsendingService,
-    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
+    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
 ) {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
 
-    fun lagDokumentForSoknadJson(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
+    fun lagDokumentForSoknadJson(
+        internalSoknad: JsonInternalSoknad,
+        map: MutableMap<String, InputStream>,
+    ): Dokument {
         val filnavn = "soknad.json"
         val soknadJson = mapJsonSoknadTilFil(internalSoknad.soknad)
 
@@ -42,7 +45,10 @@ class FiksDokumentHelper(
             .withEkskluderesFraUtskrift(true)
     }
 
-    fun lagDokumentForVedleggJson(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
+    fun lagDokumentForVedleggJson(
+        internalSoknad: JsonInternalSoknad,
+        map: MutableMap<String, InputStream>,
+    ): Dokument {
         val filnavn = "vedlegg.json"
         val vedleggJson = mapJsonVedleggTilFil(internalSoknad.vedlegg)
 
@@ -57,14 +63,17 @@ class FiksDokumentHelper(
 
     fun lagDokumentForSaksbehandlerPdf(
         internalSoknad: JsonInternalSoknad,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val filnavn = "Soknad.pdf"
         val soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false)
         return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, soknadPdf, false, map)
     }
 
-    fun lagDokumentForJuridiskPdf(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
+    fun lagDokumentForJuridiskPdf(
+        internalSoknad: JsonInternalSoknad,
+        map: MutableMap<String, InputStream>,
+    ): Dokument {
         val filnavn = "Soknad-juridisk.pdf"
         val juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true)
         return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, juridiskPdf, false, map)
@@ -79,7 +88,7 @@ class FiksDokumentHelper(
     fun lagDokumentForEttersendelsePdf(
         internalSoknad: JsonInternalSoknad,
         eier: String,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val filnavn = "ettersendelse.pdf"
         val pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier)
@@ -91,7 +100,7 @@ class FiksDokumentHelper(
         mimetype: String,
         bytes: ByteArray,
         eksluderesFraUtskrift: Boolean,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): Dokument {
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(bytes)
         map[filnavn] = byteArrayInputStream
@@ -103,13 +112,16 @@ class FiksDokumentHelper(
 
     fun lagDokumentListeForVedlegg(
         soknadUnderArbeid: SoknadUnderArbeid,
-        map: MutableMap<String, InputStream>
+        map: MutableMap<String, InputStream>,
     ): List<Dokument> {
         val opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid)
         return opplastedeVedlegg.map { opprettDokumentForVedlegg(it, map) }
     }
 
-    fun opprettDokumentForVedlegg(opplastetVedlegg: OpplastetVedlegg, map: MutableMap<String, InputStream>): Dokument {
+    fun opprettDokumentForVedlegg(
+        opplastetVedlegg: OpplastetVedlegg,
+        map: MutableMap<String, InputStream>,
+    ): Dokument {
         val filnavn = opplastetVedlegg.filnavn
 
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.data)
