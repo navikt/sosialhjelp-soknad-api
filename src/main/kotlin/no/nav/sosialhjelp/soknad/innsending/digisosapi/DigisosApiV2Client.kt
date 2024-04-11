@@ -144,6 +144,7 @@ class DigisosApiV2Client(
 
             if (MiljoUtils.isNonProduction()) {
                 idOldFormat = SenderUtils.createPrefixedBehandlingsId(idOldFormat)
+                log.error("SKAL IKKE SKJE I PROD - ID med prefiks: $idOldFormat")
             }
 
             val response = fiksWebClient.post()
