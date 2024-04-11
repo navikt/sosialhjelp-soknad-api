@@ -1,0 +1,4 @@
+ALTER TABLE ektefelle
+    ALTER COLUMN person_id DROP NOT NULL,
+    ALTER COLUMN fornavn DROP NOT NULL,
+    ALTER COLUMN etternavn DROP NOT NULL;
