@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -13,6 +14,7 @@ import java.util.*
 @Repository
 interface KontaktRepository : UpsertRepository<Kontakt>, ListCrudRepository<Kontakt, UUID>
 
+@Table
 data class Kontakt(
     @Id
     override val soknadId: UUID,
@@ -44,6 +46,7 @@ data class Adresser(
             else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
     }
+
     private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing {
         throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
     }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.MappedCollection
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -14,6 +15,7 @@ import java.util.*
 interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRepository<Livssituasjon, UUID>
 
 // TODO Navn?
+@Table
 data class Livssituasjon(
     @Id
     override val soknadId: UUID,
