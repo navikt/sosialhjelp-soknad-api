@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -85,7 +86,7 @@ internal class PersonServiceTest {
 
     @Test
     fun skalHentePersonMedEktefelle() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
@@ -95,7 +96,7 @@ internal class PersonServiceTest {
                 folkeregistermetadata = null
             )
         )
-        every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
+        every { hentPersonClient.hentEktefelle(any()) } returns Mono.just(mockEktefelleDto)
         every { mapper.ektefelleDtoToDomain(any(), any(), any()) } returns ektefelle
 
         val result = personService.hentPerson("ident")
@@ -104,7 +105,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
@@ -124,7 +125,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
@@ -144,7 +145,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalHentePersonUtenEktefelle() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns emptyList()
 
@@ -154,9 +155,9 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalHenteBarn() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
-        every { hentPersonClient.hentBarn(any()) } returns mockBarnDto
+        every { hentPersonClient.hentBarn(any()) } returns Mono.just(mockBarnDto)
         every { mapper.barnDtoToDomain(any(), any(), any()) } returns barn
 
         val result = personService.hentBarnForPerson("ident")
@@ -166,9 +167,9 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalFiltrereVekkNullBarn() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR"))
-        every { hentPersonClient.hentBarn(any()) } returns mockBarnDto
+        every { hentPersonClient.hentBarn(any()) } returns Mono.just(mockBarnDto)
         every { mapper.barnDtoToDomain(any(), any(), any()) } returns null
 
         val result = personService.hentBarnForPerson("ident")
@@ -177,7 +178,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalIkkeHenteBarnHvisIdentErNull() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
 
         val result = personService.hentBarnForPerson("ident")
@@ -189,7 +190,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun skalIkkeHenteBarnHvisIdentErFDAT() {
-        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { hentPersonClient.hentPerson(any()) } returns Mono.just(mockPersonDto)
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
 
         val result = personService.hentBarnForPerson("ident")
@@ -202,7 +203,7 @@ internal class PersonServiceTest {
     @Test
     internal fun skalHenteAdressebeskyttelse() {
         val adressebeskyttelse = mockk<PersonAdressebeskyttelseDto>()
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns adressebeskyttelse
+        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns Mono.just(adressebeskyttelse)
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
 
         val result = personService.hentAdressebeskyttelse("ident")
@@ -212,7 +213,7 @@ internal class PersonServiceTest {
 
     @Test
     internal fun gjenkjennerAdressebeskyttelse() {
-        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns mockk<PersonAdressebeskyttelseDto>()
+        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns Mono.just(mockk<PersonAdressebeskyttelseDto>())
 
         // Ihht. https://pdl-docs.intern.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
         // hvilket betyr ingen addressebeskyttelse.
