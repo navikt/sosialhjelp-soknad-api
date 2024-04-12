@@ -18,7 +18,7 @@ class PersonService(
     private val helper: MapperHelper,
     private val mapper: PdlDtoMapper
 ) {
-    @Cacheable("hentPerson")
+    @Cacheable(cacheNames = ["pdl"], key = "#root.methodName + '_' + #ident")
     fun hentPerson(ident: String): Person? {
         val personDto = hentPersonClient.hentPerson(ident).block() ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
@@ -28,7 +28,7 @@ class PersonService(
         return person
     }
 
-    @Cacheable("hentBarnForPerson")
+    @Cacheable(cacheNames = ["pdl"], key = "#root.methodName + '_' + #ident")
     fun hentBarnForPerson(ident: String): List<Barn>? {
         val personDto = hentPersonClient.hentPerson(ident).block()
         if (personDto?.forelderBarnRelasjon == null) {
@@ -73,13 +73,13 @@ class PersonService(
         return null
     }
 
-    @Cacheable("hentAdressebeskyttelse")
+    @Cacheable(cacheNames = ["pdl"], key = "#root.methodName + '_' + #ident")
     fun hentAdressebeskyttelse(ident: String): Gradering? {
         val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident).block()
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }
 
-    @Cacheable("harAdressebeskyttelse")
+    @Cacheable(cacheNames = ["pdl"], key = "#root.methodName + '_' + #ident")
     fun harAdressebeskyttelse(ident: String): Boolean =
         hentAdressebeskyttelse(ident) in listOf(Gradering.FORTROLIG, Gradering.STRENGT_FORTROLIG, Gradering.STRENGT_FORTROLIG_UTLAND)
 
