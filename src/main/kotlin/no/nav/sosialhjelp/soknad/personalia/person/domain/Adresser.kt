@@ -1,10 +1,12 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
+import java.io.Serializable
+
 data class Bostedsadresse(
     val coAdressenavn: String?,
     val vegadresse: Vegadresse?,
     val matrikkeladresse: Matrikkeladresse?
-)
+) : Serializable
 
 /**
  * Fra PDL-doc: https://pdldocs-navno.msappproxy.net/ekstern/index.html#opplysningstyper-adresser-oppholdsAdresse
@@ -13,7 +15,7 @@ data class Bostedsadresse(
 data class Oppholdsadresse(
     val coAdressenavn: String?,
     val vegadresse: Vegadresse?
-)
+) : Serializable
 
 data class Vegadresse(
     val adressenavn: String?,
@@ -25,7 +27,7 @@ data class Vegadresse(
     val kommunenummer: String?,
     val bruksenhetsnummer: String?,
     val bydelsnummer: String?
-)
+) : Serializable
 
 /**
  * I JsonMatrikkeladresse kan vi sette "kommunenummer", "gaardsnummer", "bruksnummer", "festenummer", "seksjonsnummer", "undernummer"
@@ -37,4 +39,4 @@ data class Matrikkeladresse(
     val tilleggsnavn: String?,
     val kommunenummer: String?,
     val bruksenhetsnummer: String?
-)
+) : Serializable

@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
+import java.io.Serializable
+
 data class Person(
     val fornavn: String,
     val mellomnavn: String?,
@@ -10,4 +12,4 @@ data class Person(
     var ektefelle: Ektefelle?,
     val bostedsadresse: Bostedsadresse?,
     val oppholdsadresse: Oppholdsadresse?
-)
+) : Serializable
