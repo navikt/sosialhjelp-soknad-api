@@ -19,7 +19,7 @@ class PersonService(
 ) {
 
     fun hentPerson(ident: String): Person? {
-        val personDto = hentPersonClient.hentPerson(ident) ?: return null
+        val personDto = hentPersonClient.hentPerson(ident).block() ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
         if (person != null) {
             person.ektefelle = hentEktefelle(personDto)
@@ -28,7 +28,7 @@ class PersonService(
     }
 
     fun hentBarnForPerson(ident: String): List<Barn>? {
-        val personDto = hentPersonClient.hentPerson(ident)
+        val personDto = hentPersonClient.hentPerson(ident).block()
         if (personDto?.forelderBarnRelasjon == null) {
             return null
         }
@@ -44,7 +44,7 @@ class PersonService(
                     return null
                 }
                 loggHvisIdentIkkeErFnr(it.relatertPersonsIdent)
-                val pdlBarn = hentPersonClient.hentBarn(it.relatertPersonsIdent)
+                val pdlBarn = hentPersonClient.hentBarn(it.relatertPersonsIdent).block()
                 mapper.barnDtoToDomain(pdlBarn, it.relatertPersonsIdent, personDto)
             }
             .filterNotNull()
@@ -64,7 +64,7 @@ class PersonService(
                     return null
                 }
                 loggHvisIdentIkkeErFnr(ektefelleIdent)
-                val ektefelleDto = hentPersonClient.hentEktefelle(ektefelleIdent)
+                val ektefelleDto = hentPersonClient.hentEktefelle(ektefelleIdent).block()
                 return mapper.ektefelleDtoToDomain(ektefelleDto, ektefelleIdent, personDto)
             }
         }
@@ -72,7 +72,7 @@ class PersonService(
     }
 
     fun hentAdressebeskyttelse(ident: String): Gradering? {
-        val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident)
+        val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident).block()
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }
 
