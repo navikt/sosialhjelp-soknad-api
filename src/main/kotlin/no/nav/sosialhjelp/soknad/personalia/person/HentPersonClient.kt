@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import no.nav.sosialhjelp.soknad.adressesok.PdlGraphQlClientBuilder
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
@@ -29,6 +30,7 @@ class HentPersonClientImpl(
         }
     }
 
+    @CircuitBreaker(name = "pdl")
     override fun hentPerson(ident: String): Mono<PersonDto> = pdlGraphQlClientBuilder.buildAzureAdClient()
         .documentName("pdl-person-query")
         .variable("ident", ident)
@@ -36,6 +38,7 @@ class HentPersonClientImpl(
         .toEntity(PersonDto::class.java)
         .doOnError(::handleError)
 
+    @CircuitBreaker(name = "pdl")
     override fun hentEktefelle(ident: String): Mono<EktefelleDto> = pdlGraphQlClientBuilder.buildTokenXClient(ident)
         .documentName("pdl-ektefelle-query")
         .variable("ident", ident)
@@ -43,6 +46,7 @@ class HentPersonClientImpl(
         .toEntity(EktefelleDto::class.java)
         .doOnError(::handleError)
 
+    @CircuitBreaker(name = "pdl")
     override fun hentBarn(ident: String): Mono<BarnDto> = pdlGraphQlClientBuilder.buildAzureAdClient()
         .documentName("pdl-barn-query")
         .variable("ident", ident)
@@ -50,6 +54,7 @@ class HentPersonClientImpl(
         .toEntity(BarnDto::class.java)
         .doOnError(::handleError)
 
+    @CircuitBreaker(name = "pdl")
     override fun hentAdressebeskyttelse(ident: String): Mono<PersonAdressebeskyttelseDto> = pdlGraphQlClientBuilder.buildTokenXClient(ident)
         .documentName("pdl-person-adressebeskyttelse-query")
         .variable("ident", ident)
