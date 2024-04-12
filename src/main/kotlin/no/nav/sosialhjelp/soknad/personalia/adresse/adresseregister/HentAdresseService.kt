@@ -11,7 +11,7 @@ class HentAdresseService(
     private val personService: PersonService
 ) {
     fun hentKartverketMatrikkelAdresse(matrikkelId: String): KartverketMatrikkelAdresse? {
-        return hentAdresseClient.hentMatrikkelAdresse(matrikkelId)
+        return hentAdresseClient.hentMatrikkelAdresse(matrikkelId).block()
             ?.let {
                 KartverketMatrikkelAdresse(
                     kommunenummer = it.matrikkelnummer?.kommunenummer,
