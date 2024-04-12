@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
-import no.nav.sosialhjelp.soknad.v2.soknad.OldIdFormatSupportHandler
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -14,8 +13,7 @@ import java.time.LocalDateTime
 @Repository
 class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
-    private val oldIdFormatSupportHandler: OldIdFormatSupportHandler
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 ) : BatchSoknadMetadataRepository {
 
     @Transactional
@@ -70,6 +68,5 @@ class BatchSoknadMetadataRepositoryJdbc(
     override fun slettSoknadMetaDataer(behandlingsIdList: List<String>) {
         val parameters = MapSqlParameterSource("ids", behandlingsIdList)
         namedParameterJdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid IN (:ids)", parameters)
-        oldIdFormatSupportHandler.deleteAllByIds(behandlingsIdList)
     }
 }
