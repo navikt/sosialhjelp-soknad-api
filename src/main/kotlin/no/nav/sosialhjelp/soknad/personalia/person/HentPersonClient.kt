@@ -62,7 +62,7 @@ class HentPersonClientImpl(
         .documentName("pdl-person-adressebeskyttelse-query")
         .variable("ident", ident)
         .variable("historikk", false)
-        .retrieve("hentPerson")
+        .retrieve("adressebeskyttelse")
         .toEntity(PersonAdressebeskyttelseDto::class.java)
         .doOnError(::handleError)
 
