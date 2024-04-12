@@ -10,10 +10,6 @@ import java.util.stream.Collectors
 
 object PdlApiQuery {
 
-    val HENT_PERSON = readGraphQLQueryFromFile("graphql-documents/pdl-person-query.graphql")
-    val HENT_BARN = readGraphQLQueryFromFile("graphql-documents/pdl-barn-query.graphql")
-    val HENT_EKTEFELLE = readGraphQLQueryFromFile("graphql-documents/pdl-ektefelle-query.graphql")
-    val HENT_ADRESSEBESKYTTELSE = readGraphQLQueryFromFile("graphql-documents/pdl-person-adressebeskyttelse-query.graphql")
     val ADRESSE_SOK = readGraphQLQueryFromFile("graphql-documents/pdl-adressesok.graphql")
     val HENT_ADRESSE = readGraphQLQueryFromFile("graphql-documents/pdl-hentadresse.graphql")
     // flere queries?
