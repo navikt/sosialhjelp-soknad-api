@@ -33,7 +33,7 @@ vault-mount-path: ${VAULT_MOUNT_PATH}
 
 digisos:
   cache:
-    geografiskTilknytningForIdent:
+    pdl:
       time-to-live: 1800 # 30 minutter
     kodeverk:
       time-to-live: 86400 # 24 timer
