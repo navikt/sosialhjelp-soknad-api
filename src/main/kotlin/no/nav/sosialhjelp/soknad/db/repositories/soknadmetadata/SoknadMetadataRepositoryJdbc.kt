@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
@@ -20,7 +21,7 @@ class SoknadMetadataRepositoryJdbc(
     private val mapper = jacksonObjectMapper()
 
     override fun hentNesteId(): Long {
-        return jdbcTemplate.queryForObject("SELECT nextval('id_sequence')", Long::class.java)
+        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
             ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
     }
 

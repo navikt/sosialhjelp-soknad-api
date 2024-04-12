@@ -47,7 +47,6 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
-import no.nav.sosialhjelp.soknad.v2.soknad.OldIdFormatSupportHandler
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -61,6 +60,7 @@ import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
@@ -74,8 +74,7 @@ class SoknadServiceOld(
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val v2AdapterService: V2AdapterService,
-    private val oldIdFormatSupportHandler: OldIdFormatSupportHandler
+    private val v2AdapterService: V2AdapterService
 ) {
     @Transactional
     fun startSoknad(): String {
@@ -88,6 +87,7 @@ class SoknadServiceOld(
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = null,
             eier = eierId,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
@@ -123,13 +123,9 @@ class SoknadServiceOld(
             sistEndretDato = LocalDateTime.now(clock)
         )
         soknadMetadataRepository.opprett(soknadMetadata)
-
-        // TODO MIDLERTIDIG støtte for gammelt ID-format
-        oldIdFormatSupportHandler.createAndMap(soknadMetadata.behandlingsId)
-            .also { log.info("MIDLERTIDIG ID-FIKS: ${it.soknadId} -> ${it.idOldFormat}") }
-
-        return soknadMetadata.behandlingsId
-            .also { log.info("Starter søknad $it") }
+        return soknadMetadata.behandlingsId.also {
+            log.info("Starter søknad $it")
+        }
     }
 
     @Transactional
