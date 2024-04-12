@@ -16,9 +16,9 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 
 internal class HentAdresseServiceTest {
-
     private val hentAdresseClient: HentAdresseClient = mockk()
     private val personService: PersonService = mockk()
     private val hentAdresseService = HentAdresseService(hentAdresseClient, personService)
@@ -50,13 +50,13 @@ internal class HentAdresseServiceTest {
 
     @Test
     internal fun `null gir null`() {
-        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns null
+        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns Mono.empty()
         assertThat(hentAdresseService.hentKartverketMatrikkelAdresse("matrikkeId")).isNull()
     }
 
     @Test
     internal fun `henter adresse fra pdl`() {
-        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns defaultMatrikkelAdresse
+        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns Mono.just(defaultMatrikkelAdresse)
         val dto = hentAdresseService.hentKartverketMatrikkelAdresse("matrikkelId")
         assertThat(dto).isNotNull
         assertThat(dto?.kommunenummer).isEqualTo("0301")
@@ -67,7 +67,7 @@ internal class HentAdresseServiceTest {
         val mockPerson: Person = mockk()
         every { personService.hentPerson(any()) } returns mockPerson
         every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
-        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns defaultMatrikkelAdresse
+        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns Mono.just(defaultMatrikkelAdresse)
         val dto = hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
         assertThat(dto).isNotNull
         assertThat(dto?.kommunenummer).isEqualTo("0301")
