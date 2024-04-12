@@ -3,8 +3,6 @@ spring:
     enabled: false
   main:
     allow-bean-definition-overriding: true
-  cache:
-    type: simple
 
 resilience4j:
   retry:
