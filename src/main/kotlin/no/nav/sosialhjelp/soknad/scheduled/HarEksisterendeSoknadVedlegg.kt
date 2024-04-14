@@ -127,7 +127,7 @@ class HarEksisterendeSoknadVedlegg(
         var unikeNavkontorSoknadMedVedlegg = "Navkontor - soknad med vedlegg: "
 
         navEnhetToAntallSoknader.keys.forEach { key ->
-            unikeNavkontorSoknadMedVedlegg += "$key(${navEnhetToAntallSoknader[key]})"
+            unikeNavkontorSoknadMedVedlegg += "$key (${navEnhetToAntallSoknader[key]});"
         }
 
         logger.info(unikeNavkontorSoknadMedVedlegg)
