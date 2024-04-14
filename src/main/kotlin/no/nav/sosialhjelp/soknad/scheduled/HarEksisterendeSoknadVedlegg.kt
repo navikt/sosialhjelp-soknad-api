@@ -31,7 +31,7 @@ class HarEksisterendeSoknadVedlegg(
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
     private val relevantTidspunkt = LocalDateTime.of(2024, 4, 12, 12, 10)
 
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun hentUtVedleggInfoForSoknad() {
         if (leaderElection.isLeader()) {
             logger.info("1. Henter ut IdFormatMap")
@@ -129,6 +129,8 @@ class HarEksisterendeSoknadVedlegg(
         navEnhetToAntallSoknader.keys.forEach { key ->
             unikeNavkontorSoknadMedVedlegg += "$key(${navEnhetToAntallSoknader[key]})"
         }
+
+        logger.info(unikeNavkontorSoknadMedVedlegg)
     }
 
     private fun writeSoknadMetadataString(soknadMetadata: SoknadMetadata, oldId: String): String {
