@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.scheduled
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.data.annotation.Id
@@ -23,22 +24,25 @@ data class IdFormatMap(
 class HarEksisterendeSoknadVedlegg(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val jdbcAggregateTemplate: JdbcAggregateTemplate,
-    private val mellomlagringService: MellomlagringService
+    private val mellomlagringService: MellomlagringService,
+    private val leaderElection: LeaderElection,
 ) {
 
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
     private val relevantTidspunkt = LocalDateTime.of(2024, 4, 12, 12, 10)
 
-//    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun hentUtVedleggInfoForSoknad() {
-        logger.info("1. Henter ut IdFormatMap")
-        val idFormatMapList = hentAlleIdFormatMap()
+        if (leaderElection.isLeader()) {
+            logger.info("1. Henter ut IdFormatMap")
+            val idFormatMapList = hentAlleIdFormatMap()
 
-        logger.info("2. Henter aktuelle SoknadMetadata")
-        val soknadMetadataList = hentAktuelleSoknadMetadata(idFormatMapList)
+            logger.info("2. Henter aktuelle SoknadMetadata")
+            val soknadMetadataList = hentAktuelleSoknadMetadata(idFormatMapList)
 
-        logger.info("3. Sjekker om Soknad har mellomlagrede vedlegg")
-        sjekkMellomlagredeVedlegg(soknadMetadataList)
+            logger.info("3. Sjekker om Soknad har mellomlagrede vedlegg")
+            sjekkMellomlagredeVedlegg(soknadMetadataList)
+        }
     }
 
     private fun hentAlleIdFormatMap(): List<IdFormatMap> {
