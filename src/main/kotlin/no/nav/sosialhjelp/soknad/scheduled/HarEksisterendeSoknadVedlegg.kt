@@ -72,13 +72,13 @@ class HarEksisterendeSoknadVedlegg(
 
     private fun sjekkMellomlagredeVedlegg(soknadMetadataList: List<SoknadMetadata>, idFormatMapList: List<IdFormatMap>) {
         kotlin.runCatching {
-//            val soknadHarVedleggList = mutableListOf<SoknadMetadata>()
-            val soknadUtenVedlegg = mutableListOf<SoknadMetadata>()
+            val soknadHarVedleggList = mutableListOf<SoknadMetadata>()
+//            val soknadUtenVedlegg = mutableListOf<SoknadMetadata>()
 
             soknadMetadataList.forEach {
                 mellomlagringService.getAllVedlegg(it.behandlingsId)
                     .let { alleVedlegg ->
-                        if (alleVedlegg.isEmpty()) soknadUtenVedlegg.add(it)
+                        if (alleVedlegg.isNotEmpty()) soknadHarVedleggList.add(it)
 //                        if (alleVedlegg.isNotEmpty()) {
 //                            soknadHarVedleggList.add(it)
 //                        } else {
@@ -90,7 +90,8 @@ class HarEksisterendeSoknadVedlegg(
             val behandlingsIdToIdOldFormatMap = idFormatMapList
                 .associate { it.soknadId.toString() to it.idOldFormat }
 
-            writeSoknadMetadataList(soknadUtenVedlegg, behandlingsIdToIdOldFormatMap)
+            writeUniqueNavEnheter(soknadHarVedleggList)
+//            writeSoknadMetadataList(soknadUtenVedlegg, behandlingsIdToIdOldFormatMap)
         }
             .onFailure { logger.error("Kunne ikke hente mellomlagrede vedlegg fra FIKS", it) }
     }
@@ -111,6 +112,23 @@ class HarEksisterendeSoknadVedlegg(
             )
         }
         logger.info(soknadMedVedleggString)
+    }
+
+    private fun writeUniqueNavEnheter(soknadMetadataList: List<SoknadMetadata>) {
+        val navEnhetToAntallSoknader = mutableMapOf<String, Int>()
+
+        soknadMetadataList.forEach {
+            it.navEnhet?.let { navenhet ->
+                val value = navEnhetToAntallSoknader.getOrPut(navenhet) { 1 }
+                navEnhetToAntallSoknader[navenhet] = value + 1
+            }
+        }
+
+        var unikeNavkontorSoknadMedVedlegg = "Navkontor - soknad med vedlegg: "
+
+        navEnhetToAntallSoknader.keys.forEach { key ->
+            unikeNavkontorSoknadMedVedlegg += "$key(${navEnhetToAntallSoknader[key]})"
+        }
     }
 
     private fun writeSoknadMetadataString(soknadMetadata: SoknadMetadata, oldId: String): String {
