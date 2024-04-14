@@ -114,8 +114,8 @@ class HarEksisterendeSoknadVedlegg(
 
     private fun writeSoknadMetadataString(soknadMetadata: SoknadMetadata, oldId: String): String {
         return "${soknadMetadata.behandlingsId}, " +
-                "$oldId, " +
-                "${soknadMetadata.innsendtDato}, " +
-                "${soknadMetadata.navEnhet}\n"
+            "$oldId, " +
+            "${soknadMetadata.innsendtDato}, " +
+            "${soknadMetadata.navEnhet}\n"
     }
 }
