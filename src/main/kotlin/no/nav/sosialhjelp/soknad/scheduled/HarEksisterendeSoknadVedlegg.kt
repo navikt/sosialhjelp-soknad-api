@@ -29,7 +29,7 @@ class HarEksisterendeSoknadVedlegg(
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
     private val relevantTidspunkt = LocalDateTime.of(2024, 4, 12, 12, 10)
 
-    @Scheduled(cron = "0 */10 * * * *")
+//    @Scheduled(cron = "0 */10 * * * *")
     fun hentUtVedleggInfoForSoknad() {
         logger.info("1. Henter ut IdFormatMap")
         val idFormatMapList = hentAlleIdFormatMap()
