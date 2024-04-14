@@ -25,7 +25,7 @@ class HarEksisterendeSoknadVedlegg(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val jdbcAggregateTemplate: JdbcAggregateTemplate,
     private val mellomlagringService: MellomlagringService,
-    private val leaderElection: LeaderElection,
+    private val leaderElection: LeaderElection
 ) {
 
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
@@ -41,7 +41,7 @@ class HarEksisterendeSoknadVedlegg(
             val soknadMetadataList = hentAktuelleSoknadMetadata(idFormatMapList)
 
             logger.info("3. Sjekker om Soknad har mellomlagrede vedlegg")
-            sjekkMellomlagredeVedlegg(soknadMetadataList)
+            sjekkMellomlagredeVedlegg(soknadMetadataList, idFormatMapList)
         }
     }
 
@@ -70,7 +70,7 @@ class HarEksisterendeSoknadVedlegg(
         return emptyList()
     }
 
-    private fun sjekkMellomlagredeVedlegg(soknadMetadataList: List<SoknadMetadata>) {
+    private fun sjekkMellomlagredeVedlegg(soknadMetadataList: List<SoknadMetadata>, idFormatMapList: List<IdFormatMap>) {
         kotlin.runCatching {
             val soknadHarVedleggList = mutableListOf<SoknadMetadata>()
             val soknadUtenVedlegg = mutableListOf<SoknadMetadata>()
@@ -85,9 +85,38 @@ class HarEksisterendeSoknadVedlegg(
                         }
                     }
             }
-            logger.info("Antall soknader MED mellomlagrede vedlegg: ${soknadHarVedleggList.size}")
-            logger.info("Antall soknader UTEN mellomlagrede vedlegg: ${soknadUtenVedlegg.size}")
+
+            val behandlingsIdToIdOldFormatMap = idFormatMapList
+                .associate { it.soknadId.toString() to it.idOldFormat }
+
+            var medVedleggString = "Antall soknader MED mellomlagrede vedlegg: ${soknadHarVedleggList.size}\n"
+            soknadHarVedleggList.forEach {
+                medVedleggString += writeSoknadMetadataString(
+                    it,
+                    behandlingsIdToIdOldFormatMap[it.behandlingsId] ?: "empty"
+                )
+            }
+
+            logger.info(medVedleggString)
+
+            var utenVedleggString = "Antall soknader UTEN mellomlagrede vedlegg: ${soknadUtenVedlegg.size}\n"
+
+            soknadUtenVedlegg.forEach {
+                utenVedleggString += writeSoknadMetadataString(
+                    it,
+                    behandlingsIdToIdOldFormatMap[it.behandlingsId] ?: "empty"
+                )
+            }
+
+            logger.info(utenVedleggString)
         }
             .onFailure { logger.error("Kunne ikke hente mellomlagrede vedlegg fra FIKS", it) }
+    }
+
+    private fun writeSoknadMetadataString(soknadMetadata: SoknadMetadata, oldId: String): String {
+        return "${soknadMetadata.behandlingsId}, " +
+            "$oldId, " +
+            "${soknadMetadata.innsendtDato}, " +
+            "${soknadMetadata.navEnhet}\n"
     }
 }
