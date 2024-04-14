@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import org.springframework.data.relational.core.mapping.Table
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
@@ -30,7 +31,7 @@ class HarEksisterendeSoknadVedlegg(
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
     private val relevantTidspunkt = LocalDateTime.of(2024, 4, 12, 12, 10)
 
-//    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */15 * * * *")
     fun hentUtVedleggInfoForSoknad() {
         if (leaderElection.isLeader()) {
             logger.info("1. Henter ut IdFormatMap")
@@ -71,17 +72,18 @@ class HarEksisterendeSoknadVedlegg(
 
     private fun sjekkMellomlagredeVedlegg(soknadMetadataList: List<SoknadMetadata>, idFormatMapList: List<IdFormatMap>) {
         kotlin.runCatching {
-            val soknadHarVedleggList = mutableListOf<SoknadMetadata>()
+//            val soknadHarVedleggList = mutableListOf<SoknadMetadata>()
             val soknadUtenVedlegg = mutableListOf<SoknadMetadata>()
 
             soknadMetadataList.forEach {
                 mellomlagringService.getAllVedlegg(it.behandlingsId)
                     .let { alleVedlegg ->
-                        if (alleVedlegg.isNotEmpty()) {
-                            soknadHarVedleggList.add(it)
-                        } else {
-                            soknadUtenVedlegg.add(it)
-                        }
+                        if (alleVedlegg.isEmpty()) soknadUtenVedlegg.add(it)
+//                        if (alleVedlegg.isNotEmpty()) {
+//                            soknadHarVedleggList.add(it)
+//                        } else {
+//                            soknadUtenVedlegg.add(it)
+//                        }
                     }
             }
 
@@ -94,14 +96,14 @@ class HarEksisterendeSoknadVedlegg(
     }
 
     private fun writeSoknadMetadataList(soknadMetadataList: List<SoknadMetadata>, oldIdMap: Map<String, String>) {
-        logger.info("Antall soknader MED mellomlagrede vedlegg: ${soknadMetadataList.size}\n")
+        logger.info("Antall soknader UTEN mellomlagrede vedlegg: ${soknadMetadataList.size}\n")
 
-        var soknadMedVedleggString = ""
+        var soknadMedVedleggString = "20 neste\n"
 
         soknadMetadataList.forEachIndexed { index, soknadMetadata ->
-            if (index % 200 == 0) {
+            if (index % 20 == 0) {
                 logger.info(soknadMedVedleggString)
-                soknadMedVedleggString = ""
+                soknadMedVedleggString = "20 neste\n"
             }
             soknadMedVedleggString += writeSoknadMetadataString(
                 soknadMetadata,
