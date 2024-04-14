@@ -89,34 +89,33 @@ class HarEksisterendeSoknadVedlegg(
             val behandlingsIdToIdOldFormatMap = idFormatMapList
                 .associate { it.soknadId.toString() to it.idOldFormat }
 
-            var medVedleggString = "Antall soknader MED mellomlagrede vedlegg: ${soknadHarVedleggList.size}\n"
-            soknadHarVedleggList.forEach {
-                medVedleggString += writeSoknadMetadataString(
-                    it,
-                    behandlingsIdToIdOldFormatMap[it.behandlingsId] ?: "empty"
-                )
-            }
-
-            logger.info(medVedleggString)
-
-            var utenVedleggString = "Antall soknader UTEN mellomlagrede vedlegg: ${soknadUtenVedlegg.size}\n"
-
-            soknadUtenVedlegg.forEach {
-                utenVedleggString += writeSoknadMetadataString(
-                    it,
-                    behandlingsIdToIdOldFormatMap[it.behandlingsId] ?: "empty"
-                )
-            }
-
-            logger.info(utenVedleggString)
+            writeSoknadMetadataList(soknadUtenVedlegg, behandlingsIdToIdOldFormatMap)
         }
             .onFailure { logger.error("Kunne ikke hente mellomlagrede vedlegg fra FIKS", it) }
     }
 
+    private fun writeSoknadMetadataList(soknadMetadataList: List<SoknadMetadata>, oldIdMap: Map<String, String>) {
+        logger.info("Antall soknader MED mellomlagrede vedlegg: ${soknadMetadataList.size}\n")
+
+        var soknadMedVedleggString = ""
+
+        soknadMetadataList.forEachIndexed { index, soknadMetadata ->
+            if (index % 200 == 0) {
+                logger.info(soknadMedVedleggString)
+                soknadMedVedleggString = ""
+            }
+            soknadMedVedleggString += writeSoknadMetadataString(
+                soknadMetadata,
+                oldIdMap[soknadMetadata.behandlingsId] ?: "empty"
+            )
+        }
+        logger.info(soknadMedVedleggString)
+    }
+
     private fun writeSoknadMetadataString(soknadMetadata: SoknadMetadata, oldId: String): String {
         return "${soknadMetadata.behandlingsId}, " +
-            "$oldId, " +
-            "${soknadMetadata.innsendtDato}, " +
-            "${soknadMetadata.navEnhet}\n"
+                "$oldId, " +
+                "${soknadMetadata.innsendtDato}, " +
+                "${soknadMetadata.navEnhet}\n"
     }
 }
