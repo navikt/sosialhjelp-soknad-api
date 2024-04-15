@@ -90,10 +90,27 @@ class HarEksisterendeSoknadVedlegg(
             val behandlingsIdToIdOldFormatMap = idFormatMapList
                 .associate { it.soknadId.toString() to it.idOldFormat }
 
-            writeUniqueNavEnheter(soknadHarVedleggList)
+            writeListOfAffectedNavEksternRef(soknadHarVedleggList, behandlingsIdToIdOldFormatMap)
+//            writeUniqueNavEnheter(soknadHarVedleggList)
 //            writeSoknadMetadataList(soknadUtenVedlegg, behandlingsIdToIdOldFormatMap)
         }
             .onFailure { logger.error("Kunne ikke hente mellomlagrede vedlegg fra FIKS", it) }
+    }
+
+    private fun writeListOfAffectedNavEksternRef(
+        soknadMetadataList: List<SoknadMetadata>,
+        toIdOldFormatMap: Map<String, String>
+    ) {
+        var navEksternRefMedVedlegg = "navEksternRefMedVedlegg: "
+
+        soknadMetadataList.forEachIndexed { index, sm ->
+            if (index % 400 == 0) {
+                logger.info(navEksternRefMedVedlegg)
+                navEksternRefMedVedlegg = "navEksternRefMedVedlegg: "
+            }
+            navEksternRefMedVedlegg += "${toIdOldFormatMap[sm.behandlingsId]};"
+        }
+        logger.info(navEksternRefMedVedlegg)
     }
 
     private fun writeSoknadMetadataList(soknadMetadataList: List<SoknadMetadata>, oldIdMap: Map<String, String>) {
