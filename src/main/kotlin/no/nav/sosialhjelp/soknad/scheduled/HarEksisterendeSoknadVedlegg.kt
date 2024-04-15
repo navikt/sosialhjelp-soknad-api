@@ -108,6 +108,8 @@ class HarEksisterendeSoknadVedlegg(
     ) {
         var navEksternRefBerorteSoknaderOslo = "Berorte Soknader Oslo: "
 
+        val navEnhetMap = mutableMapOf<String, MutableList<String>>()
+
         soknadMetadataList
             .filter { it.navEnhet?.contains("Oslo") ?: false }
             .forEachIndexed { index, sm ->
@@ -115,10 +117,24 @@ class HarEksisterendeSoknadVedlegg(
                     logger.info(navEksternRefBerorteSoknaderOslo)
                     navEksternRefBerorteSoknaderOslo = "Berorte Soknader Oslo: "
                 }
+
+                sm.navEnhet?.let {
+                    val list = navEnhetMap.getOrPut(it) { mutableListOf() }
+                    list.add(toIdOldFormatMap[sm.behandlingsId] ?: "error")
+                }
                 navEksternRefBerorteSoknaderOslo += "${toIdOldFormatMap[sm.behandlingsId]};"
             }
-
         logger.info(navEksternRefBerorteSoknaderOslo)
+
+        var navEnhetOsloString = "antall soknader navenheter Oslo: "
+
+        navEnhetMap.keys
+            .filter { it.contains("Oslo") }
+            .forEach {
+                navEnhetOsloString += "$it(${navEnhetMap[it]?.size});"
+            }
+
+        logger.info(navEnhetOsloString)
     }
 
     private fun writeListOfAffectedNavEksternRef(
@@ -147,6 +163,7 @@ class HarEksisterendeSoknadVedlegg(
                 logger.info(soknadMedVedleggString)
                 soknadMedVedleggString = "20 neste\n"
             }
+
             soknadMedVedleggString += writeSoknadMetadataString(
                 soknadMetadata,
                 oldIdMap[soknadMetadata.behandlingsId] ?: "empty"
