@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import org.springframework.data.relational.core.mapping.Table
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
@@ -30,7 +31,7 @@ class HarEksisterendeSoknadVedlegg(
     private val logger = LoggerFactory.getLogger(HarEksisterendeSoknadVedlegg::class.java)
     private val relevantTidspunkt = LocalDateTime.of(2024, 4, 12, 12, 10)
 
-//    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun hentUtVedleggInfoForSoknad() {
         if (leaderElection.isLeader()) {
             logger.info("1. Henter ut IdFormatMap")
@@ -89,11 +90,35 @@ class HarEksisterendeSoknadVedlegg(
             val behandlingsIdToIdOldFormatMap = idFormatMapList
                 .associate { it.soknadId.toString() to it.idOldFormat }
 
-            writeListOfAffectedNavEksternRef(soknadHarVedleggList, behandlingsIdToIdOldFormatMap)
+            writeSoknadIdFromOslo(
+                soknadHarVedleggList,
+                behandlingsIdToIdOldFormatMap
+            )
+
+//            writeListOfAffectedNavEksternRef(soknadHarVedleggList, behandlingsIdToIdOldFormatMap)
 //            writeUniqueNavEnheter(soknadHarVedleggList)
 //            writeSoknadMetadataList(soknadUtenVedlegg, behandlingsIdToIdOldFormatMap)
         }
             .onFailure { logger.error("Kunne ikke hente mellomlagrede vedlegg fra FIKS", it) }
+    }
+
+    private fun writeSoknadIdFromOslo(
+        soknadMetadataList: List<SoknadMetadata>,
+        toIdOldFormatMap: Map<String, String>
+    ) {
+        var navEksternRefBerorteSoknaderOslo = "Berorte Soknader Oslo: "
+
+        soknadMetadataList
+            .filter { it.navEnhet?.contains("Oslo") ?: false }
+            .forEachIndexed { index, sm ->
+                if (index % 300 == 0) {
+                    logger.info(navEksternRefBerorteSoknaderOslo)
+                    navEksternRefBerorteSoknaderOslo = "Berorte Soknader Oslo: "
+                }
+                navEksternRefBerorteSoknaderOslo += "${toIdOldFormatMap[sm.behandlingsId]};"
+            }
+
+        logger.info(navEksternRefBerorteSoknaderOslo)
     }
 
     private fun writeListOfAffectedNavEksternRef(
