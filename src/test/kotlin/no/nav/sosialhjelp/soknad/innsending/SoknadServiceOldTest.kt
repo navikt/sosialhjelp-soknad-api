@@ -107,58 +107,6 @@ internal class SoknadServiceOldTest {
     }
 
     @Test
-    fun skalSendeSoknad() {
-        val testType = "testType"
-        val testTilleggsinfo = "testTilleggsinfo"
-        val testType2 = "testType2"
-        val testTilleggsinfo2 = "testTilleggsinfo2"
-        val jsonVedlegg = mutableListOf(
-            JsonVedlegg()
-                .withType(testType)
-                .withTilleggsinfo(testTilleggsinfo)
-                .withStatus(Vedleggstatus.LastetOpp.toString()),
-            JsonVedlegg()
-                .withType(testType2)
-                .withTilleggsinfo(testTilleggsinfo2)
-                .withStatus(Vedleggstatus.LastetOpp.toString())
-        )
-
-        val behandlingsId = "123"
-        val eier = "123456"
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            eier = eier,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
-        soknadUnderArbeid.jsonInternalSoknad!!.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
-
-        val soknadMetadata = createSoknadMetadata()
-        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
-        every { soknadMetadataRepository.oppdater(any()) } just runs
-
-        every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
-        every { innsendingService.oppdaterSoknadUnderArbeid(any()) } just runs
-
-        soknadServiceOld.sendSoknad(behandlingsId)
-
-        verify { oppgaveHandterer.leggTilOppgave(behandlingsId, any()) }
-
-        val vedlegg = soknadMetadata.vedlegg
-        assertThat(vedlegg?.vedleggListe).hasSize(2)
-        assertThat(vedlegg?.vedleggListe?.get(0)?.filnavn).isEqualTo(testType)
-        assertThat(vedlegg?.vedleggListe?.get(0)?.skjema).isEqualTo(testType)
-        assertThat(vedlegg?.vedleggListe?.get(0)?.tillegg).isEqualTo(testTilleggsinfo)
-        assertThat(vedlegg?.vedleggListe?.get(1)?.filnavn).isEqualTo(testType2)
-        assertThat(vedlegg?.vedleggListe?.get(1)?.skjema).isEqualTo(testType2)
-        assertThat(vedlegg?.vedleggListe?.get(1)?.tillegg).isEqualTo(testTilleggsinfo2)
-    }
-
-    @Test
     fun skalAvbryteSoknad() {
         every { soknadUnderArbeidRepository.hentSoknadNullable(BEHANDLINGSID, any()) } returns SoknadUnderArbeid(
             versjon = 1L,

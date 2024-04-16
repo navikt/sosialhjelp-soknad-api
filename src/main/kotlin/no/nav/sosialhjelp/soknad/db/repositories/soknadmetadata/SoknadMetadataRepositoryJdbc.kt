@@ -30,11 +30,10 @@ class SoknadMetadataRepositoryJdbc(
         jdbcTemplate.update(
             "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
-            metadata.tilknyttetBehandlingsId,
+            null, // tilknyttetBehandlingsId skal alltid være null
             metadata.skjema,
             metadata.fnr,
             metadata.vedlegg?.let { mapper.writeValueAsString(it) },
-//            metadata.vedlegg?.let { JAXB.marshal(it) },
             metadata.orgnr,
             metadata.navEnhet,
             metadata.fiksForsendelseId,

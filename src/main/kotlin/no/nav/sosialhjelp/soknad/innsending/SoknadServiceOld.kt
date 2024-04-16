@@ -64,8 +64,6 @@ import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
-    private val oppgaveHandterer: OppgaveHandterer,
-    private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdataUpdater: SystemdataUpdater,
@@ -87,7 +85,6 @@ class SoknadServiceOld(
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = null,
             eier = eierId,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
@@ -126,55 +123,6 @@ class SoknadServiceOld(
         return soknadMetadata.behandlingsId.also {
             log.info("Starter søknad $it")
         }
-    }
-
-    @Transactional
-    fun sendSoknad(behandlingsId: String) {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-
-        log.info("Starter innsending av søknad med behandlingsId $behandlingsId")
-        logDriftsinformasjon(soknadUnderArbeid)
-
-        if (soknadUnderArbeid.erEttersendelse && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
-            log.error("Kan ikke sende inn ettersendingen med ID ${soknadUnderArbeid.behandlingsId} uten å ha lastet opp vedlegg")
-            throw SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg")
-        }
-
-        val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
-
-        oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
-        oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
-        innsendingService.oppdaterSoknadUnderArbeid(soknadUnderArbeid)
-
-        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
-    }
-
-    private fun logDriftsinformasjon(soknadUnderArbeid: SoknadUnderArbeid) {
-        if (!soknadUnderArbeid.erEttersendelse) {
-            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.stotteFraHusbankenFeilet) {
-                val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)
-                log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. $alderPaaData")
-            }
-            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.inntektFraSkatteetatenFeilet) {
-                val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)
-                log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. $alderPaaData")
-            }
-        }
-    }
-
-    private fun finnAlderPaaDataFor(soknadUnderArbeid: SoknadUnderArbeid, type: String): String {
-        val bekreftelsesDatoStreng =
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
-                ?.firstOrNull { it.type == type && it.verdi }
-                ?.bekreftelsesDato
-                ?: return ""
-        val bekreftelsesDato = OffsetDateTime.parse(bekreftelsesDatoStreng)
-        val now = OffsetDateTime.now(ZoneOffset.UTC)
-        val antallDager = bekreftelsesDato.until(now, DAYS)
-        val antallTimer = bekreftelsesDato.until(now, HOURS) % 24
-        val antallMinutter = bekreftelsesDato.until(now, MINUTES) % 60
-        return " Dataene er $antallDager dager, $antallTimer timer og $antallMinutter minutter gamle."
     }
 
     fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
@@ -227,38 +175,8 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    private fun oppdaterMetadataVedAvslutningAvSoknad(
-        behandlingsId: String?,
-        vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid
-    ) {
-        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-        soknadMetadata?.vedlegg = vedlegg
-        if (soknadMetadata?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknadMetadata?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
-            soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
-        }
-        soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
-        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
-        soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
-
-        soknadMetadata?.let {
-            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
-            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
-        }
-        soknadMetadataRepository.oppdater(soknadMetadata)
-        log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
-    }
-
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
-
-        private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
-            val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)
-            val vedlegg = VedleggMetadataListe()
-            vedlegg.vedleggListe = jsonVedleggs.map { mapJsonVedleggToVedleggMetadata(it) }.toMutableList()
-            return vedlegg
-        }
 
         fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad {
             return JsonInternalSoknad().withSoknad(
