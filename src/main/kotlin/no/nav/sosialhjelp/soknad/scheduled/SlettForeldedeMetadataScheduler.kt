@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
@@ -13,7 +12,6 @@ import java.time.LocalDateTime
 class SlettForeldedeMetadataScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
-    private val oppgaveRepository: OppgaveRepository,
     @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) {
@@ -50,9 +48,6 @@ class SlettForeldedeMetadataScheduler(
         var soknadMetadataList = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
         while (soknadMetadataList.isNotEmpty()) {
             val behandlingsIdList = soknadMetadataList.map { it.behandlingsId }
-
-            val oppgaver = oppgaveRepository.hentOppgaveIdList(behandlingsIdList)
-            if (oppgaver.isNotEmpty()) oppgaveRepository.slettOppgaver(oppgaver)
 
             batchSoknadMetadataRepository.slettSoknadMetaDataer(behandlingsIdList)
 

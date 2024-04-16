@@ -28,20 +28,7 @@ class PrometheusMetricsService(
     private val feiletSendingMedSvarUtCounter = Counter.builder("feilet_sending_svarut_counter")
     private val feiletSendingMedDigisosApiCounter = Counter.builder("feilet_sending_digisosapi_counter")
 
-    private val oppgaverFeilet = AtomicInteger(0)
-    private val oppgaverStuckUnderArbeid = AtomicInteger(0)
-
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
-
-    init {
-        Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
-            .description("Antall av oppgaver med status FEILET i db")
-            .register(meterRegistry)
-
-        Gauge.builder("oppgaver_stuck_underarbeid_gauge", oppgaverStuckUnderArbeid) { it.toDouble() }
-            .description("Antall av oppgaver stuck med status UNDER_ARBEID i db")
-            .register(meterRegistry)
-    }
 
     fun reportInnsendingTid(antallSekunder: Long) {
         soknadInnsendingTidTimer
@@ -121,19 +108,6 @@ class PrometheusMetricsService(
             .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
-    }
-
-    fun resetOppgaverFeiletOgStuckUnderArbeid() {
-        oppgaverFeilet.set(0)
-        oppgaverStuckUnderArbeid.set(0)
-    }
-
-    fun reportOppgaverFeilet(antall: Int) {
-        oppgaverFeilet.set(antall)
-    }
-
-    fun reportOppgaverStuckUnderArbeid(antall: Int) {
-        oppgaverStuckUnderArbeid.set(antall)
     }
 
     companion object {
