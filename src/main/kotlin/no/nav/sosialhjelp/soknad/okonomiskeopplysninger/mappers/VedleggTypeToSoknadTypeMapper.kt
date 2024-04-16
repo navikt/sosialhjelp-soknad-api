@@ -19,8 +19,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.FakturaS
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.FakturaStrom
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.FakturaTannbehandling
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.HusbankenVedtak
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.HusleiekontraktHusleiekontrakt
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.HusleiekontraktKommunal
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.KontooversiktAksjer
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.KontooversiktAnnet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.KontooversiktBrukskonto
@@ -29,64 +27,49 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.Kontoove
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.KontooversiktSparekonto
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.LonnslippArbeid
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.NedbetalingsplanAvdragslan
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.OppholdstillatelOppholdstillatel
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.SalgsoppgjorEiendom
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.SamvarsavtaleBarn
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.SkattemeldingSkattemelding
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.SluttoppgjorArbeid
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.StudentVedtak
 
 object VedleggTypeToSoknadTypeMapper {
-    val vedleggTypeToSoknadType: MutableMap<String, String> = HashMap()
+    val vedleggTypeToSoknadType: Map<VedleggType, String> = mapOf(
+        KontooversiktAksjer to SoknadJsonTyper.FORMUE_VERDIPAPIRER,
+        FakturaAnnetBarnutgift to SoknadJsonTyper.UTGIFTER_ANNET_BARN,
+        DokumentasjonAnnetBoutgift to SoknadJsonTyper.UTGIFTER_ANNET_BO,
+        DokumentasjonAnnetInntekter to SoknadJsonTyper.UTBETALING_ANNET,
+        FakturaBarnehage to SoknadJsonTyper.UTGIFTER_BARNEHAGE,
+        BarnebidragBetaler to SoknadJsonTyper.BARNEBIDRAG,
+        KontooversiktBrukskonto to SoknadJsonTyper.FORMUE_BRUKSKONTO,
+        KontooversiktBsu to SoknadJsonTyper.FORMUE_BSU,
+        SalgsoppgjorEiendom to SoknadJsonTyper.UTBETALING_SALG,
+        DokumentasjonForsikringsutbetaling to SoknadJsonTyper.UTBETALING_FORSIKRING,
+        FakturaFritidsaktivitet to SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER,
+        FakturaHusleie to SoknadJsonTyper.UTGIFTER_HUSLEIE,
+        FakturaKommunaleavgifter to SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT,
+        KontooversiktLivsforsikring to SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
+        BarnebidragMottar to SoknadJsonTyper.BARNEBIDRAG,
+        FakturaOppvarming to SoknadJsonTyper.UTGIFTER_OPPVARMING,
+        FakturaSfo to SoknadJsonTyper.UTGIFTER_SFO,
+        KontooversiktSparekonto to SoknadJsonTyper.FORMUE_SPAREKONTO,
+        FakturaStrom to SoknadJsonTyper.UTGIFTER_STROM,
+        FakturaTannbehandling to SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING,
+        DokumentasjonUtbytte to SoknadJsonTyper.UTBETALING_UTBYTTE,
+        HusbankenVedtak to SoknadJsonTyper.UTBETALING_HUSBANKEN,
+        StudentVedtak to SoknadJsonTyper.STUDIELAN,
+        LonnslippArbeid to SoknadJsonTyper.JOBB,
+        SluttoppgjorArbeid to SoknadJsonTyper.SLUTTOPPGJOER,
+        KontooversiktAnnet to SoknadJsonTyper.FORMUE_ANNET,
+        AnnetAnnet to SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER,
+        // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
+        NedbetalingsplanAvdragslan to SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG
+    )
 
-    init {
-        vedleggTypeToSoknadType["kontooversikt|aksjer"] = SoknadJsonTyper.FORMUE_VERDIPAPIRER
-        vedleggTypeToSoknadType["faktura|annetbarnutgift"] = SoknadJsonTyper.UTGIFTER_ANNET_BARN
-        vedleggTypeToSoknadType["dokumentasjon|annetboutgift"] = SoknadJsonTyper.UTGIFTER_ANNET_BO
-        vedleggTypeToSoknadType["dokumentasjon|annetinntekter"] = SoknadJsonTyper.UTBETALING_ANNET
-        vedleggTypeToSoknadType["faktura|barnehage"] = SoknadJsonTyper.UTGIFTER_BARNEHAGE
-        vedleggTypeToSoknadType["barnebidrag|betaler"] = SoknadJsonTyper.BARNEBIDRAG
-        vedleggTypeToSoknadType["kontooversikt|brukskonto"] = SoknadJsonTyper.FORMUE_BRUKSKONTO
-        vedleggTypeToSoknadType["kontooversikt|bsu"] = SoknadJsonTyper.FORMUE_BSU
-        vedleggTypeToSoknadType["salgsoppgjor|eiendom"] = SoknadJsonTyper.UTBETALING_SALG
-        vedleggTypeToSoknadType["dokumentasjon|forsikringsutbetaling"] = SoknadJsonTyper.UTBETALING_FORSIKRING
-        vedleggTypeToSoknadType["faktura|fritidsaktivitet"] = SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER
-        vedleggTypeToSoknadType["faktura|husleie"] = SoknadJsonTyper.UTGIFTER_HUSLEIE
-        vedleggTypeToSoknadType["faktura|kommunaleavgifter"] = SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT
-        vedleggTypeToSoknadType["kontooversikt|livsforsikring"] = SoknadJsonTyper.FORMUE_LIVSFORSIKRING
-        vedleggTypeToSoknadType["barnebidrag|mottar"] = SoknadJsonTyper.BARNEBIDRAG
-        vedleggTypeToSoknadType["faktura|oppvarming"] = SoknadJsonTyper.UTGIFTER_OPPVARMING
-        vedleggTypeToSoknadType["faktura|sfo"] = SoknadJsonTyper.UTGIFTER_SFO
-        vedleggTypeToSoknadType["kontooversikt|sparekonto"] = SoknadJsonTyper.FORMUE_SPAREKONTO
-        vedleggTypeToSoknadType["faktura|strom"] = SoknadJsonTyper.UTGIFTER_STROM
-        vedleggTypeToSoknadType["faktura|tannbehandling"] = SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING
-        vedleggTypeToSoknadType["dokumentasjon|utbytte"] = SoknadJsonTyper.UTBETALING_UTBYTTE
-        vedleggTypeToSoknadType["husbanken|vedtak"] = SoknadJsonTyper.UTBETALING_HUSBANKEN
-        vedleggTypeToSoknadType["student|vedtak"] = SoknadJsonTyper.STUDIELAN
-        vedleggTypeToSoknadType["lonnslipp|arbeid"] = SoknadJsonTyper.JOBB
-        vedleggTypeToSoknadType["sluttoppgjor|arbeid"] = SoknadJsonTyper.SLUTTOPPGJOER
-        vedleggTypeToSoknadType["kontooversikt|annet"] = SoknadJsonTyper.FORMUE_ANNET
-        vedleggTypeToSoknadType["annet|annet"] = SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER
-        vedleggTypeToSoknadType["dokumentasjon|annet"] = SoknadJsonTyper.UTBETALING_ANNET
-        vedleggTypeToSoknadType["nedbetalingsplan|avdraglaan"] =
-            SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
-    }
-
-    fun getSoknadPath(vedleggType: VedleggType?): String {
-        return when (vedleggType) {
-            DokumentasjonAnnetBoutgift, FakturaAnnetBarnutgift, FakturaTannbehandling, FakturaKommunaleavgifter, FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet -> "opplysningerUtgift"
-            BarnebidragBetaler, FakturaSfo, FakturaBarnehage, FakturaHusleie, NedbetalingsplanAvdragslan -> "oversiktUtgift"
-            KontooversiktBrukskonto, KontooversiktBsu, KontooversiktSparekonto, KontooversiktLivsforsikring, KontooversiktAksjer, KontooversiktAnnet -> "formue"
-            DokumentasjonForsikringsutbetaling, DokumentasjonAnnetInntekter, DokumentasjonUtbytte, SalgsoppgjorEiendom, SluttoppgjorArbeid, HusbankenVedtak -> "utbetaling"
-            BarnebidragMottar, LonnslippArbeid, StudentVedtak -> "inntekt"
-            else -> throw IllegalStateException("Vedleggstypen eksisterer ikke eller mangler mapping")
-        }
-    }
-
-    fun isInSoknadJson(vedleggType: VedleggType?): Boolean {
-        return when (vedleggType) {
-            OppholdstillatelOppholdstillatel, SamvarsavtaleBarn, HusleiekontraktHusleiekontrakt, HusleiekontraktKommunal, SkattemeldingSkattemelding -> false
-            else -> true
-        }
+    fun getSoknadPath(vedleggType: VedleggType?): String = when (vedleggType) {
+        DokumentasjonAnnetBoutgift, FakturaAnnetBarnutgift, FakturaTannbehandling, FakturaKommunaleavgifter, FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet -> "opplysningerUtgift"
+        BarnebidragBetaler, FakturaSfo, FakturaBarnehage, FakturaHusleie, NedbetalingsplanAvdragslan -> "oversiktUtgift"
+        KontooversiktBrukskonto, KontooversiktBsu, KontooversiktSparekonto, KontooversiktLivsforsikring, KontooversiktAksjer, KontooversiktAnnet -> "formue"
+        DokumentasjonForsikringsutbetaling, DokumentasjonAnnetInntekter, DokumentasjonUtbytte, SalgsoppgjorEiendom, SluttoppgjorArbeid, HusbankenVedtak -> "utbetaling"
+        BarnebidragMottar, LonnslippArbeid, StudentVedtak -> "inntekt"
+        else -> error("Vedleggstypen eksisterer ikke eller mangler mapping")
     }
 }

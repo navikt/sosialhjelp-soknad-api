@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplys
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllUtbetalingerToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapMellomlagredeVedleggToVedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapToVedleggFrontend
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -146,19 +145,20 @@ class OkonomiskeOpplysningerRessurs(
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
-        if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
-            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
+        if (vedleggTypeToSoknadType.containsKey(vedleggFrontend.type)) {
+            val rader = vedleggFrontend.rader ?: emptyList()
+            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
             when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
-                    addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
+                    addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
                 } else {
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
+                    addAllUtbetalingerToJsonOkonomi(rader, jsonOkonomi.opplysninger, soknadType)
                 }
 
-                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "inntekt" -> addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
+                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
+                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "formue" -> addAllFormuerToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "inntekt" -> addAllInntekterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
             }
         }
 
