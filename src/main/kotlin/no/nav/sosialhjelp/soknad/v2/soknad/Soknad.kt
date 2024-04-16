@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -13,8 +14,10 @@ import java.util.*
 
 @Repository
 interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
+
 fun SoknadRepository.findOrError(soknadId: UUID) = findByIdOrNull(soknadId) ?: error("Kunne ikke finne soknad: $soknadId")
 
+@Table
 data class Soknad(
     @Id
     val id: UUID = UUID.randomUUID(),
@@ -23,7 +26,9 @@ data class Soknad(
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
     @Embedded.Nullable
     val begrunnelse: Begrunnelse? = null
-) : AggregateRoot { override val soknadId: UUID get() = id }
+) : AggregateRoot {
+    override val soknadId: UUID get() = id
+}
 
 data class Tidspunkt(
     val opprettet: LocalDateTime,
