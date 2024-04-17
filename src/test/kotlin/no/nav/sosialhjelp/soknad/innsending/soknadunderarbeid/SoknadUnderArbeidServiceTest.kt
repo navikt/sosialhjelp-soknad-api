@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -41,11 +40,13 @@ internal class SoknadUnderArbeidServiceTest {
 
         // false - kommune mangler konfigurasjon hos Fiks
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // false - kommune bruker SvarUt
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
     }
 
     companion object {
