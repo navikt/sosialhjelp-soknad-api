@@ -28,34 +28,11 @@ class InnsendingService(
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 
-    fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
-        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
-        soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
-            ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
-    }
-
     fun oppdaterSoknadMetadataVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
         log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
-    }
-
-    fun hentSoknadMetadata(behandlingsId: String, eier: String?): SoknadMetadata {
-        return soknadMetadataRepository.hent(behandlingsId)
-            ?: throw RuntimeException("Finner ikke soknadMetadata med behandlingsId $behandlingsId")
-    }
-
-    fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
-        return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
-            ?: throw RuntimeException("Finner ikke soknadUnderArbeid med behandlingsId $behandlingsId")
-    }
-
-    fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
-        val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
-            ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
-
-        return soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
     }
 
     companion object {

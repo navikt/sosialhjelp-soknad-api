@@ -76,7 +76,6 @@ internal class SoknadUnderArbeidServiceTest {
             soknadId = SOKNAD_UNDER_ARBEID_ID,
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

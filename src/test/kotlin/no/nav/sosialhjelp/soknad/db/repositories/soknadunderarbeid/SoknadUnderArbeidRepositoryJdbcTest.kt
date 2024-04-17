@@ -37,7 +37,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid?.soknadId).isNotNull
         assertThat(soknadUnderArbeid?.versjon).isEqualTo(1L)
         assertThat(soknadUnderArbeid?.behandlingsId).isEqualTo(BEHANDLINGSID)
-        assertThat(soknadUnderArbeid?.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
         assertThat(soknadUnderArbeid?.eier).isEqualTo(EIER)
         assertThat(soknadUnderArbeid?.jsonInternalSoknad).isNotNull
         assertThat(soknadUnderArbeid?.status).isEqualTo(SoknadUnderArbeidStatus.UNDER_ARBEID)
@@ -129,7 +128,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

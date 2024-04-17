@@ -12,7 +12,7 @@ data class SoknadUnderArbeid(
     var soknadId: Long = 0L, // dummy verdi, settes i DB
     var versjon: Long,
     var behandlingsId: String,
-    var tilknyttetBehandlingsId: String? = null,
+    private val tilknyttetBehandlingsId: String? = null,
     var eier: String,
     var jsonInternalSoknad: JsonInternalSoknad?,
     var status: SoknadUnderArbeidStatus,

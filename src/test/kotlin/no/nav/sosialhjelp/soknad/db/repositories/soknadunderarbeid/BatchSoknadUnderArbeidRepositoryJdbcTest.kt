@@ -46,7 +46,6 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

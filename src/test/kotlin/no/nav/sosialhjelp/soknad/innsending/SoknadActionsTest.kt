@@ -92,20 +92,6 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
-        val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
-    }
-
-    @Test
     fun sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         val behandlingsId = "fiksNedetidOgTomCache"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
@@ -212,7 +198,6 @@ internal class SoknadActionsTest {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
-                tilknyttetBehandlingsId = null,
                 eier = eier,
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

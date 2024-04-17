@@ -46,20 +46,6 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata`() {
-        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
-    }
-
-    @Test
-    fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SoknadMetadata`() {
-        every { soknadMetadataRepository.hent(any()) } returns null
-
-        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(fiksForsendelseId).isNull()
-    }
-
-    @Test
     internal fun `skal oppdatere soknadmetadata ved innsending`() {
         val soknadMetadata = createSoknadMetadata()
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
@@ -96,7 +82,6 @@ internal class InnsendingServiceTest {
             soknadId = SOKNAD_UNDER_ARBEID_ID,
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

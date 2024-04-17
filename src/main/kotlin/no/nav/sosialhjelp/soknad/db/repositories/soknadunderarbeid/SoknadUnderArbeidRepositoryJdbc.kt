@@ -35,10 +35,9 @@ class SoknadUnderArbeidRepositoryJdbc(
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
         jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
+            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?)",
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.tilknyttetBehandlingsId,
             soknadUnderArbeid.eier,
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),

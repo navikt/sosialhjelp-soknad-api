@@ -26,7 +26,6 @@ internal class DokumentListeServiceTest {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = "behandlingsid",
-            tilknyttetBehandlingsId = null,
             eier = eier,
             jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

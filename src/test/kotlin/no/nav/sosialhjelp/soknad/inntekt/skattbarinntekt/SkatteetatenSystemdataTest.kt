@@ -227,7 +227,6 @@ internal class SkatteetatenSystemdataTest {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
-                tilknyttetBehandlingsId = null,
                 eier = EIER,
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

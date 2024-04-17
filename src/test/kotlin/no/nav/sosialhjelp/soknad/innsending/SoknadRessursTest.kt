@@ -268,7 +268,6 @@ internal class SoknadRessursTest {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
                 eier = eier,
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

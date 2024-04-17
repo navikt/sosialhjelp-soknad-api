@@ -122,7 +122,6 @@ internal class VedleggUtilsTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = "123",
-            tilknyttetBehandlingsId = null,
             eier = "EIER",
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

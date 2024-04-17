@@ -48,12 +48,10 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun oppdater(metadata: SoknadMetadata?) {
         jdbcTemplate.update(
-            "UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
-            metadata?.tilknyttetBehandlingsId,
+            "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
             metadata?.skjema,
             metadata?.fnr,
             metadata?.vedlegg?.let { mapper.writeValueAsString(it) },
-//            metadata?.vedlegg?.let { JAXB.marshal(it) },
             metadata?.orgnr,
             metadata?.navEnhet,
             metadata?.fiksForsendelseId,

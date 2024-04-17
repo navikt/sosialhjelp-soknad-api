@@ -201,7 +201,6 @@ internal class MellomlagringServiceTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandligsId,
-            tilknyttetBehandlingsId = null,
             eier = "EIER",
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
