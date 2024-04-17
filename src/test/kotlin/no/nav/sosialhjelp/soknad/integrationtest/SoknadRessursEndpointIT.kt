@@ -42,7 +42,6 @@ class SoknadRessursEndpointIT {
     }
 
     @Test
-    @Disabled("Gjelder ettersendelse")
     internal fun nektetTilgang_opprettEttersendelse() {
         val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 

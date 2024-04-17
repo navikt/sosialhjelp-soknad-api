@@ -77,19 +77,6 @@ internal class InnsendingServiceTest {
         )
     }
 
-    private fun createSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
-            soknadId = SOKNAD_UNDER_ARBEID_ID,
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            eier = EIER,
-            jsonInternalSoknad = null,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
-        )
-    }
-
     private fun createSoknadMetadata(): SoknadMetadata {
         return SoknadMetadata(
             id = 0L,

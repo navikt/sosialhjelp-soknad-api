@@ -83,10 +83,10 @@ class DigisosApiService(
             throw e
         }
 
-        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
         prometheusMetricsService.reportSendt()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
         shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)

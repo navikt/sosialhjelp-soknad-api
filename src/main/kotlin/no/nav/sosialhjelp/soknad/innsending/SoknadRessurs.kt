@@ -125,9 +125,7 @@ class SoknadRessurs(
 
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
-        @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Map<String, String> {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
@@ -149,8 +147,7 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
-        soknadServiceOld.avbrytSoknad(behandlingsId, steg)
+        soknadServiceOld.avbrytSoknad(behandlingsId, referer)
     }
 
     companion object {

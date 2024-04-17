@@ -93,7 +93,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(capture(cookieSlot)) } just runs
         every { soknadServiceOld.startSoknad() } returns "null"
 
-        ressurs.opprettSoknad(null, response, "")
+        ressurs.opprettSoknad(response)
 
         assertThat(cookieSlot.captured.name).isEqualTo(SoknadRessurs.XSRF_TOKEN + "-null")
     }
@@ -105,7 +105,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(any()) } just runs
         every { soknadServiceOld.startSoknad() } returns "null"
 
-        ressurs.opprettSoknad(null, response, "")
+        ressurs.opprettSoknad(response)
 
         verify(exactly = 1) { soknadServiceOld.startSoknad() }
     }
@@ -252,7 +252,7 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }
+            .isThrownBy { ressurs.opprettSoknad(mockk()) }
 
         verify { soknadServiceOld wasNot called }
     }

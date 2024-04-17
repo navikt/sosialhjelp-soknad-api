@@ -18,10 +18,7 @@ data class SoknadUnderArbeid(
     var status: SoknadUnderArbeidStatus,
     var opprettetDato: LocalDateTime,
     var sistEndretDato: LocalDateTime
-) {
-    @Deprecated("SvarUt og denne type ettersendelse støttes ikke lenger")
-    val erEttersendelse: Boolean get() = false
-}
+)
 
 enum class SoknadUnderArbeidStatus {
     UNDER_ARBEID, LAAST

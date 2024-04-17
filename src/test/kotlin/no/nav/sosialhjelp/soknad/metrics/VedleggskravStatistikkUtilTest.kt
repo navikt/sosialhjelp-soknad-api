@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.metrics
 
-import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -11,17 +10,11 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererVedleggskravStatistikk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class VedleggskravStatistikkUtilTest {
 
     private val soknadUnderArbeidMock: SoknadUnderArbeid = mockk()
-
-    @BeforeEach
-    internal fun setUp() {
-        every { soknadUnderArbeidMock.erEttersendelse } returns false
-    }
 
     @Test
     fun reportVedleggskrav_shouldReportCorrect() {
@@ -37,7 +30,7 @@ internal class VedleggskravStatistikkUtilTest {
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(VedleggKreves, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 9, 3, 2, 4)
     }
 
@@ -48,7 +41,7 @@ internal class VedleggskravStatistikkUtilTest {
         vedleggList.add(createVedleggMetadata(LastetOpp, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(LastetOpp, "skjema", "tillegg"))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 3, 3, 0, 0)
     }
 
@@ -59,7 +52,7 @@ internal class VedleggskravStatistikkUtilTest {
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 3, 0, 0, 3)
     }
 
@@ -70,7 +63,7 @@ internal class VedleggskravStatistikkUtilTest {
         vedleggList.add(createVedleggMetadata(VedleggAlleredeSendt, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(VedleggAlleredeSendt, "skjema", "tillegg"))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 3, 0, 3, 0)
     }
 
@@ -79,7 +72,7 @@ internal class VedleggskravStatistikkUtilTest {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
         vedleggList.add(createVedleggMetadata(LastetOpp, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
     }
 
@@ -88,7 +81,7 @@ internal class VedleggskravStatistikkUtilTest {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
         vedleggList.add(createVedleggMetadata(VedleggKreves, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
     }
 
@@ -97,7 +90,7 @@ internal class VedleggskravStatistikkUtilTest {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
         vedleggList.add(createVedleggMetadata(VedleggAlleredeSendt, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
 
-        val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeidMock, vedleggList)
+        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
     }
 

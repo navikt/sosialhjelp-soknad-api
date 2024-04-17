@@ -61,10 +61,6 @@ class ExceptionMapper(
                 log.warn(e.message, e)
                 ResponseEntity.status(HttpStatus.NOT_FOUND)
             }
-            is EttersendelseSendtForSentException -> {
-                log.info("REST-kall feilet: ${e.message}", e)
-                ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
-            }
             is TjenesteUtilgjengeligException -> {
                 log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
                 ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
@@ -125,7 +121,7 @@ class ExceptionMapper(
                     .body(
                         Feilmelding(
                             id = "pdf_generering",
-                            message = "Innsending av søknad eller ettersendelse feilet"
+                            message = "Innsending av søknad eller feilet"
                         )
                     )
             }

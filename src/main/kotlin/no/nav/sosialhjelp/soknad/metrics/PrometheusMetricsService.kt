@@ -34,14 +34,6 @@ class PrometheusMetricsService(
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
-    @Deprecated("Ettersendelse ikke relevant lenger")
-    fun reportStartSoknad(isEttersendelse: Boolean) {
-        startSoknadCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .register(meterRegistry)
-            .increment()
-    }
-
     fun reportStartSoknad() {
         startSoknadCounter
             .register(meterRegistry)
@@ -55,47 +47,14 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    @Deprecated("Ettersendelse er ikke lenger relevant")
-    fun reportSoknadMottaker(isEttersendelse: Boolean, navEnhet: String) {
-        soknadMottakerCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .tag(TAG_MOTTAKER, navEnhet)
-            .register(meterRegistry)
-            .increment()
-    }
-
-    fun reportSendtMedSvarUt(isEttersendelse: Boolean) {
-        sendtSoknadSvarUtCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .register(meterRegistry)
-            .increment()
-    }
-
     fun reportSendt() {
         sendtSoknadDigisosApiCounter
             .register(meterRegistry)
             .increment()
     }
 
-    @Deprecated("SvarUt støttes ikke lenger")
-    fun reportFeiletMedSvarUt(isEttersendelse: Boolean) {
-        feiletSendingMedSvarUtCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .register(meterRegistry)
-            .increment()
-    }
-
     fun reportFeilet() {
         feiletSendingMedDigisosApiCounter
-            .register(meterRegistry)
-            .increment()
-    }
-
-    @Deprecated("Ettersendelse er irrelevant. SvarUt støttes ikke lenger")
-    fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
-        avbruttSoknadCounter
-            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
     }
@@ -109,7 +68,6 @@ class PrometheusMetricsService(
     }
 
     companion object {
-        const val TAG_ETTERSENDELSE = "ettersendelse"
         const val TAG_MOTTAKER = "mottaker"
         const val TAG_STEG = "steg"
     }

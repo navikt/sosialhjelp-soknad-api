@@ -66,7 +66,7 @@ class SoknadServiceOld(
         val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
-        prometheusMetricsService.reportStartSoknad(false)
+        prometheusMetricsService.reportStartSoknad()
 
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -118,7 +118,7 @@ class SoknadServiceOld(
     }
 
     @Transactional
-    fun avbrytSoknad(behandlingsId: String, steg: String) {
+    fun avbrytSoknad(behandlingsId: String, referer: String?) {
         log.info("Soknad avbrutt av bruker - slettes")
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -129,7 +129,7 @@ class SoknadServiceOld(
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
-                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse, steg)
+                prometheusMetricsService.reportAvbruttSoknad(referer)
             }
 
         // ny modell

@@ -65,35 +65,6 @@ class SosialhjelpPdfGenerator(
         }
     }
 
-    fun generateEttersendelsePdf(jsonInternalSoknad: JsonInternalSoknad, eier: String): ByteArray {
-        return try {
-            val pdf = PdfGenerator()
-
-            val tittel = getTekst("ettersending.kvittering.tittel")
-            val undertittel = getTekst("skjema.tittel")
-            leggTilHeading(pdf, tittel, undertittel, eier)
-
-            val formatter = DateTimeFormatter.ofPattern(DATO_OG_TID_FORMAT)
-            val formattedTime = LocalDateTime.now().format(formatter)
-
-            pdf.skrivTekstBold("Følgende vedlegg er sendt $formattedTime:")
-            pdf.addBlankLine()
-
-            jsonInternalSoknad.vedlegg?.vedlegg?.forEach { jsonVedlegg ->
-                if (jsonVedlegg.status != null && jsonVedlegg.status == "LastetOpp") {
-                    pdf.skrivTekst(getTekst("vedlegg.${jsonVedlegg.type}.${jsonVedlegg.tilleggsinfo}.tittel"))
-                    pdf.skrivTekst("Filer:")
-                    jsonVedlegg.filer.forEach { jsonFiler ->
-                        pdf.skrivTekst("Filnavn: " + jsonFiler.filnavn)
-                    }
-                }
-            }
-            pdf.finish()
-        } catch (e: Exception) {
-            throw PdfGenereringException("Kunne ikke generere ettersendelse.pdf", e)
-        }
-    }
-
     fun generateBrukerkvitteringPdf(): ByteArray {
         return try {
             val pdf = PdfGenerator()

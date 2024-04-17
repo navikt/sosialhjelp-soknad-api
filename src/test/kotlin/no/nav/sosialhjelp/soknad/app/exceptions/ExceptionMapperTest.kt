@@ -73,15 +73,6 @@ class ExceptionMapperTest {
     }
 
     @Test
-    fun `skal gi 500 med header for ingen BigIpRedirect ved EttersendelseSendtForSentException`() {
-        val responseEntity = exceptionMapper.handleSoknadApiException(
-            EttersendelseSendtForSentException(message = "feil")
-        )
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
-        assertThat(responseEntity.headers.getFirst(Feilmelding.NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
-    }
-
-    @Test
     fun `Skal gi 406 Not Acceptable hvis fil er lastet opp allerede`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
             DuplikatFilException(message = "feil")

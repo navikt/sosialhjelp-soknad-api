@@ -17,7 +17,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-@Deprecated("Gammel logikk - nye søknader skal håndteres via SoknadRepository")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 class SoknadUnderArbeidRepositoryJdbc(
@@ -30,7 +29,6 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    @Deprecated("Gammel logikk. Nye søknader skal lagres via SoknadRepository")
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
@@ -48,7 +46,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
-    @Deprecated("Gammelt repository")
     override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
@@ -58,7 +55,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    @Deprecated("Gammelt repository")
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -68,7 +64,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
-    @Deprecated("Gammelt repository")
     override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -78,21 +73,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    @Deprecated("Gammelt repository")
-    override fun hentEttersendingMedTilknyttetBehandlingsId(
-        tilknyttetBehandlingsId: String,
-        eier: String
-    ): SoknadUnderArbeid? {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            eier,
-            tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
-        ).firstOrNull()
-    }
-
-    @Deprecated("Gammelt repository")
     override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -140,7 +120,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         }
     }
 
-    @Deprecated("Gammelt repository")
     override fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
