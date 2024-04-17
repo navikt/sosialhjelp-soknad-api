@@ -118,7 +118,7 @@ internal class SoknadServiceOldTest {
         soknadServiceOld.avbrytSoknad(BEHANDLINGSID, "3")
 
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
-        verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad( "3") }
+        verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad("3") }
     }
 
     private fun createSoknadMetadata(): SoknadMetadata {
