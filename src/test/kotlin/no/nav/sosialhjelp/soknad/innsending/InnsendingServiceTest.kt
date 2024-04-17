@@ -7,7 +7,6 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -23,13 +22,11 @@ import java.time.temporal.ChronoUnit
 internal class InnsendingServiceTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
     private val innsendingService = InnsendingService(
         soknadUnderArbeidRepository,
-        opplastetVedleggRepository,
         soknadUnderArbeidService,
         soknadMetadataRepository
     )

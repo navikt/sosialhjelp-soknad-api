@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -16,7 +14,6 @@ import java.time.temporal.ChronoUnit
 @Component
 class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
@@ -52,10 +49,6 @@ class InnsendingService(
     fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
         return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?: throw RuntimeException("Finner ikke soknadUnderArbeid med behandlingsId $behandlingsId")
-    }
-
-    fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
-        return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
     fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {

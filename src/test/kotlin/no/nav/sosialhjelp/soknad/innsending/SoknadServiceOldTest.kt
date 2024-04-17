@@ -12,20 +12,16 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -40,7 +36,6 @@ import java.time.LocalDateTime
 
 internal class SoknadServiceOldTest {
 
-    private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
@@ -52,8 +47,6 @@ internal class SoknadServiceOldTest {
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
 
     private val soknadServiceOld = SoknadServiceOld(
-        oppgaveHandterer,
-        innsendingService,
         soknadMetadataRepository,
         soknadUnderArbeidRepository,
         systemdataUpdater,

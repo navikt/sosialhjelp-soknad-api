@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
@@ -137,17 +135,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
             sistEndretDato = SIST_ENDRET_DATO
-        )
-    }
-
-    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg(
-            eier = EIER,
-            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = soknadId,
-            filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
         )
     }
 

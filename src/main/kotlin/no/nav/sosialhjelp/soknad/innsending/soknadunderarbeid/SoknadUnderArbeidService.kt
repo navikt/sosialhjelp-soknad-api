@@ -129,7 +129,9 @@ class SoknadUnderArbeidService(
             FIKS_NEDETID_OG_TOM_CACHE -> {
                 throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
             }
-            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
+            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> {
+                throw SendingTilKommuneUtilgjengeligException("Manglende eller feil konfigurasjon. (SvarUt)")
+            }
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
