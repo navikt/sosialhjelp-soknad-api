@@ -22,4 +22,5 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@main
         with:
+          lint: false
           java-version: '21'

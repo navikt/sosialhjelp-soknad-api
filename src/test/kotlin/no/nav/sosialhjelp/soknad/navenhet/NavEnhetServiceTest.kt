@@ -189,7 +189,6 @@ class NavEnhetServiceTest {
     }
 
     @Test
-    @Suppress("ktlint:standard:max-line-length")
     internal fun `getNavEnhet - adressevalg er folkeregistrert - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia

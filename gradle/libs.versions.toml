@@ -30,6 +30,7 @@ mockk = "1.13.10"
 versions = "0.51.0"
 vault_jdbc = "1.3.10"
 resilience4j = "2.2.0"
+spotless = "6.25.0"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
@@ -135,6 +136,7 @@ sosialhjelp-common = [
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway_plugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+
