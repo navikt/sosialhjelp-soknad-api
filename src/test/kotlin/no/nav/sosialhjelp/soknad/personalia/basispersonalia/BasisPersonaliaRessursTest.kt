@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BasisPersonaliaRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kodeverkService: KodeverkService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
@@ -89,7 +88,7 @@ internal class BasisPersonaliaRessursTest {
 
     private fun assertThatPersonaliaIsCorrectlyConverted(
         personaliaFrontend: BasisPersonaliaFrontend,
-        jsonPersonalia: JsonPersonalia
+        jsonPersonalia: JsonPersonalia,
     ) {
         assertThat(personaliaFrontend.fodselsnummer).isEqualTo(jsonPersonalia.personIdentifikator.verdi)
         assertThat(personaliaFrontend.navn?.fornavn).isEqualTo(jsonPersonalia.navn.fornavn)
@@ -100,19 +99,18 @@ internal class BasisPersonaliaRessursTest {
             .isEqualTo(if (jsonPersonalia.statsborgerskap?.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap?.verdi)
     }
 
-    private fun createJsonInternalSoknadWithBasisPersonalia(
-        withStatsborgerskap: Boolean
-    ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+    private fun createJsonInternalSoknadWithBasisPersonalia(withStatsborgerskap: Boolean): SoknadUnderArbeid {
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withNavn(
@@ -120,7 +118,7 @@ internal class BasisPersonaliaRessursTest {
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
                     .withFornavn(FORNAVN)
                     .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
+                    .withEtternavn(ETTERNAVN),
             )
             .withStatsborgerskap(
                 if (!withStatsborgerskap) {
@@ -129,7 +127,7 @@ internal class BasisPersonaliaRessursTest {
                     JsonStatsborgerskap()
                         .withKilde(JsonKilde.SYSTEM)
                         .withVerdi(NORSK_STATSBORGERSKAP)
-                }
+                },
             )
         return soknadUnderArbeid
     }
@@ -142,36 +140,38 @@ internal class BasisPersonaliaRessursTest {
         private const val ETTERNAVN = "Telcontar"
         private const val FULLT_NAVN = "Aragorn Elessar Telcontar"
         private const val NORSK_STATSBORGERSKAP = "NOR"
-        private val JSON_PERSONALIA = JsonPersonalia()
-            .withPersonIdentifikator(
-                JsonPersonIdentifikator()
-                    .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                    .withVerdi(EIER)
-            )
-            .withNavn(
-                JsonSokernavn()
-                    .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                    .withFornavn(FORNAVN)
-                    .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
-            )
-            .withStatsborgerskap(
-                JsonStatsborgerskap()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi("NOR")
-            )
-        private val JSON_PERSONALIA_UTEN_STAT = JsonPersonalia()
-            .withPersonIdentifikator(
-                JsonPersonIdentifikator()
-                    .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                    .withVerdi(EIER)
-            )
-            .withNavn(
-                JsonSokernavn()
-                    .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                    .withFornavn(FORNAVN)
-                    .withMellomnavn(MELLOMNAVN)
-                    .withEtternavn(ETTERNAVN)
-            )
+        private val JSON_PERSONALIA =
+            JsonPersonalia()
+                .withPersonIdentifikator(
+                    JsonPersonIdentifikator()
+                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                        .withVerdi(EIER),
+                )
+                .withNavn(
+                    JsonSokernavn()
+                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                        .withFornavn(FORNAVN)
+                        .withMellomnavn(MELLOMNAVN)
+                        .withEtternavn(ETTERNAVN),
+                )
+                .withStatsborgerskap(
+                    JsonStatsborgerskap()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi("NOR"),
+                )
+        private val JSON_PERSONALIA_UTEN_STAT =
+            JsonPersonalia()
+                .withPersonIdentifikator(
+                    JsonPersonIdentifikator()
+                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                        .withVerdi(EIER),
+                )
+                .withNavn(
+                    JsonSokernavn()
+                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                        .withFornavn(FORNAVN)
+                        .withMellomnavn(MELLOMNAVN)
+                        .withEtternavn(ETTERNAVN),
+                )
     }
 }

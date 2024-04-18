@@ -21,18 +21,18 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 internal class InnsendingServiceTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
-    private val innsendingService = InnsendingService(
-        soknadUnderArbeidRepository,
-        opplastetVedleggRepository,
-        soknadUnderArbeidService,
-        soknadMetadataRepository
-    )
+    private val innsendingService =
+        InnsendingService(
+            soknadUnderArbeidRepository,
+            opplastetVedleggRepository,
+            soknadUnderArbeidService,
+            soknadMetadataRepository,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -41,7 +41,12 @@ internal class InnsendingServiceTest {
 
     @Test
     fun `oppdater innsendingStatus for SoknadUnderArbeid`() {
-        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any(), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)) } just runs
+        every {
+            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
+                any(),
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+            )
+        } just runs
         every { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) } just runs
 
         innsendingService.oppdaterSoknadUnderArbeid(createSoknadUnderArbeid())
@@ -82,7 +87,7 @@ internal class InnsendingServiceTest {
             jsonInternalSoknad = createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn(),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -90,7 +95,7 @@ internal class InnsendingServiceTest {
         return JsonInternalSoknad().withMottaker(
             JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(ORGNR)
-                .withNavEnhetsnavn(NAVENHETSNAVN)
+                .withNavEnhetsnavn(NAVENHETSNAVN),
         )
     }
 
@@ -104,7 +109,7 @@ internal class InnsendingServiceTest {
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -117,7 +122,7 @@ internal class InnsendingServiceTest {
             navEnhet = NAVENHETSNAVN_METADATA,
             fiksForsendelseId = FIKSFORSENDELSEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 

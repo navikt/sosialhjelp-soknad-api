@@ -24,9 +24,12 @@ import java.time.format.DateTimeFormatter
 class SosialhjelpPdfGenerator(
     private val navMessageSource: NavMessageSource,
     private val textHelpers: TextHelpers,
-    private val pdfUtils: PdfUtils
+    private val pdfUtils: PdfUtils,
 ) {
-    fun generate(jsonInternalSoknad: JsonInternalSoknad, utvidetSoknad: Boolean): ByteArray {
+    fun generate(
+        jsonInternalSoknad: JsonInternalSoknad,
+        utvidetSoknad: Boolean,
+    ): ByteArray {
         return try {
             val pdf = PdfGenerator()
 
@@ -65,7 +68,10 @@ class SosialhjelpPdfGenerator(
         }
     }
 
-    fun generateEttersendelsePdf(jsonInternalSoknad: JsonInternalSoknad, eier: String): ByteArray {
+    fun generateEttersendelsePdf(
+        jsonInternalSoknad: JsonInternalSoknad,
+        eier: String,
+    ): ByteArray {
         return try {
             val pdf = PdfGenerator()
 
@@ -100,7 +106,9 @@ class SosialhjelpPdfGenerator(
 
             leggTilHeading(pdf, "Brukerkvittering")
 
-            pdf.skrivTekst("Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat")
+            pdf.skrivTekst(
+                "Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat",
+            )
 
             pdf.finish()
         } catch (e: Exception) {
@@ -112,7 +120,11 @@ class SosialhjelpPdfGenerator(
         return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key)
     }
 
-    private fun leggTilHeading(pdf: PdfGenerator, heading: String, vararg undertitler: String) {
+    private fun leggTilHeading(
+        pdf: PdfGenerator,
+        heading: String,
+        vararg undertitler: String,
+    ) {
         pdf.addCenteredH1Bold(heading)
         undertitler
             .filter { it.isNotEmpty() }

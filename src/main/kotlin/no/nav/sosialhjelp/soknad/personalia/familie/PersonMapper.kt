@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import org.apache.commons.lang3.StringUtils
 
 object PersonMapper {
-
     fun getPersonnummerFromFnr(fnr: String?): String? {
         return fnr?.substring(6)
     }

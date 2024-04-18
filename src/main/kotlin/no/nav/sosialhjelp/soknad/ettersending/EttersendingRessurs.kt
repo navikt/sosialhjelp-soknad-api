@@ -17,22 +17,30 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/ettersendelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class EttersendingRessurs(
     private val innsendtSoknadService: InnsendtSoknadService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping("/innsendte/{behandlingsId}")
-    fun hentBehandlingskjede(@PathVariable("behandlingsId") behandlingsId: String): BehandlingsKjede {
+    fun hentBehandlingskjede(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): BehandlingsKjede {
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId)
         return innsendtSoknadService.hentBehandlingskjede(behandlingsId)
     }
 
     @GetMapping("/ettersendteVedlegg/{behandlingsId}")
-    fun hentVedlegg(@PathVariable("behandlingsId") behandlingsId: String): List<EttersendtVedlegg> {
+    fun hentVedlegg(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): List<EttersendtVedlegg> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -42,7 +50,7 @@ class EttersendingRessurs(
         return VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg(
             innsendingstidspunkt,
             opplastedeVedlegg,
-            originaleVedlegg
+            originaleVedlegg,
         )
     }
 }

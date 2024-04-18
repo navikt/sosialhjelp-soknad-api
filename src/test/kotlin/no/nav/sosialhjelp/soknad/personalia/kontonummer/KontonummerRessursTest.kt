@@ -29,17 +29,17 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class KontonummerRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
-    private val kontonummerRessurs = KontonummerRessurs(
-        tilgangskontroll,
-        soknadUnderArbeidRepository,
-        kontonummerService,
-        controllerAdapter
-    )
+    private val kontonummerRessurs =
+        KontonummerRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            kontonummerService,
+            controllerAdapter,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -96,7 +96,7 @@ internal class KontonummerRessursTest {
     }
 
     @Test
-    fun UgyldigKontonummerValidererIkke() {
+    fun ugyldigKontonummerValidererIkke() {
         val invalidInput = KontonummerInputDTO(brukerutfyltVerdi = "invalid; should match ^\\d{11}$")
         println(Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).map { it.message })
         val isValid = Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).isEmpty()
@@ -172,7 +172,10 @@ internal class KontonummerRessursTest {
             createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null)
     }
 
-    private fun createJsonInternalSoknadWithKontonummer(kilde: JsonKilde, verdi: String?): SoknadUnderArbeid {
+    private fun createJsonInternalSoknadWithKontonummer(
+        kilde: JsonKilde,
+        verdi: String?,
+    ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
             .withKilde(kilde)
@@ -195,7 +198,7 @@ internal class KontonummerRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

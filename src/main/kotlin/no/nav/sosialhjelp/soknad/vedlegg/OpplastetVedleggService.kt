@@ -19,13 +19,13 @@ class OpplastetVedleggService(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
 ) {
     fun lastOppVedlegg(
         behandlingsId: String,
         vedleggstype: String,
         orginalData: ByteArray,
-        orginaltFilnavn: String
+        orginaltFilnavn: String,
     ): OpplastetVedlegg {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, FileDetectionUtils.detectMimeType(orginalData))
 
@@ -40,39 +40,46 @@ class OpplastetVedleggService(
             vedleggType = OpplastetVedleggType(vedleggstype),
             data = data,
             soknadId = soknadUnderArbeid.soknadId,
-            filnavn = filnavn
+            filnavn = filnavn,
         ).also {
             opplastetVedleggRepository.opprettVedlegg(it, eier())
             soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
                 getSha512FromByteArray(data),
                 behandlingsId,
                 vedleggstype,
-                filnavn
+                filnavn,
             )
         }
     }
 
-    fun sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId: String?, data: ByteArray) {
+    fun sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(
+        behandlingsId: String?,
+        data: ByteArray,
+    ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val soknadId = soknadUnderArbeid.soknadId
 
         val samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier())
         val newStorrelse = samletVedleggStorrelse + data.size
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
-            val feilmeldingId = if (soknadUnderArbeid.erEttersendelse) {
-                "ettersending.vedlegg.feil.samletStorrelseForStor"
-            } else {
-                "vedlegg.opplasting.feil.samletStorrelseForStor"
-            }
+            val feilmeldingId =
+                if (soknadUnderArbeid.erEttersendelse) {
+                    "ettersending.vedlegg.feil.samletStorrelseForStor"
+                } else {
+                    "vedlegg.opplasting.feil.samletStorrelseForStor"
+                }
             throw SamletVedleggStorrelseForStorException(
                 "Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor",
                 null,
-                feilmeldingId
+                feilmeldingId,
             )
         }
     }
 
-    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String?, vedleggId: String?) {
+    fun deleteVedleggAndUpdateVedleggstatus(
+        behandlingsId: String?,
+        vedleggId: String?,
+    ) {
         val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier()) ?: return
 
         val vedleggstype = opplastetVedlegg.vedleggType.sammensattType

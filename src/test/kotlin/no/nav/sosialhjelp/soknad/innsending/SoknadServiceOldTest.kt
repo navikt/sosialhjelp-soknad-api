@@ -39,7 +39,6 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 internal class SoknadServiceOldTest {
-
     private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val innsendingService: InnsendingService = mockk()
@@ -51,19 +50,20 @@ internal class SoknadServiceOldTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
 
-    private val soknadServiceOld = SoknadServiceOld(
-        oppgaveHandterer,
-        innsendingService,
-        soknadMetadataRepository,
-        soknadUnderArbeidRepository,
-        systemdataUpdater,
-        bostotteSystemdata,
-        skatteetatenSystemdata,
-        mellomlagringService,
-        prometheusMetricsService,
-        Clock.systemDefaultZone(),
-        v2AdapterService
-    )
+    private val soknadServiceOld =
+        SoknadServiceOld(
+            oppgaveHandterer,
+            innsendingService,
+            soknadMetadataRepository,
+            soknadUnderArbeidRepository,
+            systemdataUpdater,
+            bostotteSystemdata,
+            skatteetatenSystemdata,
+            mellomlagringService,
+            prometheusMetricsService,
+            Clock.systemDefaultZone(),
+            v2AdapterService,
+        )
 
     @BeforeEach
     fun before() {
@@ -102,7 +102,10 @@ internal class SoknadServiceOldTest {
         assertThat(bekreftelser.any { harBekreftelseFor(it, BOSTOTTE_SAMTYKKE) }).isFalse
     }
 
-    private fun harBekreftelseFor(bekreftelse: JsonOkonomibekreftelse, bekreftelsesType: String): Boolean {
+    private fun harBekreftelseFor(
+        bekreftelse: JsonOkonomibekreftelse,
+        bekreftelsesType: String,
+    ): Boolean {
         return bekreftelse.verdi && bekreftelse.type.equals(bekreftelsesType, ignoreCase = true)
     }
 
@@ -112,28 +115,30 @@ internal class SoknadServiceOldTest {
         val testTilleggsinfo = "testTilleggsinfo"
         val testType2 = "testType2"
         val testTilleggsinfo2 = "testTilleggsinfo2"
-        val jsonVedlegg = mutableListOf(
-            JsonVedlegg()
-                .withType(testType)
-                .withTilleggsinfo(testTilleggsinfo)
-                .withStatus(Vedleggstatus.LastetOpp.toString()),
-            JsonVedlegg()
-                .withType(testType2)
-                .withTilleggsinfo(testTilleggsinfo2)
-                .withStatus(Vedleggstatus.LastetOpp.toString())
-        )
+        val jsonVedlegg =
+            mutableListOf(
+                JsonVedlegg()
+                    .withType(testType)
+                    .withTilleggsinfo(testTilleggsinfo)
+                    .withStatus(Vedleggstatus.LastetOpp.toString()),
+                JsonVedlegg()
+                    .withType(testType2)
+                    .withTilleggsinfo(testTilleggsinfo2)
+                    .withStatus(Vedleggstatus.LastetOpp.toString()),
+            )
 
         val behandlingsId = "123"
         val eier = "123456"
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            eier = eier,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                eier = eier,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
 
@@ -160,15 +165,16 @@ internal class SoknadServiceOldTest {
 
     @Test
     fun skalAvbryteSoknad() {
-        every { soknadUnderArbeidRepository.hentSoknadNullable(BEHANDLINGSID, any()) } returns SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        every { soknadUnderArbeidRepository.hentSoknadNullable(BEHANDLINGSID, any()) } returns
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
@@ -186,7 +192,7 @@ internal class SoknadServiceOldTest {
             behandlingsId = BEHANDLINGSID,
             fnr = EIER,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 

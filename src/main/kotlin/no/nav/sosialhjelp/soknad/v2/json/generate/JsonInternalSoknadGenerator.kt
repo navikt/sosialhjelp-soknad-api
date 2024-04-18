@@ -10,13 +10,12 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class JsonInternalSoknadGenerator(
-    private val mappers: List<DomainToJsonMapper>
+    private val mappers: List<DomainToJsonMapper>,
 ) {
-
     private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
 
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
@@ -29,7 +28,10 @@ class JsonInternalSoknadGenerator(
             .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
-    fun copyAndMerge(soknadId: String, original: JsonInternalSoknad): JsonInternalSoknad {
+    fun copyAndMerge(
+        soknadId: String,
+        original: JsonInternalSoknad,
+    ): JsonInternalSoknad {
         return copyJsonInternalSoknad(original)
             .apply {
                 mappers.forEach { it.mapToSoknad(UUID.fromString(soknadId), this) }
@@ -48,7 +50,9 @@ class JsonInternalSoknadGenerator(
 
     private companion object {
         private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+
         private fun toJson(jsonInternalSoknad: JsonInternalSoknad) = objectMapper.writeValueAsString(jsonInternalSoknad)
+
         private fun toObject(json: String) = objectMapper.readValue(json, JsonInternalSoknad::class.java)
     }
 }

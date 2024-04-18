@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component
 @Component
 class ArbeidsforholdService(
     private val aaregClient: AaregClient,
-    private val organisasjonService: OrganisasjonService
+    private val organisasjonService: OrganisasjonService,
 ) {
-
     fun hentArbeidsforhold(fnr: String): List<Arbeidsforhold>? {
         return aaregClient.finnArbeidsforholdForArbeidstaker(fnr)
             ?.map { it.toDomain(organisasjonService) }

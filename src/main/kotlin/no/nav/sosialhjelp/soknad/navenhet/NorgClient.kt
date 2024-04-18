@@ -30,9 +30,8 @@ import java.time.format.DateTimeFormatter
 class NorgClient(
     @Value("\${norg_url}") private val norgUrl: String,
     private val redisService: RedisService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
-
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
@@ -60,16 +59,19 @@ class NorgClient(
         }
     }
 
-    private fun lagreTilCache(geografiskTilknytning: String, navEnhetDto: NavEnhetDto) {
+    private fun lagreTilCache(
+        geografiskTilknytning: String,
+        navEnhetDto: NavEnhetDto,
+    ) {
         try {
             redisService.setex(
                 GT_CACHE_KEY_PREFIX + geografiskTilknytning,
                 redisObjectMapper.writeValueAsBytes(navEnhetDto),
-                CACHE_24_HOURS_IN_SECONDS
+                CACHE_24_HOURS_IN_SECONDS,
             )
             redisService.set(
                 GT_LAST_POLL_TIME_PREFIX + geografiskTilknytning,
-                LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8)
+                LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8),
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e)

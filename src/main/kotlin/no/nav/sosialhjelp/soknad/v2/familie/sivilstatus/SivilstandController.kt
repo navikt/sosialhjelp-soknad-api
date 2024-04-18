@@ -24,13 +24,13 @@ import java.util.UUID
 class SivilstandController(private val familieService: FamilieService) {
     @GetMapping
     fun getSivilstand(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): SivilstandDto? = familieService.findFamilie(soknadId)?.toSivilstandDto()
 
     @PutMapping
     fun updateSivilstand(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody sivilstandInput: SivilstandInput
+        @RequestBody sivilstandInput: SivilstandInput,
     ): ResponseEntity<SivilstandDto> {
         if (sivilstandInput.sivilstatus != Sivilstatus.GIFT) {
             require(sivilstandInput.ektefelle == null) { "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift" }
@@ -42,15 +42,16 @@ class SivilstandController(private val familieService: FamilieService) {
 
 data class SivilstandInput(
     val sivilstatus: Sivilstatus?,
-    val ektefelle: EktefelleInput?
+    val ektefelle: EktefelleInput?,
 )
 
 data class SivilstandDto(
     val sivilstatus: Sivilstatus?,
-    val ektefelle: EktefelleDto?
+    val ektefelle: EktefelleDto?,
 )
 
-fun Familie.toSivilstandDto() = SivilstandDto(
-    this.sivilstatus,
-    if (this.sivilstatus == Sivilstatus.GIFT) this.ektefelle?.toDto() else null
-)
+fun Familie.toSivilstandDto() =
+    SivilstandDto(
+        this.sivilstatus,
+        if (this.sivilstatus == Sivilstatus.GIFT) this.ektefelle?.toDto() else null,
+    )

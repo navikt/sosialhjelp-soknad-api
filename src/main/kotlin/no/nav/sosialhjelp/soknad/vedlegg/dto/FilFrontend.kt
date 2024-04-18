@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.vedlegg.dto
 
 data class FilFrontend(
     val filNavn: String?,
-    val uuid: String? = null
+    val uuid: String? = null,
 )
 
 data class KonvertertFilFrontend(
     val filnavn: String,
-    val bytes: ByteArray
+    val bytes: ByteArray,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

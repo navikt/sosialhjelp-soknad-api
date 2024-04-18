@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
 class UtdanningIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
@@ -25,7 +24,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/utdanning",
-            UtdanningDto::class.java
+            UtdanningDto::class.java,
         ).also {
             assertThat(it.erStudent).isEqualTo(brukerdata.utdanning!!.erStudent)
             assertThat(it.studentgrad).isEqualTo(brukerdata.utdanning!!.studentgrad)
@@ -42,7 +41,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/utdanning",
             input,
             UtdanningDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
@@ -62,7 +61,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/utdanning",
             input,
             UtdanningDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {

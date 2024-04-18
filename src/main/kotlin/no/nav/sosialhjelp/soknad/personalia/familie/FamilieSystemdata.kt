@@ -47,10 +47,8 @@ class FamilieSystemdata(
             if (!ansvarList.isNullOrEmpty()) {
                 ansvarList.removeIf { it.barn.kilde == JsonKilde.SYSTEM && isNotInList(it, systemverdiForsorgerplikt.ansvar) }
                 ansvarList.addAll(
-                    systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) }
+                    systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) },
                 )
-//                TODO ny modell addBarn
-                forsorgerplikt.ansvar = ansvarList
             } else {
                 forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
             }
@@ -58,11 +56,13 @@ class FamilieSystemdata(
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt
             forsorgerplikt.barnebidrag = null
             forsorgerplikt.ansvar = ArrayList()
-//            TODO må vi sette tomme verdier i ny modell ogse?
         }
     }
 
-    private fun isNotInList(jsonAnsvar: JsonAnsvar, jsonAnsvarList: List<JsonAnsvar>): Boolean {
+    private fun isNotInList(
+        jsonAnsvar: JsonAnsvar,
+        jsonAnsvarList: List<JsonAnsvar>,
+    ): Boolean {
         return jsonAnsvarList.none {
             checkNotNull(it.barn) { "JsonAnsvar mangler barn. Ikke mulig å skille fra andre barn" }
             return if (it.barn.personIdentifikator != null) {
@@ -117,16 +117,16 @@ class FamilieSystemdata(
                         JsonNavn()
                             .withFornavn(barn.fornavn)
                             .withMellomnavn(barn.mellomnavn)
-                            .withEtternavn(barn.etternavn)
+                            .withEtternavn(barn.etternavn),
                     )
                     .withFodselsdato(barn.fodselsdato?.toString())
                     .withPersonIdentifikator(barn.fnr)
-                    .withHarDiskresjonskode(false)
+                    .withHarDiskresjonskode(false),
             )
             .withErFolkeregistrertSammen(
                 JsonErFolkeregistrertSammen()
                     .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(barn.folkeregistrertSammen)
+                    .withVerdi(barn.folkeregistrertSammen),
             )
     }
 
@@ -137,7 +137,7 @@ class FamilieSystemdata(
                     JsonNavn()
                         .withFornavn("")
                         .withMellomnavn("")
-                        .withEtternavn("")
+                        .withEtternavn(""),
                 )
             } else {
                 JsonEktefelle()

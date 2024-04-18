@@ -6,14 +6,16 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import java.util.Locale
 
 object SenderUtils {
-
     fun lagBehandlingsId(databasenokkel: Long): String {
         val applikasjonsprefix = "11"
         val base = (applikasjonsprefix + "0000000").toLong(36)
-        val behandlingsId = (base + databasenokkel).toString(36).uppercase(Locale.getDefault())
-            .replace("O", "o").replace("I", "i")
+        val behandlingsId =
+            (base + databasenokkel).toString(36).uppercase(Locale.getDefault())
+                .replace("O", "o").replace("I", "i")
         if (!behandlingsId.startsWith(applikasjonsprefix)) {
-            throw SosialhjelpSoknadApiException("Tildelt sekvensrom for behandlingsId er brukt opp. Kan ikke generer behandlingsId $behandlingsId")
+            throw SosialhjelpSoknadApiException(
+                "Tildelt sekvensrom for behandlingsId er brukt opp. Kan ikke generer behandlingsId $behandlingsId",
+            )
         }
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
         return behandlingsId

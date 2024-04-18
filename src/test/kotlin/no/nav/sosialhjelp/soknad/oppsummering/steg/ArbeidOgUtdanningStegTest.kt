@@ -14,18 +14,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class ArbeidOgUtdanningStegTest {
-
     private val steg = ArbeidOgUtdanningSteg()
 
-    private val arbeidsforholdMedSlutt = JsonArbeidsforhold()
-        .withArbeidsgivernavn("arbeidsgiver")
-        .withFom("01.01.2021")
-        .withTom("10.10.2021")
-        .withStillingsprosent(100)
-    private val arbeidsforholdUtenSlutt = JsonArbeidsforhold()
-        .withArbeidsgivernavn("arbeidsgiver2")
-        .withFom("01.01.2021")
-        .withStillingsprosent(100)
+    private val arbeidsforholdMedSlutt =
+        JsonArbeidsforhold()
+            .withArbeidsgivernavn("arbeidsgiver")
+            .withFom("01.01.2021")
+            .withTom("10.10.2021")
+            .withStillingsprosent(100)
+    private val arbeidsforholdUtenSlutt =
+        JsonArbeidsforhold()
+            .withArbeidsgivernavn("arbeidsgiver2")
+            .withFom("01.01.2021")
+            .withStillingsprosent(100)
     private val ikkeStudent = JsonUtdanning().withErStudent(false)
     private val studentUtenStudentgrad = JsonUtdanning().withErStudent(true)
     private val heltidstudent = JsonUtdanning().withErStudent(true).withStudentgrad(JsonUtdanning.Studentgrad.HELTID)
@@ -65,7 +66,9 @@ internal class ArbeidOgUtdanningStegTest {
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.tom.label")
         assertThat(felt.labelSvarMap!!["arbeidsforhold.tom.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.tom)
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.stillingsprosent.label")
-        assertThat(felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.stillingsprosent.toString())
+        assertThat(
+            felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value,
+        ).isEqualTo(arbeidsforholdMedSlutt.stillingsprosent.toString())
     }
 
     @Test
@@ -89,17 +92,20 @@ internal class ArbeidOgUtdanningStegTest {
         assertThat(felt.labelSvarMap!!["arbeidsforhold.fom.label"]!!.value).isEqualTo(arbeidsforholdUtenSlutt.fom)
         assertThat(felt.labelSvarMap).doesNotContainKey("arbeidsforhold.tom.label")
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.stillingsprosent.label")
-        assertThat(felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value).isEqualTo(arbeidsforholdUtenSlutt.stillingsprosent.toString())
+        assertThat(
+            felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value,
+        ).isEqualTo(arbeidsforholdUtenSlutt.stillingsprosent.toString())
     }
 
     @Test
     fun arbeidsforholdMedKommentar() {
-        val soknad = createSoknad(
-            JsonArbeid()
-                .withForhold(listOf(arbeidsforholdUtenSlutt))
-                .withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold().withVerdi("kommentar")),
-            JsonUtdanning()
-        )
+        val soknad =
+            createSoknad(
+                JsonArbeid()
+                    .withForhold(listOf(arbeidsforholdUtenSlutt))
+                    .withKommentarTilArbeidsforhold(JsonKommentarTilArbeidsforhold().withVerdi("kommentar")),
+                JsonUtdanning(),
+            )
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(2)
         assertThat(res.avsnitt[0].sporsmal).hasSize(2)
@@ -174,15 +180,18 @@ internal class ArbeidOgUtdanningStegTest {
         validateFeltMedSvar(studentgradSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "dinsituasjon.studerer.true.grad.heltid")
     }
 
-    private fun createSoknad(arbeid: JsonArbeid, utdanning: JsonUtdanning): JsonInternalSoknad {
+    private fun createSoknad(
+        arbeid: JsonArbeid,
+        utdanning: JsonUtdanning,
+    ): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()
                     .withData(
                         JsonData()
                             .withArbeid(arbeid)
-                            .withUtdanning(utdanning)
-                    )
+                            .withUtdanning(utdanning),
+                    ),
             )
     }
 }

@@ -10,9 +10,8 @@ import java.time.LocalDate
 
 @Component
 class SkattbarInntektService(
-    private val skatteetatenClient: SkatteetatenClient
+    private val skatteetatenClient: SkatteetatenClient,
 ) {
-
     fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
@@ -21,7 +20,10 @@ class SkattbarInntektService(
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(summerteUtbetalinger)
     }
 
-    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger: List<Utbetaling>?, trekk: List<Utbetaling>): List<Utbetaling>? {
+    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(
+        utbetalinger: List<Utbetaling>?,
+        trekk: List<Utbetaling>,
+    ): List<Utbetaling>? {
         val bruttoOrgPerMaaned = utbetalinger?.groupBy { it.orgnummer }?.let { getUtBetalingPerMaanedPerOrg(it) }
         val trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(trekk.groupBy { it.orgnummer })
         val utbetalingerBrutto: List<Utbetaling>? = bruttoOrgPerMaaned?.values?.flatMap { it.values }
@@ -54,7 +56,9 @@ class SkattbarInntektService(
             ?.values
             ?.map {
                 val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
-                grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
+                grupperOgSummerEtterUtbetalingsStartDato(
+                    it,
+                )[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
             }
     }
 }

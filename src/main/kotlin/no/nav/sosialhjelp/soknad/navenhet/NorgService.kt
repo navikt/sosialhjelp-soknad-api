@@ -15,9 +15,8 @@ import java.time.format.DateTimeFormatter
 @Component
 class NorgService(
     private val norgClient: NorgClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
-
     fun getEnhetForGt(gt: String?): NavEnhet? {
         if (gt == null || !gt.matches(Regex("^[0-9]+$"))) {
             throw IllegalArgumentException("GT ikke på gyldig format: $gt")

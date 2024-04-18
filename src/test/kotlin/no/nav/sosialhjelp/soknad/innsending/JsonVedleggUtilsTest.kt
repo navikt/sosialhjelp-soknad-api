@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class JsonVedleggUtilsTest {
-
     @Test
     fun addHendelseTypeAndHendelseReferanse_forSoknad() {
         val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
@@ -75,21 +74,21 @@ internal class JsonVedleggUtilsTest {
             JsonVedlegg()
                 .withStatus(Vedleggstatus.VedleggKreves.name)
                 .withType("annet")
-                .withTilleggsinfo("tilleggsinfo1")
+                .withTilleggsinfo("tilleggsinfo1"),
         )
         jsonVedlegg.add(
             JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name)
                 .withType("type1")
                 .withTilleggsinfo("annet")
-                .withFiler(lagJsonFiler())
+                .withFiler(lagJsonFiler()),
         )
         jsonVedlegg.add(
             JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name)
                 .withType(JsonVedleggUtils.ANNET)
                 .withTilleggsinfo(JsonVedleggUtils.ANNET)
-                .withFiler(lagJsonFiler())
+                .withFiler(lagJsonFiler()),
         )
         return JsonVedleggSpesifikasjon()
             .withVedlegg(jsonVedlegg)
@@ -100,7 +99,7 @@ internal class JsonVedleggUtilsTest {
         filer.add(
             JsonFiler()
                 .withFilnavn("filnavn")
-                .withSha512("sha1")
+                .withSha512("sha1"),
         )
         return filer
     }

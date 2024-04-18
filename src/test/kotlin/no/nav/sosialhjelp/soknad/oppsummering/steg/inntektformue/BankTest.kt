@@ -15,7 +15,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class BankTest {
-
     private val bank = Bank()
 
     @Test
@@ -33,13 +32,14 @@ internal class BankTest {
     @Test
     fun valgtFlereBankFormuerMedBeskrivelseAvAnnet() {
         val okonomi = createOkonomi(true)
-        okonomi.oversikt = JsonOkonomioversikt()
-            .withFormue(
-                listOf(
-                    createFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO),
-                    createFormue(SoknadJsonTyper.FORMUE_ANNET)
+        okonomi.oversikt =
+            JsonOkonomioversikt()
+                .withFormue(
+                    listOf(
+                        createFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO),
+                        createFormue(SoknadJsonTyper.FORMUE_ANNET),
+                    ),
                 )
-            )
         okonomi.opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet().withSparing("sparing")
 
         val avsnitt = bank.getAvsnitt(okonomi)
@@ -65,9 +65,9 @@ internal class BankTest {
                         listOf(
                             JsonOkonomibekreftelse()
                                 .withType(SoknadJsonTyper.BEKREFTELSE_SPARING)
-                                .withVerdi(harBekreftelse)
-                        )
-                    )
+                                .withVerdi(harBekreftelse),
+                        ),
+                    ),
             )
     }
 

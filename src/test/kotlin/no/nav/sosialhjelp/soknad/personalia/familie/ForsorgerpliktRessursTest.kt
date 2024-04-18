@@ -48,7 +48,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class ForsorgerpliktRessursTest {
-
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -88,11 +87,12 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun forsorgerpliktSkalReturnereEtBarnSomErFolkeregistrertSammenOgHarDeltBosted() {
-        val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-            .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true)
-            )
-            .withHarDeltBosted(JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true))
+        val jsonAnsvar =
+            JsonAnsvar().withBarn(JSON_BARN)
+                .withErFolkeregistrertSammen(
+                    JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true),
+                )
+                .withHarDeltBosted(JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true))
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
@@ -106,11 +106,12 @@ internal class ForsorgerpliktRessursTest {
 
     @Test
     fun forsorgerpliktSkalReturnereEtBarnSomIkkeErFolkeregistrertSammenMenHarSamvarsgrad() {
-        val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-            .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false)
-            )
-            .withSamvarsgrad(JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30))
+        val jsonAnsvar =
+            JsonAnsvar().withBarn(JSON_BARN)
+                .withErFolkeregistrertSammen(
+                    JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false),
+                )
+                .withSamvarsgrad(JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30))
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
@@ -245,37 +246,39 @@ internal class ForsorgerpliktRessursTest {
 
     private fun createBarnMedSamvarsgrad(): AnsvarFrontend {
         return AnsvarFrontend(
-            barn = BarnFrontend(
-                navn = null,
-                fodselsdato = null,
-                personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN_2.personIdentifikator),
-                fodselsnummer = JSON_BARN_2.personIdentifikator
-            ),
+            barn =
+                BarnFrontend(
+                    navn = null,
+                    fodselsdato = null,
+                    personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN_2.personIdentifikator),
+                    fodselsnummer = JSON_BARN_2.personIdentifikator,
+                ),
             borSammenMed = null,
             erFolkeregistrertSammen = null,
             harDeltBosted = null,
-            samvarsgrad = 30
+            samvarsgrad = 30,
         )
     }
 
     private fun createBarnMedDeltBosted(): AnsvarFrontend {
         return AnsvarFrontend(
-            barn = BarnFrontend(
-                navn = null,
-                fodselsdato = null,
-                personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN.personIdentifikator),
-                fodselsnummer = JSON_BARN.personIdentifikator
-            ),
+            barn =
+                BarnFrontend(
+                    navn = null,
+                    fodselsdato = null,
+                    personnummer = PersonMapper.getPersonnummerFromFnr(JSON_BARN.personIdentifikator),
+                    fodselsnummer = JSON_BARN.personIdentifikator,
+                ),
             borSammenMed = null,
             erFolkeregistrertSammen = null,
             harDeltBosted = true,
-            samvarsgrad = null
+            samvarsgrad = null,
         )
     }
 
     private fun assertThatAnsvarIsCorrectlyConverted(
         ansvarFrontend: AnsvarFrontend?,
-        jsonAnsvar: JsonAnsvar
+        jsonAnsvar: JsonAnsvar,
     ) {
         val barnFrontend = ansvarFrontend?.barn
         val jsonBarn = jsonAnsvar.barn
@@ -293,7 +296,7 @@ internal class ForsorgerpliktRessursTest {
     private fun createJsonInternalSoknadWithForsorgerplikt(
         harForsorgerplikt: Boolean?,
         barnebidrag: Verdi?,
-        ansvars: List<JsonAnsvar>?
+        ansvars: List<JsonAnsvar>?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
@@ -304,16 +307,16 @@ internal class ForsorgerpliktRessursTest {
                             JsonHarForsorgerplikt()
                                 .withKilde(JsonKilde.SYSTEM)
                                 .withVerdi(it)
-                        }
+                        },
                     )
                     .withBarnebidrag(
                         barnebidrag?.let {
                             JsonBarnebidrag()
                                 .withKilde(JsonKildeBruker.BRUKER)
                                 .withVerdi(it)
-                        }
+                        },
                     )
-                    .withAnsvar(ansvars)
+                    .withAnsvar(ansvars),
             )
         return soknadUnderArbeid
     }
@@ -321,26 +324,28 @@ internal class ForsorgerpliktRessursTest {
     companion object {
         private const val EIER = "123456789101"
         private const val BEHANDLINGSID = "123"
-        private val JSON_BARN = JsonBarn()
-            .withKilde(JsonKilde.SYSTEM)
-            .withNavn(
-                JsonNavn()
-                    .withFornavn("Amadeus")
-                    .withMellomnavn("Wolfgang")
-                    .withEtternavn("Mozart")
-            )
-            .withFodselsdato("1756-01-27")
-            .withPersonIdentifikator("11111111111")
-        private val JSON_BARN_2 = JsonBarn()
-            .withKilde(JsonKilde.SYSTEM)
-            .withNavn(
-                JsonNavn()
-                    .withFornavn("Ludwig")
-                    .withMellomnavn("van")
-                    .withEtternavn("Beethoven")
-            )
-            .withFodselsdato("1770-12-16")
-            .withPersonIdentifikator("22222222222")
+        private val JSON_BARN =
+            JsonBarn()
+                .withKilde(JsonKilde.SYSTEM)
+                .withNavn(
+                    JsonNavn()
+                        .withFornavn("Amadeus")
+                        .withMellomnavn("Wolfgang")
+                        .withEtternavn("Mozart"),
+                )
+                .withFodselsdato("1756-01-27")
+                .withPersonIdentifikator("11111111111")
+        private val JSON_BARN_2 =
+            JsonBarn()
+                .withKilde(JsonKilde.SYSTEM)
+                .withNavn(
+                    JsonNavn()
+                        .withFornavn("Ludwig")
+                        .withMellomnavn("van")
+                        .withEtternavn("Beethoven"),
+                )
+                .withFodselsdato("1770-12-16")
+                .withPersonIdentifikator("22222222222")
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(
@@ -351,7 +356,7 @@ internal class ForsorgerpliktRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

@@ -12,7 +12,6 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 internal class SkattbarInntektServiceTest {
-
     private val skatteetatenClient: SkatteetatenClient = mockk()
     private val skattbarInntektService = SkattbarInntektService(skatteetatenClient)
 

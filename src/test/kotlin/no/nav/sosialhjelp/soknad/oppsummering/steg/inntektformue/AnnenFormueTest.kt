@@ -15,16 +15,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class AnnenFormueTest {
-
     private val annenFormue = AnnenFormue()
 
     @Test
     fun ikkeUtfylt() {
-        val okonomi = JsonOkonomi()
-            .withOpplysninger(
-                JsonOkonomiopplysninger()
-                    .withBekreftelse(emptyList())
-            )
+        val okonomi =
+            JsonOkonomi()
+                .withOpplysninger(
+                    JsonOkonomiopplysninger()
+                        .withBekreftelse(emptyList()),
+                )
 
         val avsnitt = annenFormue.getAvsnitt(okonomi)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -52,7 +52,7 @@ internal class AnnenFormueTest {
         val okonomi = createOkonomi(true)
         okonomi.withOversikt(
             JsonOkonomioversikt()
-                .withFormue(emptyList())
+                .withFormue(emptyList()),
         )
 
         val avsnitt = annenFormue.getAvsnitt(okonomi)
@@ -76,9 +76,9 @@ internal class AnnenFormueTest {
                 .withFormue(
                     listOf(
                         createFormue(SoknadJsonTyper.VERDI_BOLIG),
-                        createFormue(SoknadJsonTyper.VERDI_ANNET)
-                    )
-                )
+                        createFormue(SoknadJsonTyper.VERDI_ANNET),
+                    ),
+                ),
         )
         okonomi.opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet().withVerdi("verdi")
 
@@ -110,9 +110,9 @@ internal class AnnenFormueTest {
                         listOf(
                             JsonOkonomibekreftelse()
                                 .withType(SoknadJsonTyper.BEKREFTELSE_VERDI)
-                                .withVerdi(harBekreftelse)
-                        )
-                    )
+                                .withVerdi(harBekreftelse),
+                        ),
+                    ),
             )
     }
 

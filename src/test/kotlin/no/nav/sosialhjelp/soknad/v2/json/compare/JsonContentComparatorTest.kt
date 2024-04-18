@@ -14,17 +14,17 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.UUID
 
 class JsonContentComparatorTest {
-
     private val comparator = ShadowProductionManager.JsonContentComparator(UUID.randomUUID().toString())
     private var original: JsonInternalSoknad = createJsonInternalSoknad()
     private val logger = LoggerFactory.getLogger(JsonCompareErrorLogger::class.java)
 
-    private val logInMemoryAppender = object : ListAppender<ILoggingEvent>() {
-        fun getErrors(): List<ILoggingEvent> = list.filter { it.level == Level.WARN }
-    }
+    private val logInMemoryAppender =
+        object : ListAppender<ILoggingEvent>() {
+            fun getErrors(): List<ILoggingEvent> = list.filter { it.level == Level.WARN }
+        }
 
     @BeforeEach
     fun setup() {
@@ -37,11 +37,12 @@ class JsonContentComparatorTest {
     fun `PersonId skal ikke finnes i log etter sammenlikning`() {
         val nyPersonId = "99887712345"
 
-        val other = copyJsonClass(original).apply {
-            soknad.data.personalia.personIdentifikator.verdi = nyPersonId
-            soknad.data.familie.sivilstatus.ektefelle.personIdentifikator = nyPersonId
-            soknad.data.familie.forsorgerplikt.ansvar.first().barn.personIdentifikator = nyPersonId
-        }
+        val other =
+            copyJsonClass(original).apply {
+                soknad.data.personalia.personIdentifikator.verdi = nyPersonId
+                soknad.data.familie.sivilstatus.ektefelle.personIdentifikator = nyPersonId
+                soknad.data.familie.forsorgerplikt.ansvar.first().barn.personIdentifikator = nyPersonId
+            }
 
         comparator.doCompareAndLogErrors(original, other)
 
@@ -52,7 +53,7 @@ class JsonContentComparatorTest {
                 assertThat(
                     any {
                         it.contains(original.soknad.data.personalia.personIdentifikator.verdi)
-                    }
+                    },
                 ).isFalse()
                 assertThat(any { it.contains("barn.personIdentifikator") }).isTrue()
                 assertThat(any { it.contains("ektefelle.personIdentifikator") }).isTrue()
@@ -63,11 +64,12 @@ class JsonContentComparatorTest {
     @Test
     fun `Adresseinformasjon skal ikke finnes i logg etter sammenlikning`() {
         val originalAdresse = createGateAdresse()
-        val other = copyJsonClass(originalAdresse).apply {
-            gatenavn = "En helt annen gate"
-            husnummer = "44"
-            kommunenummer = "0302"
-        }
+        val other =
+            copyJsonClass(originalAdresse).apply {
+                gatenavn = "En helt annen gate"
+                husnummer = "44"
+                kommunenummer = "0302"
+            }
 
         comparator.doCompareAndLogErrors(originalAdresse, other)
 
@@ -86,9 +88,10 @@ class JsonContentComparatorTest {
     @Test
     fun `Hvis adressetypen er forskjellig, skal verdi vises i logg`() {
         val originalPersonalia = createJsonPersonalia()
-        val other = copyJsonClass(originalPersonalia).apply {
-            this.oppholdsadresse = createGateAdresse()
-        }
+        val other =
+            copyJsonClass(originalPersonalia).apply {
+                this.oppholdsadresse = createGateAdresse()
+            }
         comparator.doCompareAndLogErrors(originalPersonalia, other)
 
         logInMemoryAppender.getErrors()

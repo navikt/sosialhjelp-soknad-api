@@ -9,7 +9,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class SenderUtilsTest {
-
     private var originalBehandlingsId = "behandlingsId"
 
     @Test

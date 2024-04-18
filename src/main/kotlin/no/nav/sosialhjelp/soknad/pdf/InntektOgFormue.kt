@@ -17,7 +17,7 @@ object InntektOgFormue {
         pdfUtils: PdfUtils,
         okonomi: JsonOkonomi?,
         soknad: JsonSoknad,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("inntektbolk.tittel"))
         pdf.addBlankLine()
@@ -53,7 +53,11 @@ object InntektOgFormue {
             pdf.skrivTekst(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.har_gitt_samtykke"))
             pdf.addBlankLine()
             if (skattetatenSamtykke.isNotEmpty()) {
-                pdfUtils.skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(skattetatenSamtykke[0].bekreftelsesDato), "utbetalinger.inntekt.skattbar.tidspunkt")
+                pdfUtils.skrivTekstMedGuard(
+                    pdf,
+                    formaterDatoOgTidspunkt(skattetatenSamtykke[0].bekreftelsesDato),
+                    "utbetalinger.inntekt.skattbar.tidspunkt",
+                )
             }
             val skatteetatenUtbetalinger = hentUtbetalinger(okonomi, "skatteetaten")
             if (soknad.driftsinformasjon != null && soknad.driftsinformasjon.inntektFraSkatteetatenFeilet) {
@@ -72,10 +76,18 @@ object InntektOgFormue {
                         pdfUtils.skrivTekstMedGuard(pdf, skatt.organisasjon.navn, "utbetalinger.utbetaling.arbeidsgivernavn.label")
                     }
                     if (skatt.periodeFom != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, formaterDato(skatt.periodeFom, DATO_FORMAT), "utbetalinger.utbetaling.periodeFom.label")
+                        pdfUtils.skrivTekstMedGuard(
+                            pdf,
+                            formaterDato(skatt.periodeFom, DATO_FORMAT),
+                            "utbetalinger.utbetaling.periodeFom.label",
+                        )
                     }
                     if (skatt.periodeTom != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, formaterDato(skatt.periodeTom, DATO_FORMAT), "utbetalinger.utbetaling.periodeTom.label")
+                        pdfUtils.skrivTekstMedGuard(
+                            pdf,
+                            formaterDato(skatt.periodeTom, DATO_FORMAT),
+                            "utbetalinger.utbetaling.periodeTom.label",
+                        )
                     }
                     if (skatt.brutto != null) {
                         pdfUtils.skrivTekstMedGuard(pdf, skatt.brutto.toString(), "utbetalinger.utbetaling.brutto.label")
@@ -116,7 +128,11 @@ object InntektOgFormue {
                         pdfUtils.skrivTekstMedGuard(pdf, navytelse.brutto.toString(), "utbetalinger.utbetaling.brutto.label")
                     }
                     if (navytelse.utbetalingsdato != null) {
-                        pdfUtils.skrivTekstMedGuard(pdf, formaterDato(navytelse.utbetalingsdato, DATO_FORMAT), "utbetalinger.utbetaling.erutbetalt.label")
+                        pdfUtils.skrivTekstMedGuard(
+                            pdf,
+                            formaterDato(navytelse.utbetalingsdato, DATO_FORMAT),
+                            "utbetalinger.utbetaling.erutbetalt.label",
+                        )
                     }
                 }
                 if (utvidetSoknad) {
@@ -170,7 +186,11 @@ object InntektOgFormue {
             pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.har_gitt_samtykke"))
             pdf.addBlankLine()
             if (bostotteSamtykke.isNotEmpty()) {
-                pdfUtils.skrivTekstMedGuard(pdf, formaterDatoOgTidspunkt(bostotteSamtykke[0].bekreftelsesDato), "inntekt.bostotte.tidspunkt")
+                pdfUtils.skrivTekstMedGuard(
+                    pdf,
+                    formaterDatoOgTidspunkt(bostotteSamtykke[0].bekreftelsesDato),
+                    "inntekt.bostotte.tidspunkt",
+                )
             }
             if (hentingFraHusbankenHarFeilet) {
                 pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.nedlasting_feilet")
@@ -196,7 +216,11 @@ object InntektOgFormue {
                 if (husbanken.mottaker != null) {
                     pdfUtils.skrivTekstMedGuard(pdf, husbanken.mottaker.value(), "inntekt.bostotte.utbetaling.mottaker")
                 }
-                pdfUtils.skrivTekstMedGuard(pdf, formaterDato(husbanken.utbetalingsdato, DATO_FORMAT), "inntekt.bostotte.utbetaling.utbetalingsdato")
+                pdfUtils.skrivTekstMedGuard(
+                    pdf,
+                    formaterDato(husbanken.utbetalingsdato, DATO_FORMAT),
+                    "inntekt.bostotte.utbetaling.utbetalingsdato",
+                )
                 if (husbanken.netto != null) {
                     pdfUtils.skrivTekstMedGuard(pdf, husbanken.netto.toString(), "inntekt.bostotte.utbetaling.belop")
                 }

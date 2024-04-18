@@ -4,11 +4,11 @@ data class SkattbarInntektFrontend(
     val inntektFraSkatteetaten: List<SkattbarInntektOgForskuddstrekk>?,
     val inntektFraSkatteetatenFeilet: Boolean?,
     val samtykke: Boolean?,
-    val samtykkeTidspunkt: String?
+    val samtykkeTidspunkt: String?,
 )
 
 data class SkattbarInntektOgForskuddstrekk(
-    val organisasjoner: List<Organisasjon>?
+    val organisasjoner: List<Organisasjon>?,
 )
 
 data class Organisasjon(
@@ -16,11 +16,11 @@ data class Organisasjon(
     val organisasjonsnavn: String?,
     val orgnr: String?,
     val fom: String,
-    val tom: String
+    val tom: String,
 )
 
 data class Utbetaling(
     val brutto: Double?,
     val forskuddstrekk: Double?,
-    val tittel: String?
+    val tittel: String?,
 )

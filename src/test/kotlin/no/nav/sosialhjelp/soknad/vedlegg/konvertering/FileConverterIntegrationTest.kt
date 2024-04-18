@@ -21,7 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.*
+import java.util.UUID
 
 class FileConverterIntegrationTest : AbstractIntegrationTest() {
     private val endpoint: String = "/vedlegg/konverter"
@@ -54,11 +54,12 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Ikke stottet fil skal gi exception`() {
-        every { fileConverter.toPdf(any(), any()) } throws FileConverterException(
-            httpStatus = HttpStatus.BAD_REQUEST,
-            msg = "Unknown format",
-            trace = UUID.randomUUID().toString()
-        )
+        every { fileConverter.toPdf(any(), any()) } throws
+            FileConverterException(
+                httpStatus = HttpStatus.BAD_REQUEST,
+                msg = "Unknown format",
+                trace = UUID.randomUUID().toString(),
+            )
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))
             .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
@@ -70,7 +71,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
     fun `Ikke stottet content-type`() {
         doPost(
             contentType = MediaType.APPLICATION_JSON,
-            BodyInserters.fromValue("{id: 44}")
+            BodyInserters.fromValue("{id: 44}"),
         )
             .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
             .expectHeader().contentType("application/problem+json;charset=UTF-8")
@@ -80,7 +81,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
 
     fun doPost(
         contentType: MediaType = MediaType.MULTIPART_FORM_DATA,
-        producer: BodyInserter<*, in ClientHttpRequest>
+        producer: BodyInserter<*, in ClientHttpRequest>,
     ): WebTestClient.ResponseSpec {
         return webClient.post()
             .uri(endpoint)
@@ -94,7 +95,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
             "file",
             ExampleFileRepository.EXCEL_FILE.name,
             MediaType.MULTIPART_FORM_DATA.toString(),
-            ExampleFileRepository.EXCEL_FILE.readBytes()
+            ExampleFileRepository.EXCEL_FILE.readBytes(),
         ).let {
             val builder = MultipartBodyBuilder()
             builder.part("file", it.resource)

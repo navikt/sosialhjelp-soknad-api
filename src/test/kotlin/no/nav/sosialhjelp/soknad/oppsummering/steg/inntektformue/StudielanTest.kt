@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class StudielanTest {
-
     private val studielan = Studielan()
 
     @Test
@@ -28,14 +27,15 @@ internal class StudielanTest {
 
     @Test
     fun harSvartJa() {
-        val opplysninger = JsonOkonomiopplysninger()
-            .withBekreftelse(
-                listOf(
-                    JsonOkonomibekreftelse()
-                        .withType(SoknadJsonTyper.STUDIELAN)
-                        .withVerdi(true)
+        val opplysninger =
+            JsonOkonomiopplysninger()
+                .withBekreftelse(
+                    listOf(
+                        JsonOkonomibekreftelse()
+                            .withType(SoknadJsonTyper.STUDIELAN)
+                            .withVerdi(true),
+                    ),
                 )
-            )
 
         val avsnitt = studielan.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(1)

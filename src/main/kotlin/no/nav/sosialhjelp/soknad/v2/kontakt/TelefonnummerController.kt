@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/personalia/telefonnummer", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TelefonnummerController(
-    private val kontaktService: KontaktService
+    private val kontaktService: KontaktService,
 ) {
     @GetMapping
     fun getTelefonnummer(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): TelefonnummerDto {
         return kontaktService.getKontaktInformasjon(soknadId)?.telefonnummer
             ?.let {
                 TelefonnummerDto(
                     telefonnummerRegister = it.fraRegister,
-                    telefonnummerBruker = it.fraBruker
+                    telefonnummerBruker = it.fraBruker,
                 )
             } ?: TelefonnummerDto()
     }
@@ -33,7 +33,7 @@ class TelefonnummerController(
     @PutMapping
     fun updateTelefonnummer(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) telefonnummerInput: TelefonnummerInput
+        @RequestBody(required = true) telefonnummerInput: TelefonnummerInput,
     ): TelefonnummerDto {
         telefonnummerInput.telefonnummerBruker?.let {
             SoknadInputValidator(TelefonnummerInput::class)
@@ -43,17 +43,17 @@ class TelefonnummerController(
         return kontaktService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
             TelefonnummerDto(
                 telefonnummerRegister = it.fraRegister,
-                telefonnummerBruker = it.fraBruker
+                telefonnummerBruker = it.fraBruker,
             )
         }
     }
 }
 
 data class TelefonnummerInput(
-    val telefonnummerBruker: String? = null
+    val telefonnummerBruker: String? = null,
 )
 
 data class TelefonnummerDto(
     val telefonnummerRegister: String? = null,
-    val telefonnummerBruker: String? = null
+    val telefonnummerBruker: String? = null,
 )

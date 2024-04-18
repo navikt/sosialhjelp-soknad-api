@@ -8,11 +8,11 @@ data class SivilstatusFrontend(
     val ektefelle: EktefelleFrontend?,
     val harDiskresjonskode: Boolean?,
     val borSammenMed: Boolean?,
-    val erFolkeregistrertSammen: Boolean?
+    val erFolkeregistrertSammen: Boolean?,
 )
 
 data class EktefelleFrontend(
     var navn: NavnFrontend?,
     var fodselsdato: String?,
-    var personnummer: String?
+    var personnummer: String?,
 )

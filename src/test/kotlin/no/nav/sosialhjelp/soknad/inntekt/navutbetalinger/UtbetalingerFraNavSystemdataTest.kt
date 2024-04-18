@@ -22,7 +22,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class UtbetalingerFraNavSystemdataTest {
-
     private val organisasjonService: OrganisasjonService = mockk()
     private val navUtbetalingerService: NavUtbetalingerService = mockk()
 
@@ -102,7 +101,7 @@ internal class UtbetalingerFraNavSystemdataTest {
     private fun assertThatUtbetalingIsCorrectlyConverted(
         navUtbetaling: NavUtbetaling,
         jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
-        type: String
+        type: String,
     ) {
         assertThat(jsonUtbetaling.type).isEqualTo(type)
         assertThat(jsonUtbetaling.tittel).isEqualTo(navUtbetaling.tittel)
@@ -130,10 +129,11 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     companion object {
         private const val EIER = "12345678901"
-        private val JSON_OKONOMI_OPPLYSNING_UTBETALING = JsonOkonomiOpplysningUtbetaling()
-            .withKilde(JsonKilde.BRUKER)
-            .withType("Vaffelsalg")
-            .withBelop(1000000)
+        private val JSON_OKONOMI_OPPLYSNING_UTBETALING =
+            JsonOkonomiOpplysningUtbetaling()
+                .withKilde(JsonKilde.BRUKER)
+                .withType("Vaffelsalg")
+                .withBelop(1000000)
         private val UTBETALINGSDATO = LocalDate.now().minusDays(5)
         private val PERIODE_FOM = LocalDate.now().minusDays(40)
         private val PERIODE_TOM = LocalDate.now().minusDays(10)
@@ -155,34 +155,57 @@ internal class UtbetalingerFraNavSystemdataTest {
         private const val ORGANISASJONSNR = "012345678"
         private const val PERSONNR = "01010011111"
         private val NAV_KOMPONENT = Komponent(KOMPONENTTYPE, KOMPONENTBELOP, SATSTYPE, SATSBELOP, SATSANTALL)
-        private val NAV_UTBETALING_1 = NavUtbetaling(
-            "type", NETTO, BRUTTO, SKATT, TREKK, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM,
-            listOf(
-                NAV_KOMPONENT
-            ),
-            TITTEL, "orgnr"
-        )
-        private val NAV_UTBETALING_2 = NavUtbetaling(
-            "type",
-            NETTO_2,
-            BRUTTO_2,
-            SKATT_2,
-            TREKK_2,
-            null,
-            UTBETALINGSDATO,
-            PERIODE_FOM,
-            PERIODE_TOM,
-            emptyList(),
-            TITTEL_2,
-            ORGANISASJONSNR
-        )
-        private val NAV_UTBETALING_3 = NavUtbetaling(
-            "type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM,
-            listOf(NAV_KOMPONENT),
-            TITTEL_2, PERSONNR
-        )
+        private val NAV_UTBETALING_1 =
+            NavUtbetaling(
+                "type",
+                NETTO,
+                BRUTTO,
+                SKATT,
+                TREKK,
+                null,
+                UTBETALINGSDATO,
+                PERIODE_FOM,
+                PERIODE_TOM,
+                listOf(
+                    NAV_KOMPONENT,
+                ),
+                TITTEL,
+                "orgnr",
+            )
+        private val NAV_UTBETALING_2 =
+            NavUtbetaling(
+                "type",
+                NETTO_2,
+                BRUTTO_2,
+                SKATT_2,
+                TREKK_2,
+                null,
+                UTBETALINGSDATO,
+                PERIODE_FOM,
+                PERIODE_TOM,
+                emptyList(),
+                TITTEL_2,
+                ORGANISASJONSNR,
+            )
+        private val NAV_UTBETALING_3 =
+            NavUtbetaling(
+                "type",
+                NETTO_2,
+                BRUTTO_2,
+                SKATT_2,
+                TREKK_2,
+                null,
+                UTBETALINGSDATO,
+                PERIODE_FOM,
+                PERIODE_TOM,
+                listOf(NAV_KOMPONENT),
+                TITTEL_2,
+                PERSONNR,
+            )
 
-        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+        private fun createSoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
@@ -191,7 +214,7 @@ internal class UtbetalingerFraNavSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

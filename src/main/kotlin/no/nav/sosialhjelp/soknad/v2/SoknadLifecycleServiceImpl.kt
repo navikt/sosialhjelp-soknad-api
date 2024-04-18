@@ -10,21 +10,22 @@ import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val registerDataFetcher: RegisterDataFetcher,
     private val soknadService: SoknadService,
-    private val kontaktService: KontaktService
+    private val kontaktService: KontaktService,
 ) : SoknadLifecycleService {
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
 
-        val soknadId = SubjectHandlerUtils.getUserIdFromToken().let {
-            soknadService.createSoknad(eierId = it)
-        }
+        val soknadId =
+            SubjectHandlerUtils.getUserIdFromToken().let {
+                soknadService.createSoknad(eierId = it)
+            }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
         registerDataFetcher.updateRegisterData(soknadId)
@@ -32,24 +33,28 @@ class SoknadLifecycleServiceImpl(
         return soknadId
     }
 
-    override fun cancelSoknad(soknadId: UUID, referer: String?) {
+    override fun cancelSoknad(
+        soknadId: UUID,
+        referer: String?,
+    ) {
         soknadService.deleteSoknad(soknadId)
         prometheusMetricsService.reportAvbruttSoknad(referer)
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
-        val digisosId = try {
-            soknadService.sendSoknad(soknadId)
-        } catch (e: FeilVedSendingTilFiksException) {
-            prometheusMetricsService.reportFeilet()
-            throw e
-        }
+        val digisosId =
+            try {
+                soknadService.sendSoknad(soknadId)
+            } catch (e: FeilVedSendingTilFiksException) {
+                prometheusMetricsService.reportFeilet()
+                throw e
+            }
 
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(
-                kontaktService.getKontaktInformasjon(soknadId)?.mottaker?.enhetsnavn
-            )
+                kontaktService.getKontaktInformasjon(soknadId)?.mottaker?.enhetsnavn,
+            ),
         )
 
         return Pair(digisosId, LocalDateTime.now())

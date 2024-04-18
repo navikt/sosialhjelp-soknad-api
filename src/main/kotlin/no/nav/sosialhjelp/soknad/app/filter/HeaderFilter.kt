@@ -8,11 +8,10 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class HeaderFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         response.setHeader("X-Content-Type-Options", "nosniff")
         response.setHeader("X-XSS-Protection", "1; mode=block")

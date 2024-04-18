@@ -17,9 +17,8 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 class DatabaseConfig(
     @Value("\${spring.datasource.url}") private val dbUrl: String,
     @Value("\${postgres.user.role}") private val role: String,
-    @Value("\${vault-mount-path}") private val vaultMountPath: String
+    @Value("\${vault-mount-path}") private val vaultMountPath: String,
 ) {
-
     // TODO: sjekk ut evt mer config som minimumIdle, idleTimeout ++ hva må settes?
 
     @Bean

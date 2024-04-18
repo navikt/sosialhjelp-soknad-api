@@ -14,13 +14,12 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("no-redis", "test", "test-container")
 internal class SoknadUnderArbeidRepositoryJdbcTest {
-
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
@@ -118,8 +117,9 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun slettSoknadSletterSoknadUnderArbeidFraDatabasen() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
-            ?: throw RuntimeException("Kunne ikke lagre soknad")
+        val soknadUnderArbeidId =
+            soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+                ?: throw RuntimeException("Kunne ikke lagre soknad")
 
         soknadUnderArbeid.soknadId = soknadUnderArbeidId
 
@@ -136,7 +136,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -147,7 +147,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             data = byteArrayOf(1, 2, 3),
             soknadId = soknadId,
             filnavn = "dokumentasjon.pdf",
-            sha512 = "aaa"
+            sha512 = "aaa",
         )
     }
 

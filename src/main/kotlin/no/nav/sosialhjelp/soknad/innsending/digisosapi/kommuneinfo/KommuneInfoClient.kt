@@ -21,11 +21,12 @@ class KommuneInfoClient(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-    private val kommuneInfoWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-        .baseUrl(digisosApiEndpoint)
-        .build()
+    private val kommuneInfoWebClient: WebClient =
+        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+            .baseUrl(digisosApiEndpoint)
+            .build()
 
     fun getAll(): List<KommuneInfo> {
         return kommuneInfoWebClient.get()

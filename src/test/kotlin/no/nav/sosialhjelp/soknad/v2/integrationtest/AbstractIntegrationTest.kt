@@ -18,7 +18,6 @@ import java.util.UUID
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractIntegrationTest {
-
     @Autowired
     protected lateinit var webTestClient: WebTestClient
 
@@ -35,7 +34,10 @@ abstract class AbstractIntegrationTest {
         token = mockOAuth2Server.issueToken("selvbetjening", "54352345353", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
-    protected fun<T> doGet(uri: String, responseBodyClass: Class<T>): T {
+    protected fun <T> doGet(
+        uri: String,
+        responseBodyClass: Class<T>,
+    ): T {
         return webTestClient.get()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -46,7 +48,12 @@ abstract class AbstractIntegrationTest {
             .returnResult().responseBody!!
     }
 
-    protected fun<T> doPut(uri: String, requestBody: Any, responseBodyClass: Class<T>, soknadId: UUID? = null): T {
+    protected fun <T> doPut(
+        uri: String,
+        requestBody: Any,
+        responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
+    ): T {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -60,7 +67,12 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun doPutExpectError(uri: String, requestBody: Any, httpStatus: HttpStatus, soknadId: UUID? = null): Feilmelding {
+    protected fun doPutExpectError(
+        uri: String,
+        requestBody: Any,
+        httpStatus: HttpStatus,
+        soknadId: UUID? = null,
+    ): Feilmelding {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -74,7 +86,7 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun<T> doDelete(uri: String) {
+    protected fun <T> doDelete(uri: String) {
         webTestClient
             .delete()
             .uri(uri)

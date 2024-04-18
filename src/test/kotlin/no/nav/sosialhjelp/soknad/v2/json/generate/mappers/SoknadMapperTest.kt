@@ -13,7 +13,6 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 class SoknadMapperTest {
-
     @Test
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()

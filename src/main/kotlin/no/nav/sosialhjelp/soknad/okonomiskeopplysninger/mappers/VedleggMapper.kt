@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import java.time.LocalDateTime
@@ -30,7 +31,6 @@ import java.util.SortedMap
 import java.util.TreeMap
 
 object VedleggMapper {
-
     private const val ANNET_ANNET = "annet|annet"
     private const val LASTET_OPP = "LastetOpp"
 
@@ -39,7 +39,7 @@ object VedleggMapper {
     fun mapToVedleggFrontend(
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): VedleggFrontend {
         val filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
         val vedleggType = getVedleggType(vedlegg)
@@ -49,14 +49,14 @@ object VedleggMapper {
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
             vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
-            filer = filer
+            filer = filer,
         )
     }
 
     fun mapMellomlagredeVedleggToVedleggFrontend(
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
-        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): VedleggFrontend {
         val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
         val vedleggType = getVedleggType(vedlegg)
@@ -66,13 +66,16 @@ object VedleggMapper {
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
             vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
-            filer = filer
+            filer = filer,
         )
     }
 
-    private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: VedleggType): List<VedleggRadFrontend> {
-        if (!VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggType)) return emptyList()
-        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType.toString()]
+    private fun getRader(
+        jsonOkonomi: JsonOkonomi,
+        vedleggType: VedleggType,
+    ): List<VedleggRadFrontend> {
+        if (!vedleggTypeToSoknadType.containsKey(vedleggType)) return emptyList()
+        val soknadType = vedleggTypeToSoknadType[vedleggType]
         val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
 
         // Spesialtilfelle for avdrag og renter
@@ -98,7 +101,10 @@ object VedleggMapper {
         return avdragRad
     }
 
-    private fun getRadListFromUtbetaling(jsonOkonomi: JsonOkonomi, soknadType: String?): List<VedleggRadFrontend> {
+    private fun getRadListFromUtbetaling(
+        jsonOkonomi: JsonOkonomi,
+        soknadType: String?,
+    ): List<VedleggRadFrontend> {
         return if (jsonOkonomi.opplysninger.utbetaling.isEmpty()) {
             mutableListOf(VedleggRadFrontend())
         } else {
@@ -110,15 +116,16 @@ object VedleggMapper {
 
     private fun getRadListFromOpplysningerUtgift(
         jsonOkonomi: JsonOkonomi,
-        soknadType: String?
+        soknadType: String?,
     ): List<VedleggRadFrontend> {
-        val radList = if (jsonOkonomi.opplysninger.utgift.isEmpty()) {
-            mutableListOf(VedleggRadFrontend())
-        } else {
-            jsonOkonomi.opplysninger.utgift
-                .filter { it.type == soknadType }
-                .map { getRadFromOpplysningerUtgift(it, soknadType) }
-        }
+        val radList =
+            if (jsonOkonomi.opplysninger.utgift.isEmpty()) {
+                mutableListOf(VedleggRadFrontend())
+            } else {
+                jsonOkonomi.opplysninger.utgift
+                    .filter { it.type == soknadType }
+                    .map { getRadFromOpplysningerUtgift(it, soknadType) }
+            }
         return if (radList.isEmpty() && soknadType == UTGIFTER_ANDRE_UTGIFTER) {
             listOf(VedleggRadFrontend())
         } else {
@@ -126,7 +133,10 @@ object VedleggMapper {
         }
     }
 
-    private fun getRadListFromInntekt(jsonOkonomi: JsonOkonomi, soknadType: String?): List<VedleggRadFrontend> {
+    private fun getRadListFromInntekt(
+        jsonOkonomi: JsonOkonomi,
+        soknadType: String?,
+    ): List<VedleggRadFrontend> {
         return if (jsonOkonomi.oversikt.inntekt.isEmpty()) {
             mutableListOf(VedleggRadFrontend())
         } else {
@@ -136,7 +146,10 @@ object VedleggMapper {
         }
     }
 
-    private fun getRadListFromOversiktUtgift(jsonOkonomi: JsonOkonomi, soknadType: String?): List<VedleggRadFrontend> {
+    private fun getRadListFromOversiktUtgift(
+        jsonOkonomi: JsonOkonomi,
+        soknadType: String?,
+    ): List<VedleggRadFrontend> {
         return if (jsonOkonomi.oversikt.utgift.isEmpty()) {
             mutableListOf(VedleggRadFrontend())
         } else {
@@ -146,7 +159,10 @@ object VedleggMapper {
         }
     }
 
-    private fun getRadListFromFormue(jsonOkonomi: JsonOkonomi, soknadType: String?): List<VedleggRadFrontend> {
+    private fun getRadListFromFormue(
+        jsonOkonomi: JsonOkonomi,
+        soknadType: String?,
+    ): List<VedleggRadFrontend> {
         return if (jsonOkonomi.oversikt.formue.isEmpty()) {
             mutableListOf(VedleggRadFrontend())
         } else {
@@ -156,37 +172,38 @@ object VedleggMapper {
         }
     }
 
-    private fun getRadFromUtbetaling(utbetaling: JsonOkonomiOpplysningUtbetaling): VedleggRadFrontend {
-        if (utbetaling.belop != null) {
-            return VedleggRadFrontend(belop = utbetaling.belop)
-        } else if (utbetaling.brutto != null) {
-            return VedleggRadFrontend(belop = Integer.valueOf(utbetaling.brutto.toString()))
-        } else if (utbetaling.netto != null) {
-            return VedleggRadFrontend(belop = utbetaling.netto.toInt())
+    private fun getRadFromUtbetaling(utbetaling: JsonOkonomiOpplysningUtbetaling): VedleggRadFrontend =
+        when {
+            utbetaling.belop != null -> VedleggRadFrontend(belop = utbetaling.belop)
+            utbetaling.brutto != null -> VedleggRadFrontend(belop = Integer.valueOf(utbetaling.brutto.toString()))
+            utbetaling.netto != null -> VedleggRadFrontend(belop = utbetaling.netto.toInt())
+            else -> VedleggRadFrontend()
         }
-        return VedleggRadFrontend()
-    }
 
     private fun getRadFromOpplysningerUtgift(
         utgift: JsonOkonomiOpplysningUtgift,
-        soknadType: String?
+        soknadType: String?,
     ): VedleggRadFrontend {
         return when (soknadType) {
             UTGIFTER_ANDRE_UTGIFTER, UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO, UTGIFTER_BARN_FRITIDSAKTIVITETER -> {
                 VedleggRadFrontend(
                     belop = utgift.belop,
-                    beskrivelse = utgift.tittel.substring(utgift.tittel.indexOf(":") + 1) + " "
+                    beskrivelse = utgift.tittel.substring(utgift.tittel.indexOf(":") + 1) + " ",
                 )
             }
+
             else -> VedleggRadFrontend(belop = utgift.belop)
         }
     }
 
-    private fun getRadFromInntekt(inntekt: JsonOkonomioversiktInntekt, soknadType: String?): VedleggRadFrontend {
+    private fun getRadFromInntekt(
+        inntekt: JsonOkonomioversiktInntekt,
+        soknadType: String?,
+    ): VedleggRadFrontend {
         if (soknadType == JOBB) {
             return VedleggRadFrontend(
                 brutto = inntekt.brutto,
-                netto = inntekt.netto
+                netto = inntekt.netto,
             )
         }
         if (inntekt.brutto != null) {
@@ -197,7 +214,10 @@ object VedleggMapper {
         return VedleggRadFrontend()
     }
 
-    private fun getRadFromOversiktUtgift(utgift: JsonOkonomioversiktUtgift, soknadType: String?): VedleggRadFrontend {
+    private fun getRadFromOversiktUtgift(
+        utgift: JsonOkonomioversiktUtgift,
+        soknadType: String?,
+    ): VedleggRadFrontend {
         if (soknadType == UTGIFTER_BOLIGLAN_AVDRAG) {
             return VedleggRadFrontend(avdrag = utgift.belop)
         } else if (soknadType == SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER) {
@@ -208,7 +228,7 @@ object VedleggMapper {
 
     private fun mapJsonFilerAndOpplastedeVedleggToFilerFrontend(
         filer: List<JsonFiler>,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): List<FilFrontend> {
         return filer
             .map { fil: JsonFiler ->
@@ -221,7 +241,7 @@ object VedleggMapper {
 
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
         jsonVedlegg: JsonVedlegg,
-        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): List<FilFrontend> {
         return jsonVedlegg.filer
             .map { fil: JsonFiler ->
@@ -238,32 +258,38 @@ object VedleggMapper {
     fun mapVedleggToSortedListOfEttersendteVedlegg(
         innsendingstidspunkt: LocalDateTime?,
         opplastedeVedlegg: List<OpplastetVedlegg>,
-        originaleVedlegg: List<JsonVedlegg>
+        originaleVedlegg: List<JsonVedlegg>,
     ): List<EttersendtVedlegg> {
-        val ettersendteVedlegg: SortedMap<String, EttersendtVedlegg> = TreeMap(
-            sortAlphabeticallyAndPutTypeAnnetLast()
-        )
+        val ettersendteVedlegg: SortedMap<String, EttersendtVedlegg> =
+            TreeMap(
+                sortAlphabeticallyAndPutTypeAnnetLast(),
+            )
         originaleVedlegg
             .filter { filterGittInnsendingstidspunkt(innsendingstidspunkt, it) }
             .forEach { vedlegg: JsonVedlegg ->
                 val sammensattNavn = getVedleggType(vedlegg).toString()
                 if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
-                    val filerFrontend = if (vedlegg.status == LASTET_OPP) {
-                        mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
-                    } else {
-                        listOf()
-                    }
-                    ettersendteVedlegg[sammensattNavn] = EttersendtVedlegg(
-                        type = sammensattNavn,
-                        vedleggStatus = vedlegg.status,
-                        filer = filerFrontend
-                    )
+                    val filerFrontend =
+                        if (vedlegg.status == LASTET_OPP) {
+                            mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
+                        } else {
+                            listOf()
+                        }
+                    ettersendteVedlegg[sammensattNavn] =
+                        EttersendtVedlegg(
+                            type = sammensattNavn,
+                            vedleggStatus = vedlegg.status,
+                            filer = filerFrontend,
+                        )
                 }
             }
         return ettersendteVedlegg.values.toList()
     }
 
-    private fun filterGittInnsendingstidspunkt(innsendingstidspunkt: LocalDateTime?, vedlegg: JsonVedlegg): Boolean {
+    private fun filterGittInnsendingstidspunkt(
+        innsendingstidspunkt: LocalDateTime?,
+        vedlegg: JsonVedlegg,
+    ): Boolean {
         return if (innsendingstidspunkt != null && soknadSendtForMindreEnn30DagerSiden(innsendingstidspunkt.toLocalDate())) {
             true
         } else {
@@ -275,16 +301,13 @@ object VedleggMapper {
         return VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]
     }
 
-    private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> {
-        return Comparator { o1: String, o2: String ->
-            if (o1 == o2) {
-                return@Comparator 0
-            } else if (o1 == ANNET_ANNET) {
-                return@Comparator 1
-            } else if (o2 == ANNET_ANNET) {
-                return@Comparator -1
+    private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> =
+        Comparator { o1, o2 ->
+            when {
+                o1 == o2 -> return@Comparator 0
+                o1 == ANNET_ANNET -> return@Comparator 1
+                o2 == ANNET_ANNET -> return@Comparator -1
+                else -> o1.compareTo(o2)
             }
-            o1.compareTo(o2)
         }
-    }
 }

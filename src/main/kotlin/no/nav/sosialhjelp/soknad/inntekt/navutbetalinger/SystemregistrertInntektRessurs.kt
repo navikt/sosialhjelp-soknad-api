@@ -14,25 +14,33 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/inntekt/systemdata", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SystemregistrertInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val tilgangskontroll: Tilgangskontroll
+    private val tilgangskontroll: Tilgangskontroll,
 ) {
     @GetMapping
-    fun hentSystemregistrerteInntekter(@PathVariable("behandlingsId") behandlingsId: String): SysteminntekterFrontend {
+    fun hentSystemregistrerteInntekter(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): SysteminntekterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
 
         return SysteminntekterFrontend(
-            systeminntekter = utbetalinger
-                ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
-                ?.map { mapToUtbetalingFrontend(it) },
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
+            systeminntekter =
+                utbetalinger
+                    ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
+                    ?.map { mapToUtbetalingFrontend(it) },
+            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
         )
     }
 
@@ -40,18 +48,18 @@ class SystemregistrertInntektRessurs(
         return SysteminntektFrontend(
             inntektType = utbetaling.tittel,
             utbetalingsdato = utbetaling.utbetalingsdato,
-            belop = utbetaling.netto
+            belop = utbetaling.netto,
         )
     }
 
     data class SysteminntekterFrontend(
         val systeminntekter: List<SysteminntektFrontend>? = null,
-        val utbetalingerFraNavFeilet: Boolean? = null
+        val utbetalingerFraNavFeilet: Boolean? = null,
     )
 
     data class SysteminntektFrontend(
         val inntektType: String? = null,
         val utbetalingsdato: String? = null,
-        val belop: Double? = null
+        val belop: Double? = null,
     )
 }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class PabegynteSoknaderServiceTest {
-
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val pabegynteSoknaderService = PabegynteSoknaderService(soknadMetadataRepository)
 
@@ -23,14 +22,15 @@ internal class PabegynteSoknaderServiceTest {
     @Test
     fun brukerHar1PabegyntSoknad() {
         val now = LocalDateTime.now()
-        val soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "id",
-            fnr = "fnr",
-            opprettetDato = now,
-            sistEndretDato = now,
-            innsendtDato = now
-        )
+        val soknadMetadata =
+            SoknadMetadata(
+                id = 0L,
+                behandlingsId = "id",
+                fnr = "fnr",
+                opprettetDato = now,
+                sistEndretDato = now,
+                innsendtDato = now,
+            )
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker(any()) } returns listOf(soknadMetadata)
 
         val pabegyntSoknadList = pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr")

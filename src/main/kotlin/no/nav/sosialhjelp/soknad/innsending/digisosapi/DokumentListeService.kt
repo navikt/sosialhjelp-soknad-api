@@ -14,9 +14,8 @@ import java.io.ByteArrayInputStream
 @Component
 class DokumentListeService(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
-    private val mellomlagringService: MellomlagringService
+    private val mellomlagringService: MellomlagringService,
 ) {
-
     fun getFilOpplastingList(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
@@ -30,7 +29,7 @@ class DokumentListeService(
         return listOf(
             lagDokumentForSaksbehandlerPdf(internalSoknad),
             lagDokumentForJuridiskPdf(internalSoknad),
-            lagDokumentForBrukerkvitteringPdf()
+            lagDokumentForBrukerkvitteringPdf(),
         ).also {
             log.info("Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}")
         }
@@ -54,14 +53,18 @@ class DokumentListeService(
         return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
 
-    private fun opprettFilOpplastingFraByteArray(filnavn: String, bytes: ByteArray): FilOpplasting {
+    private fun opprettFilOpplastingFraByteArray(
+        filnavn: String,
+        bytes: ByteArray,
+    ): FilOpplasting {
         return FilOpplasting(
-            metadata = FilMetadata(
-                filnavn = filnavn,
-                mimetype = MimeTypes.APPLICATION_PDF,
-                storrelse = bytes.size.toLong()
-            ),
-            data = ByteArrayInputStream(bytes)
+            metadata =
+                FilMetadata(
+                    filnavn = filnavn,
+                    mimetype = MimeTypes.APPLICATION_PDF,
+                    storrelse = bytes.size.toLong(),
+                ),
+            data = ByteArrayInputStream(bytes),
         )
     }
 

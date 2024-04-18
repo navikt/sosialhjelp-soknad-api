@@ -30,7 +30,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class BostotteSystemdataTest {
-
     private val husbankenClient: HusbankenClient = mockk()
     private val textService: TextService = mockk()
     private val bostotteSystemdata = BostotteSystemdata(husbankenClient, textService)
@@ -49,10 +48,11 @@ internal class BostotteSystemdataTest {
         val mottaker = BostotteMottaker.HUSSTAND
         val netto = BigDecimal.valueOf(10000.5)
         val utbetalingsDato = LocalDate.now()
-        val bostotteDto = BostotteDto(
-            emptyList(),
-            listOf(UtbetalingDto(utbetalingsDato, netto, mottaker, BostotteRolle.HOVEDPERSON))
-        )
+        val bostotteDto =
+            BostotteDto(
+                emptyList(),
+                listOf(UtbetalingDto(utbetalingsDato, netto, mottaker, BostotteRolle.HOVEDPERSON)),
+            )
 
         // Mock:
         every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
@@ -75,13 +75,14 @@ internal class BostotteSystemdataTest {
         val netto1 = BigDecimal.valueOf(10000)
         val netto2 = BigDecimal.valueOf(20000)
         val utbetalingsDato = LocalDate.now()
-        val bostotteDto = BostotteDto(
-            emptyList(),
-            listOf(
-                UtbetalingDto(utbetalingsDato.minusDays(32), netto1, mottaker, BostotteRolle.HOVEDPERSON),
-                UtbetalingDto(utbetalingsDato, netto2, mottaker, BostotteRolle.HOVEDPERSON)
+        val bostotteDto =
+            BostotteDto(
+                emptyList(),
+                listOf(
+                    UtbetalingDto(utbetalingsDato.minusDays(32), netto1, mottaker, BostotteRolle.HOVEDPERSON),
+                    UtbetalingDto(utbetalingsDato, netto2, mottaker, BostotteRolle.HOVEDPERSON),
+                ),
             )
-        )
 
         // Mock:
         every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
@@ -100,14 +101,15 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val sakDto = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.UNDER_BEHANDLING,
-            BostotteRolle.HOVEDPERSON,
-            null,
-            null,
-            null
-        )
+        val sakDto =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.UNDER_BEHANDLING,
+                BostotteRolle.HOVEDPERSON,
+                null,
+                null,
+                null,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
@@ -131,22 +133,24 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val sakDto1 = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.UNDER_BEHANDLING,
-            BostotteRolle.HOVEDPERSON,
-            null,
-            null,
-            null
-        )
-        val sakDto2 = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.VEDTATT,
-            BostotteRolle.HOVEDPERSON,
-            "V02",
-            "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
-        )
+        val sakDto1 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.UNDER_BEHANDLING,
+                BostotteRolle.HOVEDPERSON,
+                null,
+                null,
+                null,
+            )
+        val sakDto2 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.VEDTATT,
+                BostotteRolle.HOVEDPERSON,
+                "V02",
+                "Avslag - For høy inntekt",
+                Vedtaksstatus.AVSLAG,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
@@ -193,7 +197,7 @@ internal class BostotteSystemdataTest {
             JsonBostotteSak()
                 .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)
                 .withKilde(JsonKildeSystem.SYSTEM)
-                .withStatus(BostotteStatus.UNDER_BEHANDLING.toString())
+                .withStatus(BostotteStatus.UNDER_BEHANDLING.toString()),
         )
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
@@ -225,14 +229,15 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid1 = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, true)
-        val sakDto = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.UNDER_BEHANDLING,
-            BostotteRolle.HOVEDPERSON,
-            null,
-            null,
-            null
-        )
+        val sakDto =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.UNDER_BEHANDLING,
+                BostotteRolle.HOVEDPERSON,
+                null,
+                null,
+                null,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
@@ -255,22 +260,24 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val sakDto1 = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.UNDER_BEHANDLING,
-            BostotteRolle.HOVEDPERSON,
-            null,
-            null,
-            null
-        )
-        val sakDto2 = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.VEDTATT,
-            BostotteRolle.BIPERSON,
-            "V02",
-            "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
-        )
+        val sakDto1 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.UNDER_BEHANDLING,
+                BostotteRolle.HOVEDPERSON,
+                null,
+                null,
+                null,
+            )
+        val sakDto2 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.VEDTATT,
+                BostotteRolle.BIPERSON,
+                "V02",
+                "Avslag - For høy inntekt",
+                Vedtaksstatus.AVSLAG,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
@@ -289,18 +296,20 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val utbetalingDto1 = UtbetalingDto(
-            LocalDate.now().minusDays(32),
-            BigDecimal.valueOf(10000),
-            BostotteMottaker.KOMMUNE,
-            BostotteRolle.HOVEDPERSON
-        )
-        val utbetalingDto2 = UtbetalingDto(
-            LocalDate.now().minusDays(32),
-            BigDecimal.valueOf(20000),
-            BostotteMottaker.HUSSTAND,
-            BostotteRolle.BIPERSON
-        )
+        val utbetalingDto1 =
+            UtbetalingDto(
+                LocalDate.now().minusDays(32),
+                BigDecimal.valueOf(10000),
+                BostotteMottaker.KOMMUNE,
+                BostotteRolle.HOVEDPERSON,
+            )
+        val utbetalingDto2 =
+            UtbetalingDto(
+                LocalDate.now().minusDays(32),
+                BigDecimal.valueOf(20000),
+                BostotteMottaker.HUSSTAND,
+                BostotteRolle.BIPERSON,
+            )
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto1, utbetalingDto2))
 
         // Mock:
@@ -319,22 +328,24 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val sakDto1 = lagSak(
-            LocalDate.now().withDayOfMonth(1),
-            BostotteStatus.UNDER_BEHANDLING,
-            BostotteRolle.HOVEDPERSON,
-            null,
-            null,
-            null
-        )
-        val sakDto2 = lagSak(
-            LocalDate.now().withDayOfMonth(1).minusDays(32),
-            BostotteStatus.VEDTATT,
-            BostotteRolle.HOVEDPERSON,
-            "V02",
-            "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
-        )
+        val sakDto1 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1),
+                BostotteStatus.UNDER_BEHANDLING,
+                BostotteRolle.HOVEDPERSON,
+                null,
+                null,
+                null,
+            )
+        val sakDto2 =
+            lagSak(
+                LocalDate.now().withDayOfMonth(1).minusDays(32),
+                BostotteStatus.VEDTATT,
+                BostotteRolle.HOVEDPERSON,
+                "V02",
+                "Avslag - For høy inntekt",
+                Vedtaksstatus.AVSLAG,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
@@ -353,19 +364,21 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val testDate: LocalDate = if (LocalDate.now().dayOfMonth >= 30) {
-            LocalDate.now().withDayOfMonth(1)
-        } else {
-            LocalDate.now().withDayOfMonth(1).minusMonths(1)
-        }
-        val sakDto2 = lagSak(
-            testDate,
-            BostotteStatus.VEDTATT,
-            BostotteRolle.HOVEDPERSON,
-            "V02",
-            "Avslag - For høy inntekt",
-            Vedtaksstatus.AVSLAG
-        )
+        val testDate: LocalDate =
+            if (LocalDate.now().dayOfMonth >= 30) {
+                LocalDate.now().withDayOfMonth(1)
+            } else {
+                LocalDate.now().withDayOfMonth(1).minusMonths(1)
+            }
+        val sakDto2 =
+            lagSak(
+                testDate,
+                BostotteStatus.VEDTATT,
+                BostotteRolle.HOVEDPERSON,
+                "V02",
+                "Avslag - For høy inntekt",
+                Vedtaksstatus.AVSLAG,
+            )
         val bostotteDto = BostotteDto(listOf(sakDto2), emptyList())
 
         // Mock:
@@ -387,9 +400,10 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad
-            .data.okonomi.opplysninger.utbetaling
-            .filter { it.kilde == JsonKilde.SYSTEM }
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad
+                .data.okonomi.opplysninger.utbetaling
+                .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger).isEmpty()
         assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
     }
@@ -399,12 +413,13 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid1 = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, true)
-        val utbetalingDto = UtbetalingDto(
-            LocalDate.now().minusDays(32),
-            BigDecimal.valueOf(10000),
-            BostotteMottaker.KOMMUNE,
-            BostotteRolle.HOVEDPERSON
-        )
+        val utbetalingDto =
+            UtbetalingDto(
+                LocalDate.now().minusDays(32),
+                BigDecimal.valueOf(10000),
+                BostotteMottaker.KOMMUNE,
+                BostotteRolle.HOVEDPERSON,
+            )
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto))
 
         // Mock:
@@ -418,9 +433,10 @@ internal class BostotteSystemdataTest {
         // Kjøring:
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
-        val utbetalinger2 = soknadUnderArbeid1.jsonInternalSoknad!!.soknad
-            .data.okonomi.opplysninger.utbetaling
-            .filter { it.kilde == JsonKilde.SYSTEM }
+        val utbetalinger2 =
+            soknadUnderArbeid1.jsonInternalSoknad!!.soknad
+                .data.okonomi.opplysninger.utbetaling
+                .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger2).isEmpty()
     }
 
@@ -430,7 +446,7 @@ internal class BostotteSystemdataTest {
         rolle: BostotteRolle,
         kode: String?,
         beskrivelse: String?,
-        vedtaksstatus: Vedtaksstatus?
+        vedtaksstatus: Vedtaksstatus?,
     ): SakDto {
         var vedtakDto: VedtakDto? = null
         if (kode != null) {
@@ -439,7 +455,10 @@ internal class BostotteSystemdataTest {
         return SakDto(saksDato.monthValue, saksDato.year, status, vedtakDto, rolle)
     }
 
-    private fun settBostotteSamtykkePaSoknad(jsonInternalSoknad: JsonInternalSoknad, harSamtykke: Boolean) {
+    private fun settBostotteSamtykkePaSoknad(
+        jsonInternalSoknad: JsonInternalSoknad,
+        harSamtykke: Boolean,
+    ) {
         val bekreftelser = jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
         bekreftelser.removeIf { bekreftelse: JsonOkonomibekreftelse ->
             bekreftelse.type.equals(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, ignoreCase = true)
@@ -449,7 +468,7 @@ internal class BostotteSystemdataTest {
                 JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
                     .withVerdi(harSamtykke)
-                    .withTittel("beskrivelse")
+                    .withTittel("beskrivelse"),
             )
     }
 
@@ -457,7 +476,7 @@ internal class BostotteSystemdataTest {
         mottaker: BostotteMottaker,
         netto: BigDecimal,
         utbetaling: JsonOkonomiOpplysningUtbetaling,
-        utbetalingsDato: LocalDate
+        utbetalingsDato: LocalDate,
     ) {
         assertThat(utbetaling.tittel).isEqualToIgnoringCase("Statlig bostøtte")
         assertThat(utbetaling.mottaker).isEqualTo(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(mottaker.value))
@@ -479,7 +498,7 @@ internal class BostotteSystemdataTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

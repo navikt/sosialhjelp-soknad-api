@@ -3,7 +3,12 @@ package no.nav.sosialhjelp.soknad.pdf
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 
 object Begrunnelse {
-    fun leggTilBegrunnelse(pdf: PdfGenerator, pdfUtils: PdfUtils, jsonBegrunnelse: JsonBegrunnelse, utvidetSoknad: Boolean) {
+    fun leggTilBegrunnelse(
+        pdf: PdfGenerator,
+        pdfUtils: PdfUtils,
+        jsonBegrunnelse: JsonBegrunnelse,
+        utvidetSoknad: Boolean,
+    ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("begrunnelsebolk.tittel"))
         pdf.addBlankLine()
 

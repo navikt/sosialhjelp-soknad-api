@@ -12,10 +12,10 @@ class PabegyntSoknadDto(
     val link: String,
     val sikkerhetsnivaa: Int,
     val sistOppdatert: String,
-    val isAktiv: Boolean
+    val isAktiv: Boolean,
 )
 
 data class MarkerPabegyntSoknadSomLestDto(
     val eventId: String,
-    val grupperingsId: String
+    val grupperingsId: String,
 )

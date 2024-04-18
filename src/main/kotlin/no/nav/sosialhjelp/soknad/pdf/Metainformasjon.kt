@@ -4,7 +4,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.pdf.Utils.formaterDatoOgTidspunkt
 
 object Metainformasjon {
-    fun leggTilMetainformasjon(pdf: PdfGenerator, soknad: JsonSoknad) {
+    fun leggTilMetainformasjon(
+        pdf: PdfGenerator,
+        soknad: JsonSoknad,
+    ) {
         pdf.skrivTekst("Søknaden er sendt " + formaterDatoOgTidspunkt(soknad.innsendingstidspunkt))
         pdf.skrivTekst("Versjonsnummer: " + soknad.version)
         if (soknad.mottaker != null) {

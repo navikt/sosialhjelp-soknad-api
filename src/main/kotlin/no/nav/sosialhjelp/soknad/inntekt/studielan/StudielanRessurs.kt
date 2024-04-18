@@ -22,11 +22,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class StudielanRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
     fun hentStudielanBekreftelse(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         return getStudielan(behandlingsId)
@@ -35,12 +35,13 @@ class StudielanRessurs(
     @PutMapping
     fun updateStudielan(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody studielanFrontend: StudielanInputDTO
+        @RequestBody studielanFrontend: StudielanInputDTO,
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
 
@@ -48,14 +49,14 @@ class StudielanRessurs(
             opplysninger,
             STUDIELAN,
             studielanFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.student")
+            textService.getJsonOkonomiTittel("inntekt.student"),
         )
         if (studielanFrontend.bekreftelse != null) {
             OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt(
                 inntekter,
                 STUDIELAN,
                 textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
-                studielanFrontend.bekreftelse
+                studielanFrontend.bekreftelse,
             )
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
@@ -63,13 +64,15 @@ class StudielanRessurs(
     }
 
     private fun getStudielan(behandlingsId: String): StudielanFrontend {
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         val erStudent = soknad.soknad.data.utdanning.erStudent ?: false
-        val harStudielan = soknad.soknad.data.okonomi.opplysninger.bekreftelse
-            ?.firstOrNull { it.type == STUDIELAN }
-            ?.verdi
+        val harStudielan =
+            soknad.soknad.data.okonomi.opplysninger.bekreftelse
+                ?.firstOrNull { it.type == STUDIELAN }
+                ?.verdi
 
         return StudielanFrontend(erStudent, harStudielan.takeIf { erStudent })
     }
@@ -81,11 +84,11 @@ class StudielanRessurs(
         /** Søker er student */
         val skalVises: Boolean,
         /** Søker mottar lån eller stipend fra Lånekassen */
-        val bekreftelse: Boolean?
+        val bekreftelse: Boolean?,
     )
 
     data class StudielanInputDTO(
         /** Søker mottar lån eller stipend fra Lånekassen */
-        val bekreftelse: Boolean?
+        val bekreftelse: Boolean?,
     )
 }

@@ -11,15 +11,15 @@ import reactor.netty.http.client.HttpClient
 class BostotteConfig(
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
     @Bean
     fun husbankenClient(): HusbankenClient {
         return HusbankenClient(husbankenWebClient)
     }
 
-    private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-        .baseUrl(bostotteBaseUrl)
-        .build()
+    private val husbankenWebClient: WebClient =
+        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+            .baseUrl(bostotteBaseUrl)
+            .build()
 }

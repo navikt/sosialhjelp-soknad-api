@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class AdresseSystemdataTest {
-
     private val personService: PersonService = mockk()
     private val hentAdresseService: HentAdresseService = mockk()
     private val v2AdapterService: V2AdapterService = mockk()
@@ -57,20 +56,21 @@ internal class AdresseSystemdataTest {
     @Test
     fun `skal oppdatere folkeregistrert matrikkeladresse - uten utfyllende matrikkeladresse`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
-            Bostedsadresse(
-                "",
-                null,
-                Matrikkeladresse(
-                    "matrikkelId",
-                    "postnummer",
-                    "poststed",
-                    "tilleggsnavn",
-                    "kommunenummer",
-                    "bruksenhetsnummer"
-                )
+        val personWithBostedsadresseMatrikkeladresse =
+            createPersonWithBostedsadresse(
+                Bostedsadresse(
+                    "",
+                    null,
+                    Matrikkeladresse(
+                        "matrikkelId",
+                        "postnummer",
+                        "poststed",
+                        "tilleggsnavn",
+                        "kommunenummer",
+                        "bruksenhetsnummer",
+                    ),
+                ),
             )
-        )
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
         every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns null
 
@@ -92,30 +92,32 @@ internal class AdresseSystemdataTest {
     @Test
     fun `skal oppdatere folkeregistrert matrikkeladresse - med utfyllende matrikkeladresse`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
-            Bostedsadresse(
-                "",
-                null,
-                Matrikkeladresse(
-                    "matrikkelId",
-                    "postnummer",
-                    "poststed",
-                    "tilleggsnavn",
-                    "kommunenummer",
-                    "bruksenhetsnummer"
-                )
+        val personWithBostedsadresseMatrikkeladresse =
+            createPersonWithBostedsadresse(
+                Bostedsadresse(
+                    "",
+                    null,
+                    Matrikkeladresse(
+                        "matrikkelId",
+                        "postnummer",
+                        "poststed",
+                        "tilleggsnavn",
+                        "kommunenummer",
+                        "bruksenhetsnummer",
+                    ),
+                ),
             )
-        )
 
-        val kartverketMatrikkelAdresse = KartverketMatrikkelAdresse(
-            kommunenummer = "0301",
-            gaardsnummer = "gaardsnummer",
-            bruksnummer = "H0101",
-            festenummer = "F4",
-            seksjonsnummer = null,
-            undernummer = "under1",
-            bydelsnummer = "030107"
-        )
+        val kartverketMatrikkelAdresse =
+            KartverketMatrikkelAdresse(
+                kommunenummer = "0301",
+                gaardsnummer = "gaardsnummer",
+                bruksnummer = "H0101",
+                festenummer = "F4",
+                seksjonsnummer = null,
+                undernummer = "under1",
+                bydelsnummer = "030107",
+            )
 
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
         every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns kartverketMatrikkelAdresse
@@ -140,10 +142,11 @@ internal class AdresseSystemdataTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
-        val personWithOppholdsadresse = createPersonWithBostedsadresseOgOppholdsadresse(
-            Bostedsadresse("", DEFAULT_VEGADRESSE, null),
-            Oppholdsadresse("", ANNEN_VEGADRESSE)
-        )
+        val personWithOppholdsadresse =
+            createPersonWithBostedsadresseOgOppholdsadresse(
+                Bostedsadresse("", DEFAULT_VEGADRESSE, null),
+                Oppholdsadresse("", ANNEN_VEGADRESSE),
+            )
         every { personService.hentPerson(any()) } returns personWithOppholdsadresse
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -205,7 +208,10 @@ internal class AdresseSystemdataTest {
         assertThat(oppholdsadresse.type).isNull()
     }
 
-    private fun assertThatVegadresseIsCorrectlyConverted(vegadresse: Vegadresse?, jsonAdresse: JsonAdresse) {
+    private fun assertThatVegadresseIsCorrectlyConverted(
+        vegadresse: Vegadresse?,
+        jsonAdresse: JsonAdresse,
+    ) {
         val gateAdresse = jsonAdresse as JsonGateAdresse
         assertThat(gateAdresse.bolignummer).isEqualTo(vegadresse?.bruksenhetsnummer)
         assertThat(gateAdresse.gatenavn).isEqualTo(vegadresse?.adressenavn)
@@ -227,13 +233,13 @@ internal class AdresseSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = null,
             bostedsadresse = bostedsadresse,
-            oppholdsadresse = null
+            oppholdsadresse = null,
         )
     }
 
     private fun createPersonWithBostedsadresseOgOppholdsadresse(
         bostedsadresse: Bostedsadresse,
-        oppholdsadresse: Oppholdsadresse
+        oppholdsadresse: Oppholdsadresse,
     ): Person {
         return Person(
             fornavn = "fornavn",
@@ -244,34 +250,36 @@ internal class AdresseSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = null,
             bostedsadresse = bostedsadresse,
-            oppholdsadresse = oppholdsadresse
+            oppholdsadresse = oppholdsadresse,
         )
     }
 
     companion object {
         private const val EIER = "12345678901"
-        private val DEFAULT_VEGADRESSE = Vegadresse(
-            adressenavn = "Gateveien",
-            husnummer = 1,
-            husbokstav = "A",
-            tilleggsnavn = "",
-            postnummer = "0123",
-            poststed = "poststed",
-            kommunenummer = "0301",
-            bruksenhetsnummer = "H0101",
-            bydelsnummer = "123456"
-        )
-        private val ANNEN_VEGADRESSE = Vegadresse(
-            adressenavn = "en annen sti",
-            husnummer = 32,
-            husbokstav = null,
-            tilleggsnavn = null,
-            postnummer = "0456",
-            poststed = "oslo",
-            kommunenummer = "0302",
-            bruksenhetsnummer = null,
-            bydelsnummer = null
-        )
+        private val DEFAULT_VEGADRESSE =
+            Vegadresse(
+                adressenavn = "Gateveien",
+                husnummer = 1,
+                husbokstav = "A",
+                tilleggsnavn = "",
+                postnummer = "0123",
+                poststed = "poststed",
+                kommunenummer = "0301",
+                bruksenhetsnummer = "H0101",
+                bydelsnummer = "123456",
+            )
+        private val ANNEN_VEGADRESSE =
+            Vegadresse(
+                adressenavn = "en annen sti",
+                husnummer = 32,
+                husbokstav = null,
+                tilleggsnavn = null,
+                postnummer = "0456",
+                poststed = "oslo",
+                kommunenummer = "0302",
+                bruksenhetsnummer = null,
+                bydelsnummer = null,
+            )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(
@@ -282,7 +290,7 @@ internal class AdresseSystemdataTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

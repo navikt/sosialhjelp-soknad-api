@@ -4,28 +4,35 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class KontaktService(
-    private val kontaktRepository: KontaktRepository
+    private val kontaktRepository: KontaktRepository,
 ) {
     private val logger = LoggerFactory.getLogger(KontaktService::class.java)
 
     fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
-    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer {
+    fun updateTelefonnummer(
+        soknadId: UUID,
+        telefonnummerBruker: String?,
+    ): Telefonnummer {
         return kontaktRepository.getOrCreateKontakt(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
     }
 
-    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt {
+    fun updateBrukerAdresse(
+        soknadId: UUID,
+        adresseValg: AdresseValg,
+        brukerAdresse: Adresse?,
+    ): Kontakt {
         logger.info(
             "Oppdaterer adresse for $soknadId. " +
                 "Adressevalg: $adresseValg, " +
-                "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}"
+                "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
         )
 
         return kontaktRepository.getOrCreateKontakt(soknadId)
@@ -36,27 +43,31 @@ class KontaktService(
     fun saveAdresserRegister(
         soknadId: UUID,
         folkeregistrertAdresse: Adresse?,
-        midlertidigAdresse: Adresse?
+        midlertidigAdresse: Adresse?,
     ) {
         logger.info(
             "Legger til adresser for $soknadId. " +
                 "Folkeregistrert: ${folkeregistrertAdresse?.let { "Funnet" }} " +
-                "Midlertidig: ${midlertidigAdresse?.let { "Funnet" }}"
+                "Midlertidig: ${midlertidigAdresse?.let { "Funnet" }}",
         )
 
         kontaktRepository.getOrCreateKontakt(soknadId)
             .run {
                 copy(
-                    adresser = adresser.copy(
-                        folkeregistrertAdresse = folkeregistrertAdresse,
-                        midlertidigAdresse = midlertidigAdresse
-                    )
+                    adresser =
+                        adresser.copy(
+                            folkeregistrertAdresse = folkeregistrertAdresse,
+                            midlertidigAdresse = midlertidigAdresse,
+                        ),
                 )
             }
             .also { kontaktRepository.save(it) }
     }
 
-    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String) {
+    fun updateTelefonRegister(
+        soknadId: UUID,
+        telefonRegister: String,
+    ) {
         kontaktRepository.getOrCreateKontakt(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
             .also { kontaktRepository.save(it) }

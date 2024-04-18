@@ -10,9 +10,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 class AzureadService(
     private val azureClient: AzureadClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
-
     suspend fun getSystemToken(scope: String): String {
         redisService.getString("$AZURE_SYSTEM_TOKEN$scope")?.let { return it }
 
@@ -25,7 +24,10 @@ class AzureadService(
         }
     }
 
-    private fun lagreTilCache(scope: String, accessToken: String) {
+    private fun lagreTilCache(
+        scope: String,
+        accessToken: String,
+    ) {
         redisService.setex("$AZURE_SYSTEM_TOKEN$scope", accessToken.toByteArray(), CACHE_30_SECONDS)
     }
 

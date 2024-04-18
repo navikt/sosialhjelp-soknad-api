@@ -14,7 +14,7 @@ data class OppgaveDto(
     val opprettet: LocalDateTime?,
     val sistKjort: LocalDateTime?,
     val nesteForsok: LocalDateTime?,
-    val retries: Int
+    val retries: Int,
 )
 
 data class FiksDataDto(
@@ -24,17 +24,17 @@ data class FiksDataDto(
     val mottakerNavn: String?,
     val dokumentInfoer: List<DokumentInfoDto>?,
     val innsendtDato: LocalDateTime?,
-    val ettersendelsePa: String?
+    val ettersendelsePa: String?,
 )
 
 data class DokumentInfoDto(
     val uuid: String?,
     val filnavn: String?,
     val mimetype: String?,
-    val ekskluderesFraPrint: Boolean?
+    val ekskluderesFraPrint: Boolean?,
 )
 
 data class FiksResultatDto(
     val fiksForsendelsesId: String?,
-    val feilmelding: String?
+    val feilmelding: String?,
 )

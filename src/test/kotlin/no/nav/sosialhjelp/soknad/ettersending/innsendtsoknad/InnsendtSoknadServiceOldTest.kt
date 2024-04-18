@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class InnsendtSoknadServiceOldTest {
-
     @Test
     fun soknadsalderIMinutter_returnsMinutes() {
         val tidspunktSendt =

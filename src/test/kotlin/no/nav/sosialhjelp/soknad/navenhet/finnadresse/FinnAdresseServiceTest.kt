@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class FinnAdresseServiceTest {
-
     companion object {
         private const val EIER = "123456789101"
         private const val KOMMUNENUMMER = "0300"
@@ -60,15 +59,16 @@ internal class FinnAdresseServiceTest {
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
 
-        val matrikkelAdresse = KartverketMatrikkelAdresse(
-            kommunenummer = KOMMUNENUMMER,
-            gaardsnummer = "11",
-            bruksnummer = "001",
-            festenummer = "42",
-            seksjonsnummer = "asd123",
-            undernummer = null,
-            bydelsnummer = "030107"
-        )
+        val matrikkelAdresse =
+            KartverketMatrikkelAdresse(
+                kommunenummer = KOMMUNENUMMER,
+                gaardsnummer = "11",
+                bruksnummer = "001",
+                festenummer = "42",
+                seksjonsnummer = "asd123",
+                undernummer = null,
+                bydelsnummer = "030107",
+            )
         every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns matrikkelAdresse
 
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT)
@@ -116,8 +116,24 @@ internal class FinnAdresseServiceTest {
             .withBolignummer(BOLIGNUMMER)
     }
 
-    private fun lagAdresseForslag(kommunenummer: String = KOMMUNENUMMER, kommunenavn: String = KOMMUNENAVN1, adresse: String = "Gateveien"): AdresseForslag {
-        return AdresseForslag(adresse, null, null, kommunenummer, kommunenavn, "0030", "Mocka", GEOGRAFISK_TILKNYTNING, null, BYDEL, AdresseForslagType.GATEADRESSE)
+    private fun lagAdresseForslag(
+        kommunenummer: String = KOMMUNENUMMER,
+        kommunenavn: String = KOMMUNENAVN1,
+        adresse: String = "Gateveien",
+    ): AdresseForslag {
+        return AdresseForslag(
+            adresse,
+            null,
+            null,
+            kommunenummer,
+            kommunenavn,
+            "0030",
+            "Mocka",
+            GEOGRAFISK_TILKNYTNING,
+            null,
+            BYDEL,
+            AdresseForslagType.GATEADRESSE,
+        )
     }
 
     private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -129,7 +145,7 @@ internal class FinnAdresseServiceTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

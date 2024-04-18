@@ -9,7 +9,7 @@ import io.lettuce.core.codec.StringCodec
 import org.slf4j.LoggerFactory
 
 class RedisStore(
-    redisClient: RedisClient
+    redisClient: RedisClient,
 ) {
     private val commands: RedisCommands<String, ByteArray>
 
@@ -27,7 +27,11 @@ class RedisStore(
         }
     }
 
-    fun setex(key: String?, value: ByteArray?, timeToLiveSeconds: Long): String? {
+    fun setex(
+        key: String?,
+        value: ByteArray?,
+        timeToLiveSeconds: Long,
+    ): String? {
         return try {
             commands.setex(key, timeToLiveSeconds, value)
         } catch (e: RedisCommandTimeoutException) {
@@ -36,7 +40,10 @@ class RedisStore(
         }
     }
 
-    fun set(key: String?, value: ByteArray?): String? {
+    fun set(
+        key: String?,
+        value: ByteArray?,
+    ): String? {
         return try {
             commands.set(key, value)
         } catch (e: RedisCommandTimeoutException) {

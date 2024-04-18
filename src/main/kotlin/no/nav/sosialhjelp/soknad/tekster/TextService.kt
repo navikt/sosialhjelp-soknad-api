@@ -5,7 +5,7 @@ import java.util.Locale
 
 @Component
 class TextService(
-    private val navMessageSource: NavMessageSource
+    private val navMessageSource: NavMessageSource,
 ) {
     fun getJsonOkonomiTittel(key: String?): String {
         val properties = navMessageSource.getBundleFor("sendsoknad", Locale.forLanguageTag("nb-NO"))

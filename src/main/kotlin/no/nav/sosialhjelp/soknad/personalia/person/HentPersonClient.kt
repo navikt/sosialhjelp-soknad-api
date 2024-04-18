@@ -36,8 +36,11 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
+
     fun hentEktefelle(ident: String): EktefelleDto?
+
     fun hentBarn(ident: String): BarnDto?
+
     fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto?
 }
 
@@ -49,9 +52,8 @@ class HentPersonClientImpl(
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-
     override fun hentPerson(ident: String): PersonDto? {
         return hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
     }
@@ -62,13 +64,14 @@ class HentPersonClientImpl(
 
     private fun hentPersonFraPdl(ident: String): PersonDto? {
         return try {
-            val response = hentPersonRequest
-                .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(pdlRetry)
-                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentPerson - response null?")
+            val response =
+                hentPersonRequest
+                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                    .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentPerson - response null?")
             val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -91,13 +94,14 @@ class HentPersonClientImpl(
 
     private fun hentEktefelleFraPdl(ident: String): EktefelleDto? {
         return try {
-            val response = hentPersonRequest
-                .header(AUTHORIZATION, BEARER + azureAdToken())
-                .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(pdlRetry)
-                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
+            val response =
+                hentPersonRequest
+                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -120,13 +124,14 @@ class HentPersonClientImpl(
 
     private fun hentBarnFraPdl(ident: String): BarnDto? {
         return try {
-            val response: String = hentPersonRequest
-                .header(AUTHORIZATION, BEARER + azureAdToken())
-                .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(pdlRetry)
-                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
+            val response: String =
+                hentPersonRequest
+                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -146,19 +151,20 @@ class HentPersonClientImpl(
     private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? {
         return redisService.get(
             ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
-            PersonAdressebeskyttelseDto::class.java
+            PersonAdressebeskyttelseDto::class.java,
         ) as? PersonAdressebeskyttelseDto
     }
 
     private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? {
         return try {
-            val body: String = hentPersonRequest
-                .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(pdlRetry)
-                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdressebeskyttelse - response null?")
+            val body: String =
+                hentPersonRequest
+                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                    .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdressebeskyttelse - response null?")
             val pdlResponse = parse<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -171,13 +177,15 @@ class HentPersonClientImpl(
         }
     }
 
-    private fun tokenXtoken(ident: String) = runBlocking {
-        tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
-    }
+    private fun tokenXtoken(ident: String) =
+        runBlocking {
+            tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
+        }
 
-    private fun azureAdToken() = runBlocking {
-        azureadService.getSystemToken(pdlScope)
-    }
+    private fun azureAdToken() =
+        runBlocking {
+            azureadService.getSystemToken(pdlScope)
+        }
 
     private fun variables(ident: String): Map<String, Any> {
         return mapOf("historikk" to false, "ident" to ident)
@@ -185,7 +193,11 @@ class HentPersonClientImpl(
 
     private val hentPersonRequest get() = baseRequest.header(HEADER_TEMA, TEMA_KOM)
 
-    private fun lagreTilCache(prefix: String, ident: String, pdlResponse: Any) {
+    private fun lagreTilCache(
+        prefix: String,
+        ident: String,
+        pdlResponse: Any,
+    ) {
         try {
             redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
         } catch (e: JsonProcessingException) {

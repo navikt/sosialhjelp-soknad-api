@@ -11,9 +11,8 @@ import java.util.Locale
 @Component
 class NedetidService(
     @Value("\${nedetid.start}") private val nedetidStart: String?,
-    @Value("\${nedetid.slutt}") private val nedetidSlutt: String?
+    @Value("\${nedetid.slutt}") private val nedetidSlutt: String?,
 ) {
-
     private fun getNedetid(time: String?): LocalDateTime? {
         return if (time.isNullOrEmpty()) {
             null
@@ -21,7 +20,7 @@ class NedetidService(
             try {
                 LocalDateTime.parse(time, dateTimeFormatter)
             } catch (e: DateTimeParseException) {
-                log.error("Klarte ikke parse $time. Skal være på formatet: $nedetidFormat")
+                log.error("Klarte ikke parse $time. Skal være på formatet: $NEDETID_FORMAT")
                 null
             }
         }
@@ -45,7 +44,10 @@ class NedetidService(
     val nedetidSluttAsHumanReadableEn: String?
         get() = getNedetidAsFormattedStringOrNull(nedetidSlutt, humanreadableFormatterEn)
 
-    private fun getNedetidAsFormattedStringOrNull(time: String?, formatter: DateTimeFormatter): String? {
+    private fun getNedetidAsFormattedStringOrNull(
+        time: String?,
+        formatter: DateTimeFormatter,
+    ): String? {
         val nedetid = getNedetid(time)
         return nedetid?.format(formatter)
     }
@@ -58,7 +60,7 @@ class NedetidService(
             return if (start == null || slutt == null || slutt.isBefore(start)) {
                 false
             } else {
-                now.plusDays(planlagtNedetidVarselAntallDager.toLong()).isAfter(start) && now.isBefore(start)
+                now.plusDays(PLANLAGT_NEDETID_VARSEL_ANTALL_DAGER.toLong()).isAfter(start) && now.isBefore(start)
             }
         }
 
@@ -77,14 +79,14 @@ class NedetidService(
     companion object {
         private val log by logger()
 
-        private const val planlagtNedetidVarselAntallDager = 14
+        private const val PLANLAGT_NEDETID_VARSEL_ANTALL_DAGER = 14
 
-        private const val nedetidFormat = "dd.MM.yyyy HH:mm:ss"
-        private const val humanreadableFormat = "EEEE dd.MM.yyyy 'kl.' HH:mm"
-        private const val humanreadableFormatEn = "EEEE d MMM yyyy 'at' HH:mm '(CET)'"
+        private const val NEDETID_FORMAT = "dd.MM.yyyy HH:mm:ss"
+        private const val HUMANREADABLE_FORMAT = "EEEE dd.MM.yyyy 'kl.' HH:mm"
+        private const val HUMANREADABLE_FORMAT_EN = "EEEE d MMM yyyy 'at' HH:mm '(CET)'"
 
-        val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(nedetidFormat)
-        val humanreadableFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(humanreadableFormat, Locale.forLanguageTag("nb-NO"))
-        val humanreadableFormatterEn: DateTimeFormatter = DateTimeFormatter.ofPattern(humanreadableFormatEn, Locale.ENGLISH)
+        val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(NEDETID_FORMAT)
+        val humanreadableFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(HUMANREADABLE_FORMAT, Locale.forLanguageTag("nb-NO"))
+        val humanreadableFormatterEn: DateTimeFormatter = DateTimeFormatter.ofPattern(HUMANREADABLE_FORMAT_EN, Locale.ENGLISH)
     }
 }

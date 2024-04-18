@@ -25,24 +25,36 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto?
-    fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting)
+
+    fun postVedlegg(
+        navEksternId: String,
+        filOpplasting: FilOpplasting,
+    )
+
     fun deleteAllVedlegg(navEksternId: String)
-    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray
-    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String)
+
+    fun getVedlegg(
+        navEksternId: String,
+        digisosDokumentId: String,
+    ): ByteArray
+
+    fun deleteVedlegg(
+        navEksternId: String,
+        digisosDokumentId: String,
+    )
 }
 
 class MellomlagringClientImpl(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) : MellomlagringClient {
-
     /**
      * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
      */
@@ -73,18 +85,22 @@ class MellomlagringClientImpl(
     /**
      * Last opp vedlegg til mellomlagring for `navEksternId`
      */
-    override fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
+    override fun postVedlegg(
+        navEksternId: String,
+        filOpplasting: FilOpplasting,
+    ) {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             lastOpp(
-                filForOpplasting = FilForOpplasting(
-                    filnavn = filOpplasting.metadata.filnavn,
-                    metadata = filOpplasting.metadata,
-                    data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate)
-                ),
-                navEksternId = navEksternId
+                filForOpplasting =
+                    FilForOpplasting(
+                        filnavn = filOpplasting.metadata.filnavn,
+                        metadata = filOpplasting.metadata,
+                        data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
+                    ),
+                navEksternId = navEksternId,
             )
             waitForFutures(krypteringFutureList)
         } finally {
@@ -94,7 +110,10 @@ class MellomlagringClientImpl(
         }
     }
 
-    private fun lastOpp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
+    private fun lastOpp(
+        filForOpplasting: FilForOpplasting<Any>,
+        navEksternId: String,
+    ) {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
         body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
@@ -110,7 +129,10 @@ class MellomlagringClientImpl(
                 log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.")
             }
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}", it)
+                log.warn(
+                    "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}",
+                    it,
+                )
             }
             .block()
     }
@@ -133,7 +155,10 @@ class MellomlagringClientImpl(
     /**
      * Last ned mellomlagret vedlegg
      */
-    override fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
+    override fun getVedlegg(
+        navEksternId: String,
+        digisosDokumentId: String,
+    ): ByteArray {
         return webClient.get()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -146,7 +171,10 @@ class MellomlagringClientImpl(
     /**
      * Slett mellomlagret vedlegg
      */
-    override fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
+    override fun deleteVedlegg(
+        navEksternId: String,
+        digisosDokumentId: String,
+    ) {
         webClient.delete()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -161,11 +189,17 @@ class MellomlagringClientImpl(
             .block()
     }
 
-    private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
+    private fun createHttpEntityOfString(
+        body: String,
+        name: String,
+    ): HttpEntity<Any> {
         return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
     }
 
-    private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
+    private fun createHttpEntityOfFile(
+        file: FilForOpplasting<Any>,
+        name: String,
+    ): HttpEntity<Any> {
         return createHttpEntity(ByteArrayResource(IOUtils.toByteArray(file.data)), name, file.filnavn, "application/octet-stream")
     }
 

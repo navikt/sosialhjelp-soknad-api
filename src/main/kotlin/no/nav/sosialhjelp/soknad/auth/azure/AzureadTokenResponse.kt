@@ -8,5 +8,5 @@ data class AzureadTokenResponse(
     @JsonProperty("expires_in") val expiresIn: Int = 0,
     @JsonProperty("ext_expires_in") val extExpiresIn: Int = 0,
     @JsonProperty("access_token") val accessToken: String = "",
-    @JsonProperty("refresh_token") val refreshToken: String = ""
+    @JsonProperty("refresh_token") val refreshToken: String = "",
 )

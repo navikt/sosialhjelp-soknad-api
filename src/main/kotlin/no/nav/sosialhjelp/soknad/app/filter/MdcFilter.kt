@@ -17,11 +17,10 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class MdcFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
@@ -41,7 +40,10 @@ class MdcFilter : OncePerRequestFilter() {
 
     private fun getBehandlingsId(request: HttpServletRequest): String? {
         val requestURI = request.requestURI
-        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/(.*)")) && !requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/opprettSoknad(.*)"))) {
+        if (requestURI.matches(
+                Regex("^${SOKNAD_API_BASEURL}soknader/(.*)"),
+            ) && !requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/opprettSoknad(.*)"))
+        ) {
             return requestURI.substringAfter("${SOKNAD_API_BASEURL}soknader/").substringBefore("/")
         }
         if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {

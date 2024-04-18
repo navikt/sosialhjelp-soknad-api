@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/personalia/kontonummer")
 class KontonummerController(
-    private val eierService: EierService
+    private val eierService: EierService,
 ) {
     @GetMapping
     fun getKontonummer(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): KontoInformasjonDto {
         return eierService.getEier(soknadId).kontonummer?.toKontoInformasjonDto() ?: KontoInformasjonDto()
     }
@@ -30,7 +30,7 @@ class KontonummerController(
     @PutMapping
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) input: KontoInput
+        @RequestBody(required = true) input: KontoInput,
     ): KontoInformasjonDto {
         return eierService.run {
             when (input) {
@@ -47,30 +47,30 @@ private fun Kontonummer.toKontoInformasjonDto(): KontoInformasjonDto {
     return KontoInformasjonDto(
         harIkkeKonto = harIkkeKonto,
         kontonummerRegister = fraRegister,
-        kontonummerBruker = fraBruker
+        kontonummerBruker = fraBruker,
     )
 }
 
 data class KontoInformasjonDto(
     val harIkkeKonto: Boolean? = null,
     val kontonummerRegister: String? = null,
-    val kontonummerBruker: String? = null
+    val kontonummerBruker: String? = null,
 )
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY
+    include = JsonTypeInfo.As.PROPERTY,
 )
 @JsonSubTypes(
     JsonSubTypes.Type(HarIkkeKontoInput::class),
-    JsonSubTypes.Type(KontonummerBrukerInput::class)
+    JsonSubTypes.Type(KontonummerBrukerInput::class),
 )
 interface KontoInput
 
 data class HarIkkeKontoInput(
-    val harIkkeKonto: Boolean
+    val harIkkeKonto: Boolean,
 ) : KontoInput
 
 data class KontonummerBrukerInput(
-    val kontonummer: String
+    val kontonummer: String,
 ) : KontoInput

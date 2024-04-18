@@ -10,8 +10,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 
 object OkonomiMapper {
-
-    fun setBekreftelse(opplysninger: JsonOkonomiopplysninger, type: String, verdi: Boolean?, tittel: String) {
+    fun setBekreftelse(
+        opplysninger: JsonOkonomiopplysninger,
+        type: String,
+        verdi: Boolean?,
+        tittel: String,
+    ) {
         opplysninger.bekreftelse = opplysninger.bekreftelse ?: ArrayList()
 
         opplysninger.bekreftelse.firstOrNull { it.type == type }?.apply {
@@ -21,14 +25,14 @@ object OkonomiMapper {
                 .withKilde(JsonKilde.BRUKER)
                 .withType(type)
                 .withTittel(tittel)
-                .withVerdi(verdi)
+                .withVerdi(verdi),
         )
     }
 
     private fun addFormueIfNotPresentInOversikt(
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
-        tittel: String
+        tittel: String,
     ) {
         val jsonFormue = formuer.firstOrNull { it.type == type }
         if (jsonFormue == null) {
@@ -37,7 +41,7 @@ object OkonomiMapper {
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
-                    .withOverstyrtAvBruker(false)
+                    .withOverstyrtAvBruker(false),
             )
         }
     }
@@ -45,7 +49,7 @@ object OkonomiMapper {
     fun addInntektIfNotPresentInOversikt(
         inntekter: MutableList<JsonOkonomioversiktInntekt>,
         type: String,
-        tittel: String
+        tittel: String,
     ) {
         val jsonInntekt = inntekter.firstOrNull { it.type == type }
         if (jsonInntekt == null) {
@@ -54,7 +58,7 @@ object OkonomiMapper {
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
-                    .withOverstyrtAvBruker(false)
+                    .withOverstyrtAvBruker(false),
             )
         }
     }
@@ -62,7 +66,7 @@ object OkonomiMapper {
     fun addUtgiftIfNotPresentInOversikt(
         utgifter: MutableList<JsonOkonomioversiktUtgift>,
         type: String,
-        tittel: String
+        tittel: String,
     ) {
         val jsonUtgift = utgifter.firstOrNull { it.type == type }
         if (jsonUtgift == null) {
@@ -71,7 +75,7 @@ object OkonomiMapper {
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
-                    .withOverstyrtAvBruker(false)
+                    .withOverstyrtAvBruker(false),
             )
         }
     }
@@ -79,7 +83,7 @@ object OkonomiMapper {
     fun addUtgiftIfNotPresentInOpplysninger(
         utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
         type: String?,
-        tittel: String
+        tittel: String,
     ) {
         val jsonUtgift = utgifter.firstOrNull { it.type == type }
         if (jsonUtgift == null) {
@@ -88,7 +92,7 @@ object OkonomiMapper {
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
-                    .withOverstyrtAvBruker(false)
+                    .withOverstyrtAvBruker(false),
             )
         }
     }
@@ -96,7 +100,7 @@ object OkonomiMapper {
     fun addUtbetalingIfNotPresentInOpplysninger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         type: String,
-        tittel: String
+        tittel: String,
     ) {
         val jsonUtbetaling = utbetalinger.firstOrNull { it.type == type }
         if (jsonUtbetaling == null) {
@@ -105,35 +109,50 @@ object OkonomiMapper {
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
-                    .withOverstyrtAvBruker(false)
+                    .withOverstyrtAvBruker(false),
             )
         }
     }
 
-    private fun removeFormueIfPresentInOversikt(formuer: MutableList<JsonOkonomioversiktFormue>, type: String) {
+    private fun removeFormueIfPresentInOversikt(
+        formuer: MutableList<JsonOkonomioversiktFormue>,
+        type: String,
+    ) {
         formuer.removeIf { it.type == type }
     }
 
-    fun removeInntektIfPresentInOversikt(inntekter: MutableList<JsonOkonomioversiktInntekt>, type: String) {
+    fun removeInntektIfPresentInOversikt(
+        inntekter: MutableList<JsonOkonomioversiktInntekt>,
+        type: String,
+    ) {
         inntekter.removeIf { it.type == type }
     }
 
-    fun removeUtgiftIfPresentInOversikt(utgifter: MutableList<JsonOkonomioversiktUtgift>, type: String) {
+    fun removeUtgiftIfPresentInOversikt(
+        utgifter: MutableList<JsonOkonomioversiktUtgift>,
+        type: String,
+    ) {
         utgifter.removeIf { it.type == type }
     }
 
-    fun removeUtgiftIfPresentInOpplysninger(utgifter: MutableList<JsonOkonomiOpplysningUtgift>, type: String?) {
+    fun removeUtgiftIfPresentInOpplysninger(
+        utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
+        type: String?,
+    ) {
         utgifter.removeIf { it.type == type }
     }
 
     fun removeUtbetalingIfPresentInOpplysninger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String
+        type: String,
     ) {
         utbetalinger.removeIf { it.type == type }
     }
 
-    fun removeBekreftelserIfPresent(opplysninger: JsonOkonomiopplysninger, type: String?) {
+    fun removeBekreftelserIfPresent(
+        opplysninger: JsonOkonomiopplysninger,
+        type: String?,
+    ) {
         opplysninger.bekreftelse.removeIf { it.type.equals(type, ignoreCase = true) }
     }
 
@@ -141,7 +160,7 @@ object OkonomiMapper {
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
         tittel: String,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (isChecked) {
             addFormueIfNotPresentInOversikt(formuer, type, tittel)
@@ -154,7 +173,7 @@ object OkonomiMapper {
         inntekter: MutableList<JsonOkonomioversiktInntekt>,
         type: String,
         tittel: String,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (isChecked) {
             addInntektIfNotPresentInOversikt(inntekter, type, tittel)
@@ -167,7 +186,7 @@ object OkonomiMapper {
         utgifter: MutableList<JsonOkonomioversiktUtgift>,
         type: String,
         tittel: String,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (isChecked) {
             addUtgiftIfNotPresentInOversikt(utgifter, type, tittel)
@@ -180,7 +199,7 @@ object OkonomiMapper {
         utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
         type: String,
         tittel: String,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (isChecked) {
             addUtgiftIfNotPresentInOpplysninger(utgifter, type, tittel)
@@ -193,7 +212,7 @@ object OkonomiMapper {
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         type: String,
         tittel: String,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (isChecked) {
             addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel)

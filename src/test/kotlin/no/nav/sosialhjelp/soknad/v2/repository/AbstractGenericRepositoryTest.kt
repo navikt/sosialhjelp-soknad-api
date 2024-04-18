@@ -20,14 +20,13 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @ActiveProfiles("test", "test-container")
 abstract class AbstractGenericRepositoryTest {
-
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
 
@@ -50,9 +49,10 @@ abstract class AbstractGenericRepositoryTest {
 
     @BeforeEach
     fun saveSoknad() {
-        soknad = soknadRepository.save(
-            opprettSoknad(id = UUID.randomUUID())
-        )
+        soknad =
+            soknadRepository.save(
+                opprettSoknad(id = UUID.randomUUID()),
+            )
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AbstractGenericRepositoryTest {
      */
     protected fun <Entity : AggregateRoot, Repo> Repo.verifyCRUDOperations(
         originalEntity: Entity,
-        updatedEntity: Entity
+        updatedEntity: Entity,
     ) where Repo : UpsertRepository<Entity>, Repo : ListCrudRepository<Entity, UUID> {
         assertThat(originalEntity.soknadId).isEqualTo(updatedEntity.soknadId)
         assertThat(originalEntity).isNotEqualTo(updatedEntity)

@@ -13,9 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger
 // TODO... interceptor.
 @Component
 class PrometheusMetricsService(
-    private val meterRegistry: MeterRegistry
+    private val meterRegistry: MeterRegistry,
 ) {
-
     private val startSoknadCounter = Counter.builder("start_soknad_counter")
 
     private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
@@ -71,7 +70,10 @@ class PrometheusMetricsService(
     }
 
     @Deprecated("Ettersendelse er ikke lenger relevant")
-    fun reportSoknadMottaker(isEttersendelse: Boolean, navEnhet: String) {
+    fun reportSoknadMottaker(
+        isEttersendelse: Boolean,
+        navEnhet: String,
+    ) {
         soknadMottakerCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
             .tag(TAG_MOTTAKER, navEnhet)
@@ -107,7 +109,10 @@ class PrometheusMetricsService(
     }
 
     @Deprecated("Ettersendelse er irrelevant. SvarUt støttes ikke lenger")
-    fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
+    fun reportAvbruttSoknad(
+        isEttersendelse: Boolean,
+        steg: String,
+    ) {
         avbruttSoknadCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
             .tag(TAG_STEG, steg)

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class DittNavMetadataService(
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     fun hentAktivePabegynteSoknader(fnr: String): List<PabegyntSoknadDto> {
         return hentPabegynteSoknader(fnr, true)
@@ -21,7 +21,10 @@ class DittNavMetadataService(
         return hentPabegynteSoknader(fnr, false)
     }
 
-    private fun hentPabegynteSoknader(fnr: String, aktiv: Boolean): List<PabegyntSoknadDto> {
+    private fun hentPabegynteSoknader(
+        fnr: String,
+        aktiv: Boolean,
+    ): List<PabegyntSoknadDto> {
         val pabegynteSoknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr, !aktiv)
         return pabegynteSoknader.map {
             PabegyntSoknadDto(
@@ -32,12 +35,15 @@ class DittNavMetadataService(
                 lenkeTilPabegyntSoknad(it.behandlingsId),
                 SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
                 toUtc(it.sistEndretDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                aktiv
+                aktiv,
             )
         }
     }
 
-    fun oppdaterLestStatusForPabegyntSoknad(behandlingsId: String?, fnr: String): Boolean {
+    fun oppdaterLestStatusForPabegyntSoknad(
+        behandlingsId: String?,
+        fnr: String,
+    ): Boolean {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         if (soknadMetadata == null) {
             log.warn("Fant ingen soknadMetadata med behandlingsId=$behandlingsId")
@@ -53,7 +59,10 @@ class DittNavMetadataService(
         }
     }
 
-    private fun eventId(behandlingsId: String, aktiv: Boolean): String {
+    private fun eventId(
+        behandlingsId: String,
+        aktiv: Boolean,
+    ): String {
         return behandlingsId + "_" + if (aktiv) "aktiv" else "inaktiv"
     }
 

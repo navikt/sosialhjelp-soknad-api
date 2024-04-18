@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class SosialhjelpPdfGeneratorTest {
-
     private val kodeverkService: KodeverkService = mockk()
 
     private lateinit var sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
@@ -59,20 +58,21 @@ internal class SosialhjelpPdfGeneratorTest {
     fun generateEttersendelsePdfWithValidJson() {
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
 
-        val vedleggSpesifikasjon = JsonVedleggSpesifikasjon()
-            .withVedlegg(
-                mutableListOf(
-                    JsonVedlegg()
-                        .withStatus("LastetOpp")
-                        .withType("annet")
-                        .withTilleggsinfo("annet")
-                        .withFiler(
-                            mutableListOf(
-                                JsonFiler().withFilnavn("Fil1.pdf")
-                            )
-                        )
+        val vedleggSpesifikasjon =
+            JsonVedleggSpesifikasjon()
+                .withVedlegg(
+                    mutableListOf(
+                        JsonVedlegg()
+                            .withStatus("LastetOpp")
+                            .withType("annet")
+                            .withTilleggsinfo("annet")
+                            .withFiler(
+                                mutableListOf(
+                                    JsonFiler().withFilnavn("Fil1.pdf"),
+                                ),
+                            ),
+                    ),
                 )
-            )
         internalSoknad.vedlegg = vedleggSpesifikasjon
 
         sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234")
@@ -136,66 +136,67 @@ internal class SosialhjelpPdfGeneratorTest {
     }
 
     private val jsonInternalSoknadWithMandatoryFields: JsonInternalSoknad
-        get() = JsonInternalSoknad()
-            .withSoknad(
-                JsonSoknad()
-                    .withVersion("1.0")
-                    .withData(
-                        JsonData()
-                            .withPersonalia(
-                                JsonPersonalia().withPersonIdentifikator(
-                                    JsonPersonIdentifikator()
-                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                        .withVerdi("1234")
+        get() =
+            JsonInternalSoknad()
+                .withSoknad(
+                    JsonSoknad()
+                        .withVersion("1.0")
+                        .withData(
+                            JsonData()
+                                .withPersonalia(
+                                    JsonPersonalia().withPersonIdentifikator(
+                                        JsonPersonIdentifikator()
+                                            .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                            .withVerdi("1234"),
+                                    )
+                                        .withNavn(
+                                            JsonSokernavn()
+                                                .withFornavn("Navn")
+                                                .withMellomnavn("")
+                                                .withEtternavn("Navnesen")
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM),
+                                        )
+                                        .withKontonummer(
+                                            JsonKontonummer()
+                                                .withKilde(JsonKilde.SYSTEM)
+                                                .withVerdi("0000"),
+                                        ),
                                 )
-                                    .withNavn(
-                                        JsonSokernavn()
-                                            .withFornavn("Navn")
-                                            .withMellomnavn("")
-                                            .withEtternavn("Navnesen")
-                                            .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                                    )
-                                    .withKontonummer(
-                                        JsonKontonummer()
-                                            .withKilde(JsonKilde.SYSTEM)
-                                            .withVerdi("0000")
-                                    )
-                            )
-                            .withArbeid(JsonArbeid())
-                            .withUtdanning(
-                                JsonUtdanning()
-                                    .withKilde(JsonKilde.SYSTEM)
-                            )
-                            .withFamilie(
-                                JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt())
-                            )
-                            .withBegrunnelse(
-                                JsonBegrunnelse()
-                                    .withKilde(JsonKildeBruker.BRUKER)
-                                    .withHvaSokesOm("")
-                                    .withHvorforSoke("")
-                            )
-                            .withBosituasjon(
-                                JsonBosituasjon()
-                                    .withKilde(JsonKildeBruker.BRUKER)
-                            )
-                            .withOkonomi(
-                                JsonOkonomi()
-                                    .withOpplysninger(
-                                        JsonOkonomiopplysninger()
-                                            .withUtbetaling(emptyList())
-                                            .withUtgift(emptyList())
-                                    )
-                                    .withOversikt(
-                                        JsonOkonomioversikt()
-                                            .withInntekt(emptyList())
-                                            .withUtgift(emptyList())
-                                            .withFormue(emptyList())
-                                    )
-                            )
-                    )
-            )
+                                .withArbeid(JsonArbeid())
+                                .withUtdanning(
+                                    JsonUtdanning()
+                                        .withKilde(JsonKilde.SYSTEM),
+                                )
+                                .withFamilie(
+                                    JsonFamilie()
+                                        .withForsorgerplikt(JsonForsorgerplikt()),
+                                )
+                                .withBegrunnelse(
+                                    JsonBegrunnelse()
+                                        .withKilde(JsonKildeBruker.BRUKER)
+                                        .withHvaSokesOm("")
+                                        .withHvorforSoke(""),
+                                )
+                                .withBosituasjon(
+                                    JsonBosituasjon()
+                                        .withKilde(JsonKildeBruker.BRUKER),
+                                )
+                                .withOkonomi(
+                                    JsonOkonomi()
+                                        .withOpplysninger(
+                                            JsonOkonomiopplysninger()
+                                                .withUtbetaling(emptyList())
+                                                .withUtgift(emptyList()),
+                                        )
+                                        .withOversikt(
+                                            JsonOkonomioversikt()
+                                                .withInntekt(emptyList())
+                                                .withUtgift(emptyList())
+                                                .withFormue(emptyList()),
+                                        ),
+                                ),
+                        ),
+                )
 
     @Test
     fun skalGenererePdfA() {

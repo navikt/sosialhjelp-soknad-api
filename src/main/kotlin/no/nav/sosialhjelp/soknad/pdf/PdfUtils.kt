@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class PdfUtils(private val navMessageSource: NavMessageSource) {
-
     fun getTekst(key: String?): String? {
         return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key)
     }
 
-    fun skrivInfotekst(pdf: PdfGenerator, vararg keys: String?) {
+    fun skrivInfotekst(
+        pdf: PdfGenerator,
+        vararg keys: String?,
+    ) {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"))
         for (key in keys) {
             if (!key.isNullOrEmpty()) {
@@ -21,13 +23,19 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         pdf.addBlankLine()
     }
 
-    fun skrivHjelpetest(pdf: PdfGenerator, key: String?) {
+    fun skrivHjelpetest(
+        pdf: PdfGenerator,
+        key: String?,
+    ) {
         pdf.skrivTekstBold(getTekst("hjelpetekst.oppsummering.tittel"))
         pdf.skrivTekst(getTekst(key))
         pdf.addBlankLine()
     }
 
-    fun skrivKnappTilgjengelig(pdf: PdfGenerator, key: String) {
+    fun skrivKnappTilgjengelig(
+        pdf: PdfGenerator,
+        key: String,
+    ) {
         pdf.skrivTekstBold("Knapp tilgjengelig:")
         pdf.skrivTekst(getTekst(key))
         pdf.addBlankLine()
@@ -37,17 +45,28 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"))
     }
 
-    fun skrivIkkeUtfyltMedGuard(pdf: PdfGenerator, key: String) {
+    fun skrivIkkeUtfyltMedGuard(
+        pdf: PdfGenerator,
+        key: String,
+    ) {
         pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"))
     }
 
-    fun skrivTekstMedGuard(pdf: PdfGenerator, tekst: String?, key: String) {
+    fun skrivTekstMedGuard(
+        pdf: PdfGenerator,
+        tekst: String?,
+        key: String,
+    ) {
         if (tekst != null) {
             pdf.skrivTekst(getTekst(key) + ": " + tekst)
         }
     }
 
-    fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, tekst: String?, key: String) {
+    fun skrivTekstMedGuardOgIkkeUtfylt(
+        pdf: PdfGenerator,
+        tekst: String?,
+        key: String,
+    ) {
         if (tekst != null) {
             pdf.skrivTekst(getTekst(key) + ": " + tekst)
         } else {
@@ -55,7 +74,11 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, verdi: Int?, key: String) {
+    fun skrivTekstMedGuardOgIkkeUtfylt(
+        pdf: PdfGenerator,
+        verdi: Int?,
+        key: String,
+    ) {
         if (verdi != null) {
             pdf.skrivTekst(getTekst(key) + ": " + verdi)
         } else {
@@ -63,7 +86,11 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, verdi: Double?, key: String) {
+    fun skrivTekstMedGuardOgIkkeUtfylt(
+        pdf: PdfGenerator,
+        verdi: Double?,
+        key: String,
+    ) {
         if (verdi != null) {
             pdf.skrivTekst(getTekst(key) + ": " + String.format("%.2f", verdi))
         } else {
@@ -71,7 +98,10 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    fun addLinks(pdf: PdfGenerator, uris: Map<String, String>) {
+    fun addLinks(
+        pdf: PdfGenerator,
+        uris: Map<String, String>,
+    ) {
         pdf.skrivTekst("Lenker på siden: ")
         for ((name, uri) in uris) {
             pdf.skrivTekst("$name: $uri")
@@ -79,14 +109,20 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         pdf.addBlankLine()
     }
 
-    fun skrivSvaralternativer(pdf: PdfGenerator, keys: List<String>) {
+    fun skrivSvaralternativer(
+        pdf: PdfGenerator,
+        keys: List<String>,
+    ) {
         pdf.skrivTekstBold("Svaralternativer:")
         for (key in keys) {
             pdf.skrivTekstMedInnrykk(getTekst(key), PdfGenerator.INNRYKK_2)
         }
     }
 
-    fun skrivUtBarnebidragAlternativer(pdf: PdfGenerator, utvidetSoknad: Boolean) {
+    fun skrivUtBarnebidragAlternativer(
+        pdf: PdfGenerator,
+        utvidetSoknad: Boolean,
+    ) {
         if (utvidetSoknad) {
             val svaralternativer: MutableList<String> = ArrayList(4)
             svaralternativer.add("familie.barn.true.barnebidrag.betaler")

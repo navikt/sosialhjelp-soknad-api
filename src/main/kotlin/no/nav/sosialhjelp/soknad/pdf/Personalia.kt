@@ -12,14 +12,13 @@ import no.nav.sosialhjelp.soknad.pdf.PdfGenerator.Companion.INNRYKK_2
 import no.nav.sosialhjelp.soknad.pdf.PdfGenerator.Companion.INNRYKK_4
 
 object Personalia {
-
     fun leggTilPersonalia(
         pdf: PdfGenerator,
         pdfUtils: PdfUtils,
         textHelpers: TextHelpers,
         jsonPersonalia: JsonPersonalia,
         midlertidigAdresse: JsonAdresse?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.tittel"))
         pdf.addBlankLine()
@@ -63,7 +62,10 @@ object Personalia {
                 if (adresseValg == JsonAdresseValg.SOKNAD) {
                     pdf.skrivTekstMedInnrykk(pdfUtils.getTekst("kontakt.system.oppholdsadresse.valg.soknad"), INNRYKK_2)
                 } else {
-                    pdf.skrivTekstMedInnrykk(pdfUtils.getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"), INNRYKK_2)
+                    pdf.skrivTekstMedInnrykk(
+                        pdfUtils.getTekst("kontakt.system.oppholdsadresse." + adresseValg.value() + "Adresse"),
+                        INNRYKK_2,
+                    )
                 }
                 pdf.addBlankLine()
 
@@ -155,7 +157,7 @@ object Personalia {
 
     private fun adresseTilTekst(
         it: JsonAdresse,
-        pdfUtils: PdfUtils
+        pdfUtils: PdfUtils,
     ) = when (it.type) {
         JsonAdresse.Type.GATEADRESSE -> jsonGateAdresseToString(it as JsonGateAdresse)
         JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
@@ -164,7 +166,11 @@ object Personalia {
         else -> null
     }
 
-    private fun leggTilUtvidetInfoAdresse(pdf: PdfGenerator, pdfUtils: PdfUtils, jsonAdresse: JsonAdresse) {
+    private fun leggTilUtvidetInfoAdresse(
+        pdf: PdfGenerator,
+        pdfUtils: PdfUtils,
+        jsonAdresse: JsonAdresse,
+    ) {
         when (jsonAdresse.type) {
             JsonAdresse.Type.GATEADRESSE -> {
                 val gateAdresse = jsonAdresse as JsonGateAdresse
@@ -173,11 +179,25 @@ object Personalia {
             }
             JsonAdresse.Type.MATRIKKELADRESSE -> {
                 val matrikkelAdresse = jsonAdresse as JsonMatrikkelAdresse
-                pdf.skrivTekstMedInnrykk("${pdfUtils.getTekst("kontakt.system.adresse.bruksnummer.label")}: ${matrikkelAdresse.bruksnummer}. ${pdfUtils.getTekst("kontakt.system.adresse.gaardsnummer.label")}: ${matrikkelAdresse.gaardsnummer}. ${pdfUtils.getTekst("kontakt.system.adresse.kommunenummer.label")}:${matrikkelAdresse.kommunenummer}.", INNRYKK_2)
+                pdf.skrivTekstMedInnrykk(
+                    "${pdfUtils.getTekst(
+                        "kontakt.system.adresse.bruksnummer.label",
+                    )}: ${matrikkelAdresse.bruksnummer}. ${pdfUtils.getTekst(
+                        "kontakt.system.adresse.gaardsnummer.label",
+                    )}: ${matrikkelAdresse.gaardsnummer}. ${pdfUtils.getTekst(
+                        "kontakt.system.adresse.kommunenummer.label",
+                    )}:${matrikkelAdresse.kommunenummer}.",
+                    INNRYKK_2,
+                )
             }
             JsonAdresse.Type.POSTBOKS -> {
                 val postboksAdresse = jsonAdresse as JsonPostboksAdresse
-                pdf.skrivTekstMedInnrykk("${pdfUtils.getTekst("kontakt.system.adresse.postboks.label")}: ${postboksAdresse.postboks}, ${postboksAdresse.postnummer} ${postboksAdresse.poststed}", INNRYKK_2)
+                pdf.skrivTekstMedInnrykk(
+                    "${pdfUtils.getTekst(
+                        "kontakt.system.adresse.postboks.label",
+                    )}: ${postboksAdresse.postboks}, ${postboksAdresse.postnummer} ${postboksAdresse.poststed}",
+                    INNRYKK_2,
+                )
             }
             JsonAdresse.Type.USTRUKTURERT -> {
                 val ustrukturertAdresse = jsonAdresse as JsonUstrukturertAdresse
@@ -198,7 +218,10 @@ object Personalia {
         return adresse.toString()
     }
 
-    private fun jsonMatrikkelAdresseToString(pdfUtils: PdfUtils, matrikkelAdresse: JsonMatrikkelAdresse): String {
+    private fun jsonMatrikkelAdresseToString(
+        pdfUtils: PdfUtils,
+        matrikkelAdresse: JsonMatrikkelAdresse,
+    ): String {
         return buildString {
             append(pdfUtils.getTekst("kontakt.system.adresse.bruksnummer.label"))
             append(": ")
@@ -215,7 +238,10 @@ object Personalia {
         }
     }
 
-    private fun jsonPostboksAdresseToString(pdfUtils: PdfUtils, postboksAdresse: JsonPostboksAdresse): String {
+    private fun jsonPostboksAdresseToString(
+        pdfUtils: PdfUtils,
+        postboksAdresse: JsonPostboksAdresse,
+    ): String {
         return buildString {
             append(pdfUtils.getTekst("kontakt.system.adresse.postboks.label"))
             append(": ")

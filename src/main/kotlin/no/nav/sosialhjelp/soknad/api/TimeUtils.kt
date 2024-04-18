@@ -6,7 +6,10 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 object TimeUtils {
-    fun toUtc(localDateTime: LocalDateTime, zoneId: ZoneId): LocalDateTime {
+    fun toUtc(
+        localDateTime: LocalDateTime,
+        zoneId: ZoneId,
+    ): LocalDateTime {
         return ZonedDateTime.of(localDateTime, zoneId)
             .withZoneSameInstant(ZoneOffset.UTC)
             .toLocalDateTime()

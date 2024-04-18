@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class ByInstanceIdStrategyTest {
-
     @Test
     fun shouldReturnFalse_instanceIdNotInMap() {
         val byInstanceIdStrategy = ByInstanceIdStrategy("local")

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
 
 internal class HentGeografiskTilknytningDtoTest {
-
-    private val pdlMapper: ObjectMapper = jacksonObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .registerModule(JavaTimeModule())
+    private val pdlMapper: ObjectMapper =
+        jacksonObjectMapper()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .registerModule(JavaTimeModule())
 
     @Test
     fun deserialiseringAvResponseJson() {

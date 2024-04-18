@@ -17,14 +17,14 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.UUID
 
 @Component
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val kontaktService: KontaktService
+    private val kontaktService: KontaktService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -37,26 +37,28 @@ class SendSoknadHandler(
             log.info(
                 "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
-                    "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}"
+                    "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}",
             )
         }
 
-        val digisosId: UUID = try {
-            // TODO Verdt å kikke litt på digisosApiV2Clienten
-            digisosApiV2Client.krypterOgLastOppFiler(
-                soknadJson = objectMapper.writeValueAsString(json.soknad),
-                tilleggsinformasjonJson = objectMapper.writeValueAsString(
-                    JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer)
-                ),
-                vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
-                dokumenter = getFilOpplastingList(json),
-                kommunenr = json.soknad.mottaker.kommunenummer,
-                navEksternRefId = soknad.id.toString(),
-                token = SubjectHandlerUtils.getToken()
-            ).let { UUID.fromString(it) }
-        } catch (e: Exception) {
-            throw FeilVedSendingTilFiksException("Feil ved sending til fiks", e, soknad.id.toString())
-        }
+        val digisosId: UUID =
+            try {
+                // TODO Verdt å kikke litt på digisosApiV2Clienten
+                digisosApiV2Client.krypterOgLastOppFiler(
+                    soknadJson = objectMapper.writeValueAsString(json.soknad),
+                    tilleggsinformasjonJson =
+                        objectMapper.writeValueAsString(
+                            JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer),
+                        ),
+                    vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
+                    dokumenter = getFilOpplastingList(json),
+                    kommunenr = json.soknad.mottaker.kommunenummer,
+                    navEksternRefId = soknad.id.toString(),
+                    token = SubjectHandlerUtils.getToken(),
+                ).let { UUID.fromString(it) }
+            } catch (e: Exception) {
+                throw FeilVedSendingTilFiksException("Feil ved sending til fiks", e, soknad.id.toString())
+            }
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
         return digisosId
@@ -70,7 +72,7 @@ class SendSoknadHandler(
         return listOf(
             lagDokumentForSaksbehandlerPdf(json),
             lagDokumentForJuridiskPdf(json),
-            lagDokumentForBrukerkvitteringPdf()
+            lagDokumentForBrukerkvitteringPdf(),
         ).also {
             log.info("Antall vedlegg: ${it.size}.")
             // TODO Antall mellomlastede vedlegg (filer!!) bør kunne utledes fra våre egne data
@@ -96,14 +98,18 @@ class SendSoknadHandler(
         return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
 
-    private fun opprettFilOpplastingFraByteArray(filnavn: String, bytes: ByteArray): FilOpplasting {
+    private fun opprettFilOpplastingFraByteArray(
+        filnavn: String,
+        bytes: ByteArray,
+    ): FilOpplasting {
         return FilOpplasting(
-            metadata = FilMetadata(
-                filnavn = filnavn,
-                mimetype = MimeTypes.APPLICATION_PDF,
-                storrelse = bytes.size.toLong()
-            ),
-            data = ByteArrayInputStream(bytes)
+            metadata =
+                FilMetadata(
+                    filnavn = filnavn,
+                    mimetype = MimeTypes.APPLICATION_PDF,
+                    storrelse = bytes.size.toLong(),
+                ),
+            data = ByteArrayInputStream(bytes),
         )
     }
 

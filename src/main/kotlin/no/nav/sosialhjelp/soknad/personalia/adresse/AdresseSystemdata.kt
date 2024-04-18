@@ -25,9 +25,8 @@ import org.springframework.stereotype.Component
 class AdresseSystemdata(
     private val personService: PersonService,
     private val hentAdresseService: HentAdresseService,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
 
@@ -55,18 +54,18 @@ class AdresseSystemdata(
     private fun valgtAdresseLikNull(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ): Boolean {
         return (
             folkeregistrertAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.FOLKEREGISTRERT == personalia.oppholdsadresse.adresseValg ||
                 midlertidigAdresse == null && personalia.oppholdsadresse != null && JsonAdresseValg.MIDLERTIDIG == personalia.oppholdsadresse.adresseValg
-            )
+        )
     }
 
     private fun updatePostadresse(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ) {
         val postadresse = personalia.postadresse ?: return
         val adresseValg = postadresse.adresseValg
@@ -81,7 +80,7 @@ class AdresseSystemdata(
     private fun updateOppholdsadresse(
         personalia: JsonPersonalia,
         folkeregistrertAdresse: JsonAdresse?,
-        midlertidigAdresse: JsonAdresse?
+        midlertidigAdresse: JsonAdresse?,
     ) {
         val oppholdsadresse = personalia.oppholdsadresse ?: return
         val adresseValg = oppholdsadresse.adresseValg
@@ -118,17 +117,18 @@ class AdresseSystemdata(
         if (bostedsadresse == null) {
             return null
         }
-        val jsonAdresse: JsonAdresse = if (bostedsadresse.vegadresse != null) {
-            tilGateAdresse(bostedsadresse.vegadresse)
-        } else if (bostedsadresse.matrikkeladresse != null) {
-            val matrikkelId: String? = bostedsadresse.matrikkeladresse.matrikkelId
-            matrikkelId
-                ?.let { hentMatrikkelAdresseFraKartverket(it) }
-                ?.let { mapToJsonMatrikkelAdresse(it) }
-                ?: tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
-        } else {
-            throw IllegalStateException("Ukjent bostedsadresse fra PDL (skal være Vegadresse eller Matrikkeladresse")
-        }
+        val jsonAdresse: JsonAdresse =
+            if (bostedsadresse.vegadresse != null) {
+                tilGateAdresse(bostedsadresse.vegadresse)
+            } else if (bostedsadresse.matrikkeladresse != null) {
+                val matrikkelId: String? = bostedsadresse.matrikkeladresse.matrikkelId
+                matrikkelId
+                    ?.let { hentMatrikkelAdresseFraKartverket(it) }
+                    ?.let { mapToJsonMatrikkelAdresse(it) }
+                    ?: tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
+            } else {
+                throw IllegalStateException("Ukjent bostedsadresse fra PDL (skal være Vegadresse eller Matrikkeladresse")
+            }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
     }
@@ -137,11 +137,12 @@ class AdresseSystemdata(
         if (oppholdsadresse == null) {
             return null
         }
-        val jsonAdresse: JsonAdresse = if (oppholdsadresse.vegadresse != null) {
-            tilGateAdresse(oppholdsadresse.vegadresse)
-        } else {
-            throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
-        }
+        val jsonAdresse: JsonAdresse =
+            if (oppholdsadresse.vegadresse != null) {
+                tilGateAdresse(oppholdsadresse.vegadresse)
+            } else {
+                throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
+            }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
     }

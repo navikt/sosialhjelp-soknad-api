@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class FormueRessursTest {
-
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
@@ -77,17 +76,18 @@ internal class FormueRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns createJsonInternalSoknadWithFormue(
-            listOf(
-                SoknadJsonTyper.FORMUE_BRUKSKONTO,
-                SoknadJsonTyper.FORMUE_BSU,
-                SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
-                SoknadJsonTyper.FORMUE_VERDIPAPIRER,
-                SoknadJsonTyper.FORMUE_SPAREKONTO,
-                SoknadJsonTyper.FORMUE_ANNET
-            ),
-            null
-        )
+        } returns
+            createJsonInternalSoknadWithFormue(
+                listOf(
+                    SoknadJsonTyper.FORMUE_BRUKSKONTO,
+                    SoknadJsonTyper.FORMUE_BSU,
+                    SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
+                    SoknadJsonTyper.FORMUE_VERDIPAPIRER,
+                    SoknadJsonTyper.FORMUE_SPAREKONTO,
+                    SoknadJsonTyper.FORMUE_ANNET,
+                ),
+                null,
+            )
 
         val formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID)
         assertThat(formueFrontend.brukskonto).isTrue
@@ -123,9 +123,9 @@ internal class FormueRessursTest {
                     SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
                     SoknadJsonTyper.FORMUE_VERDIPAPIRER,
                     SoknadJsonTyper.FORMUE_SPAREKONTO,
-                    SoknadJsonTyper.FORMUE_ANNET
+                    SoknadJsonTyper.FORMUE_ANNET,
                 ),
-                "Vinylplater"
+                "Vinylplater",
             )
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -155,15 +155,16 @@ internal class FormueRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val formueFrontend = FormueFrontend(
-            brukskonto = true,
-            sparekonto = false,
-            bsu = true,
-            livsforsikring = true,
-            verdipapirer = false,
-            annet = false,
-            beskrivelseAvAnnet = null
-        )
+        val formueFrontend =
+            FormueFrontend(
+                brukskonto = true,
+                sparekonto = false,
+                bsu = true,
+                livsforsikring = true,
+                verdipapirer = false,
+                annet = false,
+                beskrivelseAvAnnet = null,
+            )
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -190,15 +191,16 @@ internal class FormueRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val formueFrontend = FormueFrontend(
-            brukskonto = true,
-            sparekonto = true,
-            bsu = true,
-            livsforsikring = true,
-            verdipapirer = true,
-            annet = true,
-            beskrivelseAvAnnet = null
-        )
+        val formueFrontend =
+            FormueFrontend(
+                brukskonto = true,
+                sparekonto = true,
+                bsu = true,
+                livsforsikring = true,
+                verdipapirer = true,
+                annet = true,
+                beskrivelseAvAnnet = null,
+            )
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -260,16 +262,17 @@ internal class FormueRessursTest {
 
     private fun createJsonInternalSoknadWithFormue(
         formueTyper: List<String>,
-        beskrivelseAvAnnet: String?
+        beskrivelseAvAnnet: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
 
-        val formuer = formueTyper.map {
-            JsonOkonomioversiktFormue()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(it)
-                .withTittel("tittel")
-        }
+        val formuer =
+            formueTyper.map {
+                JsonOkonomioversiktFormue()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(it)
+                    .withTittel("tittel")
+            }
 
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue = formuer
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
@@ -286,7 +289,7 @@ internal class FormueRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

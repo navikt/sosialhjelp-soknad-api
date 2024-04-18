@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class NavUtbetalingerServiceTest {
-
     private val navUtbetalingerClient: NavUtbetalingerClient = mockk()
     private val navUtbetalingerService = NavUtbetalingerService(navUtbetalingerClient)
 
@@ -24,18 +23,20 @@ internal class NavUtbetalingerServiceTest {
 
     @BeforeEach
     fun setup() {
-        mapper = jacksonObjectMapper()
-            .registerKotlinModule()
-            .registerModule(JavaTimeModule())
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        mapper =
+            jacksonObjectMapper()
+                .registerKotlinModule()
+                .registerModule(JavaTimeModule())
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     }
 
     @Test
     internal fun clientReturnererUtbetalinger() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
-            listOf(lagUtbetalingResponse()),
-            false
-        )
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns
+            UtbetalDataDto(
+                listOf(lagUtbetalingResponse()),
+                false,
+            )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
@@ -62,10 +63,11 @@ internal class NavUtbetalingerServiceTest {
 
     @Test
     internal fun clientReturnererUtbetalingerUtenKomponenter() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
-            listOf(lagUtbetalingUtenKomponenterResponse()),
-            false
-        )
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns
+            UtbetalDataDto(
+                listOf(lagUtbetalingUtenKomponenterResponse()),
+                false,
+            )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 

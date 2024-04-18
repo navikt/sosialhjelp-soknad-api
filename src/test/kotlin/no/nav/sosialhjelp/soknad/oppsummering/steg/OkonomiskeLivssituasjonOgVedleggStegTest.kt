@@ -23,7 +23,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class OkonomiskeLivssituasjonOgVedleggStegTest {
-
     private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
 
     @Test
@@ -43,11 +42,12 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
     @Test
     fun inntekter() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.oversikt.inntekt = listOf(
-            createInntekt(SoknadJsonTyper.JOBB, 42).withBrutto(142),
-            createInntekt(SoknadJsonTyper.STUDIELAN, 111),
-            createInntekt(SoknadJsonTyper.BARNEBIDRAG, null)
-        )
+        soknad.soknad.data.okonomi.oversikt.inntekt =
+            listOf(
+                createInntekt(SoknadJsonTyper.JOBB, 42).withBrutto(142),
+                createInntekt(SoknadJsonTyper.STUDIELAN, 111),
+                createInntekt(SoknadJsonTyper.BARNEBIDRAG, null),
+            )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
         assertThat(steg.avsnitt).hasSize(3)
@@ -62,11 +62,12 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
     @Test
     fun formuer() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.oversikt.formue = listOf(
-            createFormue(SoknadJsonTyper.FORMUE_VERDIPAPIRER, 42),
-            createFormue(SoknadJsonTyper.FORMUE_BSU, 111),
-            createFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING, null)
-        )
+        soknad.soknad.data.okonomi.oversikt.formue =
+            listOf(
+                createFormue(SoknadJsonTyper.FORMUE_VERDIPAPIRER, 42),
+                createFormue(SoknadJsonTyper.FORMUE_BSU, 111),
+                createFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING, null),
+            )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
         assertThat(steg.avsnitt).hasSize(3)
@@ -80,12 +81,13 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
     @Test
     fun utbetalinger() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
-            createUtbetaling(SoknadJsonTyper.SLUTTOPPGJOER, 111),
-            createUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING, null),
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET, null)
-        )
+        soknad.soknad.data.okonomi.opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
+                createUtbetaling(SoknadJsonTyper.SLUTTOPPGJOER, 111),
+                createUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING, null),
+                createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET, null),
+            )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
         assertThat(steg.avsnitt).hasSize(3)
@@ -102,17 +104,19 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
     @Test
     fun utgifter() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.opplysninger.utgift = listOf(
-            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, 42), // skal filtreres vekk
-            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_STROM, 111),
-            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER, null)
-        )
-        soknad.soknad.data.okonomi.oversikt.utgift = listOf(
-            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BARNEHAGE, 42), // skal filtreres vekk
-            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_HUSLEIE, 111),
-            createOversiktUtgift(SoknadJsonTyper.BARNEBIDRAG, 111),
-            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, null)
-        )
+        soknad.soknad.data.okonomi.opplysninger.utgift =
+            listOf(
+                createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, 42), // skal filtreres vekk
+                createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_STROM, 111),
+                createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER, null),
+            )
+        soknad.soknad.data.okonomi.oversikt.utgift =
+            listOf(
+                createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BARNEHAGE, 42), // skal filtreres vekk
+                createOversiktUtgift(SoknadJsonTyper.UTGIFTER_HUSLEIE, 111),
+                createOversiktUtgift(SoknadJsonTyper.BARNEBIDRAG, 111),
+                createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, null),
+            )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList())
         assertThat(steg.avsnitt).hasSize(3)
@@ -133,17 +137,19 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
     fun vedlegg() {
         val soknad = createSoknad()
         val filnavn = "fil.jpg"
-        soknad.vedlegg.vedlegg = mutableListOf(
-            createVedlegg("faktura", "oppvarming", "VedleggAlleredeSendt", null),
-            createVedlegg("kontooversikt", "sparekonto", "VedleggKreves", null),
-            createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn)))
-        )
-        val opplastedeVedlegg = listOf(
-            OppsummeringVedleggInfo(
-                filnavn = filnavn,
-                id = "uuid-goes-here"
+        soknad.vedlegg.vedlegg =
+            mutableListOf(
+                createVedlegg("faktura", "oppvarming", "VedleggAlleredeSendt", null),
+                createVedlegg("kontooversikt", "sparekonto", "VedleggKreves", null),
+                createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn))),
             )
-        )
+        val opplastedeVedlegg =
+            listOf(
+                OppsummeringVedleggInfo(
+                    filnavn = filnavn,
+                    id = "uuid-goes-here",
+                ),
+            )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, opplastedeVedlegg)
         assertThat(steg.avsnitt).hasSize(3)
@@ -174,31 +180,46 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
         assertThat(vedlegg3.felt!![0].vedlegg!![0].uuid).isEqualTo("uuid-goes-here")
     }
 
-    private fun createInntekt(type: String, netto: Int?): JsonOkonomioversiktInntekt {
+    private fun createInntekt(
+        type: String,
+        netto: Int?,
+    ): JsonOkonomioversiktInntekt {
         return JsonOkonomioversiktInntekt()
             .withType(type)
             .withNetto(netto)
     }
 
-    private fun createFormue(type: String, belop: Int?): JsonOkonomioversiktFormue {
+    private fun createFormue(
+        type: String,
+        belop: Int?,
+    ): JsonOkonomioversiktFormue {
         return JsonOkonomioversiktFormue()
             .withType(type)
             .withBelop(belop)
     }
 
-    private fun createUtbetaling(type: String, belop: Int?): JsonOkonomiOpplysningUtbetaling {
+    private fun createUtbetaling(
+        type: String,
+        belop: Int?,
+    ): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withType(type)
             .withBelop(belop)
     }
 
-    private fun createOpplysningUtgift(type: String, belop: Int?): JsonOkonomiOpplysningUtgift {
+    private fun createOpplysningUtgift(
+        type: String,
+        belop: Int?,
+    ): JsonOkonomiOpplysningUtgift {
         return JsonOkonomiOpplysningUtgift()
             .withType(type)
             .withBelop(belop)
     }
 
-    private fun createOversiktUtgift(type: String, belop: Int?): JsonOkonomioversiktUtgift {
+    private fun createOversiktUtgift(
+        type: String,
+        belop: Int?,
+    ): JsonOkonomioversiktUtgift {
         return JsonOkonomioversiktUtgift()
             .withType(type)
             .withBelop(belop)
@@ -208,7 +229,7 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
         type: String,
         tilleggsinfo: String,
         status: String,
-        filer: List<JsonFiler>?
+        filer: List<JsonFiler>?,
     ): JsonVedlegg {
         return JsonVedlegg()
             .withType(type)
@@ -226,9 +247,9 @@ internal class OkonomiskeLivssituasjonOgVedleggStegTest {
                             .withOkonomi(
                                 JsonOkonomi()
                                     .withOversikt(JsonOkonomioversikt())
-                                    .withOpplysninger(JsonOkonomiopplysninger())
-                            )
-                    )
+                                    .withOpplysninger(JsonOkonomiopplysninger()),
+                            ),
+                    ),
             )
             .withVedlegg(JsonVedleggSpesifikasjon())
     }

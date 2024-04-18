@@ -21,17 +21,19 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUt
 import org.slf4j.LoggerFactory
 
 class BostotteHusbanken {
-
-    fun getAvsnitt(opplysninger: JsonOkonomiopplysninger, driftsinformasjon: JsonDriftsinformasjon): Avsnitt {
+    fun getAvsnitt(
+        opplysninger: JsonOkonomiopplysninger,
+        driftsinformasjon: JsonDriftsinformasjon,
+    ): Avsnitt {
         return Avsnitt(
             tittel = "inntekt.bostotte.husbanken.tittel",
-            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon)
+            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon),
         )
     }
 
     private fun bostotteSporsmal(
         opplysninger: JsonOkonomiopplysninger,
-        driftsinformasjon: JsonDriftsinformasjon
+        driftsinformasjon: JsonDriftsinformasjon,
     ): List<Sporsmal> {
         val harUtfyltBostotteSporsmal = harBekreftelse(opplysninger, SoknadJsonTyper.BOSTOTTE)
         val harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, SoknadJsonTyper.BOSTOTTE)
@@ -42,24 +44,25 @@ class BostotteHusbanken {
             Sporsmal(
                 tittel = "inntekt.bostotte.sporsmal.sporsmal",
                 erUtfylt = harUtfyltBostotteSporsmal,
-                felt = if (harUtfyltBostotteSporsmal) {
-                    booleanVerdiFelt(
-                        harSvartJaBostotte,
-                        "inntekt.bostotte.sporsmal.true",
-                        "inntekt.bostotte.sporsmal.false"
-                    )
-                } else {
-                    null
-                }
-            )
+                felt =
+                    if (harUtfyltBostotteSporsmal) {
+                        booleanVerdiFelt(
+                            harSvartJaBostotte,
+                            "inntekt.bostotte.sporsmal.true",
+                            "inntekt.bostotte.sporsmal.false",
+                        )
+                    } else {
+                        null
+                    },
+            ),
         )
         if (harSvartJaBostotte && fikkFeilMotHusbanken) {
             sporsmal.add(
                 Sporsmal(
                     tittel = "inntekt.bostotte.kontaktproblemer",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         }
         if (harSvartJaBostotte && !fikkFeilMotHusbanken && !harBostotteSamtykke) {
@@ -67,8 +70,8 @@ class BostotteHusbanken {
                 Sporsmal(
                     tittel = "inntekt.bostotte.mangler_samtykke",
                     erUtfylt = true,
-                    felt = null
-                )
+                    felt = null,
+                ),
             )
         }
         if (harSvartJaBostotte && !fikkFeilMotHusbanken && harBostotteSamtykke) {
@@ -91,12 +94,13 @@ class BostotteHusbanken {
         return Sporsmal(
             tittel = "inntekt.bostotte.har_gitt_samtykke",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar = createSvar(bostotteBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT)
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.TEKST,
+                        svar = createSvar(bostotteBekreftelse.bekreftelsesDato, SvarType.TIDSPUNKT),
+                    ),
+                ),
         )
     }
 
@@ -104,12 +108,13 @@ class BostotteHusbanken {
         return Sporsmal(
             tittel = "",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar = createSvar("inntekt.bostotte.ikkefunnet", SvarType.LOCALE_TEKST)
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.TEKST,
+                        svar = createSvar("inntekt.bostotte.ikkefunnet", SvarType.LOCALE_TEKST),
+                    ),
+                ),
         )
     }
 
@@ -118,33 +123,39 @@ class BostotteHusbanken {
         val harSaker = opplysninger.bostotte.saker.isNotEmpty()
         val felter: List<Felt>
         if (!harUtbetalinger && harSaker) {
-            felter = listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar = createSvar("inntekt.bostotte.utbetalingerIkkefunnet", SvarType.LOCALE_TEKST)
-                )
-            )
-        } else {
-            felter = opplysninger.utbetaling
-                .filter { UTBETALING_HUSBANKEN == it.type }
-                .map {
-                    val map = LinkedHashMap<String, Svar>()
-                    if (it.mottaker == null) {
-                        log.warn("Utbetaling.mottaker er null?")
-                    }
-                    map["inntekt.bostotte.utbetaling.mottaker"] = createSvar(if (it.mottaker == null) "" else it.mottaker.value(), SvarType.TEKST)
-                    map["inntekt.bostotte.utbetaling.utbetalingsdato"] = createSvar(it.utbetalingsdato, SvarType.DATO)
-                    map["inntekt.bostotte.utbetaling.belop"] = createSvar(it.netto.toString(), SvarType.TEKST)
+            felter =
+                listOf(
                     Felt(
-                        type = Type.SYSTEMDATA_MAP,
-                        labelSvarMap = map
-                    )
-                }
+                        type = Type.TEKST,
+                        svar = createSvar("inntekt.bostotte.utbetalingerIkkefunnet", SvarType.LOCALE_TEKST),
+                    ),
+                )
+        } else {
+            felter =
+                opplysninger.utbetaling
+                    .filter { UTBETALING_HUSBANKEN == it.type }
+                    .map {
+                        val map = LinkedHashMap<String, Svar>()
+                        if (it.mottaker == null) {
+                            log.warn("Utbetaling.mottaker er null?")
+                        }
+                        map["inntekt.bostotte.utbetaling.mottaker"] =
+                            createSvar(
+                                if (it.mottaker == null) "" else it.mottaker.value(),
+                                SvarType.TEKST,
+                            )
+                        map["inntekt.bostotte.utbetaling.utbetalingsdato"] = createSvar(it.utbetalingsdato, SvarType.DATO)
+                        map["inntekt.bostotte.utbetaling.belop"] = createSvar(it.netto.toString(), SvarType.TEKST)
+                        Felt(
+                            type = Type.SYSTEMDATA_MAP,
+                            labelSvarMap = map,
+                        )
+                    }
         }
         return Sporsmal(
             tittel = "inntekt.bostotte.utbetaling",
             erUtfylt = true,
-            felt = felter
+            felt = felter,
         )
     }
 
@@ -153,28 +164,30 @@ class BostotteHusbanken {
         val harSaker = opplysninger.bostotte.saker.isNotEmpty()
         val felter: List<Felt>
         if (harUtbetalinger && !harSaker) {
-            felter = listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar = createSvar("inntekt.bostotte.sakerIkkefunnet", SvarType.LOCALE_TEKST)
-                )
-            )
-        } else {
-            felter = opplysninger.bostotte.saker
-                .map {
-                    val map = LinkedHashMap<String, Svar>()
-                    map["inntekt.bostotte.sak.dato"] = createSvar(it.dato, SvarType.DATO)
-                    map["inntekt.bostotte.sak.status"] = createSvar(bostotteSakStatus(it), SvarType.TEKST)
+            felter =
+                listOf(
                     Felt(
-                        type = Type.SYSTEMDATA_MAP,
-                        labelSvarMap = map
-                    )
-                }
+                        type = Type.TEKST,
+                        svar = createSvar("inntekt.bostotte.sakerIkkefunnet", SvarType.LOCALE_TEKST),
+                    ),
+                )
+        } else {
+            felter =
+                opplysninger.bostotte.saker
+                    .map {
+                        val map = LinkedHashMap<String, Svar>()
+                        map["inntekt.bostotte.sak.dato"] = createSvar(it.dato, SvarType.DATO)
+                        map["inntekt.bostotte.sak.status"] = createSvar(bostotteSakStatus(it), SvarType.TEKST)
+                        Felt(
+                            type = Type.SYSTEMDATA_MAP,
+                            labelSvarMap = map,
+                        )
+                    }
         }
         return Sporsmal(
             tittel = "inntekt.bostotte.sak",
             erUtfylt = true,
-            felt = felter
+            felt = felter,
         )
     }
 

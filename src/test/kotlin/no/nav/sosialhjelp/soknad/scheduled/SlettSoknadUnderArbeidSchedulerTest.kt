@@ -20,13 +20,14 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
 
-    private val scheduler = SlettSoknadUnderArbeidScheduler(
-        batchEnabled = true,
-        schedulerDisabled = false,
-        leaderElection,
-        batchSoknadUnderArbeidRepository,
-        mellomlagringService
-    )
+    private val scheduler =
+        SlettSoknadUnderArbeidScheduler(
+            batchEnabled = true,
+            schedulerDisabled = false,
+            leaderElection,
+            batchSoknadUnderArbeidRepository,
+            mellomlagringService,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -35,31 +36,35 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
 
     @Test
     fun skalSletteGamleSoknadUnderArbeid() {
-        val soknadUnderArbeid1 = SoknadUnderArbeid(
-            soknadId = 1L,
-            versjon = 1L,
-            behandlingsId = "behandlingsId1",
-            tilknyttetBehandlingsId = null,
-            eier = "11111111111",
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid1 =
+            SoknadUnderArbeid(
+                soknadId = 1L,
+                versjon = 1L,
+                behandlingsId = "behandlingsId1",
+                tilknyttetBehandlingsId = null,
+                eier = "11111111111",
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
-        val soknadUnderArbeid2 = SoknadUnderArbeid(
-            soknadId = 2L,
-            versjon = 2L,
-            behandlingsId = "behandlingsId2",
-            tilknyttetBehandlingsId = null,
-            eier = "11111111111",
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid2 =
+            SoknadUnderArbeid(
+                soknadId = 2L,
+                versjon = 2L,
+                behandlingsId = "behandlingsId2",
+                tilknyttetBehandlingsId = null,
+                eier = "11111111111",
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
-        every { batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch() } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
+        every {
+            batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs

@@ -6,10 +6,12 @@ import java.io.InputStream
 
 @Component
 class SvarUtService(
-    private val svarUtClient: SvarUtClient
+    private val svarUtClient: SvarUtClient,
 ) {
-
-    fun send(forsendelse: Forsendelse, filnavnInputStreamMap: Map<String, InputStream>): String? {
+    fun send(
+        forsendelse: Forsendelse,
+        filnavnInputStreamMap: Map<String, InputStream>,
+    ): String? {
         val forsendelseId = svarUtClient.sendForsendelse(forsendelse, filnavnInputStreamMap)
         return forsendelseId?.id.toString()
     }

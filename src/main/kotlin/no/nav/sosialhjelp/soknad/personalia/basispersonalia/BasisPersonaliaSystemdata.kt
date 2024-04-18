@@ -16,9 +16,8 @@ import org.springframework.stereotype.Component
 @Component
 class BasisPersonaliaSystemdata(
     private val personService: PersonService,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val personalia = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.personalia ?: return
 
@@ -32,7 +31,7 @@ class BasisPersonaliaSystemdata(
         // ny modell
         v2AdapterService.updateEier(
             soknadUnderArbeid.behandlingsId,
-            personalia
+            personalia,
         )
     }
 

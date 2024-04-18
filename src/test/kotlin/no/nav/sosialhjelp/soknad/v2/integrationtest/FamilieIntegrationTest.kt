@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 class FamilieIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var familieRepository: FamilieRepository
 
@@ -31,7 +30,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             uri = "/soknad/${storedSoknad.id}/familie",
-            responseBodyClass = FamilieDto::class.java
+            responseBodyClass = FamilieDto::class.java,
         ).also {
             Assertions.assertThat(it).isEqualTo(storedFamilie.toDto())
         }
@@ -43,27 +42,29 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         familieRepository.save(
             createFamilie(
                 storedSoknad.id,
-                ansvar = listOf(
-                    createBarn(UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"), personId = "12345678", deltBosted = true)
-                )
-            )
+                ansvar =
+                    listOf(
+                        createBarn(UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"), personId = "12345678", deltBosted = true),
+                    ),
+            ),
         )
 
-        val barnInput = BarnInput(
-            uuid = UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
-            deltBosted = true
-        )
+        val barnInput =
+            BarnInput(
+                uuid = UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
+                deltBosted = true,
+            )
         val forsorgerInput = ForsorgerInput(Barnebidrag.BETALER, listOf(barnInput))
 
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
             Unit::class.java,
-            storedSoknad.id
+            storedSoknad.id,
         )
 
         familieRepository.findById(
-            storedSoknad.id
+            storedSoknad.id,
         ).also { Assertions.assertThat(it).isNotNull() }.get().also {
             Assertions.assertThat(it).isNotNull()
             Assertions.assertThat(it.barnebidrag).isEqualTo(Barnebidrag.BETALER)
@@ -80,23 +81,24 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         val storedSoknad = soknadRepository.save(opprettSoknad())
         familieRepository.save(createFamilie(storedSoknad.id, ektefelle = null))
 
-        val ektefelle = EktefelleInput(
-            personId = "12345678",
-            navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
-            fodselsdato = "10101900",
-            borSammen = true
-        )
+        val ektefelle =
+            EktefelleInput(
+                personId = "12345678",
+                navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
+                fodselsdato = "10101900",
+                borSammen = true,
+            )
         val forsorgerInput = SivilstandInput(Sivilstatus.GIFT, ektefelle)
 
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
             forsorgerInput,
             Unit::class.java,
-            storedSoknad.id
+            storedSoknad.id,
         )
 
         familieRepository.findById(
-            storedSoknad.id
+            storedSoknad.id,
         ).also { Assertions.assertThat(it).isNotNull() }.get().also {
             Assertions.assertThat(it).isNotNull()
             Assertions.assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)

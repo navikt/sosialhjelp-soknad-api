@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 interface KontaktRepository : UpsertRepository<Kontakt>, ListCrudRepository<Kontakt, UUID>
@@ -22,21 +22,21 @@ data class Kontakt(
     val telefonnummer: Telefonnummer = Telefonnummer(),
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
-    val mottaker: NavEnhet = NavEnhet()
+    val mottaker: NavEnhet = NavEnhet(),
 ) : AggregateRoot
 
 data class Telefonnummer(
     @Column("telefon_register")
     val fraRegister: String? = null,
     @Column("telefon_bruker")
-    val fraBruker: String? = null
+    val fraBruker: String? = null,
 )
 
 data class Adresser(
     val folkeregistrertAdresse: Adresse? = null,
     val midlertidigAdresse: Adresse? = null,
     val brukerAdresse: Adresse? = null,
-    val adressevalg: AdresseValg? = null
+    val adressevalg: AdresseValg? = null,
 ) {
     fun getOppholdsadresse(): Adresse {
         return when (adressevalg) {
@@ -55,7 +55,7 @@ data class Adresser(
 enum class AdresseValg {
     FOLKEREGISTRERT,
     MIDLERTIDIG,
-    SOKNAD;
+    SOKNAD,
 }
 
 data class NavEnhet(
@@ -63,5 +63,5 @@ data class NavEnhet(
     val enhetsnummer: String? = null,
     val kommunenummer: String? = null,
     val orgnummer: String? = null,
-    val kommunenavn: String? = null
+    val kommunenavn: String? = null,
 )

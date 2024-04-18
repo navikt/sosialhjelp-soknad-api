@@ -7,7 +7,7 @@ object Bosituasjon {
         pdf: PdfGenerator,
         pdfUtils: PdfUtils,
         bosituasjon: JsonBosituasjon?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("bosituasjonbolk.tittel"))
         pdf.addBlankLine()

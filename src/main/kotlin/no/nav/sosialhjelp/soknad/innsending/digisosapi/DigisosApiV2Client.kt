@@ -45,31 +45,31 @@ class DigisosApiV2Client(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
-    private val fiksWebClient = webClientBuilder
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .doOnConnected {
-                        it
-                            .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                            .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                    }
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+    private val fiksWebClient =
+        webClientBuilder
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    proxiedHttpClient
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                        .doOnConnected {
+                            it
+                                .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                                .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                        }
+                        .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+                ),
             )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
-            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
-        }
-        .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-        .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-        .filter(mdcExchangeFilter)
-        .build()
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
+            }
+            .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .filter(mdcExchangeFilter)
+            .build()
 
     companion object {
         private val log by logger()
@@ -83,27 +83,28 @@ class DigisosApiV2Client(
         dokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,
-        token: String?
+        token: String?,
     ): String {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-            digisosId = lastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                dokumenter.map { dokument: FilOpplasting ->
-                    FilForOpplasting(
-                        filnavn = dokument.metadata.filnavn,
-                        metadata = dokument.metadata,
-                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
-                    )
-                },
-                kommunenr,
-                navEksternRefId,
-                token
-            )
+            digisosId =
+                lastOppFiler(
+                    soknadJson,
+                    tilleggsinformasjonJson,
+                    vedleggJson,
+                    dokumenter.map { dokument: FilOpplasting ->
+                        FilForOpplasting(
+                            filnavn = dokument.metadata.filnavn,
+                            metadata = dokument.metadata,
+                            data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate),
+                        )
+                    },
+                    kommunenr,
+                    navEksternRefId,
+                    token,
+                )
             waitForFutures(krypteringFutureList)
         } finally {
             krypteringFutureList
@@ -120,7 +121,7 @@ class DigisosApiV2Client(
         filer: List<FilForOpplasting<Any>>,
         kommunenummer: String,
         behandlingsId: String,
-        token: String?
+        token: String?,
     ): String {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
@@ -134,15 +135,16 @@ class DigisosApiV2Client(
 
         val startTime = System.currentTimeMillis()
         try {
-            val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
-                .header(AUTHORIZATION, token)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(body))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block() ?: throw FiksException("Fiks - noe uventet feilet ved innsending av søknad. Response er null?", null)
+            val response =
+                fiksWebClient.post()
+                    .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
+                    .header(AUTHORIZATION, token)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromMultipartData(body))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                    .block() ?: throw FiksException("Fiks - noe uventet feilet ved innsending av søknad. Response er null?", null)
 
             val digisosId = Utils.stripVekkFnutter(response)
             log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")

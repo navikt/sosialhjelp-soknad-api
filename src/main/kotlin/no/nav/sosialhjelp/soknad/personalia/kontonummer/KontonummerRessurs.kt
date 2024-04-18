@@ -24,11 +24,11 @@ class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerService: KontonummerService,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentKontonummer(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val konto = loadKontonummer(behandlingsId)
@@ -38,7 +38,7 @@ class KontonummerRessurs(
                 JsonKontonummer().apply {
                     kilde = JsonKilde.SYSTEM
                     verdi = kontonummerService.getKontonummer(eier())
-                }
+                },
             )
         }
 
@@ -49,7 +49,7 @@ class KontonummerRessurs(
     fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody @Valid
-        kontoDTO: KontonummerInputDTO
+        kontoDTO: KontonummerInputDTO,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
@@ -68,7 +68,7 @@ class KontonummerRessurs(
         @Schema(nullable = true, description = "Kontonummer fra bruker")
         val brukerutfyltVerdi: String? = null,
         @Schema(nullable = false, description = "Bruker oppgir at de ikke har konto")
-        val harIkkeKonto: Boolean = false
+        val harIkkeKonto: Boolean = false,
     ) {
         @Deprecated("Unødvendig, utled av annen data")
         val brukerdefinert: Boolean
@@ -79,25 +79,33 @@ class KontonummerRessurs(
         soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
             .jsonInternalSoknad!!.soknad.data.personalia.kontonummer
 
-    private fun storeKontonummer(behandlingsId: String, kontonummer: JsonKontonummer) {
+    private fun storeKontonummer(
+        behandlingsId: String,
+        kontonummer: JsonKontonummer,
+    ) {
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         soknad.jsonInternalSoknad!!.soknad.data.personalia.kontonummer = kontonummer
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
-    private fun mapInputDTOtoDAO(inputDTO: KontonummerInputDTO, kontoFraSystem: String?): JsonKontonummer {
+    private fun mapInputDTOtoDAO(
+        inputDTO: KontonummerInputDTO,
+        kontoFraSystem: String?,
+    ): JsonKontonummer {
         val definedByUser = inputDTO.brukerutfyltVerdi != null || inputDTO.harIkkeKonto == true
 
         return when (definedByUser) {
-            true -> JsonKontonummer()
-                .withKilde(JsonKilde.BRUKER)
-                .withVerdi(inputDTO.brukerutfyltVerdi)
-                .withHarIkkeKonto(inputDTO.harIkkeKonto ?: false)
+            true ->
+                JsonKontonummer()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withVerdi(inputDTO.brukerutfyltVerdi)
+                    .withHarIkkeKonto(inputDTO.harIkkeKonto ?: false)
 
-            false -> JsonKontonummer()
-                .withKilde(JsonKilde.SYSTEM)
-                .withVerdi(kontoFraSystem)
-                .withHarIkkeKonto(null)
+            false ->
+                JsonKontonummer()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withVerdi(kontoFraSystem)
+                    .withHarIkkeKonto(null)
         }
     }
 
@@ -106,11 +114,12 @@ class KontonummerRessurs(
      *  DAO har ikke plass til både brukerutfyltVerdi og systemverdi,
      *  så dersom brukeren velger den ene, blir den andre slettet. ¯\_(ツ)_/¯
      */
-    private fun mapDAOtoDTO(kontonummer: JsonKontonummer) = KontonummerFrontend(
-        systemverdi = kontonummerService.getKontonummer(eier()),
-        brukerutfyltVerdi = kontonummer.verdi.takeIf { kontonummer.kilde == JsonKilde.BRUKER },
-        harIkkeKonto = kontonummer.harIkkeKonto ?: false
-    )
+    private fun mapDAOtoDTO(kontonummer: JsonKontonummer) =
+        KontonummerFrontend(
+            systemverdi = kontonummerService.getKontonummer(eier()),
+            brukerutfyltVerdi = kontonummer.verdi.takeIf { kontonummer.kilde == JsonKilde.BRUKER },
+            harIkkeKonto = kontonummer.harIkkeKonto ?: false,
+        )
 }
 
 data class KontonummerInputDTO(
@@ -120,5 +129,5 @@ data class KontonummerInputDTO(
     @Schema(nullable = true, description = "Bruker oppgir at de ikke har konto")
     val harIkkeKonto: Boolean? = null,
     @Deprecated("Ignorert - kun her for bakoverkompatibilitet")
-    val brukerdefinert: Boolean? = null
+    val brukerdefinert: Boolean? = null,
 )

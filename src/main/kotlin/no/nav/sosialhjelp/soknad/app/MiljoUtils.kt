@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.app
 
 object MiljoUtils {
-
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
     private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"

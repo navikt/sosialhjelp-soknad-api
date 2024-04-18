@@ -17,9 +17,8 @@ import kotlin.math.roundToInt
 @Component
 class UtbetalingerFraNavSystemdata(
     private val organisasjonService: OrganisasjonService,
-    private val navUtbetalingerService: NavUtbetalingerService
+    private val navUtbetalingerService: NavUtbetalingerService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
 
@@ -81,6 +80,7 @@ class UtbetalingerFraNavSystemdata(
 
     companion object {
         private val log by logger()
+
         fun tilIntegerMedAvrunding(s: String): Int? {
             val d = tilDouble(s) ?: return null
             return d.roundToInt()

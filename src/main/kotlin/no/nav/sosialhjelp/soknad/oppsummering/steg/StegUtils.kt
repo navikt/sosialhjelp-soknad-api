@@ -22,38 +22,51 @@ object StegUtils {
             .collect(Collectors.joining(" "))
     }
 
-    fun integerVerdiSporsmalMedTittel(tittel: String?, key: String?, verdi: Int?): Sporsmal {
+    fun integerVerdiSporsmalMedTittel(
+        tittel: String?,
+        key: String?,
+        verdi: Int?,
+    ): Sporsmal {
         return Sporsmal(
             tittel = tittel,
             erUtfylt = verdi != null,
-            felt = verdi?.let {
-                listOf(
-                    Felt(
-                        label = key,
-                        svar = createSvar(it.toString(), SvarType.TEKST),
-                        type = Type.TEKST
+            felt =
+                verdi?.let {
+                    listOf(
+                        Felt(
+                            label = key,
+                            svar = createSvar(it.toString(), SvarType.TEKST),
+                            type = Type.TEKST,
+                        ),
                     )
-                )
-            }
+                },
         )
     }
 
-    fun booleanVerdiFelt(harSvartJa: Boolean, keyTrue: String, keyFalse: String): List<Felt> {
+    fun booleanVerdiFelt(
+        harSvartJa: Boolean,
+        keyTrue: String,
+        keyFalse: String,
+    ): List<Felt> {
         return listOf(
             Felt(
                 type = Type.CHECKBOX,
-                svar = createSvar(if (harSvartJa) keyTrue else keyFalse, SvarType.LOCALE_TEKST)
-            )
+                svar = createSvar(if (harSvartJa) keyTrue else keyFalse, SvarType.LOCALE_TEKST),
+            ),
         )
     }
 
     fun harSystemRegistrerteBarn(forsorgerplikt: JsonForsorgerplikt): Boolean {
         val harForsorgerplikt = forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == java.lang.Boolean.TRUE
-        return harForsorgerplikt && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.SYSTEM && forsorgerplikt.ansvar != null && forsorgerplikt.ansvar
-            .any { it.barn.kilde == JsonKilde.SYSTEM }
+        return harForsorgerplikt && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.SYSTEM && forsorgerplikt.ansvar != null &&
+            forsorgerplikt.ansvar
+                .any { it.barn.kilde == JsonKilde.SYSTEM }
     }
 
-    fun createSvar(value: String?, type: SvarType): Svar {
+    fun createSvar(
+        value: String?,
+        type: SvarType,
+    ): Svar {
         return Svar(value, type)
     }
 }

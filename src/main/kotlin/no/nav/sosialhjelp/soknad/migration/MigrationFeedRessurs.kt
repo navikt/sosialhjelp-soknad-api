@@ -16,16 +16,19 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.TOKENX,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/internal/migration", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MigrationFeedRessurs(
     private val migrationService: MigrationService,
-    private val unleash: Unleash
+    private val unleash: Unleash,
 ) {
-
     @GetMapping("/feed")
     fun getNextSoknadForMigration(
-        @RequestParam("sistEndretDato") sistEndretDatoString: String?
+        @RequestParam("sistEndretDato") sistEndretDatoString: String?,
     ): ResponseEntity<ReplicationDto> {
         if (!unleash.isEnabled(MIGRATION_API_ENABLED)) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()

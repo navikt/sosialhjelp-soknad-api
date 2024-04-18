@@ -30,7 +30,7 @@ class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()
@@ -41,10 +41,14 @@ class OppsummeringService(
     private val utgifterOgGjeldSteg = UtgifterOgGjeldSteg()
     private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
 
-    fun hentOppsummering(fnr: String, behandlingsId: String): Oppsummering {
+    fun hentOppsummering(
+        fnr: String,
+        behandlingsId: String,
+    ): Oppsummering {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr)
-        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknadUnderArbeid.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         val skalSendesMedDigisosApi = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)
         if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
@@ -56,15 +60,16 @@ class OppsummeringService(
             }
         }
 
-        val vedleggInfo = if (skalSendesMedDigisosApi) {
-            mellomlagringService.getAllVedlegg(behandlingsId).map {
-                OppsummeringVedleggInfo(it.filnavn, it.filId)
+        val vedleggInfo =
+            if (skalSendesMedDigisosApi) {
+                mellomlagringService.getAllVedlegg(behandlingsId).map {
+                    OppsummeringVedleggInfo(it.filnavn, it.filId)
+                }
+            } else {
+                opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr).map {
+                    OppsummeringVedleggInfo(it.filnavn, it.uuid)
+                }
             }
-        } else {
-            opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr).map {
-                OppsummeringVedleggInfo(it.filnavn, it.uuid)
-            }
-        }
 
         return Oppsummering(
             listOf(
@@ -75,12 +80,15 @@ class OppsummeringService(
                 bosituasjonSteg.get(jsonInternalSoknad),
                 inntektOgFormueSteg.get(jsonInternalSoknad),
                 utgifterOgGjeldSteg.get(jsonInternalSoknad),
-                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, vedleggInfo)
-            )
+                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, vedleggInfo),
+            ),
         )
     }
 
-    private fun oppdaterVedleggsforventninger(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+    private fun oppdaterVedleggsforventninger(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ) {
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
         val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, eier)
@@ -94,7 +102,7 @@ class OppsummeringService(
                     it
                         .withStatus(Vedleggstatus.VedleggKreves.toString())
                         .withHendelseType(JsonVedlegg.HendelseType.SOKNAD)
-                }
+                },
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
@@ -104,7 +112,7 @@ class OppsummeringService(
     private fun fjernIkkePaakrevdeVedlegg(
         jsonVedleggs: MutableList<JsonVedlegg>,
         paakrevdeVedlegg: List<JsonVedlegg>,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ) {
         val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(paakrevdeVedlegg).test(it) }.toMutableList()
 
@@ -127,11 +135,14 @@ class OppsummeringService(
 
     private fun excludeTypeAnnetAnnetFromList(jsonVedleggs: MutableList<JsonVedlegg>) {
         jsonVedleggs.removeAll(
-            jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" }
+            jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" },
         )
     }
 
-    private fun isSameType(jsonVedlegg: JsonVedlegg, opplastetVedlegg: OpplastetVedlegg): Boolean {
+    private fun isSameType(
+        jsonVedlegg: JsonVedlegg,
+        opplastetVedlegg: OpplastetVedlegg,
+    ): Boolean {
         return opplastetVedlegg.vedleggType.sammensattType == jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo
     }
 

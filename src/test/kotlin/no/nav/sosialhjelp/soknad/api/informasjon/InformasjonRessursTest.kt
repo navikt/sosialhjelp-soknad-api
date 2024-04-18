@@ -17,31 +17,32 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class InformasjonRessursTest {
-
     private val personService: PersonService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
 
     companion object {
-        val PERSON = Person(
-            fornavn = "Test",
-            mellomnavn = null,
-            etternavn = "Testesen",
-            fnr = "12345678910",
-            sivilstatus = null,
-            statsborgerskap = null,
-            ektefelle = null,
-            bostedsadresse = null,
-            oppholdsadresse = null
-        )
+        val PERSON =
+            Person(
+                fornavn = "Test",
+                mellomnavn = null,
+                etternavn = "Testesen",
+                fnr = "12345678910",
+                sivilstatus = null,
+                statsborgerskap = null,
+                ektefelle = null,
+                bostedsadresse = null,
+                oppholdsadresse = null,
+            )
     }
 
-    private val ressurs = InformasjonRessurs(
-        adresseSokService = mockk(),
-        personService = personService,
-        soknadMetadataRepository = soknadMetadataRepository,
-        pabegynteSoknaderService = pabegynteSoknaderService
-    )
+    private val ressurs =
+        InformasjonRessurs(
+            adresseSokService = mockk(),
+            personService = personService,
+            soknadMetadataRepository = soknadMetadataRepository,
+            pabegynteSoknaderService = pabegynteSoknaderService,
+        )
 
     @BeforeEach
     fun setUp() {

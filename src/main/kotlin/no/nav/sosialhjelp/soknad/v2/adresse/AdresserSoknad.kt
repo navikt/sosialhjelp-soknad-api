@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Repository
 interface AdresseRepository : UpsertRepository<AdresserSoknad>, ListCrudRepository<AdresserSoknad, UUID>
@@ -19,9 +19,8 @@ data class AdresserSoknad(
     val midlertidigAdresse: Adresse? = null,
     val folkeregistrertAdresse: Adresse? = null,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
-    var brukerInput: BrukerInputAdresse? = null
+    var brukerInput: BrukerInputAdresse? = null,
 ) : AggregateRoot {
-
     fun getOppholdsadresse(): Adresse {
         return brukerInput?.let {
             return when (it.valgtAdresse) {
@@ -39,11 +38,11 @@ data class AdresserSoknad(
 
 data class BrukerInputAdresse(
     val valgtAdresse: AdresseValg,
-    val brukerAdresse: Adresse? = null
+    val brukerAdresse: Adresse? = null,
 )
 
 enum class AdresseValg {
     FOLKEREGISTRERT,
     MIDLERTIDIG,
-    SOKNAD;
+    SOKNAD,
 }

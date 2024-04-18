@@ -17,7 +17,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal class XsrfGeneratorTest {
-
     @BeforeEach
     fun setUp() {
         mockkObject(MiljoUtils)
@@ -41,7 +40,10 @@ internal class XsrfGeneratorTest {
         sjekkAtMetodeKasterException(xsrfToken, 1L)
     }
 
-    private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {
+    private fun sjekkAtMetodeKasterException(
+        token: String,
+        soknadId: Long,
+    ) {
         try {
             sjekkXsrfToken(token, soknadId.toString(), false)
             Assertions.fail<Any>("Kastet ikke exception")

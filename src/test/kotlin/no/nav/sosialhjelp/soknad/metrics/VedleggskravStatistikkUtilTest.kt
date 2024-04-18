@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class VedleggskravStatistikkUtilTest {
-
     private val soknadUnderArbeidMock: SoknadUnderArbeid = mockk()
 
     @BeforeEach
@@ -101,7 +100,11 @@ internal class VedleggskravStatistikkUtilTest {
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
     }
 
-    private fun createVedleggMetadata(status: Vedleggstatus, skjema: String, tillegg: String): VedleggMetadata {
+    private fun createVedleggMetadata(
+        status: Vedleggstatus,
+        skjema: String,
+        tillegg: String,
+    ): VedleggMetadata {
         val vedleggMetadata = VedleggMetadata()
         vedleggMetadata.status = status
         vedleggMetadata.skjema = skjema
@@ -114,7 +117,7 @@ internal class VedleggskravStatistikkUtilTest {
         expectedTotaltAntall: Int,
         expectedAntallInnsendt: Int,
         expectedAntallLevertTidligere: Int,
-        expectedAntallIkkeLevert: Int
+        expectedAntallIkkeLevert: Int,
     ) {
         assertThat(vedleggskravStatistikk.sendetype).isEqualTo("soknad")
         assertThat(vedleggskravStatistikk.totaltAntall).isEqualTo(expectedTotaltAntall)

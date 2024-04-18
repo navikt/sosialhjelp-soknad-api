@@ -7,24 +7,29 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class IntegrasjonstatusToJsonMapper(
-    private val integrasjonstatusRepository: IntegrasjonstatusRepository
+    private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         val integrasjonstatus = integrasjonstatusRepository.findByIdOrNull(soknadId) ?: Integrasjonstatus(soknadId)
 
         doMapping(
             integrasjonstatus = integrasjonstatus,
-            json = jsonInternalSoknad
+            json = jsonInternalSoknad,
         )
     }
 
     internal companion object Mapper {
-
-        fun doMapping(integrasjonstatus: Integrasjonstatus, json: JsonInternalSoknad) {
+        fun doMapping(
+            integrasjonstatus: Integrasjonstatus,
+            json: JsonInternalSoknad,
+        ) {
             json.soknad.driftsinformasjon = integrasjonstatus.toJsonDriftsinformasjon()
         }
 

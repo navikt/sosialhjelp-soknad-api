@@ -65,13 +65,14 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg.HendelseType
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+
 fun <T> copyJsonClass(json: T): T {
     return mapper.readValue(
         mapper.writeValueAsString(json),
-        json!!::class.java
+        json!!::class.java,
     )
 }
 
@@ -163,11 +164,16 @@ fun createJsonForsorgerplikt(): JsonForsorgerplikt {
 fun createJsonAnsvarListe(): List<JsonAnsvar> {
     return listOf(
         createJsonAnsvar("01011054251", "2010-01-01", "Jentebarn", "Nordmann"),
-        createJsonAnsvar("01011542323", "2015-01-01", "Guttebarn", "Nordmann")
+        createJsonAnsvar("01011542323", "2015-01-01", "Guttebarn", "Nordmann"),
     )
 }
 
-fun createJsonAnsvar(personId: String, fodselsDato: String, fornavn: String, etternavn: String): JsonAnsvar {
+fun createJsonAnsvar(
+    personId: String,
+    fodselsDato: String,
+    fornavn: String,
+    etternavn: String,
+): JsonAnsvar {
     return JsonAnsvar().apply {
         this.barn = createJsonBarn(personId, fodselsDato, fornavn, etternavn)
         this.borSammenMed = JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(true)
@@ -177,7 +183,12 @@ fun createJsonAnsvar(personId: String, fodselsDato: String, fornavn: String, ett
     }
 }
 
-fun createJsonBarn(personId: String, fodselsDato: String, fornavn: String, etternavn: String): JsonBarn {
+fun createJsonBarn(
+    personId: String,
+    fodselsDato: String,
+    fornavn: String,
+    etternavn: String,
+): JsonBarn {
     return JsonBarn().apply {
         this.kilde = SYSTEM
         this.personIdentifikator = personId
@@ -189,7 +200,10 @@ fun createJsonBarn(personId: String, fodselsDato: String, fornavn: String, etter
 
 fun createJsonArbeid(): JsonArbeid? {
     return JsonArbeid().apply {
-        this.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold().withKilde(JsonKildeBruker.BRUKER).withVerdi("Jeg er veldig glad i å jobbe")
+        this.kommentarTilArbeidsforhold =
+            JsonKommentarTilArbeidsforhold().withKilde(
+                JsonKildeBruker.BRUKER,
+            ).withVerdi("Jeg er veldig glad i å jobbe")
         this.forhold = createJsonArbeidsforholdList()
     }
 }
@@ -197,11 +211,15 @@ fun createJsonArbeid(): JsonArbeid? {
 fun createJsonArbeidsforholdList(): List<JsonArbeidsforhold> {
     return listOf(
         createJsonArbeidsforhold("Skatteetaten", "2010-01-01", "2015-12-31"),
-        createJsonArbeidsforhold("NAV", "2016-01-01", null)
+        createJsonArbeidsforhold("NAV", "2016-01-01", null),
     )
 }
 
-fun createJsonArbeidsforhold(arbeidsgivernavn: String, start: String, slutt: String?): JsonArbeidsforhold {
+fun createJsonArbeidsforhold(
+    arbeidsgivernavn: String,
+    start: String,
+    slutt: String?,
+): JsonArbeidsforhold {
     return JsonArbeidsforhold().apply {
         this.kilde = SYSTEM
         this.arbeidsgivernavn = arbeidsgivernavn
@@ -233,7 +251,7 @@ fun createOkonomiOpplysning(): JsonOkonomiopplysninger {
 fun createUtbetalingList(): List<JsonOkonomiOpplysningUtbetaling> {
     return listOf(
         createJsonOkonomiOpplysningUtbetaling(BRUKER),
-        createJsonOkonomiOpplysningUtbetaling(SYSTEM)
+        createJsonOkonomiOpplysningUtbetaling(SYSTEM),
     )
 }
 
@@ -272,13 +290,13 @@ fun createOpplysningUtbetalingKomponentList(): List<JsonOkonomiOpplysningUtbetal
             this.satsType = "Prosent"
             this.satsBelop = 0.25
             this.satsAntall = 2.00
-        }
+        },
     )
 }
 
 fun createJsonOkonomiOpplysningUtbetalingKomponent(
     type: String,
-    sum: Double
+    sum: Double,
 ): JsonOkonomiOpplysningUtbetalingKomponent {
     return JsonOkonomiOpplysningUtbetalingKomponent().apply {
         this.type = type
@@ -315,30 +333,31 @@ fun createOkonomiBekreftelseList(): List<JsonOkonomibekreftelse>? {
             this.tittel = "Lønnsslipp"
             this.verdi = true
             this.bekreftelsesDato = "2021-01-01"
-        }
+        },
     )
 }
 
 fun createJsonBostotte(): JsonBostotte {
     return JsonBostotte().apply {
-        this.saker = listOf(
-            JsonBostotteSak().apply {
-                this.kilde = JsonKildeSystem.SYSTEM
-                this.type = "Bostøtte"
-                this.status = "Innvilget"
-                this.beskrivelse = "Bostøtte innvilget"
-                this.dato = "2021-01-01"
-                this.vedtaksstatus = JsonBostotteSak.Vedtaksstatus.INNVILGET
-            },
-            JsonBostotteSak().apply {
-                this.kilde = JsonKildeSystem.SYSTEM
-                this.type = "Bostøtte"
-                this.status = "Avvist"
-                this.beskrivelse = "Bostøtte Avvist"
-                this.dato = "2018-01-01"
-                this.vedtaksstatus = JsonBostotteSak.Vedtaksstatus.AVSLAG
-            }
-        )
+        this.saker =
+            listOf(
+                JsonBostotteSak().apply {
+                    this.kilde = JsonKildeSystem.SYSTEM
+                    this.type = "Bostøtte"
+                    this.status = "Innvilget"
+                    this.beskrivelse = "Bostøtte innvilget"
+                    this.dato = "2021-01-01"
+                    this.vedtaksstatus = JsonBostotteSak.Vedtaksstatus.INNVILGET
+                },
+                JsonBostotteSak().apply {
+                    this.kilde = JsonKildeSystem.SYSTEM
+                    this.type = "Bostøtte"
+                    this.status = "Avvist"
+                    this.beskrivelse = "Bostøtte Avvist"
+                    this.dato = "2018-01-01"
+                    this.vedtaksstatus = JsonBostotteSak.Vedtaksstatus.AVSLAG
+                },
+            )
     }
 }
 
@@ -357,7 +376,7 @@ fun createUtgiftList(): List<JsonOkonomiOpplysningUtgift> {
             this.tittel = "Båtutgifter"
             this.belop = 2400
             this.overstyrtAvBruker = false
-        }
+        },
     )
 }
 
@@ -384,7 +403,7 @@ fun createOkonomiOversiktUtgiftList(): List<JsonOkonomioversiktUtgift> {
             this.tittel = "Båtutgifter"
             this.belop = 5000
             this.overstyrtAvBruker = false
-        }
+        },
     )
 }
 
@@ -405,7 +424,7 @@ fun createOkonomiOversiktInntektList(): List<JsonOkonomioversiktInntekt> {
             this.brutto = 1000
             this.netto = 800
             this.overstyrtAvBruker = false
-        }
+        },
     )
 }
 
@@ -424,7 +443,7 @@ fun createOkonomiOversiktFormueList(): List<JsonOkonomioversiktFormue> {
             this.tittel = "Bil"
             this.belop = 50000
             this.overstyrtAvBruker = false
-        }
+        },
     )
 }
 
@@ -462,42 +481,45 @@ fun createJsonDriftsInformasjon(): JsonDriftsinformasjon {
 
 fun createJsonVedleggSpesifikasjon(): JsonVedleggSpesifikasjon {
     return JsonVedleggSpesifikasjon().apply {
-        this.vedlegg = listOf(
-            JsonVedlegg().apply {
-                this.type = "Søknad"
-                this.status = "Innsendt"
-                this.hendelseType = HendelseType.BRUKER
-                this.tilleggsinfo = "Søknad om bostøtte"
-                this.hendelseReferanse = UUID.randomUUID().toString()
-                this.filer = listOf(
-                    JsonFiler().apply {
-                        this.sha512 = UUID.randomUUID().toString()
-                        this.filnavn = "soknad.pdf"
-                    },
-                    JsonFiler().apply {
-                        this.sha512 = UUID.randomUUID().toString()
-                        this.filnavn = "vedlegg.pdf"
-                    }
-                )
-            },
-            JsonVedlegg().apply {
-                this.type = "Inntekt"
-                this.status = "Innsendt"
-                this.hendelseType = HendelseType.BRUKER
-                this.tilleggsinfo = "Lønnsslipp"
-                this.hendelseReferanse = UUID.randomUUID().toString()
-                this.filer = listOf(
-                    JsonFiler().apply {
-                        this.sha512 = UUID.randomUUID().toString()
-                        this.filnavn = "lonnsslipp_mai.pdf"
-                    },
-                    JsonFiler().apply {
-                        this.sha512 = UUID.randomUUID().toString()
-                        this.filnavn = "lonnsslipp_juni.pdf"
-                    }
-                )
-            }
-        )
+        this.vedlegg =
+            listOf(
+                JsonVedlegg().apply {
+                    this.type = "Søknad"
+                    this.status = "Innsendt"
+                    this.hendelseType = HendelseType.BRUKER
+                    this.tilleggsinfo = "Søknad om bostøtte"
+                    this.hendelseReferanse = UUID.randomUUID().toString()
+                    this.filer =
+                        listOf(
+                            JsonFiler().apply {
+                                this.sha512 = UUID.randomUUID().toString()
+                                this.filnavn = "soknad.pdf"
+                            },
+                            JsonFiler().apply {
+                                this.sha512 = UUID.randomUUID().toString()
+                                this.filnavn = "vedlegg.pdf"
+                            },
+                        )
+                },
+                JsonVedlegg().apply {
+                    this.type = "Inntekt"
+                    this.status = "Innsendt"
+                    this.hendelseType = HendelseType.BRUKER
+                    this.tilleggsinfo = "Lønnsslipp"
+                    this.hendelseReferanse = UUID.randomUUID().toString()
+                    this.filer =
+                        listOf(
+                            JsonFiler().apply {
+                                this.sha512 = UUID.randomUUID().toString()
+                                this.filnavn = "lonnsslipp_mai.pdf"
+                            },
+                            JsonFiler().apply {
+                                this.sha512 = UUID.randomUUID().toString()
+                                this.filnavn = "lonnsslipp_juni.pdf"
+                            },
+                        )
+                },
+            )
     }
 }
 
@@ -545,11 +567,12 @@ fun createUstrukturertAdresse(): JsonUstrukturertAdresse {
         this.kilde = SYSTEM
         this.type = JsonAdresse.Type.USTRUKTURERT
         this.adresseValg = JsonAdresseValg.FOLKEREGISTRERT
-        this.adresse = listOf(
-            "Ustrukturert-veien",
-            "xxxx",
-            "xxxx Ustrukturert"
-        )
+        this.adresse =
+            listOf(
+                "Ustrukturert-veien",
+                "xxxx",
+                "xxxx Ustrukturert",
+            )
     }
 }
 

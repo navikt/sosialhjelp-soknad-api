@@ -9,10 +9,9 @@ import no.nav.sosialhjelp.soknad.v2.opprettEier
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 class EierMapperTest {
-
     private lateinit var json: JsonInternalSoknad
 
     @BeforeEach
@@ -38,13 +37,15 @@ class EierMapperTest {
 
     @Test
     fun `HarIkkeKonto == true gir kilde = BRUKER og verdi = null`() {
-        val eier = opprettEier(
-            soknadId = UUID.randomUUID(),
-            kontonummer = Kontonummer(
-                harIkkeKonto = true,
-                fraBruker = "blabla"
+        val eier =
+            opprettEier(
+                soknadId = UUID.randomUUID(),
+                kontonummer =
+                    Kontonummer(
+                        harIkkeKonto = true,
+                        fraBruker = "blabla",
+                    ),
             )
-        )
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
@@ -56,13 +57,15 @@ class EierMapperTest {
 
     @Test
     fun `Har brukerkonto og registerkonto - bruker skal velges`() {
-        val eier = opprettEier(
-            soknadId = UUID.randomUUID(),
-            kontonummer = Kontonummer(
-                fraBruker = "blabla",
-                fraRegister = "tjatja"
+        val eier =
+            opprettEier(
+                soknadId = UUID.randomUUID(),
+                kontonummer =
+                    Kontonummer(
+                        fraBruker = "blabla",
+                        fraRegister = "tjatja",
+                    ),
             )
-        )
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
@@ -74,12 +77,14 @@ class EierMapperTest {
 
     @Test
     fun `Kun register skal gi register i json`() {
-        val eier = opprettEier(
-            soknadId = UUID.randomUUID(),
-            kontonummer = Kontonummer(
-                fraRegister = "blabla"
+        val eier =
+            opprettEier(
+                soknadId = UUID.randomUUID(),
+                kontonummer =
+                    Kontonummer(
+                        fraRegister = "blabla",
+                    ),
             )
-        )
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
@@ -91,10 +96,11 @@ class EierMapperTest {
 
     @Test
     fun `Ingen verdier satt skal gi json == null`() {
-        val eier = opprettEier(
-            soknadId = UUID.randomUUID(),
-            kontonummer = Kontonummer()
-        )
+        val eier =
+            opprettEier(
+                soknadId = UUID.randomUUID(),
+                kontonummer = Kontonummer(),
+            )
         EierToJsonMapper.doMapping(eier, json)
         Assertions.assertThat(json.soknad.data.personalia.kontonummer).isNull()
     }

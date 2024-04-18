@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component
 @Component
 class PdlCheck(
     @Value("\${pdl_api_url}") private val pdlUrl: String,
-    private val geografiskTilknytningClient: GeografiskTilknytningClient
+    private val geografiskTilknytningClient: GeografiskTilknytningClient,
 ) : DependencyCheck {
-
     override val type = DependencyType.REST
     override val name = "PDL"
     override val address = pdlUrl

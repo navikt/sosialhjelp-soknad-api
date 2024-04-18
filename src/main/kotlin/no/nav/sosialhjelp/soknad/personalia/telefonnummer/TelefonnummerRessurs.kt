@@ -24,17 +24,18 @@ class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
     @GetMapping
     fun hentTelefonnummer(
-        @PathVariable("behandlingsId") behandlingsId: String?
+        @PathVariable("behandlingsId") behandlingsId: String?,
     ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = eier()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknadUnderArbeid.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         return getTelefonnummer(jsonInternalSoknad)
     }
@@ -42,13 +43,14 @@ class TelefonnummerRessurs(
     @PutMapping
     fun updateTelefonnummer(
         @PathVariable("behandlingsId") behandlingsId: String?,
-        @RequestBody telefonnummerFrontend: TelefonnummerFrontend
+        @RequestBody telefonnummerFrontend: TelefonnummerFrontend,
     ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = eier()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personalia = jsonInternalSoknad.soknad.data.personalia
         val jsonTelefonnummer =
             personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
@@ -74,15 +76,16 @@ class TelefonnummerRessurs(
 
     private fun getTelefonnummer(internal: JsonInternalSoknad): TelefonnummerFrontend {
         val telefonnummer = internal.soknad.data.personalia.telefonnummer
-        val systemverdi: String? = if (telefonnummer != null && telefonnummer.kilde == JsonKilde.SYSTEM) {
-            telefonnummer.verdi
-        } else {
-            telefonnummerSystemdata.innhentSystemverdiTelefonnummer(eier())
-        }
+        val systemverdi: String? =
+            if (telefonnummer != null && telefonnummer.kilde == JsonKilde.SYSTEM) {
+                telefonnummer.verdi
+            } else {
+                telefonnummerSystemdata.innhentSystemverdiTelefonnummer(eier())
+            }
         return TelefonnummerFrontend(
             brukerdefinert = telefonnummer == null || telefonnummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
+            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi,
         )
     }
 }
@@ -91,5 +94,5 @@ data class TelefonnummerFrontend(
     val brukerdefinert: Boolean = false,
     val systemverdi: String? = null,
     @Schema(nullable = true)
-    val brukerutfyltVerdi: String? = null
+    val brukerutfyltVerdi: String? = null,
 )

@@ -15,7 +15,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class SkattbarInntektTest {
-
     private val skattbarInntekt = SkattbarInntekt()
 
     @Test
@@ -98,9 +97,9 @@ internal class SkattbarInntektTest {
                             JsonOkonomibekreftelse()
                                 .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
                                 .withVerdi(harSamtykke)
-                                .withBekreftelsesDato("2018-10-04T13:37:00.134Z")
-                        )
-                    )
+                                .withBekreftelsesDato("2018-10-04T13:37:00.134Z"),
+                        ),
+                    ),
             )
     }
 
@@ -108,7 +107,7 @@ internal class SkattbarInntektTest {
         fom: String,
         tom: String,
         brutto: Double,
-        skattetrekk: Double
+        skattetrekk: Double,
     ): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)

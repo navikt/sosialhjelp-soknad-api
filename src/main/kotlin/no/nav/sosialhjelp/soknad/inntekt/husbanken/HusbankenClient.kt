@@ -11,11 +11,15 @@ import java.time.LocalDate
 private const val QUERY_PARAMS = "?fra={fra}&til={til}"
 
 class HusbankenClient(
-    private val webClient: WebClient
+    private val webClient: WebClient,
 ) {
     private val log by logger()
 
-    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
+    fun hentBostotte(
+        token: String?,
+        fra: LocalDate,
+        til: LocalDate,
+    ): BostotteDto? {
         return try {
             webClient.get()
                 .uri(QUERY_PARAMS, fra, til)
@@ -26,7 +30,11 @@ class HusbankenClient(
                 .doOnError(WebClientResponseException::class.java) { e ->
                     when {
                         e.statusCode.is4xxClientError -> log.error("Problemer med å koble opp mot Husbanken!", e)
-                        e.statusCode.is5xxServerError -> log.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}", e)
+                        e.statusCode.is5xxServerError ->
+                            log.error(
+                                "Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}",
+                                e,
+                            )
                         else -> log.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e)
                     }
                 }

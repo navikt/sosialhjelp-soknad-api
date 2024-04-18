@@ -30,33 +30,40 @@ class SkatteetatenClient(
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
+    private val skatteetatenMapper =
+        jacksonObjectMapper()
+            .registerKotlinModule()
+            .registerModule(JavaTimeModule())
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
-    private val skatteetatenMapper = jacksonObjectMapper()
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
-        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-
-    private val skatteetatenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-        .baseUrl(baseurl)
-        .codecs {
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
-        }
-        .build()
+    private val skatteetatenWebClient: WebClient =
+        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+            .baseUrl(baseurl)
+            .codecs {
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
+            }
+            .build()
 
     fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
         val identifikator = if (!MiljoUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
 
-        val sokedata = Sokedata(
-            identifikator = identifikator,
-            fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
-            tom = LocalDate.now()
-        )
+        val sokedata =
+            Sokedata(
+                identifikator = identifikator,
+                fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
+                tom = LocalDate.now(),
+            )
 
         return try {
             skatteetatenWebClient.get()
-                .uri("{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}", sokedata.identifikator, sokedata.fom.format(formatter), sokedata.tom.format(formatter))
+                .uri(
+                    "{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}",
+                    sokedata.identifikator,
+                    sokedata.fom.format(formatter),
+                    sokedata.tom.format(formatter),
+                )
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
                 .retrieve()
@@ -67,7 +74,10 @@ class SkatteetatenClient(
                 }
                 .doOnError { e ->
                     when (e) {
-                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}")
+                        is WebClientResponseException ->
+                            log.warn(
+                                "Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}",
+                            )
                         else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
                     }
                 }

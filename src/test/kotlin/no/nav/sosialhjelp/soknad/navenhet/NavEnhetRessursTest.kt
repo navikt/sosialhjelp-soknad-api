@@ -35,22 +35,22 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class NavEnhetRessursTest {
-
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val OPPHOLDSADRESSE_KOMMUNENR = "0123"
-        private val OPPHOLDSADRESSE: JsonAdresse = JsonGateAdresse()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withLandkode("NOR")
-            .withKommunenummer(OPPHOLDSADRESSE_KOMMUNENR)
-            .withAdresselinjer(null)
-            .withBolignummer("1")
-            .withPostnummer("2")
-            .withPoststed("Oslo")
-            .withGatenavn("Sanntidsgata")
-            .withHusnummer("1337")
-            .withHusbokstav("A")
+        private val OPPHOLDSADRESSE: JsonAdresse =
+            JsonGateAdresse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withLandkode("NOR")
+                .withKommunenummer(OPPHOLDSADRESSE_KOMMUNENR)
+                .withAdresselinjer(null)
+                .withBolignummer("1")
+                .withPostnummer("2")
+                .withPoststed("Oslo")
+                .withGatenavn("Sanntidsgata")
+                .withHusnummer("1337")
+                .withHusbokstav("A")
 
         private const val ENHETSNAVN = "NAV Testenhet"
         private const val KOMMUNENAVN = "Test kommune"
@@ -58,10 +58,11 @@ internal class NavEnhetRessursTest {
         private const val ENHETSNR = "1234"
         private const val ORGNR = "123456789"
 
-        private val SOKNADSMOTTAKER = JsonSoknadsmottaker()
-            .withNavEnhetsnavn("$ENHETSNAVN, $KOMMUNENAVN")
-            .withEnhetsnummer(ENHETSNR)
-            .withKommunenummer(KOMMUNENR)
+        private val SOKNADSMOTTAKER =
+            JsonSoknadsmottaker()
+                .withNavEnhetsnavn("$ENHETSNAVN, $KOMMUNENAVN")
+                .withEnhetsnummer(ENHETSNR)
+                .withKommunenummer(KOMMUNENR)
         private const val EIER = "123456789101"
     }
 
@@ -70,24 +71,26 @@ internal class NavEnhetRessursTest {
     private val navEnhetService: NavEnhetService = mockk()
     private val adresseRessurs: AdresseRessurs = mockk()
 
-    private val navEnhetRessurs = NavEnhetRessurs(
-        tilgangskontroll = tilgangskontroll,
-        soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        navEnhetService = navEnhetService,
-        adresseRessurs = adresseRessurs
-    )
+    private val navEnhetRessurs =
+        NavEnhetRessurs(
+            tilgangskontroll = tilgangskontroll,
+            soknadUnderArbeidRepository = soknadUnderArbeidRepository,
+            navEnhetService = navEnhetService,
+            adresseRessurs = adresseRessurs,
+        )
 
-    private val navEnhetFrontend = NavEnhetFrontend(
-        orgnr = ORGNR,
-        enhetsnr = ENHETSNR,
-        enhetsnavn = ENHETSNAVN,
-        kommunenavn = KOMMUNENAVN,
-        kommuneNr = KOMMUNENR,
-        behandlingsansvarlig = null,
-        valgt = true,
-        isMottakMidlertidigDeaktivert = false,
-        isMottakDeaktivert = false
-    )
+    private val navEnhetFrontend =
+        NavEnhetFrontend(
+            orgnr = ORGNR,
+            enhetsnr = ENHETSNR,
+            enhetsnavn = ENHETSNAVN,
+            kommunenavn = KOMMUNENAVN,
+            kommuneNr = KOMMUNENR,
+            behandlingsansvarlig = null,
+            valgt = true,
+            isMottakMidlertidigDeaktivert = false,
+            isMottakDeaktivert = false,
+        )
 
     @BeforeEach
     internal fun setUp() {
@@ -169,7 +172,7 @@ internal class NavEnhetRessursTest {
                 JsonSoknadsmottaker()
                     .withNavEnhetsnavn(ENHETSNAVN)
                     .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(null)
+                    .withKommunenummer(null),
             )
             .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -186,7 +189,7 @@ internal class NavEnhetRessursTest {
                 JsonSoknadsmottaker()
                     .withNavEnhetsnavn(null)
                     .withEnhetsnummer(ENHETSNR)
-                    .withKommunenummer(KOMMUNENR)
+                    .withKommunenummer(KOMMUNENR),
             )
             .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -262,7 +265,7 @@ internal class NavEnhetRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }

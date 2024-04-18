@@ -22,25 +22,27 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harValgtFormueType
 
 class Bank {
-
     fun getAvsnitt(okonomi: JsonOkonomi): Avsnitt {
         val oversikt = okonomi.oversikt
         val opplysninger = okonomi.opplysninger
         return Avsnitt(
             tittel = "opplysninger.formue.bank.undertittel",
-            sporsmal = bankSporsmal(oversikt, opplysninger)
+            sporsmal = bankSporsmal(oversikt, opplysninger),
         )
     }
 
-    private fun bankSporsmal(oversikt: JsonOkonomioversikt?, opplysninger: JsonOkonomiopplysninger): List<Sporsmal> {
+    private fun bankSporsmal(
+        oversikt: JsonOkonomioversikt?,
+        opplysninger: JsonOkonomiopplysninger,
+    ): List<Sporsmal> {
         val harUtfyltBankSporsmal = harBekreftelseTrue(opplysninger, SoknadJsonTyper.BEKREFTELSE_SPARING)
         val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "inntekt.bankinnskudd.true.type.sporsmal",
                 erUtfylt = true,
-                felt = if (harUtfyltBankSporsmal) formueFelter(oversikt) else null
-            )
+                felt = if (harUtfyltBankSporsmal) formueFelter(oversikt) else null,
+            ),
         )
         if (harUtfyltBankSporsmal && harValgtFormueType(oversikt, FORMUE_ANNET)) {
             val beskrivelseAvAnnet: JsonOkonomibeskrivelserAvAnnet? = opplysninger.beskrivelseAvAnnet
@@ -49,17 +51,18 @@ class Bank {
                 Sporsmal(
                     tittel = "inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label",
                     erUtfylt = harUtfyltAnnetFelt,
-                    felt = if (harUtfyltAnnetFelt) {
-                        listOf(
-                            Felt(
-                                type = Type.TEKST,
-                                svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) }
+                    felt =
+                        if (harUtfyltAnnetFelt) {
+                            listOf(
+                                Felt(
+                                    type = Type.TEKST,
+                                    svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) },
+                                ),
                             )
-                        )
-                    } else {
-                        null
-                    }
-                )
+                        } else {
+                            null
+                        },
+                ),
             )
         }
         return sporsmal

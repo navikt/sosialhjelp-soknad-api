@@ -4,5 +4,5 @@ data class NavUtbetalingerRequest(
     val ident: String,
     val rolle: String,
     val periode: Periode,
-    val periodetype: String
+    val periodetype: String,
 )

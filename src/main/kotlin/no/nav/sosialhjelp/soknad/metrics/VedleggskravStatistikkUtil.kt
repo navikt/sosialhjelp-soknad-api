@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 
 object VedleggskravStatistikkUtil {
-
     private val log by logger()
     private val mapper = jacksonObjectMapper()
 
@@ -42,7 +41,7 @@ object VedleggskravStatistikkUtil {
             antallIkkeLevert = antallIkkeLevert,
             prosentInnsendt = getProsent(antallInnsendt, totaltAntall),
             prosentLevertTidligere = getProsent(antallLevertTidligere, totaltAntall),
-            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall)
+            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall),
         ).also {
             log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(it)}")
         }
@@ -50,7 +49,7 @@ object VedleggskravStatistikkUtil {
 
     fun genererOgLoggVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
-        vedleggList: List<VedleggMetadata>
+        vedleggList: List<VedleggMetadata>,
     ) {
         val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeid, vedleggList)
         log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
@@ -58,7 +57,7 @@ object VedleggskravStatistikkUtil {
 
     fun genererVedleggskravStatistikk(
         soknadUnderArbeid: SoknadUnderArbeid,
-        vedleggList: List<VedleggMetadata>
+        vedleggList: List<VedleggMetadata>,
     ): VedleggskravStatistikk {
         val isEttersendelse = soknadUnderArbeid.erEttersendelse
 
@@ -86,22 +85,23 @@ object VedleggskravStatistikkUtil {
             antallIkkeLevert = antallIkkeLevert,
             prosentInnsendt = getProsent(antallInnsendt, totaltAntall),
             prosentLevertTidligere = getProsent(antallLevertTidligere, totaltAntall),
-            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall)
+            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall),
         )
     }
 
     private fun convertToVedleggMetadataListe(json: JsonInternalSoknad): VedleggMetadataListe {
         val vedleggMetadataListe = VedleggMetadataListe()
 
-        vedleggMetadataListe.vedleggListe = json.vedlegg.vedlegg
-            .map {
-                VedleggMetadata(
-                    skjema = it.type,
-                    tillegg = it.tilleggsinfo,
-                    filnavn = it.type,
-                    status = Vedleggstatus.valueOf(it.status)
-                )
-            }.toMutableList()
+        vedleggMetadataListe.vedleggListe =
+            json.vedlegg.vedlegg
+                .map {
+                    VedleggMetadata(
+                        skjema = it.type,
+                        tillegg = it.tilleggsinfo,
+                        filnavn = it.type,
+                        status = Vedleggstatus.valueOf(it.status),
+                    )
+                }.toMutableList()
         return vedleggMetadataListe
     }
 
@@ -113,6 +113,6 @@ object VedleggskravStatistikkUtil {
         val antallIkkeLevert: Int,
         val prosentInnsendt: Int,
         val prosentLevertTidligere: Int,
-        val prosentIkkeLevert: Int
+        val prosentIkkeLevert: Int,
     )
 }

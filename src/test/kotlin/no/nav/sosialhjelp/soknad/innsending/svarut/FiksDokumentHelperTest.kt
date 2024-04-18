@@ -39,10 +39,11 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentForSoknadJsonLagerKorrektDokument() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val soknadJson = fiksDokumentHelper!!.lagDokumentForSoknadJson(
-            createEmptyJsonInternalSoknad(EIER),
-            filnavnInputStreamMap
-        )
+        val soknadJson =
+            fiksDokumentHelper!!.lagDokumentForSoknadJson(
+                createEmptyJsonInternalSoknad(EIER),
+                filnavnInputStreamMap,
+            )
         assertThat(soknadJson.filnavn).isEqualTo("soknad.json")
         assertThat(soknadJson.mimeType).isEqualTo(MimeTypes.APPLICATION_JSON)
         assertThat(soknadJson.isEkskluderesFraUtskrift).isTrue
@@ -53,10 +54,11 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentForVedleggJsonLagerKorrektDokument() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val vedleggJson = fiksDokumentHelper!!.lagDokumentForVedleggJson(
-            lagInternalSoknadForVedlegg(),
-            filnavnInputStreamMap
-        )
+        val vedleggJson =
+            fiksDokumentHelper!!.lagDokumentForVedleggJson(
+                lagInternalSoknadForVedlegg(),
+                filnavnInputStreamMap,
+            )
         assertThat(vedleggJson.filnavn).isEqualTo("vedlegg.json")
         assertThat(vedleggJson.mimeType).isEqualTo(MimeTypes.APPLICATION_JSON)
         assertThat(vedleggJson.isEkskluderesFraUtskrift).isTrue
@@ -67,10 +69,11 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val saksbehandlerPdf = fiksDokumentHelper!!.lagDokumentForSaksbehandlerPdf(
-            createEmptyJsonInternalSoknad(EIER),
-            filnavnInputStreamMap
-        )
+        val saksbehandlerPdf =
+            fiksDokumentHelper!!.lagDokumentForSaksbehandlerPdf(
+                createEmptyJsonInternalSoknad(EIER),
+                filnavnInputStreamMap,
+            )
         assertThat(saksbehandlerPdf.filnavn).isEqualTo("Soknad.pdf")
         assertThat(saksbehandlerPdf.mimeType).isEqualTo(MimeTypes.APPLICATION_PDF)
         assertThat(saksbehandlerPdf.isEkskluderesFraUtskrift).isFalse
@@ -81,10 +84,11 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentForJuridiskPdfLagerKorrektDokument() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val juridiskPdf = fiksDokumentHelper!!.lagDokumentForJuridiskPdf(
-            createEmptyJsonInternalSoknad(EIER),
-            filnavnInputStreamMap
-        )
+        val juridiskPdf =
+            fiksDokumentHelper!!.lagDokumentForJuridiskPdf(
+                createEmptyJsonInternalSoknad(EIER),
+                filnavnInputStreamMap,
+            )
         assertThat(juridiskPdf.filnavn).isEqualTo("Soknad-juridisk.pdf")
         assertThat(juridiskPdf.mimeType).isEqualTo(MimeTypes.APPLICATION_PDF)
         assertThat(juridiskPdf.isEkskluderesFraUtskrift).isFalse
@@ -106,11 +110,12 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentForEttersendelsePdfLagerKorrektDokument() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val ettersendelsePdf = fiksDokumentHelper!!.lagDokumentForEttersendelsePdf(
-            createEmptyJsonInternalSoknad(EIER),
-            EIER,
-            filnavnInputStreamMap
-        )
+        val ettersendelsePdf =
+            fiksDokumentHelper!!.lagDokumentForEttersendelsePdf(
+                createEmptyJsonInternalSoknad(EIER),
+                EIER,
+                filnavnInputStreamMap,
+            )
         assertThat(ettersendelsePdf.filnavn).isEqualTo("ettersendelse.pdf")
         assertThat(ettersendelsePdf.mimeType).isEqualTo(MimeTypes.APPLICATION_PDF)
         assertThat(ettersendelsePdf.isEkskluderesFraUtskrift).isFalse
@@ -131,14 +136,15 @@ internal class FiksDokumentHelperTest {
     @Test
     fun opprettDokumentForVedleggOppretterDokumentKorrekt() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val opplastetVedlegg = OpplastetVedlegg(
-            eier = "eier",
-            vedleggType = OpplastetVedleggType("$TYPE|$TILLEGGSINFO"),
-            data = DATA,
-            soknadId = 123L,
-            filnavn = FILNAVN,
-            sha512 = SHA512
-        )
+        val opplastetVedlegg =
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("$TYPE|$TILLEGGSINFO"),
+                data = DATA,
+                soknadId = 123L,
+                filnavn = FILNAVN,
+                sha512 = SHA512,
+            )
         val dokument = fiksDokumentHelper!!.opprettDokumentForVedlegg(opplastetVedlegg, filnavnInputStreamMap)
         assertThat(dokument.filnavn).isEqualTo(FILNAVN)
         assertThat(dokument.mimeType).isEqualTo("application/octet-stream")
@@ -169,8 +175,8 @@ internal class FiksDokumentHelperTest {
                 data = DATA,
                 soknadId = 123L,
                 filnavn = FILNAVN,
-                sha512 = SHA512
-            )
+                sha512 = SHA512,
+            ),
         )
         opplastedeVedlegg.add(
             OpplastetVedlegg(
@@ -179,8 +185,8 @@ internal class FiksDokumentHelperTest {
                 data = DATA,
                 soknadId = 123L,
                 filnavn = ANNET_FILNAVN,
-                sha512 = ANNEN_SHA512
-            )
+                sha512 = ANNEN_SHA512,
+            ),
         )
         opplastedeVedlegg.add(
             OpplastetVedlegg(
@@ -189,8 +195,8 @@ internal class FiksDokumentHelperTest {
                 data = DATA,
                 soknadId = 123L,
                 filnavn = TREDJE_FILNAVN,
-                sha512 = TREDJE_SHA512
-            )
+                sha512 = TREDJE_SHA512,
+            ),
         )
         return opplastedeVedlegg
     }
@@ -201,45 +207,53 @@ internal class FiksDokumentHelperTest {
             JsonVedlegg()
                 .withStatus(Vedleggstatus.VedleggKreves.name)
                 .withType(TYPE)
-                .withTilleggsinfo(TILLEGGSINFO2)
+                .withTilleggsinfo(TILLEGGSINFO2),
         )
         jsonVedlegg.add(
             JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name)
                 .withType(TYPE)
                 .withTilleggsinfo(TILLEGGSINFO)
-                .withFiler(lagJsonFiler(FILNAVN, SHA512))
+                .withFiler(lagJsonFiler(FILNAVN, SHA512)),
         )
         jsonVedlegg.add(
             JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name)
                 .withType(TYPE2)
                 .withTilleggsinfo(TILLEGGSINFO2)
-                .withFiler(lagJsonFilerMedToFiler(ANNET_FILNAVN, ANNEN_SHA512, TREDJE_FILNAVN, TREDJE_SHA512))
+                .withFiler(lagJsonFilerMedToFiler(ANNET_FILNAVN, ANNEN_SHA512, TREDJE_FILNAVN, TREDJE_SHA512)),
         )
         return JsonInternalSoknad()
             .withVedlegg(
                 JsonVedleggSpesifikasjon()
-                    .withVedlegg(jsonVedlegg)
+                    .withVedlegg(jsonVedlegg),
             )
     }
 
-    private fun lagJsonFiler(filnavn: String, sha512: String): MutableList<JsonFiler> {
+    private fun lagJsonFiler(
+        filnavn: String,
+        sha512: String,
+    ): MutableList<JsonFiler> {
         val filer = mutableListOf<JsonFiler>()
         filer.add(
             JsonFiler()
                 .withFilnavn(filnavn)
-                .withSha512(sha512)
+                .withSha512(sha512),
         )
         return filer
     }
 
-    private fun lagJsonFilerMedToFiler(filnavn: String, sha: String, filnavn2: String, sha2: String): List<JsonFiler> {
+    private fun lagJsonFilerMedToFiler(
+        filnavn: String,
+        sha: String,
+        filnavn2: String,
+        sha2: String,
+    ): List<JsonFiler> {
         val jsonFiler = lagJsonFiler(filnavn, sha)
         jsonFiler.add(
             JsonFiler()
                 .withFilnavn(filnavn2)
-                .withSha512(sha2)
+                .withSha512(sha2),
         )
         return jsonFiler
     }

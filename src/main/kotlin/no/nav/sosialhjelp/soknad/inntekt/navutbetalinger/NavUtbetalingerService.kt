@@ -12,9 +12,8 @@ import java.time.LocalDate
 
 @Component
 class NavUtbetalingerService(
-    private val navUtbetalingerClient: NavUtbetalingerClient
+    private val navUtbetalingerClient: NavUtbetalingerClient,
 ) {
-
     fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
         val utbetalinger: List<NavUtbetaling>
 
@@ -36,7 +35,7 @@ class NavUtbetalingerService(
         }
         return utbetalinger.joinToString(
             prefix = "Antall komponenter: ",
-            separator = ", "
+            separator = ", ",
         ) { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
     }
 
@@ -69,7 +68,7 @@ class NavUtbetalingerService(
                                 periodeTom = it.ytelsesperiode.tom,
                                 komponenter = mapToKomponenter(it.ytelseskomponentListe),
                                 tittel = it.ytelsestype ?: "",
-                                orgnummer = ORGNR_NAV
+                                orgnummer = ORGNR_NAV,
                             )
                         }
                 }
@@ -79,7 +78,10 @@ class NavUtbetalingerService(
             return if (utbetalingsdato != null) !utbetalingsdato.isBefore(LocalDate.now().minusDays(40)) else false
         }
 
-        private fun utbetaltTilBruker(ytelse: Ytelse, utbetaling: Utbetaling): Boolean {
+        private fun utbetaltTilBruker(
+            ytelse: Ytelse,
+            utbetaling: Utbetaling,
+        ): Boolean {
             val utbetaltTil = utbetaling.utbetaltTil?.navn
             val rettighetshaver = ytelse.rettighetshaver
 
@@ -107,7 +109,7 @@ class NavUtbetalingerService(
                         belop = it.ytelseskomponentbeloep?.toDouble(),
                         satsType = it.satstype,
                         satsBelop = it.satsbeloep?.toDouble(),
-                        satsAntall = it.satsantall
+                        satsAntall = it.satsantall,
                     )
                 }
         }

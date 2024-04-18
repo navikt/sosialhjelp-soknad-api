@@ -13,7 +13,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class AzureadServiceTest {
-
     private val azureClient: AzureadClient = mockk()
     private val redisService: RedisService = mockk()
 

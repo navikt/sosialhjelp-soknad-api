@@ -13,7 +13,10 @@ import java.time.LocalDateTime
 import kotlin.math.pow
 
 interface OppgaveHandterer {
-    fun leggTilOppgave(behandlingsId: String, eier: String)
+    fun leggTilOppgave(
+        behandlingsId: String,
+        eier: String,
+    )
 }
 
 @Component
@@ -22,10 +25,9 @@ class OppgaveHandtererImpl(
     private val oppgaveRepository: OppgaveRepository,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val leaderElection: LeaderElection
+    private val leaderElection: LeaderElection,
 ) : OppgaveHandterer {
-
-//    @Scheduled(fixedDelay = PROSESS_RATE)
+    //    @Scheduled(fixedDelay = PROSESS_RATE)
     fun prosesserOppgaver() {
         if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
@@ -103,18 +105,22 @@ class OppgaveHandtererImpl(
         return if (backoff.isBefore(max)) backoff else max
     }
 
-    override fun leggTilOppgave(behandlingsId: String, eier: String) {
-        val oppgave = Oppgave(
-            id = 0L, // dummy id. sekvens-value settes som `id` ved oppgaveRepository.opprett(oppgave)
-            behandlingsId = behandlingsId,
-            type = FiksHandterer.FIKS_OPPGAVE,
-            status = Status.KLAR,
-            steg = FORSTE_STEG_NY_INNSENDING,
-            opprettet = LocalDateTime.now(),
-            sistKjort = null,
-            nesteForsok = LocalDateTime.now(),
-            retries = 0
-        )
+    override fun leggTilOppgave(
+        behandlingsId: String,
+        eier: String,
+    ) {
+        val oppgave =
+            Oppgave(
+                id = 0L, // dummy id. sekvens-value settes som `id` ved oppgaveRepository.opprett(oppgave)
+                behandlingsId = behandlingsId,
+                type = FiksHandterer.FIKS_OPPGAVE,
+                status = Status.KLAR,
+                steg = FORSTE_STEG_NY_INNSENDING,
+                opprettet = LocalDateTime.now(),
+                sistKjort = null,
+                nesteForsok = LocalDateTime.now(),
+                retries = 0,
+            )
         oppgave.oppgaveData?.avsenderFodselsnummer = eier
         oppgaveRepository.opprett(oppgave)
     }

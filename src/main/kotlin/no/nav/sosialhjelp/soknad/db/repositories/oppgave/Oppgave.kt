@@ -18,7 +18,7 @@ data class Oppgave(
     var opprettet: LocalDateTime?,
     var sistKjort: LocalDateTime?,
     var nesteForsok: LocalDateTime?,
-    var retries: Int
+    var retries: Int,
 ) {
     fun nesteSteg() {
         steg++
@@ -30,7 +30,10 @@ data class Oppgave(
 }
 
 enum class Status {
-    KLAR, UNDER_ARBEID, FERDIG, FEILET
+    KLAR,
+    UNDER_ARBEID,
+    FERDIG,
+    FEILET,
 }
 
 @XmlRootElement
@@ -42,7 +45,7 @@ data class FiksData(
     var dokumentInfoer: List<DokumentInfo>? = null,
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter::class)
     var innsendtDato: LocalDateTime? = null,
-    var ettersendelsePa: String? = null
+    var ettersendelsePa: String? = null,
 )
 
 @XmlRootElement
@@ -51,16 +54,17 @@ data class DokumentInfo(
     var uuid: String? = null,
     var filnavn: String? = null,
     var mimetype: String? = null,
-    var ekskluderesFraPrint: Boolean? = false
+    var ekskluderesFraPrint: Boolean? = false,
 )
 
 @XmlRootElement
 data class FiksResultat(
     var fiksForsendelsesId: String? = null,
-    var feilmelding: String? = null
+    var feilmelding: String? = null,
 )
 
-val JAXB = JAXBHelper(
-    FiksData::class.java,
-    FiksResultat::class.java
-)
+val JAXB =
+    JAXBHelper(
+        FiksData::class.java,
+        FiksResultat::class.java,
+    )

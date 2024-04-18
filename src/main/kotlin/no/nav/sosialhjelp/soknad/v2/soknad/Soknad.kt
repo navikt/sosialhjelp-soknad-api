@@ -10,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 @Repository
 interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
@@ -25,7 +25,7 @@ data class Soknad(
     @Embedded.Empty
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
     @Embedded.Nullable
-    val begrunnelse: Begrunnelse? = null
+    val begrunnelse: Begrunnelse? = null,
 ) : AggregateRoot {
     override val soknadId: UUID get() = id
 }
@@ -34,10 +34,10 @@ data class Tidspunkt(
     val opprettet: LocalDateTime,
     // TODO Hvordan skal diverse PUT / POSTS / REGISTER-OPPDATERINGER oppdatere denne?
     var sistEndret: LocalDateTime? = null,
-    var sendtInn: LocalDateTime? = null
+    var sendtInn: LocalDateTime? = null,
 )
 
 data class Begrunnelse(
     val hvorforSoke: String = "",
-    val hvaSokesOm: String = ""
+    val hvaSokesOm: String = "",
 )

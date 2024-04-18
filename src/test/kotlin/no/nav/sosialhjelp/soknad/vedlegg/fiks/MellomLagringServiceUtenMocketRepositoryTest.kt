@@ -29,12 +29,11 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
 internal class MellomLagringServiceUtenMocketRepositoryTest {
-
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
 
@@ -79,19 +78,20 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
             BEHANDLINGSID,
             VEDLEGGSTYPE.stringName,
             PDF_FILE.readBytes(),
-            ORIGINALT_FILNAVN
+            ORIGINALT_FILNAVN,
         )
 
-        val soknadUnderArbeidFraDb = jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
-            soknadUnderArbeidRowMapper,
-            BEHANDLINGSID
-        ).firstOrNull()
+        val soknadUnderArbeidFraDb =
+            jdbcTemplate.query(
+                "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
+                soknadUnderArbeidRowMapper,
+                BEHANDLINGSID,
+            ).firstOrNull()
 
         assertThat(soknadUnderArbeidFraDb?.behandlingsId).isEqualTo(BEHANDLINGSID)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(1)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.get(0)?.filnavn).isEqualTo(
-            FILNAVN
+            FILNAVN,
         )
     }
 
@@ -106,15 +106,16 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
                 BEHANDLINGSID,
                 VEDLEGGSTYPE.stringName,
                 PDF_FILE.readBytes(),
-                ORIGINALT_FILNAVN
+                ORIGINALT_FILNAVN,
             )
         }
 
-        val soknadUnderArbeidFraDb = jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
-            soknadUnderArbeidRowMapper,
-            BEHANDLINGSID
-        ).firstOrNull()
+        val soknadUnderArbeidFraDb =
+            jdbcTemplate.query(
+                "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
+                soknadUnderArbeidRowMapper,
+                BEHANDLINGSID,
+            ).firstOrNull()
 
         assertThat(soknadUnderArbeidFraDb?.behandlingsId).isEqualTo(BEHANDLINGSID)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(0)
@@ -129,7 +130,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
             jsonInternalSoknad = lagInternalSoknadJson(),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO
+            sistEndretDato = SIST_ENDRET_DATO,
         )
     }
 
@@ -141,18 +142,19 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
                         JsonVedlegg()
                             .withType("annet")
                             .withTilleggsinfo("annet")
-                            .withStatus("VedleggKreves")
-                    )
-                )
+                            .withStatus("VedleggKreves"),
+                    ),
+                ),
             )
     }
 
     private fun lagMellomlagringDto(): MellomlagringDto {
         return MellomlagringDto(
             navEksternRefId = BEHANDLINGSID,
-            mellomlagringMetadataList = listOf(
-                MellomlagringDokumentInfo(filnavn = FILNAVN, filId = "uuid", storrelse = 123L, mimetype = "mime")
-            )
+            mellomlagringMetadataList =
+                listOf(
+                    MellomlagringDokumentInfo(filnavn = FILNAVN, filId = "uuid", storrelse = 123L, mimetype = "mime"),
+                ),
         )
     }
 

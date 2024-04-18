@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 import com.fasterxml.jackson.annotation.JsonValue
 
 enum class VedleggType(
-    @JsonValue val stringName: String
+    @JsonValue val stringName: String,
 ) {
     AnnetAnnet("annet|annet"),
     BarnebidragBetaler("barnebidrag|betaler"),
@@ -37,7 +37,8 @@ enum class VedleggType(
     SamvarsavtaleBarn("samvarsavtale|barn"),
     SkattemeldingSkattemelding("skattemelding|skattemelding"),
     SluttoppgjorArbeid("sluttoppgjor|arbeid"),
-    StudentVedtak("student|vedtak");
+    StudentVedtak("student|vedtak"),
+    ;
 
     override fun toString(): String {
         return stringName
@@ -46,7 +47,8 @@ enum class VedleggType(
     companion object {
         private val map = VedleggType.values().associateBy(VedleggType::stringName)
 
-        operator fun get(stringName: String): VedleggType = map[stringName]
-            ?: throw IllegalArgumentException("Fant ikke VedleggType lik $stringName")
+        operator fun get(stringName: String): VedleggType =
+            map[stringName]
+                ?: throw IllegalArgumentException("Fant ikke VedleggType lik $stringName")
     }
 }

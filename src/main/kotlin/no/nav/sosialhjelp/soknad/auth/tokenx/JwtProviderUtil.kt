@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.auth.tokenx
 import org.springframework.web.reactive.function.client.WebClient
 
 object JwtProviderUtil {
-
     fun downloadWellKnown(url: String): WellKnown =
         WebClient.create()
             .get()

@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class TextHelpers(
-    private val kodeverkService: KodeverkService
+    private val kodeverkService: KodeverkService,
 ) {
-
     fun fulltNavnForLand(landForkortelse: String?): String? {
         if (landForkortelse == null || landForkortelse.equals(PDL_UKJENT_STATSBORGERSKAP, ignoreCase = true)) {
             return "Vi har ikke opplysninger om ditt statsborgerskap"

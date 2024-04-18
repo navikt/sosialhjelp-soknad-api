@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class NavUtbetalingerTest {
-
     private val navUtbetalinger = NavUtbetalinger()
 
     @Test
@@ -41,13 +40,14 @@ internal class NavUtbetalingerTest {
 
     @Test
     fun flereNavUtbetalinger() {
-        val opplysninger = JsonOkonomiopplysninger()
-            .withUtbetaling(
-                listOf(
-                    createUtbetaling("Dagpenger", 1234.0, "2021-01-01"),
-                    createUtbetaling("Uføre", 42.0, "2021-03-03")
+        val opplysninger =
+            JsonOkonomiopplysninger()
+                .withUtbetaling(
+                    listOf(
+                        createUtbetaling("Dagpenger", 1234.0, "2021-01-01"),
+                        createUtbetaling("Uføre", 42.0, "2021-03-03"),
+                    ),
                 )
-            )
 
         val avsnitt = navUtbetalinger.getAvsnitt(opplysninger, JsonDriftsinformasjon())
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -82,7 +82,7 @@ internal class NavUtbetalingerTest {
     private fun createUtbetaling(
         tittel: String,
         netto: Double,
-        utbetalingsdato: String
+        utbetalingsdato: String,
     ): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withType(SoknadJsonTyper.UTBETALING_NAVYTELSE)

@@ -21,7 +21,7 @@ import kotlin.reflect.cast
 @Component
 @Profile("!no-interceptor")
 class ConflictAvoidanceDelayInterceptor(
-    private val soknadLockManager: SoknadLockManager
+    private val soknadLockManager: SoknadLockManager,
 ) : HandlerInterceptor {
     companion object {
         val LOCK_ATTRIBUTE_NAME = ConflictAvoidanceDelayInterceptor::class.java.canonicalName + ".LOCK"
@@ -35,7 +35,7 @@ class ConflictAvoidanceDelayInterceptor(
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        handler: Any
+        handler: Any,
     ): Boolean {
         // dersom soknadLockManager er disabled, er hele interceptoren inaktiv.
         if (!soknadLockManager.enabled) return true
@@ -54,7 +54,7 @@ class ConflictAvoidanceDelayInterceptor(
         request: HttpServletRequest,
         response: HttpServletResponse,
         handler: Any,
-        ex: Exception?
+        ex: Exception?,
     ) {
         getRequestLock(request)?.let {
             try {

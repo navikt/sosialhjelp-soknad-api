@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class SoknadUnderArbeid(
     var soknadId: Long = 0L, // dummy verdi, settes i DB
@@ -17,14 +17,15 @@ data class SoknadUnderArbeid(
     var jsonInternalSoknad: JsonInternalSoknad?,
     var status: SoknadUnderArbeidStatus,
     var opprettetDato: LocalDateTime,
-    var sistEndretDato: LocalDateTime
+    var sistEndretDato: LocalDateTime,
 ) {
     @Deprecated("SvarUt og denne type ettersendelse støttes ikke lenger")
     val erEttersendelse: Boolean get() = false
 }
 
 enum class SoknadUnderArbeidStatus {
-    UNDER_ARBEID, LAAST
+    UNDER_ARBEID,
+    LAAST,
 }
 
 fun SoknadUnderArbeid.toV2Eier(): Eier? {
@@ -37,10 +38,11 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
         statsborgerskap = statsborgerskap?.verdi,
         nordiskBorger = nordiskBorger?.verdi,
         kontonummer = kontonummer?.let { Kontonummer(fraRegister = it.verdi) },
-        navn = Navn(
-            fornavn = navn.fornavn,
-            mellomnavn = navn.mellomnavn,
-            etternavn = navn.etternavn
-        )
+        navn =
+            Navn(
+                fornavn = navn.fornavn,
+                mellomnavn = navn.mellomnavn,
+                etternavn = navn.etternavn,
+            ),
     )
 }

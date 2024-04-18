@@ -16,7 +16,7 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
+import java.util.Date
 
 @Deprecated("Gammel logikk - nye søknader skal håndteres via SoknadRepository")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -24,20 +24,26 @@ import java.util.*
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository
+    private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
-
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
     @Deprecated("Gammel logikk. Nye søknader skal lagres via SoknadRepository")
-    override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
+    override fun opprettSoknad(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
         jdbcTemplate.update(
-            "insert into SOKNAD_UNDER_ARBEID (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO) values (?,?,?,?,?,?,?,?)",
+            """
+            insert into SOKNAD_UNDER_ARBEID 
+            (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
+             values (?,?,?,?,?,?,?,?)
+            """.trimIndent(),
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
             soknadUnderArbeid.tilknyttetBehandlingsId,
@@ -45,58 +51,70 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
-            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
+            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
         )
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
     @Deprecated("Gammelt repository")
-    override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
+    override fun hentSoknad(
+        soknadId: Long,
+        eier: String,
+    ): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            soknadId
+            soknadId,
         ).firstOrNull()
     }
 
     @Deprecated("Gammelt repository")
-    override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
+    override fun hentSoknad(
+        behandlingsId: String?,
+        eier: String,
+    ): SoknadUnderArbeid {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
     }
 
     @Deprecated("Gammelt repository")
-    override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
+    override fun hentSoknadNullable(
+        behandlingsId: String?,
+        eier: String,
+    ): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
             eier,
-            behandlingsId
+            behandlingsId,
         ).firstOrNull()
     }
 
     @Deprecated("Gammelt repository")
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
-        eier: String
+        eier: String,
     ): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
             soknadUnderArbeidRowMapper,
             eier,
             tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
+            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         ).firstOrNull()
     }
 
     @Deprecated("Gammelt repository")
-    override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+    override fun oppdaterSoknadsdata(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
         val opprinneligVersjon = soknadUnderArbeid.versjon
@@ -104,61 +122,83 @@ class SoknadUnderArbeidRepositoryJdbc(
         val sistEndretDato = LocalDateTime.now()
         val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
 
-        val antallOppdaterteRader = jdbcTemplate.update(
-            "update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
-            oppdatertVersjon,
-            data,
-            Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
-            soknadUnderArbeid.soknadId,
-            eier,
-            opprinneligVersjon,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
-        )
+        val antallOppdaterteRader =
+            jdbcTemplate.update(
+                """
+                update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? 
+                where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?
+                """.trimIndent(),
+                oppdatertVersjon,
+                data,
+                Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                soknadUnderArbeid.soknadId,
+                eier,
+                opprinneligVersjon,
+                SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
+            )
         if (antallOppdaterteRader == 0) {
-            val soknadIDb: SoknadUnderArbeid = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
-                ?: throw IllegalStateException("Ingen soknadUnderArbeid funnet for ${soknadUnderArbeid.behandlingsId}, med status ${soknadUnderArbeid.status}")
+            val soknadIDb: SoknadUnderArbeid =
+                hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
+                    ?: throw IllegalStateException(
+                        "Ingen soknadUnderArbeid funnet for ${soknadUnderArbeid.behandlingsId}, med status ${soknadUnderArbeid.status}",
+                    )
 
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
-            throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
+            throw SamtidigOppdateringException(
+                "Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId}" +
+                    " fra versjon $opprinneligVersjon til versjon $oppdatertVersjon",
+            )
         }
         soknadUnderArbeid.versjon = oppdatertVersjon
         soknadUnderArbeid.sistEndretDato = sistEndretDato
     }
 
     @Deprecated("Gammelt repository")
-    override fun oppdaterInnsendingStatus(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+    override fun oppdaterInnsendingStatus(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
-        val antallOppdaterteRader = jdbcTemplate.update(
-            "update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
-            soknadUnderArbeid.status.toString(),
-            Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
-            soknadUnderArbeid.soknadId,
-            eier
-        )
+        val antallOppdaterteRader =
+            jdbcTemplate.update(
+                "update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
+                soknadUnderArbeid.status.toString(),
+                Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                soknadUnderArbeid.soknadId,
+                eier,
+            )
         if (antallOppdaterteRader != 0) {
             soknadUnderArbeid.sistEndretDato = sistEndretDato
         }
     }
 
     @Deprecated("Gammelt repository")
-    override fun slettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+    override fun slettSoknad(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
-        transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
-            override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
-                val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                jdbcTemplate.update(
-                    "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-                    eier,
-                    soknadUnderArbeidId
-                )
-            }
-        })
+        transactionTemplate.execute(
+            object : TransactionCallbackWithoutResult() {
+                override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
+                    val soknadUnderArbeidId = soknadUnderArbeid.soknadId
+                    jdbcTemplate.update(
+                        "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
+                        eier,
+                        soknadUnderArbeidId,
+                    )
+                }
+            },
+        )
     }
 
-    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+    private fun sjekkOmBrukerEierSoknadUnderArbeid(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        eier: String,
+    ) {
         if (!eier.equals(soknadUnderArbeid.eier, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med søknadens eier")
         }
@@ -166,7 +206,9 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private fun sjekkOmSoknadErLaast(soknadUnderArbeid: SoknadUnderArbeid) {
         if (SoknadUnderArbeidStatus.LAAST == soknadUnderArbeid.status) {
-            throw SoknadLaastException("Kan ikke oppdatere søknad med behandlingsid ${soknadUnderArbeid.behandlingsId} fordi den er sendt fra bruker")
+            throw SoknadLaastException(
+                "Kan ikke oppdatere søknad med behandlingsid ${soknadUnderArbeid.behandlingsId} fordi den er sendt fra bruker",
+            )
         }
     }
 

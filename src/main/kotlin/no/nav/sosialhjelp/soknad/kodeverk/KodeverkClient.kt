@@ -21,42 +21,44 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder)
-        .codecs {
-            it.defaultCodecs().jackson2JsonDecoder(
-                Jackson2JsonDecoder(
-                    jacksonObjectMapper()
-                        .registerModule(JavaTimeModule())
-                        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    private val webClient =
+        unproxiedWebClientBuilder(webClientBuilder)
+            .codecs {
+                it.defaultCodecs().jackson2JsonDecoder(
+                    Jackson2JsonDecoder(
+                        jacksonObjectMapper()
+                            .registerModule(JavaTimeModule())
+                            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
+                    ),
                 )
-            )
-        }
-        .baseUrl(kodeverkUrl)
-        .build()
+            }
+            .baseUrl(kodeverkUrl)
+            .build()
 
     @Retry(name = "kodeverk")
-    fun hentKodeverk(kodeverksnavn: String): KodeverkDto = runCatching {
-        webClient.get()
-            .uri { builder ->
-                builder.path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
-                    .queryParam("ekskluderUgyldige", "true")
-                    .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
-                    .build(kodeverksnavn)
+    fun hentKodeverk(kodeverksnavn: String): KodeverkDto =
+        runCatching {
+            webClient.get()
+                .uri { builder ->
+                    builder.path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
+                        .queryParam("ekskluderUgyldige", "true")
+                        .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
+                        .build(kodeverksnavn)
+                }
+                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, getConsumerId())
+                .retrieve()
+                .bodyToMono<KodeverkDto>()
+                .block() ?: error("Kodeverk - ugyldig data")
+        }.onFailure { e ->
+            if (e is WebClientResponseException) {
+                log.warn("Kodeverk - ${e.statusCode}", e)
+            } else {
+                log.error("Kodeverk - noe uventet feilet", e)
             }
-            .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-            .header(HEADER_CONSUMER_ID, getConsumerId())
-            .retrieve()
-            .bodyToMono<KodeverkDto>()
-            .block() ?: error("Kodeverk - ugyldig data")
-    }.onFailure { e ->
-        if (e is WebClientResponseException) {
-            log.warn("Kodeverk - ${e.statusCode}", e)
-        } else {
-            log.error("Kodeverk - noe uventet feilet", e)
-        }
-    }.getOrThrow()
+        }.getOrThrow()
 
     companion object {
         private val log = getLogger(KodeverkClient::class.java)

@@ -169,7 +169,7 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
@@ -206,7 +206,7 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.BRUKER)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
@@ -232,8 +232,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
-        val soknadUnderArbeid =
-            createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
+        val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -251,7 +250,6 @@ internal class FamilieSystemdataTest {
         assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR)
         assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2)
     }
-
 
     private fun sivilstatusSkalIkkeSettes(status: JsonSivilstatus.Status, ektefelle: Ektefelle?) {
         val person = createPerson(status.toString(), ektefelle)
@@ -274,18 +272,21 @@ internal class FamilieSystemdataTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(true)
+                    .withVerdi(true),
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2))
             .withBarnebidrag(
                 JsonBarnebidrag()
                     .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(Verdi.BEGGE)
+                    .withVerdi(Verdi.BEGGE),
             )
         return jsonInternalSoknad
     }
 
-    private fun assertThatAnsvarIsCorrectlyConverted(barn: Barn, jsonAnsvar: JsonAnsvar) {
+    private fun assertThatAnsvarIsCorrectlyConverted(
+        barn: Barn,
+        jsonAnsvar: JsonAnsvar,
+    ) {
         val jsonBarn = jsonAnsvar.barn
         assertThat(barn.folkeregistrertSammen).isEqualTo(jsonAnsvar.erFolkeregistrertSammen?.verdi)
         assertThat(barn.fnr).isEqualTo(jsonBarn.personIdentifikator)
@@ -299,7 +300,10 @@ internal class FamilieSystemdataTest {
         assertThat(barn.etternavn).isEqualTo(jsonBarn.navn.etternavn)
     }
 
-    private fun assertThatEktefelleIsCorrectlyConverted(ektefelle: Ektefelle, jsonEktefelle: JsonEktefelle) {
+    private fun assertThatEktefelleIsCorrectlyConverted(
+        ektefelle: Ektefelle,
+        jsonEktefelle: JsonEktefelle,
+    ) {
         if (ektefelle.fodselsdato != null) {
             assertThat(ektefelle.fodselsdato).hasToString(jsonEktefelle.fodselsdato)
         } else {
@@ -311,7 +315,10 @@ internal class FamilieSystemdataTest {
         assertThat(ektefelle.etternavn).isEqualTo(jsonEktefelle.navn.etternavn)
     }
 
-    private fun createPerson(sivilstatus: String, ektefelle: Ektefelle?): Person {
+    private fun createPerson(
+        sivilstatus: String,
+        ektefelle: Ektefelle?,
+    ): Person {
         return Person(
             fornavn = "fornavn",
             mellomnavn = "mellomnavn",
@@ -321,7 +328,7 @@ internal class FamilieSystemdataTest {
             statsborgerskap = emptyList(),
             ektefelle = ektefelle,
             bostedsadresse = null,
-            oppholdsadresse = null
+            oppholdsadresse = null,
         )
     }
 
@@ -349,92 +356,99 @@ internal class FamilieSystemdataTest {
         private const val ETTERNAVN_BARN_3 = "Påske"
         private val FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05")
         private const val SAMVARSGRAD_BARN_3 = 30
-        private val BARN = Barn(
-            FORNAVN_BARN,
-            MELLOMNAVN_BARN,
-            ETTERNAVN_BARN,
-            FNR_BARN,
-            FODSELSDATO_BARN,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN
-        )
-        private val BARN_2 = Barn(
-            FORNAVN_BARN_2,
-            MELLOMNAVN_BARN_2,
-            ETTERNAVN_BARN_2,
-            FNR_BARN_2,
-            FODSELSDATO_BARN_2,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN_2
-        )
-        private val JSON_ANSVAR = JsonAnsvar()
-            .withBarn(
-                JsonBarn()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withNavn(
-                        JsonNavn()
-                            .withFornavn(FORNAVN_BARN)
-                            .withMellomnavn(MELLOMNAVN_BARN)
-                            .withEtternavn(ETTERNAVN_BARN)
-                    )
-                    .withFodselsdato(FODSELSDATO_BARN.toString())
-                    .withPersonIdentifikator(FNR_BARN)
+        private val BARN =
+            Barn(
+                FORNAVN_BARN,
+                MELLOMNAVN_BARN,
+                ETTERNAVN_BARN,
+                FNR_BARN,
+                FODSELSDATO_BARN,
+                ER_FOLKEREGISTRERT_SAMMEN_BARN,
             )
-            .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen()
-                    .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN)
+        private val BARN_2 =
+            Barn(
+                FORNAVN_BARN_2,
+                MELLOMNAVN_BARN_2,
+                ETTERNAVN_BARN_2,
+                FNR_BARN_2,
+                FODSELSDATO_BARN_2,
+                ER_FOLKEREGISTRERT_SAMMEN_BARN_2,
             )
-            .withHarDeltBosted(
-                JsonHarDeltBosted()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(HAR_DELT_BOSTED_BARN)
-            )
-        private val JSON_ANSVAR_2 = JsonAnsvar()
-            .withBarn(
-                JsonBarn()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withNavn(
-                        JsonNavn()
-                            .withFornavn(FORNAVN_BARN_2)
-                            .withMellomnavn(MELLOMNAVN_BARN_2)
-                            .withEtternavn(ETTERNAVN_BARN_2)
-                    )
-                    .withFodselsdato(FODSELSDATO_BARN_2.toString())
-                    .withPersonIdentifikator(FNR_BARN_2)
-            )
-            .withErFolkeregistrertSammen(
-                JsonErFolkeregistrertSammen()
-                    .withKilde(JsonKildeSystem.SYSTEM)
-                    .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN_2)
-            )
-            .withSamvarsgrad(
-                JsonSamvarsgrad()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(SAMVARSGRAD_BARN_2)
-            )
-        private val JSON_ANSVAR_3_BRUKERREGISTRERT = JsonAnsvar()
-            .withBarn(
-                JsonBarn()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withNavn(
-                        JsonNavn()
-                            .withFornavn(FORNAVN_BARN_3)
-                            .withMellomnavn(MELLOMNAVN_BARN_3)
-                            .withEtternavn(ETTERNAVN_BARN_3)
-                    )
-                    .withFodselsdato(FODSELSDATO_BARN_3.toString())
-            )
-            .withBorSammenMed(
-                JsonBorSammenMed()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(false)
-            )
-            .withSamvarsgrad(
-                JsonSamvarsgrad()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(SAMVARSGRAD_BARN_3)
-            )
+        private val JSON_ANSVAR =
+            JsonAnsvar()
+                .withBarn(
+                    JsonBarn()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withNavn(
+                            JsonNavn()
+                                .withFornavn(FORNAVN_BARN)
+                                .withMellomnavn(MELLOMNAVN_BARN)
+                                .withEtternavn(ETTERNAVN_BARN),
+                        )
+                        .withFodselsdato(FODSELSDATO_BARN.toString())
+                        .withPersonIdentifikator(FNR_BARN),
+                )
+                .withErFolkeregistrertSammen(
+                    JsonErFolkeregistrertSammen()
+                        .withKilde(JsonKildeSystem.SYSTEM)
+                        .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN),
+                )
+                .withHarDeltBosted(
+                    JsonHarDeltBosted()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi(HAR_DELT_BOSTED_BARN),
+                )
+        private val JSON_ANSVAR_2 =
+            JsonAnsvar()
+                .withBarn(
+                    JsonBarn()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withNavn(
+                            JsonNavn()
+                                .withFornavn(FORNAVN_BARN_2)
+                                .withMellomnavn(MELLOMNAVN_BARN_2)
+                                .withEtternavn(ETTERNAVN_BARN_2),
+                        )
+                        .withFodselsdato(FODSELSDATO_BARN_2.toString())
+                        .withPersonIdentifikator(FNR_BARN_2),
+                )
+                .withErFolkeregistrertSammen(
+                    JsonErFolkeregistrertSammen()
+                        .withKilde(JsonKildeSystem.SYSTEM)
+                        .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN_2),
+                )
+                .withSamvarsgrad(
+                    JsonSamvarsgrad()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi(SAMVARSGRAD_BARN_2),
+                )
+        private val JSON_ANSVAR_3_BRUKERREGISTRERT =
+            JsonAnsvar()
+                .withBarn(
+                    JsonBarn()
+                        .withKilde(JsonKilde.BRUKER)
+                        .withNavn(
+                            JsonNavn()
+                                .withFornavn(FORNAVN_BARN_3)
+                                .withMellomnavn(MELLOMNAVN_BARN_3)
+                                .withEtternavn(ETTERNAVN_BARN_3),
+                        )
+                        .withFodselsdato(FODSELSDATO_BARN_3.toString()),
+                )
+                .withBorSammenMed(
+                    JsonBorSammenMed()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi(false),
+                )
+                .withSamvarsgrad(
+                    JsonSamvarsgrad()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi(SAMVARSGRAD_BARN_3),
+                )
 
-        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+        private fun createSoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
@@ -443,7 +457,7 @@ internal class FamilieSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

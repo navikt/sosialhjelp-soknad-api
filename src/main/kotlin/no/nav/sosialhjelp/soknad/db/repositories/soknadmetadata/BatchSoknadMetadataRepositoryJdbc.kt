@@ -13,23 +13,24 @@ import java.time.LocalDateTime
 @Repository
 class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : BatchSoknadMetadataRepository {
-
     @Transactional
     override fun hentForBatch(antallDagerGammel: Int): SoknadMetadata? {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
-            val resultat = jdbcTemplate.query(
-                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + SQLUtils.limit(1),
-                soknadMetadataRowMapper,
-                SQLUtils.tidTilTimestamp(frist)
-            ).firstOrNull() ?: return null
+            val resultat =
+                jdbcTemplate.query(
+                    "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + SQLUtils.limit(1),
+                    soknadMetadataRowMapper,
+                    SQLUtils.tidTilTimestamp(frist),
+                ).firstOrNull() ?: return null
 
-            val rowsAffected = jdbcTemplate.update(
-                "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.id
-            )
+            val rowsAffected =
+                jdbcTemplate.update(
+                    "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
+                    resultat.id,
+                )
             if (rowsAffected == 1) {
                 return resultat
             }
@@ -40,18 +41,20 @@ class BatchSoknadMetadataRepositoryJdbc(
     override fun hentEldreEnn(antallDagerGammel: Int): List<SoknadMetadata> {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
-            val resultat = jdbcTemplate.query(
-                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(20),
-                soknadMetadataRowMapper,
-                SQLUtils.tidTilTimestamp(frist)
-            )
-
-            val rowsAffected = resultat.sumOf {
-                jdbcTemplate.update(
-                    "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                    it.id
+            val resultat =
+                jdbcTemplate.query(
+                    "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(20),
+                    soknadMetadataRowMapper,
+                    SQLUtils.tidTilTimestamp(frist),
                 )
-            }
+
+            val rowsAffected =
+                resultat.sumOf {
+                    jdbcTemplate.update(
+                        "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
+                        it.id,
+                    )
+                }
 
             if (rowsAffected == resultat.size) {
                 return resultat

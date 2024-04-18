@@ -4,19 +4,24 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import java.util.regex.Pattern
 
 object AdresseStringSplitter {
-
-    fun toSokedata(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
+    fun toSokedata(
+        kodeverkService: KodeverkService?,
+        adresse: String?,
+    ): Sokedata? {
         return if (isAddressTooShortOrNull(adresse)) {
             Sokedata(adresse = adresse)
         } else {
             firstNonNull(
                 fullstendigGateadresseMatch(kodeverkService, adresse!!),
-                Sokedata(adresse = adresse)
+                Sokedata(adresse = adresse),
             )
         }
     }
 
-    private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? {
+    private fun fullstendigGateadresseMatch(
+        kodeverkService: KodeverkService?,
+        adresse: String,
+    ): Sokedata? {
         // Why Trim: This  that depends on a  may run slow on strings with many repetitions of ' '.
         // https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
         val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9]{1,4})? *[0-9]* *([^0-9]*[^ ])? *$")
@@ -32,7 +37,10 @@ object AdresseStringSplitter {
         return null
     }
 
-    private fun getKommunenummer(kodeverkService: KodeverkService?, kommunenavn: String?): String? {
+    private fun getKommunenummer(
+        kodeverkService: KodeverkService?,
+        kommunenavn: String?,
+    ): String? {
         return if (kommunenavn != null && kommunenavn.trim { it <= ' ' }.isNotEmpty() && kodeverkService != null) {
             kodeverkService.gjettKommunenummer(kommunenavn)
         } else {

@@ -31,17 +31,17 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class SkattbarInntektRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val textService: TextService = mockk()
-    private val skattbarInntektRessurs = SkattbarInntektRessurs(
-        tilgangskontroll,
-        soknadUnderArbeidRepository,
-        skatteetatenSystemdata,
-        textService
-    )
+    private val skattbarInntektRessurs =
+        SkattbarInntektRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            skatteetatenSystemdata,
+            textService,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -175,18 +175,19 @@ internal class SkattbarInntektRessursTest {
     private fun createJsonInternalSoknadWithSkattbarInntekt(harSkattbarInntekt: Boolean): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         if (harSkattbarInntekt) {
-            val utbetaling = JsonOkonomiOpplysningUtbetaling()
-                .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
-                .withKilde(JsonKilde.SYSTEM)
-                .withTittel("Utbetalingen!")
-                .withOrganisasjon(
-                    JsonOrganisasjon()
-                        .withNavn("Arbeidsgiver")
-                        .withOrganisasjonsnummer("123456789")
-                )
-                .withBelop(123456)
-                .withPeriodeFom("2020-01-01")
-                .withPeriodeTom("2020-02-01")
+            val utbetaling =
+                JsonOkonomiOpplysningUtbetaling()
+                    .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withTittel("Utbetalingen!")
+                    .withOrganisasjon(
+                        JsonOrganisasjon()
+                            .withNavn("Arbeidsgiver")
+                            .withOrganisasjonsnummer("123456789"),
+                    )
+                    .withBelop(123456)
+                    .withPeriodeFom("2020-01-01")
+                    .withPeriodeTom("2020-02-01")
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
         }
         return soknadUnderArbeid
@@ -205,7 +206,7 @@ internal class SkattbarInntektRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

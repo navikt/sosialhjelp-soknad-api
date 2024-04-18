@@ -11,7 +11,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class BegrunnelseStegTest {
-
     private val steg = BegrunnelseSteg()
 
     @Test
@@ -44,7 +43,10 @@ internal class BegrunnelseStegTest {
         validateFeltMedSvar(hvorforSokeSporsmal.felt!![0], Type.TEKST, SvarType.TEKST, "hvorfor")
     }
 
-    private fun createSoknad(hvaSokesOm: String?, hvorforSoke: String): JsonInternalSoknad {
+    private fun createSoknad(
+        hvaSokesOm: String?,
+        hvorforSoke: String,
+    ): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()
@@ -53,9 +55,9 @@ internal class BegrunnelseStegTest {
                             .withBegrunnelse(
                                 JsonBegrunnelse()
                                     .withHvaSokesOm(hvaSokesOm)
-                                    .withHvorforSoke(hvorforSoke)
-                            )
-                    )
+                                    .withHvorforSoke(hvorforSoke),
+                            ),
+                    ),
             )
     }
 }

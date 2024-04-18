@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplys
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllUtbetalingerToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapMellomlagredeVedleggToVedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapToVedleggFrontend
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -49,7 +48,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @ProtectedWithClaims(
     issuer = Constants.SELVBETJENING,
     claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true
+    combineWithOr = true,
 )
 @RequestMapping("/soknader/{behandlingsId}/okonomiskeOpplysninger")
 class OkonomiskeOpplysningerRessurs(
@@ -57,11 +56,11 @@ class OkonomiskeOpplysningerRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     @GetMapping
     fun hentOkonomiskeOpplysninger(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): VedleggFrontends {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = getUser()
@@ -74,7 +73,10 @@ class OkonomiskeOpplysningerRessurs(
         }
     }
 
-    private fun hentBasertPaaOpplastedeVedlegg(soknad: SoknadUnderArbeid, eier: String): VedleggFrontends {
+    private fun hentBasertPaaOpplastedeVedlegg(
+        soknad: SoknadUnderArbeid,
+        eier: String,
+    ): VedleggFrontends {
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.jsonInternalSoknad)
@@ -89,23 +91,24 @@ class OkonomiskeOpplysningerRessurs(
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map { mapToVedleggFrontend(it, jsonOkonomi, opplastedeVedlegg) },
             slettedeVedlegg = slettedeVedlegg,
-            isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
+            isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi),
         )
     }
 
     private fun hentBasertPaaMellomlagredeVedlegg(
         behandlingsId: String,
         eier: String,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ): VedleggFrontends {
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
-        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
-            mellomlagringService.getAllVedlegg(behandlingsId)
-        } else {
-            emptyList()
-        }
+        val mellomlagredeVedlegg =
+            if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+                mellomlagringService.getAllVedlegg(behandlingsId)
+            } else {
+                emptyList()
+            }
 
         val opplastedeVedleggFraJson =
             jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
@@ -124,41 +127,44 @@ class OkonomiskeOpplysningerRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger = jsonVedleggs.map {
-                mapMellomlagredeVedleggToVedleggFrontend(
-                    it,
-                    jsonOkonomi,
-                    mellomlagredeVedlegg
-                )
-            },
+            okonomiskeOpplysninger =
+                jsonVedleggs.map {
+                    mapMellomlagredeVedleggToVedleggFrontend(
+                        it,
+                        jsonOkonomi,
+                        mellomlagredeVedlegg,
+                    )
+                },
             slettedeVedlegg = slettedeVedlegg,
-            isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
+            isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi),
         )
     }
 
     @PutMapping
     fun updateOkonomiskOpplysning(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody vedleggFrontend: VedleggFrontend
+        @RequestBody vedleggFrontend: VedleggFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = getUser()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
-        if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
-            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
+        if (vedleggTypeToSoknadType.containsKey(vedleggFrontend.type)) {
+            val rader = vedleggFrontend.rader ?: emptyList()
+            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
             when (getSoknadPath(vedleggFrontend.type)) {
-                "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
-                    addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
-                } else {
-                    addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                }
+                "utbetaling" ->
+                    if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
+                        addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
+                    } else {
+                        addAllUtbetalingerToJsonOkonomi(rader, jsonOkonomi.opplysninger, soknadType)
+                    }
 
-                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
-                "inntekt" -> addAllInntekterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
+                "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
+                "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "formue" -> addAllFormuerToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                "inntekt" -> addAllInntekterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
             }
         }
 
@@ -170,7 +176,7 @@ class OkonomiskeOpplysningerRessurs(
     private fun removeIkkePaakrevdeVedlegg(
         jsonVedleggs: MutableList<JsonVedlegg>,
         paakrevdeVedlegg: List<JsonVedlegg>,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): List<VedleggFrontend> {
         val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(it, paakrevdeVedlegg) }.toMutableList()
         excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg)
@@ -188,8 +194,8 @@ class OkonomiskeOpplysningerRessurs(
                     VedleggFrontend(
                         type = vedleggstype,
                         gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
-                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) }
-                    )
+                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) },
+                    ),
                 )
             }
         }
@@ -200,7 +206,7 @@ class OkonomiskeOpplysningerRessurs(
         behandlingsId: String,
         jsonVedleggs: MutableList<JsonVedlegg>,
         paakrevdeVedlegg: List<JsonVedlegg>,
-        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): List<VedleggFrontend> {
         val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(it, paakrevdeVedlegg) }.toMutableList()
         excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg)
@@ -220,8 +226,8 @@ class OkonomiskeOpplysningerRessurs(
                     VedleggFrontend(
                         type = vedleggstype,
                         gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
-                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) }
-                    )
+                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) },
+                    ),
                 )
             }
         }
@@ -232,19 +238,28 @@ class OkonomiskeOpplysningerRessurs(
         jsonVedleggs.removeAll(jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" })
     }
 
-    private fun isSameType(jsonVedlegg: JsonVedlegg, opplastetVedlegg: OpplastetVedlegg): Boolean {
+    private fun isSameType(
+        jsonVedlegg: JsonVedlegg,
+        opplastetVedlegg: OpplastetVedlegg,
+    ): Boolean {
         return opplastetVedlegg.vedleggType.sammensattType == jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo
     }
 
-    private fun addPaakrevdeVedlegg(jsonVedleggs: MutableList<JsonVedlegg>, paakrevdeVedlegg: List<JsonVedlegg>) {
+    private fun addPaakrevdeVedlegg(
+        jsonVedleggs: MutableList<JsonVedlegg>,
+        paakrevdeVedlegg: List<JsonVedlegg>,
+    ) {
         jsonVedleggs.addAll(
             paakrevdeVedlegg
                 .filter { isNotInList(it, jsonVedleggs) }
-                .map { it.withStatus(Vedleggstatus.VedleggKreves.toString()) }
+                .map { it.withStatus(Vedleggstatus.VedleggKreves.toString()) },
         )
     }
 
-    private fun isNotInList(vedlegg: JsonVedlegg, jsonVedleggs: List<JsonVedlegg>): Boolean {
+    private fun isNotInList(
+        vedlegg: JsonVedlegg,
+        jsonVedleggs: List<JsonVedlegg>,
+    ): Boolean {
         return jsonVedleggs.none { it.type == vedlegg.type && it.tilleggsinfo == vedlegg.tilleggsinfo }
     }
 
@@ -261,36 +276,40 @@ class OkonomiskeOpplysningerRessurs(
     internal fun determineVedleggStatus(
         alleredeLevert: Boolean,
         vedleggStatus: VedleggStatus?,
-        hasFiles: Boolean
+        hasFiles: Boolean,
     ): VedleggStatus {
         return when {
-            /* Bruker indikerer at vedlegg allerede er sendt vha. ny frontend-kode */
+            // Bruker indikerer at vedlegg allerede er sendt vha. ny frontend-kode
             alleredeLevert == true -> VedleggStatus.VedleggAlleredeSendt
-            /* Bruker indikerer at vedlegg er allerede sendt vha. gammel frontend-kode */
+            // Bruker indikerer at vedlegg er allerede sendt vha. gammel frontend-kode
             vedleggStatus == VedleggStatus.VedleggAlleredeSendt -> VedleggStatus.VedleggAlleredeSendt
-            /* Bruker har ikke indikert at vedlegg allerede er sendt. */
+            // Bruker har ikke indikert at vedlegg allerede er sendt.
             hasFiles -> VedleggStatus.LastetOpp
             else -> VedleggStatus.VedleggKreves
         }
     }
 
-    private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
+    private fun setVedleggStatus(
+        vedleggFrontend: VedleggFrontend,
+        soknad: SoknadUnderArbeid,
+    ) {
         val vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type).firstOrNull()
 
         requireNotNull(vedlegg) { "Vedlegget finnes ikke" }
 
-        vedlegg.status = determineVedleggStatus(
-            alleredeLevert = vedleggFrontend.alleredeLevert ?: false,
-            vedleggStatus = vedleggFrontend.vedleggStatus,
-            hasFiles = vedlegg.filer.isNotEmpty()
-        ).name
+        vedlegg.status =
+            determineVedleggStatus(
+                alleredeLevert = vedleggFrontend.alleredeLevert ?: false,
+                vedleggStatus = vedleggFrontend.vedleggStatus,
+                hasFiles = vedlegg.filer.isNotEmpty(),
+            ).name
     }
 
     data class VedleggFrontends(
         var okonomiskeOpplysninger: List<VedleggFrontend>?,
         var slettedeVedlegg: List<VedleggFrontend>?,
         @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
-        var isOkonomiskeOpplysningerBekreftet: Boolean
+        var isOkonomiskeOpplysningerBekreftet: Boolean,
     )
 
     companion object {

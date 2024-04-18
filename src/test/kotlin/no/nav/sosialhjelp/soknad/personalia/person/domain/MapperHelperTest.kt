@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class MapperHelperTest {
-
     companion object {
         private val NOV_30_KVELD = LocalDateTime.of(2020, 11, 30, 19, 0)
         private val DEC_1_MORGEN = LocalDateTime.of(2020, 12, 1, 7, 0)
@@ -32,13 +31,14 @@ internal class MapperHelperTest {
 
     @Test
     fun kunEnSivilstand_medUkjentMaster_ingenVelges() {
-        val sivilstandUkjentmaster = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Ukjent",
-            "DSF",
-            DEC_1_KVELD,
-            DEC_1_MIDDAG
-        )
+        val sivilstandUkjentmaster =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Ukjent",
+                "DSF",
+                DEC_1_KVELD,
+                DEC_1_MIDDAG,
+            )
         val list = listOf(sivilstandUkjentmaster)
         val result = helper.utledGjeldendeSivilstand(list)
         assertThat(result).isNull()
@@ -46,13 +46,14 @@ internal class MapperHelperTest {
 
     @Test
     fun kunEnsivilstandFraFreg_denEneVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.GIFT,
-            "Freg",
-            "KILDE_DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.GIFT,
+                "Freg",
+                "KILDE_DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val list = listOf(sivilstandFraFreg)
         val result = helper.utledGjeldendeSivilstand(list)
         assertThat(result).isEqualTo(sivilstandFraFreg)
@@ -60,13 +61,14 @@ internal class MapperHelperTest {
 
     @Test
     fun kunEnUoppgittsivilstandFraFreg_ingenVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.UOPPGITT,
-            "Freg",
-            "KILDE_DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.UOPPGITT,
+                "Freg",
+                "KILDE_DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val list = listOf(sivilstandFraFreg)
         val result = helper.utledGjeldendeSivilstand(list)
         assertThat(result).isNull()
@@ -90,13 +92,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_enFraPdlMedEndringstidspunktNull_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -105,13 +108,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_enFraPdlSomErVerifisert_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_KVELD)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -120,13 +124,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFregMedNyesteAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MIDDAG,
-            DEC_2_MORGEN
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MIDDAG,
+                DEC_2_MORGEN,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_KVELD)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -135,13 +140,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFregMedGammeltAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_KVELD,
-            NOV_30_KVELD
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_KVELD,
+                NOV_30_KVELD,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -150,13 +156,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_enFraPdlSomErNyesteOgOppgittAvBrukerSelv_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_KVELD,
-            NOV_30_KVELD
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_KVELD,
+                NOV_30_KVELD,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "Bruker selv", DEC_1_MIDDAG)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -165,13 +172,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_enFraPdl_fregRegistrertTidligerEnnPdlSammeDag_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MORGEN,
-            NOV_30_KVELD
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MORGEN,
+                NOV_30_KVELD,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -180,13 +188,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_enFraPdl_beggeRegistrertSamtidig_ingenVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_KVELD,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_KVELD,
+                DEC_1_MIDDAG,
+            )
         val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -195,13 +204,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_toFraPdl_toRegistrertSamtidigOgEnNyere_nyesteVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MORGEN,
-            DEC_1_MORGEN
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MORGEN,
+                DEC_1_MORGEN,
+            )
         val sivilstandFraPdl1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
         val sivilstandFraPdl2 =
             createSivilstand(SivilstandType.ENKE_ELLER_ENKEMANN, "PDL", "NAV", DEC_1_MIDDAG)
@@ -212,13 +222,14 @@ internal class MapperHelperTest {
 
     @Test
     fun flereSivilstander_enFraFreg_toFraPdl_enRegistrertTidligPaaDagenOgToSamtidigHvorEnErUoppgitt_ingenVelges() {
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val sivilstandfrapdl1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
         val sivilstandfrapdl2 = createSivilstand(SivilstandType.UOPPGITT, "PDL", "NAV", DEC_1_MIDDAG)
         val list = listOf(sivilstandFraFreg, sivilstandfrapdl1, sivilstandfrapdl2)
@@ -232,13 +243,14 @@ internal class MapperHelperTest {
         val endring1 = EndringDto("PDL", DEC_1_MIDDAG, "Korriger")
         val endring2 = EndringDto("PDL", DEC_1_KVELD, "Korriger")
         val endringer = listOf(opprettet, endring1, endring2)
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_MIDDAG,
-            DEC_1_MIDDAG
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_MIDDAG,
+                DEC_1_MIDDAG,
+            )
         val sivilstandFraPdl = createSivilstandMedEndringer(SivilstandType.GIFT, "PDL", endringer)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -251,13 +263,14 @@ internal class MapperHelperTest {
         val endring1 = EndringDto("PDL", DEC_1_MIDDAG, "Korriger")
         val endring2 = EndringDto("PDL", DEC_1_KVELD, "Korriger")
         val endringer = listOf(opprettet, endring1, endring2)
-        val sivilstandFraFreg = createSivilstandMedFolkeregisterMetadata(
-            SivilstandType.SKILT,
-            "Freg",
-            "DSF",
-            DEC_1_KVELD,
-            DEC_1_KVELD
-        )
+        val sivilstandFraFreg =
+            createSivilstandMedFolkeregisterMetadata(
+                SivilstandType.SKILT,
+                "Freg",
+                "DSF",
+                DEC_1_KVELD,
+                DEC_1_KVELD,
+            )
         val sivilstandFraPdl = createSivilstandMedEndringer(SivilstandType.GIFT, "PDL", endringer)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
@@ -302,13 +315,13 @@ internal class MapperHelperTest {
         type: SivilstandType,
         master: String,
         kilde: String,
-        registrert: LocalDateTime
+        registrert: LocalDateTime,
     ): SivilstandDto {
         return createSivilstandMedEndringerOgFolkeregisterMetadata(
             type,
             master,
             listOf(EndringDto(kilde, registrert, "Opprettet")),
-            null
+            null,
         )
     }
 
@@ -317,20 +330,20 @@ internal class MapperHelperTest {
         master: String,
         kilde: String,
         registrert: LocalDateTime,
-        ajourholdtidspunkt: LocalDateTime
+        ajourholdtidspunkt: LocalDateTime,
     ): SivilstandDto {
         return createSivilstandMedEndringerOgFolkeregisterMetadata(
             type,
             master,
             listOf(EndringDto(kilde, registrert, "Opprettet")),
-            ajourholdtidspunkt
+            ajourholdtidspunkt,
         )
     }
 
     private fun createSivilstandMedEndringer(
         type: SivilstandType,
         master: String,
-        endringer: List<EndringDto>
+        endringer: List<EndringDto>,
     ): SivilstandDto {
         return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, endringer, null)
     }
@@ -339,22 +352,27 @@ internal class MapperHelperTest {
         type: SivilstandType,
         master: String,
         endringer: List<EndringDto>,
-        ajourholdtidspunkt: LocalDateTime?
+        ajourholdtidspunkt: LocalDateTime?,
     ): SivilstandDto {
         return SivilstandDto(
             type,
             null,
             MetadataDto(master, endringer),
-            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) }
+            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) },
         )
     }
 
-    private fun createNavn(fornavn: String, master: String, kilde: String, registrert: LocalDateTime): NavnDto {
+    private fun createNavn(
+        fornavn: String,
+        master: String,
+        kilde: String,
+        registrert: LocalDateTime,
+    ): NavnDto {
         return createNavnMedEndringerOgFolkeregisterMetadata(
             fornavn,
             master,
             listOf(EndringDto(kilde, registrert, "Opprettet")),
-            null
+            null,
         )
     }
 
@@ -363,13 +381,13 @@ internal class MapperHelperTest {
         master: String,
         kilde: String,
         registrert: LocalDateTime,
-        ajourholdtidspunkt: LocalDateTime
+        ajourholdtidspunkt: LocalDateTime,
     ): NavnDto {
         return createNavnMedEndringerOgFolkeregisterMetadata(
             fornavn,
             master,
             listOf(EndringDto(kilde, registrert, "Opprettet")),
-            ajourholdtidspunkt
+            ajourholdtidspunkt,
         )
     }
 
@@ -377,14 +395,14 @@ internal class MapperHelperTest {
         fornavn: String,
         master: String,
         endringer: List<EndringDto>,
-        ajourholdtidspunkt: LocalDateTime?
+        ajourholdtidspunkt: LocalDateTime?,
     ): NavnDto {
         return NavnDto(
             fornavn,
             "mellomnavn",
             "etternavn",
             MetadataDto(master, endringer),
-            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) }
+            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) },
         )
     }
 }

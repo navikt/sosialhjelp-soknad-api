@@ -37,13 +37,12 @@ import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import javax.imageio.ImageIO
 import javax.imageio.stream.ImageOutputStream
 import javax.imageio.stream.MemoryCacheImageOutputStream
 
 internal class OpplastetVedleggServiceTest {
-
     private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val virusScanner: VirusScanner = mockk()
@@ -75,18 +74,19 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun oppdatererVedleggStatusVedOpplastingAvVedlegg() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                                .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
+                                .withStatus("VedleggKreves"),
+                        ),
+                    ),
+                ),
             )
-        )
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -106,27 +106,29 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
-                            .withStatus("LastetOpp")
-                    )
-                )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                                .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
+                                .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
+                                .withStatus("LastetOpp"),
+                        ),
+                    ),
+                ),
             )
-        )
-        every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns OpplastetVedlegg(
-            eier = "eier",
-            vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
-            data = byteArrayOf(1, 2, 3),
-            soknadId = 123L,
-            filnavn = FILNAVN2,
-            sha512 = SHA512
-        )
+        every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = FILNAVN2,
+                sha512 = SHA512,
+            )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -141,22 +143,23 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                                .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
+                                .withStatus("VedleggKreves"),
+                        ),
+                    ),
+                ),
             )
-        )
         every {
             opplastetVedleggRepository.hentSamletVedleggStorrelse(
                 any(),
-                any()
+                any(),
             )
         } returns MAKS_SAMLET_VEDLEGG_STORRELSE
 
@@ -193,7 +196,7 @@ internal class OpplastetVedleggServiceTest {
                         BEHANDLINGSID,
                         VEDLEGGSTYPE,
                         "ikkeBildeEllerPdf".toByteArray(),
-                        "filnavnUtenFiltype"
+                        "filnavnUtenFiltype",
                     )
             }
     }
@@ -203,8 +206,9 @@ internal class OpplastetVedleggServiceTest {
         doCommonMocking()
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg = opplastetVedleggService
-            .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavnUtenFiltype")
+        val opplastetVedlegg =
+            opplastetVedleggService
+                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavnUtenFiltype")
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavnUtenFiltype").endsWith(".jpg")
     }
 
@@ -213,12 +217,13 @@ internal class OpplastetVedleggServiceTest {
         doCommonMocking()
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
-            BEHANDLINGSID,
-            VEDLEGGSTYPE,
-            imageFile,
-            "filnavnMed.punktum"
-        )
+        val opplastetVedlegg =
+            opplastetVedleggService.lastOppVedlegg(
+                BEHANDLINGSID,
+                VEDLEGGSTYPE,
+                imageFile,
+                "filnavnMed.punktum",
+            )
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavnMedpunktum").endsWith(".jpg")
     }
 
@@ -234,29 +239,32 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun `Skal oppdatere JsonInternalSoknad med vedleggsinformasjon`() {
-        val opplastetVedlegg = OpplastetVedlegg(
-            eier = SubjectHandlerUtils.getUserIdFromToken(),
-            vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
-            data = PDF_FILE.readBytes(),
-            soknadId = 1L,
-            filnavn = PDF_FILE.name
-        )
-        every { opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, any()) } returns UUID.nameUUIDFromBytes(
-            PDF_FILE.readBytes()
-        ).toString()
-
-        val initSoknadUnderArbeid = createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
+        val opplastetVedlegg =
+            OpplastetVedlegg(
+                eier = SubjectHandlerUtils.getUserIdFromToken(),
+                vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
+                data = PDF_FILE.readBytes(),
+                soknadId = 1L,
+                filnavn = PDF_FILE.name,
             )
-        )
+        every { opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, any()) } returns
+            UUID.nameUUIDFromBytes(
+                PDF_FILE.readBytes(),
+            ).toString()
+
+        val initSoknadUnderArbeid =
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                                .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
+                                .withStatus("VedleggKreves"),
+                        ),
+                    ),
+                ),
+            )
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns initSoknadUnderArbeid
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -265,7 +273,7 @@ internal class OpplastetVedleggServiceTest {
             opplastetVedlegg.sha512,
             BEHANDLINGSID,
             "hei|på deg",
-            opplastetVedlegg.filnavn
+            opplastetVedlegg.filnavn,
         )
 
         val soknadUnderArbeid = slot.captured
@@ -276,18 +284,19 @@ internal class OpplastetVedleggServiceTest {
     }
 
     private fun doCommonMocking() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                                .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
+                                .withStatus("VedleggKreves"),
+                        ),
+                    ),
+                ),
             )
-        )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
     }
@@ -316,7 +325,7 @@ internal class OpplastetVedleggServiceTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

@@ -15,22 +15,29 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class V2AdresseControllerAdapter(
     private val adresseController: AdresseController,
-    private val kontaktRepository: KontaktRepository
+    private val kontaktRepository: KontaktRepository,
 ) {
-    fun updateAdresse(soknadId: UUID, adresseValg: JsonAdresseValg, adresseSoknad: AdresseFrontend?) {
+    fun updateAdresse(
+        soknadId: UUID,
+        adresseValg: JsonAdresseValg,
+        adresseSoknad: AdresseFrontend?,
+    ) {
         AdresserInput(
             adresseValg = adresseValg.toAdresseValg(),
-            brukerAdresse = adresseSoknad?.toAdresse()
+            brukerAdresse = adresseSoknad?.toAdresse(),
         )
             .let { adresseController.updateAdresser(soknadId, it) }
     }
 
-    fun updateNavEnhet(soknadId: UUID, navEnhetFrontend: NavEnhetFrontend) {
+    fun updateNavEnhet(
+        soknadId: UUID,
+        navEnhetFrontend: NavEnhetFrontend,
+    ) {
         val kontakt = kontaktRepository.findByIdOrNull(soknadId) ?: Kontakt(soknadId)
 
         navEnhetFrontend.toNavEnhet()
@@ -45,7 +52,7 @@ private fun NavEnhetFrontend.toNavEnhet(): NavEnhet {
         kommunenavn = kommunenavn,
         enhetsnavn = enhetsnavn,
         enhetsnummer = enhetsnr,
-        orgnummer = orgnr
+        orgnummer = orgnr,
     )
 }
 
@@ -59,8 +66,9 @@ private fun JsonAdresseValg.toAdresseValg(): AdresseValg {
 
 private fun AdresseFrontend.toAdresse(): Adresse {
     return when (type) {
-        JsonAdresse.Type.GATEADRESSE -> this.gateadresse?.toV2Adresse()
-            ?: throw IllegalStateException("NyModell: Gateadresse mangler i input")
+        JsonAdresse.Type.GATEADRESSE ->
+            this.gateadresse?.toV2Adresse()
+                ?: throw IllegalStateException("NyModell: Gateadresse mangler i input")
 
         else -> throw IllegalStateException("NyModell: Ukjent/ikke støttet adresse-type: $type")
     }
@@ -75,6 +83,6 @@ private fun GateadresseFrontend.toV2Adresse(): Adresse {
         poststed = poststed,
         gatenavn = gatenavn,
         husnummer = husnummer,
-        husbokstav = husbokstav
+        husbokstav = husbokstav,
     )
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 /**
  * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
@@ -28,14 +28,14 @@ import java.util.*
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleService,
     private val nedetidService: NedetidService,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     @PostMapping("/opprettSoknad")
     fun createSoknad(response: HttpServletResponse): Map<String, String> {
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
-                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
+                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
             )
         }
 
@@ -50,7 +50,7 @@ class SoknadLifecycleController(
 
     @PostMapping("/{soknadId}/send")
     fun sendSoknad(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): SoknadSendtDto {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
@@ -65,7 +65,7 @@ class SoknadLifecycleController(
     fun deleteSoknad(
         @PathVariable("soknadId") soknadId: UUID,
         // TODO Se Prometheus-metrics-todo
-        @RequestHeader(value = HttpHeaders.REFERER) referer: String?
+        @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
     }
@@ -91,5 +91,5 @@ class SoknadLifecycleController(
 
 data class SoknadSendtDto(
     val soknadId: UUID,
-    val tidspunkt: LocalDateTime
+    val tidspunkt: LocalDateTime,
 )

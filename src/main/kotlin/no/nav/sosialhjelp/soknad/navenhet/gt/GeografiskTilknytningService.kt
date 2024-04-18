@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class GeografiskTilknytningService(
-    private val geografiskTilknytningClient: GeografiskTilknytningClient
+    private val geografiskTilknytningClient: GeografiskTilknytningClient,
 ) {
     fun hentGeografiskTilknytning(ident: String): String? {
         val geografiskTilknytningDto = geografiskTilknytningClient.hentGeografiskTilknytning(ident)

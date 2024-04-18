@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/feature-toggle", produces = [MediaType.APPLICATION_JSON_VALUE])
 class FeatureToggleRessurs {
-
     @GetMapping
     fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()

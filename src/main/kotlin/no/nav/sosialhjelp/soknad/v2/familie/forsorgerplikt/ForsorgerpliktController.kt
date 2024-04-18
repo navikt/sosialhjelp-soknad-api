@@ -23,35 +23,38 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ForsorgerpliktController(private val familieService: FamilieService) {
-
     @GetMapping
-    fun getForsorgerplikt(@PathVariable soknadId: UUID): ForsorgerDto? = familieService.findFamilie(soknadId)?.toForsorgerDto()
+    fun getForsorgerplikt(
+        @PathVariable soknadId: UUID,
+    ): ForsorgerDto? = familieService.findFamilie(soknadId)?.toForsorgerDto()
 
     @PutMapping
     fun updateForsorgerplikt(
         @PathVariable soknadId: UUID,
-        @RequestBody forsorgerInput: ForsorgerInput
+        @RequestBody forsorgerInput: ForsorgerInput,
     ): ResponseEntity<ForsorgerDto> {
         require(forsorgerInput.ansvar.isNotEmpty()) { "Ansvar kan ikke være en tom liste" }
 
-        val updated = familieService.updateForsorger(
-            soknadId,
-            forsorgerInput.barnebidrag,
-            forsorgerInput.ansvar.map { it.toDomain() }
-        )
+        val updated =
+            familieService.updateForsorger(
+                soknadId,
+                forsorgerInput.barnebidrag,
+                forsorgerInput.ansvar.map { it.toDomain() },
+            )
         return ResponseEntity.ok(updated.toForsorgerDto())
     }
 }
 
 data class ForsorgerInput(
     val barnebidrag: Barnebidrag?,
-    val ansvar: List<BarnInput> = emptyList()
+    val ansvar: List<BarnInput> = emptyList(),
 )
 
 data class ForsorgerDto(
     val harForsorgerplikt: Boolean?,
     val barnebidrag: Barnebidrag?,
-    val ansvar: List<BarnDto>
+    val ansvar: List<BarnDto>,
 )
 
-private fun Familie.toForsorgerDto(): ForsorgerDto = ForsorgerDto(harForsorgerplikt, barnebidrag = barnebidrag, ansvar = ansvar.values.map(Barn::toDto))
+private fun Familie.toForsorgerDto(): ForsorgerDto =
+    ForsorgerDto(harForsorgerplikt, barnebidrag = barnebidrag, ansvar = ansvar.values.map(Barn::toDto))

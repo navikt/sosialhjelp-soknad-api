@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
 
 internal class RedisServiceImplTest {
-
     private val redisStore = mockk<RedisStore>()
     private val redisService = RedisServiceImpl(redisStore)
 

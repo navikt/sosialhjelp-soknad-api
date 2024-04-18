@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class NedetidRessursTest {
-
     private var nedetidRessurs: NedetidRessurs = NedetidRessurs(NedetidService(null, null))
 
     // Utenfor planlagt nedetid eller nedetid:
@@ -19,18 +18,20 @@ internal class NedetidRessursTest {
         assertThat(nedetidFrontend.nedetidStart).isNull()
 
         val nedetidStart = LocalDateTime.now().format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = null)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = null),
+            )
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse
         assertThat(nedetidFrontend.nedetidSlutt).isNull()
 
         val nedetidSlutt = LocalDateTime.now().format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = null, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = null, nedetidSlutt = nedetidSlutt),
+            )
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse
@@ -41,9 +42,10 @@ internal class NedetidRessursTest {
     fun whenNedetidStarterOm15dager_ShouldReturnFalseAndNull() {
         val nedetidStart = LocalDateTime.now().plusDays(15).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(20).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -56,9 +58,10 @@ internal class NedetidRessursTest {
     fun whenNedetidStarterOm14dagerAnd1min_ShouldReturnFalseAndNull() {
         val nedetidStart = LocalDateTime.now().plusDays(14).plusMinutes(1).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(20).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -72,9 +75,10 @@ internal class NedetidRessursTest {
     fun whenNedetidStarterOm12dager_ShouldReturnPlanlagtNedetid() {
         val nedetidStart = LocalDateTime.now().plusDays(12).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(20).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -87,9 +91,10 @@ internal class NedetidRessursTest {
     fun whenNedetidStarterOm14dagerMinus1min_ShouldReturnPlanlagtNedetid() {
         val nedetidStart = LocalDateTime.now().plusDays(14).minusMinutes(1).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(20).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -103,9 +108,10 @@ internal class NedetidRessursTest {
     fun whenNedetidStartetfor1sekSiden_ShouldReturnNedetid() {
         val nedetidStart = LocalDateTime.now().minusSeconds(1).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(20).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isTrue
@@ -118,9 +124,10 @@ internal class NedetidRessursTest {
     fun whenMidtINedetid_ShouldReturnNedetid() {
         val nedetidStart = LocalDateTime.now().minusDays(5).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusDays(5).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isTrue
@@ -133,9 +140,10 @@ internal class NedetidRessursTest {
     fun whenNedetidSlutterOm1min_ShouldReturnNedetid() {
         val nedetidStart = LocalDateTime.now().minusDays(2).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().plusMinutes(1).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isTrue
@@ -151,9 +159,10 @@ internal class NedetidRessursTest {
     fun whenNedetidSluttetFor1sekSiden_ShouldReturnFalse() {
         val nedetidStart = LocalDateTime.now().minusDays(5).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().minusSeconds(1).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -166,9 +175,10 @@ internal class NedetidRessursTest {
     fun whenNedetidSluttetFor1ArSiden_ShouldReturnFalse() {
         val nedetidStart = LocalDateTime.now().minusDays(5).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().minusYears(1).plusDays(1).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -182,9 +192,10 @@ internal class NedetidRessursTest {
     fun whenSluttIsBeforeStart_ShouldReturnFalse() {
         val nedetidStart = LocalDateTime.now().plusDays(2).format(dateTimeFormatter)
         val nedetidSlutt = LocalDateTime.now().minusDays(1).format(dateTimeFormatter)
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = nedetidStart, nedetidSlutt = nedetidSlutt),
+            )
 
         val nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
@@ -195,27 +206,30 @@ internal class NedetidRessursTest {
 
     @Test
     fun whenPropertyIsNotInDateformat_ShouldReturnNullAndFalse() {
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = "noe", nedetidSlutt = null)
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = "noe", nedetidSlutt = null),
+            )
         var nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse
         assertThat(nedetidFrontend.nedetidSlutt).isNull()
         assertThat(nedetidFrontend.nedetidStart).isNull()
 
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = null, nedetidSlutt = "null")
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = null, nedetidSlutt = "null"),
+            )
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse
         assertThat(nedetidFrontend.nedetidSlutt).isNull()
         assertThat(nedetidFrontend.nedetidStart).isNull()
 
-        nedetidRessurs = NedetidRessurs(
-            NedetidService(nedetidStart = "", nedetidSlutt = "noe")
-        )
+        nedetidRessurs =
+            NedetidRessurs(
+                NedetidService(nedetidStart = "", nedetidSlutt = "noe"),
+            )
         nedetidFrontend = nedetidRessurs.hentNedetidInformasjon()
         assertThat(nedetidFrontend.isNedetid).isFalse
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse

@@ -9,11 +9,10 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class NoContentFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         filterChain.doFilter(request, response)
         if (response.contentType == null || response.contentType.equals("")) {

@@ -19,10 +19,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 internal class VedleggUtilsTest {
-
     @Test
     fun lagerFilnavn() {
         val uuid = UUID.fromString("5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99")
@@ -30,11 +29,12 @@ internal class VedleggUtilsTest {
         val filnavn = lagFilnavn("minfil.jpg", TikaFileType.JPEG, uuid)
         assertThat(filnavn).isEqualTo("minfil-$uuidFirstPart.jpg")
 
-        val truncate = lagFilnavn(
-            "etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
-            TikaFileType.JPEG,
-            uuid
-        )
+        val truncate =
+            lagFilnavn(
+                "etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
+                TikaFileType.JPEG,
+                uuid,
+            )
         assertThat(truncate).isEqualTo("etkjempelangtfilnavn123456789012345678901234567890-$uuidFirstPart.jpg")
 
         val medSpesialTegn = lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", TikaFileType.JPEG, uuid)
@@ -77,31 +77,33 @@ internal class VedleggUtilsTest {
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
         val vedleggType = OpplastetVedleggType("hei|på deg")
 
-        val soknadUnderArbeid = createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(vedleggType.type)
-                            .withTilleggsinfo(vedleggType.tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
+        val soknadUnderArbeid =
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        listOf(
+                            JsonVedlegg()
+                                .withType(vedleggType.type)
+                                .withTilleggsinfo(vedleggType.tilleggsinfo)
+                                .withStatus("VedleggKreves"),
+                        ),
+                    ),
+                ),
             )
-        )
         val vedlegg = finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid)
         assertThat(vedlegg.type).isEqualTo(soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0].type)
     }
 
     @Test
     fun `Kast exception hvis vedlegg ikke finnes`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    emptyList()
-                )
+        val soknadUnderArbeid =
+            createSoknadUnderArbeid(
+                JsonInternalSoknad().withVedlegg(
+                    JsonVedleggSpesifikasjon().withVedlegg(
+                        emptyList(),
+                    ),
+                ),
             )
-        )
         assertThatThrownBy { finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid) }
             .isInstanceOf(IkkeFunnetException::class.java)
             .hasMessageContaining("Dette vedlegget tilhører hei|på deg utgift som har blitt tatt bort fra søknaden.")
@@ -130,7 +132,7 @@ internal class VedleggUtilsTest {
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 }
