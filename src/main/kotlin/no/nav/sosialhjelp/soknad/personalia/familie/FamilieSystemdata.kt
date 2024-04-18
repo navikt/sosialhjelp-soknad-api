@@ -34,8 +34,6 @@ class FamilieSystemdata(
         if (systemverdiSivilstatus != null || familie.sivilstatus == null || familie.sivilstatus.kilde == JsonKilde.SYSTEM) {
             familie.sivilstatus = systemverdiSivilstatus
             v2AdapterService.addEktefelle(soknadUnderArbeid.behandlingsId, systemverdiSivilstatus)
-
-//            TODO ny modell addEktefelle
         }
 
         val forsorgerplikt = familie.forsorgerplikt
