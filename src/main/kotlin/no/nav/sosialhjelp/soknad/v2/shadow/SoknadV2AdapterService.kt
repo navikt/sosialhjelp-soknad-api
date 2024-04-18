@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -25,7 +28,8 @@ class SoknadV2AdapterService(
     private val livssituasjonService: LivssituasjonService,
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService
+    private val eierService: EierService,
+    private val familieService: FamilieService
 ) : V2AdapterService {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -111,6 +115,17 @@ class SoknadV2AdapterService(
         }
             .onFailure { log.error("NyModell: Kunne ikke slette Soknad V2") }
     }
+
+    override fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus?) {
+       log.info("NyModell: Legger til systemdata for ektefelle")
+
+        systemverdiSivilstatus?.let {
+            kotlin.runCatching {
+                familieService.addEktefelle(UUID.fromString(behandlingsId), it.toV2Ektefelle())
+            }
+                .onFailure { log.error("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
+        }
+    }
 }
 
 private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
@@ -123,5 +138,21 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
         ),
         statsborgerskap = this.statsborgerskap.verdi,
         nordiskBorger = this.nordiskBorger.verdi
+    )
+}
+
+private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
+    return Ektefelle(
+        navn = Navn(
+            fornavn = this.ektefelle.navn.fornavn,
+            mellomnavn = this.ektefelle.navn.mellomnavn,
+            etternavn = this.ektefelle.navn.etternavn
+        ),
+
+        fodselsdato = this.ektefelle.fodselsdato,
+        personId = this.ektefelle.personIdentifikator,
+        folkeregistrertMedEktefelle = this.folkeregistrertMedEktefelle,
+        borSammen = this.borSammenMed,
+        kildeErSystem = true
     )
 }

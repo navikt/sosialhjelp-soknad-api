@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
@@ -13,4 +14,5 @@ interface V2AdapterService {
     fun updateEier(soknadId: String, personalia: JsonPersonalia)
     fun setInnsendingstidspunkt(soknadId: String, innsendingsTidspunkt: LocalDateTime)
     fun slettSoknad(behandlingsId: String)
+    fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus?)
 }

@@ -15,12 +15,14 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.apache.commons.lang3.StringUtils.isEmpty
 import org.springframework.stereotype.Component
 
 @Component
 class FamilieSystemdata(
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val v2AdapterService: V2AdapterService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -31,6 +33,9 @@ class FamilieSystemdata(
 
         if (systemverdiSivilstatus != null || familie.sivilstatus == null || familie.sivilstatus.kilde == JsonKilde.SYSTEM) {
             familie.sivilstatus = systemverdiSivilstatus
+            v2AdapterService.addEktefelle(soknadUnderArbeid.behandlingsId, systemverdiSivilstatus)
+
+//            TODO ny modell addEktefelle
         }
 
         val forsorgerplikt = familie.forsorgerplikt
@@ -46,6 +51,8 @@ class FamilieSystemdata(
                 ansvarList.addAll(
                     systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) }
                 )
+//                TODO ny modell addBarn
+                forsorgerplikt.ansvar = ansvarList
             } else {
                 forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
             }
@@ -53,6 +60,7 @@ class FamilieSystemdata(
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt
             forsorgerplikt.barnebidrag = null
             forsorgerplikt.ansvar = ArrayList()
+//            TODO må vi sette tomme verdier i ny modell ogse?
         }
     }
 

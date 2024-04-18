@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -37,7 +38,8 @@ internal class FamilieSystemdataTest {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     private val personService: PersonService = mockk()
-    private val familieSystemdata = FamilieSystemdata(personService)
+    private val v2AdapterService: V2AdapterService = mockk()
+    private val familieSystemdata = FamilieSystemdata(personService, v2AdapterService)
 
     @Test
     fun skalSetteSivilstatusGiftMedEktefelle() {
