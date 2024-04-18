@@ -17,11 +17,10 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue
 
 class AndreInntekter {
-
     fun getAvsnitt(opplysninger: JsonOkonomiopplysninger): Avsnitt {
         return Avsnitt(
             tittel = "inntekt.inntekter.titel",
-            sporsmal = andreInntekterSporsmal(opplysninger)
+            sporsmal = andreInntekterSporsmal(opplysninger),
         )
     }
 
@@ -34,8 +33,17 @@ class AndreInntekter {
             Sporsmal(
                 tittel = "inntekt.inntekter.sporsmal",
                 erUtfylt = harUtfyltAndreInntekterSporsmal,
-                felt = if (harUtfyltAndreInntekterSporsmal) booleanVerdiFelt(harSvartJaAndreInntekter, "inntekt.inntekter.true", "inntekt.inntekter.false") else null
-            )
+                felt =
+                    if (harUtfyltAndreInntekterSporsmal) {
+                        booleanVerdiFelt(
+                            harSvartJaAndreInntekter,
+                            "inntekt.inntekter.true",
+                            "inntekt.inntekter.false",
+                        )
+                    } else {
+                        null
+                    },
+            ),
         )
         if (harSvartJaAndreInntekter) {
             val harSvartHvaHarDuMottattSporsmal = opplysninger.utbetaling.any { utbetalingTyper.contains(it.type) }
@@ -43,8 +51,8 @@ class AndreInntekter {
                 Sporsmal(
                     tittel = "inntekt.inntekter.true.type.sporsmal",
                     erUtfylt = harSvartHvaHarDuMottattSporsmal,
-                    felt = if (harSvartHvaHarDuMottattSporsmal) andreinntekterFelter(opplysninger) else null
-                )
+                    felt = if (harSvartHvaHarDuMottattSporsmal) andreinntekterFelter(opplysninger) else null,
+                ),
             )
             if (sporsmal[1].containsFeltWithSvar("json.okonomi.opplysninger.inntekt.inntekter.annet")) {
                 val beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet
@@ -54,19 +62,20 @@ class AndreInntekter {
                     Sporsmal(
                         tittel = "inntekt.inntekter.true.type.annet",
                         erUtfylt = harUtfyltAnnetFelt,
-                        felt = beskrivelseAvAnnet?.let {
-                            if (harUtfyltAnnetFelt) {
-                                listOf(
-                                    Felt(
-                                        type = Type.TEKST,
-                                        svar = createSvar(it.utbetaling, SvarType.TEKST)
+                        felt =
+                            beskrivelseAvAnnet?.let {
+                                if (harUtfyltAnnetFelt) {
+                                    listOf(
+                                        Felt(
+                                            type = Type.TEKST,
+                                            svar = createSvar(it.utbetaling, SvarType.TEKST),
+                                        ),
                                     )
-                                )
-                            } else {
-                                null
-                            }
-                        }
-                    )
+                                } else {
+                                    null
+                                }
+                            },
+                    ),
                 )
             }
         }
@@ -79,25 +88,25 @@ class AndreInntekter {
             opplysninger,
             felter,
             UTBETALING_UTBYTTE,
-            "json.okonomi.opplysninger.inntekt.inntekter.utbytte"
+            "json.okonomi.opplysninger.inntekt.inntekter.utbytte",
         )
         addUtbetalingIfPresent(
             opplysninger,
             felter,
             UTBETALING_SALG,
-            "json.okonomi.opplysninger.inntekt.inntekter.salg"
+            "json.okonomi.opplysninger.inntekt.inntekter.salg",
         )
         addUtbetalingIfPresent(
             opplysninger,
             felter,
             UTBETALING_FORSIKRING,
-            "json.okonomi.opplysninger.inntekt.inntekter.forsikringsutbetalinger"
+            "json.okonomi.opplysninger.inntekt.inntekter.forsikringsutbetalinger",
         )
         addUtbetalingIfPresent(
             opplysninger,
             felter,
             UTBETALING_ANNET,
-            "json.okonomi.opplysninger.inntekt.inntekter.annet"
+            "json.okonomi.opplysninger.inntekt.inntekter.annet",
         )
         return felter
     }
@@ -106,14 +115,14 @@ class AndreInntekter {
         opplysninger: JsonOkonomiopplysninger,
         felter: MutableList<Felt>,
         type: String,
-        key: String
+        key: String,
     ) {
         opplysninger.utbetaling.firstOrNull { type == it.type }?.let {
             felter.add(
                 Felt(
                     type = Type.CHECKBOX,
-                    svar = createSvar(key, SvarType.LOCALE_TEKST)
-                )
+                    svar = createSvar(key, SvarType.LOCALE_TEKST),
+                ),
             )
         }
     }

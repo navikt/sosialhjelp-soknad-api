@@ -7,27 +7,36 @@ import java.util.Locale
 import java.util.Properties
 
 open class NavMessageSource : ReloadableResourceBundleMessageSource() {
-
     private val basenames: MutableMap<String, String> = HashMap()
     private var fellesBasename: String? = null
 
-    fun getBundleFor(type: String?, locale: Locale): Properties {
+    fun getBundleFor(
+        type: String?,
+        locale: Locale,
+    ): Properties {
         return if (basenames.containsKey(type)) {
             val properties = Properties()
             try {
                 properties.putAll(hentProperties(fellesBasename, locale))
                 properties.putAll(hentProperties(basenames[type], locale))
             } catch (ex: Exception) {
-                log.error("Kunne ikke hente bundle for type=[$type], locale=[$locale], basenames=[$basenames], fellesbasenames=[$fellesBasename]")
+                log.error(
+                    "Kunne ikke hente bundle for type=[$type], locale=[$locale], basenames=[$basenames], fellesbasenames=[$fellesBasename]",
+                )
                 throw ex
             }
             properties
         } else {
-            getMergedProperties(locale).properties ?: throw SosialhjelpSoknadApiException("Noe feilet ved henting av tekster for locale=$locale")
+            getMergedProperties(
+                locale,
+            ).properties ?: throw SosialhjelpSoknadApiException("Noe feilet ved henting av tekster for locale=$locale")
         }
     }
 
-    private fun hentProperties(propertiesFile: String?, locale: Locale): Properties {
+    private fun hentProperties(
+        propertiesFile: String?,
+        locale: Locale,
+    ): Properties {
         val localFile = calculateFilenameForLocale(propertiesFile, locale)
         val properties = getProperties(localFile).properties
         return if (properties != null) {
@@ -43,11 +52,17 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
         }
     }
 
-    private fun calculateFilenameForLocale(type: String?, locale: Locale): String {
+    private fun calculateFilenameForLocale(
+        type: String?,
+        locale: Locale,
+    ): String {
         return type + "_" + locale.language + if ("" == locale.country) "" else "_" + locale.country
     }
 
-    fun setBasenames(fellesBundle: Bundle, vararg soknadBundles: Bundle) {
+    fun setBasenames(
+        fellesBundle: Bundle,
+        vararg soknadBundles: Bundle,
+    ) {
         fellesBasename = fellesBundle.propertiesFile
         val basenameStrings: MutableList<String?> = ArrayList()
         basenameStrings.add(fellesBasename)

@@ -27,19 +27,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/inntekt/utbetalinger", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
-    fun hentUtbetalinger(@PathVariable("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
+    fun hentUtbetalinger(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
 
         if (opplysninger.bekreftelse == null) {
@@ -52,50 +59,57 @@ class UtbetalingRessurs(
             forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
             annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
             beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
+            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
         )
     }
 
     @PutMapping
     fun updateUtbetalinger(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody utbetalingerFrontend: UtbetalingerFrontend
+        @RequestBody utbetalingerFrontend: UtbetalingerFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
 
         setBekreftelse(
             opplysninger,
             BEKREFTELSE_UTBETALING,
             utbetalingerFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.inntekter")
+            textService.getJsonOkonomiTittel("inntekt.inntekter"),
         )
         setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun setUtbetalinger(utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>, utbetalingerFrontend: UtbetalingerFrontend) {
+    private fun setUtbetalinger(
+        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
+        utbetalingerFrontend: UtbetalingerFrontend,
+    ) {
         listOf(
             UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
             UTBETALING_SALG to utbetalingerFrontend.salg,
             UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
-            UTBETALING_ANNET to utbetalingerFrontend.annet
+            UTBETALING_ANNET to utbetalingerFrontend.annet,
         ).map { (utbetalingJsonType, isChecked) ->
             addUtbetalingIfCheckedElseDeleteInOpplysninger(
                 utbetalinger,
                 utbetalingJsonType,
                 textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
-                isChecked
+                isChecked,
             )
         }
     }
 
-    private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
+    private fun setBeskrivelseAvAnnet(
+        opplysninger: JsonOkonomiopplysninger,
+        utbetalingerFrontend: UtbetalingerFrontend,
+    ) {
         if (opplysninger.beskrivelseAvAnnet == null) {
             opplysninger.withBeskrivelseAvAnnet(
                 JsonOkonomibeskrivelserAvAnnet()
@@ -104,14 +118,17 @@ class UtbetalingRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         // TODO Er dette eneste vi fyller ut av denne? Er den nødvendig ref. beskrivelse på Json-objektet?
         opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
     }
 
-    private fun hasUtbetalingType(opplysninger: JsonOkonomiopplysninger, type: String): Boolean {
+    private fun hasUtbetalingType(
+        opplysninger: JsonOkonomiopplysninger,
+        type: String,
+    ): Boolean {
         return opplysninger.utbetaling.any { it.type == type }
     }
 
@@ -126,6 +143,6 @@ class UtbetalingRessurs(
         var forsikring: Boolean = false,
         var annet: Boolean = false,
         var beskrivelseAvAnnet: String? = null,
-        var utbetalingerFraNavFeilet: Boolean? = null
+        var utbetalingerFraNavFeilet: Boolean? = null,
     )
 }

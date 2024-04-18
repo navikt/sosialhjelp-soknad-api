@@ -6,19 +6,19 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 
 data class AdressesokDataDto(
-    val sokAdresse: AdressesokResultDto?
+    val sokAdresse: AdressesokResultDto?,
 )
 
 data class AdressesokResultDto(
     val hits: List<AdressesokHitDto>?,
     val pageNumber: Int,
     val totalPages: Int,
-    val totalHits: Int
+    val totalHits: Int,
 )
 
 data class AdressesokHitDto(
     val vegadresse: VegadresseDto,
-    val score: Float
+    val score: Float,
 )
 
 data class VegadresseDto(
@@ -30,7 +30,7 @@ data class VegadresseDto(
     val kommunenummer: String?,
     val postnummer: String?,
     val poststed: String?,
-    val bydelsnummer: String?
+    val bydelsnummer: String?,
 ) {
     fun toAdresseForslag(): AdresseForslag {
         return AdresseForslag(
@@ -42,7 +42,7 @@ data class VegadresseDto(
             postnummer = postnummer,
             poststed = poststed,
             geografiskTilknytning = bydelsnummerOrKommunenummer,
-            type = AdresseForslagType.GATEADRESSE
+            type = AdresseForslagType.GATEADRESSE,
         )
     }
 

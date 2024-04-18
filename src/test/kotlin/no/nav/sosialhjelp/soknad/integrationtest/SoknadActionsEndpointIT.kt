@@ -16,13 +16,12 @@ import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
 @ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class SoknadActionsEndpointIT {
-
     companion object {
         private const val BRUKER = "11111111111"
         private const val ANNEN_BRUKER = "22222222222"

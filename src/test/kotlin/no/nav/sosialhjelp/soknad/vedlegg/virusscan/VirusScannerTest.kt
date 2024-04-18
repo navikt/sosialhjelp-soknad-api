@@ -20,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
 class VirusScannerTest {
-
     private val mockWebServer = MockWebServer()
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
     private val enabled = true
@@ -49,7 +48,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND)))),
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
@@ -80,10 +79,10 @@ class VirusScannerTest {
                     redisObjectMapper.writeValueAsString(
                         arrayOf(
                             ScanResult("test", Result.FOUND),
-                            ScanResult("test", Result.FOUND)
-                        )
-                    )
-                )
+                            ScanResult("test", Result.FOUND),
+                        ),
+                    ),
+                ),
         )
         assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "png") }
             .doesNotThrowAnyException()
@@ -95,7 +94,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.OK))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.OK)))),
         )
         assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "jpg") }
             .doesNotThrowAnyException()
@@ -107,7 +106,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND)))),
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
@@ -119,7 +118,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.ERROR))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.ERROR)))),
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }

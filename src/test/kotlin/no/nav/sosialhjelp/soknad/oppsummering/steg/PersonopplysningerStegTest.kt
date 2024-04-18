@@ -21,21 +21,21 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class PersonopplysningerStegTest {
-
     private val steg = PersonopplysningerSteg()
 
     private val navnUtenMellomnavn = JsonSokernavn().withFornavn("fornavn").withEtternavn("etternavn")
     private val navnMedMellomnavn = JsonSokernavn().withFornavn("fornavn").withMellomnavn("mellomnavn").withEtternavn("etternavn")
     private val kontonummerSystemdata = JsonKontonummer().withVerdi("12345678901").withKilde(JsonKilde.SYSTEM)
     private val telefonnummerSystemdata = JsonTelefonnummer().withVerdi("+4712345678").withKilde(JsonKilde.SYSTEM)
-    private val folkeregGateadresse = JsonGateAdresse()
-        .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
-        .withType(JsonAdresse.Type.GATEADRESSE)
-        .withGatenavn("gate")
-        .withHusnummer("1")
-        .withHusbokstav("B")
-        .withPostnummer("0123")
-        .withPoststed("poststed")
+    private val folkeregGateadresse =
+        JsonGateAdresse()
+            .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+            .withType(JsonAdresse.Type.GATEADRESSE)
+            .withGatenavn("gate")
+            .withHusnummer("1")
+            .withHusbokstav("B")
+            .withPostnummer("0123")
+            .withPoststed("poststed")
 
     @Test
     fun personalia_navnUtenMellomnavn() {
@@ -89,11 +89,12 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun folkeregistrertMatrikkeladresse() {
-        val folkeregMatrikkeladresse = JsonMatrikkelAdresse()
-            .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
-            .withType(JsonAdresse.Type.MATRIKKELADRESSE)
-            .withBruksnummer("bruksnummer")
-            .withKommunenummer("kommunenr")
+        val folkeregMatrikkeladresse =
+            JsonMatrikkelAdresse()
+                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+                .withType(JsonAdresse.Type.MATRIKKELADRESSE)
+                .withBruksnummer("bruksnummer")
+                .withKommunenummer("kommunenr")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregMatrikkeladresse)
 
         val res = steg.get(soknad)
@@ -112,13 +113,14 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun midlertidigGateadresse() {
-        val midlertidigGateadresse = JsonGateAdresse()
-            .withAdresseValg(JsonAdresseValg.MIDLERTIDIG)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withGatenavn("gate")
-            .withHusnummer("1")
-            .withPostnummer("0123")
-            .withPoststed("poststed")
+        val midlertidigGateadresse =
+            JsonGateAdresse()
+                .withAdresseValg(JsonAdresseValg.MIDLERTIDIG)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withGatenavn("gate")
+                .withHusnummer("1")
+                .withPostnummer("0123")
+                .withPoststed("poststed")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, midlertidigGateadresse)
 
         val res = steg.get(soknad)
@@ -137,13 +139,14 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun adressesokGateadresse() {
-        val adressesokGateadresse = JsonGateAdresse()
-            .withAdresseValg(JsonAdresseValg.SOKNAD)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withGatenavn("gate")
-            .withHusnummer("1")
-            .withPostnummer("0123")
-            .withPoststed("poststed")
+        val adressesokGateadresse =
+            JsonGateAdresse()
+                .withAdresseValg(JsonAdresseValg.SOKNAD)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withGatenavn("gate")
+                .withHusnummer("1")
+                .withPostnummer("0123")
+                .withPoststed("poststed")
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, adressesokGateadresse)
 
         val res = steg.get(soknad)
@@ -178,9 +181,10 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun telefonnummerBrukerUtfylt() {
-        val telefonnummerBruker = JsonTelefonnummer()
-            .withVerdi("+4712345678")
-            .withKilde(JsonKilde.BRUKER)
+        val telefonnummerBruker =
+            JsonTelefonnummer()
+                .withVerdi("+4712345678")
+                .withKilde(JsonKilde.BRUKER)
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerBruker, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -228,9 +232,10 @@ internal class PersonopplysningerStegTest {
 
     @Test
     fun kontonummerBrukerUtfylt() {
-        val kontonummerBruker = JsonKontonummer()
-            .withVerdi("22222222222")
-            .withKilde(JsonKilde.BRUKER)
+        val kontonummerBruker =
+            JsonKontonummer()
+                .withVerdi("22222222222")
+                .withKilde(JsonKilde.BRUKER)
         val soknad = createSoknad(navnUtenMellomnavn, kontonummerBruker, telefonnummerSystemdata, folkeregGateadresse)
 
         val res = steg.get(soknad)
@@ -274,7 +279,12 @@ internal class PersonopplysningerStegTest {
         assertThat(kontonummerSporsmal.felt).isNull()
     }
 
-    private fun createSoknad(navn: JsonSokernavn, kontonummer: JsonKontonummer, telefonnummer: JsonTelefonnummer, oppholdsadresse: JsonAdresse): JsonInternalSoknad {
+    private fun createSoknad(
+        navn: JsonSokernavn,
+        kontonummer: JsonKontonummer,
+        telefonnummer: JsonTelefonnummer,
+        oppholdsadresse: JsonAdresse,
+    ): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()
@@ -287,9 +297,9 @@ internal class PersonopplysningerStegTest {
                                     .withStatsborgerskap(JsonStatsborgerskap().withVerdi("NOR"))
                                     .withKontonummer(kontonummer)
                                     .withTelefonnummer(telefonnummer)
-                                    .withOppholdsadresse(oppholdsadresse)
-                            )
-                    )
+                                    .withOppholdsadresse(oppholdsadresse),
+                            ),
+                    ),
             )
     }
 }

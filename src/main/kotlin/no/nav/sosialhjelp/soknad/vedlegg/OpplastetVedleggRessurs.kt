@@ -28,16 +28,19 @@ import org.springframework.web.multipart.MultipartFile
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
-
     @GetMapping("/{vedleggId}/fil")
     @Operation(operationId = "getVedleggFilSvarut", summary = "Henter et gitt vedlegg (kun SVARUT)")
     @ApiResponse(
@@ -46,14 +49,14 @@ class OpplastetVedleggRessurs(
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-                schema = Schema(type = "string", format = "binary")
-            )
-        ]
+                schema = Schema(type = "string", format = "binary"),
+            ),
+        ],
     )
     @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("vedleggId") vedleggId: String,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
@@ -74,15 +77,15 @@ class OpplastetVedleggRessurs(
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-                schema = Schema(type = "string", format = "binary")
-            )
-        ]
+                schema = Schema(type = "string", format = "binary"),
+            ),
+        ],
     )
     @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
     fun getVedleggFil(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
@@ -111,7 +114,7 @@ class OpplastetVedleggRessurs(
     fun saveVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("type") vedleggstype: String,
-        @RequestParam("file") fil: MultipartFile
+        @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
@@ -137,7 +140,7 @@ class OpplastetVedleggRessurs(
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
     fun deleteVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @PathVariable("vedleggId") vedleggId: String
+        @PathVariable("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val erMellomlagret = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(behandlingsId)

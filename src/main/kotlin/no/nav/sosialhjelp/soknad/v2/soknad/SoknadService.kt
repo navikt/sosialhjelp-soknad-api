@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 @Service
 @Transactional
 class SoknadService(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
-    private val sendSoknadHandler: SendSoknadHandler
+    private val sendSoknadHandler: SendSoknadHandler,
 ) {
     @Transactional(readOnly = true)
     fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
@@ -24,12 +24,12 @@ class SoknadService(
     fun createSoknad(
         eierId: String,
         soknadId: UUID? = null,
-        opprettetDato: LocalDateTime? = null
+        opprettetDato: LocalDateTime? = null,
     ): UUID {
         return Soknad(
             id = soknadId ?: UUID.randomUUID(),
             tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-            eierPersonId = eierId
+            eierPersonId = eierId,
         )
             .let { soknadRepository.save(it) }
             .id
@@ -43,19 +43,23 @@ class SoknadService(
     }
 
     fun sendSoknad(id: UUID): UUID {
-        val digisosId: UUID = getSoknadOrThrowException(id).run {
-            tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-            soknadRepository.save(this)
+        val digisosId: UUID =
+            getSoknadOrThrowException(id).run {
+                tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+                soknadRepository.save(this)
 
-            sendSoknadHandler.doSendAndReturnDigisosId(this)
-        }
+                sendSoknadHandler.doSendAndReturnDigisosId(this)
+            }
         log.info("Sletter innsendt Soknad $id")
         soknadRepository.deleteById(id)
 
         return digisosId
     }
 
-    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Begrunnelse {
+    fun updateBegrunnelse(
+        soknadId: UUID,
+        begrunnelse: Begrunnelse,
+    ): Begrunnelse {
         return getSoknadOrThrowException(soknadId).run {
             copy(begrunnelse = begrunnelse)
                 .also { soknadRepository.save(it) }
@@ -70,7 +74,7 @@ class SoknadService(
 
     fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     ) {
         soknadRepository.findByIdOrNull(soknadId)
             ?.run {

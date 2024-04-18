@@ -33,44 +33,45 @@ class DokumentlagerClient(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
     private var cachedPublicKey: X509Certificate? = null
 
-    private val fiksWebClient = webClientBuilder
-        .baseUrl(digisosApiEndpoint)
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+    private val fiksWebClient =
+        webClientBuilder
+            .baseUrl(digisosApiEndpoint)
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    proxiedHttpClient
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                        .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+                ),
             )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
-            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
-        }
-        .filter(mdcExchangeFilter)
-        .build()
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
+            }
+            .filter(mdcExchangeFilter)
+            .build()
 
     fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
         cachedPublicKey?.let { return it }
 
-        val publicKey = fiksWebClient.get()
-            .uri("/digisos/api/v1/dokumentlager-public-key")
-            .header(ACCEPT, MediaType.ALL_VALUE)
-            .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-            .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .retrieve()
-            .bodyToMono<ByteArray>()
-            .onErrorMap(WebClientResponseException::class.java) { e ->
-                log.warn("Fiks - getDokumentlagerPublicKey feilet - ${e.statusCode} ${e.statusText}", e)
-                TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e)
-            }
-            .block()
+        val publicKey =
+            fiksWebClient.get()
+                .uri("/digisos/api/v1/dokumentlager-public-key")
+                .header(ACCEPT, MediaType.ALL_VALUE)
+                .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+                .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+                .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
+                .retrieve()
+                .bodyToMono<ByteArray>()
+                .onErrorMap(WebClientResponseException::class.java) { e ->
+                    log.warn("Fiks - getDokumentlagerPublicKey feilet - ${e.statusCode} ${e.statusText}", e)
+                    TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e)
+                }
+                .block()
 
         log.info("Hentet public key for dokumentlager")
 

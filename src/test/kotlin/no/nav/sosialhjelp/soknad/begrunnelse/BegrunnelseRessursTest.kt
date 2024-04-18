@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BegrunnelseRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
@@ -109,17 +108,21 @@ internal class BegrunnelseRessursTest {
         verify { soknadUnderArbeidRepository wasNot called }
     }
 
-    private fun createJsonInternalSoknadWithBegrunnelse(hvaSokesOm: String, hvorforSoke: String): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "behandlingsid",
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+    private fun createJsonInternalSoknadWithBegrunnelse(
+        hvaSokesOm: String,
+        hvorforSoke: String,
+    ): SoknadUnderArbeid {
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)
             .withHvorforSoke(hvorforSoke)

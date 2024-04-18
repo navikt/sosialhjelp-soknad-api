@@ -25,13 +25,14 @@ internal class SlettForeldedeMetadataSchedulerTest {
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
     private val oppgaveRepository: OppgaveRepository = mockk()
 
-    private val scheduler = SlettForeldedeMetadataScheduler(
-        leaderElection,
-        batchSoknadMetadataRepository,
-        oppgaveRepository,
-        batchEnabled = true,
-        schedulerDisabled = false
-    )
+    private val scheduler =
+        SlettForeldedeMetadataScheduler(
+            leaderElection,
+            batchSoknadMetadataRepository,
+            oppgaveRepository,
+            batchEnabled = true,
+            schedulerDisabled = false,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -91,7 +92,7 @@ internal class SlettForeldedeMetadataSchedulerTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
@@ -102,11 +103,14 @@ internal class SlettForeldedeMetadataSchedulerTest {
             status = status,
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
         )
     }
 
-    private fun oppgave(behandlingsId: String, dagerSiden: Int): Oppgave {
+    private fun oppgave(
+        behandlingsId: String,
+        dagerSiden: Int,
+    ): Oppgave {
         return Oppgave(
             id = 1L,
             behandlingsId = behandlingsId,
@@ -116,7 +120,7 @@ internal class SlettForeldedeMetadataSchedulerTest {
             opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             nesteForsok = null,
-            retries = 0
+            retries = 0,
         )
     }
 

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.mdc
 
-/* Copy from modig-log-common */
+// Copy from modig-log-common
 
 import org.slf4j.MDC
 import java.security.SecureRandom
@@ -25,7 +25,10 @@ object MdcOperations {
         return MDC.get(key)
     }
 
-    fun putToMDC(key: String?, value: String?) {
+    fun putToMDC(
+        key: String?,
+        value: String?,
+    ) {
         MDC.put(key, value)
     }
 

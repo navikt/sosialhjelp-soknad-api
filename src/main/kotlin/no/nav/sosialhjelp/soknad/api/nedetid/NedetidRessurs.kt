@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController
 @Unprotected
 @RequestMapping("/nedetid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class NedetidRessurs(
-    private val nedetidService: NedetidService
+    private val nedetidService: NedetidService,
 ) {
-
     @GetMapping
     fun hentNedetidInformasjon(): NedetidFrontend {
         return NedetidFrontend(
@@ -24,7 +23,7 @@ class NedetidRessurs(
             nedetidStartText = nedetidService.nedetidStartAsHumanReadable,
             nedetidSluttText = nedetidService.nedetidSluttAsHumanReadable,
             nedetidStartTextEn = nedetidService.nedetidStartAsHumanReadableEn,
-            nedetidSluttTextEn = nedetidService.nedetidSluttAsHumanReadableEn
+            nedetidSluttTextEn = nedetidService.nedetidSluttAsHumanReadableEn,
         )
     }
 }

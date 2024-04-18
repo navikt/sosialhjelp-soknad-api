@@ -32,25 +32,28 @@ class AaregClient(
     @Value("\${aareg_url}") private val aaregUrl: String,
     @Value("\${aareg_audience}") private val aaregAudience: String,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
-    private val arbeidsforholdMapper: ObjectMapper = jacksonObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .registerModule(JavaTimeModule())
+    private val arbeidsforholdMapper: ObjectMapper =
+        jacksonObjectMapper()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(JavaTimeModule())
 
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
-    private val tokenxToken: String get() = runBlocking {
-        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), aaregAudience)
-    }
-
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder)
-        .baseUrl(aaregUrl)
-        .codecs {
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(arbeidsforholdMapper))
+    private val tokenxToken: String get() =
+        runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), aaregAudience)
         }
-        .build()
+
+    private val webClient =
+        unproxiedWebClientBuilder(webClientBuilder)
+            .baseUrl(aaregUrl)
+            .codecs {
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(arbeidsforholdMapper))
+            }
+            .build()
 
     private val queryParamsPart = "?sporingsinformasjon={sporingsinformasjon}&regelverk={regelverk}&ansettelsesperiodeFom={fom}&ansettelsesperiodeTom={tom}"
 
@@ -104,7 +107,7 @@ class AaregClient(
 
     data class Sokeperiode(
         private val fomDate: LocalDate,
-        private val tomDate: LocalDate
+        private val tomDate: LocalDate,
     ) {
         val fom: String get() = fomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
         val tom: String get() = tomDate.format(DateTimeFormatter.ISO_LOCAL_DATE)

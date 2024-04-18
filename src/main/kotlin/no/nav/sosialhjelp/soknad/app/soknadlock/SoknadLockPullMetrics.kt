@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 @Suppress("unused")
 class SoknadLockPullMetrics(
     private val meterRegistry: MeterRegistry,
-    private val lockManager: SoknadLockManager
+    private val lockManager: SoknadLockManager,
 ) {
     private val metricsGauges = mutableListOf<Gauge>()
 
@@ -23,13 +23,13 @@ class SoknadLockPullMetrics(
         metricsGauges.add(
             Gauge.builder("soknad_lock_map_size") { lockManager.getLockMapSize().toDouble() }
                 .description("Number of locks in the lock map")
-                .register(meterRegistry)
+                .register(meterRegistry),
         )
 
         metricsGauges.add(
             Gauge.builder("soknad_lock_held_count") { lockManager.getNumLocks().toDouble() }
                 .description("Number of locks currently held")
-                .register(meterRegistry)
+                .register(meterRegistry),
         )
     }
 }

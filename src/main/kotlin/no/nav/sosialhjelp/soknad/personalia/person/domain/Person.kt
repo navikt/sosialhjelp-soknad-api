@@ -9,5 +9,5 @@ data class Person(
     val statsborgerskap: List<String>?,
     var ektefelle: Ektefelle?,
     val bostedsadresse: Bostedsadresse?,
-    val oppholdsadresse: Oppholdsadresse?
+    val oppholdsadresse: Oppholdsadresse?,
 )

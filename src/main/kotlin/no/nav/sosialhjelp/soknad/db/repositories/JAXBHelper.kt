@@ -9,12 +9,12 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
 class JAXBHelper(vararg classes: Class<*>) {
-
-    private var context: JAXBContext = try {
-        JAXBContext.newInstance(*classes)
-    } catch (e: JAXBException) {
-        throw RuntimeException(e)
-    }
+    private var context: JAXBContext =
+        try {
+            JAXBContext.newInstance(*classes)
+        } catch (e: JAXBException) {
+            throw RuntimeException(e)
+        }
 
     fun marshal(jaxbelement: Any?): String {
         return try {
@@ -29,7 +29,10 @@ class JAXBHelper(vararg classes: Class<*>) {
         }
     }
 
-    fun <T> unmarshal(melding: String?, elementClass: Class<T>): T {
+    fun <T> unmarshal(
+        melding: String?,
+        elementClass: Class<T>,
+    ): T {
         return try {
             val value = context.createUnmarshaller().unmarshal(StreamSource(StringReader(melding)), elementClass)
             value.value

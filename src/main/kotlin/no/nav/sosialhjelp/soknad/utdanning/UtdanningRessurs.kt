@@ -19,22 +19,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/utdanning", produces = [APPLICATION_JSON_VALUE])
 class UtdanningRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: ControllerAdapter
+    private val controllerAdapter: ControllerAdapter,
 ) {
-
     @GetMapping
     fun hentUtdanning(
-        @PathVariable("behandlingsId") behandlingsId: String
+        @PathVariable("behandlingsId") behandlingsId: String,
     ): UtdanningFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val utdanning = soknad.soknad.data.utdanning
         return UtdanningFrontend(utdanning.erStudent, toStudentgradErHeltid(utdanning.studentgrad))
     }
@@ -42,13 +46,14 @@ class UtdanningRessurs(
     @PutMapping
     fun updateUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody utdanningFrontend: UtdanningFrontend
+        @RequestBody utdanningFrontend: UtdanningFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val utdanning = jsonInternalSoknad.soknad.data.utdanning
         val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
         utdanning.kilde = JsonKilde.BRUKER
@@ -91,5 +96,5 @@ data class UtdanningFrontend(
     @Schema(nullable = true)
     var erStudent: Boolean?,
     @Schema(nullable = true)
-    var studengradErHeltid: Boolean?
+    var studengradErHeltid: Boolean?,
 )

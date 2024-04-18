@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 data class BostotteDto(
     val saker: List<SakDto>?,
-    val utbetalinger: List<UtbetalingDto>?
+    val utbetalinger: List<UtbetalingDto>?,
 ) {
     fun toDomain(): Bostotte {
         return Bostotte(
@@ -21,7 +21,7 @@ data class BostotteDto(
                 ?.map { it.toDomain } ?: emptyList(),
             utbetalinger
                 ?.filter { it.rolle == BostotteRolle.HOVEDPERSON }
-                ?.map { it.toDomain } ?: emptyList()
+                ?.map { it.toDomain } ?: emptyList(),
         )
     }
 }
@@ -31,7 +31,7 @@ data class SakDto(
     val ar: Int,
     val status: BostotteStatus,
     val vedtak: VedtakDto?,
-    val rolle: BostotteRolle
+    val rolle: BostotteRolle,
 ) {
     val dato: LocalDate
         get() = LocalDate.of(ar, mnd, 1)
@@ -40,14 +40,14 @@ data class SakDto(
 data class VedtakDto(
     val kode: String,
     val beskrivelse: String,
-    val type: String
+    val type: String,
 )
 
 data class UtbetalingDto(
     val utbetalingsdato: LocalDate,
     val belop: BigDecimal,
     val mottaker: BostotteMottaker,
-    val rolle: BostotteRolle
+    val rolle: BostotteRolle,
 )
 
 val SakDto.toDomain: Sak

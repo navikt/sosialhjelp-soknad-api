@@ -14,7 +14,7 @@ object OkonomiskeOpplysningerOgVedlegg {
         pdfUtils: PdfUtils,
         okonomi: JsonOkonomi,
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         val utgifterBarnAlternativer: MutableList<String> = ArrayList(5)
         utgifterBarnAlternativer.add("barnFritidsaktiviteter")
@@ -40,7 +40,7 @@ object OkonomiskeOpplysningerOgVedlegg {
                     pdf,
                     "opplysninger.informasjon.avsnitt1",
                     "opplysninger.informasjon.avsnitt2",
-                    "opplysninger.informasjon.lenke"
+                    "opplysninger.informasjon.lenke",
                 )
                 skrivOkonomiskeOpplysningerModal(pdf, pdfUtils)
             } else {
@@ -48,7 +48,7 @@ object OkonomiskeOpplysningerOgVedlegg {
                     pdf,
                     "opplysninger.ikkebesvart.avsnitt1",
                     "opplysninger.ikkebesvart.avsnitt2",
-                    "opplysninger.informasjon.lenke"
+                    "opplysninger.informasjon.lenke",
                 )
                 skrivOkonomiskeOpplysningerModal(pdf, pdfUtils)
             }
@@ -64,14 +64,14 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     inntekt.netto,
-                    "opplysninger.arbeid.student.utbetaling.label"
+                    "opplysninger.arbeid.student.utbetaling.label",
                 )
             }
             if (inntekt.type == "jobb") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     inntekt.brutto,
-                    "opplysninger.arbeid.jobb.bruttolonn.label"
+                    "opplysninger.arbeid.jobb.bruttolonn.label",
                 )
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(pdf, inntekt.netto, "opplysninger.arbeid.jobb.nettolonn.label")
             }
@@ -79,7 +79,7 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     inntekt.netto,
-                    "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label"
+                    "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label",
                 )
             }
             pdf.addBlankLine()
@@ -92,7 +92,7 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     husbankenUtbetaling.netto,
-                    "opplysninger.inntekt.bostotte.utbetaling.label"
+                    "opplysninger.inntekt.bostotte.utbetaling.label",
                 )
                 pdf.addBlankLine()
             }
@@ -112,7 +112,7 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     formue.belop,
-                    "opplysninger.inntekt.bankinnskudd." + formue.type + ".saldo.label"
+                    "opplysninger.inntekt.bankinnskudd." + formue.type + ".saldo.label",
                 )
                 pdf.addBlankLine()
             }
@@ -126,13 +126,13 @@ object OkonomiskeOpplysningerOgVedlegg {
                     pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                         pdf,
                         utbetaling.belop,
-                        "opplysninger.arbeid.avsluttet.netto.label"
+                        "opplysninger.arbeid.avsluttet.netto.label",
                     )
                 } else {
                     pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                         pdf,
                         utbetaling.belop,
-                        "opplysninger.inntekt.inntekter." + utbetaling.type + ".sum.label"
+                        "opplysninger.inntekt.inntekter." + utbetaling.type + ".sum.label",
                     )
                 }
                 pdf.addBlankLine()
@@ -147,21 +147,21 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.barn." + utgift.type + ".sisteregning.label"
+                    "opplysninger.utgifter.barn." + utgift.type + ".sisteregning.label",
                 )
             }
             if (boutgiftAlternativer.contains(utgift.type)) {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.boutgift." + utgift.type + ".sisteregning.label"
+                    "opplysninger.utgifter.boutgift." + utgift.type + ".sisteregning.label",
                 )
             }
             if (utgift.type == "annen") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.ekstrainfo.utgifter.utgift.label"
+                    "opplysninger.ekstrainfo.utgifter.utgift.label",
                 )
             }
             pdf.addBlankLine()
@@ -172,35 +172,35 @@ object OkonomiskeOpplysningerOgVedlegg {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.barn." + utgift.type + ".sistemnd.label"
+                    "opplysninger.utgifter.barn." + utgift.type + ".sistemnd.label",
                 )
             }
             if (utgift.type == "barnebidrag") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label"
+                    "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label",
                 )
             }
             if (utgift.type == "husleie") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.boutgift.husleie.permnd.label"
+                    "opplysninger.utgifter.boutgift.husleie.permnd.label",
                 )
             }
             if (utgift.type == "boliglanAvdrag") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label"
+                    "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label",
                 )
             }
             if (utgift.type == "boliglanRenter") {
                 pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
                     pdf,
                     utgift.belop,
-                    "opplysninger.utgifter.boutgift.avdraglaan.renter.label"
+                    "opplysninger.utgifter.boutgift.avdraglaan.renter.label",
                 )
             }
             pdf.addBlankLine()
@@ -227,7 +227,10 @@ object OkonomiskeOpplysningerOgVedlegg {
         }
     }
 
-    private fun skrivOkonomiskeOpplysningerModal(pdf: PdfGenerator, pdfUtils: PdfUtils) {
+    private fun skrivOkonomiskeOpplysningerModal(
+        pdf: PdfGenerator,
+        pdfUtils: PdfUtils,
+    ) {
         pdf.skrivTekst("Ved trykk på " + pdfUtils.getTekst("opplysninger.informasjon.lenke") + ":")
         pdf.skrivTekstBold(pdfUtils.getTekst("opplysninger.informasjon.modal.overskrift"))
         pdf.skrivTekstBold(pdfUtils.getTekst("opplysninger.informasjon.modal.bolk1.tittel"))

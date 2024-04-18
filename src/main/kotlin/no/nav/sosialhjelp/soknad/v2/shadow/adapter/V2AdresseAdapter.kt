@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
 
 object V2AdresseAdapter {
-
     fun Bostedsadresse.toV2Adresse(hentAdresseService: HentAdresseService): Adresse? {
         return vegadresse?.toV2VegAdresse() ?: matrikkeladresse?.toV2MatrikkelAdresse(hentAdresseService)
     }
@@ -29,7 +28,7 @@ object V2AdresseAdapter {
             poststed = this.poststed,
             gatenavn = this.adressenavn,
             husnummer = this.husnummer.toString(),
-            husbokstav = this.husbokstav
+            husbokstav = this.husbokstav,
         )
     }
 
@@ -46,7 +45,7 @@ object V2AdresseAdapter {
             bruksnummer = bruksnummer!!,
             festenummer = festenummer,
             seksjonsnummer = seksjonsnummer,
-            undernummer = undernummer
+            undernummer = undernummer,
         )
     }
 }

@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
 
 internal class ArbeidsforholdDtoTest {
-
     @Test
     fun skalDeserialisereArbeidsforholdResponse() {
-        val objectMapper = jacksonObjectMapper()
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .registerModule(JavaTimeModule())
+        val objectMapper =
+            jacksonObjectMapper()
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .registerModule(JavaTimeModule())
 
         val resourceAsStream = ClassLoader.getSystemResourceAsStream("arbeidsforhold/aaregResponse.json")
         assertThat(resourceAsStream).isNotNull

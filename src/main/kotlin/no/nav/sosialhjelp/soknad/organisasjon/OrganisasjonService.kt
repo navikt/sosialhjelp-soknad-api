@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrganisasjonService(
-    private val organisasjonClient: OrganisasjonClient
+    private val organisasjonClient: OrganisasjonClient,
 ) {
-
     fun hentOrgNavn(orgnr: String?): String {
         return if (orgnr != null) {
             try {
@@ -22,7 +21,7 @@ class OrganisasjonService(
                     noekkelinfo.navn.navnelinje2,
                     noekkelinfo.navn.navnelinje3,
                     noekkelinfo.navn.navnelinje4,
-                    noekkelinfo.navn.navnelinje5
+                    noekkelinfo.navn.navnelinje5,
                 )
                     .filterNotNull()
                     .filter { it.isNotEmpty() }
@@ -45,7 +44,9 @@ class OrganisasjonService(
         if (orgnr.matches(Regex("\\d{11}"))) {
             log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")
         } else {
-            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnr. Kontakt skatteetaten.")
+            log.error(
+                "Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnr. Kontakt skatteetaten.",
+            )
         }
         return null
     }

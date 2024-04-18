@@ -18,14 +18,14 @@ class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val personService: PersonService,
-    private val environment: Environment
+    private val environment: Environment,
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
         XsrfGenerator.sjekkXsrfToken(
             request.getHeader("X-XSRF-TOKEN"),
             behandlingsId,
-            environment.activeProfiles.contains("mock-alt")
+            environment.activeProfiles.contains("mock-alt"),
         )
         verifiserBrukerHarTilgangTilSoknad(behandlingsId)
     }
@@ -38,8 +38,9 @@ class Tilgangskontroll(
             throw SoknadAlleredeSendtException("Søknad $behandlingsId har allerede blitt sendt inn.")
         }
 
-        val soknadEier = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
-            ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+        val soknadEier =
+            soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
+                ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
         if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
 
@@ -49,7 +50,9 @@ class Tilgangskontroll(
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
         val personId = getUserIdFromToken()
         val soknadEier =
-            soknadMetadataRepository.hent(behandlingsId)?.fnr ?: AuthorizationException("henting av eier for søknad $behandlingsId feilet, nekter adgang")
+            soknadMetadataRepository.hent(
+                behandlingsId,
+            )?.fnr ?: AuthorizationException("henting av eier for søknad $behandlingsId feilet, nekter adgang")
         if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
         verifiserAtBrukerIkkeHarAdressebeskyttelse(personId)
     }

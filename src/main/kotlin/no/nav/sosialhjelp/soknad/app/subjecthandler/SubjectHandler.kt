@@ -9,30 +9,34 @@ import org.springframework.stereotype.Component
 
 interface SubjectHandler {
     fun getConsumerId(): String
+
     fun getUserIdFromToken(): String
+
     fun getToken(): String
 }
 
 @Component
 class SubjectHandlerImpl(
-    private val tokenValidationContextHolder: TokenValidationContextHolder
+    private val tokenValidationContextHolder: TokenValidationContextHolder,
 ) : SubjectHandler {
-
     private val tokenValidationContext: TokenValidationContext
         get() {
             return tokenValidationContextHolder.getTokenValidationContext()
                 .also {
                     if (!it.hasValidToken()) {
-                        log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.")
+                        log.error(
+                            "Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.",
+                        )
                         throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
                     }
                 }
         }
 
-    override fun getUserIdFromToken(): String = when {
-        tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
-        else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
-    }
+    override fun getUserIdFromToken(): String =
+        when {
+            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
+            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
+        }
 
     private fun getUserIdFromTokenWithIssuer(issuer: String): String {
         val pid: String? = tokenValidationContext.getClaims(issuer).getStringClaim(CLAIM_PID)
@@ -57,7 +61,6 @@ class SubjectHandlerImpl(
 }
 
 class StaticSubjectHandlerImpl : SubjectHandler {
-
     companion object {
         private const val DEFAULT_USER = "11111111111"
         private const val DEFAULT_TOKEN = "token"

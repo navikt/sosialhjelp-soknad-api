@@ -40,7 +40,7 @@ class InntektOgFormueSteg {
         return Steg(
             stegNr = 6,
             tittel = "inntektbolk.tittel",
-            avsnitt = avsnitt
+            avsnitt = avsnitt,
         )
     }
 

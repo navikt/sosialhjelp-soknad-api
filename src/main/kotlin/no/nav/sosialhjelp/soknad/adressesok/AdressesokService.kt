@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component
 @Component
 class AdressesokService(
     private val adressesokClient: AdressesokClient,
-    private val kodeverkService: KodeverkService
+    private val kodeverkService: KodeverkService,
 ) {
-
     fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
@@ -110,7 +109,11 @@ class AdressesokService(
         return criteriaList
     }
 
-    private fun criteria(fieldName: FieldName, searchRule: SearchRule, value: String): Criteria {
+    private fun criteria(
+        fieldName: FieldName,
+        searchRule: SearchRule,
+        value: String,
+    ): Criteria {
         return when (searchRule) {
             SearchRule.WILDCARD -> Criteria(fieldName, SearchRule.WILDCARD, value + WILDCARD_SUFFIX)
             else -> Criteria(fieldName, searchRule, value)
@@ -126,15 +129,24 @@ class AdressesokService(
         } else {
             val first = hits[0].vegadresse
             if (hits.all { relevantFieldsAreEquals(first, it.vegadresse) }) {
-                log.info("Flere hits i adressesok, men velger første hit fra listen ettersom (kommunenummer, kommunenavn og bydelsnummer) er like.")
+                log.info(
+                    "Flere hits i adressesok, men velger første hit fra listen ettersom " +
+                        "(kommunenummer, kommunenavn og bydelsnummer) er like.",
+                )
                 return first
             }
-            log.warn("Flere (${hits.size}) hits i adressesok. Kan ikke utlede entydig kombinasjon av (kommunenummer, kommunenavn og bydelsnummer) fra alle vegadressene")
+            log.warn(
+                "Flere (${hits.size}) hits i adressesok. Kan ikke utlede entydig kombinasjon av " +
+                    "(kommunenummer, kommunenavn og bydelsnummer) fra alle vegadressene",
+            )
             throw SosialhjelpSoknadApiException("PDL adressesok - flere hits")
         }
     }
 
-    private fun relevantFieldsAreEquals(dto1: VegadresseDto?, dto2: VegadresseDto?): Boolean {
+    private fun relevantFieldsAreEquals(
+        dto1: VegadresseDto?,
+        dto2: VegadresseDto?,
+    ): Boolean {
         return if (dto1 == null || dto2 == null) {
             false
         } else {

@@ -17,21 +17,21 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class DittNavMetadataServiceTest {
-
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val dittNavMetadataService = DittNavMetadataService(soknadMetadataRepository)
 
-    private val soknadMetadata = SoknadMetadata(
-        id = 0L,
-        fnr = "12345",
-        behandlingsId = "beh123",
-        status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-        type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
-        opprettetDato = LocalDateTime.now().minusDays(10),
-        innsendtDato = LocalDateTime.now().minusDays(2),
-        sistEndretDato = LocalDateTime.now().minusDays(2),
-        lest = false
-    )
+    private val soknadMetadata =
+        SoknadMetadata(
+            id = 0L,
+            fnr = "12345",
+            behandlingsId = "beh123",
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            opprettetDato = LocalDateTime.now().minusDays(10),
+            innsendtDato = LocalDateTime.now().minusDays(2),
+            sistEndretDato = LocalDateTime.now().minusDays(2),
+            lest = false,
+        )
 
     @BeforeEach
     internal fun setUp() {

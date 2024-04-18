@@ -30,15 +30,16 @@ internal class AvbrytAutomatiskSchedulerTest {
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
 
-    private val scheduler = AvbrytAutomatiskScheduler(
-        batchEnabled = true,
-        schedulerDisabled = false,
-        leaderElection,
-        soknadMetadataRepository,
-        batchSoknadMetadataRepository,
-        batchSoknadUnderArbeidRepository,
-        mellomlagringService
-    )
+    private val scheduler =
+        AvbrytAutomatiskScheduler(
+            batchEnabled = true,
+            schedulerDisabled = false,
+            leaderElection,
+            soknadMetadataRepository,
+            batchSoknadMetadataRepository,
+            batchSoknadUnderArbeidRepository,
+            mellomlagringService,
+        )
 
     @BeforeEach
     fun setup() {
@@ -49,17 +50,18 @@ internal class AvbrytAutomatiskSchedulerTest {
     @Test
     fun avbrytAutomatiskOgSlettGamleSoknader() {
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            soknadId = 1L,
-            versjon = 1L,
-            behandlingsId = BEHANDLINGS_ID,
-            tilknyttetBehandlingsId = null,
-            eier = "11111111111",
-            jsonInternalSoknad = null,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                soknadId = 1L,
+                versjon = 1L,
+                behandlingsId = BEHANDLINGS_ID,
+                tilknyttetBehandlingsId = null,
+                eier = "11111111111",
+                jsonInternalSoknad = null,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
@@ -87,17 +89,18 @@ internal class AvbrytAutomatiskSchedulerTest {
     @Test
     fun avbrytAutomatiskOgSlettGamleSoknaderMedMellomlagredeVedlegg() {
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            soknadId = 1L,
-            versjon = 1L,
-            behandlingsId = BEHANDLINGS_ID,
-            tilknyttetBehandlingsId = null,
-            eier = "11111111111",
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                soknadId = 1L,
+                versjon = 1L,
+                behandlingsId = BEHANDLINGS_ID,
+                tilknyttetBehandlingsId = null,
+                eier = "11111111111",
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
 
@@ -127,7 +130,7 @@ internal class AvbrytAutomatiskSchedulerTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
@@ -138,7 +141,7 @@ internal class AvbrytAutomatiskSchedulerTest {
             status = status,
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
         )
     }
 

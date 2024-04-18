@@ -14,7 +14,6 @@ import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var eierRepository: EierRepository
 
@@ -25,7 +24,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoInformasjonDto::class.java
+            KontoInformasjonDto::class.java,
         ).also {
             assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer!!.fraBruker)
             assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer!!.fraRegister)
@@ -42,7 +41,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             input,
             KontoInformasjonDto::class.java,
-            soknadId
+            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
@@ -60,7 +59,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/$soknadId/personalia/kontonummer",
             HarIkkeKontoInput(true),
             KontoInformasjonDto::class.java,
-            soknadId
+            soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {

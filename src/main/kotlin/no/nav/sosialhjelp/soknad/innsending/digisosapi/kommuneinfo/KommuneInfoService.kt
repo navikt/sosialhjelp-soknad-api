@@ -22,9 +22,8 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 @Component
 class KommuneInfoService(
     private val kommuneInfoClient: KommuneInfoClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
-
     fun kanMottaSoknader(kommunenummer: String): Boolean {
         return hentFraCacheEllerServer(kommunenummer)?.kanMottaSoknader ?: false
     }
@@ -33,7 +32,10 @@ class KommuneInfoService(
         return hentFraCacheEllerServer(kommunenummer)?.harMidlertidigDeaktivertMottak ?: false
     }
 
-    fun getBehandlingskommune(kommunenummer: String, kommunenavnFraAdresseforslag: String?): String? {
+    fun getBehandlingskommune(
+        kommunenummer: String,
+        kommunenavnFraAdresseforslag: String?,
+    ): String? {
         return hentFraCacheEllerServer(kommunenummer)?.behandlingsansvarlig
             ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
             ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, kommunenavnFraAdresseforslag)
@@ -75,7 +77,10 @@ class KommuneInfoService(
     }
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    fun getKommuneStatus(kommunenummer: String, withLogging: Boolean = false): KommuneStatus {
+    fun getKommuneStatus(
+        kommunenummer: String,
+        withLogging: Boolean = false,
+    ): KommuneStatus {
         val kommuneInfoMap = hentAlleKommuneInfo()
         val kommuneInfo = hentFraCacheEllerServer(kommunenummer)
         if (withLogging) {
@@ -88,7 +93,7 @@ class KommuneInfoService(
                         ", harMidlertidigDeaktivertOppdateringer: ${it.harMidlertidigDeaktivertOppdateringer}  " +
                         ", behandlingsansvarlig: ${it.behandlingsansvarlig} " +
                         ", harNksTilgang: ${it.harNksTilgang} " +
-                        ", kommunenummer: ${it.kommunenummer} "
+                        ", kommunenummer: ${it.kommunenummer} ",
                 )
             }
         }
@@ -107,11 +112,11 @@ class KommuneInfoService(
                 redisService.setex(
                     KOMMUNEINFO_CACHE_KEY,
                     redisObjectMapper.writeValueAsBytes(kommuneInfoList),
-                    KOMMUNEINFO_CACHE_SECONDS
+                    KOMMUNEINFO_CACHE_SECONDS,
                 )
                 redisService.set(
                     KOMMUNEINFO_LAST_POLL_TIME_KEY,
-                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8)
+                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8),
                 )
             }
         } catch (e: JsonProcessingException) {
@@ -128,15 +133,16 @@ class KommuneInfoService(
         private val log = getLogger(KommuneInfoService::class.java)
         private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 10
 
-        private val DEFAULT_KOMMUNEINFO = KommuneInfo(
-            kommunenummer = "",
-            kanMottaSoknader = false,
-            kanOppdatereStatus = false,
-            harMidlertidigDeaktivertMottak = false,
-            harMidlertidigDeaktivertOppdateringer = false,
-            kontaktpersoner = null,
-            harNksTilgang = false,
-            behandlingsansvarlig = null
-        )
+        private val DEFAULT_KOMMUNEINFO =
+            KommuneInfo(
+                kommunenummer = "",
+                kanMottaSoknader = false,
+                kanOppdatereStatus = false,
+                harMidlertidigDeaktivertMottak = false,
+                harMidlertidigDeaktivertOppdateringer = false,
+                kontaktpersoner = null,
+                harNksTilgang = false,
+                behandlingsansvarlig = null,
+            )
     }
 }

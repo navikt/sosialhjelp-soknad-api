@@ -21,11 +21,11 @@ data class SoknadMetadataDto(
     val opprettetDato: LocalDateTime,
     val sistEndretDato: LocalDateTime,
     val innsendtDato: LocalDateTime?,
-    val lest: Boolean
+    val lest: Boolean,
 )
 
 data class VedleggMetadataListeDto(
-    val vedleggListe: List<VedleggMetadataDto>
+    val vedleggListe: List<VedleggMetadataDto>,
 )
 
 data class VedleggMetadataDto(
@@ -37,5 +37,5 @@ data class VedleggMetadataDto(
     val skjema: String?,
     val tillegg: String?,
     val hendelseType: JsonVedlegg.HendelseType?,
-    val hendelseReferanse: String?
+    val hendelseReferanse: String?,
 )

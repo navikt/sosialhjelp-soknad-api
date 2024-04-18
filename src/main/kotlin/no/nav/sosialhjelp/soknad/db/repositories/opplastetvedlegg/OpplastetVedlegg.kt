@@ -10,7 +10,7 @@ data class OpplastetVedlegg(
     var data: ByteArray,
     var soknadId: Long,
     var filnavn: String,
-    var sha512: String = VedleggUtils.getSha512FromByteArray(data)
+    var sha512: String = VedleggUtils.getSha512FromByteArray(data),
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -42,7 +42,7 @@ data class OpplastetVedlegg(
 }
 
 data class OpplastetVedleggType(
-    var sammensattType: String
+    var sammensattType: String,
 ) {
     val type get() = sammensattType.substringBefore('|')
     val tilleggsinfo get() = sammensattType.substringAfter('|')

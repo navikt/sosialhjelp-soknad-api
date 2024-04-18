@@ -22,13 +22,14 @@ internal class OppgaveHandtererImplTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val leaderElection: LeaderElection = mockk()
 
-    private val oppgaveHandterer = OppgaveHandtererImpl(
-        fiksHandterer,
-        oppgaveRepository,
-        schedulerDisabled = false,
-        prometheusMetricsService,
-        leaderElection
-    )
+    private val oppgaveHandterer =
+        OppgaveHandtererImpl(
+            fiksHandterer,
+            oppgaveRepository,
+            schedulerDisabled = false,
+            prometheusMetricsService,
+            leaderElection,
+        )
 
     private val oppgaveSlot = slot<Oppgave>()
 
@@ -39,17 +40,18 @@ internal class OppgaveHandtererImplTest {
 
     @Test
     fun prosessereFeilendeOppgaveSkalSetteNesteForsok() {
-        val oppgave = Oppgave(
-            id = 0L,
-            behandlingsId = "behandlingsId",
-            type = FiksHandterer.FIKS_OPPGAVE,
-            status = Status.UNDER_ARBEID,
-            steg = 21,
-            opprettet = LocalDateTime.now(),
-            sistKjort = null,
-            nesteForsok = LocalDateTime.now(),
-            retries = 0
-        )
+        val oppgave =
+            Oppgave(
+                id = 0L,
+                behandlingsId = "behandlingsId",
+                type = FiksHandterer.FIKS_OPPGAVE,
+                status = Status.UNDER_ARBEID,
+                steg = 21,
+                opprettet = LocalDateTime.now(),
+                sistKjort = null,
+                nesteForsok = LocalDateTime.now(),
+                retries = 0,
+            )
 
         every { oppgaveRepository.hentNeste() } returns oppgave andThen null
         every { fiksHandterer.eksekver(oppgave) } throws IllegalStateException()

@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component
 @Component
 class KrrCheck(
     @Value("\${krr_url}") private val krrUrl: String,
-    private val krrClient: KrrClient
+    private val krrClient: KrrClient,
 ) : DependencyCheck {
-
     override val type = DependencyType.REST
     override val name = "digdir-krr-proxy"
     override val address = "$krrUrl/rest/ping"

@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class KontonummerServiceTest {
-
     private val kontonummerClient: KontonummerClient = mockk()
     private val kontonummerService = KontonummerService(kontonummerClient)
 
@@ -32,10 +31,11 @@ internal class KontonummerServiceTest {
 
     @Test
     internal fun kontonummerSkalIkkeSettesNaarKlientReturnererUtenlandskontoNr() {
-        every { kontonummerClient.getKontonummer(any()) } returns KontoDto(
-            "1337",
-            UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null)
-        )
+        every { kontonummerClient.getKontonummer(any()) } returns
+            KontoDto(
+                "1337",
+                UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null),
+            )
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 

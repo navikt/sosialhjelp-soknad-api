@@ -12,7 +12,7 @@ import java.net.URI
 @Profile("!(mock-alt|test)")
 @Configuration
 class ProxiedHttpClientConfig(
-    @Value("\${HTTPS_PROXY}") private val proxyUrl: String
+    @Value("\${HTTPS_PROXY}") private val proxyUrl: String,
 ) {
     @Bean
     fun proxiedHttpClient(): HttpClient = proxiedHttpClient(proxyUrl)
@@ -31,7 +31,6 @@ class ProxiedHttpClientConfig(
 @Profile("(mock-alt|test)")
 @Configuration
 class MockProxiedHttpClientConfig {
-
     @Bean
     fun proxiedHttpClient(): HttpClient = unproxiedHttpClient()
 }

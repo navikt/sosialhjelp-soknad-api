@@ -19,22 +19,26 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class LivssituasjonToJsonMapper(
-    private val livssituasjonRepository: LivssituasjonRepository
+    private val livssituasjonRepository: LivssituasjonRepository,
 ) : DomainToJsonMapper {
-
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         livssituasjonRepository.findByIdOrNull(soknadId)?.let {
             doMapping(it, jsonInternalSoknad)
         }
     }
 
     internal companion object Mapper {
-
-        fun doMapping(livssituasjon: Livssituasjon, json: JsonInternalSoknad) {
+        fun doMapping(
+            livssituasjon: Livssituasjon,
+            json: JsonInternalSoknad,
+        ) {
             // noen felter forventes i validering
             json.initializeObjects()
 

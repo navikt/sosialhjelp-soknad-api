@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class BarneutgiftRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
@@ -86,7 +85,7 @@ internal class BarneutgiftRessursTest {
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = false,
                 harUtgifter = false,
-                utgiftstyper = emptyList()
+                utgiftstyper = emptyList(),
             )
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
@@ -106,13 +105,14 @@ internal class BarneutgiftRessursTest {
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = true,
                 harUtgifter = true,
-                utgiftstyper = listOf(
-                    UTGIFTER_BARNEHAGE,
-                    UTGIFTER_SFO,
-                    UTGIFTER_BARN_FRITIDSAKTIVITETER,
-                    UTGIFTER_BARN_TANNREGULERING,
-                    UTGIFTER_ANNET_BARN
-                )
+                utgiftstyper =
+                    listOf(
+                        UTGIFTER_BARNEHAGE,
+                        UTGIFTER_SFO,
+                        UTGIFTER_BARN_FRITIDSAKTIVITETER,
+                        UTGIFTER_BARN_TANNREGULERING,
+                        UTGIFTER_ANNET_BARN,
+                    ),
             )
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
@@ -132,12 +132,13 @@ internal class BarneutgiftRessursTest {
             createJsonInternalSoknadWithBarneutgifter(
                 harForsorgerplikt = true,
                 harUtgifter = true,
-                utgiftstyper = listOf(
-                    UTGIFTER_BARNEHAGE,
-                    UTGIFTER_SFO,
-                    UTGIFTER_BARN_FRITIDSAKTIVITETER,
-                    UTGIFTER_ANNET_BARN
-                )
+                utgiftstyper =
+                    listOf(
+                        UTGIFTER_BARNEHAGE,
+                        UTGIFTER_SFO,
+                        UTGIFTER_BARN_FRITIDSAKTIVITETER,
+                        UTGIFTER_ANNET_BARN,
+                    ),
             )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -164,15 +165,16 @@ internal class BarneutgiftRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val barneutgifterFrontend = BarneutgifterFrontend(
-            harForsorgerplikt = true,
-            bekreftelse = true,
-            fritidsaktiviteter = false,
-            barnehage = true,
-            sfo = true,
-            tannregulering = false,
-            annet = false
-        )
+        val barneutgifterFrontend =
+            BarneutgifterFrontend(
+                harForsorgerplikt = true,
+                bekreftelse = true,
+                fritidsaktiviteter = false,
+                barnehage = true,
+                sfo = true,
+                tannregulering = false,
+                annet = false,
+            )
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -198,15 +200,16 @@ internal class BarneutgiftRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val barneutgifterFrontend = BarneutgifterFrontend(
-            harForsorgerplikt = true,
-            bekreftelse = true,
-            fritidsaktiviteter = true,
-            barnehage = true,
-            sfo = true,
-            tannregulering = true,
-            annet = true
-        )
+        val barneutgifterFrontend =
+            BarneutgifterFrontend(
+                harForsorgerplikt = true,
+                bekreftelse = true,
+                fritidsaktiviteter = true,
+                barnehage = true,
+                sfo = true,
+                tannregulering = true,
+                annet = true,
+            )
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -248,7 +251,7 @@ internal class BarneutgiftRessursTest {
     private fun createJsonInternalSoknadWithBarneutgifter(
         harForsorgerplikt: Boolean,
         harUtgifter: Boolean,
-        utgiftstyper: List<String>
+        utgiftstyper: List<String>,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift> = ArrayList()
@@ -259,31 +262,37 @@ internal class BarneutgiftRessursTest {
                     JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
-            } else if (utgiftstype == UTGIFTER_BARN_FRITIDSAKTIVITETER || utgiftstype == UTGIFTER_BARN_TANNREGULERING || utgiftstype == UTGIFTER_ANNET_BARN) {
+            } else if (
+                utgiftstype == UTGIFTER_BARN_FRITIDSAKTIVITETER ||
+                utgiftstype == UTGIFTER_BARN_TANNREGULERING ||
+                utgiftstype == UTGIFTER_ANNET_BARN
+            ) {
                 opplysningUtgifter.add(
                     JsonOkonomiOpplysningUtgift()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(utgiftstype)
-                        .withTittel("tittel")
+                        .withTittel("tittel"),
                 )
             }
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
-            JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(BEKREFTELSE_BARNEUTGIFTER)
-                .withVerdi(harUtgifter)
-        )
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+            listOf(
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(BEKREFTELSE_BARNEUTGIFTER)
+                    .withVerdi(harUtgifter),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt = JsonForsorgerplikt()
-            .withHarForsorgerplikt(
-                JsonHarForsorgerplikt()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(harForsorgerplikt)
-            )
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt =
+            JsonForsorgerplikt()
+                .withHarForsorgerplikt(
+                    JsonHarForsorgerplikt()
+                        .withKilde(JsonKilde.SYSTEM)
+                        .withVerdi(harForsorgerplikt),
+                )
         return soknadUnderArbeid
     }
 
@@ -296,7 +305,7 @@ internal class BarneutgiftRessursTest {
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 

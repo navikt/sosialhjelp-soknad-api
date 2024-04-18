@@ -13,15 +13,14 @@ import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.UUID
 
 @Component
 class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
 ) {
-
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val navEksternId = getNavEksternId(behandlingsId)
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
@@ -29,12 +28,15 @@ class MellomlagringService(
             ?.map {
                 MellomlagretVedleggMetadata(
                     filnavn = it.filnavn,
-                    filId = it.filId
+                    filId = it.filId,
                 )
             } ?: emptyList()
     }
 
-    fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
+    fun getVedlegg(
+        behandlingsId: String,
+        vedleggId: String,
+    ): MellomlagretVedlegg? {
         val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg =
             mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
@@ -47,7 +49,7 @@ class MellomlagringService(
             ?.let {
                 MellomlagretVedlegg(
                     filnavn = it,
-                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId),
                 )
             }
     }
@@ -57,7 +59,7 @@ class MellomlagringService(
         behandlingsId: String,
         vedleggstype: String,
         orginalData: ByteArray,
-        orginaltFilnavn: String
+        orginaltFilnavn: String,
     ): MellomlagretVedleggMetadata {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
@@ -69,7 +71,7 @@ class MellomlagringService(
             VedleggUtils.getSha512FromByteArray(data),
             behandlingsId,
             vedleggstype,
-            filnavn
+            filnavn,
         )
 
         val filOpplasting = opprettFilOpplasting(filnavn, data)
@@ -79,27 +81,35 @@ class MellomlagringService(
         val mellomlagredeVedlegg =
             mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
 
-        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
-            ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+        val filId =
+            mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
+                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
-            filId = filId
+            filId = filId,
         )
     }
 
-    private fun opprettFilOpplasting(filnavn: String, data: ByteArray): FilOpplasting {
+    private fun opprettFilOpplasting(
+        filnavn: String,
+        data: ByteArray,
+    ): FilOpplasting {
         return FilOpplasting(
             data = ByteArrayInputStream(data),
-            metadata = FilMetadata(
-                filnavn = filnavn,
-                mimetype = detectMimeType(data),
-                storrelse = data.size.toLong()
-            )
+            metadata =
+                FilMetadata(
+                    filnavn = filnavn,
+                    mimetype = detectMimeType(data),
+                    storrelse = data.size.toLong(),
+                ),
         )
     }
 
-    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
+    fun deleteVedleggAndUpdateVedleggstatus(
+        behandlingsId: String,
+        vedleggId: String,
+    ) {
         val navEksternId = getNavEksternId(behandlingsId)
 
         val mellomlagredeVedlegg =
@@ -117,7 +127,10 @@ class MellomlagringService(
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
-    fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
+    fun deleteVedlegg(
+        behandlingsId: String,
+        vedleggId: String,
+    ) {
         val navEksternId = getNavEksternId(behandlingsId)
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
@@ -142,11 +155,12 @@ class MellomlagringService(
         if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
     fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        val kanSoknadSendesMedDigisosApi = try {
-            soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid.behandlingsId)
-        } catch (e: Exception) {
-            false
-        }
+        val kanSoknadSendesMedDigisosApi =
+            try {
+                soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid.behandlingsId)
+            } catch (e: Exception) {
+                false
+            }
         return kanSoknadSendesMedDigisosApi
     }
 
@@ -158,12 +172,12 @@ class MellomlagringService(
 data class MellomlagretVedleggMetadata(
     val filnavn: String,
     val filId: String,
-    val sha512: String? = null
+    val sha512: String? = null,
 )
 
 data class MellomlagretVedlegg(
     val filnavn: String,
-    val data: ByteArray
+    val data: ByteArray,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

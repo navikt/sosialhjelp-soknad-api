@@ -15,7 +15,7 @@ class SlettForeldedeMetadataScheduler(
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val oppgaveRepository: OppgaveRepository,
     @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.util
 import java.io.File
 
 object ExampleFileRepository {
-
     val BMP_FILE = getFile("sample_bmp.bmp")
     val PDF_FILE = getFile("sample_pdf.pdf")
     val PNG_FILE = getFile("sample_png.png")

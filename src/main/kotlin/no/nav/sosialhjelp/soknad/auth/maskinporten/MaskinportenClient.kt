@@ -22,9 +22,8 @@ interface MaskinportenClient {
 class MaskinportenClientImpl(
     private val webClient: WebClient,
     maskinportenProperties: MaskinportenProperties,
-    private val wellKnown: WellKnown
+    private val wellKnown: WellKnown,
 ) : MaskinportenClient {
-
     private var cachedToken: SignedJWT? = null
     private val tokenGenerator = MaskinportenGrantTokenGenerator(maskinportenProperties, wellKnown.issuer)
 
@@ -37,25 +36,27 @@ class MaskinportenClientImpl(
     }
 
     private fun getTokenFraMaskinporten(): String {
-        val response = webClient.post()
-            .uri(wellKnown.token_endpoint)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromFormData(params))
-            .retrieve()
-            .bodyToMono<MaskinportenResponse>()
-            .doOnSuccess { log.info("Hentet token fra Maskinporten") }
-            .doOnError { log.warn("Noe feilet ved henting av token fra Maskinporten", it) }
-            .block() ?: throw SosialhjelpSoknadApiException("Noe feilet ved henting av token fra Maskinporten")
+        val response =
+            webClient.post()
+                .uri(wellKnown.token_endpoint)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(params))
+                .retrieve()
+                .bodyToMono<MaskinportenResponse>()
+                .doOnSuccess { log.info("Hentet token fra Maskinporten") }
+                .doOnError { log.warn("Noe feilet ved henting av token fra Maskinporten", it) }
+                .block() ?: throw SosialhjelpSoknadApiException("Noe feilet ved henting av token fra Maskinporten")
 
         return response.access_token
             .also { cachedToken = SignedJWT.parse(it) }
     }
 
     private val params: MultiValueMap<String, String>
-        get() = LinkedMultiValueMap<String, String>().apply {
-            add("grant_type", GRANT_TYPE)
-            add("assertion", tokenGenerator.getJwt())
-        }
+        get() =
+            LinkedMultiValueMap<String, String>().apply {
+                add("grant_type", GRANT_TYPE)
+                add("assertion", tokenGenerator.getJwt())
+            }
 
     companion object {
         private val log = LoggerFactory.getLogger(MaskinportenClientImpl::class.java)

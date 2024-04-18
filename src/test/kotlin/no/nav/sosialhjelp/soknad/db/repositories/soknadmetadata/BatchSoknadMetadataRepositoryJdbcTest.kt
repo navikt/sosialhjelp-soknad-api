@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
@@ -78,11 +78,12 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad - 1))
 
         // oppretter over 20 SoknadMetadata som er eldre enn `antallDagerGammelt`
-        val oldSoknads = (0..22).map {
-            behandlingsId.also { id ->
-                opprettSoknadMetadata(soknadMetadata(id, FERDIG, dagerGammelSoknad + it))
+        val oldSoknads =
+            (0..22).map {
+                behandlingsId.also { id ->
+                    opprettSoknadMetadata(soknadMetadata(id, FERDIG, dagerGammelSoknad + it))
+                }
             }
-        }
 
         val bolk = batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)
         assertThat(bolk).hasSize(20)
@@ -100,7 +101,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             behandlingsId = behandlingsId,
@@ -111,7 +112,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            lest = false
+            lest = false,
         )
     }
 

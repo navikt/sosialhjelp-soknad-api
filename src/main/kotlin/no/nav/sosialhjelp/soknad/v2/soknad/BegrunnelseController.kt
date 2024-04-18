@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseController(
-    private val soknadService: SoknadService
+    private val soknadService: SoknadService,
 ) {
     @GetMapping
     fun getBegrunnelse(
-        @PathVariable("soknadId") soknadId: UUID
+        @PathVariable("soknadId") soknadId: UUID,
     ): BegrunnelseDto? {
         // TODO hva skal vi egentlig returnere når bruker ikke har fylt ut data? null, objekt med null-verdier eller 404?
         return soknadService.getSoknad(soknadId).begrunnelse?.toBegrunnelseDto()
@@ -28,29 +28,31 @@ class BegrunnelseController(
     @PutMapping
     fun updateBegrunnelse(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) begrunnelseDto: BegrunnelseDto
+        @RequestBody(required = true) begrunnelseDto: BegrunnelseDto,
     ): BegrunnelseDto {
-        val brukerdata = begrunnelseDto.let {
-            soknadService.updateBegrunnelse(
-                soknadId = soknadId,
-                begrunnelse = Begrunnelse(
-                    hvorforSoke = it.hvorforSoke,
-                    hvaSokesOm = it.hvaSokesOm
+        val brukerdata =
+            begrunnelseDto.let {
+                soknadService.updateBegrunnelse(
+                    soknadId = soknadId,
+                    begrunnelse =
+                        Begrunnelse(
+                            hvorforSoke = it.hvorforSoke,
+                            hvaSokesOm = it.hvaSokesOm,
+                        ),
                 )
-            )
-        }
+            }
         return brukerdata.toBegrunnelseDto()
     }
 }
 
 data class BegrunnelseDto(
     val hvaSokesOm: String = "",
-    val hvorforSoke: String = ""
+    val hvorforSoke: String = "",
 )
 
 fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
     return BegrunnelseDto(
         hvorforSoke = hvorforSoke,
-        hvaSokesOm = hvaSokesOm
+        hvaSokesOm = hvaSokesOm,
     )
 }

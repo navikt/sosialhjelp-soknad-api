@@ -14,7 +14,7 @@ data class NavUtbetaling(
     val periodeTom: LocalDate?,
     val komponenter: List<Komponent>,
     val tittel: String,
-    val orgnummer: String
+    val orgnummer: String,
 )
 
 data class Komponent(
@@ -22,5 +22,5 @@ data class Komponent(
     val belop: Double?,
     val satsType: String?,
     val satsBelop: Double?,
-    val satsAntall: Double?
+    val satsAntall: Double?,
 )

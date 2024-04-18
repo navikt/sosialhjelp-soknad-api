@@ -8,9 +8,10 @@ import java.time.temporal.TemporalQuery
 
 class LocalDateTimeXmlAdapter : XmlAdapter<String, LocalDateTime>() {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-    private val temporalQuery: TemporalQuery<LocalDateTime> = TemporalQuery { temporal: TemporalAccessor ->
-        LocalDateTime.from(temporal)
-    }
+    private val temporalQuery: TemporalQuery<LocalDateTime> =
+        TemporalQuery { temporal: TemporalAccessor ->
+            LocalDateTime.from(temporal)
+        }
 
     override fun unmarshal(stringValue: String): LocalDateTime {
         return formatter.parse(stringValue, temporalQuery)

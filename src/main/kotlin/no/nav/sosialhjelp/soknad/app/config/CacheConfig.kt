@@ -16,14 +16,15 @@ class CacheConfig {
     @Bean
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
-        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long
-    ): CacheManager = RedisCacheManager.builder(redisConnectionFactory)
-        .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-        .withInitialCacheConfigurations(
-            mapOf(
-                "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL))
+        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
+    ): CacheManager =
+        RedisCacheManager.builder(redisConnectionFactory)
+            .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
+            .withInitialCacheConfigurations(
+                mapOf(
+                    "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
+                ),
             )
-        )
-        .enableStatistics()
-        .build()
+            .enableStatistics()
+            .build()
 }

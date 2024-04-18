@@ -15,7 +15,7 @@ import java.util.function.Predicate
 
 @Component
 class InnsendtSoknadService(
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     private val ikkeKvittering = Predicate<VedleggMetadata> { SKJEMANUMMER_KVITTERING != it.skjema }
     private val lastetOpp = Predicate<VedleggMetadata> { it.status?.er(Vedleggstatus.LastetOpp) ?: false }
@@ -28,7 +28,7 @@ class InnsendtSoknadService(
         val ettersendelser = originalSoknad?.let { hentEttersendelser(it.behandlingsId) }
         return BehandlingsKjede(
             originalSoknad = originalSoknad?.let { konverter(it) },
-            ettersendelser = ettersendelser?.map { konverter(it) }
+            ettersendelser = ettersendelser?.map { konverter(it) },
         )
     }
 
@@ -53,10 +53,20 @@ class InnsendtSoknadService(
             innsendtTidspunkt = metadata.innsendtDato?.format(tidFormatter),
             soknadsalderIMinutter = soknadsalderIMinutter(metadata.innsendtDato),
             innsendteVedlegg = metadata.vedlegg?.vedleggListe?.let { tilVedlegg(it, lastetOpp) },
-            ikkeInnsendteVedlegg = metadata.innsendtDato?.toLocalDate()
-                ?.let { if (soknadSendtForMindreEnn30DagerSiden(it)) tilVedlegg(metadata.vedlegg?.vedleggListe, ikkeLastetOpp) else null },
+            ikkeInnsendteVedlegg =
+                metadata.innsendtDato?.toLocalDate()
+                    ?.let {
+                        if (soknadSendtForMindreEnn30DagerSiden(
+                                it,
+                            )
+                        ) {
+                            tilVedlegg(metadata.vedlegg?.vedleggListe, ikkeLastetOpp)
+                        } else {
+                            null
+                        }
+                    },
             navenhet = metadata.navEnhet,
-            orgnummer = metadata.orgnr
+            orgnummer = metadata.orgnr,
         )
     }
 
@@ -67,21 +77,23 @@ class InnsendtSoknadService(
 
     private fun tilVedlegg(
         vedlegg: List<VedleggMetadata>?,
-        status: Predicate<VedleggMetadata>
+        status: Predicate<VedleggMetadata>,
     ): List<Vedlegg> {
-        val vedleggMedRiktigStatus = vedlegg
-            ?.filter { ikkeKvittering.test(it) }
-            ?.filter { status.test(it) }
+        val vedleggMedRiktigStatus =
+            vedlegg
+                ?.filter { ikkeKvittering.test(it) }
+                ?.filter { status.test(it) }
 
         val unikeVedlegg: MutableMap<String, Vedlegg> = HashMap()
         vedleggMedRiktigStatus?.forEach {
             val sammensattnavn = it.skjema + "|" + it.tillegg
             if (!unikeVedlegg.containsKey(sammensattnavn)) {
-                unikeVedlegg[sammensattnavn] = Vedlegg(
-                    skjemaNummer = it.skjema,
-                    skjemanummerTillegg = it.tillegg,
-                    innsendingsvalg = it.status
-                )
+                unikeVedlegg[sammensattnavn] =
+                    Vedlegg(
+                        skjemaNummer = it.skjema,
+                        skjemanummerTillegg = it.tillegg,
+                        innsendingsvalg = it.status,
+                    )
             }
         }
         return unikeVedlegg.values.toList()

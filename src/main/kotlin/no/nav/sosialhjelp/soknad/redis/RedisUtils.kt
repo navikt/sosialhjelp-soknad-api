@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 
 object RedisUtils {
-
     private val log = LoggerFactory.getLogger(RedisUtils::class.java)
 
-    val redisObjectMapper: ObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
+    val redisObjectMapper: ObjectMapper =
+        JsonSosialhjelpObjectMapper.createObjectMapper()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .registerKotlinModule()
+            .registerModule(JavaTimeModule())
 
     fun toKommuneInfoMap(value: ByteArray?): Map<String, KommuneInfo>? {
         if (value != null) {

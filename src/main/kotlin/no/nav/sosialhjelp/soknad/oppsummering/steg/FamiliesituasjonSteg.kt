@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 
 class FamiliesituasjonSteg {
-
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val familie = jsonInternalSoknad.soknad.data.familie
         val sivilstatus: JsonSivilstatus? = familie.sivilstatus
@@ -27,17 +26,18 @@ class FamiliesituasjonSteg {
         return Steg(
             stegNr = 4,
             tittel = "familiebolk.tittel",
-            avsnitt = listOf(
-                sivilstatusAvsnitt(sivilstatus),
-                forsorgerpliktAvsnitt(forsorgerplikt)
-            )
+            avsnitt =
+                listOf(
+                    sivilstatusAvsnitt(sivilstatus),
+                    forsorgerpliktAvsnitt(forsorgerplikt),
+                ),
         )
     }
 
     private fun sivilstatusAvsnitt(sivilstatus: JsonSivilstatus?): Avsnitt {
         return Avsnitt(
             tittel = "system.familie.sivilstatus.sporsmal",
-            sporsmal = sivilstatusSporsmal(sivilstatus)
+            sporsmal = sivilstatusSporsmal(sivilstatus),
         )
     }
 
@@ -70,43 +70,49 @@ class FamiliesituasjonSteg {
         return sporsmal
     }
 
-    private fun brukerSivilstatusSporsmal(erUtfylt: Boolean, status: JsonSivilstatus.Status?): Sporsmal {
+    private fun brukerSivilstatusSporsmal(
+        erUtfylt: Boolean,
+        status: JsonSivilstatus.Status?,
+    ): Sporsmal {
         return Sporsmal(
             tittel = "familie.sivilstatus.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) {
-                listOf(
-                    Felt(
-                        type = Type.CHECKBOX,
-                        svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST)
+            felt =
+                if (erUtfylt) {
+                    listOf(
+                        Felt(
+                            type = Type.CHECKBOX,
+                            svar = createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST),
+                        ),
                     )
-                )
-            } else {
-                null
-            }
+                } else {
+                    null
+                },
         )
     }
 
     private fun statusToTekstKey(status: JsonSivilstatus.Status?): String {
-        val key: String = when (status) {
-            JsonSivilstatus.Status.ENKE -> "familie.sivilstatus.enke"
-            JsonSivilstatus.Status.GIFT -> "familie.sivilstatus.gift"
-            JsonSivilstatus.Status.SKILT -> "familie.sivilstatus.skilt"
-            JsonSivilstatus.Status.SAMBOER -> "familie.sivilstatus.samboer"
-            JsonSivilstatus.Status.SEPARERT -> "familie.sivilstatus.separert"
-            JsonSivilstatus.Status.UGIFT -> "familie.sivilstatus.ugift"
-            else -> "familie.sivilstatus.ugift"
-        }
+        val key: String =
+            when (status) {
+                JsonSivilstatus.Status.ENKE -> "familie.sivilstatus.enke"
+                JsonSivilstatus.Status.GIFT -> "familie.sivilstatus.gift"
+                JsonSivilstatus.Status.SKILT -> "familie.sivilstatus.skilt"
+                JsonSivilstatus.Status.SAMBOER -> "familie.sivilstatus.samboer"
+                JsonSivilstatus.Status.SEPARERT -> "familie.sivilstatus.separert"
+                JsonSivilstatus.Status.UGIFT -> "familie.sivilstatus.ugift"
+                else -> "familie.sivilstatus.ugift"
+            }
         return key
     }
 
     private fun brukerRegistrertEktefelle(sivilstatus: JsonSivilstatus): Sporsmal {
         val ektefelle = sivilstatus.ektefelle
-        val erUtfylt = !ektefelle.navn.fornavn.isNullOrEmpty() &&
-            !ektefelle.navn.etternavn.isNullOrEmpty() &&
-            !ektefelle.fodselsdato.isNullOrEmpty() &&
-            !ektefelle.personIdentifikator.isNullOrEmpty() &&
-            sivilstatus.borSammenMed != null
+        val erUtfylt =
+            !ektefelle.navn.fornavn.isNullOrEmpty() &&
+                !ektefelle.navn.etternavn.isNullOrEmpty() &&
+                !ektefelle.fodselsdato.isNullOrEmpty() &&
+                !ektefelle.personIdentifikator.isNullOrEmpty() &&
+                sivilstatus.borSammenMed != null
         val map = LinkedHashMap<String, Svar>()
         map["familie.sivilstatus.gift.ektefelle.navn.label"] =
             createSvar(fulltnavn(ektefelle.navn), SvarType.TEKST)
@@ -119,12 +125,13 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.sivilstatus.gift.ektefelle.sporsmal",
             erUtfylt = erUtfylt,
-            felt = listOf(
-                Felt(
-                    type = Type.SYSTEMDATA_MAP, // selv om dette ikke er systemdata?!?
-                    labelSvarMap = map
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.SYSTEMDATA_MAP, // selv om dette ikke er systemdata?!?
+                        labelSvarMap = map,
+                    ),
+                ),
         )
     }
 
@@ -148,12 +155,13 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "system.familie.sivilstatus",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.SYSTEMDATA,
-                    svar = createSvar("system.familie.sivilstatus.ikkeTilgang.label", SvarType.LOCALE_TEKST)
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.SYSTEMDATA,
+                        svar = createSvar("system.familie.sivilstatus.ikkeTilgang.label", SvarType.LOCALE_TEKST),
+                    ),
+                ),
         )
     }
 
@@ -169,27 +177,29 @@ class FamiliesituasjonSteg {
                 createSvar(ektefelle.fodselsdato, SvarType.DATO)
         }
         if (sivilstatus.folkeregistrertMedEktefelle != null) {
-            labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"] = createSvar(
-                if (java.lang.Boolean.TRUE == sivilstatus.folkeregistrertMedEktefelle) "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" else "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false",
-                SvarType.LOCALE_TEKST
-            )
+            labelSvarMap["system.familie.sivilstatus.gift.ektefelle.folkereg"] =
+                createSvar(
+                    if (java.lang.Boolean.TRUE == sivilstatus.folkeregistrertMedEktefelle) "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" else "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false",
+                    SvarType.LOCALE_TEKST,
+                )
         }
         return Sporsmal(
             tittel = "system.familie.sivilstatus.infotekst",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.SYSTEMDATA_MAP,
-                    labelSvarMap = labelSvarMap
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.SYSTEMDATA_MAP,
+                        labelSvarMap = labelSvarMap,
+                    ),
+                ),
         )
     }
 
     private fun forsorgerpliktAvsnitt(forsorgerplikt: JsonForsorgerplikt): Avsnitt {
         return Avsnitt(
             tittel = "familierelasjon.faktum.sporsmal",
-            sporsmal = forsorgerpliktSporsmal(forsorgerplikt)
+            sporsmal = forsorgerpliktSporsmal(forsorgerplikt),
         )
     }
 
@@ -218,12 +228,13 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familierelasjon.ingen_registrerte_barn_tittel",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.SYSTEMDATA,
-                    svar = createSvar("familierelasjon.ingen_registrerte_barn_tekst", SvarType.LOCALE_TEKST)
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.SYSTEMDATA,
+                        svar = createSvar("familierelasjon.ingen_registrerte_barn_tekst", SvarType.LOCALE_TEKST),
+                    ),
+                ),
         )
     }
 
@@ -236,20 +247,22 @@ class FamiliesituasjonSteg {
             labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
         }
         if (barn.erFolkeregistrertSammen != null) {
-            labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] = createSvar(
-                if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
-                SvarType.LOCALE_TEKST
-            )
+            labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] =
+                createSvar(
+                    if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
+                    SvarType.LOCALE_TEKST,
+                )
         }
         return Sporsmal(
             tittel = "familie.barn.true.barn.sporsmal",
             erUtfylt = true,
-            felt = listOf(
-                Felt(
-                    type = Type.SYSTEMDATA_MAP,
-                    labelSvarMap = labelSvarMap
-                )
-            )
+            felt =
+                listOf(
+                    Felt(
+                        type = Type.SYSTEMDATA_MAP,
+                        labelSvarMap = labelSvarMap,
+                    ),
+                ),
         )
     }
 
@@ -259,15 +272,16 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "system.familie.barn.true.barn.deltbosted.sporsmal",
             erUtfylt = harUtfyltDeltBostedSporsmal,
-            felt = if (harUtfyltDeltBostedSporsmal) {
-                StegUtils.booleanVerdiFelt(
-                    harSvartJaDeltBosted,
-                    "system.familie.barn.true.barn.deltbosted.true",
-                    "system.familie.barn.true.barn.deltbosted.false"
-                )
-            } else {
-                null
-            }
+            felt =
+                if (harUtfyltDeltBostedSporsmal) {
+                    StegUtils.booleanVerdiFelt(
+                        harSvartJaDeltBosted,
+                        "system.familie.barn.true.barn.deltbosted.true",
+                        "system.familie.barn.true.barn.deltbosted.false",
+                    )
+                } else {
+                    null
+                },
         )
     }
 
@@ -276,27 +290,29 @@ class FamiliesituasjonSteg {
         return Sporsmal(
             tittel = "familie.barn.true.barnebidrag.sporsmal",
             erUtfylt = erUtfylt,
-            felt = if (erUtfylt) {
-                listOf(
-                    Felt(
-                        type = Type.CHECKBOX,
-                        svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST)
+            felt =
+                if (erUtfylt) {
+                    listOf(
+                        Felt(
+                            type = Type.CHECKBOX,
+                            svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST),
+                        ),
                     )
-                )
-            } else {
-                null
-            }
+                } else {
+                    null
+                },
         )
     }
 
     private fun verdiToTekstKey(verdi: Verdi): String {
-        val key: String = when (verdi) {
-            Verdi.MOTTAR -> "familie.barn.true.barnebidrag.mottar"
-            Verdi.BETALER -> "familie.barn.true.barnebidrag.betaler"
-            Verdi.BEGGE -> "familie.barn.true.barnebidrag.begge"
-            Verdi.INGEN -> "familie.barn.true.barnebidrag.ingen"
-            else -> "familie.barn.true.barnebidrag.ingen"
-        }
+        val key: String =
+            when (verdi) {
+                Verdi.MOTTAR -> "familie.barn.true.barnebidrag.mottar"
+                Verdi.BETALER -> "familie.barn.true.barnebidrag.betaler"
+                Verdi.BEGGE -> "familie.barn.true.barnebidrag.begge"
+                Verdi.INGEN -> "familie.barn.true.barnebidrag.ingen"
+                else -> "familie.barn.true.barnebidrag.ingen"
+            }
         return key
     }
 }

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class TelefonnummerSystemdataTest {
-
     private val mobiltelefonService: MobiltelefonService = mockk()
     private val v2AdapterService: V2AdapterService = mockk()
     private val telefonnummerSystemdata = TelefonnummerSystemdata(mobiltelefonService, v2AdapterService)
@@ -85,9 +84,10 @@ internal class TelefonnummerSystemdataTest {
 
     private fun createJsonInternalSoknadWithUserDefinedTelefonnummer(): JsonInternalSoknad {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
-        jsonInternalSoknad.soknad.data.personalia.telefonnummer = JsonTelefonnummer()
-            .withKilde(JsonKilde.BRUKER)
-            .withVerdi(TELEFONNUMMER_BRUKER)
+        jsonInternalSoknad.soknad.data.personalia.telefonnummer =
+            JsonTelefonnummer()
+                .withKilde(JsonKilde.BRUKER)
+                .withVerdi(TELEFONNUMMER_BRUKER)
         return jsonInternalSoknad
     }
 
@@ -96,7 +96,9 @@ internal class TelefonnummerSystemdataTest {
         private const val TELEFONNUMMER_SYSTEM = "98765432"
         private const val TELEFONNUMMER_BRUKER = "+4723456789"
 
-        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+        private fun createSoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
@@ -105,7 +107,7 @@ internal class TelefonnummerSystemdataTest {
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

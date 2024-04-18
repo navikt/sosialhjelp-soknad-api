@@ -13,13 +13,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class AndreInntekterTest {
-
     private val andreInntekter = AndreInntekter()
 
     @Test
     fun harIkkeUtfyltSporsmal() {
-        val opplysninger = JsonOkonomiopplysninger()
-            .withBekreftelse(emptyList())
+        val opplysninger =
+            JsonOkonomiopplysninger()
+                .withBekreftelse(emptyList())
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(1)
@@ -67,10 +67,11 @@ internal class AndreInntekterTest {
     @Test
     fun harAndreInntekterMedUtbetalinger() {
         val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
-            createUtbetaling(SoknadJsonTyper.UTBETALING_SALG)
-        )
+        opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
+                createUtbetaling(SoknadJsonTyper.UTBETALING_SALG),
+            )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -85,16 +86,27 @@ internal class AndreInntekterTest {
         assertThat(hvaHarDuMottattSporsmal.tittel).isEqualTo("inntekt.inntekter.true.type.sporsmal")
         assertThat(hvaHarDuMottattSporsmal.erUtfylt).isTrue
         assertThat(hvaHarDuMottattSporsmal.felt).hasSize(2)
-        validateFeltMedSvar(hvaHarDuMottattSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "json.okonomi.opplysninger.inntekt.inntekter.utbytte")
-        validateFeltMedSvar(hvaHarDuMottattSporsmal.felt!![1], Type.CHECKBOX, SvarType.LOCALE_TEKST, "json.okonomi.opplysninger.inntekt.inntekter.salg")
+        validateFeltMedSvar(
+            hvaHarDuMottattSporsmal.felt!![0],
+            Type.CHECKBOX,
+            SvarType.LOCALE_TEKST,
+            "json.okonomi.opplysninger.inntekt.inntekter.utbytte",
+        )
+        validateFeltMedSvar(
+            hvaHarDuMottattSporsmal.felt!![1],
+            Type.CHECKBOX,
+            SvarType.LOCALE_TEKST,
+            "json.okonomi.opplysninger.inntekt.inntekter.salg",
+        )
     }
 
     @Test
     fun harAndreInntekterUtenBeskrivelseAvAnnet() {
         val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET)
-        )
+        opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+            )
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(3)
@@ -109,7 +121,12 @@ internal class AndreInntekterTest {
         assertThat(hvaHarDuMottattSporsmal.tittel).isEqualTo("inntekt.inntekter.true.type.sporsmal")
         assertThat(hvaHarDuMottattSporsmal.erUtfylt).isTrue
         assertThat(hvaHarDuMottattSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(hvaHarDuMottattSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "json.okonomi.opplysninger.inntekt.inntekter.annet")
+        validateFeltMedSvar(
+            hvaHarDuMottattSporsmal.felt!![0],
+            Type.CHECKBOX,
+            SvarType.LOCALE_TEKST,
+            "json.okonomi.opplysninger.inntekt.inntekter.annet",
+        )
 
         val annetBeskrivelseSporsmal = avsnitt.sporsmal[2]
         assertThat(annetBeskrivelseSporsmal.tittel).isEqualTo("inntekt.inntekter.true.type.annet")
@@ -120,11 +137,13 @@ internal class AndreInntekterTest {
     @Test
     fun harAndreInntekterMedBeskrivelseAvAnnet() {
         val opplysninger = createOpplysninger(true)
-        opplysninger.utbetaling = listOf(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET)
-        )
-        opplysninger.beskrivelseAvAnnet = JsonOkonomibeskrivelserAvAnnet()
-            .withUtbetaling("ANNEN")
+        opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
+            )
+        opplysninger.beskrivelseAvAnnet =
+            JsonOkonomibeskrivelserAvAnnet()
+                .withUtbetaling("ANNEN")
 
         val avsnitt = andreInntekter.getAvsnitt(opplysninger)
         assertThat(avsnitt.sporsmal).hasSize(3)
@@ -139,7 +158,12 @@ internal class AndreInntekterTest {
         assertThat(hvaHarDuMottattSporsmal.tittel).isEqualTo("inntekt.inntekter.true.type.sporsmal")
         assertThat(hvaHarDuMottattSporsmal.erUtfylt).isTrue
         assertThat(hvaHarDuMottattSporsmal.felt).hasSize(1)
-        validateFeltMedSvar(hvaHarDuMottattSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "json.okonomi.opplysninger.inntekt.inntekter.annet")
+        validateFeltMedSvar(
+            hvaHarDuMottattSporsmal.felt!![0],
+            Type.CHECKBOX,
+            SvarType.LOCALE_TEKST,
+            "json.okonomi.opplysninger.inntekt.inntekter.annet",
+        )
 
         val annetBeskrivelseSporsmal = avsnitt.sporsmal[2]
         assertThat(annetBeskrivelseSporsmal.tittel).isEqualTo("inntekt.inntekter.true.type.annet")
@@ -154,8 +178,8 @@ internal class AndreInntekterTest {
                 listOf(
                     JsonOkonomibekreftelse()
                         .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
-                        .withVerdi(harBekreftelse)
-                )
+                        .withVerdi(harBekreftelse),
+                ),
             )
     }
 

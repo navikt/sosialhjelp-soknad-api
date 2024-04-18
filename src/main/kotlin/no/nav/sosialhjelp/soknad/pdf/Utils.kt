@@ -11,12 +11,14 @@ import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
 
 object Utils {
-
     const val DATO_FORMAT = "d. MMMM yyyy"
     const val DATO_OG_TID_FORMAT = "d. MMMM yyyy HH:mm"
     private val locale = Locale.forLanguageTag("nb-NO")
 
-    fun addLinks(pdf: PdfGenerator, uris: Map<String, String>) {
+    fun addLinks(
+        pdf: PdfGenerator,
+        uris: Map<String, String>,
+    ) {
         pdf.skrivTekst("Lenker på siden: ")
         for ((name, uri) in uris) {
             pdf.skrivTekst("$name: $uri")
@@ -24,17 +26,26 @@ object Utils {
         pdf.addBlankLine()
     }
 
-    fun hentUtbetalinger(okonomi: JsonOkonomi, type: String): List<JsonOkonomiOpplysningUtbetaling> {
+    fun hentUtbetalinger(
+        okonomi: JsonOkonomi,
+        type: String,
+    ): List<JsonOkonomiOpplysningUtbetaling> {
         return okonomi.opplysninger.utbetaling
             .filter { it.type == type }
     }
 
-    fun hentBekreftelser(okonomi: JsonOkonomi, type: String): List<JsonOkonomibekreftelse> {
+    fun hentBekreftelser(
+        okonomi: JsonOkonomi,
+        type: String,
+    ): List<JsonOkonomibekreftelse> {
         return okonomi.opplysninger.bekreftelse
             ?.filter { it.type == type } ?: emptyList()
     }
 
-    fun formaterDato(dato: String?, format: String): String {
+    fun formaterDato(
+        dato: String?,
+        format: String,
+    ): String {
         return dato?.let { LocalDate.parse(it).format(ofPattern(format, locale)) } ?: ""
     }
 

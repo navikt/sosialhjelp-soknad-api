@@ -17,7 +17,6 @@ import java.util.stream.Collectors
 
 @Component
 class BydelFordelingService {
-
     private val markaBydelFordeling: List<BydelFordeling>
         get() {
             val json = readBydelsfordelingFromFile()
@@ -35,11 +34,17 @@ class BydelFordelingService {
             ?.bydelTil ?: adresseForslag.geografiskTilknytning ?: ""
     }
 
-    private fun isInHusnummerFordeling(husnummerfordeling: List<Husnummerfordeling>, husnummer: String?): Boolean {
+    private fun isInHusnummerFordeling(
+        husnummerfordeling: List<Husnummerfordeling>,
+        husnummer: String?,
+    ): Boolean {
         return husnummerfordeling.any { isInRangeHusnummer(it, husnummer) }
     }
 
-    private fun isInRangeHusnummer(husnummerfordeling: Husnummerfordeling, husnummer: String?): Boolean {
+    private fun isInRangeHusnummer(
+        husnummerfordeling: Husnummerfordeling,
+        husnummer: String?,
+    ): Boolean {
         if (husnummer == null || !StringUtils.isNumeric(husnummer)) {
             return false
         }

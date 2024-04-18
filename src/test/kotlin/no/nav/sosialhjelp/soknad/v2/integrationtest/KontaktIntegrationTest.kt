@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 
@@ -27,7 +26,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             uri = "/soknad/${soknad.id}/adresser",
-            responseBodyClass = AdresserDto::class.java
+            responseBodyClass = AdresserDto::class.java,
         ).also {
             assertThat(it.adresseValg).isEqualTo(kontakt.adresser.adressevalg)
 
@@ -46,16 +45,17 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `Skal oppdatere brukeradresse i soknad`() {
         val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
 
-        val adresserInput = AdresserInput(
-            adresseValg = AdresseValg.SOKNAD,
-            brukerAdresse = opprettFolkeregistrertAdresse()
-        )
+        val adresserInput =
+            AdresserInput(
+                adresseValg = AdresseValg.SOKNAD,
+                brukerAdresse = opprettFolkeregistrertAdresse(),
+            )
 
         doPut(
             uri = "/soknad/${lagretSoknad.id}/adresser",
             requestBody = adresserInput,
             responseBodyClass = AdresserDto::class.java,
-            lagretSoknad.id
+            lagretSoknad.id,
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {

@@ -40,17 +40,18 @@ internal class DigisosApiServiceTest {
     private val shadowProductionManager: ShadowProductionManager = mockk(relaxed = true)
     private val v2RegisterDataAdapter: SoknadV2AdapterService = mockk(relaxed = true)
 
-    private val digisosApiService = DigisosApiService(
-        digisosApiV2Client,
-        soknadUnderArbeidService,
-        soknadUnderArbeidRepository,
-        soknadMetadataRepository,
-        dokumentListeService,
-        prometheusMetricsService,
-        Clock.systemDefaultZone(),
-        shadowProductionManager,
-        v2RegisterDataAdapter
-    )
+    private val digisosApiService =
+        DigisosApiService(
+            digisosApiV2Client,
+            soknadUnderArbeidService,
+            soknadUnderArbeidRepository,
+            soknadMetadataRepository,
+            dokumentListeService,
+            prometheusMetricsService,
+            Clock.systemDefaultZone(),
+            shadowProductionManager,
+            v2RegisterDataAdapter,
+        )
 
     private val eier = "12345678910"
 
@@ -95,28 +96,35 @@ internal class DigisosApiServiceTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { MiljoUtils.environmentName } returns "test"
 
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "behandlingsid",
-            tilknyttetBehandlingsId = null,
-            eier = eier,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = eier,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
-        val soknadMetadata = SoknadMetadata(
-            id = 1L,
-            behandlingsId = "behandlingsid",
-            fnr = "12345678910",
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadMetadata =
+            SoknadMetadata(
+                id = 1L,
+                behandlingsId = "behandlingsid",
+                fnr = "12345678910",
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
-        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any(), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)) } just runs
+        every {
+            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
+                any(),
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+            )
+        } just runs
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
         every { soknadMetadataRepository.oppdater(any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs

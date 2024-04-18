@@ -22,18 +22,18 @@ class AdressesokClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
-
     fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {
-            val response = baseRequest
-                .header(AUTHORIZATION, BEARER + azureAdToken())
-                .bodyValue(PdlRequest(ADRESSE_SOK, variables))
-                .retrieve()
-                .bodyToMono<String>()
-                .retryWhen(pdlRetry)
-                .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
+            val response =
+                baseRequest
+                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .bodyValue(PdlRequest(ADRESSE_SOK, variables))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
             val pdlResponse = parse<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data?.sokAdresse

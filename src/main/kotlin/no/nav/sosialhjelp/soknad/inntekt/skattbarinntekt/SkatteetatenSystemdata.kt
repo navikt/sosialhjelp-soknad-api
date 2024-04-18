@@ -16,9 +16,8 @@ import org.springframework.stereotype.Component
 class SkatteetatenSystemdata(
     private val skattbarInntektService: SkattbarInntektService,
     private val organisasjonService: OrganisasjonService,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
-
     fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
 

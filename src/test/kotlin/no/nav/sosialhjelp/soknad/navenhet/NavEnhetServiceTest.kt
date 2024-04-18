@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 class NavEnhetServiceTest {
-
     private val norgService: NorgService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val bydelFordelingService: BydelFordelingService = mockk()
@@ -42,15 +41,16 @@ class NavEnhetServiceTest {
     private val kodeverkService: KodeverkService = mockk()
     private val unleash: Unleash = mockk()
 
-    private val navEnhetService = NavEnhetService(
-        norgService,
-        kommuneInfoService,
-        bydelFordelingService,
-        finnAdresseService,
-        geografiskTilknytningService,
-        kodeverkService,
-        unleash
-    )
+    private val navEnhetService =
+        NavEnhetService(
+            norgService,
+            kommuneInfoService,
+            bydelFordelingService,
+            finnAdresseService,
+            geografiskTilknytningService,
+            kodeverkService,
+            unleash,
+        )
 
     @BeforeEach
     fun setUp() {
@@ -151,7 +151,12 @@ class NavEnhetServiceTest {
         every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
         every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(BEHANDLINGSID, soknadUnderArbeid.jsonInternalSoknad!!.soknad, JsonAdresseValg.FOLKEREGISTRERT)
+        val response =
+            navEnhetService.getNavEnhet(
+                BEHANDLINGSID,
+                soknadUnderArbeid.jsonInternalSoknad!!.soknad,
+                JsonAdresseValg.FOLKEREGISTRERT,
+            )
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
@@ -171,7 +176,12 @@ class NavEnhetServiceTest {
         every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
         every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(BEHANDLINGSID, soknadUnderArbeid.jsonInternalSoknad!!.soknad, JsonAdresseValg.FOLKEREGISTRERT)
+        val response =
+            navEnhetService.getNavEnhet(
+                BEHANDLINGSID,
+                soknadUnderArbeid.jsonInternalSoknad!!.soknad,
+                JsonAdresseValg.FOLKEREGISTRERT,
+            )
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
@@ -179,6 +189,7 @@ class NavEnhetServiceTest {
     }
 
     @Test
+    @Suppress("ktlint:standard:max-line-length")
     internal fun `getNavEnhet - adressevalg er folkeregistrert - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
@@ -190,7 +201,12 @@ class NavEnhetServiceTest {
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
         every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
 
-        val response = navEnhetService.getNavEnhet(BEHANDLINGSID, soknadUnderArbeid.jsonInternalSoknad!!.soknad, JsonAdresseValg.FOLKEREGISTRERT)
+        val response =
+            navEnhetService.getNavEnhet(
+                BEHANDLINGSID,
+                soknadUnderArbeid.jsonInternalSoknad!!.soknad,
+                JsonAdresseValg.FOLKEREGISTRERT,
+            )
 
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(KOMMUNENR)
@@ -199,7 +215,7 @@ class NavEnhetServiceTest {
 
     private fun assertThatEnhetIsCorrectlyConverted(
         navEnhetFrontend: NavEnhetFrontend?,
-        soknadsmottaker: JsonSoknadsmottaker
+        soknadsmottaker: JsonSoknadsmottaker,
     ) {
         if (navEnhetFrontend == null) {
             assertThat(soknadsmottaker).isNull()
@@ -222,7 +238,7 @@ class NavEnhetServiceTest {
             jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 
@@ -230,18 +246,19 @@ class NavEnhetServiceTest {
         private const val BEHANDLINGSID = "123"
         private const val OPPHOLDSADRESSE_KOMMUNENR = "0123"
         private const val OPPHOLDSADRESSE_BYDELSNR = "012301"
-        private val OPPHOLDSADRESSE: JsonAdresse = JsonGateAdresse()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(JsonAdresse.Type.GATEADRESSE)
-            .withLandkode("NOR")
-            .withKommunenummer(OPPHOLDSADRESSE_KOMMUNENR)
-            .withAdresselinjer(null)
-            .withBolignummer("1")
-            .withPostnummer("2")
-            .withPoststed("Oslo")
-            .withGatenavn("Sanntidsgata")
-            .withHusnummer("1337")
-            .withHusbokstav("A")
+        private val OPPHOLDSADRESSE: JsonAdresse =
+            JsonGateAdresse()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(JsonAdresse.Type.GATEADRESSE)
+                .withLandkode("NOR")
+                .withKommunenummer(OPPHOLDSADRESSE_KOMMUNENR)
+                .withAdresselinjer(null)
+                .withBolignummer("1")
+                .withPostnummer("2")
+                .withPoststed("Oslo")
+                .withGatenavn("Sanntidsgata")
+                .withHusnummer("1337")
+                .withHusbokstav("A")
 
         private const val ENHETSNAVN = "NAV Testenhet"
         private const val KOMMUNENAVN = "Test kommune"
@@ -253,18 +270,34 @@ class NavEnhetServiceTest {
         private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.digisoskommuner[1]
         private const val ENHETSNR_2 = "5678"
         private const val ORGNR_2 = "987654321"
-        private val SOKNADSMOTTAKER = JsonSoknadsmottaker()
-            .withNavEnhetsnavn("$ENHETSNAVN, $KOMMUNENAVN")
-            .withEnhetsnummer(ENHETSNR)
-            .withKommunenummer(KOMMUNENR)
+        private val SOKNADSMOTTAKER =
+            JsonSoknadsmottaker()
+                .withNavEnhetsnavn("$ENHETSNAVN, $KOMMUNENAVN")
+                .withEnhetsnummer(ENHETSNR)
+                .withKommunenummer(KOMMUNENR)
 
-        private val SOKNADSMOTTAKER_2 = JsonSoknadsmottaker()
-            .withNavEnhetsnavn("$ENHETSNAVN_2, $KOMMUNENAVN_2")
-            .withEnhetsnummer(ENHETSNR_2)
-            .withKommunenummer(KOMMUNENR_2)
+        private val SOKNADSMOTTAKER_2 =
+            JsonSoknadsmottaker()
+                .withNavEnhetsnavn("$ENHETSNAVN_2, $KOMMUNENAVN_2")
+                .withEnhetsnummer(ENHETSNR_2)
+                .withKommunenummer(KOMMUNENR_2)
 
-        private val SOKNADSMOTTAKER_FORSLAG = AdresseForslag(null, null, null, KOMMUNENR, KOMMUNENAVN, null, null, KOMMUNENR, null, null, AdresseForslagType.GATEADRESSE)
-        private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, BydelFordelingService.BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
+        private val SOKNADSMOTTAKER_FORSLAG =
+            AdresseForslag(null, null, null, KOMMUNENR, KOMMUNENAVN, null, null, KOMMUNENR, null, null, AdresseForslagType.GATEADRESSE)
+        private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA =
+            AdresseForslag(
+                null,
+                null,
+                null,
+                KOMMUNENR_2,
+                KOMMUNENAVN_2,
+                null,
+                null,
+                BydelFordelingService.BYDEL_MARKA_OSLO,
+                null,
+                null,
+                AdresseForslagType.GATEADRESSE,
+            )
 
         private val NAV_ENHET = NavEnhet(ENHETSNR, ENHETSNAVN, null, ORGNR)
         private val NAV_ENHET_2 = NavEnhet(ENHETSNR_2, ENHETSNAVN_2, null, ORGNR_2)

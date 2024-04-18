@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class ArbeidRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
@@ -60,7 +59,9 @@ internal class ArbeidRessursTest {
     @Test
     fun arbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)
+        every {
+            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
+        } returns createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
         val arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold
@@ -123,16 +124,17 @@ internal class ArbeidRessursTest {
 
     @Test
     fun `putArbeid med KommentarTilArbeidsfohrold lager json som ikke validerer hvis forhold-liste har blitt satt lik null`() {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         // skal ikke være mulig:
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
 
@@ -159,7 +161,9 @@ internal class ArbeidRessursTest {
     @Test
     fun putArbeidSkalOppdatereKommentarTilArbeidsforhold() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
+        every {
+            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
+        } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
@@ -175,7 +179,9 @@ internal class ArbeidRessursTest {
     @Test
     fun putArbeidSkalSetteLikNullDersomKommentarenErTom() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
+        every {
+            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
+        } returns createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar")
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
@@ -209,7 +215,7 @@ internal class ArbeidRessursTest {
 
     private fun assertThatArbeidsforholdIsCorrectlyConverted(
         forholdFrontend: ArbeidRessurs.ArbeidsforholdFrontend,
-        jsonForhold: JsonArbeidsforhold
+        jsonForhold: JsonArbeidsforhold,
     ) {
         assertThat(forholdFrontend.arbeidsgivernavn).isEqualTo(jsonForhold.arbeidsgivernavn)
         assertThat(forholdFrontend.fom).isEqualTo(jsonForhold.fom)
@@ -219,7 +225,10 @@ internal class ArbeidRessursTest {
         assertThat(forholdFrontend.overstyrtAvBruker).isEqualTo(java.lang.Boolean.FALSE)
     }
 
-    private fun assertThatStillingstypeIsCorrect(stillingstypeErHeltid: Boolean?, stillingstype: Stillingstype) {
+    private fun assertThatStillingstypeIsCorrect(
+        stillingstypeErHeltid: Boolean?,
+        stillingstype: Stillingstype,
+    ) {
         if (stillingstypeErHeltid == null) {
             return
         }
@@ -236,18 +245,19 @@ internal class ArbeidRessursTest {
 
     private fun createJsonInternalSoknadWithArbeid(
         arbeidsforholdList: List<JsonArbeidsforhold>?,
-        kommentar: String?
+        kommentar: String?,
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         arbeidsforholdList?.let { soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = it }
         kommentar?.let {
             soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.kommentarTilArbeidsforhold =
@@ -263,21 +273,23 @@ internal class ArbeidRessursTest {
         private const val EIER = "123456789101"
         private const val KOMMENTAR =
             "Hath not the potter power over the clay, to make one vessel unto honor and another unto dishonor?"
-        private val ARBEIDSFORHOLD_1 = JsonArbeidsforhold()
-            .withKilde(JsonKilde.SYSTEM)
-            .withArbeidsgivernavn("Good Corp.")
-            .withFom("1337-01-01")
-            .withTom("2020-01-01")
-            .withStillingstype(Stillingstype.FAST)
-            .withStillingsprosent(50)
-            .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
-        private val ARBEIDSFORHOLD_2 = JsonArbeidsforhold()
-            .withKilde(JsonKilde.SYSTEM)
-            .withArbeidsgivernavn("Evil Corp.")
-            .withFom("1337-02-02")
-            .withTom("2020-02-02")
-            .withStillingstype(Stillingstype.VARIABEL)
-            .withStillingsprosent(30)
-            .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
+        private val ARBEIDSFORHOLD_1 =
+            JsonArbeidsforhold()
+                .withKilde(JsonKilde.SYSTEM)
+                .withArbeidsgivernavn("Good Corp.")
+                .withFom("1337-01-01")
+                .withTom("2020-01-01")
+                .withStillingstype(Stillingstype.FAST)
+                .withStillingsprosent(50)
+                .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
+        private val ARBEIDSFORHOLD_2 =
+            JsonArbeidsforhold()
+                .withKilde(JsonKilde.SYSTEM)
+                .withArbeidsgivernavn("Evil Corp.")
+                .withFom("1337-02-02")
+                .withTom("2020-02-02")
+                .withStillingstype(Stillingstype.VARIABEL)
+                .withStillingsprosent(30)
+                .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
     }
 }

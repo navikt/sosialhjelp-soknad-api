@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class LeaderElectionConfig {
-
     @Profile("leader-election")
     @Bean
     fun leaderElection(webClientBuilder: WebClient.Builder): LeaderElection {

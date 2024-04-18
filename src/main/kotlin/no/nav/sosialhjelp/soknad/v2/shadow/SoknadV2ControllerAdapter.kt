@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
-import java.util.*
+import java.util.UUID
 
 @Controller
 class SoknadV2ControllerAdapter(
@@ -52,13 +52,13 @@ class SoknadV2ControllerAdapter(
     private val sivilstandController: SivilstandController,
     private val forsorgerpliktController: ForsorgerpliktController,
     private val v2AdresseControllerAdapter: V2AdresseControllerAdapter,
-    private val transactionTemplate: TransactionTemplate
+    private val transactionTemplate: TransactionTemplate,
 ) : ControllerAdapter {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun updateArbeid(
         soknadId: String,
-        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest
+        arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
         log.info("NyModell: Oppdaterer Arbeid for $soknadId")
 
@@ -72,7 +72,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBegrunnelse(
         soknadId: String,
-        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend
+        begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
         log.info("NyModell: Oppdaterer Begrunnelse for $soknadId")
 
@@ -83,8 +83,8 @@ class SoknadV2ControllerAdapter(
                         UUID.fromString(soknadId),
                         BegrunnelseDto(
                             hvaSokesOm = hvaSokesOm ?: "",
-                            hvorforSoke = hvorforSoke ?: ""
-                        )
+                            hvorforSoke = hvorforSoke ?: "",
+                        ),
                     )
                 }
             }
@@ -94,7 +94,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBosituasjon(
         soknadId: String,
-        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend
+        bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
         log.info("NyModell: Oppdaterer Bosituasjon for $soknadId")
 
@@ -105,8 +105,8 @@ class SoknadV2ControllerAdapter(
                         UUID.fromString(soknadId),
                         BosituasjonDto(
                             botype = botype?.let { Botype.valueOf(it.name) },
-                            antallPersoner = antallPersoner
-                        )
+                            antallPersoner = antallPersoner,
+                        ),
                     )
                 }
             }
@@ -116,21 +116,22 @@ class SoknadV2ControllerAdapter(
 
     override fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerInputDTO
+        kontoInputDto: KontonummerInputDTO,
     ) {
         log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
 
-        val kontoInput = kontoInputDto.run {
-            when {
-                harIkkeKonto == true -> HarIkkeKontoInput(harIkkeKonto)
-                brukerutfyltVerdi != null -> KontonummerBrukerInput(brukerutfyltVerdi)
-                else -> return
+        val kontoInput =
+            kontoInputDto.run {
+                when {
+                    harIkkeKonto == true -> HarIkkeKontoInput(harIkkeKonto)
+                    brukerutfyltVerdi != null -> KontonummerBrukerInput(brukerutfyltVerdi)
+                    else -> return
+                }
             }
-        }
         runWithNestedTransaction {
             kontonummerController.updateKontoInformasjonBruker(
                 soknadId = UUID.fromString(soknadId),
-                input = kontoInput
+                input = kontoInput,
             )
         }
             .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
@@ -138,7 +139,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateTelefonnummer(
         soknadId: String,
-        telefonnummerBruker: String?
+        telefonnummerBruker: String?,
     ) {
         log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
 
@@ -150,62 +151,71 @@ class SoknadV2ControllerAdapter(
 
     override fun updateUtdanning(
         soknadId: String,
-        utdanningFrontend: UtdanningFrontend
+        utdanningFrontend: UtdanningFrontend,
     ) {
         log.info("NyModell: Oppdaterer Utdanning for $soknadId")
 
-        val utdanningInput = utdanningFrontend.run {
-            when {
-                erStudent == false -> IkkeStudentInput()
-                erStudent == true && studengradErHeltid != null -> {
-                    StudentgradInput(if (studengradErHeltid as Boolean) Studentgrad.HELTID else Studentgrad.DELTID)
+        val utdanningInput =
+            utdanningFrontend.run {
+                when {
+                    erStudent == false -> IkkeStudentInput()
+                    erStudent == true && studengradErHeltid != null -> {
+                        StudentgradInput(if (studengradErHeltid as Boolean) Studentgrad.HELTID else Studentgrad.DELTID)
+                    }
+                    else -> return
                 }
-                else -> return
             }
-        }
 
         runWithNestedTransaction {
             utdanningFrontend.erStudent?.let {
                 utdanningController.updateUtdanning(
                     soknadId = UUID.fromString(soknadId),
-                    input = utdanningInput
+                    input = utdanningInput,
                 )
             }
         }
             .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
     }
 
-    override fun updateSivilstand(soknadId: String, familieFrontend: SivilstatusFrontend) {
+    override fun updateSivilstand(
+        soknadId: String,
+        familieFrontend: SivilstatusFrontend,
+    ) {
         log.info("NyModell: Oppdaterer Sivilstatus for $soknadId")
 
-        val sivilstandInput = familieFrontend.run {
-            SivilstandInput(
-                sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
-                ektefelle?.let {
-                    EktefelleInput(
-                        ektefelle.personnummer,
-                        Navn(ektefelle.navn?.fornavn ?: "", ektefelle.navn?.mellomnavn, ektefelle.navn?.etternavn ?: ""),
-                        ektefelle.fodselsdato,
-                        familieFrontend.borSammenMed
-                    )
-                }
-            )
-        }
+        val sivilstandInput =
+            familieFrontend.run {
+                SivilstandInput(
+                    sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
+                    ektefelle?.let {
+                        EktefelleInput(
+                            ektefelle.personnummer,
+                            Navn(ektefelle.navn?.fornavn ?: "", ektefelle.navn?.mellomnavn, ektefelle.navn?.etternavn ?: ""),
+                            ektefelle.fodselsdato,
+                            familieFrontend.borSammenMed,
+                        )
+                    },
+                )
+            }
         runWithNestedTransaction {
             sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
         }
             .onFailure { log.error("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
-    override fun updateForsorger(soknadId: String, forsorgerpliktFrontend: ForsorgerpliktFrontend) {
+    override fun updateForsorger(
+        soknadId: String,
+        forsorgerpliktFrontend: ForsorgerpliktFrontend,
+    ) {
         log.info("NyModell: Oppdaterer Forsorger for $soknadId")
 
-        val forsorgerInput = forsorgerpliktFrontend.run {
-            ForsorgerInput(
-                barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
-                ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) }
-            )
-        }
+        val forsorgerInput =
+            forsorgerpliktFrontend.run {
+                ForsorgerInput(
+                    barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
+                    ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) },
+                )
+            }
         runWithNestedTransaction {
             forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
         }
@@ -215,7 +225,7 @@ class SoknadV2ControllerAdapter(
     override fun updateAdresseOgNavEnhet(
         soknadId: String,
         adresser: AdresserFrontendInput,
-        navEnhet: NavEnhetFrontend?
+        navEnhet: NavEnhetFrontend?,
     ) {
         adresser.valg?.let {
             runWithNestedTransaction {

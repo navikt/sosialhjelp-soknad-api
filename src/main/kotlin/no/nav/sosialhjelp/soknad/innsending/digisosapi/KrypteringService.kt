@@ -28,37 +28,38 @@ class KrypteringService {
     fun krypter(
         dokumentStream: InputStream,
         krypteringFutureList: MutableList<Future<Void>>,
-        fiksX509Certificate: X509Certificate
+        fiksX509Certificate: X509Certificate,
     ): InputStream {
         val pipedInputStream = PipedInputStream()
         try {
             val pipedOutputStream = PipedOutputStream(pipedInputStream)
-            val krypteringFuture = executor.submit {
-                try {
-                    if (MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
-                        IOUtils.copy(dokumentStream, pipedOutputStream)
-                    } else {
-                        kryptering.krypterData(
-                            pipedOutputStream,
-                            dokumentStream,
-                            fiksX509Certificate,
-                            Security.getProvider("BC")
-                        )
-                    }
-                } catch (e: Exception) {
-                    log.error("Encryption failed, setting exception on encrypted InputStream", e)
-                    throw IllegalStateException("An error occurred during encryption", e)
-                } finally {
+            val krypteringFuture =
+                executor.submit {
                     try {
-                        log.debug("Closing encryption OutputStream")
-                        pipedOutputStream.close()
-                        log.debug("Encryption OutputStream closed")
-                    } catch (e: IOException) {
-                        log.error("Failed closing encryption OutputStream", e)
+                        if (MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
+                            IOUtils.copy(dokumentStream, pipedOutputStream)
+                        } else {
+                            kryptering.krypterData(
+                                pipedOutputStream,
+                                dokumentStream,
+                                fiksX509Certificate,
+                                Security.getProvider("BC"),
+                            )
+                        }
+                    } catch (e: Exception) {
+                        log.error("Encryption failed, setting exception on encrypted InputStream", e)
+                        throw IllegalStateException("An error occurred during encryption", e)
+                    } finally {
+                        try {
+                            log.debug("Closing encryption OutputStream")
+                            pipedOutputStream.close()
+                            log.debug("Encryption OutputStream closed")
+                        } catch (e: IOException) {
+                            log.error("Failed closing encryption OutputStream", e)
+                        }
                     }
+                    null
                 }
-                null
-            }
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
             throw RuntimeException(e)

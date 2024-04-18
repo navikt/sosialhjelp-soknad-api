@@ -18,9 +18,8 @@ class MaskinportenClientConfig(
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
     @Value("\${maskinporten_client_jwk}") private val clientJwk: String,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
     @Bean
     @Profile("!test")
     fun maskinportenClient(): MaskinportenClient {
@@ -36,20 +35,22 @@ class MaskinportenClientConfig(
     private val maskinPortenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient).build()
 
     private val wellknown: WellKnown
-        get() = maskinPortenWebClient.get()
-            .uri(wellKnownUrl)
-            .retrieve()
-            .bodyToMono<WellKnown>()
-            .doOnSuccess { log.info("Hentet WellKnown for Maskinporten") }
-            .doOnError { log.warn("Feil ved henting av WellKnown for Maskinporten", it) }
-            .block() ?: throw TjenesteUtilgjengeligException("Feil ved henting av WellKnown for Maskinporten", null)
+        get() =
+            maskinPortenWebClient.get()
+                .uri(wellKnownUrl)
+                .retrieve()
+                .bodyToMono<WellKnown>()
+                .doOnSuccess { log.info("Hentet WellKnown for Maskinporten") }
+                .doOnError { log.warn("Feil ved henting av WellKnown for Maskinporten", it) }
+                .block() ?: throw TjenesteUtilgjengeligException("Feil ved henting av WellKnown for Maskinporten", null)
 
-    private val maskinportenProperties = MaskinportenProperties(
-        clientId = clientId,
-        jwkPrivate = clientJwk,
-        scope = scopes,
-        wellKnownUrl = wellKnownUrl
-    )
+    private val maskinportenProperties =
+        MaskinportenProperties(
+            clientId = clientId,
+            jwkPrivate = clientJwk,
+            scope = scopes,
+            wellKnownUrl = wellKnownUrl,
+        )
 
     companion object {
         private val log = LoggerFactory.getLogger(MaskinportenClientConfig::class.java)
@@ -58,5 +59,5 @@ class MaskinportenClientConfig(
 
 data class WellKnown(
     val issuer: String,
-    val token_endpoint: String
+    val token_endpoint: String,
 )

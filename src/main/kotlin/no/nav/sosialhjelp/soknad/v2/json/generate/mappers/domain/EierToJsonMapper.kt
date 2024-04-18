@@ -15,24 +15,29 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 
 @Component
 class EierToJsonMapper(
-    private val eierRepository: EierRepository
+    private val eierRepository: EierRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         val eier = (
             eierRepository.findByIdOrNull(soknadId)
                 ?: throw IllegalStateException("Fant ikke Eier")
-            )
+        )
 
         doMapping(eier, jsonInternalSoknad)
     }
 
     internal companion object Mapper {
-
-        fun doMapping(eier: Eier, json: JsonInternalSoknad) {
+        fun doMapping(
+            eier: Eier,
+            json: JsonInternalSoknad,
+        ) {
             json.initializeObjects()
 
             with(json.soknad.data.personalia) {

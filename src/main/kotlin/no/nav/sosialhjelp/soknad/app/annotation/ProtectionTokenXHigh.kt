@@ -17,6 +17,6 @@ import no.nav.sosialhjelp.soknad.app.Constants
 @ProtectedWithClaims(
     issuer = Constants.TOKENX,
     claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true
+    combineWithOr = true,
 )
 annotation class ProtectionTokenXHigh

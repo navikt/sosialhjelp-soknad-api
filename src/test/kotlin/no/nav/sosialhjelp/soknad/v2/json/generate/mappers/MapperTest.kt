@@ -11,10 +11,9 @@ import no.nav.sosialhjelp.soknad.v2.opprettUtdanning
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 class MapperTest {
-
     private lateinit var json: JsonInternalSoknad
 
     @BeforeEach
@@ -24,9 +23,10 @@ class MapperTest {
 
     @Test
     fun `Arbeid skal mappes til Json`() {
-        val arbeid = opprettLivssituasjon(UUID.randomUUID())
-            .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-            .arbeid
+        val arbeid =
+            opprettLivssituasjon(UUID.randomUUID())
+                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
+                .arbeid
 
         with(json.soknad.data) {
             Assertions.assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid!!.kommentar)
@@ -38,9 +38,10 @@ class MapperTest {
 
     @Test
     fun `Utdanning skal mappes til Json`() {
-        val utdanning = opprettLivssituasjon(UUID.randomUUID())
-            .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-            .utdanning
+        val utdanning =
+            opprettLivssituasjon(UUID.randomUUID())
+                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
+                .utdanning
 
         with(json.soknad.data) {
             Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
@@ -50,12 +51,13 @@ class MapperTest {
 
     @Test
     fun `erStudent satt til false skal gi studentgrad = null`() {
-        val utdanning = opprettLivssituasjon(
-            soknadId = UUID.randomUUID(),
-            utdanning = opprettUtdanning(erStudent = false)
-        )
-            .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-            .utdanning
+        val utdanning =
+            opprettLivssituasjon(
+                soknadId = UUID.randomUUID(),
+                utdanning = opprettUtdanning(erStudent = false),
+            )
+                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
+                .utdanning
 
         with(json.soknad.data) {
             Assertions.assertThat(this.utdanning.erStudent).isEqualTo(utdanning!!.erStudent)
@@ -65,9 +67,10 @@ class MapperTest {
 
     @Test
     fun `Bosituasjon skal mappes til Json`() {
-        val bosituasjon = opprettLivssituasjon(UUID.randomUUID())
-            .also { LivssituasjonToJsonMapper.doMapping(it, json) }
-            .bosituasjon
+        val bosituasjon =
+            opprettLivssituasjon(UUID.randomUUID())
+                .also { LivssituasjonToJsonMapper.doMapping(it, json) }
+                .bosituasjon
 
         with(json.soknad.data) {
             Assertions.assertThat(this.bosituasjon.botype.name).isEqualTo(bosituasjon!!.botype?.name)

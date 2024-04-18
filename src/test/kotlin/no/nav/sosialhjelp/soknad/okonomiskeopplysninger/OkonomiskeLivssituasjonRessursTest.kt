@@ -30,32 +30,33 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 class OkonomiskeLivssituasjonRessursTest {
-
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
 
-    private val okonomiskeOpplysningerRessurs = OkonomiskeOpplysningerRessurs(
-        tilgangskontroll = tilgangskontroll,
-        soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        opplastetVedleggRepository = opplastetVedleggRepository,
-        mellomlagringService = mellomlagringService,
-        soknadUnderArbeidService = soknadUnderArbeidService
-    )
+    private val okonomiskeOpplysningerRessurs =
+        OkonomiskeOpplysningerRessurs(
+            tilgangskontroll = tilgangskontroll,
+            soknadUnderArbeidRepository = soknadUnderArbeidRepository,
+            opplastetVedleggRepository = opplastetVedleggRepository,
+            mellomlagringService = mellomlagringService,
+            soknadUnderArbeidService = soknadUnderArbeidService,
+        )
 
     private val behandlingsId = "123"
 
-    private val soknadUnderArbeid = SoknadUnderArbeid(
-        versjon = 1L,
-        behandlingsId = behandlingsId,
-        eier = "eier",
-        jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
-        status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-        opprettetDato = LocalDateTime.now(),
-        sistEndretDato = LocalDateTime.now()
-    )
+    private val soknadUnderArbeid =
+        SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            eier = "eier",
+            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now(),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -69,35 +70,38 @@ class OkonomiskeLivssituasjonRessursTest {
 
     @Test
     fun `hentOkonomiskeOpplysninger happy path med 1 mellomlagret vedlegg`() {
-        val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
-                .withVedlegg(
-                    JsonVedleggSpesifikasjon()
+        val soknadMedVedlegg =
+            soknadUnderArbeid.copy(
+                jsonInternalSoknad =
+                    createEmptyJsonInternalSoknad("eier")
                         .withVedlegg(
-                            mutableListOf(
-                                JsonVedlegg()
-                                    .withType("skattemelding")
-                                    .withTilleggsinfo("skattemelding")
-                                    .withStatus(Vedleggstatus.LastetOpp.toString())
-                                    .withFiler(
-                                        mutableListOf(
-                                            JsonFiler()
-                                                .withFilnavn("hubbabubba.jpg")
-                                                .withSha512("sha512")
-                                        )
-                                    )
-                            )
-                        )
-                )
-        )
+                            JsonVedleggSpesifikasjon()
+                                .withVedlegg(
+                                    mutableListOf(
+                                        JsonVedlegg()
+                                            .withType("skattemelding")
+                                            .withTilleggsinfo("skattemelding")
+                                            .withStatus(Vedleggstatus.LastetOpp.toString())
+                                            .withFiler(
+                                                mutableListOf(
+                                                    JsonFiler()
+                                                        .withFilnavn("hubbabubba.jpg")
+                                                        .withSha512("sha512"),
+                                                ),
+                                            ),
+                                    ),
+                                ),
+                        ),
+            )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
-        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
-        )
+        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
+            listOf(
+                MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
+            )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
@@ -122,39 +126,42 @@ class OkonomiskeLivssituasjonRessursTest {
 
     @Test
     fun `hentOkonomiskeOpplysninger kaster IllegalStateException`() {
-        val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
-                .withVedlegg(
-                    JsonVedleggSpesifikasjon()
+        val soknadMedVedlegg =
+            soknadUnderArbeid.copy(
+                jsonInternalSoknad =
+                    createEmptyJsonInternalSoknad("eier")
                         .withVedlegg(
-                            mutableListOf(
-                                JsonVedlegg()
-                                    .withType("skattemelding")
-                                    .withTilleggsinfo("skattemelding")
-                                    .withStatus(Vedleggstatus.LastetOpp.toString())
-                                    .withFiler(
-                                        mutableListOf(
-                                            JsonFiler()
-                                                .withFilnavn("hubbabubba.jpg")
-                                                .withSha512("sha512"),
-                                            JsonFiler()
-                                                .withFilnavn("juicyfruit.pdf")
-                                                .withSha512("shasha512512")
-                                        )
-                                    )
-                            )
-                        )
-                )
-        )
+                            JsonVedleggSpesifikasjon()
+                                .withVedlegg(
+                                    mutableListOf(
+                                        JsonVedlegg()
+                                            .withType("skattemelding")
+                                            .withTilleggsinfo("skattemelding")
+                                            .withStatus(Vedleggstatus.LastetOpp.toString())
+                                            .withFiler(
+                                                mutableListOf(
+                                                    JsonFiler()
+                                                        .withFilnavn("hubbabubba.jpg")
+                                                        .withSha512("sha512"),
+                                                    JsonFiler()
+                                                        .withFilnavn("juicyfruit.pdf")
+                                                        .withSha512("shasha512512"),
+                                                ),
+                                            ),
+                                    ),
+                                ),
+                        ),
+            )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         // kun 1 mellomlagret fil - 1 færre enn soknad.json over viser
-        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
-        )
+        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
+            listOf(
+                MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
+            )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
@@ -164,35 +171,38 @@ class OkonomiskeLivssituasjonRessursTest {
 
     @Test
     fun `hentOkonomiskeOpplysninger JsonVedlegg med VedleggKreves og filer - kaster IllegalStateException`() {
-        val soknadMedVedlegg = soknadUnderArbeid.copy(
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
-                .withVedlegg(
-                    JsonVedleggSpesifikasjon()
+        val soknadMedVedlegg =
+            soknadUnderArbeid.copy(
+                jsonInternalSoknad =
+                    createEmptyJsonInternalSoknad("eier")
                         .withVedlegg(
-                            mutableListOf(
-                                JsonVedlegg()
-                                    .withType("skattemelding")
-                                    .withTilleggsinfo("skattemelding")
-                                    .withStatus(Vedleggstatus.VedleggKreves.toString())
-                                    .withFiler(
-                                        mutableListOf(
-                                            JsonFiler()
-                                                .withFilnavn("hubbabubba.jpg")
-                                                .withSha512("sha512")
-                                        )
-                                    )
-                            )
-                        )
-                )
-        )
+                            JsonVedleggSpesifikasjon()
+                                .withVedlegg(
+                                    mutableListOf(
+                                        JsonVedlegg()
+                                            .withType("skattemelding")
+                                            .withTilleggsinfo("skattemelding")
+                                            .withStatus(Vedleggstatus.VedleggKreves.toString())
+                                            .withFiler(
+                                                mutableListOf(
+                                                    JsonFiler()
+                                                        .withFilnavn("hubbabubba.jpg")
+                                                        .withSha512("sha512"),
+                                                ),
+                                            ),
+                                    ),
+                                ),
+                        ),
+            )
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
         every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
-        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
-            MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123")
-        )
+        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
+            listOf(
+                MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123"),
+            )
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 

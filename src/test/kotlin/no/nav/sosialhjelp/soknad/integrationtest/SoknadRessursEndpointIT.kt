@@ -20,7 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @AutoConfigureWebTestClient(timeout = "PT30S")
 @ActiveProfiles(profiles = ["no-redis", "test", "test-container"])
 class SoknadRessursEndpointIT {
-
     companion object {
         private const val BRUKER = "11111111111"
         private const val ANNEN_BRUKER = "22222222222"

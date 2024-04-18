@@ -35,17 +35,18 @@ internal class TelefonnummerRessursTest {
     private val mobiltelefonService: MobiltelefonService = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
 
-    private val telefonnummerSystemdata: TelefonnummerSystemdata = TelefonnummerSystemdata(
-        mobiltelefonService = mobiltelefonService,
-        v2AdapterService = v2AdapterService
-    )
+    private val telefonnummerSystemdata: TelefonnummerSystemdata =
+        TelefonnummerSystemdata(
+            mobiltelefonService = mobiltelefonService,
+            v2AdapterService = v2AdapterService,
+        )
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val telefonnummerRessurs =
         TelefonnummerRessurs(
             tilgangskontroll,
             telefonnummerSystemdata,
             soknadUnderArbeidRepository,
-            controllerAdapter
+            controllerAdapter,
         )
 
     @BeforeEach
@@ -113,10 +114,11 @@ internal class TelefonnummerRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true,
-            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
-        )
+        val telefonnummerFrontend =
+            TelefonnummerFrontend(
+                brukerdefinert = true,
+                brukerutfyltVerdi = TELEFONNUMMER_BRUKER,
+            )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -134,10 +136,11 @@ internal class TelefonnummerRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true,
-            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
-        )
+        val telefonnummerFrontend =
+            TelefonnummerFrontend(
+                brukerdefinert = true,
+                brukerutfyltVerdi = TELEFONNUMMER_BRUKER,
+            )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -187,7 +190,10 @@ internal class TelefonnummerRessursTest {
         verify { soknadUnderArbeidRepository wasNot Called }
     }
 
-    private fun createJsonInternalSoknadWithTelefonnummer(kilde: JsonKilde?, verdi: String?): SoknadUnderArbeid {
+    private fun createJsonInternalSoknadWithTelefonnummer(
+        kilde: JsonKilde?,
+        verdi: String?,
+    ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withTelefonnummer(
@@ -195,7 +201,7 @@ internal class TelefonnummerRessursTest {
                     JsonTelefonnummer()
                         .withKilde(kilde)
                         .withVerdi(it)
-                }
+                },
             )
         return soknadUnderArbeid
     }
@@ -215,7 +221,7 @@ internal class TelefonnummerRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

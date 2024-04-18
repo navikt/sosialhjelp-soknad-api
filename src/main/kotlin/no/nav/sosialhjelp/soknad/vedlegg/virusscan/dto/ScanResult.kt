@@ -6,9 +6,11 @@ data class ScanResult(
     @JsonAlias("Filename")
     val filename: String?,
     @JsonAlias("Result")
-    val result: Result
+    val result: Result,
 )
 
 enum class Result {
-    FOUND, OK, ERROR
+    FOUND,
+    OK,
+    ERROR,
 }

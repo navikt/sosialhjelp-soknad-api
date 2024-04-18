@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 data class PabegyntSoknad(
     val sistOppdatert: LocalDateTime,
-    val behandlingsId: String
+    val behandlingsId: String,
 )

@@ -13,7 +13,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
 class BosituasjonIntegrationTest : AbstractIntegrationTest() {
-
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
@@ -24,7 +23,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/bosituasjon",
-            BosituasjonDto::class.java
+            BosituasjonDto::class.java,
         ).also {
             assertThat(it.botype).isEqualTo(livssituasjon.bosituasjon!!.botype)
             assertThat(it.antallPersoner).isEqualTo(livssituasjon.bosituasjon!!.antallHusstand)
@@ -35,16 +34,17 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere Bosituasjon skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
-        val bosituasjonInput = BosituasjonDto(
-            botype = Botype.EIER,
-            antallPersoner = 3
-        )
+        val bosituasjonInput =
+            BosituasjonDto(
+                botype = Botype.EIER,
+                antallPersoner = 3,
+            )
 
         doPut(
             "/soknad/${soknad.id}/bosituasjon",
             bosituasjonInput,
             BosituasjonDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
@@ -62,7 +62,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/bosituasjon",
             BosituasjonDto(),
             HttpStatus.BAD_REQUEST,
-            soknad.id
+            soknad.id,
         )
     }
 
@@ -74,7 +74,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/bosituasjon",
             BosituasjonDto(antallPersoner = 3),
             BosituasjonDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {

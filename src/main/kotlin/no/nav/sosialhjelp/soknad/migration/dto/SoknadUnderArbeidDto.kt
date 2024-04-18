@@ -14,5 +14,5 @@ data class SoknadUnderArbeidDto(
     val status: SoknadUnderArbeidStatus,
     val opprettetDato: LocalDateTime,
     val sistEndretDato: LocalDateTime,
-    val opplastetVedleggList: List<OpplastetVedleggDto>
+    val opplastetVedleggList: List<OpplastetVedleggDto>,
 )

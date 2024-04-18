@@ -10,17 +10,25 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
 
 interface TokendingsClient {
-    suspend fun exchangeToken(subjectToken: String, clientAssertion: String, audience: String): TokendingsResponse
+    suspend fun exchangeToken(
+        subjectToken: String,
+        clientAssertion: String,
+        audience: String,
+    ): TokendingsResponse
+
     val audience: String
 }
 
 class TokendingsClientImpl(
     private val tokendingsWebClient: WebClient,
     private val wellKnown: WellKnown,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TokendingsClient {
-
-    override suspend fun exchangeToken(subjectToken: String, clientAssertion: String, audience: String): TokendingsResponse {
+    override suspend fun exchangeToken(
+        subjectToken: String,
+        clientAssertion: String,
+        audience: String,
+    ): TokendingsResponse {
         return withContext(dispatcher) {
             val params = LinkedMultiValueMap<String, String>()
             params.add("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")

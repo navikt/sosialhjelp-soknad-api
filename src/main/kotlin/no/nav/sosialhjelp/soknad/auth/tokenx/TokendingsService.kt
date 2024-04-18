@@ -18,17 +18,21 @@ class TokendingsService(
     private val tokendingsClient: TokendingsClient,
     private val tokendingsClientId: String,
     tokendingsPrivateJwk: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
+    private val privateRsaKey: RSAKey =
+        if (tokendingsPrivateJwk == "generateRSA") {
+            if (!isNonProduction()) throw RuntimeException("Generation of RSA keys is not allowed in prod.")
+            RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate()
+        } else {
+            RSAKey.parse(tokendingsPrivateJwk)
+        }
 
-    private val privateRsaKey: RSAKey = if (tokendingsPrivateJwk == "generateRSA") {
-        if (!isNonProduction()) throw RuntimeException("Generation of RSA keys is not allowed in prod.")
-        RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate()
-    } else {
-        RSAKey.parse(tokendingsPrivateJwk)
-    }
-
-    suspend fun exchangeToken(subject: String, token: String, audience: String): String {
+    suspend fun exchangeToken(
+        subject: String,
+        token: String,
+        audience: String,
+    ): String {
         hentFraCache("$audience-$subject")?.let { return it }
 
         val jwt = createSignedAssertion(tokendingsClientId, tokendingsClient.audience, privateRsaKey)
@@ -46,11 +50,18 @@ class TokendingsService(
         return redisService.getString(TOKENDINGS_CACHE_KEY_PREFIX + key)
     }
 
-    private fun lagreTilCache(key: String, onBehalfToken: String) {
+    private fun lagreTilCache(
+        key: String,
+        onBehalfToken: String,
+    ) {
         redisService.setex(TOKENDINGS_CACHE_KEY_PREFIX + key, onBehalfToken.toByteArray(), 30)
     }
 
-    private fun createSignedAssertion(clientId: String, audience: String, rsaKey: RSAKey): String {
+    private fun createSignedAssertion(
+        clientId: String,
+        audience: String,
+        rsaKey: RSAKey,
+    ): String {
         val now = Instant.now()
         return JWT.create()
             .withSubject(clientId)

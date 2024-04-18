@@ -31,7 +31,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadActions(
     private val soknadServiceOld: SoknadServiceOld,
@@ -40,12 +44,12 @@ class SoknadActions(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val digisosApiService: DigisosApiService,
-    private val nedetidService: NedetidService
+    private val nedetidService: NedetidService,
 ) {
     @PostMapping("/send")
     fun sendSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SendTilUrlFrontend {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
@@ -69,18 +73,23 @@ class SoknadActions(
         }
 
         log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
-        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
+        val kommunenummer =
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
         return when (kommuneStatus) {
             FIKS_NEDETID_OG_TOM_CACHE ->
-                throw SendingTilKommuneUtilgjengeligException("Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
+                throw SendingTilKommuneUtilgjengeligException(
+                    "Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
+                )
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT ->
                 throw SendingTilKommuneUtilgjengeligException("Manglende eller feil konfigurasjon. (SvarUt)")
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER ->
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException(
+                    "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
+                )
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
@@ -91,13 +100,13 @@ class SoknadActions(
 
     private fun updateVedleggJsonWithHendelseTypeAndHendelseReferanse(
         eier: String,
-        soknadUnderArbeid: SoknadUnderArbeid
+        soknadUnderArbeid: SoknadUnderArbeid,
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
 
         addHendelseTypeAndHendelseReferanse(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
-            isSoknad = !soknadUnderArbeid.erEttersendelse
+            isSoknad = !soknadUnderArbeid.erEttersendelse,
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }

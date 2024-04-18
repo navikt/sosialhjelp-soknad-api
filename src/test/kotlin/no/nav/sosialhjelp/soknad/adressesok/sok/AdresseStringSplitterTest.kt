@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class AdresseStringSplitterTest {
-
     @Test
     fun tomStrengGirBlanktSvar() {
         val sokedata = toSokedata(kodeverkService = null, adresse = "")
@@ -99,10 +98,11 @@ internal class AdresseStringSplitterTest {
 
     @Test
     fun dobbeltnavnPlussDiverseMellomrom() {
-        val sokedata = toSokedata(
-            kodeverkService = null,
-            adresse = "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   "
-        )
+        val sokedata =
+            toSokedata(
+                kodeverkService = null,
+                adresse = "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ",
+            )
         assertThat(sokedata!!.adresse).isEqualTo("Nedre Glommas Vei")
         assertThat(sokedata.husnummer).isEqualTo("211")
         assertThat(sokedata.husbokstav).isEqualTo("G")

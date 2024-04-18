@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component
 @Component
 class AaregCheck(
     @Value("\${aareg_url}") private val aaregUrl: String,
-    private val aaregClient: AaregClient
+    private val aaregClient: AaregClient,
 ) : DependencyCheck {
-
     override val type = DependencyType.REST
     override val name = "aareg-services"
     override val address = "$aaregUrl/ping"

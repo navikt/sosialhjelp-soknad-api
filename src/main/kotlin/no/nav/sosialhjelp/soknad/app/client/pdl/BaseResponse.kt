@@ -8,36 +8,37 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.HentAdre
 import no.nav.sosialhjelp.soknad.personalia.person.dto.HentPersonDataDto
 
 sealed class BaseResponse(
-    open val errors: List<JsonNode>?
+    open val errors: List<JsonNode>?,
 ) {
     fun checkForPdlApiErrors() {
         errors?.let { handleErrors(it) }
     }
 
     private fun handleErrors(errors: List<JsonNode>) {
-        val errorMessage = errors
-            .map { "${it.get("message")} (feilkode: ${it.path("extensions").path("code")})" }
-            .joinToString(prefix = "Error i respons fra pdl-api: ", separator = ", ") { it }
+        val errorMessage =
+            errors
+                .map { "${it.get("message")} (feilkode: ${it.path("extensions").path("code")})" }
+                .joinToString(prefix = "Error i respons fra pdl-api: ", separator = ", ") { it }
         throw PdlApiException(errorMessage)
     }
 }
 
 data class HentGeografiskTilknytningDto(
     val data: HentGeografiskTilknytning,
-    override val errors: List<JsonNode>?
+    override val errors: List<JsonNode>?,
 ) : BaseResponse(errors)
 
 data class AdressesokDto(
     val data: AdressesokDataDto?,
-    override val errors: List<JsonNode>?
+    override val errors: List<JsonNode>?,
 ) : BaseResponse(errors)
 
 data class HentPersonDto<T>(
     val data: HentPersonDataDto<T>,
-    override val errors: List<JsonNode>?
+    override val errors: List<JsonNode>?,
 ) : BaseResponse(errors)
 
 data class HentAdresseDto(
     val data: HentAdresseDataDto?,
-    override val errors: List<JsonNode>?
+    override val errors: List<JsonNode>?,
 ) : BaseResponse(errors)

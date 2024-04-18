@@ -10,9 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient
 class VirusScanConfig(
     @Value("\${virusscan_enabled}") private val enabled: Boolean,
     @Value("\${clamav_url}") private val clamAvUrl: String,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
-
     @Bean
     fun virusScanner(): VirusScanner {
         return VirusScanner(virusScannerWebClient, enabled)

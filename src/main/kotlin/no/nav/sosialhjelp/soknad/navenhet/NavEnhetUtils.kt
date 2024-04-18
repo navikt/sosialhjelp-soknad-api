@@ -1,10 +1,12 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 object NavEnhetUtils {
-
     private const val SPLITTER = ", "
 
-    fun createNavEnhetsnavn(enhetsnavn: String, kommunenavn: String?): String {
+    fun createNavEnhetsnavn(
+        enhetsnavn: String,
+        kommunenavn: String?,
+    ): String {
         return enhetsnavn + SPLITTER + kommunenavn
     }
 

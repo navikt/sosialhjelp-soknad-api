@@ -27,41 +27,44 @@ class PersonopplysningerSteg {
         return Steg(
             stegNr = 1,
             tittel = "personaliabolk.tittel",
-            avsnitt = listOf(
-                personaliaAvsnitt(personalia),
-                adresseOgNavKontorAvsnitt(personalia),
-                telefonnummerAvsnitt(telefonnummer),
-                kontonummerAvsnitt(kontonummer)
-            )
+            avsnitt =
+                listOf(
+                    personaliaAvsnitt(personalia),
+                    adresseOgNavKontorAvsnitt(personalia),
+                    telefonnummerAvsnitt(telefonnummer),
+                    kontonummerAvsnitt(kontonummer),
+                ),
         )
     }
 
     private fun personaliaAvsnitt(personalia: JsonPersonalia): Avsnitt {
         return Avsnitt(
             tittel = "kontakt.system.personalia.sporsmal",
-            sporsmal = listOf(
-                Sporsmal(
-                    tittel = "kontakt.system.personalia.infotekst.tekst",
-                    erUtfylt = true,
-                    felt = listOf(
-                        Felt(
-                            type = Type.SYSTEMDATA,
-                            label = "kontakt.system.personalia.navn",
-                            svar = createSvar(fulltnavn(personalia.navn), SvarType.TEKST)
-                        ),
-                        Felt(
-                            type = Type.SYSTEMDATA,
-                            label = "kontakt.system.personalia.fnr",
-                            svar = createSvar(personalia.personIdentifikator.verdi, SvarType.TEKST)
-                        ),
-                        Felt(
-                            type = Type.SYSTEMDATA,
-                            label = "kontakt.system.personalia.statsborgerskap",
-                            svar = createSvar(personalia.statsborgerskap?.verdi, SvarType.TEKST)
-                        )
-                    )
-                )
-            )
+            sporsmal =
+                listOf(
+                    Sporsmal(
+                        tittel = "kontakt.system.personalia.infotekst.tekst",
+                        erUtfylt = true,
+                        felt =
+                            listOf(
+                                Felt(
+                                    type = Type.SYSTEMDATA,
+                                    label = "kontakt.system.personalia.navn",
+                                    svar = createSvar(fulltnavn(personalia.navn), SvarType.TEKST),
+                                ),
+                                Felt(
+                                    type = Type.SYSTEMDATA,
+                                    label = "kontakt.system.personalia.fnr",
+                                    svar = createSvar(personalia.personIdentifikator.verdi, SvarType.TEKST),
+                                ),
+                                Felt(
+                                    type = Type.SYSTEMDATA,
+                                    label = "kontakt.system.personalia.statsborgerskap",
+                                    svar = createSvar(personalia.statsborgerskap?.verdi, SvarType.TEKST),
+                                ),
+                            ),
+                    ),
+                ),
         )
     }
 
@@ -69,19 +72,21 @@ class PersonopplysningerSteg {
         val oppholdsadresse = personalia.oppholdsadresse
         return Avsnitt(
             tittel = "soknadsmottaker.sporsmal",
-            sporsmal = listOf(
-                Sporsmal(
-                    tittel = "soknadsmottaker.infotekst.tekst",
-                    erUtfylt = true,
-                    felt = listOf(
-                        Felt(
-                            type = if (JsonAdresseValg.SOKNAD == oppholdsadresse.adresseValg) Type.TEKST else Type.SYSTEMDATA,
-                            label = adresseLabel(oppholdsadresse.adresseValg),
-                            svar = createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST)
-                        )
-                    )
-                )
-            )
+            sporsmal =
+                listOf(
+                    Sporsmal(
+                        tittel = "soknadsmottaker.infotekst.tekst",
+                        erUtfylt = true,
+                        felt =
+                            listOf(
+                                Felt(
+                                    type = if (JsonAdresseValg.SOKNAD == oppholdsadresse.adresseValg) Type.TEKST else Type.SYSTEMDATA,
+                                    label = adresseLabel(oppholdsadresse.adresseValg),
+                                    svar = createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST),
+                                ),
+                            ),
+                    ),
+                ),
         )
     }
 
@@ -126,13 +131,14 @@ class PersonopplysningerSteg {
             telefonnummer != null && telefonnummer.verdi != null && telefonnummer.verdi.isNotEmpty()
         return Avsnitt(
             tittel = "kontakt.system.telefoninfo.sporsmal",
-            sporsmal = listOf(
-                Sporsmal(
-                    tittel = "kontakt.system.telefoninfo.infotekst.tekst", // skal variere ut fra kilde? systemdata eller bruker
-                    erUtfylt = harUtfyltTelefonnummer,
-                    felt = telefonnummer?.let { if (harUtfyltTelefonnummer) telefonnummerFelt(it) else null }
-                )
-            )
+            sporsmal =
+                listOf(
+                    Sporsmal(
+                        tittel = "kontakt.system.telefoninfo.infotekst.tekst", // skal variere ut fra kilde? systemdata eller bruker
+                        erUtfylt = harUtfyltTelefonnummer,
+                        felt = telefonnummer?.let { if (harUtfyltTelefonnummer) telefonnummerFelt(it) else null },
+                    ),
+                ),
         )
     }
 
@@ -142,8 +148,8 @@ class PersonopplysningerSteg {
             Felt(
                 type = if (erSystemdata) Type.SYSTEMDATA else Type.TEKST,
                 label = "kontakt.system.telefon.label",
-                svar = createSvar(telefonnummer.verdi, SvarType.TEKST)
-            )
+                svar = createSvar(telefonnummer.verdi, SvarType.TEKST),
+            ),
         )
     }
 
@@ -153,13 +159,14 @@ class PersonopplysningerSteg {
             kontonummer != null && (kontonummer.verdi != null && kontonummer.verdi.isNotEmpty() || harValgtHarIkkeKonto)
         return Avsnitt(
             tittel = "kontakt.system.kontonummer.sporsmal",
-            sporsmal = listOf(
-                Sporsmal(
-                    tittel = "kontakt.system.kontonummer.label",
-                    erUtfylt = harUtfyltKontonummer,
-                    felt = kontonummer?.let { if (harUtfyltKontonummer) kontonummerFelt(it) else null }
-                )
-            )
+            sporsmal =
+                listOf(
+                    Sporsmal(
+                        tittel = "kontakt.system.kontonummer.label",
+                        erUtfylt = harUtfyltKontonummer,
+                        felt = kontonummer?.let { if (harUtfyltKontonummer) kontonummerFelt(it) else null },
+                    ),
+                ),
         )
     }
 
@@ -168,8 +175,8 @@ class PersonopplysningerSteg {
             return listOf(
                 Felt(
                     type = Type.CHECKBOX,
-                    svar = createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE_TEKST)
-                )
+                    svar = createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE_TEKST),
+                ),
             )
         }
         val erSystemdata = kontonummer.kilde == JsonKilde.SYSTEM
@@ -177,8 +184,8 @@ class PersonopplysningerSteg {
             Felt(
                 type = if (erSystemdata) Type.SYSTEMDATA else Type.TEKST,
                 label = "kontakt.system.kontonummer.label",
-                svar = createSvar(kontonummer.verdi, SvarType.TEKST)
-            )
+                svar = createSvar(kontonummer.verdi, SvarType.TEKST),
+            ),
         )
     }
 

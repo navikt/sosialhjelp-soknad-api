@@ -15,7 +15,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class BostotteHusbankenTest {
-
     private val bostotteHusbanken = BostotteHusbanken()
 
     @Test
@@ -33,11 +32,12 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotte_manglerSamtykke() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true)
+        val opplysninger =
+            createOpplysninger(
+                listOf(
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                ),
             )
-        )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
         assertThat(avsnitt.sporsmal).hasSize(2)
@@ -55,12 +55,13 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotteOgSamtykke_feilMotHusbanken() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
+        val opplysninger =
+            createOpplysninger(
+                listOf(
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
-        )
         val driftsinformasjon = JsonDriftsinformasjon().withStotteFraHusbankenFeilet(true)
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, driftsinformasjon)
@@ -79,26 +80,29 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotteOgSamtykke_medUtbetalinger_medSaker() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
-        )
-        opplysninger.utbetaling = listOf(
-            createUtbetaling(42.0, "2020-01-01"),
-            createUtbetaling(1000.0, "2020-02-02")
-        )
-        opplysninger.bostotte = JsonBostotte()
-            .withSaker(
+        val opplysninger =
+            createOpplysninger(
                 listOf(
-                    JsonBostotteSak()
-                        .withDato("2020-01-01")
-                        .withStatus("Vedtatt")
-                        .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
-                        .withBeskrivelse("Ekstra info")
-                )
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
+        opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(42.0, "2020-01-01"),
+                createUtbetaling(1000.0, "2020-02-02"),
+            )
+        opplysninger.bostotte =
+            JsonBostotte()
+                .withSaker(
+                    listOf(
+                        JsonBostotteSak()
+                            .withDato("2020-01-01")
+                            .withStatus("Vedtatt")
+                            .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
+                            .withBeskrivelse("Ekstra info"),
+                    ),
+                )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
         assertThat(avsnitt.sporsmal).hasSize(4)
@@ -145,12 +149,13 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotteOgSamtykke_medUtbetalinger_utenSaker() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
+        val opplysninger =
+            createOpplysninger(
+                listOf(
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
-        )
         opplysninger.utbetaling = listOf(createUtbetaling(42.0, "2020-01-01"))
         opplysninger.bostotte = JsonBostotte()
 
@@ -187,16 +192,18 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun nullsafe_utbetaling_mottaker() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
+        val opplysninger =
+            createOpplysninger(
+                listOf(
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
-        )
-        opplysninger.utbetaling = listOf(
-            createUtbetaling(42.0, "2020-01-01")
-                .withMottaker(null)
-        )
+        opplysninger.utbetaling =
+            listOf(
+                createUtbetaling(42.0, "2020-01-01")
+                    .withMottaker(null),
+            )
         opplysninger.bostotte = JsonBostotte()
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
@@ -222,23 +229,25 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotteOgSamtykke_utenUtbetalinger_medSaker() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
-            )
-        )
-        opplysninger.utbetaling = emptyList()
-        opplysninger.bostotte = JsonBostotte()
-            .withSaker(
+        val opplysninger =
+            createOpplysninger(
                 listOf(
-                    JsonBostotteSak()
-                        .withDato("2020-01-01")
-                        .withStatus("Vedtatt")
-                        .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
-                        .withBeskrivelse("Ekstra info")
-                )
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
+        opplysninger.utbetaling = emptyList()
+        opplysninger.bostotte =
+            JsonBostotte()
+                .withSaker(
+                    listOf(
+                        JsonBostotteSak()
+                            .withDato("2020-01-01")
+                            .withStatus("Vedtatt")
+                            .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
+                            .withBeskrivelse("Ekstra info"),
+                    ),
+                )
 
         val avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, JsonDriftsinformasjon())
         assertThat(avsnitt.sporsmal).hasSize(4)
@@ -273,12 +282,13 @@ internal class BostotteHusbankenTest {
 
     @Test
     fun harSoktEllerMottattBostotteOgSamtykke_utenUtbetalinger_utenSaker() {
-        val opplysninger = createOpplysninger(
-            listOf(
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
-                createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true)
+        val opplysninger =
+            createOpplysninger(
+                listOf(
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE, true),
+                    createBekreftelse(SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true),
+                ),
             )
-        )
         opplysninger.utbetaling = emptyList()
         opplysninger.bostotte = JsonBostotte()
 
@@ -306,14 +316,20 @@ internal class BostotteHusbankenTest {
             .withBekreftelse(bekreftelser)
     }
 
-    private fun createBekreftelse(type: String, verdi: Boolean): JsonOkonomibekreftelse {
+    private fun createBekreftelse(
+        type: String,
+        verdi: Boolean,
+    ): JsonOkonomibekreftelse {
         return JsonOkonomibekreftelse()
             .withType(type)
             .withVerdi(verdi)
             .withBekreftelsesDato("2018-10-04T13:37:00.134Z")
     }
 
-    private fun createUtbetaling(belop: Double, utbetalingsdato: String): JsonOkonomiOpplysningUtbetaling {
+    private fun createUtbetaling(
+        belop: Double,
+        utbetalingsdato: String,
+    ): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
             .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)

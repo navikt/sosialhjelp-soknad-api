@@ -9,10 +9,11 @@ import org.springframework.context.event.EventListener
 @Configuration
 class CacheMetricsConfig(
     val cacheMetricsRegistrar: CacheMetricsRegistrar,
-    val cacheManager: CacheManager
+    val cacheManager: CacheManager,
 ) {
     @EventListener(ApplicationStartedEvent::class)
-    fun addCachesToMetrics() = cacheManager.cacheNames.forEach {
-        cacheMetricsRegistrar.bindCacheToRegistry(cacheManager.getCache(it))
-    }
+    fun addCachesToMetrics() =
+        cacheManager.cacheNames.forEach {
+            cacheMetricsRegistrar.bindCacheToRegistry(cacheManager.getCache(it))
+        }
 }

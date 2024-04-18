@@ -59,43 +59,46 @@ internal class SoknadLockManagerTest {
     }
 
     @Test
-    fun `test getLock fails to acquire lock twice on different threads`() = runBlocking {
-        val (duration, locks) = measureTimeAndResult {
-            runSimultaneously({
-                lockManager.getLock(BEHANDLINGSID_A)
-            }, {
-                lockManager.getLock(BEHANDLINGSID_A)
-            })
+    fun `test getLock fails to acquire lock twice on different threads`() =
+        runBlocking {
+            val (duration, locks) =
+                measureTimeAndResult {
+                    runSimultaneously({
+                        lockManager.getLock(BEHANDLINGSID_A)
+                    }, {
+                        lockManager.getLock(BEHANDLINGSID_A)
+                    })
+                }
+
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+
+            verify { mockLockMetrics.reportLockTimeout() }
+            verify { mockLockMetrics.reportLockAcquireLatency(any()) }
+            verify(exactly = 0) { mockLockMetrics.reportLockHoldDuration(any()) }
+
+            assertEquals(1, locks.filterNotNull().size, "expected only one lock to be acquired")
+            assertEquals(1, locks.filter { it == null }.size, "expected one lock to fail to acquire")
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting second lock on BEHANDLINGSID_A")
+            assertTrue(
+                (duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS,
+                "expected to wait at least ${SoknadLockManager.LOCK_TIMEOUT_MS}ms",
+            )
         }
 
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
-
-        verify { mockLockMetrics.reportLockTimeout() }
-        verify { mockLockMetrics.reportLockAcquireLatency(any()) }
-        verify(exactly = 0) { mockLockMetrics.reportLockHoldDuration(any()) }
-
-        assertEquals(1, locks.filterNotNull().size, "expected only one lock to be acquired")
-        assertEquals(1, locks.filter { it == null }.size, "expected one lock to fail to acquire")
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting second lock on BEHANDLINGSID_A")
-        assertTrue(
-            (duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS,
-            "expected to wait at least ${SoknadLockManager.LOCK_TIMEOUT_MS}ms"
-        )
-    }
-
     @Test
-    fun `test getLock fails to acquire lock twice on same thread`() = runBlocking {
-        lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
+    fun `test getLock fails to acquire lock twice on same thread`() =
+        runBlocking {
+            lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
 
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
-        // Try to acquire the same lock again
-        val (duration, lock) = measureTimeAndResult { lockManager.getLock(BEHANDLINGSID_A) }
+            // Try to acquire the same lock again
+            val (duration, lock) = measureTimeAndResult { lockManager.getLock(BEHANDLINGSID_A) }
 
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
-        assertTrue((duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS)
-        assertNull(lock)
-    }
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+            assertTrue((duration.toMillis() + SLINGRINGSMONN_MS) >= SoknadLockManager.LOCK_TIMEOUT_MS)
+            assertNull(lock)
+        }
 
     @Test
     fun `test releaseLock releases lock successfully`() {
@@ -107,18 +110,19 @@ internal class SoknadLockManagerTest {
     }
 
     @Test
-    fun `test two threads can acquire different locks`() = runBlocking {
-        runSimultaneously({
-            lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
-        }, {
-            lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
-        })
+    fun `test two threads can acquire different locks`() =
+        runBlocking {
+            runSimultaneously({
+                lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
+            }, {
+                lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
+            })
 
-        assertLockMapState(
-            mapOf(BEHANDLINGSID_A to LockState.LOCKED, BEHANDLINGSID_B to LockState.LOCKED),
-            "after acquiring locks"
-        )
-    }
+            assertLockMapState(
+                mapOf(BEHANDLINGSID_A to LockState.LOCKED, BEHANDLINGSID_B to LockState.LOCKED),
+                "after acquiring locks",
+            )
+        }
 
     @Test
     fun `test pruneLocks removes old locks`() {
@@ -133,18 +137,19 @@ internal class SoknadLockManagerTest {
     }
 
     @Test
-    fun `test old locks are pruned when getLock is called and prune is due`() = runBlocking {
-        lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
+    fun `test old locks are pruned when getLock is called and prune is due`() =
+        runBlocking {
+            lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED))
 
-        // Move the clock forward beyond the lock expiry duration
-        every { mockClock.instant() } returns afterLockExpires()
+            // Move the clock forward beyond the lock expiry duration
+            every { mockClock.instant() } returns afterLockExpires()
 
-        // Acquire a new lock, this should trigger pruning
-        lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
+            // Acquire a new lock, this should trigger pruning
+            lockManager.getLock(BEHANDLINGSID_B) ?: fail("expected to acquire lock on BEHANDLINGSID_B")
 
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.ABSENT, BEHANDLINGSID_B to LockState.LOCKED))
-    }
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.ABSENT, BEHANDLINGSID_B to LockState.LOCKED))
+        }
 
     @Test
     fun `test pruneLocks does not remove new locks`() {
@@ -158,18 +163,19 @@ internal class SoknadLockManagerTest {
      */
 
     @Test
-    fun `test failed getLock reports metrics`() = runBlocking {
-        // Acquire the lock on the main coroutine
-        lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after acquiring lock on BEHANDLINGSID_A")
+    fun `test failed getLock reports metrics`() =
+        runBlocking {
+            // Acquire the lock on the main coroutine
+            lockManager.getLock(BEHANDLINGSID_A) ?: fail("expected to acquire lock on BEHANDLINGSID_A")
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after acquiring lock on BEHANDLINGSID_A")
 
-        // Launch a new coroutine to try and acquire the same lock
-        val secondLock = async(Dispatchers.Default) { lockManager.getLock(BEHANDLINGSID_A) }.await()
+            // Launch a new coroutine to try and acquire the same lock
+            val secondLock = async(Dispatchers.Default) { lockManager.getLock(BEHANDLINGSID_A) }.await()
 
-        assertNull(secondLock, "expected to fail to acquire second lock on BEHANDLINGSID_A")
-        assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting lock on BEHANDLINGSID_A")
-        verify { mockLockMetrics.reportLockTimeout() }
-    }
+            assertNull(secondLock, "expected to fail to acquire second lock on BEHANDLINGSID_A")
+            assertLockMapState(mapOf(BEHANDLINGSID_A to LockState.LOCKED), "after timeout getting lock on BEHANDLINGSID_A")
+            verify { mockLockMetrics.reportLockTimeout() }
+        }
 
     @Test
     fun `test unlock reports metrics`() {
@@ -211,11 +217,15 @@ internal class SoknadLockManagerTest {
         assertTrue(lockManager.isLocked(BEHANDLINGSID_A), "expected BEHANDLINGSID_A to be locked")
     }
 
-    private fun assertLockMapState(stateMap: Map<String, LockState>, message: String? = null) {
-        val postfix = when (message != null) {
-            true -> " $message"
-            false -> ""
-        }
+    private fun assertLockMapState(
+        stateMap: Map<String, LockState>,
+        message: String? = null,
+    ) {
+        val postfix =
+            when (message != null) {
+                true -> " $message"
+                false -> ""
+            }
 
         val expectedLockMapSize = stateMap.filterValues { it != LockState.ABSENT }.size
         assertEquals(expectedLockMapSize, lockManager.getLockMapSize(), "expected $expectedLockMapSize locks in map" + postfix)
@@ -246,26 +256,30 @@ internal class SoknadLockManagerTest {
         return Duration.between(start, end) to result
     }
 
-    private fun <T> runSimultaneously(vararg blocks: suspend () -> T): List<T> = runBlocking {
-        val latch = CountDownLatch(blocks.size)
+    private fun <T> runSimultaneously(vararg blocks: suspend () -> T): List<T> =
+        runBlocking {
+            val latch = CountDownLatch(blocks.size)
 
-        // Create and start the coroutines
-        val deferredList = blocks.map { block ->
-            async(Dispatchers.Default) {
-                withContext(Dispatchers.IO) {
-                    latch.countDown()
-                    latch.await()
-                    block()
+            // Create and start the coroutines
+            val deferredList =
+                blocks.map { block ->
+                    async(Dispatchers.Default) {
+                        withContext(Dispatchers.IO) {
+                            latch.countDown()
+                            latch.await()
+                            block()
+                        }
+                    }
                 }
-            }
+
+            // Wait for all coroutines to complete
+            awaitAll(*deferredList.toTypedArray())
         }
 
-        // Wait for all coroutines to complete
-        awaitAll(*deferredList.toTypedArray())
-    }
-
     enum class LockState {
-        LOCKED, UNLOCKED, ABSENT
+        LOCKED,
+        UNLOCKED,
+        ABSENT,
     }
 
     private fun afterLockExpires(): Instant = Instant.now().plus(Duration.ofHours(SoknadLockManager.LOCK_EXPIRY_HOURS + 2))

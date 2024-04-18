@@ -5,11 +5,11 @@ import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIEL
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.UUID
 
 class JsonCompareErrorLogger(
     private val soknadId: UUID,
-    private val result: JSONCompareResult
+    private val result: JSONCompareResult,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -18,6 +18,7 @@ class JsonCompareErrorLogger(
         getFieldMissing().forEach { logError(it) }
         getArraySizeErrorList().forEach { logError(it) }
     }
+
     private fun logError(error: ErrorRow) {
         logger.warn("$soknadId - ${error.type} - ${error.message}")
     }
@@ -35,10 +36,11 @@ class JsonCompareErrorLogger(
             .map { ErrorRow(MISSING_FIELD, it) }
     }
 
-    private fun getArraySizeErrorList() = result.message
-        .split(";")
-        .filter { isArraySizeErrorMessage(it) }
-        .map { ErrorRow(ARRAY_SIZE, it) }
+    private fun getArraySizeErrorList() =
+        result.message
+            .split(";")
+            .filter { isArraySizeErrorMessage(it) }
+            .map { ErrorRow(ARRAY_SIZE, it) }
 
     private fun isArraySizeErrorMessage(message: String): Boolean {
         return message.contains("Expected [\\d][\\d]?[\\d]? values but got [\\d][\\d]?[\\d]?".toRegex())
@@ -46,14 +48,15 @@ class JsonCompareErrorLogger(
 
     private data class ErrorRow(
         val type: LoggerComparisonErrorTypes,
-        val message: String
+        val message: String,
     )
 }
 
 enum class LoggerComparisonErrorTypes(private val logString: String) {
     FIELD_FAILURE("** FieldFailure **"),
     MISSING_FIELD("** MissingField **"),
-    ARRAY_SIZE("** ArraySize **");
+    ARRAY_SIZE("** ArraySize **"),
+    ;
 
     override fun toString(): String {
         return logString

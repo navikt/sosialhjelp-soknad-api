@@ -24,35 +24,35 @@ class MellomlagringConfig(
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    proxiedHttpClient: HttpClient,
 ) {
-
     @Bean
     fun mellomlagringClient(): MellomlagringClient {
         return MellomlagringClientImpl(
             dokumentlagerClient,
             krypteringService,
             maskinportenClient,
-            webClient
+            webClient,
         )
     }
 
-    private val webClient = webClientBuilder
-        .baseUrl(digisosApiEndpoint)
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+    private val webClient =
+        webClientBuilder
+            .baseUrl(digisosApiEndpoint)
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    proxiedHttpClient
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                        .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+                ),
             )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-        .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-        .filter(mdcExchangeFilter)
-        .build()
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
+            .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .filter(mdcExchangeFilter)
+            .build()
 
     companion object {
         private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter

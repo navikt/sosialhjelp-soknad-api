@@ -23,7 +23,6 @@ import org.springframework.mock.web.MockHttpServletResponse
 
 // @Disabled
 internal class MdcFilterTest {
-
     private val mdcFilter = MdcFilter()
     private val filterChain = MDCCapturingMockFilterChain()
 
@@ -132,7 +131,10 @@ internal class MdcFilterTest {
     class MDCCapturingMockFilterChain : FilterChain {
         private var contextMap: MutableMap<String, String> = mutableMapOf()
 
-        override fun doFilter(request: ServletRequest, response: ServletResponse) {
+        override fun doFilter(
+            request: ServletRequest,
+            response: ServletResponse,
+        ) {
             contextMap = MDC.getCopyOfContextMap()
         }
 

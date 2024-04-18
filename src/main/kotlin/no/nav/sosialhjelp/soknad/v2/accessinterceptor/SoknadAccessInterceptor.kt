@@ -13,8 +13,11 @@ import java.util.UUID
 
 @Component
 class SoknadAccessInterceptor(private val soknadService: SoknadService) : HandlerInterceptor {
-
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    override fun preHandle(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+    ): Boolean {
         val method = request.method
         val soknadId = getSoknadId(request) ?: return true
         val soknad = soknadService.getSoknad(UUID.fromString(soknadId))

@@ -12,7 +12,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class BosituasjonStegTest {
-
     private val steg = BosituasjonSteg()
 
     @Test
@@ -83,7 +82,10 @@ internal class BosituasjonStegTest {
         validateFeltMedSvar(antallPersonerSporsmal.felt!![0], Type.TEKST, SvarType.TEKST, "11")
     }
 
-    private fun createSoknad(botype: Botype?, antallPersoner: Int?): JsonInternalSoknad {
+    private fun createSoknad(
+        botype: Botype?,
+        antallPersoner: Int?,
+    ): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()
@@ -92,9 +94,9 @@ internal class BosituasjonStegTest {
                             .withBosituasjon(
                                 JsonBosituasjon()
                                     .withBotype(botype)
-                                    .withAntallPersoner(antallPersoner)
-                            )
-                    )
+                                    .withAntallPersoner(antallPersoner),
+                            ),
+                    ),
             )
     }
 }

@@ -8,22 +8,23 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class OrganisasjonServiceTest {
-
     private val organisasjonClient: OrganisasjonClient = mockk()
     private val organisasjonService = OrganisasjonService(organisasjonClient)
 
     private val orgnr = "12345"
 
-    private val dto = OrganisasjonNoekkelinfoDto(
-        navn = NavnDto(
-            navnelinje1 = "Testesen A/S",
-            navnelinje2 = "andre linje",
-            navnelinje3 = null,
-            navnelinje4 = null,
-            navnelinje5 = null
-        ),
-        organisasjonsnummer = orgnr
-    )
+    private val dto =
+        OrganisasjonNoekkelinfoDto(
+            navn =
+                NavnDto(
+                    navnelinje1 = "Testesen A/S",
+                    navnelinje2 = "andre linje",
+                    navnelinje3 = null,
+                    navnelinje4 = null,
+                    navnelinje5 = null,
+                ),
+            organisasjonsnummer = orgnr,
+        )
 
     @Test
     internal fun `skal hente orgnavn med null i navnelinjer`() {
@@ -36,7 +37,11 @@ internal class OrganisasjonServiceTest {
 
     @Test
     internal fun `skal hente orgNavn med tomme strings i navnelinjer`() {
-        every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } returns dto.copy(navn = NavnDto("Testesen A/S", "andre linje", "", "", ""))
+        every {
+            organisasjonClient.hentOrganisasjonNoekkelinfo(
+                any(),
+            )
+        } returns dto.copy(navn = NavnDto("Testesen A/S", "andre linje", "", "", ""))
 
         val orgNavn: String = organisasjonService.hentOrgNavn(orgnr)
 

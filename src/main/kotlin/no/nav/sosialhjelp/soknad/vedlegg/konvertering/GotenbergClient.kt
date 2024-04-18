@@ -22,9 +22,8 @@ import java.io.File
 @Component
 class GotenbergClient(
     @Value("\${fil-konvertering_url}") private val baseUrl: String,
-    private val webClientBuilder: WebClient.Builder
+    private val webClientBuilder: WebClient.Builder,
 ) : FileConverter {
-
     companion object GotenbergConsts {
         private const val LIBRE_OFFICE_ROUTE = "/forms/libreoffice/convert"
         private const val GOTENBERG_TRACE_HEADER = "gotenberg-trace"
@@ -33,16 +32,23 @@ class GotenbergClient(
     private var trace = "[NA]"
     private val webClient = buildWebClient()
 
-    override fun toPdf(filename: String, bytes: ByteArray): ByteArray {
-        val multipartBody = MultipartBodyBuilder().run {
-            part("files", ByteArrayMultipartFile(filename, bytes).resource)
-            build()
-        }
+    override fun toPdf(
+        filename: String,
+        bytes: ByteArray,
+    ): ByteArray {
+        val multipartBody =
+            MultipartBodyBuilder().run {
+                part("files", ByteArrayMultipartFile(filename, bytes).resource)
+                build()
+            }
 
         return convertFileRequest(filename, multipartBody)
     }
 
-    private fun convertFileRequest(filename: String, multipartBody: MultiValueMap<String, HttpEntity<*>>): ByteArray {
+    private fun convertFileRequest(
+        filename: String,
+        multipartBody: MultiValueMap<String, HttpEntity<*>>,
+    ): ByteArray {
         return webClient.post()
             .uri(baseUrl + LIBRE_OFFICE_ROUTE)
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$filename\"")
@@ -76,15 +82,22 @@ class GotenbergClient(
 
     private class ByteArrayMultipartFile(
         private val filnavn: String,
-        private val bytes: ByteArray
+        private val bytes: ByteArray,
     ) : MultipartFile {
         override fun getInputStream() = ByteArrayInputStream(bytes)
+
         override fun getName() = "file"
+
         override fun getOriginalFilename() = filnavn
+
         override fun getContentType() = FileDetectionUtils.detectMimeType(bytes)
+
         override fun isEmpty(): Boolean = bytes.isEmpty()
+
         override fun getSize() = bytes.size.toLong()
+
         override fun getBytes() = bytes
+
         override fun transferTo(dest: File) {
             FileUtils.writeByteArrayToFile(dest, bytes)
         }

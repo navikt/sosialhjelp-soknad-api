@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class HentAdresseService(
     private val hentAdresseClient: HentAdresseClient,
-    private val personService: PersonService
+    private val personService: PersonService,
 ) {
     fun hentKartverketMatrikkelAdresse(matrikkelId: String): KartverketMatrikkelAdresse? {
         return hentAdresseClient.hentMatrikkelAdresse(matrikkelId)
@@ -20,7 +20,7 @@ class HentAdresseService(
                     festenummer = it.matrikkelnummer?.festenummer,
                     seksjonsnummer = it.matrikkelnummer?.seksjonsnummer,
                     undernummer = it.undernummer,
-                    bydelsnummer = it.bydel?.bydelsnummer
+                    bydelsnummer = it.bydel?.bydelsnummer,
                 )
             }
     }

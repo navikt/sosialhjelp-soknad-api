@@ -26,10 +26,12 @@ import java.time.LocalDate
 @Component
 class BostotteSystemdata(
     private val husbankenClient: HusbankenClient,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
-
-    fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
+    fun updateSystemdataIn(
+        soknadUnderArbeid: SoknadUnderArbeid,
+        token: String?,
+    ) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
@@ -55,7 +57,10 @@ class BostotteSystemdata(
         }
     }
 
-    private fun fjernGamleHusbankenData(okonomi: JsonOkonomi, skalFortsattHaBrukerUtbetaling: Boolean) {
+    private fun fjernGamleHusbankenData(
+        okonomi: JsonOkonomi,
+        skalFortsattHaBrukerUtbetaling: Boolean,
+    ) {
         val okonomiopplysninger = okonomi.opplysninger
         okonomiopplysninger.bostotte = JsonBostotte()
 
@@ -89,7 +94,7 @@ class BostotteSystemdata(
 
     private fun mapToJsonOkonomiOpplysningUtbetalinger(
         bostotte: Bostotte,
-        trengerViDataFraDeSiste60Dager: Boolean
+        trengerViDataFraDeSiste60Dager: Boolean,
     ): List<JsonOkonomiOpplysningUtbetaling> {
         val filterDays = if (trengerViDataFraDeSiste60Dager) 60 else 30
         return bostotte.utbetalinger
@@ -112,7 +117,10 @@ class BostotteSystemdata(
         return WordUtils.capitalizeFully(navn)
     }
 
-    private fun mapToBostotteSaker(bostotte: Bostotte, trengerViDataFraDeSiste60Dager: Boolean): List<JsonBostotteSak> {
+    private fun mapToBostotteSaker(
+        bostotte: Bostotte,
+        trengerViDataFraDeSiste60Dager: Boolean,
+    ): List<JsonBostotteSak> {
         val filterDays = if (trengerViDataFraDeSiste60Dager) 60 else 30
         return bostotte.saker
             .filter { it.dato.isAfter(LocalDate.now().minusDays(filterDays.toLong())) }
@@ -120,11 +128,12 @@ class BostotteSystemdata(
     }
 
     private fun mapToBostotteSak(sak: Sak): JsonBostotteSak {
-        val bostotteSak = JsonBostotteSak()
-            .withKilde(JsonKildeSystem.SYSTEM)
-            .withType(UTBETALING_HUSBANKEN)
-            .withStatus(sak.status.toString())
-            .withDato(sak.dato.toString())
+        val bostotteSak =
+            JsonBostotteSak()
+                .withKilde(JsonKildeSystem.SYSTEM)
+                .withType(UTBETALING_HUSBANKEN)
+                .withStatus(sak.status.toString())
+                .withDato(sak.dato.toString())
         if (sak.vedtak != null) {
             bostotteSak.withBeskrivelse(sak.vedtak.beskrivelse)
             bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sak.vedtak.type))

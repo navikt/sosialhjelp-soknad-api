@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer.dto
 
 data class KontoDto(
     val kontonummer: String,
-    val utenlandskKontoInfo: UtenlandskKontoInfo?
+    val utenlandskKontoInfo: UtenlandskKontoInfo?,
 )
 
 data class UtenlandskKontoInfo(
@@ -13,5 +13,5 @@ data class UtenlandskKontoInfo(
     val swiftBicKode: String?,
     val bankadresse1: String?,
     val bankadresse2: String?,
-    val bankadresse3: String?
+    val bankadresse3: String?,
 )

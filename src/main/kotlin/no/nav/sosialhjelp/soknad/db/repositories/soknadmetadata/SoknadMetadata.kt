@@ -20,14 +20,14 @@ data class SoknadMetadata(
     var opprettetDato: LocalDateTime,
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
-    var lest: Boolean = false
+    var lest: Boolean = false,
 ) {
     val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
 }
 
 @XmlRootElement
 data class VedleggMetadataListe(
-    var vedleggListe: MutableList<VedleggMetadata> = mutableListOf()
+    var vedleggListe: MutableList<VedleggMetadata> = mutableListOf(),
 )
 
 @XmlRootElement
@@ -40,26 +40,35 @@ data class VedleggMetadata(
     var skjema: String? = null,
     var tillegg: String? = null,
     var hendelseType: JsonVedlegg.HendelseType? = null,
-    var hendelseReferanse: String? = null
+    var hendelseReferanse: String? = null,
 )
 
 enum class SoknadMetadataType {
-    SEND_SOKNAD_KOMMUNAL, SEND_SOKNAD_KOMMUNAL_ETTERSENDING
+    SEND_SOKNAD_KOMMUNAL,
+    SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
 }
 
 enum class SoknadMetadataInnsendingStatus {
-    UNDER_ARBEID, FERDIG, AVBRUTT_AV_BRUKER, AVBRUTT_AUTOMATISK, SENDT_MED_DIGISOS_API
+    UNDER_ARBEID,
+    FERDIG,
+    AVBRUTT_AV_BRUKER,
+    AVBRUTT_AUTOMATISK,
+    SENDT_MED_DIGISOS_API,
 }
 
 enum class Vedleggstatus {
-    VedleggKreves, LastetOpp, VedleggAlleredeSendt;
+    VedleggKreves,
+    LastetOpp,
+    VedleggAlleredeSendt,
+    ;
 
     fun er(status: Vedleggstatus): Boolean {
         return this == status
     }
 }
 
-val JAXB = JAXBHelper(
-    VedleggMetadata::class.java,
-    VedleggMetadataListe::class.java
-)
+val JAXB =
+    JAXBHelper(
+        VedleggMetadata::class.java,
+        VedleggMetadataListe::class.java,
+    )

@@ -13,16 +13,18 @@ import org.springframework.stereotype.Component
 class FiksHandterer(
     private val fiksSender: FiksSender,
     private val innsendingService: InnsendingService,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     fun eksekver(oppgave: Oppgave) {
         val behandlingsId = oppgave.behandlingsId
         logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgave.steg}")
 
-        val resultat = oppgave.oppgaveResultat
-            ?: throw IllegalStateException("Søknad med behandlingsId $behandlingsId har oppgaveResultat=null")
-        val eier = oppgave.oppgaveData?.avsenderFodselsnummer
-            ?: throw IllegalStateException("Søknad med behandlingsid $behandlingsId har eier=null")
+        val resultat =
+            oppgave.oppgaveResultat
+                ?: throw IllegalStateException("Søknad med behandlingsId $behandlingsId har oppgaveResultat=null")
+        val eier =
+            oppgave.oppgaveData?.avsenderFodselsnummer
+                ?: throw IllegalStateException("Søknad med behandlingsid $behandlingsId har eier=null")
 
         check(!StringUtils.isEmpty(eier)) { "Søknad med behandlingsid $behandlingsId mangler eier" }
 
@@ -42,7 +44,11 @@ class FiksHandterer(
         }
     }
 
-    private fun sendTilFiks(behandlingsId: String, resultat: FiksResultat, eier: String) {
+    private fun sendTilFiks(
+        behandlingsId: String,
+        resultat: FiksResultat,
+        eier: String,
+    ) {
         val soknadMetadata = innsendingService.hentSoknadMetadata(behandlingsId, eier)
         try {
             resultat.fiksForsendelsesId = fiksSender.sendTilFiks(soknadMetadata)
@@ -56,11 +62,18 @@ class FiksHandterer(
         }
     }
 
-    private fun slettSoknadOgFiler(behandlingsId: String, eier: String) {
+    private fun slettSoknadOgFiler(
+        behandlingsId: String,
+        eier: String,
+    ) {
         innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, eier)
     }
 
-    private fun lagreResultat(behandlingsId: String, resultat: FiksResultat, eier: String) {
+    private fun lagreResultat(
+        behandlingsId: String,
+        resultat: FiksResultat,
+        eier: String,
+    ) {
         innsendingService.oppdaterSoknadMetadataVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
     }
 

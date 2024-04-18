@@ -31,7 +31,7 @@ class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val pabegynteSoknaderService: PabegynteSoknaderService
+    private val pabegynteSoknaderService: PabegynteSoknaderService,
 ) {
     companion object {
         private val log by logger()
@@ -41,14 +41,14 @@ class InformasjonRessurs(
 
     @GetMapping("/adressesok")
     fun adresseSok(
-        @RequestParam("sokestreng") sokestreng: String?
+        @RequestParam("sokestreng") sokestreng: String?,
     ): List<AdresseForslag> {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
     @PostMapping("/actions/logg")
     fun loggFraKlient(
-        @RequestBody logg: Logg
+        @RequestBody logg: Logg,
     ) = when (logg.level) {
         LoggLevel.INFO -> klientlogger.info(logg.melding())
         LoggLevel.WARN -> klientlogger.warn(logg.melding())
@@ -71,7 +71,7 @@ class InformasjonRessurs(
         val numRecentlySent =
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
                 eier,
-                LocalDateTime.now().minusDays(FJORTEN_DAGER)
+                LocalDateTime.now().minusDays(FJORTEN_DAGER),
             ).size
 
         return SessionResponse(
@@ -79,7 +79,7 @@ class InformasjonRessurs(
             fornavn = person?.fornavn,
             daysBeforeDeletion = FJORTEN_DAGER,
             open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier),
-            numRecentlySent = numRecentlySent
+            numRecentlySent = numRecentlySent,
         )
     }
 
@@ -94,6 +94,6 @@ class InformasjonRessurs(
         @Schema(description = "Påbegynte men ikke innleverte søknader")
         val open: List<PabegyntSoknad>,
         @Schema(description = "Antall nylig innsendte søknader")
-        val numRecentlySent: Int
+        val numRecentlySent: Int,
     )
 }

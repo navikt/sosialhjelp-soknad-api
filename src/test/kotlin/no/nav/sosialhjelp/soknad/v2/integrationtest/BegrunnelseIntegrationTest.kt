@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 
 class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
-
     @Test
     fun `Hente begrunnelse skal returnere riktig data`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
         doGet(
             "/soknad/${soknad.id}/begrunnelse",
-            BegrunnelseDto::class.java
+            BegrunnelseDto::class.java,
         ).also {
             assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse!!.hvorforSoke)
             assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse!!.hvaSokesOm)
@@ -26,16 +25,17 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere begrunnelse skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
-        val inputBegrunnelse = BegrunnelseDto(
-            hvaSokesOm = "Jeg bare må ha penger",
-            hvorforSoke = "Fordi jeg ikke har penger vel"
-        )
+        val inputBegrunnelse =
+            BegrunnelseDto(
+                hvaSokesOm = "Jeg bare må ha penger",
+                hvorforSoke = "Fordi jeg ikke har penger vel",
+            )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
             inputBegrunnelse,
             BegrunnelseDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
@@ -49,16 +49,17 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Input hvor ett felt er tomt skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
-        val inputBegrunnelse = BegrunnelseDto(
-            hvaSokesOm = "",
-            hvorforSoke = "Fordi jeg ikke har penger vel"
-        )
+        val inputBegrunnelse =
+            BegrunnelseDto(
+                hvaSokesOm = "",
+                hvorforSoke = "Fordi jeg ikke har penger vel",
+            )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
             inputBegrunnelse,
             BegrunnelseDto::class.java,
-            soknad.id
+            soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {

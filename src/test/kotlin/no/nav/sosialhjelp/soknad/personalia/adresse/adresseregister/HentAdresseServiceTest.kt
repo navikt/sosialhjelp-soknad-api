@@ -18,24 +18,26 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class HentAdresseServiceTest {
-
     private val hentAdresseClient: HentAdresseClient = mockk()
     private val personService: PersonService = mockk()
     private val hentAdresseService = HentAdresseService(hentAdresseClient, personService)
 
-    private val defaultMatrikkelAdresse = MatrikkeladresseDto(
-        undernummer = "01234",
-        matrikkelnummer = MatrikkelNummer(
-            kommunenummer = "0301",
-            gaardsnummer = "000123",
-            bruksnummer = "H0101",
-            festenummer = "F4",
-            seksjonsnummer = "seksjonsnummer"
-        ),
-        bydel = Bydel(
-            bydelsnummer = "030107"
+    private val defaultMatrikkelAdresse =
+        MatrikkeladresseDto(
+            undernummer = "01234",
+            matrikkelnummer =
+                MatrikkelNummer(
+                    kommunenummer = "0301",
+                    gaardsnummer = "000123",
+                    bruksnummer = "H0101",
+                    festenummer = "F4",
+                    seksjonsnummer = "seksjonsnummer",
+                ),
+            bydel =
+                Bydel(
+                    bydelsnummer = "030107",
+                ),
         )
-    )
 
     @BeforeEach
     internal fun setUp() {

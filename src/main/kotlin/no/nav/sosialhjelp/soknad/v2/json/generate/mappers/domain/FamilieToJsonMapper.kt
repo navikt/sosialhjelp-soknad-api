@@ -21,18 +21,23 @@ import java.util.UUID
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
-    override fun mapToSoknad(soknadId: UUID, jsonInternalSoknad: JsonInternalSoknad) {
+    override fun mapToSoknad(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         familieRepository.findByIdOrNull(soknadId)?.let {
             with(jsonInternalSoknad.soknad.data.familie) {
-                sivilstatus = JsonSivilstatus()
-                    .withStatus(it.sivilstatus?.toJson())
-                    .withEktefelle(it.ektefelle?.toJson())
-                    .withBorSammenMed(it.ektefelle?.borSammen)
-                    .withFolkeregistrertMedEktefelle(it.ektefelle?.folkeregistrertMedEktefelle)
-                forsorgerplikt = JsonForsorgerplikt()
-                    .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(it.harForsorgerplikt))
-                    .withBarnebidrag(JsonBarnebidrag().withVerdi(it.barnebidrag?.toJson()))
-                    .withAnsvar(it.ansvar.values.toJson())
+                sivilstatus =
+                    JsonSivilstatus()
+                        .withStatus(it.sivilstatus?.toJson())
+                        .withEktefelle(it.ektefelle?.toJson())
+                        .withBorSammenMed(it.ektefelle?.borSammen)
+                        .withFolkeregistrertMedEktefelle(it.ektefelle?.folkeregistrertMedEktefelle)
+                forsorgerplikt =
+                    JsonForsorgerplikt()
+                        .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(it.harForsorgerplikt))
+                        .withBarnebidrag(JsonBarnebidrag().withVerdi(it.barnebidrag?.toJson()))
+                        .withAnsvar(it.ansvar.values.toJson())
             }
         }
     }
@@ -44,6 +49,7 @@ private fun Ektefelle.toJson() = JsonEktefelle().withNavn(navn?.toJson()).withFo
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
-private fun Barn.toJson() = JsonAnsvar().withBarn(JsonBarn().withFodselsdato(fodselsdato).withNavn(navn?.toJson()).withPersonIdentifikator(personId))
+private fun Barn.toJson() =
+    JsonAnsvar().withBarn(JsonBarn().withFodselsdato(fodselsdato).withNavn(navn?.toJson()).withPersonIdentifikator(personId))
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

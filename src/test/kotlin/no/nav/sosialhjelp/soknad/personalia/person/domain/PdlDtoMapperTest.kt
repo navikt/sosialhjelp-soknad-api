@@ -32,7 +32,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class PdlDtoMapperTest {
-
     companion object {
         private const val IDENT = "ident"
         private const val FORNAVN = "Fornavn"
@@ -58,66 +57,73 @@ internal class PdlDtoMapperTest {
     private val helper = MapperHelper()
     private val mapper = PdlDtoMapper(kodeverkService, helper)
 
-    private val defaultVegadresse = VegadresseDto(
-        matrikkelId = "matrikkelId",
-        adressenavn = "Gateveien",
-        husnummer = 1,
-        husbokstav = "A",
-        tilleggsnavn = "tilleggsnavn",
-        postnummer = "1234",
-        kommunenummer = "1212",
-        bruksenhetsnummer = "U123123",
-        bydelsnummer = "123456"
-    )
-
-    private val annenVegadresse = VegadresseDto(
-        matrikkelId = "matrikkelId2",
-        adressenavn = "Stien",
-        husnummer = 2,
-        husbokstav = "B",
-        tilleggsnavn = null,
-        postnummer = "1234",
-        kommunenummer = "1212",
-        bruksenhetsnummer = null,
-        bydelsnummer = null
-    )
-
-    private val defaultBarn = BarnDto(
-        adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-        bostedsadresse = emptyList(),
-        folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-        foedsel = listOf(FoedselDto(LocalDate.now().minusYears(12))),
-        navn = listOf(
-            NavnDto(
-                fornavn = FORNAVN,
-                mellomnavn = null,
-                etternavn = ETTERNAVN,
-                metadata = METADATA,
-                folkeregistermetadata = FOLKEREGISTERMETADATA
-            )
+    private val defaultVegadresse =
+        VegadresseDto(
+            matrikkelId = "matrikkelId",
+            adressenavn = "Gateveien",
+            husnummer = 1,
+            husbokstav = "A",
+            tilleggsnavn = "tilleggsnavn",
+            postnummer = "1234",
+            kommunenummer = "1212",
+            bruksenhetsnummer = "U123123",
+            bydelsnummer = "123456",
         )
-    )
 
-    private val defaultForelderBarnRelasjonDto = ForelderBarnRelasjonDto(
-        relatertPersonsIdent = BARNIDENT,
-        relatertPersonsRolle = BARN_ROLLE,
-        minRolleForPerson = MOR_ROLLE
-    )
+    private val annenVegadresse =
+        VegadresseDto(
+            matrikkelId = "matrikkelId2",
+            adressenavn = "Stien",
+            husnummer = 2,
+            husbokstav = "B",
+            tilleggsnavn = null,
+            postnummer = "1234",
+            kommunenummer = "1212",
+            bruksenhetsnummer = null,
+            bydelsnummer = null,
+        )
 
-    private val defaultNavnDto = NavnDto(
-        fornavn = FORNAVN,
-        mellomnavn = MELLOMNAVN,
-        etternavn = ETTERNAVN,
-        metadata = METADATA,
-        folkeregistermetadata = FOLKEREGISTERMETADATA
-    )
+    private val defaultBarn =
+        BarnDto(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = emptyList(),
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(LocalDate.now().minusYears(12))),
+            navn =
+                listOf(
+                    NavnDto(
+                        fornavn = FORNAVN,
+                        mellomnavn = null,
+                        etternavn = ETTERNAVN,
+                        metadata = METADATA,
+                        folkeregistermetadata = FOLKEREGISTERMETADATA,
+                    ),
+                ),
+        )
 
-    private val defaultSivilstandDto = SivilstandDto(
-        type = SivilstandType.GIFT,
-        relatertVedSivilstand = EKTEFELLEIDENT,
-        metadata = METADATA,
-        folkeregistermetadata = FOLKEREGISTERMETADATA
-    )
+    private val defaultForelderBarnRelasjonDto =
+        ForelderBarnRelasjonDto(
+            relatertPersonsIdent = BARNIDENT,
+            relatertPersonsRolle = BARN_ROLLE,
+            minRolleForPerson = MOR_ROLLE,
+        )
+
+    private val defaultNavnDto =
+        NavnDto(
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            metadata = METADATA,
+            folkeregistermetadata = FOLKEREGISTERMETADATA,
+        )
+
+    private val defaultSivilstandDto =
+        SivilstandDto(
+            type = SivilstandType.GIFT,
+            relatertVedSivilstand = EKTEFELLEIDENT,
+            metadata = METADATA,
+            folkeregistermetadata = FOLKEREGISTERMETADATA,
+        )
 
     @BeforeEach
     internal fun setUp() {
@@ -126,29 +132,32 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun fulltUtfyltPerson() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = listOf(
-                OppholdsadresseDto(
-                    oppholdAnnetSted = null,
-                    coAdressenavn = "Test McTest",
-                    vegadresse = VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null, null),
-                    metadata = null,
-                    folkeregistermetadata = null
-                )
-            ),
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse =
+                    listOf(
+                        OppholdsadresseDto(
+                            oppholdAnnetSted = null,
+                            coAdressenavn = "Test McTest",
+                            vegadresse = VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null, null),
+                            metadata = null,
+                            folkeregistermetadata = null,
+                        ),
+                    ),
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.fornavn).isEqualTo(FORNAVN)
@@ -175,21 +184,23 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun personMedMatrikkeladresseBostedsadresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = null,
-                    matrikkeladresse = MatrikkeladresseDto("matrikkelid", "1111", null, "1111", null),
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = null,
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = null,
+                            matrikkeladresse = MatrikkeladresseDto("matrikkelid", "1111", null, "1111", null),
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse = null,
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.vegadresse).isNull()
@@ -199,14 +210,15 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun personMedUkjentBosted() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, null, null, UkjentBostedDto("Oslo"))),
-            oppholdsadresse = null,
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, null, null, UkjentBostedDto("Oslo"))),
+                oppholdsadresse = null,
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse).isNull()
@@ -214,29 +226,32 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun personMedOppholdsadresseUtenVegadresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = listOf(
-                OppholdsadresseDto(
-                    oppholdAnnetSted = "oppholdAnnetSted",
-                    coAdressenavn = null,
-                    vegadresse = null,
-                    metadata = null,
-                    folkeregistermetadata = null
-                )
-            ),
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse =
+                    listOf(
+                        OppholdsadresseDto(
+                            oppholdAnnetSted = "oppholdAnnetSted",
+                            coAdressenavn = null,
+                            vegadresse = null,
+                            metadata = null,
+                            folkeregistermetadata = null,
+                        ),
+                    ),
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.oppholdsadresse).isNull()
@@ -244,36 +259,39 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun personMedOppholdsadresseLikBostedsadresseSkalFiltreresVekk() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = listOf(
-                OppholdsadresseDto(
-                    oppholdAnnetSted = null,
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    metadata = null,
-                    folkeregistermetadata = null
-                ),
-                OppholdsadresseDto(
-                    oppholdAnnetSted = null,
-                    coAdressenavn = null,
-                    vegadresse = annenVegadresse,
-                    metadata = null,
-                    folkeregistermetadata = null
-                )
-            ),
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse =
+                    listOf(
+                        OppholdsadresseDto(
+                            oppholdAnnetSted = null,
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            metadata = null,
+                            folkeregistermetadata = null,
+                        ),
+                        OppholdsadresseDto(
+                            oppholdAnnetSted = null,
+                            coAdressenavn = null,
+                            vegadresse = annenVegadresse,
+                            metadata = null,
+                            folkeregistermetadata = null,
+                        ),
+                    ),
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
@@ -285,22 +303,24 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun personMedOppholdsadresseUtenBostedsadresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = null, // ingen bostedsadresse
-            oppholdsadresse = listOf(
-                OppholdsadresseDto(
-                    oppholdAnnetSted = null,
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    metadata = null,
-                    folkeregistermetadata = null
-                )
-            ),
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = null, // ingen bostedsadresse
+                oppholdsadresse =
+                    listOf(
+                        OppholdsadresseDto(
+                            oppholdAnnetSted = null,
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            metadata = null,
+                            folkeregistermetadata = null,
+                        ),
+                    ),
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse).isNull()
@@ -310,27 +330,30 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun fulltUtfyltEktefelle() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNotNull
         assertThat(ektefelle!!.ikkeTilgangTilEktefelle).isFalse
@@ -344,34 +367,39 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun ektefelleOgPersonErIkkeFolkeregistrertSammenMedUlikMatrikkelId() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse.copy(matrikkelId = "2matrikkelId"),
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ), // kun matrikkelId er ulik
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse,
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse.copy(matrikkelId = "2matrikkelId"),
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                // kun matrikkelId er ulik
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNotNull
         assertThat(ektefelle!!.folkeregistrertSammen).isFalse
@@ -379,34 +407,38 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun ektefelleOgPersonErFolkeregistrertSammenUtenMatrikkelId() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse.copy(matrikkelId = null),
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = defaultVegadresse.copy(matrikkelId = null),
-                    matrikkeladresse = null,
-                    ukjentBosted = null
-                )
-            ),
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse.copy(matrikkelId = null),
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = defaultVegadresse.copy(matrikkelId = null),
+                            matrikkeladresse = null,
+                            ukjentBosted = null,
+                        ),
+                    ),
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNotNull
         assertThat(ektefelle!!.folkeregistrertSammen).isTrue
@@ -414,20 +446,22 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun ektefelleMedAdressebeskyttelse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG)),
-            bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG)),
+                bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNotNull
         assertThat(ektefelle!!.ikkeTilgangTilEktefelle).isTrue
@@ -441,109 +475,120 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun ektefelleNull() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(null, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle).isNull()
     }
 
     @Test
     fun ektefelleOgPersonNullAdresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = null, // Ingen bostedsadresse
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = null, // Ingen bostedsadresse
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = null, // Ingen bostedsadresse
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = null, // Ingen bostedsadresse
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle!!.folkeregistrertSammen).isFalse
     }
 
     @Test
     fun ektefelleOgPersonTomAdresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = emptyList(),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = emptyList(),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = emptyList(),
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = emptyList(),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = emptyList(),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = emptyList(),
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle!!.folkeregistrertSammen).isFalse
     }
 
     @Test
     fun ektefelleOgPersonMatrikkelAdresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = null,
-                    matrikkeladresse = MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"),
-                    ukjentBosted = null
-                )
-            ),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = emptyList(),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlEktefelle = EktefelleDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = null,
-                    matrikkeladresse = MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"),
-                    ukjentBosted = null
-                )
-            ),
-            foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
-            navn = listOf(defaultNavnDto)
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = null,
+                            matrikkeladresse = MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"),
+                            ukjentBosted = null,
+                        ),
+                    ),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = emptyList(),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlEktefelle =
+            EktefelleDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse =
+                    listOf(
+                        BostedsadresseDto(
+                            coAdressenavn = null,
+                            vegadresse = null,
+                            matrikkeladresse = MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"),
+                            ukjentBosted = null,
+                        ),
+                    ),
+                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                navn = listOf(defaultNavnDto),
+            )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
         assertThat(ektefelle!!.folkeregistrertSammen).isTrue
     }
 
     @Test
     fun fulltUtfyltBarn() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNotNull
         assertThat(barn!!.fornavn).isEqualTo(FORNAVN)
@@ -554,113 +599,123 @@ internal class PdlDtoMapperTest {
             LocalDate.of(
                 FOEDSELSDATO_BARN.year,
                 FOEDSELSDATO_BARN.monthValue,
-                FOEDSELSDATO_BARN.dayOfMonth
-            )
+                FOEDSELSDATO_BARN.dayOfMonth,
+            ),
         )
         assertThat(barn.folkeregistrertSammen).isTrue
     }
 
     @Test
     fun barnMedAdressebeskyttelse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.FORTROLIG)),
-            bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.FORTROLIG)),
+                bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
     }
 
     @Test
     fun barnDoed() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto(DOED)),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto(DOED)),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
     }
 
     @Test
     fun barnMyndig() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn).isNull()
     }
 
     @Test
     fun barnOgPersonNullAdresse() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = null, // Ingen bostedsadresse
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = null,
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = null, // Ingen bostedsadresse
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = null,
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn!!.folkeregistrertSammen).isFalse
     }
 
     @Test
     fun barnOgPersonTomAdresseliste() {
-        val pdlPerson = PersonDto(
-            bostedsadresse = emptyList(),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
-        val pdlBarn = BarnDto(
-            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            bostedsadresse = emptyList(),
-            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            navn = listOf(defaultNavnDto.copy(mellomnavn = null))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = emptyList(),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
+        val pdlBarn =
+            BarnDto(
+                adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+                bostedsadresse = emptyList(),
+                folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
+            )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
         assertThat(barn!!.folkeregistrertSammen).isFalse
     }
@@ -670,14 +725,15 @@ internal class PdlDtoMapperTest {
         val dagenFoerBarnBlirMyndig = LocalDate.now().minusYears(18).plusDays(1)
         val dagenBarnBlirMyndig = LocalDate.now().minusYears(18)
         val dagenEtterBarnBlirMyndig = LocalDate.now().minusYears(18).minusDays(1)
-        val pdlPerson = PersonDto(
-            bostedsadresse = emptyList(),
-            oppholdsadresse = null, // Ingen oppholdsadresse
-            forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
-            navn = listOf(defaultNavnDto),
-            sivilstand = listOf(defaultSivilstandDto),
-            statsborgerskap = listOf(StatsborgerskapDto(LAND))
-        )
+        val pdlPerson =
+            PersonDto(
+                bostedsadresse = emptyList(),
+                oppholdsadresse = null, // Ingen oppholdsadresse
+                forelderBarnRelasjon = listOf(defaultForelderBarnRelasjonDto),
+                navn = listOf(defaultNavnDto),
+                sivilstand = listOf(defaultSivilstandDto),
+                statsborgerskap = listOf(StatsborgerskapDto(LAND)),
+            )
         val pdlBarnDagenFoerBarnBlirMyndig = defaultBarn.copy(foedsel = listOf(FoedselDto(dagenFoerBarnBlirMyndig)))
         val barnDagenFoerMyndig = mapper.barnDtoToDomain(pdlBarnDagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson)
         assertThat(barnDagenFoerMyndig).isNotNull
@@ -693,9 +749,10 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun adressebeskyttelseStrengtFortrolig() {
-        val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG))
-        )
+        val pdlAdressebeskyttelse =
+            PersonAdressebeskyttelseDto(
+                listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG)),
+            )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNotNull
         assertThat(gradering).isEqualTo(Gradering.STRENGT_FORTROLIG)
@@ -703,9 +760,10 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun adressebeskyttelseStrengtUgradert() {
-        val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT))
-        )
+        val pdlAdressebeskyttelse =
+            PersonAdressebeskyttelseDto(
+                listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNotNull
         assertThat(gradering).isEqualTo(Gradering.UGRADERT)
@@ -713,9 +771,10 @@ internal class PdlDtoMapperTest {
 
     @Test
     fun adressebeskyttelseNull() {
-        val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(null))
-        )
+        val pdlAdressebeskyttelse =
+            PersonAdressebeskyttelseDto(
+                listOf(AdressebeskyttelseDto(null)),
+            )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNull()
     }

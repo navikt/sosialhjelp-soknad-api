@@ -35,5 +35,5 @@ class EttersendelseSendtForSentException(message: String?) : SosialhjelpSoknadAp
 class FeilVedSendingTilFiksException(
     message: String?,
     e: Exception?,
-    id: String?
+    id: String?,
 ) : SosialhjelpSoknadApiException(message, e, id)

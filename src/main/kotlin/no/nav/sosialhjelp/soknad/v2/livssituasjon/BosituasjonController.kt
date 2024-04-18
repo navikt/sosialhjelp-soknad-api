@@ -9,16 +9,18 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonController(
-    private val livssituasjonService: LivssituasjonService
+    private val livssituasjonService: LivssituasjonService,
 ) {
     @GetMapping
-    fun getBosituasjon(@PathVariable("soknadId") soknadId: UUID): BosituasjonDto {
+    fun getBosituasjon(
+        @PathVariable("soknadId") soknadId: UUID,
+    ): BosituasjonDto {
         return livssituasjonService.getLivssituasjon(soknadId)?.bosituasjon?.toBosituasjonDto()
             ?: BosituasjonDto()
     }
@@ -26,7 +28,7 @@ class BosituasjonController(
     @PutMapping
     fun updateBosituasjon(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody bosituasjonDto: BosituasjonDto
+        @RequestBody bosituasjonDto: BosituasjonDto,
     ): BosituasjonDto {
         SoknadInputValidator(BosituasjonDto::class)
             .validateAllInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
@@ -34,17 +36,18 @@ class BosituasjonController(
         return livssituasjonService.updateBosituasjon(
             soknadId,
             botype = bosituasjonDto.botype,
-            antallHusstand = bosituasjonDto.antallPersoner
+            antallHusstand = bosituasjonDto.antallPersoner,
         ).toBosituasjonDto()
     }
 }
 
 data class BosituasjonDto(
     val botype: Botype? = null,
-    val antallPersoner: Int? = null
+    val antallPersoner: Int? = null,
 )
 
-fun Bosituasjon.toBosituasjonDto() = BosituasjonDto(
-    botype = this.botype,
-    antallPersoner = this.antallHusstand
-)
+fun Bosituasjon.toBosituasjonDto() =
+    BosituasjonDto(
+        botype = this.botype,
+        antallPersoner = this.antallHusstand,
+    )

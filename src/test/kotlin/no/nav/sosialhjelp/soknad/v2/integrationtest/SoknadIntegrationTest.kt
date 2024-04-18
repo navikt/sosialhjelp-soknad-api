@@ -12,11 +12,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import java.util.*
+import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
 class SoknadIntegrationTest : AbstractIntegrationTest() {
-
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
 

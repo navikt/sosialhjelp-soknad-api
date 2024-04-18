@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person.domain
 data class Bostedsadresse(
     val coAdressenavn: String?,
     val vegadresse: Vegadresse?,
-    val matrikkeladresse: Matrikkeladresse?
+    val matrikkeladresse: Matrikkeladresse?,
 )
 
 /**
@@ -12,7 +12,7 @@ data class Bostedsadresse(
  */
 data class Oppholdsadresse(
     val coAdressenavn: String?,
-    val vegadresse: Vegadresse?
+    val vegadresse: Vegadresse?,
 )
 
 data class Vegadresse(
@@ -24,7 +24,7 @@ data class Vegadresse(
     val poststed: String?,
     val kommunenummer: String?,
     val bruksenhetsnummer: String?,
-    val bydelsnummer: String?
+    val bydelsnummer: String?,
 )
 
 /**
@@ -36,5 +36,5 @@ data class Matrikkeladresse(
     val poststed: String?,
     val tilleggsnavn: String?,
     val kommunenummer: String?,
-    val bruksenhetsnummer: String?
+    val bruksenhetsnummer: String?,
 )

@@ -24,21 +24,23 @@ import java.time.Duration
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
-    private val baseurl: String
+    private val baseurl: String,
 ) {
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
 
-    protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .registerModule(JavaTimeModule())
+    protected val pdlMapper: ObjectMapper =
+        jacksonObjectMapper()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(JavaTimeModule())
 
-    private val pdlWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder)
-        .codecs {
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
-        }
-        .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
-        .build()
+    private val pdlWebClient: WebClient =
+        unproxiedWebClientBuilder(webClientBuilder)
+            .codecs {
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
+            }
+            .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
+            .build()
 
     protected val pdlRetry: RetryBackoffSpec =
         Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
@@ -56,9 +58,10 @@ abstract class PdlClient(
     }
 
     protected val baseRequest: WebClient.RequestBodySpec
-        get() = pdlWebClient.post()
-            .uri(baseurl)
-            .accept(MediaType.APPLICATION_JSON)
+        get() =
+            pdlWebClient.post()
+                .uri(baseurl)
+                .accept(MediaType.APPLICATION_JSON)
 
     protected inline fun <reified T> parse(response: String): T {
         return try {

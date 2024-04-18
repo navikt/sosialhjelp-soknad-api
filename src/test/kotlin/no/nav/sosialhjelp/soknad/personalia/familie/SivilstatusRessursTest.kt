@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class SivilstatusRessursTest {
-
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
@@ -80,7 +79,7 @@ internal class SivilstatusRessursTest {
                 null,
                 null,
                 null,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -101,7 +100,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 null,
                 null,
-                true
+                true,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -123,7 +122,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 false,
                 true,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -145,7 +144,7 @@ internal class SivilstatusRessursTest {
                 JSON_EKTEFELLE,
                 true,
                 null,
-                null
+                null,
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -179,14 +178,15 @@ internal class SivilstatusRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val sivilstatusFrontend = SivilstatusFrontend(
-            false,
-            JsonSivilstatus.Status.GIFT,
-            EKTEFELLE_FRONTEND,
-            null,
-            null,
-            null
-        )
+        val sivilstatusFrontend =
+            SivilstatusFrontend(
+                false,
+                JsonSivilstatus.Status.GIFT,
+                EKTEFELLE_FRONTEND,
+                null,
+                null,
+                null,
+            )
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -210,14 +210,15 @@ internal class SivilstatusRessursTest {
     fun putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
-        val sivilstatusFrontend = SivilstatusFrontend(
-            false,
-            JsonSivilstatus.Status.GIFT,
-            EKTEFELLE_FRONTEND,
-            null,
-            null,
-            null
-        )
+        val sivilstatusFrontend =
+            SivilstatusFrontend(
+                false,
+                JsonSivilstatus.Status.GIFT,
+                EKTEFELLE_FRONTEND,
+                null,
+                null,
+                null,
+            )
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend) }
@@ -227,7 +228,7 @@ internal class SivilstatusRessursTest {
 
     private fun assertThatEktefelleIsCorrectlyConverted(
         ektefelle: EktefelleFrontend?,
-        jsonEktefelle: JsonEktefelle
+        jsonEktefelle: JsonEktefelle,
     ) {
         assertThat(ektefelle?.fodselsdato).isEqualTo(jsonEktefelle.fodselsdato)
         assertThat(ektefelle?.personnummer).isEqualTo(getPersonnummerFromFnr(jsonEktefelle.personIdentifikator))
@@ -255,7 +256,7 @@ internal class SivilstatusRessursTest {
         ektefelle: JsonEktefelle?,
         harDiskresjonskode: Boolean?,
         folkeregistrertMed: Boolean?,
-        borSammen: Boolean?
+        borSammen: Boolean?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
@@ -268,7 +269,7 @@ internal class SivilstatusRessursTest {
                         .withEktefelleHarDiskresjonskode(harDiskresjonskode)
                         .withFolkeregistrertMedEktefelle(folkeregistrertMed)
                         .withBorSammenMed(borSammen)
-                }
+                },
             )
         return soknadUnderArbeid
     }
@@ -276,20 +277,22 @@ internal class SivilstatusRessursTest {
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
-        private val JSON_EKTEFELLE = JsonEktefelle()
-            .withNavn(
-                JsonNavn()
-                    .withFornavn("Alfred")
-                    .withMellomnavn("Thaddeus Crane")
-                    .withEtternavn("Pennyworth")
+        private val JSON_EKTEFELLE =
+            JsonEktefelle()
+                .withNavn(
+                    JsonNavn()
+                        .withFornavn("Alfred")
+                        .withMellomnavn("Thaddeus Crane")
+                        .withEtternavn("Pennyworth"),
+                )
+                .withFodselsdato("1940-01-01")
+                .withPersonIdentifikator("11111111111")
+        private val EKTEFELLE_FRONTEND =
+            EktefelleFrontend(
+                navn = NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"),
+                fodselsdato = "1940-01-01",
+                personnummer = "12345",
             )
-            .withFodselsdato("1940-01-01")
-            .withPersonIdentifikator("11111111111")
-        private val EKTEFELLE_FRONTEND = EktefelleFrontend(
-            navn = NavnFrontend("Alfred", "Thaddeus Crane", "Pennyworth"),
-            fodselsdato = "1940-01-01",
-            personnummer = "12345"
-        )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(
@@ -300,7 +303,7 @@ internal class SivilstatusRessursTest {
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
+                sistEndretDato = LocalDateTime.now(),
             )
         }
     }

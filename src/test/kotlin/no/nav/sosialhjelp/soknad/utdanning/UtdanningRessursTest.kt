@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class UtdanningRessursTest {
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
@@ -185,18 +184,19 @@ internal class UtdanningRessursTest {
 
     private fun createJsonInternalSoknadWithUtdanning(
         erStudent: Boolean?,
-        studentgrad: Studentgrad?
+        studentgrad: Studentgrad?,
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
             .withKilde(JsonKilde.BRUKER)
             .withErStudent(erStudent)

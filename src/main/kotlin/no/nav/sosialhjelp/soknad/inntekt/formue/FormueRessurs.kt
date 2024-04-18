@@ -29,19 +29,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH], combineWithOr = true)
+@ProtectedWithClaims(
+    issuer = Constants.SELVBETJENING,
+    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
+    combineWithOr = true,
+)
 @RequestMapping("/soknader/{behandlingsId}/inntekt/formue", produces = [MediaType.APPLICATION_JSON_VALUE])
 class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService
+    private val textService: TextService,
 ) {
     @GetMapping
-    fun hentFormue(@PathVariable("behandlingsId") behandlingsId: String): FormueFrontend {
+    fun hentFormue(
+        @PathVariable("behandlingsId") behandlingsId: String,
+    ): FormueFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad =
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = soknad.soknad.data.okonomi
 
         if (okonomi.opplysninger.bekreftelse == null) {
@@ -55,36 +62,41 @@ class FormueRessurs(
             livsforsikring = hasFormueType(okonomi.oversikt, FORMUE_LIVSFORSIKRING),
             verdipapirer = hasFormueType(okonomi.oversikt, FORMUE_VERDIPAPIRER),
             annet = hasFormueType(okonomi.oversikt, FORMUE_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing
+            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing,
         )
     }
 
     @PutMapping
     fun updateFormue(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody formueFrontend: FormueFrontend
+        @RequestBody formueFrontend: FormueFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad = soknad.jsonInternalSoknad
-            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        val hasAnyFormueType = formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
-            formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
+        val hasAnyFormueType =
+            formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
+                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
         setBekreftelse(
             okonomi.opplysninger,
             BEKREFTELSE_SPARING,
             hasAnyFormueType,
-            textService.getJsonOkonomiTittel("inntekt.bankinnskudd")
+            textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
         )
         setFormue(okonomi.oversikt, formueFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun setFormue(oversikt: JsonOkonomioversikt, formueFrontend: FormueFrontend) {
+    private fun setFormue(
+        oversikt: JsonOkonomioversikt,
+        formueFrontend: FormueFrontend,
+    ) {
         val formue = oversikt.formue
 
         var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BRUKSKONTO])
@@ -106,7 +118,10 @@ class FormueRessurs(
         addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet)
     }
 
-    private fun setBeskrivelseAvAnnet(opplysninger: JsonOkonomiopplysninger, formueFrontend: FormueFrontend) {
+    private fun setBeskrivelseAvAnnet(
+        opplysninger: JsonOkonomiopplysninger,
+        formueFrontend: FormueFrontend,
+    ) {
         if (opplysninger.beskrivelseAvAnnet == null) {
             opplysninger.withBeskrivelseAvAnnet(
                 JsonOkonomibeskrivelserAvAnnet()
@@ -115,13 +130,16 @@ class FormueRessurs(
                     .withSparing("")
                     .withUtbetaling("")
                     .withBoutgifter("")
-                    .withBarneutgifter("")
+                    .withBarneutgifter(""),
             )
         }
         opplysninger.beskrivelseAvAnnet.sparing = formueFrontend.beskrivelseAvAnnet ?: ""
     }
 
-    private fun hasFormueType(oversikt: JsonOkonomioversikt, type: String): Boolean {
+    private fun hasFormueType(
+        oversikt: JsonOkonomioversikt,
+        type: String,
+    ): Boolean {
         return oversikt.formue.any { it.type == type }
     }
 
@@ -132,6 +150,6 @@ class FormueRessurs(
         val livsforsikring: Boolean = false,
         val verdipapirer: Boolean = false,
         val annet: Boolean = false,
-        val beskrivelseAvAnnet: String?
+        val beskrivelseAvAnnet: String?,
     )
 }

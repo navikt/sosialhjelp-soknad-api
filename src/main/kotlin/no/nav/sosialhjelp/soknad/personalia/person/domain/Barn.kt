@@ -8,5 +8,5 @@ data class Barn(
     val etternavn: String,
     val fnr: String,
     val fodselsdato: LocalDate?,
-    val folkeregistrertSammen: Boolean
+    val folkeregistrertSammen: Boolean,
 )

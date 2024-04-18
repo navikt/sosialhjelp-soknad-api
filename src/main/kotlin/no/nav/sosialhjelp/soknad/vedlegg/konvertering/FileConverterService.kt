@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class FileConverterService(
     val fileConverter: FileConverter,
-    private val meterRegistry: MeterRegistry
+    private val meterRegistry: MeterRegistry,
 ) {
     private val pdfConversionSuccess = Counter.builder("soknad_pdf_conversion_success")
     private val pdfConversionFailure = Counter.builder("soknad_pdf_conversion_failure")

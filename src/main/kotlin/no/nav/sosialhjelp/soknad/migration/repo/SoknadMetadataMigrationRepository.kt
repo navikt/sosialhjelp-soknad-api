@@ -9,20 +9,20 @@ import java.time.LocalDateTime
 
 @Repository
 class SoknadMetadataMigrationRepository(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     fun getNextSoknadMetadataAfter(sistEndretDato: LocalDateTime): SoknadMetadata? {
         return jdbcTemplate.query(
             "select * from soknadmetadata where sistendretdato > ? order by sistendretdato asc",
             SoknadMetadataRowMapper.soknadMetadataRowMapper,
-            SQLUtils.tidTilTimestamp(sistEndretDato)
+            SQLUtils.tidTilTimestamp(sistEndretDato),
         ).firstOrNull()
     }
 
     fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from soknadmetadata",
-            Int::class.java
+            Int::class.java,
         ) ?: 0
     }
 }
