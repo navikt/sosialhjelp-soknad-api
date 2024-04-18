@@ -1,2 +1,20 @@
 [*.{kt,kts}]
 max_line_length = off
+
+# If EditorConfig support is enabled in IntelliJ IDEA, the following settings override Code Style settings.
+# This is the minimal set to make IDEAs formatter compatible with ktlint.
+# The settings here are the equivalent to the settings prescribed in
+# https://pinterest.github.io/ktlint/latest/rules/configuration-intellij-idea/
+
+insert_final_newline = true
+
+# This is generally the default.
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+
+# Disable wildcard imports
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+# For java.util., ... too
+ij_kotlin_packages_to_use_import_on_demand = unset
+
+# End EditorConfig settings
