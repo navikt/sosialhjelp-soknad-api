@@ -47,7 +47,10 @@ class SoknadV2AdapterService(
             .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
-    override fun addArbeidsforholdList(soknadId: String, arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?) {
+    override fun addArbeidsforholdList(
+        soknadId: String,
+        arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?
+    ) {
         arbeidsforhold?.let {
             log.info("NyModell: Legger til arbeidsforhold for $soknadId")
 
@@ -117,7 +120,7 @@ class SoknadV2AdapterService(
     }
 
     override fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus?) {
-       log.info("NyModell: Legger til systemdata for ektefelle")
+        log.info("NyModell: Legger til systemdata for ektefelle")
 
         systemverdiSivilstatus?.let {
             kotlin.runCatching {
