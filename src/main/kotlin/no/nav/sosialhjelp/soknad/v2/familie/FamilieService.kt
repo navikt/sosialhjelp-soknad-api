@@ -63,7 +63,10 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         }
     }
 
-    fun addEktefelle(soknadId: UUID, ektefelle: Ektefelle) {
+    fun addEktefelle(
+        soknadId: UUID,
+        ektefelle: Ektefelle,
+    ) {
         val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
         val updatedFamilieMedEktefelle = familie.copy(ektefelle = ektefelle)
         familieRepository.save(updatedFamilieMedEktefelle)

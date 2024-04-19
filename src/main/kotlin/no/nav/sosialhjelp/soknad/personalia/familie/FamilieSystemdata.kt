@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component
 @Component
 class FamilieSystemdata(
     private val personService: PersonService,
-    private val v2AdapterService: V2AdapterService
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
-
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonData = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data ?: return
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi

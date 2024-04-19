@@ -29,7 +29,7 @@ class SoknadV2AdapterService(
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
     private val eierService: EierService,
-    private val familieService: FamilieService
+    private val familieService: FamilieService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -134,7 +134,10 @@ class SoknadV2AdapterService(
             .onFailure { log.error("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    override fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus?) {
+    override fun addEktefelle(
+        behandlingsId: String,
+        systemverdiSivilstatus: JsonSivilstatus?,
+    ) {
         log.info("NyModell: Legger til systemdata for ektefelle")
 
         systemverdiSivilstatus?.let {
@@ -162,16 +165,16 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
 
 private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
     return Ektefelle(
-        navn = Navn(
-            fornavn = this.ektefelle.navn.fornavn,
-            mellomnavn = this.ektefelle.navn.mellomnavn,
-            etternavn = this.ektefelle.navn.etternavn
-        ),
-
+        navn =
+            Navn(
+                fornavn = this.ektefelle.navn.fornavn,
+                mellomnavn = this.ektefelle.navn.mellomnavn,
+                etternavn = this.ektefelle.navn.etternavn,
+            ),
         fodselsdato = this.ektefelle.fodselsdato,
         personId = this.ektefelle.personIdentifikator,
         folkeregistrertMedEktefelle = this.folkeregistrertMedEktefelle,
         borSammen = this.borSammenMed,
-        kildeErSystem = true
+        kildeErSystem = true,
     )
 }

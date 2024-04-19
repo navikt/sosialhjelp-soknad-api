@@ -39,5 +39,9 @@ interface V2AdapterService {
     )
 
     fun slettSoknad(behandlingsId: String)
-    fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus?)
+
+    fun addEktefelle(
+        behandlingsId: String,
+        systemverdiSivilstatus: JsonSivilstatus?,
+    )
 }

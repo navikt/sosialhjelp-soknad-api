@@ -36,7 +36,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class FamilieSystemdataTest {
-
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     private val personService: PersonService = mockk()
@@ -251,7 +250,10 @@ internal class FamilieSystemdataTest {
         assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2)
     }
 
-    private fun sivilstatusSkalIkkeSettes(status: JsonSivilstatus.Status, ektefelle: Ektefelle?) {
+    private fun sivilstatusSkalIkkeSettes(
+        status: JsonSivilstatus.Status,
+        ektefelle: Ektefelle?,
+    ) {
         val person = createPerson(status.toString(), ektefelle)
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null

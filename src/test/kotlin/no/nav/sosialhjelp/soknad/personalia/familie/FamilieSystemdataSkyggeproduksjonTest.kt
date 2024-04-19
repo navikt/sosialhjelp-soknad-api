@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
-
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -25,7 +24,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle as EktefelleV2
 
 class FamilieSystemdataSkyggeproduksjonTest {
-
     private val personService: PersonService = mockk()
     private val familieService: FamilieService = mockk()
     private val v2AdapterService: V2AdapterService =
@@ -36,10 +34,11 @@ class FamilieSystemdataSkyggeproduksjonTest {
     fun `skal legge til ektefelle i skyggeproduksjon`() {
         val ektefelleSlot = slot<EktefelleV2>()
 
-        every { personService.hentPerson(EIER) } returns createPerson(
-            JsonSivilstatus.Status.GIFT.toString(),
-            EKTEFELLE
-        )
+        every { personService.hentPerson(EIER) } returns
+            createPerson(
+                JsonSivilstatus.Status.GIFT.toString(),
+                EKTEFELLE,
+            )
         every { personService.hentBarnForPerson(EIER) } returns emptyList()
         every { familieService.addEktefelle(any(), capture(ektefelleSlot)) } just Runs
 
@@ -52,7 +51,10 @@ class FamilieSystemdataSkyggeproduksjonTest {
         }
     }
 
-    private fun createPerson(sivilstatus: String, ektefelle: EktefelleOld?): Person {
+    private fun createPerson(
+        sivilstatus: String,
+        ektefelle: EktefelleOld?,
+    ): Person {
         return Person(
             fornavn = "fornavn",
             mellomnavn = "mellomnavn",
@@ -62,14 +64,15 @@ class FamilieSystemdataSkyggeproduksjonTest {
             statsborgerskap = emptyList(),
             ektefelle = ektefelle,
             bostedsadresse = null,
-            oppholdsadresse = null
+            oppholdsadresse = null,
         )
     }
 
     private fun createSoknadUnderArbeid(
-        jsonInternalSoknad: JsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(
-            EIER
-        )
+        jsonInternalSoknad: JsonInternalSoknad =
+            SoknadServiceOld.createEmptyJsonInternalSoknad(
+                EIER,
+            ),
     ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
@@ -79,7 +82,7 @@ class FamilieSystemdataSkyggeproduksjonTest {
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = LocalDateTime.now(),
         )
     }
 
@@ -88,5 +91,4 @@ class FamilieSystemdataSkyggeproduksjonTest {
         private val EKTEFELLE =
             EktefelleOld("Av", "Og", "På", LocalDate.parse("1993-02-01"), "11111111111", false, false)
     }
-
 }
