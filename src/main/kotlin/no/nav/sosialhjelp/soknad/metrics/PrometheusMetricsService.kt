@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.metrics
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
-import java.util.concurrent.TimeUnit
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 
 // TODO Hvor hører oppdateringer til prometheus hjemme? Controller, Business-logikk (service) eller...
 // TODO ...er det egentlig en side-tjeneste. Kunne vært interessant å skille ut Prometheus-logikk som en egen..
