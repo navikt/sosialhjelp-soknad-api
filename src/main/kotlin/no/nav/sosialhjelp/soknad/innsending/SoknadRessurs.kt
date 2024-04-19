@@ -133,9 +133,7 @@ class SoknadRessurs(
 
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
-        @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): Map<String, String> {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")

@@ -42,7 +42,6 @@ data class VedleggMetadata(
 
 enum class SoknadMetadataType {
     SEND_SOKNAD_KOMMUNAL,
-    SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
 }
 
 enum class SoknadMetadataInnsendingStatus {

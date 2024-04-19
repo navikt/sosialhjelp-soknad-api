@@ -31,12 +31,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -47,13 +45,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
-import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 
 @Component
 class SoknadServiceOld(
-    private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdataUpdater: SystemdataUpdater,
@@ -171,38 +167,8 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    private fun oppdaterMetadataVedAvslutningAvSoknad(
-        behandlingsId: String?,
-        vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid,
-    ) {
-        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-        soknadMetadata?.vedlegg = vedlegg
-        if (soknadMetadata?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknadMetadata?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
-            soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
-        }
-        soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
-        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
-        soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
-
-        soknadMetadata?.let {
-            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
-            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
-        }
-        soknadMetadataRepository.oppdater(soknadMetadata)
-        log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
-    }
-
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
-
-        private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
-            val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)
-            val vedlegg = VedleggMetadataListe()
-            vedlegg.vedleggListe = jsonVedleggs.map { mapJsonVedleggToVedleggMetadata(it) }.toMutableList()
-            return vedlegg
-        }
 
         fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad {
             return JsonInternalSoknad().withSoknad(
