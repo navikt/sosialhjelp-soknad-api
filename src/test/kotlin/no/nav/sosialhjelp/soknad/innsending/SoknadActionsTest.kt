@@ -54,11 +54,9 @@ internal class SoknadActionsTest {
 
     private val actions =
         SoknadActions(
-            soknadServiceOld,
             kommuneInfoService,
             tilgangskontroll,
             soknadUnderArbeidRepository,
-            soknadMetadataRepository,
             digisosApiService,
             nedetidService,
         )
@@ -102,7 +100,6 @@ internal class SoknadActionsTest {
         val behandlingsId = "ettersendelsePaaSvarUtSoknad"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
         val soknadMetadata =
             SoknadMetadata(
                 id = 0L,
@@ -115,7 +112,6 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-        every { soknadServiceOld.sendSoknad(behandlingsId) } just runs
 
         actions.sendSoknad(behandlingsId, token)
 
@@ -128,7 +124,6 @@ internal class SoknadActionsTest {
         val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
@@ -142,7 +137,6 @@ internal class SoknadActionsTest {
         val behandlingsId = "ettersendelsePaaDigisosApiSoknad"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
         val soknadMetadata =
             SoknadMetadata(
                 id = 0L,
@@ -183,7 +177,6 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
-        every { soknadServiceOld.sendSoknad(any()) } just runs
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
             .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
@@ -197,7 +190,6 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MED_MANGLER
-        every { soknadServiceOld.sendSoknad(any()) } just runs
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
             .isInstanceOf(SendingTilKommuneUtilgjengeligException::class.java)
@@ -267,7 +259,6 @@ internal class SoknadActionsTest {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
-                tilknyttetBehandlingsId = null,
                 eier = eier,
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

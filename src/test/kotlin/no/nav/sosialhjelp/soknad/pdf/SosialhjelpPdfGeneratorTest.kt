@@ -55,30 +55,6 @@ internal class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    fun generateEttersendelsePdfWithValidJson() {
-        val internalSoknad = jsonInternalSoknadWithMandatoryFields
-
-        val vedleggSpesifikasjon =
-            JsonVedleggSpesifikasjon()
-                .withVedlegg(
-                    mutableListOf(
-                        JsonVedlegg()
-                            .withStatus("LastetOpp")
-                            .withType("annet")
-                            .withTilleggsinfo("annet")
-                            .withFiler(
-                                mutableListOf(
-                                    JsonFiler().withFilnavn("Fil1.pdf"),
-                                ),
-                            ),
-                    ),
-                )
-        internalSoknad.vedlegg = vedleggSpesifikasjon
-
-        sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, "1234")
-    }
-
-    @Test
     fun generateBrukerkvittering() {
         sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()
     }
@@ -203,25 +179,6 @@ internal class SosialhjelpPdfGeneratorTest {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
 
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
-        val file = File("pdfaTest.pdf")
-
-        FileUtils.writeByteArrayToFile(file, bytes)
-
-        try {
-            val validationResult = PreflightParser.validate(file)
-            assertThat(validationResult.isValid).isTrue
-        } catch (e: SyntaxValidationException) {
-            fail<Any>("Exception when checking validity of pdf/a. ", e)
-        } finally {
-            file.deleteOnExit()
-        }
-    }
-
-    @Test
-    fun skalGenerereEttersendelsePdfA() {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
-
-        val bytes = sosialhjelpPdfGenerator.generateEttersendelsePdf(jsonInternalSoknad, "pdfaTest")
         val file = File("pdfaTest.pdf")
 
         FileUtils.writeByteArrayToFile(file, bytes)
