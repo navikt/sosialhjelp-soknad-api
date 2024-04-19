@@ -98,11 +98,11 @@ class MellomlagringService(
         return FilOpplasting(
             data = ByteArrayInputStream(data),
             metadata =
-                FilMetadata(
-                    filnavn = filnavn,
-                    mimetype = detectMimeType(data),
-                    storrelse = data.size.toLong(),
-                ),
+            FilMetadata(
+                filnavn = filnavn,
+                mimetype = detectMimeType(data),
+                storrelse = data.size.toLong(),
+            ),
         )
     }
 
