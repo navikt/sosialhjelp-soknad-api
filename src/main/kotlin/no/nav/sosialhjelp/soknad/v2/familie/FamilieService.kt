@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.familie
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 import kotlin.jvm.optionals.getOrDefault
 
 @Component
