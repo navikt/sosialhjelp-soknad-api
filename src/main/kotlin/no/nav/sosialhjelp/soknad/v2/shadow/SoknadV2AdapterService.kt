@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
@@ -7,6 +8,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseS
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
@@ -147,17 +149,27 @@ class SoknadV2AdapterService(
                 .onFailure { log.error("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }
     }
+
+    override fun addBarn(behandlingsId: String, ansvarList: MutableList<JsonAnsvar>) {
+        log.info("NyModell: Legger til systemdata for barn")
+        ansvarList.let {
+            kotlin.runCatching {
+                familieService.addBarn(UUID.fromString(behandlingsId), it.map { it.toV2Barn() })
+            }
+                .onFailure { log.error("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
+        }
+    }
 }
 
 private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
     return Eier(
         soknadId = soknadId,
         navn =
-            Navn(
-                fornavn = this.navn.fornavn,
-                mellomnavn = this.navn.mellomnavn,
-                etternavn = this.navn.etternavn,
-            ),
+        Navn(
+            fornavn = this.navn.fornavn,
+            mellomnavn = this.navn.mellomnavn,
+            etternavn = this.navn.etternavn,
+        ),
         statsborgerskap = this.statsborgerskap.verdi,
         nordiskBorger = this.nordiskBorger.verdi,
     )
@@ -166,15 +178,32 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
 private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
     return Ektefelle(
         navn =
-            Navn(
-                fornavn = this.ektefelle.navn.fornavn,
-                mellomnavn = this.ektefelle.navn.mellomnavn,
-                etternavn = this.ektefelle.navn.etternavn,
-            ),
+        Navn(
+            fornavn = this.ektefelle.navn.fornavn,
+            mellomnavn = this.ektefelle.navn.mellomnavn,
+            etternavn = this.ektefelle.navn.etternavn,
+        ),
         fodselsdato = this.ektefelle.fodselsdato,
         personId = this.ektefelle.personIdentifikator,
         folkeregistrertMedEktefelle = this.folkeregistrertMedEktefelle,
         borSammen = this.borSammenMed,
         kildeErSystem = true,
+    )
+}
+
+private fun JsonAnsvar.toV2Barn(): Barn {
+    return Barn(
+//        TODO hvor skal familieKey opprettes.
+        familieKey = UUID.randomUUID(),
+        personId = this.barn.personIdentifikator,
+        navn =
+        Navn(
+            fornavn = this.barn.navn.fornavn,
+            mellomnavn = this.barn.navn.mellomnavn,
+            etternavn = this.barn.navn.etternavn,
+        ),
+        fodselsdato = this.barn.fodselsdato,
+        borSammen = this.borSammenMed?.verdi,
+        folkeregistrertSammen = this.erFolkeregistrertSammen.verdi
     )
 }

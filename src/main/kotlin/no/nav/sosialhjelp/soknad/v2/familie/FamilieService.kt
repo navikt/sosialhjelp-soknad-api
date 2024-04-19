@@ -75,4 +75,13 @@ class FamilieService(private val familieRepository: FamilieRepository) {
     private fun <A : Any, B> Map<A, B?>.filterNotNullValue(): Map<A, B> {
         return filter { it.value != null }.mapValues { it.value!! }
     }
+
+    fun addBarn(soknadId: UUID, barnListe: List<Barn>) {
+        val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
+        val updatedFamilieMedBarn = familie.copy(ansvar = familie.ansvar + barnListe.map { UUID.randomUUID() to it })
+        familieRepository.save(updatedFamilieMedBarn)
+
+    }
+
+
 }

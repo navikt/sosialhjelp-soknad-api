@@ -20,7 +20,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn as BarnOld
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as EktefelleOld
+import no.nav.sosialhjelp.soknad.v2.familie.Barn as BarnV2
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle as EktefelleV2
 
 class FamilieSystemdataSkyggeproduksjonTest {
@@ -31,14 +33,14 @@ class FamilieSystemdataSkyggeproduksjonTest {
     private val familieSystemdata = FamilieSystemdata(personService, v2AdapterService)
 
     @Test
-    fun `skal legge til ektefelle i skyggeproduksjon`() {
+    fun `skal legge til ektefelle fra systemdata i skyggeproduksjon`() {
         val ektefelleSlot = slot<EktefelleV2>()
 
         every { personService.hentPerson(EIER) } returns
-            createPerson(
-                JsonSivilstatus.Status.GIFT.toString(),
-                EKTEFELLE,
-            )
+                createPerson(
+                    JsonSivilstatus.Status.GIFT.toString(),
+                    EKTEFELLE,
+                )
         every { personService.hentBarnForPerson(EIER) } returns emptyList()
         every { familieService.addEktefelle(any(), capture(ektefelleSlot)) } just Runs
 
@@ -48,6 +50,24 @@ class FamilieSystemdataSkyggeproduksjonTest {
         verify(exactly = 1) {
             familieService.addEktefelle(any(), any())
             assertThat(ektefelleSlot.captured.personId).isEqualTo(EKTEFELLE.fnr)
+        }
+    }
+
+    @Test
+    fun `skal legge til barn fra systemdata i skyggeproduksjon`() {
+        val barnSlotListe = slot<MutableList<BarnV2>>()
+
+        every { personService.hentPerson(EIER) } returns createPerson(JsonSivilstatus.Status.UGIFT.toString(), null)
+        every { personService.hentBarnForPerson(any()) } returns listOf(BARN)
+        every { familieService.addBarn(any(), capture(barnSlotListe)) } just Runs
+
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
+
+        verify(exactly = 1) {
+            familieService.addBarn(any(), any())
+            assertThat(barnSlotListe.captured).hasSize(1)
+            assertThat(barnSlotListe.captured[0].personId).isEqualTo(BARN.fnr)
         }
     }
 
@@ -88,6 +108,23 @@ class FamilieSystemdataSkyggeproduksjonTest {
 
     companion object {
         private const val EIER = "12345678901"
+        private const val FORNAVN_BARN = "Rudolf"
+        private const val MELLOMNAVN_BARN = "Rød På"
+        private const val ETTERNAVN_BARN = "Nesen"
+        private val FODSELSDATO_BARN = LocalDate.parse("2001-02-03")
+        private const val FNR_BARN = "22222222222"
+        private const val ER_FOLKEREGISTRERT_SAMMEN_BARN = true
+
+        //        private const val HAR_DELT_BOSTED_BARN = true
+        private val BARN =
+            BarnOld(
+                FORNAVN_BARN,
+                MELLOMNAVN_BARN,
+                ETTERNAVN_BARN,
+                FNR_BARN,
+                FODSELSDATO_BARN,
+                ER_FOLKEREGISTRERT_SAMMEN_BARN,
+            )
         private val EKTEFELLE =
             EktefelleOld("Av", "Og", "På", LocalDate.parse("1993-02-01"), "11111111111", false, false)
     }
