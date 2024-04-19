@@ -121,6 +121,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { v2AdapterService.addEktefelle(any(), any()) } just Runs
+        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -162,6 +163,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { personService.hentPerson(any()) } returns null
         every { v2AdapterService.addEktefelle(any(), any()) } just Runs
+        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
@@ -230,6 +232,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { v2AdapterService.addEktefelle(any(), any()) } just Runs
+        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
