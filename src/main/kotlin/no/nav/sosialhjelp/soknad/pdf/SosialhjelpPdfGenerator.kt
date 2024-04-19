@@ -12,13 +12,10 @@ import no.nav.sosialhjelp.soknad.pdf.Metainformasjon.leggTilMetainformasjon
 import no.nav.sosialhjelp.soknad.pdf.OkonomiskeOpplysningerOgVedlegg.leggTilOkonomiskeOpplysningerOgVedlegg
 import no.nav.sosialhjelp.soknad.pdf.Personalia.leggTilPersonalia
 import no.nav.sosialhjelp.soknad.pdf.UtgifterOgGjeld.leggTilUtgifterOgGjeld
-import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_OG_TID_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class SosialhjelpPdfGenerator(
