@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
@@ -77,7 +77,7 @@ class SoknadActions(
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException(
                     "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
                 )
-            SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
+            SKAL_SENDE_SOKNADER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
                 SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)

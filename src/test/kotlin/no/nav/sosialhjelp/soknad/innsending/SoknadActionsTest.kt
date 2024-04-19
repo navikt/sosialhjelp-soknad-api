@@ -30,7 +30,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -210,7 +210,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
 
         actions.sendSoknad(behandlingsId, token)

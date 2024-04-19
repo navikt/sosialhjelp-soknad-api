@@ -94,20 +94,6 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Deprecated("Gammelt repository")
-    override fun hentEttersendingMedTilknyttetBehandlingsId(
-        tilknyttetBehandlingsId: String,
-        eier: String,
-    ): SoknadUnderArbeid? {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            eier,
-            tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
-        ).firstOrNull()
-    }
-
-    @Deprecated("Gammelt repository")
     override fun oppdaterSoknadsdata(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,

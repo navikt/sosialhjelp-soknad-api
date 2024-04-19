@@ -62,12 +62,4 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
             },
         )
     }
-
-    override fun hentForeldedeEttersendelser(): List<SoknadUnderArbeid> {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
-        )
-    }
 }

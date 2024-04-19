@@ -70,14 +70,6 @@ class SoknadMetadataRepositoryJdbc(
         ).firstOrNull()
     }
 
-    override fun hentBehandlingskjede(behandlingsId: String?): List<SoknadMetadata> {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?",
-            soknadMetadataRowMapper,
-            behandlingsId,
-        )
-    }
-
     override fun hentAntallInnsendteSoknaderEtterTidspunkt(
         fnr: String?,
         tidspunkt: LocalDateTime?,
@@ -95,18 +87,9 @@ class SoknadMetadataRepositoryJdbc(
         }
     }
 
-    override fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
-            soknadMetadataRowMapper,
-            fnr,
-            SoknadMetadataInnsendingStatus.FERDIG.name,
-        )
-    }
-
     override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
         return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.FERDIG.name,
@@ -143,7 +126,7 @@ class SoknadMetadataRepositoryJdbc(
         tidsgrense: LocalDateTime,
     ): List<SoknadMetadata> {
         return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.FERDIG.name,

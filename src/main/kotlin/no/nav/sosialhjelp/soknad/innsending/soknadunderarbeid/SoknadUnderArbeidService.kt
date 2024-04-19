@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
@@ -137,7 +137,7 @@ class SoknadUnderArbeidService(
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MED_MANGLER -> {
                 throw SendingTilKommuneUtilgjengeligException("Kommune mangler eller har feil konfigurasjon")
             }
-            SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
+            SKAL_SENDE_SOKNADER_VIA_FDA -> true
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD -> {
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException(
                     "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
