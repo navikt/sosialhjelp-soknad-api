@@ -125,7 +125,6 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = lagInternalSoknadJson(),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
