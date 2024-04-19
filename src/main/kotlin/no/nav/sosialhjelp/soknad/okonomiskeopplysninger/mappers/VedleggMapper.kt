@@ -17,8 +17,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
-import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
@@ -26,9 +24,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
-import java.time.LocalDateTime
-import java.util.SortedMap
-import java.util.TreeMap
 
 object VedleggMapper {
     private const val ANNET_ANNET = "annet|annet"
@@ -255,59 +250,7 @@ object VedleggMapper {
             }
     }
 
-    fun mapVedleggToSortedListOfEttersendteVedlegg(
-        innsendingstidspunkt: LocalDateTime?,
-        opplastedeVedlegg: List<OpplastetVedlegg>,
-        originaleVedlegg: List<JsonVedlegg>,
-    ): List<EttersendtVedlegg> {
-        val ettersendteVedlegg: SortedMap<String, EttersendtVedlegg> =
-            TreeMap(
-                sortAlphabeticallyAndPutTypeAnnetLast(),
-            )
-        originaleVedlegg
-            .filter { filterGittInnsendingstidspunkt(innsendingstidspunkt, it) }
-            .forEach { vedlegg: JsonVedlegg ->
-                val sammensattNavn = getVedleggType(vedlegg).toString()
-                if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
-                    val filerFrontend =
-                        if (vedlegg.status == LASTET_OPP) {
-                            mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
-                        } else {
-                            listOf()
-                        }
-                    ettersendteVedlegg[sammensattNavn] =
-                        EttersendtVedlegg(
-                            type = sammensattNavn,
-                            vedleggStatus = vedlegg.status,
-                            filer = filerFrontend,
-                        )
-                }
-            }
-        return ettersendteVedlegg.values.toList()
-    }
-
-    private fun filterGittInnsendingstidspunkt(
-        innsendingstidspunkt: LocalDateTime?,
-        vedlegg: JsonVedlegg,
-    ): Boolean {
-        return if (innsendingstidspunkt != null && soknadSendtForMindreEnn30DagerSiden(innsendingstidspunkt.toLocalDate())) {
-            true
-        } else {
-            vedlegg.status == LASTET_OPP || getVedleggType(vedlegg) == VedleggType.AnnetAnnet
-        }
-    }
-
     private fun getVedleggType(vedlegg: JsonVedlegg): VedleggType {
         return VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]
     }
-
-    private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> =
-        Comparator { o1, o2 ->
-            when {
-                o1 == o2 -> return@Comparator 0
-                o1 == ANNET_ANNET -> return@Comparator 1
-                o2 == ANNET_ANNET -> return@Comparator -1
-                else -> o1.compareTo(o2)
-            }
-        }
 }

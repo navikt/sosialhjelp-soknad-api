@@ -41,12 +41,11 @@ class SoknadUnderArbeidRepositoryJdbc(
         jdbcTemplate.update(
             """
             insert into SOKNAD_UNDER_ARBEID 
-            (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
-             values (?,?,?,?,?,?,?,?)
+            (VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
+             values (?,?,?,?,?,?,?)
             """.trimIndent(),
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.tilknyttetBehandlingsId,
             soknadUnderArbeid.eier,
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),

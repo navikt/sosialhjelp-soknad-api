@@ -62,12 +62,7 @@ class OpplastetVedleggService(
         val samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier())
         val newStorrelse = samletVedleggStorrelse + data.size
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
-            val feilmeldingId =
-                if (soknadUnderArbeid.erEttersendelse) {
-                    "ettersending.vedlegg.feil.samletStorrelseForStor"
-                } else {
-                    "vedlegg.opplasting.feil.samletStorrelseForStor"
-                }
+            val feilmeldingId = "vedlegg.opplasting.feil.samletStorrelseForStor"
             throw SamletVedleggStorrelseForStorException(
                 "Kunne ikke lagre fil fordi samlet størrelse på alle vedlegg er for stor",
                 null,

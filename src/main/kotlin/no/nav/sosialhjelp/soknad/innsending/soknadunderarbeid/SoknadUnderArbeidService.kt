@@ -14,10 +14,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
@@ -103,9 +103,7 @@ class SoknadUnderArbeidService(
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
         }
-        if (soknadUnderArbeid.erEttersendelse) {
-            return
-        }
+
         val innsendingString = OffsetDateTime.of(innsendingsTidspunkt, ZoneOffset.UTC).toString()
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingString
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
@@ -129,10 +127,6 @@ class SoknadUnderArbeidService(
     fun skalSoknadSendesMedDigisosApi(behandlingsId: String): Boolean {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
-        if (soknadUnderArbeid.erEttersendelse) {
-            return false
-        }
-
         val kommunenummer =
             soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
                 ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false") }
@@ -143,9 +137,11 @@ class SoknadUnderArbeidService(
                     "Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
                 )
             }
-            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
+            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MED_MANGLER -> {
+                throw SendingTilKommuneUtilgjengeligException("Kommune mangler eller har feil konfigurasjon")
+            }
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
-            SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
+            SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD -> {
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException(
                     "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
                 )
