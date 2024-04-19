@@ -46,14 +46,12 @@ class FamilieSystemdata(
             if (ansvarList.isNullOrEmpty()) {
                 forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
                 v2AdapterService.addBarn(soknadUnderArbeid.behandlingsId, systemverdiForsorgerplikt.ansvar)
-
             } else {
                 ansvarList.removeIf { it.barn.kilde == JsonKilde.SYSTEM && isNotInList(it, systemverdiForsorgerplikt.ansvar) }
                 ansvarList.addAll(
                     systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) },
                 )
                 v2AdapterService.addBarn(soknadUnderArbeid.behandlingsId, ansvarList)
-
             }
         } else if (harForsorgerplikt == null || harForsorgerplikt.kilde == JsonKilde.SYSTEM || !harForsorgerplikt.verdi) {
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt

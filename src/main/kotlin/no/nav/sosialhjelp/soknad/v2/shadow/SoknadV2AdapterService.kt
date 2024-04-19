@@ -150,7 +150,10 @@ class SoknadV2AdapterService(
         }
     }
 
-    override fun addBarn(behandlingsId: String, ansvarList: MutableList<JsonAnsvar>) {
+    override fun addBarn(
+        behandlingsId: String,
+        ansvarList: MutableList<JsonAnsvar>,
+    ) {
         log.info("NyModell: Legger til systemdata for barn")
         ansvarList.let {
             kotlin.runCatching {
@@ -165,11 +168,11 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
     return Eier(
         soknadId = soknadId,
         navn =
-        Navn(
-            fornavn = this.navn.fornavn,
-            mellomnavn = this.navn.mellomnavn,
-            etternavn = this.navn.etternavn,
-        ),
+            Navn(
+                fornavn = this.navn.fornavn,
+                mellomnavn = this.navn.mellomnavn,
+                etternavn = this.navn.etternavn,
+            ),
         statsborgerskap = this.statsborgerskap.verdi,
         nordiskBorger = this.nordiskBorger.verdi,
     )
@@ -178,11 +181,11 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
 private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
     return Ektefelle(
         navn =
-        Navn(
-            fornavn = this.ektefelle.navn.fornavn,
-            mellomnavn = this.ektefelle.navn.mellomnavn,
-            etternavn = this.ektefelle.navn.etternavn,
-        ),
+            Navn(
+                fornavn = this.ektefelle.navn.fornavn,
+                mellomnavn = this.ektefelle.navn.mellomnavn,
+                etternavn = this.ektefelle.navn.etternavn,
+            ),
         fodselsdato = this.ektefelle.fodselsdato,
         personId = this.ektefelle.personIdentifikator,
         folkeregistrertMedEktefelle = this.folkeregistrertMedEktefelle,
@@ -197,13 +200,13 @@ private fun JsonAnsvar.toV2Barn(): Barn {
         familieKey = UUID.randomUUID(),
         personId = this.barn.personIdentifikator,
         navn =
-        Navn(
-            fornavn = this.barn.navn.fornavn,
-            mellomnavn = this.barn.navn.mellomnavn,
-            etternavn = this.barn.navn.etternavn,
-        ),
+            Navn(
+                fornavn = this.barn.navn.fornavn,
+                mellomnavn = this.barn.navn.mellomnavn,
+                etternavn = this.barn.navn.etternavn,
+            ),
         fodselsdato = this.barn.fodselsdato,
         borSammen = this.borSammenMed?.verdi,
-        folkeregistrertSammen = this.erFolkeregistrertSammen.verdi
+        folkeregistrertSammen = this.erFolkeregistrertSammen.verdi,
     )
 }

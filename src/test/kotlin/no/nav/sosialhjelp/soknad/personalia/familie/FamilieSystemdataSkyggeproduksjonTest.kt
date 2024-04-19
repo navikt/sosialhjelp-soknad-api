@@ -37,10 +37,10 @@ class FamilieSystemdataSkyggeproduksjonTest {
         val ektefelleSlot = slot<EktefelleV2>()
 
         every { personService.hentPerson(EIER) } returns
-                createPerson(
-                    JsonSivilstatus.Status.GIFT.toString(),
-                    EKTEFELLE,
-                )
+            createPerson(
+                JsonSivilstatus.Status.GIFT.toString(),
+                EKTEFELLE,
+            )
         every { personService.hentBarnForPerson(EIER) } returns emptyList()
         every { familieService.addEktefelle(any(), capture(ektefelleSlot)) } just Runs
 
