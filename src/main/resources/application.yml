@@ -61,12 +61,9 @@ utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
 norg_url: ${NORG_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
-svarut_url: ${SVARUT_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
 clamav_url: ${CLAMAV_URL}
 fil-konvertering_url: ${GOTENBERG_URL}
-
-fiks.nokkelfil: ${FIKS_NOKKELFIL}
 
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS}
@@ -93,10 +90,6 @@ azure_client_id: ${AZURE_APP_CLIENT_ID}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 pdl_api_scope: ${PDL_API_SCOPE}
 krr_scope: ${KRR_SCOPE}
-
-# svarut:
-fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
-fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
 
 loginservice.url: ${LOGINSERVICE_URL}
 

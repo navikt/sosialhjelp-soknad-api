@@ -76,7 +76,6 @@ spec:
     - configmap: loginservice-idporten
     - secret: redis-password-soknad-api
     - secret: fiks-integrasjon-secret
-    - secret: fiks-svarut-credentials
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
@@ -89,8 +88,6 @@ spec:
       value: "http://clamav.nais-system.svc.nais.local/scan"
     - name: EREG_URL
       value: "https://ereg-services.intern.nav.no"
-    - name: FIKS_NOKKELFIL
-      value: "svarut_public_prod.pem"
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.ks.no/"
     - name: KODEVERK_URL
@@ -127,8 +124,6 @@ spec:
       value: "https://api.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
       value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
-    - name: SVARUT_URL
-      value: "https://svarut.ks.no"
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT

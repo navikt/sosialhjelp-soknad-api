@@ -7,5 +7,4 @@ data class SendTilUrlFrontend(
 
 enum class SoknadMottakerFrontend {
     FIKS_DIGISOS_API,
-    SVARUT,
 }
