@@ -61,11 +61,13 @@ internal class SoknadUnderArbeidServiceTest {
 
         // false - kommune mangler konfigurasjon hos Fiks
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // false - kommune har feil konfigurasjon
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
     }
 
     private fun lagSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {

@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -155,8 +154,7 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        soknadServiceOld.avbrytSoknad(behandlingsId)
-        prometheusMetricsService.reportAvbruttSoknad(referer)
+        soknadServiceOld.avbrytSoknad(behandlingsId, referer)
     }
 
     companion object {
