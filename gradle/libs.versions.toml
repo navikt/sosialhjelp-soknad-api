@@ -57,7 +57,6 @@ sosialhjelp-common-kotlin-utils = { module = "no.nav.sosialhjelp:sosialhjelp-com
 
 vault-jdbc = { module = "no.nav:vault-jdbc", version.ref = "vault_jdbc" }
 
-svarut-rest-klient = { module = "no.ks.fiks.svarut:svarut-rest-klient", version.ref = "fiks_svar_ut" }
 kryptering = { module = "no.ks.fiks:kryptering", version.ref = "fiks_kryptering" }
 
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }

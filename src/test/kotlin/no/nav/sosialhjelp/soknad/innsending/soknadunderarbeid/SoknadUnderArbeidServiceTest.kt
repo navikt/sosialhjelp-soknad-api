@@ -40,11 +40,7 @@ internal class SoknadUnderArbeidServiceTest {
         val soknadUnderArbeid: SoknadUnderArbeid = mockk()
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns soknadUnderArbeid
 
-        every { soknadUnderArbeid.erEttersendelse } returns true
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
-
         // false - mottaker.kommunenummer er null, dvs at bruker ikke har valgt noen adresse enda
-        every { soknadUnderArbeid.erEttersendelse } returns false
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
@@ -67,7 +63,7 @@ internal class SoknadUnderArbeidServiceTest {
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
-        // false - kommune bruker SvarUt
+        // false - kommune har feil konfigurasjon
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
     }
@@ -77,7 +73,6 @@ internal class SoknadUnderArbeidServiceTest {
             soknadId = SOKNAD_UNDER_ARBEID_ID,
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
