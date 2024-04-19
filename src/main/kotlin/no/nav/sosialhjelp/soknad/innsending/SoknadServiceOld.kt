@@ -122,6 +122,7 @@ class SoknadServiceOld(
     @Transactional
     fun avbrytSoknad(
         behandlingsId: String,
+        referer: String?,
     ) {
         log.info("Soknad avbrutt av bruker - slettes")
 
@@ -134,6 +135,7 @@ class SoknadServiceOld(
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
             }
+        prometheusMetricsService.reportAvbruttSoknad(referer)
 
         // ny modell
         v2AdapterService.slettSoknad(behandlingsId)

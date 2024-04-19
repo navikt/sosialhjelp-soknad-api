@@ -118,7 +118,7 @@ internal class SoknadServiceOldTest {
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
         every { soknadMetadataRepository.oppdater(any()) } just runs
 
-        soknadServiceOld.avbrytSoknad(BEHANDLINGSID)
+        soknadServiceOld.avbrytSoknad(BEHANDLINGSID, "3")
 
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
         verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad("3") }
