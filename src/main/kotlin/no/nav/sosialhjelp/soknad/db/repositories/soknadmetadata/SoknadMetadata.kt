@@ -8,7 +8,6 @@ import java.time.LocalDateTime
 data class SoknadMetadata(
     var id: Long = 0,
     var behandlingsId: String,
-    var tilknyttetBehandlingsId: String? = null,
     var fnr: String,
     var skjema: String? = null,
     var orgnr: String? = null,
@@ -21,9 +20,7 @@ data class SoknadMetadata(
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false,
-) {
-    val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
-}
+)
 
 @XmlRootElement
 data class VedleggMetadataListe(
