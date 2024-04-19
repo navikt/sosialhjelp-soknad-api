@@ -15,7 +15,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
@@ -26,27 +25,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 
 object VedleggMapper {
-    private const val ANNET_ANNET = "annet|annet"
-    private const val LASTET_OPP = "LastetOpp"
-
     private val log by logger()
-
-    fun mapToVedleggFrontend(
-        vedlegg: JsonVedlegg,
-        jsonOkonomi: JsonOkonomi,
-        opplastedeVedlegg: List<OpplastetVedlegg>,
-    ): VedleggFrontend {
-        val filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
-        val vedleggType = getVedleggType(vedlegg)
-        val rader = getRader(jsonOkonomi, vedleggType)
-        return VedleggFrontend(
-            type = vedleggType,
-            gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
-            rader = rader,
-            vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
-            filer = filer,
-        )
-    }
 
     fun mapMellomlagredeVedleggToVedleggFrontend(
         vedlegg: JsonVedlegg,
@@ -219,19 +198,6 @@ object VedleggMapper {
             return VedleggRadFrontend(renter = utgift.belop)
         }
         return VedleggRadFrontend(belop = utgift.belop)
-    }
-
-    private fun mapJsonFilerAndOpplastedeVedleggToFilerFrontend(
-        filer: List<JsonFiler>,
-        opplastedeVedlegg: List<OpplastetVedlegg>,
-    ): List<FilFrontend> {
-        return filer
-            .map { fil: JsonFiler ->
-                opplastedeVedlegg
-                    .firstOrNull { it.filnavn == fil.filnavn }
-                    ?.let { FilFrontend(fil.filnavn, it.uuid) }
-                    ?: throw IllegalStateException("Vedlegget finnes ikke")
-            }
     }
 
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(

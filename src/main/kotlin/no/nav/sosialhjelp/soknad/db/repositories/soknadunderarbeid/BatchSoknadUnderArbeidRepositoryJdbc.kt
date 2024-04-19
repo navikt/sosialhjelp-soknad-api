@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -19,7 +18,6 @@ import java.time.LocalDateTime
 class BatchSoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository,
 ) : BatchSoknadUnderArbeidRepository {
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 

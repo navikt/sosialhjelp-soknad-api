@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -24,7 +23,6 @@ import java.util.Date
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
