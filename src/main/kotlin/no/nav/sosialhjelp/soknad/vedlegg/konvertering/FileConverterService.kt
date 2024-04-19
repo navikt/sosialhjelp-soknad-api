@@ -29,7 +29,7 @@ class FileConverterService(
                     .register(meterRegistry)
                     .increment()
             }.onFailure { e ->
-                log.error("Feil ved konvertering av fil [$file]", e)
+                log.warn("Feil ved konvertering av fil [$file]", e)
                 pdfConversionFailure
                     .tag(TAG_TIKA_MIME_TYPE, file.mimeType)
                     .tag(TAG_CLIENT_MIME_TYPE, file.file.contentType ?: "undefined")

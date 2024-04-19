@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.NotValidInputException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
@@ -164,18 +163,6 @@ class ExceptionMapper(
                         Feilmelding(
                             id = "duplikat_fil",
                             message = "Fil er allerede lastet opp"
-                        )
-                    )
-            }
-            is KonverteringTilPdfException -> {
-                log.error("Konverteringsfeil: ${e.message}", e)
-                return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(
-                        Feilmelding(
-                            id = "konvertering_til_pdf_error",
-                            message = "Feil ved konvertering: ${e.message}"
                         )
                     )
             }
