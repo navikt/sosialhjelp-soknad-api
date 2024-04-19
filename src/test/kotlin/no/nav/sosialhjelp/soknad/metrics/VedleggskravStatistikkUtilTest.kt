@@ -11,7 +11,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class VedleggskravStatistikkUtilTest {
-
     @Test
     fun reportVedleggskrav_shouldReportCorrect() {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()

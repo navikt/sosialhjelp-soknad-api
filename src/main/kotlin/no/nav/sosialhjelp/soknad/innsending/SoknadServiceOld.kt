@@ -46,7 +46,8 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
+import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(

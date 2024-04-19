@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 
@@ -57,7 +56,6 @@ object VedleggskravStatistikkUtil {
     fun genererVedleggskravStatistikk(
         vedleggList: List<VedleggMetadata>,
     ): VedleggskravStatistikk {
-
         var antallInnsendt = 0
         var antallLevertTidligere = 0
         var antallIkkeLevert = 0

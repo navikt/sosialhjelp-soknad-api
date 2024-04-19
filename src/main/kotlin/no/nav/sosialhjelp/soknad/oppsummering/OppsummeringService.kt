@@ -48,9 +48,10 @@ class OppsummeringService(
             }
         }
 
-        val vedleggInfo = mellomlagringService.getAllVedlegg(behandlingsId).map {
-            OppsummeringVedleggInfo(it.filnavn, it.filId)
-        }
+        val vedleggInfo =
+            mellomlagringService.getAllVedlegg(behandlingsId).map {
+                OppsummeringVedleggInfo(it.filnavn, it.filId)
+            }
 
         return Oppsummering(
             listOf(
