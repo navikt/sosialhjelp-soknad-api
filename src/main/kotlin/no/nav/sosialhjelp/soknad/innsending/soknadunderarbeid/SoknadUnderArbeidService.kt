@@ -107,6 +107,10 @@ class SoknadUnderArbeidService(
             return
         }
         val innsendingString = OffsetDateTime.of(innsendingsTidspunkt, ZoneOffset.UTC).toString()
+        // TODO Logging i forbindelse med feil klokkeslett
+        log.info("Innsendingstidspunkt utgangspunkt: $innsendingsTidspunkt")
+        log.info("Innsendingstidspunkt formatert: $innsendingString")
+
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingString
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
