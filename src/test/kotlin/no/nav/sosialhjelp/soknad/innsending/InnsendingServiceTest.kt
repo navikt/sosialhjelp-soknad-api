@@ -18,7 +18,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 internal class InnsendingServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -44,7 +43,7 @@ internal class InnsendingServiceTest {
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                any(),
             )
         } just runs
         every { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) } just runs

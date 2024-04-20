@@ -28,7 +28,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 internal class DigisosApiServiceTest {
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
@@ -122,7 +121,6 @@ internal class DigisosApiServiceTest {
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
             )
         } just runs
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata

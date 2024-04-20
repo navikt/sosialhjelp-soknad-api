@@ -25,7 +25,7 @@ class InnsendingService(
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
             soknadUnderArbeid,
-            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
         )
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
