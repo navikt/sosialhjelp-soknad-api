@@ -22,10 +22,8 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
@@ -98,7 +96,7 @@ class SoknadUnderArbeidService(
 
     fun settInnsendingstidspunktPaSoknad(
         soknadUnderArbeid: SoknadUnderArbeid?,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        innsendingsTidspunkt: String = nowWithForcedNanoseconds(),
     ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
@@ -106,12 +104,8 @@ class SoknadUnderArbeidService(
         if (soknadUnderArbeid.erEttersendelse) {
             return
         }
-        val innsendingString = OffsetDateTime.of(innsendingsTidspunkt, ZoneOffset.UTC).toString()
-        // TODO Logging i forbindelse med feil klokkeslett
-        log.info("Innsendingstidspunkt utgangspunkt: $innsendingsTidspunkt")
-        log.info("Innsendingstidspunkt formatert: $innsendingString")
 
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingString
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = innsendingsTidspunkt
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

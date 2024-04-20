@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @Service
@@ -108,14 +109,16 @@ class SoknadV2AdapterService(
 
     override fun setInnsendingstidspunkt(
         soknadId: String,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: String,
     ) {
         log.info("NyModell: Setter innsendingstidspunkt")
 
         kotlin.runCatching {
+            val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
+
             soknadService.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
-                innsendingsTidspunkt,
+                zonedDateTime.toLocalDateTime(),
             )
         }
             .onFailure { log.error("NyModell: Kunne ikke sette innsendingstidspunkt", it) }

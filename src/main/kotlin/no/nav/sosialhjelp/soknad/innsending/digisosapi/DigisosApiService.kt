@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 @Component
 class DigisosApiService(
@@ -52,7 +51,7 @@ class DigisosApiService(
             soknadUnderArbeid.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        val innsendingsTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        val innsendingsTidspunkt = SoknadUnderArbeidService.nowWithForcedNanoseconds()
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
 
         // Ny modell
