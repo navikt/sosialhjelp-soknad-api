@@ -12,9 +12,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
@@ -37,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController
 class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val okonomiForventningService: OkonomiForventningService,
     private val textService: TextService,
 ) {
     @GetMapping
@@ -84,27 +84,22 @@ class VerdiRessurs(
             verdierFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("inntekt.eierandeler"),
         )
-        setVerdier(okonomi.oversikt, verdierFrontend)
+        setVerdier(behandlingsId, okonomi.oversikt, verdierFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun setVerdier(
+        behandlingsId: String,
         oversikt: JsonOkonomioversikt,
         verdierFrontend: VerdierFrontend,
-    ) {
-        val verdier = oversikt.formue
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_BOLIG])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_CAMPINGVOGN])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, verdierFrontend.campingvogn)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_KJORETOY])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_KJORETOY, tittel, verdierFrontend.kjoretoy)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_FRITIDSEIENDOM])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, verdierFrontend.fritidseiendom)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_ANNET])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet)
-    }
+    ) = mapOf(
+        VERDI_BOLIG to verdierFrontend.bolig,
+        VERDI_CAMPINGVOGN to verdierFrontend.campingvogn,
+        VERDI_KJORETOY to verdierFrontend.kjoretoy,
+        VERDI_FRITIDSEIENDOM to verdierFrontend.fritidseiendom,
+        VERDI_ANNET to verdierFrontend.annet,
+    ).forEach { (opplysningType, isChecked) -> okonomiForventningService.setOversiktFormue(behandlingsId, oversikt.formue, opplysningType, isChecked) }
 
     private fun setBeskrivelseAvAnnet(
         opplysninger: JsonOkonomiopplysninger,

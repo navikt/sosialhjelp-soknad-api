@@ -13,9 +13,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
@@ -38,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController
 class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val okonomiForventningService: OkonomiForventningService,
     private val textService: TextService,
 ) {
     @GetMapping
@@ -88,34 +88,24 @@ class FormueRessurs(
             hasAnyFormueType,
             textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
         )
-        setFormue(okonomi.oversikt, formueFrontend)
+        setFormue(behandlingsId, okonomi.oversikt, formueFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun setFormue(
+        behandlingsId: String,
         oversikt: JsonOkonomioversikt,
         formueFrontend: FormueFrontend,
-    ) {
-        val formue = oversikt.formue
-
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BRUKSKONTO])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BRUKSKONTO, tittel, formueFrontend.brukskonto)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BSU])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BSU, tittel, formueFrontend.bsu)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_LIVSFORSIKRING])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_LIVSFORSIKRING, tittel, formueFrontend.livsforsikring)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_SPAREKONTO])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_SPAREKONTO, tittel, formueFrontend.sparekonto)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_VERDIPAPIRER])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_VERDIPAPIRER, tittel, formueFrontend.verdipapirer)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_ANNET])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet)
+    ) = mapOf(
+        FORMUE_BRUKSKONTO to formueFrontend.brukskonto,
+        FORMUE_BSU to formueFrontend.bsu,
+        FORMUE_LIVSFORSIKRING to formueFrontend.livsforsikring,
+        FORMUE_SPAREKONTO to formueFrontend.sparekonto,
+        FORMUE_VERDIPAPIRER to formueFrontend.verdipapirer,
+        FORMUE_ANNET to formueFrontend.annet,
+    ).forEach { (soknadType, isChecked) ->
+        okonomiForventningService.setOversiktFormue(behandlingsId, oversikt.formue, soknadType, isChecked)
     }
 
     private fun setBeskrivelseAvAnnet(

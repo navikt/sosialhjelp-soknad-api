@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 
@@ -27,23 +26,6 @@ object OkonomiMapper {
                 .withTittel(tittel)
                 .withVerdi(verdi),
         )
-    }
-
-    private fun addFormueIfNotPresentInOversikt(
-        formuer: MutableList<JsonOkonomioversiktFormue>,
-        type: String,
-        tittel: String,
-    ) {
-        val jsonFormue = formuer.firstOrNull { it.type == type }
-        if (jsonFormue == null) {
-            formuer.add(
-                JsonOkonomioversiktFormue()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withOverstyrtAvBruker(false),
-            )
-        }
     }
 
     fun addInntektIfNotPresentInOversikt(
@@ -114,13 +96,6 @@ object OkonomiMapper {
         }
     }
 
-    private fun removeFormueIfPresentInOversikt(
-        formuer: MutableList<JsonOkonomioversiktFormue>,
-        type: String,
-    ) {
-        formuer.removeIf { it.type == type }
-    }
-
     fun removeInntektIfPresentInOversikt(
         inntekter: MutableList<JsonOkonomioversiktInntekt>,
         type: String,
@@ -154,19 +129,6 @@ object OkonomiMapper {
         type: String?,
     ) {
         opplysninger.bekreftelse.removeIf { it.type.equals(type, ignoreCase = true) }
-    }
-
-    fun addFormueIfCheckedElseDeleteInOversikt(
-        formuer: MutableList<JsonOkonomioversiktFormue>,
-        type: String,
-        tittel: String,
-        isChecked: Boolean,
-    ) {
-        if (isChecked) {
-            addFormueIfNotPresentInOversikt(formuer, type, tittel)
-        } else {
-            removeFormueIfPresentInOversikt(formuer, type)
-        }
     }
 
     fun addInntektIfCheckedElseDeleteInOversikt(
