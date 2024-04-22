@@ -80,9 +80,10 @@ class FamilieService(private val familieRepository: FamilieRepository) {
     fun addBarn(
         soknadId: UUID,
         barnListe: List<Barn>,
+        harForsorgerplikt: Boolean,
     ) {
         val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
-        val updatedFamilieMedBarn = familie.copy(ansvar = familie.ansvar + barnListe.map { it.familieKey to it })
+        val updatedFamilieMedBarn = familie.copy(harForsorgerplikt = harForsorgerplikt, ansvar = familie.ansvar + barnListe.map { it.familieKey to it })
         familieRepository.save(updatedFamilieMedBarn)
     }
 }

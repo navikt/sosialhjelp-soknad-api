@@ -59,13 +59,13 @@ class FamilieSystemdataSkyggeproduksjonTest {
 
         every { personService.hentPerson(EIER) } returns createPerson(JsonSivilstatus.Status.UGIFT.toString(), null)
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN)
-        every { familieService.addBarn(any(), capture(barnSlotListe)) } just Runs
+        every { familieService.addBarn(any(), capture(barnSlotListe), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         verify(exactly = 1) {
-            familieService.addBarn(any(), any())
+            familieService.addBarn(any(), any(), any())
             assertThat(barnSlotListe.captured).hasSize(1)
             assertThat(barnSlotListe.captured[0].personId).isEqualTo(BARN.fnr)
         }

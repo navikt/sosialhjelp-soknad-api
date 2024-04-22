@@ -159,7 +159,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Legger til systemdata for barn")
         ansvarList.let {
             kotlin.runCatching {
-                familieService.addBarn(UUID.fromString(behandlingsId), it.map { it.toV2Barn() })
+                familieService.addBarn(UUID.fromString(behandlingsId), it.map { it.toV2Barn() }, true)
             }
                 .onFailure { log.error("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
         }
