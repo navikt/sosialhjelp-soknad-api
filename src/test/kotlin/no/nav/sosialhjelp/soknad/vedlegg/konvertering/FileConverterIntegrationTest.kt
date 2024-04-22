@@ -55,7 +55,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Ikke stottet fil skal gi exception`() {
         every { fileConverter.toPdf(any(), any()) } throws
-            FileConverterException(
+            FileConversionException(
                 httpStatus = HttpStatus.BAD_REQUEST,
                 msg = "Unknown format",
                 trace = UUID.randomUUID().toString(),
