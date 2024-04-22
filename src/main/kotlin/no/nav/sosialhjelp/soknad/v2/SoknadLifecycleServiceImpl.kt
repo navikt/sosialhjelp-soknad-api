@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -15,7 +15,7 @@ import java.util.UUID
 @Service
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val registerDataFetcher: RegisterDataFetcher,
+    private val registerDataHandler: RegisterDataHandler,
     private val soknadService: SoknadService,
     private val kontaktService: KontaktService,
 ) : SoknadLifecycleService {
@@ -28,7 +28,7 @@ class SoknadLifecycleServiceImpl(
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
-        registerDataFetcher.updateRegisterData(soknadId)
+        registerDataHandler.fetchAndSave(soknadId)
 
         return soknadId
     }
