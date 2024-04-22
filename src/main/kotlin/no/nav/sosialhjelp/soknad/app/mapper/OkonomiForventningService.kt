@@ -6,20 +6,22 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktF
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class OkonomiForventningService(
     private val textService: TextService,
 ) {
     fun setOversiktFormue(
-        behandlingsId: String,
+        soknadId: UUID,
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
-        isChecked: Boolean,
+        isExpected: Boolean,
+        overrideTitle: String? = null, // If set, overrides title usually fetched from textService
     ) {
         // Databasekode goes here
 
-        when (isChecked) {
+        when (isExpected) {
             false -> formuer.removeIf { it.type == type }
 
             true -> {
@@ -29,7 +31,7 @@ class OkonomiForventningService(
                     JsonOkonomioversiktFormue()
                         .withKilde(JsonKilde.BRUKER)
                         .withType(type)
-                        .withTittel(textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
+                        .withTittel(overrideTitle ?: textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
                         .withOverstyrtAvBruker(false),
                 )
             }
