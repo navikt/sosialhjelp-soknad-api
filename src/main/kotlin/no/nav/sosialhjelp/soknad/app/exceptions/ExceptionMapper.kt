@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.NotValidInputException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConversionException
@@ -154,29 +153,11 @@ class ExceptionMapper(
                             ),
                         )
                 }
-                is KonverteringTilPdfException -> {
-                    log.error("Konverteringsfeil: ${e.message}", e)
-                    return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(
-                            Feilmelding(
-                                id = "konvertering_til_pdf_error",
-                                message = "Feil ved konvertering: ${e.message}",
-                            ),
-                        )
-                }
                 is FileConversionException -> {
                     log.warn("Filkonverteringsfeil: ${e.message}", e)
 
                     return ResponseEntity
-                        .status(
-                            if (e.httpStatus.is4xxClientError) {
-                                HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                            } else {
-                                HttpStatus.SERVICE_UNAVAILABLE
-                            },
-                        )
+                        .status(e.httpStatus)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(
                             Feilmelding(

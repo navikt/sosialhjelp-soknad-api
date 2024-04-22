@@ -62,7 +62,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
             )
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))
-            .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+            .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
             .expectHeader().contentType("${MediaType.APPLICATION_JSON};charset=UTF-8")
             .expectBody().jsonPath("id").isEqualTo("filkonvertering_error")
     }

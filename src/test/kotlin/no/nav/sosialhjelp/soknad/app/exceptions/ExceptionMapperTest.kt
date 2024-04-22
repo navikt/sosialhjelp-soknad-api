@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import no.nav.sosialhjelp.kotlin.utils.pdf.filkonvertering.exception.ExcelKonverteringException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConversionException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -88,11 +87,11 @@ class ExceptionMapperTest {
     }
 
     @Test
-    fun `Skal gi 500 Internal Server Error hvis konvertering av akseptert fil feiler`() {
+    fun `Skal gi 400 Bad Request hvis konvertering fil feiler`() {
         val responseEntity =
             exceptionMapper.handleSoknadApiException(
-                KonverteringTilPdfException(message = "feil", cause = ExcelKonverteringException("feil", null)),
+                FileConversionException(HttpStatus.BAD_REQUEST, "Feil ved konvertering", ""),
             )
-        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 }
