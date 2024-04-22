@@ -42,13 +42,13 @@ class FamilieSystemdataSkyggeproduksjonTest {
                 EKTEFELLE,
             )
         every { personService.hentBarnForPerson(EIER) } returns emptyList()
-        every { familieService.addEktefelle(any(), capture(ektefelleSlot)) } just Runs
+        every { familieService.addSivilstatus(any(), any(), capture(ektefelleSlot)) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         verify(exactly = 1) {
-            familieService.addEktefelle(any(), any())
+            familieService.addSivilstatus(any(), any(), any())
             assertThat(ektefelleSlot.captured.personId).isEqualTo(EKTEFELLE.fnr)
         }
     }

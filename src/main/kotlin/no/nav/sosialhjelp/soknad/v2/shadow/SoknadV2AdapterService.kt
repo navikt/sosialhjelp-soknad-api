@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
@@ -11,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -144,7 +146,7 @@ class SoknadV2AdapterService(
 
         systemverdiSivilstatus?.let {
             kotlin.runCatching {
-                familieService.addEktefelle(UUID.fromString(behandlingsId), it.toV2Ektefelle())
+                familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
                 .onFailure { log.error("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }
@@ -192,6 +194,17 @@ private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
         borSammen = this.borSammenMed,
         kildeErSystem = true,
     )
+}
+
+private fun Status.toV2Sivilstatus(): Sivilstatus {
+    return when (this) {
+        Status.GIFT -> Sivilstatus.GIFT
+        Status.SAMBOER -> Sivilstatus.SAMBOER
+        Status.ENKE -> Sivilstatus.ENKE
+        Status.SKILT -> Sivilstatus.SKILT
+        Status.SEPARERT -> Sivilstatus.SEPARERT
+        Status.UGIFT -> Sivilstatus.UGIFT
+    }
 }
 
 private fun JsonAnsvar.toV2Barn(): Barn {

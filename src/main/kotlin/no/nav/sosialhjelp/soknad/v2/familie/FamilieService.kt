@@ -63,13 +63,14 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         }
     }
 
-    fun addEktefelle(
+    fun addSivilstatus(
         soknadId: UUID,
+        sivilstatus: Sivilstatus?,
         ektefelle: Ektefelle,
     ) {
         val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
-        val updatedFamilieMedEktefelle = familie.copy(ektefelle = ektefelle)
-        familieRepository.save(updatedFamilieMedEktefelle)
+        val updatedFamilieMedEktefelleOgSivilstatus = familie.copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
+        familieRepository.save(updatedFamilieMedEktefelleOgSivilstatus)
     }
 
     private fun <A : Any, B> Map<A, B?>.filterNotNullValue(): Map<A, B> {
@@ -81,7 +82,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         barnListe: List<Barn>,
     ) {
         val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
-        val updatedFamilieMedBarn = familie.copy(ansvar = familie.ansvar + barnListe.map { UUID.randomUUID() to it })
+        val updatedFamilieMedBarn = familie.copy(ansvar = familie.ansvar + barnListe.map { it.familieKey to it })
         familieRepository.save(updatedFamilieMedBarn)
     }
 }
