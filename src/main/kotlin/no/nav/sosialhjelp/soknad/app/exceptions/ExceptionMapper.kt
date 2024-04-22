@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import java.net.URI
 import no.nav.security.token.support.core.exceptions.IssuerConfigurationException
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException
 import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableException
@@ -25,6 +24,7 @@ import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import java.net.URI
 
 @ControllerAdvice
 class ExceptionMapper(
