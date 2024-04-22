@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
@@ -13,7 +14,10 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
-interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
+interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {
+    @Query("SELECT * FROM soknad WHERE opprettet < :timestamp")
+    fun findOlderThan(timestamp: LocalDateTime): List<Soknad>
+}
 
 fun SoknadRepository.findOrError(soknadId: UUID) = findByIdOrNull(soknadId) ?: error("Kunne ikke finne soknad: $soknadId")
 
