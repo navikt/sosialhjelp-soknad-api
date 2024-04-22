@@ -65,7 +65,7 @@ class GotenbergClient(
             response.bodyToMono(ByteArray::class.java)
         } else {
             response.bodyToMono(String::class.java)
-                .flatMap { body -> Mono.error(FileConverterException(response.statusCode(), body, trace)) }
+                .flatMap { body -> Mono.error(FileConversionException(response.statusCode(), body, trace)) }
         }
     }
 

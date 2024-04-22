@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConversionException
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 
@@ -18,22 +20,28 @@ data class FileConversionUpload(val file: MultipartFile) {
     override fun toString(): String = "FileConversionUpload(mime='$mimeType', extension='$extension', size=${bytes.size}b)"
 
     private fun validatedFilename(filename: String?): String {
-        requireNotNull(filename) { "Filnavn er null" }
-        require(filename.isNotBlank()) { "Filnavn er tomt" }
+        if (filename.isNullOrBlank()) {
+            throw FileConversionException(HttpStatus.BAD_REQUEST, "Filnavn er tomt", "")
+        }
         return filename
     }
 
     init {
-        require(this.file.size > 0) { "Fil [$this] for konvertering er tom." }
+        if (this.file.isEmpty) {
+            throw FileConversionException(HttpStatus.BAD_REQUEST, "Fil for konvertering er tom.", "")
+        }
         if (this.file.contentType != this.mimeType) {
             log.warn("Ulik MIME mellom klientdata og Tika: ${this.file.contentType} != ${this.mimeType}")
         }
     }
 
     private fun splitFilename(filename: String): Pair<String, String> {
-        val file = File(filename)
-        require(file.extension.isNotBlank()) { "Finner ikke filtype" }
-        return Pair(file.nameWithoutExtension, file.extension)
+        return File(filename).let {
+            if (it.extension.isBlank()) {
+                throw FileConversionException(HttpStatus.BAD_REQUEST, "Finner ikke filtype", "")
+            }
+            Pair(it.nameWithoutExtension, it.extension)
+        }
     }
 
     companion object {
