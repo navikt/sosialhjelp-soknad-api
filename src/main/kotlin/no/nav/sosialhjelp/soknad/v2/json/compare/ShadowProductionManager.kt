@@ -27,9 +27,9 @@ class ShadowProductionManager(
                 }
             }
                 .onFailure {
-                    logger.error("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                    logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
                 }
-        } ?: logger.error("NyModell : Sammenlikning : Original er null")
+        } ?: logger.warn("NyModell : Sammenlikning : Original er null")
     }
 
     internal class JsonContentComparator(soknadIdString: String) {

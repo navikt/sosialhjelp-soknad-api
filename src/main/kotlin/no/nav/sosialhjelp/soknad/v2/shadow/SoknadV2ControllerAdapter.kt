@@ -66,7 +66,7 @@ class SoknadV2ControllerAdapter(
             runWithNestedTransaction {
                 arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
             }
-                .onFailure { log.error("Ny Modell: Oppdatere arbeid feilet", it) }
+                .onFailure { log.warn("Ny Modell: Oppdatere arbeid feilet", it) }
         }
     }
 
@@ -89,7 +89,7 @@ class SoknadV2ControllerAdapter(
                 }
             }
         }
-            .onFailure { log.error("Ny Modell: Oppdatere Begrunnelse feilet", it) }
+            .onFailure { log.warn("Ny Modell: Oppdatere Begrunnelse feilet", it) }
     }
 
     override fun updateBosituasjon(
@@ -111,7 +111,7 @@ class SoknadV2ControllerAdapter(
                 }
             }
         }
-            .onFailure { log.error("Ny modell: Oppdatere Bosituasjon feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatere Bosituasjon feilet", it) }
     }
 
     override fun updateKontonummer(
@@ -134,7 +134,7 @@ class SoknadV2ControllerAdapter(
                 input = kontoInput,
             )
         }
-            .onFailure { log.error("Ny modell: Oppdatere kontonummer feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatere kontonummer feilet", it) }
     }
 
     override fun updateTelefonnummer(
@@ -146,7 +146,7 @@ class SoknadV2ControllerAdapter(
         runWithNestedTransaction {
             telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput())
         }
-            .onFailure { log.error("Ny modell: Oppdatere Telefonnummer feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
 
     override fun updateUtdanning(
@@ -174,7 +174,7 @@ class SoknadV2ControllerAdapter(
                 )
             }
         }
-            .onFailure { log.error("Ny modell: Oppdatere Utdanning feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatere Utdanning feilet", it) }
     }
 
     override fun updateSivilstand(
@@ -200,7 +200,7 @@ class SoknadV2ControllerAdapter(
         runWithNestedTransaction {
             sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
         }
-            .onFailure { log.error("Ny modell: Oppdatering av Sivilstand feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
     override fun updateForsorger(
@@ -219,7 +219,7 @@ class SoknadV2ControllerAdapter(
         runWithNestedTransaction {
             forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
         }
-            .onFailure { log.error("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
+            .onFailure { log.warn("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
     }
 
     override fun updateAdresseOgNavEnhet(
@@ -231,17 +231,17 @@ class SoknadV2ControllerAdapter(
             runWithNestedTransaction {
                 v2AdresseControllerAdapter.updateAdresse(soknadId = UUID.fromString(soknadId), it, adresser.soknad)
             }
-                .onFailure { log.error("Ny modell: Oppdatering av adresser feilet.", it) }
+                .onFailure { log.warn("Ny modell: Oppdatering av adresser feilet.", it) }
         }
-            ?: log.error("Ny modell: Oppdatering av adresser feilet. Adressevalg er null.")
+            ?: log.warn("Ny modell: Oppdatering av adresser feilet. Adressevalg er null.")
 
         navEnhet?.let {
             runWithNestedTransaction {
                 v2AdresseControllerAdapter.updateNavEnhet(soknadId = UUID.fromString(soknadId), it)
             }
-                .onFailure { log.error("Ny modell: Oppdatering av NAV-enhet feilet.", it) }
+                .onFailure { log.warn("Ny modell: Oppdatering av NAV-enhet feilet.", it) }
         }
-            ?: log.error("Ny modell: Oppdatering av NAV-enhet feilet. NAV-enhet er null.")
+            ?: log.warn("Ny modell: Oppdatering av NAV-enhet feilet. NAV-enhet er null.")
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
