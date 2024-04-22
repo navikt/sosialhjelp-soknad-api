@@ -27,9 +27,8 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO soknadmetadata (behandlingsid, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
-            metadata.tilknyttetBehandlingsId,
             metadata.skjema,
             metadata.fnr,
             metadata.vedlegg?.let { mapper.writeValueAsString(it) },
@@ -48,12 +47,10 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun oppdater(metadata: SoknadMetadata?) {
         jdbcTemplate.update(
-            "UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
-            metadata?.tilknyttetBehandlingsId,
+            "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
             metadata?.skjema,
             metadata?.fnr,
             metadata?.vedlegg?.let { mapper.writeValueAsString(it) },
-//            metadata?.vedlegg?.let { JAXB.marshal(it) },
             metadata?.orgnr,
             metadata?.navEnhet,
             metadata?.fiksForsendelseId,
@@ -73,14 +70,6 @@ class SoknadMetadataRepositoryJdbc(
         ).firstOrNull()
     }
 
-    override fun hentBehandlingskjede(behandlingsId: String?): List<SoknadMetadata> {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?",
-            soknadMetadataRowMapper,
-            behandlingsId,
-        )
-    }
-
     override fun hentAntallInnsendteSoknaderEtterTidspunkt(
         fnr: String?,
         tidspunkt: LocalDateTime?,
@@ -98,18 +87,9 @@ class SoknadMetadataRepositoryJdbc(
         }
     }
 
-    override fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
-            soknadMetadataRowMapper,
-            fnr,
-            SoknadMetadataInnsendingStatus.FERDIG.name,
-        )
-    }
-
     override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
         return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.FERDIG.name,
@@ -146,7 +126,7 @@ class SoknadMetadataRepositoryJdbc(
         tidsgrense: LocalDateTime,
     ): List<SoknadMetadata> {
         return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.FERDIG.name,

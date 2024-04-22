@@ -116,7 +116,6 @@ internal class BegrunnelseRessursTest {
             SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
-                tilknyttetBehandlingsId = null,
                 eier = EIER,
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

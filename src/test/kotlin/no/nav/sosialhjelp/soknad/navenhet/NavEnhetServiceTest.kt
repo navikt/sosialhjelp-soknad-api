@@ -232,7 +232,6 @@ class NavEnhetServiceTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
             eier = eier,
             jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
