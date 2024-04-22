@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.sosialhjelp.soknad.vedlegg.FileConversionUpload
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,7 +22,9 @@ class FileConverterService(
             fileConverter.toPdf(file.unconvertedName, file.bytes)
         }
             .onSuccess { pdfBytes ->
-                check(pdfBytes.isNotEmpty()) { "Konvertert fil [$file] er tom." }
+                if (pdfBytes.isEmpty()) {
+                    throw FileConversionException(HttpStatus.BAD_REQUEST, "Konvertert fil [$file] er tom.", "")
+                }
                 pdfConversionSuccess
                     .tag(TAG_TIKA_MIME_TYPE, file.mimeType)
                     .tag(TAG_CLIENT_MIME_TYPE, file.file.contentType ?: "undefined")
@@ -29,7 +32,7 @@ class FileConverterService(
                     .register(meterRegistry)
                     .increment()
             }.onFailure { e ->
-                log.error("Feil ved konvertering av fil [$file]", e)
+                log.warn("Feil ved konvertering av fil [$file]", e)
                 pdfConversionFailure
                     .tag(TAG_TIKA_MIME_TYPE, file.mimeType)
                     .tag(TAG_CLIENT_MIME_TYPE, file.file.contentType ?: "undefined")
