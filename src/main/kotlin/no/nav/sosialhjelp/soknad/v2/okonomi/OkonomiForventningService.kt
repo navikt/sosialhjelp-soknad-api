@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.app.mapper
+package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling

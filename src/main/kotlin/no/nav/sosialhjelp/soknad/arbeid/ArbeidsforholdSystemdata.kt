@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
@@ -15,6 +14,7 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

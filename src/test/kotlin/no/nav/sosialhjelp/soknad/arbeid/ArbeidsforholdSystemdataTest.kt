@@ -13,7 +13,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -21,6 +20,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

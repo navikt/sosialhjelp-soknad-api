@@ -12,12 +12,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiForventningService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

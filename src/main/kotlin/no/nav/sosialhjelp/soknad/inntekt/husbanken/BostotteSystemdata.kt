@@ -10,13 +10,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiForventningService
 import org.apache.commons.text.WordUtils
 import org.springframework.stereotype.Component
 import java.time.LocalDate
