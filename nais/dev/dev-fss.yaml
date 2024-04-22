@@ -76,7 +76,6 @@ spec:
     - configmap: loginservice-idporten
     - secret: redis-password-soknad-api
     - secret: fiks-integrasjon-secret
-    - secret: fiks-svarut-credentials
     - secret: testbruker-skatteetaten
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
@@ -90,8 +89,6 @@ spec:
       value: "http://clamav.nais-system.svc.nais.local/scan"
     - name: EREG_URL
       value: "https://ereg-services.dev.intern.nav.no"
-    - name: FIKS_NOKKELFIL
-      value: "svarut_public_test.pem"
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.test.ks.no/"
     - name: KODEVERK_URL
@@ -128,8 +125,6 @@ spec:
       value: "https://api.demo.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
       value: "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/"
-    - name: SVARUT_URL
-      value: "https://test.svarut.ks.no"
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT

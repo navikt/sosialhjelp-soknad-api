@@ -7,11 +7,9 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.NotValidInputException
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FileConverterException
 import org.springframework.beans.factory.annotation.Value
@@ -45,13 +43,6 @@ class ExceptionMapper(
                     log.warn("Feilet opplasting", e)
                     ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 }
-                is SamletVedleggStorrelseForStorException -> {
-                    log.warn(
-                        "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
-                        e,
-                    )
-                    ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                }
                 is AuthorizationException -> {
                     log.warn("Ikke tilgang til ressurs", e)
                     return ResponseEntity
@@ -69,10 +60,6 @@ class ExceptionMapper(
                 is IkkeFunnetException -> {
                     log.warn(e.message, e)
                     ResponseEntity.status(HttpStatus.NOT_FOUND)
-                }
-                is EttersendelseSendtForSentException -> {
-                    log.info("REST-kall feilet: ${e.message}", e)
-                    ResponseEntity.internalServerError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
                 }
                 is TjenesteUtilgjengeligException -> {
                     log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
@@ -134,7 +121,7 @@ class ExceptionMapper(
                         .body(
                             Feilmelding(
                                 id = "pdf_generering",
-                                message = "Innsending av søknad eller ettersendelse feilet",
+                                message = "Innsending av søknad feilet",
                             ),
                         )
                 }

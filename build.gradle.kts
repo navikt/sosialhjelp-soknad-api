@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.bundles.sosialhjelp.common)
 
     // KS / Fiks
-    implementation(libs.svarut.rest.klient)
+//    implementation(libs.svarut.rest.klient)
     implementation(libs.kryptering)
 
     // springdoc

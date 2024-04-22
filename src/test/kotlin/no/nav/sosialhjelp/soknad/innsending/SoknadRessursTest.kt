@@ -25,10 +25,10 @@ import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -40,22 +40,22 @@ import java.time.LocalDateTime
 
 internal class SoknadRessursTest {
     private val soknadServiceOld: SoknadServiceOld = mockk()
-    private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val systemdata: SystemdataUpdater = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val nedetidService: NedetidService = mockk()
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val ressurs =
         SoknadRessurs(
             soknadServiceOld,
-            ettersendingService,
             soknadUnderArbeidService,
             soknadUnderArbeidRepository,
             systemdata,
             tilgangskontroll,
             nedetidService,
+            prometheusMetricsService,
         )
 
     @BeforeEach
@@ -96,7 +96,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(capture(cookieSlot)) } just runs
         every { soknadServiceOld.startSoknad() } returns "null"
 
-        ressurs.opprettSoknad(null, response, "")
+        ressurs.opprettSoknad(response)
 
         assertThat(cookieSlot.captured.name).isEqualTo(SoknadRessurs.XSRF_TOKEN + "-null")
     }
@@ -108,40 +108,9 @@ internal class SoknadRessursTest {
         every { response.addCookie(any()) } just runs
         every { soknadServiceOld.startSoknad() } returns "null"
 
-        ressurs.opprettSoknad(null, response, "")
+        ressurs.opprettSoknad(response)
 
         verify(exactly = 1) { soknadServiceOld.startSoknad() }
-    }
-
-    @Test
-    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
-    fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
-        val response: HttpServletResponse = mockk()
-        every { response.addCookie(any()) } just runs
-        every {
-            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(any(), any())
-        } returns null
-        every { ettersendingService.startEttersendelse(any()) } returns "ettersendtId"
-
-        ressurs.opprettSoknad(BEHANDLINGSID, response, "")
-
-        verify(exactly = 1) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
-    }
-
-    @Test
-    @Disabled("Ikke relevant lenger - SvarUt / Ettersendelse")
-    fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
-        val response: HttpServletResponse = mockk()
-        every { response.addCookie(any()) } just runs
-        every {
-            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, any())
-        } returns createSoknadUnderArbeid(EIER)
-
-        ressurs.opprettSoknad(BEHANDLINGSID, response, "")
-
-        verify(exactly = 0) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
     }
 
     @Test
@@ -290,7 +259,7 @@ internal class SoknadRessursTest {
         } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }
+            .isThrownBy { ressurs.opprettSoknad(mockk()) }
 
         verify { soknadServiceOld wasNot called }
     }
@@ -306,7 +275,6 @@ internal class SoknadRessursTest {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
                 eier = eier,
                 jsonInternalSoknad = jsonInternalSoknad,
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,

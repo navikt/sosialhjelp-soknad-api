@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
@@ -24,7 +23,6 @@ import java.util.Date
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
@@ -41,12 +39,11 @@ class SoknadUnderArbeidRepositoryJdbc(
         jdbcTemplate.update(
             """
             insert into SOKNAD_UNDER_ARBEID 
-            (VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
-             values (?,?,?,?,?,?,?,?)
+            (VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
+             values (?,?,?,?,?,?,?)
             """.trimIndent(),
             soknadUnderArbeid.versjon,
             soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.tilknyttetBehandlingsId,
             soknadUnderArbeid.eier,
             soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),
@@ -93,20 +90,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeidRowMapper,
             eier,
             behandlingsId,
-        ).firstOrNull()
-    }
-
-    @Deprecated("Gammelt repository")
-    override fun hentEttersendingMedTilknyttetBehandlingsId(
-        tilknyttetBehandlingsId: String,
-        eier: String,
-    ): SoknadUnderArbeid? {
-        return jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
-            soknadUnderArbeidRowMapper,
-            eier,
-            tilknyttetBehandlingsId,
-            SoknadUnderArbeidStatus.UNDER_ARBEID.toString(),
         ).firstOrNull()
     }
 

@@ -44,17 +44,9 @@ norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/n
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
-svarut_url: ${SVARUT_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/svarut/}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/skatteetaten/}
 clamav_url: virusscan_not_enabled
 fil-konvertering_url: ${GOTENBERG_URL:https://konvertering-til-pdf.intern.dev.nav.no}
-
-# fiks
-fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}
-
-# svarut
-fiks_svarut_username: fiks_username
-fiks_svarut_password: fiks_pw
 
 integrasjonsid_fiks: id1
 integrasjonpassord_fiks: pw1

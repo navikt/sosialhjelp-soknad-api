@@ -300,7 +300,6 @@ internal class BarneutgiftRessursTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
             eier = EIER,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
