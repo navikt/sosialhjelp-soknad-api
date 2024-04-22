@@ -1,9 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -16,7 +13,6 @@ import java.time.temporal.ChronoUnit
 @Component
 class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
@@ -25,19 +21,10 @@ class InnsendingService(
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
             soknadUnderArbeid,
-            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
         )
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
-    }
-
-    fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(
-        behandlingsId: String,
-        eier: String,
-    ) {
-        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
-        soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
-            ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
     fun oppdaterSoknadMetadataVedSendingTilFiks(
@@ -49,34 +36,6 @@ class InnsendingService(
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
-    }
-
-    fun hentSoknadMetadata(
-        behandlingsId: String,
-        eier: String?,
-    ): SoknadMetadata {
-        return soknadMetadataRepository.hent(behandlingsId)
-            ?: throw RuntimeException("Finner ikke soknadMetadata med behandlingsId $behandlingsId")
-    }
-
-    fun hentSoknadUnderArbeid(
-        behandlingsId: String,
-        eier: String,
-    ): SoknadUnderArbeid {
-        return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
-            ?: throw RuntimeException("Finner ikke soknadUnderArbeid med behandlingsId $behandlingsId")
-    }
-
-    fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
-        return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
-    }
-
-    fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
-        val tilknyttetBehandlingsId =
-            soknadUnderArbeid.tilknyttetBehandlingsId
-                ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
-
-        return soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
     }
 
     companion object {

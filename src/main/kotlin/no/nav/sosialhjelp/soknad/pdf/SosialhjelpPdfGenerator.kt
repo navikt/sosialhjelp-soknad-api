@@ -12,13 +12,10 @@ import no.nav.sosialhjelp.soknad.pdf.Metainformasjon.leggTilMetainformasjon
 import no.nav.sosialhjelp.soknad.pdf.OkonomiskeOpplysningerOgVedlegg.leggTilOkonomiskeOpplysningerOgVedlegg
 import no.nav.sosialhjelp.soknad.pdf.Personalia.leggTilPersonalia
 import no.nav.sosialhjelp.soknad.pdf.UtgifterOgGjeld.leggTilUtgifterOgGjeld
-import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_OG_TID_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class SosialhjelpPdfGenerator(
@@ -65,38 +62,6 @@ class SosialhjelpPdfGenerator(
                 throw PdfGenereringException("Kunne ikke generere Soknad-juridisk.pdf", e)
             }
             throw PdfGenereringException("Kunne ikke generere Soknad.pdf", e)
-        }
-    }
-
-    fun generateEttersendelsePdf(
-        jsonInternalSoknad: JsonInternalSoknad,
-        eier: String,
-    ): ByteArray {
-        return try {
-            val pdf = PdfGenerator()
-
-            val tittel = getTekst("ettersending.kvittering.tittel")
-            val undertittel = getTekst("skjema.tittel")
-            leggTilHeading(pdf, tittel, undertittel, eier)
-
-            val formatter = DateTimeFormatter.ofPattern(DATO_OG_TID_FORMAT)
-            val formattedTime = LocalDateTime.now().format(formatter)
-
-            pdf.skrivTekstBold("Følgende vedlegg er sendt $formattedTime:")
-            pdf.addBlankLine()
-
-            jsonInternalSoknad.vedlegg?.vedlegg?.forEach { jsonVedlegg ->
-                if (jsonVedlegg.status != null && jsonVedlegg.status == "LastetOpp") {
-                    pdf.skrivTekst(getTekst("vedlegg.${jsonVedlegg.type}.${jsonVedlegg.tilleggsinfo}.tittel"))
-                    pdf.skrivTekst("Filer:")
-                    jsonVedlegg.filer.forEach { jsonFiler ->
-                        pdf.skrivTekst("Filnavn: " + jsonFiler.filnavn)
-                    }
-                }
-            }
-            pdf.finish()
-        } catch (e: Exception) {
-            throw PdfGenereringException("Kunne ikke generere ettersendelse.pdf", e)
         }
     }
 

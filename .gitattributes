@@ -6,3 +6,4 @@
 *.xml text eol=lf
 *.java text eol=lf
 *.html text eol=lf
+* eol=lf

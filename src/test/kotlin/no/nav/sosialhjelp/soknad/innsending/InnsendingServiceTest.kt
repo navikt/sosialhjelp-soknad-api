@@ -7,29 +7,24 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 internal class InnsendingServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
     private val innsendingService =
         InnsendingService(
             soknadUnderArbeidRepository,
-            opplastetVedleggRepository,
             soknadUnderArbeidService,
             soknadMetadataRepository,
         )
@@ -44,27 +39,13 @@ internal class InnsendingServiceTest {
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                any(),
             )
         } just runs
         every { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) } just runs
 
         innsendingService.oppdaterSoknadUnderArbeid(createSoknadUnderArbeid())
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) }
-    }
-
-    @Test
-    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata`() {
-        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
-    }
-
-    @Test
-    fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SoknadMetadata`() {
-        every { soknadMetadataRepository.hent(any()) } returns null
-
-        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(fiksForsendelseId).isNull()
     }
 
     @Test
@@ -99,20 +80,6 @@ internal class InnsendingServiceTest {
         )
     }
 
-    private fun createSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
-            soknadId = SOKNAD_UNDER_ARBEID_ID,
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
-            eier = EIER,
-            jsonInternalSoknad = null,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = OPPRETTET_DATO,
-            sistEndretDato = SIST_ENDRET_DATO,
-        )
-    }
-
     private fun createSoknadMetadata(): SoknadMetadata {
         return SoknadMetadata(
             id = 0L,
@@ -130,7 +97,6 @@ internal class InnsendingServiceTest {
         private const val SOKNAD_UNDER_ARBEID_ID = 1L
         private const val EIER = "12345678910"
         private const val BEHANDLINGSID = "1100001L"
-        private const val TILKNYTTET_BEHANDLINGSID = "1100002K"
         private const val FIKSFORSENDELSEID = "12345"
         private const val ORGNR = "012345678"
         private const val ORGNR_METADATA = "8888"

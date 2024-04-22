@@ -60,7 +60,7 @@ class NavEnhetService(
             enhetsnavn = getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
             kommunenavn = getKommunenavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
             kommuneNr = kommunenummer,
-            isMottakDeaktivert = !isDigisosKommune(kommunenummer),
+            isMottakDeaktivert = !kanMottaSoknader(kommunenummer),
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
             orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
             valgt = true,
@@ -126,7 +126,7 @@ class NavEnhetService(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-        val isDigisosKommune = isDigisosKommune(kommunenummer)
+        val isDigisosKommune = kanMottaSoknader(kommunenummer)
         val sosialOrgnr = navEnhet.sosialOrgNr.takeIf { isDigisosKommune }
         val enhetNr = navEnhet.enhetNr.takeIf { isDigisosKommune }
         val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
@@ -159,10 +159,9 @@ class NavEnhetService(
         }
     }
 
-    private fun isDigisosKommune(kommunenummer: String): Boolean {
+    private fun kanMottaSoknader(kommunenummer: String): Boolean {
         val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer)
-        val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
-        return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
+        return isNyDigisosApiKommuneMedMottakAktivert
     }
 
     private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? {

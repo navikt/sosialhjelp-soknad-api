@@ -123,19 +123,19 @@ internal class KommuneInfoServiceTest {
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         var kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. midlertidig deaktivert innsyn (permutasjon 1 = 0001)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. midlertidig deaktivert mottak (permutasjon 2 = 0010)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertMottak = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 3 = 0011)
         every {
@@ -143,13 +143,13 @@ internal class KommuneInfoServiceTest {
         } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertMottak = true, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. deaktivert innsyn (permutasjon 4 = 0100)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert innsyn (permutasjon 5 = 0101)
         every {
@@ -157,7 +157,7 @@ internal class KommuneInfoServiceTest {
         } returns listOf(kommuneInfo.copy(kanOppdatereStatus = true, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak (permutasjon 6 = 0110)
         every { kommuneInfoClient.getAll() } returns
@@ -166,7 +166,7 @@ internal class KommuneInfoServiceTest {
             )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
 
         // Inkl. deaktivert innsyn og midlertidig deaktivert mottak og midlertidig deaktivert innsyn (permutasjon 7 = 0111)
         every {
@@ -181,7 +181,7 @@ internal class KommuneInfoServiceTest {
             )
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER)
     }
 
     @Test
@@ -191,13 +191,13 @@ internal class KommuneInfoServiceTest {
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         var kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA)
 
         // Inkl. deaktivert innsyn (permutasjon 9 = 1001)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA)
     }
 
     @Test
@@ -207,13 +207,13 @@ internal class KommuneInfoServiceTest {
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         var kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA)
 
         // Inkl. midlertidig deaktivert innsyn (permutasjon 13 = 1101)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA)
     }
 
     @Test
@@ -223,13 +223,13 @@ internal class KommuneInfoServiceTest {
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         var kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD)
 
         // Inkl. deaktivert mottak (permutasjon 10 = 1010)
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo.copy(harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD)
 
         // Inkl. deaktivert innsyn (permutasjon 11 = 1011)
         every {
@@ -237,7 +237,7 @@ internal class KommuneInfoServiceTest {
         } returns listOf(kommuneInfo.copy(kanOppdatereStatus = false, harMidlertidigDeaktivertOppdateringer = true))
 
         kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD)
     }
 
     @Test
@@ -253,7 +253,7 @@ internal class KommuneInfoServiceTest {
         every { kommuneInfoClient.getAll() } returns listOf(kommuneInfo)
 
         val kommuneStatus = kommuneInfoService.getKommuneStatus(KOMMUNENR)
-        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER)
+        assertThat(kommuneStatus).isEqualTo(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD)
     }
 
     @Test
