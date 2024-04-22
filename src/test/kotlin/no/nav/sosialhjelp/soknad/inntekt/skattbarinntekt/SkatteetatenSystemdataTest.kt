@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 internal class SkatteetatenSystemdataTest {
     private val organisasjonService: OrganisasjonService = mockk()
     private val skattbarInntektService: SkattbarInntektService = mockk()
-    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, organisasjonService, mockk())
+    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, organisasjonService, mockk(), mockk())
 
     @BeforeEach
     internal fun setUp() {

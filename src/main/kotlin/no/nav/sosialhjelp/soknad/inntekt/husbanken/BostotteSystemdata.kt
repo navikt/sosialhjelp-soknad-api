@@ -10,15 +10,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.apache.commons.text.WordUtils
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -26,13 +24,14 @@ import java.time.LocalDate
 @Component
 class BostotteSystemdata(
     private val husbankenClient: HusbankenClient,
-    private val textService: TextService,
+    private val okonomiForventningService: OkonomiForventningService,
 ) {
     fun updateSystemdataIn(
         soknadUnderArbeid: SoknadUnderArbeid,
         token: String?,
     ) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
+        val behandlingsId = soknadUnderArbeid.behandlingsId
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val bostotte = innhentBostotteFraHusbanken(token)
@@ -40,7 +39,7 @@ class BostotteSystemdata(
                 okonomi.opplysninger.bekreftelse
                     .firstOrNull { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) }
                     ?.withBekreftelsesDato(nowWithForcedNanoseconds())
-                fjernGamleHusbankenData(okonomi, false)
+                fjernGamleHusbankenData(behandlingsId, okonomi, false)
                 val trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotte)
                 val jsonBostotteUtbetalinger =
                     mapToJsonOkonomiOpplysningUtbetalinger(bostotte, trengerViDataFraDeSiste60Dager)
@@ -52,27 +51,21 @@ class BostotteSystemdata(
                 soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
             }
         } else { // Ikke samtykke!
-            fjernGamleHusbankenData(okonomi, true)
+            fjernGamleHusbankenData(behandlingsId, okonomi, true)
             soknad.driftsinformasjon.stotteFraHusbankenFeilet = false
         }
     }
 
     private fun fjernGamleHusbankenData(
+        behandlingsId: String,
         okonomi: JsonOkonomi,
         skalFortsattHaBrukerUtbetaling: Boolean,
     ) {
-        val okonomiopplysninger = okonomi.opplysninger
-        okonomiopplysninger.bostotte = JsonBostotte()
+        okonomi.opplysninger.bostotte = JsonBostotte()
 
-        okonomiopplysninger.utbetaling.removeIf {
-            it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM
-        }
-        if (skalFortsattHaBrukerUtbetaling) {
-            val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
-            addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, tittel)
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN)
-        }
+        okonomi.opplysninger.utbetaling.removeIf { it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM }
+
+        okonomiForventningService.setOppysningUtbetalinger(behandlingsId, okonomi.opplysninger.utbetaling, UTBETALING_HUSBANKEN, skalFortsattHaBrukerUtbetaling, titleKey = soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
     }
 
     private fun harViDataFraSiste30Dager(bostotte: Bostotte): Boolean {

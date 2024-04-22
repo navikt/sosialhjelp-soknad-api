@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
@@ -32,7 +33,8 @@ import java.time.LocalDateTime
 internal class BostotteSystemdataTest {
     private val husbankenClient: HusbankenClient = mockk()
     private val textService: TextService = mockk()
-    private val bostotteSystemdata = BostotteSystemdata(husbankenClient, textService)
+    private val okonomiForventningService: OkonomiForventningService = OkonomiForventningService(textService)
+    private val bostotteSystemdata = BostotteSystemdata(husbankenClient, okonomiForventningService)
 
     @BeforeEach
     internal fun setUp() {

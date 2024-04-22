@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.app.mapper
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
@@ -79,23 +78,6 @@ object OkonomiMapper {
         }
     }
 
-    fun addUtbetalingIfNotPresentInOpplysninger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String,
-        tittel: String,
-    ) {
-        val jsonUtbetaling = utbetalinger.firstOrNull { it.type == type }
-        if (jsonUtbetaling == null) {
-            utbetalinger.add(
-                JsonOkonomiOpplysningUtbetaling()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withOverstyrtAvBruker(false),
-            )
-        }
-    }
-
     fun removeInntektIfPresentInOversikt(
         inntekter: MutableList<JsonOkonomioversiktInntekt>,
         type: String,
@@ -115,13 +97,6 @@ object OkonomiMapper {
         type: String?,
     ) {
         utgifter.removeIf { it.type == type }
-    }
-
-    fun removeUtbetalingIfPresentInOpplysninger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String,
-    ) {
-        utbetalinger.removeIf { it.type == type }
     }
 
     fun removeBekreftelserIfPresent(
@@ -167,19 +142,6 @@ object OkonomiMapper {
             addUtgiftIfNotPresentInOpplysninger(utgifter, type, tittel)
         } else {
             removeUtgiftIfPresentInOpplysninger(utgifter, type)
-        }
-    }
-
-    fun addUtbetalingIfCheckedElseDeleteInOpplysninger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String,
-        tittel: String,
-        isChecked: Boolean,
-    ) {
-        if (isChecked) {
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel)
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type)
         }
     }
 }

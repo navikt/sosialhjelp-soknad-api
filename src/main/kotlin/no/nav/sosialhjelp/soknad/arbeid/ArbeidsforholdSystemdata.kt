@@ -7,11 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
@@ -26,11 +24,12 @@ class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val textService: TextService,
     private val v2AdapterService: V2AdapterService,
+    private val okonomiForventningService: OkonomiForventningService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
         internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(soknadUnderArbeid) ?: emptyList()
-        updateVedleggForventninger(internalSoknad, textService)
+        updateVedleggForventninger(soknadUnderArbeid.behandlingsId, internalSoknad, textService, okonomiForventningService)
     }
 
     private fun innhentSystemArbeidsforhold(soknadUnderArbeid: SoknadUnderArbeid): List<JsonArbeidsforhold>? {
@@ -53,7 +52,14 @@ class ArbeidsforholdSystemdata(
             .withTom(arbeidsforhold.tom)
             .withKilde(JsonKilde.SYSTEM)
             .withStillingsprosent(arbeidsforhold.fastStillingsprosent?.let { Math.toIntExact(it) })
-            .withStillingstype(arbeidsforhold.harFastStilling?.let { tilJsonStillingstype(it) })
+            .withStillingstype(
+                arbeidsforhold.harFastStilling?.let {
+                    when {
+                        it -> Stillingstype.FAST
+                        else -> Stillingstype.VARIABEL
+                    }
+                },
+            )
             .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
     }
 
@@ -61,35 +67,23 @@ class ArbeidsforholdSystemdata(
         private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
 
         fun updateVedleggForventninger(
+            behandlingsId: String,
             internalSoknad: JsonInternalSoknad,
             textService: TextService,
+            okonomiForventningService: OkonomiForventningService,
         ) {
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
-            if (typeIsInList(jsonVedleggs, "sluttoppgjor")) {
-                val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER])
-                addUtbetalingIfNotPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER, tittel)
-            } else {
-                removeUtbetalingIfPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER)
-            }
-            if (typeIsInList(jsonVedleggs, "lonnslipp")) {
+
+            okonomiForventningService.setOppysningUtbetalinger(behandlingsId, utbetalinger, SLUTTOPPGJOER, jsonVedleggs.any { it.type == "sluttoppgjor" })
+
+            if (jsonVedleggs.any { it.type == "lonnslipp" }) {
                 val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB])
                 addInntektIfNotPresentInOversikt(inntekter, JOBB, tittel)
             } else {
                 removeInntektIfPresentInOversikt(inntekter, JOBB)
             }
-        }
-
-        private fun typeIsInList(
-            jsonVedleggs: List<JsonVedlegg>,
-            vedleggstype: String,
-        ): Boolean {
-            return jsonVedleggs.any { it.type == vedleggstype }
-        }
-
-        private fun tilJsonStillingstype(harFastStilling: Boolean): Stillingstype {
-            return if (harFastStilling) Stillingstype.FAST else Stillingstype.VARIABEL
         }
     }
 }

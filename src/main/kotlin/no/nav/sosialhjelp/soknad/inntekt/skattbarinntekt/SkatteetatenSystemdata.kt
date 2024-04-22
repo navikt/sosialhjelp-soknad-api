@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdSystemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
@@ -17,10 +18,11 @@ class SkatteetatenSystemdata(
     private val skattbarInntektService: SkattbarInntektService,
     private val organisasjonService: OrganisasjonService,
     private val textService: TextService,
+    private val okonomiForventningService: OkonomiForventningService,
 ) {
     fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
-
+        val behandlingsId = soknadUnderArbeid.behandlingsId
         val jsonData = jsonInternalSoknad.soknad.data
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val okonomiOpplysningUtbetalinger = jsonData.okonomi.opplysninger.utbetaling
@@ -43,7 +45,7 @@ class SkatteetatenSystemdata(
             jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
         }
         // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
-        ArbeidsforholdSystemdata.updateVedleggForventninger(jsonInternalSoknad, textService)
+        ArbeidsforholdSystemdata.updateVedleggForventninger(behandlingsId, jsonInternalSoknad, textService, okonomiForventningService)
     }
 
     private fun fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>) {

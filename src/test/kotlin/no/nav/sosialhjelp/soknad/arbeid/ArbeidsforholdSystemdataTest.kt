@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -32,9 +33,10 @@ internal class ArbeidsforholdSystemdataTest {
     private val textService: TextService = mockk()
     private val skattbarInntektService: SkattbarInntektService = mockk()
     private val v2AdapterService: V2AdapterService = mockk()
+    private val okonomiForventningService: OkonomiForventningService = mockk()
 
-    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService, v2AdapterService)
-    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, mockk(), textService)
+    private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService, v2AdapterService, okonomiForventningService)
+    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, mockk(), textService, okonomiForventningService)
 
     @BeforeEach
     internal fun setUp() {

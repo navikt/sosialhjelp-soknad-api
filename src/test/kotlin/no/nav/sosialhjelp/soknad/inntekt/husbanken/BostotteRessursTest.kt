@@ -18,6 +18,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -40,8 +41,9 @@ internal class BostotteRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val textService: TextService = mockk()
+    private val okonomiForventningService: OkonomiForventningService = mockk()
     private val bostotteRessurs =
-        BostotteRessurs(tilgangskontroll, soknadUnderArbeidRepository, bostotteSystemdata, textService)
+        BostotteRessurs(tilgangskontroll, soknadUnderArbeidRepository, bostotteSystemdata, textService, okonomiForventningService)
 
     @BeforeEach
     fun setUp() {

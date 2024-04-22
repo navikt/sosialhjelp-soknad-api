@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiForventningService
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -38,6 +39,7 @@ class BostotteRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService,
+    private val okonomiForventningService: OkonomiForventningService,
 ) {
     @GetMapping
     fun hentBostotte(
@@ -81,20 +83,9 @@ class BostotteRessurs(
         )
 
         bostotteFrontend.bekreftelse?.let {
-            if (java.lang.Boolean.TRUE == it) {
-                val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
-                OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                    tittel,
-                )
-            } else {
-                OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                )
-            }
+            okonomiForventningService.setOppysningUtbetalinger(behandlingsId, opplysninger.utbetaling, UTBETALING_HUSBANKEN, it, titleKey = TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
         }
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
