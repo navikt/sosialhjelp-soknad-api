@@ -33,7 +33,7 @@ import java.time.LocalDateTime
 internal class BostotteSystemdataTest {
     private val husbankenClient: HusbankenClient = mockk()
     private val textService: TextService = mockk()
-    private val okonomiForventningService: OkonomiForventningService = OkonomiForventningService(textService)
+    private val okonomiForventningService: OkonomiForventningService = OkonomiForventningService(textService, mockk())
     private val bostotteSystemdata = BostotteSystemdata(husbankenClient, okonomiForventningService)
 
     @BeforeEach

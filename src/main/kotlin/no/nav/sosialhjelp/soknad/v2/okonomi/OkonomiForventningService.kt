@@ -3,13 +3,16 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class OkonomiForventningService(
     private val textService: TextService,
+    private val okonomiForventningRepository: OkonomiForventningRepository,
 ) {
     fun setOversiktFormue(
         soknadId: String,
@@ -17,7 +20,7 @@ class OkonomiForventningService(
         type: String,
         isExpected: Boolean,
     ) {
-        // Databasekode goes here
+        tryUpdateRepositoryOrLogError(soknadId, type, isExpected)
 
         when (isExpected) {
             false -> formuer.removeIf { it.type == type }
@@ -37,15 +40,15 @@ class OkonomiForventningService(
     }
 
     fun setOppysningUtbetalinger(
-        behandlingsId: String,
+        soknadId: String,
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         type: String,
-        isChecked: Boolean,
+        isExpected: Boolean,
         titleKey: String? = soknadTypeToTitleKey[type],
     ) {
-        // Databasekode goes here
+        tryUpdateRepositoryOrLogError(soknadId, type, isExpected)
 
-        when (isChecked) {
+        when (isExpected) {
             false -> utbetalinger.removeIf { it.type == type }
 
             true -> {
@@ -60,5 +63,19 @@ class OkonomiForventningService(
                 )
             }
         }
+    }
+
+    private fun tryUpdateRepositoryOrLogError(
+        soknadId: String,
+        type: String,
+        isExpected: Boolean,
+    ) = kotlin.runCatching {
+        okonomiForventningRepository.setExpectationForOpplysningType(UUID.fromString(soknadId), type, isExpected)
+    }.onFailure {
+        log.error("kunne ikke sette forventning for soknadId=$soknadId, type=$type, isExpected=$isExpected", it)
+    }
+
+    companion object {
+        private val log by logger()
     }
 }
