@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -32,7 +31,6 @@ import java.time.LocalDateTime
 class OkonomiskeLivssituasjonRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
 
@@ -40,9 +38,7 @@ class OkonomiskeLivssituasjonRessursTest {
         OkonomiskeOpplysningerRessurs(
             tilgangskontroll = tilgangskontroll,
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-            opplastetVedleggRepository = opplastetVedleggRepository,
             mellomlagringService = mellomlagringService,
-            soknadUnderArbeidService = soknadUnderArbeidService,
         )
 
     private val behandlingsId = "123"

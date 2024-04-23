@@ -189,7 +189,6 @@ class NavEnhetServiceTest {
     }
 
     @Test
-    @Suppress("ktlint:standard:max-line-length")
     internal fun `getNavEnhet - adressevalg er folkeregistrert - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
@@ -233,7 +232,6 @@ class NavEnhetServiceTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
             eier = eier,
             jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

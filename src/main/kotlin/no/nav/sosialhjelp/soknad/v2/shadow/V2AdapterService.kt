@@ -36,7 +36,7 @@ interface V2AdapterService {
 
     fun setInnsendingstidspunkt(
         soknadId: String,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: String,
     )
 
     fun slettSoknad(behandlingsId: String)

@@ -10,7 +10,7 @@ interface FileConverter {
     ): ByteArray
 }
 
-data class FileConverterException(
+data class FileConversionException(
     val httpStatus: HttpStatusCode,
     val msg: String,
     val trace: String,

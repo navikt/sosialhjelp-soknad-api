@@ -55,14 +55,14 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Ikke stottet fil skal gi exception`() {
         every { fileConverter.toPdf(any(), any()) } throws
-            FileConverterException(
+            FileConversionException(
                 httpStatus = HttpStatus.BAD_REQUEST,
                 msg = "Unknown format",
                 trace = UUID.randomUUID().toString(),
             )
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))
-            .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+            .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
             .expectHeader().contentType("${MediaType.APPLICATION_JSON};charset=UTF-8")
             .expectBody().jsonPath("id").isEqualTo("filkonvertering_error")
     }

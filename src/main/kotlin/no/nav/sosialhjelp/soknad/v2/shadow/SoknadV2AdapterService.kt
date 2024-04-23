@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @Service
@@ -51,7 +52,7 @@ class SoknadV2AdapterService(
                 eierId = eierId,
             )
         }
-            .onFailure { log.error("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+            .onFailure { log.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
     }
 
     override fun addArbeidsforholdList(
@@ -67,7 +68,7 @@ class SoknadV2AdapterService(
                     it.map { it.toV2Arbeidsforhold() },
                 )
             }
-                .onFailure { log.error("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
+                .onFailure { log.warn("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
         }
     }
 
@@ -85,7 +86,7 @@ class SoknadV2AdapterService(
                     midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
                 )
             }
-                .onFailure { log.error("NyModell: Legge til Adresser feilet for $soknadId", it) }
+                .onFailure { log.warn("NyModell: Legge til Adresser feilet for $soknadId", it) }
         }
     }
 
@@ -99,7 +100,7 @@ class SoknadV2AdapterService(
             kotlin.runCatching {
                 kontaktService.updateTelefonRegister(UUID.fromString(soknadId), it)
             }
-                .onFailure { log.error("Kunne ikke legge til telefonnummer fra register", it) }
+                .onFailure { log.warn("Kunne ikke legge til telefonnummer fra register", it) }
         }
     }
 
@@ -111,22 +112,24 @@ class SoknadV2AdapterService(
         kotlin.runCatching {
             eierService.updateEier(personalia.toV2Eier(UUID.fromString(soknadId)))
         }
-            .onFailure { log.error("NyModell: Kunne ikke legge til ny Eier fra register", it) }
+            .onFailure { log.warn("NyModell: Kunne ikke legge til ny Eier fra register", it) }
     }
 
     override fun setInnsendingstidspunkt(
         soknadId: String,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: String,
     ) {
         log.info("NyModell: Setter innsendingstidspunkt")
 
         kotlin.runCatching {
+            val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
+
             soknadService.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
-                innsendingsTidspunkt,
+                zonedDateTime.toLocalDateTime(),
             )
         }
-            .onFailure { log.error("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+            .onFailure { log.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
@@ -135,7 +138,7 @@ class SoknadV2AdapterService(
         kotlin.runCatching {
             soknadService.slettSoknad(UUID.fromString(behandlingsId))
         }
-            .onFailure { log.error("NyModell: Kunne ikke slette Soknad V2") }
+            .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
     override fun addEktefelle(

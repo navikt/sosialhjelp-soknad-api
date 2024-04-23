@@ -52,10 +52,6 @@ azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
 krr_scope: dummyScope
 
-# svarut:
-fiks_svarut_username: username
-fiks_svarut_password: pwpwpwpw
-
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_url: https://ereg/
@@ -70,7 +66,6 @@ utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
 kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
-svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
 clamav_url: virusscan_not_enabled
 

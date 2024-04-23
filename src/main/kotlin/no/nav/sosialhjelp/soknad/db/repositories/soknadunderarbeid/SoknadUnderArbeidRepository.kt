@@ -21,12 +21,6 @@ interface SoknadUnderArbeidRepository {
         eier: String,
     ): SoknadUnderArbeid?
 
-    @Deprecated("Ettersendelse og SvarUt er ikke lenger i bruk")
-    fun hentEttersendingMedTilknyttetBehandlingsId(
-        tilknyttetBehandlingsId: String,
-        eier: String,
-    ): SoknadUnderArbeid?
-
     fun oppdaterSoknadsdata(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,

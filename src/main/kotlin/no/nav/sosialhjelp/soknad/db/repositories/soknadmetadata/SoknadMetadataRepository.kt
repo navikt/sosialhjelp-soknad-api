@@ -11,14 +11,10 @@ interface SoknadMetadataRepository {
 
     fun hent(behandlingsId: String?): SoknadMetadata?
 
-    fun hentBehandlingskjede(behandlingsId: String?): List<SoknadMetadata>
-
     fun hentAntallInnsendteSoknaderEtterTidspunkt(
         fnr: String?,
         tidspunkt: LocalDateTime?,
     ): Int?
-
-    fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata>
 
     fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata>
 

@@ -7,10 +7,6 @@ object LenkeUtils {
         return "$lagContextLenke/skjema/$behandlingsId/1"
     }
 
-    fun lagEttersendelseLenke(behandlingsId: String): String {
-        return "$lagContextLenke/skjema/$behandlingsId/ettersendelse"
-    }
-
     private val lagContextLenke: String
         get() {
             val environmentName = MiljoUtils.environmentName

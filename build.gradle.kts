@@ -1,3 +1,4 @@
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -9,8 +10,8 @@ plugins {
     alias(libs.plugins.kotlin.plugin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.versions)
-    alias(libs.plugins.ktlint)
     alias(libs.plugins.flyway)
+    alias(libs.plugins.spotless)
 }
 
 java {
@@ -18,9 +19,29 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-ktlint {
-    this.version.set(libs.versions.ktlint)
+spotless {
+    format("misc") {
+        target("*.md", ".gitignore", "Dockerfile")
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    kotlin { ktlint(libs.versions.ktlint.get()) }
+    kotlinGradle { ktlint(libs.versions.ktlint.get()) }
 }
+
+val installPreCommitHook =
+    tasks.register("installPreCommitHook", Copy::class) {
+        group = "Setup"
+        description = "Copy pre-commit git hook into repository"
+        from(File(rootProject.rootDir, "scripts/pre-commit"))
+        into(File(rootProject.rootDir, ".git/hooks"))
+        fileMode = 0b111101101
+        dirMode = 0b1010001010
+    }
+
+tasks.build.get().dependsOn(installPreCommitHook)
 
 flyway {
     encoding = "ISO-8859-1"
@@ -69,7 +90,7 @@ dependencies {
     implementation(libs.bundles.sosialhjelp.common)
 
     // KS / Fiks
-    implementation(libs.svarut.rest.klient)
+//    implementation(libs.svarut.rest.klient)
     implementation(libs.kryptering)
 
     // springdoc

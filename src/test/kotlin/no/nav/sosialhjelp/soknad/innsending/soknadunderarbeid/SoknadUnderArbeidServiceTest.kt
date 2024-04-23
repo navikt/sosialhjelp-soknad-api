@@ -17,7 +17,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 internal class SoknadUnderArbeidServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -30,7 +29,6 @@ internal class SoknadUnderArbeidServiceTest {
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
             lagSoknadUnderArbeidForEttersendelse(),
-            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
         )
     }
 
@@ -42,11 +40,7 @@ internal class SoknadUnderArbeidServiceTest {
         val soknadUnderArbeid: SoknadUnderArbeid = mockk()
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns soknadUnderArbeid
 
-        every { soknadUnderArbeid.erEttersendelse } returns true
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
-
         // false - mottaker.kommunenummer er null, dvs at bruker ikke har valgt noen adresse enda
-        every { soknadUnderArbeid.erEttersendelse } returns false
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
@@ -61,17 +55,19 @@ internal class SoknadUnderArbeidServiceTest {
             kommuneInfoService.getKommuneStatus(
                 "1234",
             )
-        } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+        } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // false - kommune mangler konfigurasjon hos Fiks
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
-        // false - kommune bruker SvarUt
-        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
+        // false - kommune har feil konfigurasjon
+        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
     }
 
     private fun lagSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {
@@ -79,7 +75,6 @@ internal class SoknadUnderArbeidServiceTest {
             soknadId = SOKNAD_UNDER_ARBEID_ID,
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
             eier = EIER,
             jsonInternalSoknad = null,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,

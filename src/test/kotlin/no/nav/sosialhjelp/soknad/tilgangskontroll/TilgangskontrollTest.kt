@@ -54,7 +54,6 @@ internal class TilgangskontrollTest {
             SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsId",
-                tilknyttetBehandlingsId = null,
                 eier = userId,
                 jsonInternalSoknad = createEmptyJsonInternalSoknad(userId),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
@@ -76,7 +75,6 @@ internal class TilgangskontrollTest {
             SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsId",
-                tilknyttetBehandlingsId = null,
                 eier = "other_user",
                 jsonInternalSoknad = createEmptyJsonInternalSoknad("other_user"),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
