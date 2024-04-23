@@ -48,6 +48,6 @@ interface V2AdapterService {
 
     fun addBarn(
         behandlingsId: String,
-        ansvarList: MutableList<JsonAnsvar>,
+        ansvarList: List<JsonAnsvar>,
     )
 }

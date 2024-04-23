@@ -148,20 +148,20 @@ class SoknadV2AdapterService(
             kotlin.runCatching {
                 familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
-                .onFailure { log.error("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }
     }
 
     override fun addBarn(
         behandlingsId: String,
-        ansvarList: MutableList<JsonAnsvar>,
+        ansvarList: List<JsonAnsvar>,
     ) {
         log.info("NyModell: Legger til systemdata for barn")
         ansvarList.let {
             kotlin.runCatching {
                 familieService.addBarn(UUID.fromString(behandlingsId), it.map { it.toV2Barn() }, true)
             }
-                .onFailure { log.error("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
         }
     }
 }
