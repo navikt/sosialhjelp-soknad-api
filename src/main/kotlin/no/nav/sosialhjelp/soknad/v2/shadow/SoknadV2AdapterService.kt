@@ -209,7 +209,6 @@ private fun Status.toV2Sivilstatus(): Sivilstatus {
 
 private fun JsonAnsvar.toV2Barn(): Barn {
     return Barn(
-//        TODO hvor skal familieKey opprettes.
         familieKey = UUID.randomUUID(),
         personId = this.barn.personIdentifikator,
         navn =

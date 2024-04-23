@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn as BarnOld
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as EktefelleOld
 import no.nav.sosialhjelp.soknad.v2.familie.Barn as BarnV2
@@ -65,7 +66,7 @@ class FamilieSystemdataSkyggeproduksjonTest {
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         verify(exactly = 1) {
-            familieService.addBarn(any(), any(), any())
+            familieService.addBarn(UUID.fromString(SOKNADSID), any(), true)
             assertThat(barnSlotListe.captured).hasSize(1)
             assertThat(barnSlotListe.captured[0].personId).isEqualTo(BARN.fnr)
         }
@@ -96,7 +97,7 @@ class FamilieSystemdataSkyggeproduksjonTest {
     ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
-            behandlingsId = "acac6db9-c124-4ba2-a60c-97800ebfc7fc",
+            behandlingsId = SOKNADSID,
             tilknyttetBehandlingsId = null,
             eier = EIER,
             jsonInternalSoknad = jsonInternalSoknad,
@@ -108,6 +109,7 @@ class FamilieSystemdataSkyggeproduksjonTest {
 
     companion object {
         private const val EIER = "12345678901"
+        private const val SOKNADSID = "acac6db9-c124-4ba2-a60c-97800ebfc7fc"
         private const val FORNAVN_BARN = "Rudolf"
         private const val MELLOMNAVN_BARN = "Rød På"
         private const val ETTERNAVN_BARN = "Nesen"
@@ -115,7 +117,6 @@ class FamilieSystemdataSkyggeproduksjonTest {
         private const val FNR_BARN = "22222222222"
         private const val ER_FOLKEREGISTRERT_SAMMEN_BARN = true
 
-        //        private const val HAR_DELT_BOSTED_BARN = true
         private val BARN =
             BarnOld(
                 FORNAVN_BARN,
