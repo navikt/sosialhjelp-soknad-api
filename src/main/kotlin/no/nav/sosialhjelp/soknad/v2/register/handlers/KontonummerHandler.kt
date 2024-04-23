@@ -1,11 +1,13 @@
-package no.nav.sosialhjelp.soknad.v2.register.fetchers
+package no.nav.sosialhjelp.soknad.v2.register.handlers
 
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import org.springframework.stereotype.Component
 
 @Component
-class ArbeidsforholdHandler: RegisterDataHandler {
+class KontonummerHandler(
+
+): RegisterDataHandler {
     override fun fetchAndSave(soknadId: UUID) {
         TODO("Not yet implemented")
     }

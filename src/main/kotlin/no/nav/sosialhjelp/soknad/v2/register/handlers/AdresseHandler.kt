@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.fetchers
+package no.nav.sosialhjelp.soknad.v2.register.handlers
 
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseAdapter.toV2Adresse
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
