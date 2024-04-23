@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
@@ -30,7 +30,7 @@ data class Soknad(
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
     @Embedded.Nullable
     val begrunnelse: Begrunnelse? = null,
-) : AggregateRoot {
+) : DomainRoot {
     override val soknadId: UUID get() = id
 }
 

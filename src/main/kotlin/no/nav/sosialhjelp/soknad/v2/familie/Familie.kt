@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
@@ -16,7 +16,7 @@ data class Familie(
     val sivilstatus: Sivilstatus? = null,
     val ansvar: Map<UUID, Barn> = emptyMap(), // jsonForsorgerplikt
     val ektefelle: Ektefelle? = null, // jsonSivilstatus
-) : AggregateRoot
+) : DomainRoot
 
 data class Barn(
     // JsonAnsvar

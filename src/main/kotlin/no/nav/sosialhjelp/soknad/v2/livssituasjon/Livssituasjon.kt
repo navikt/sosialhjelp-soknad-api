@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -25,7 +25,7 @@ data class Livssituasjon(
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
     val bosituasjon: Bosituasjon? = null,
-) : AggregateRoot
+) : DomainRoot
 
 data class Bosituasjon(
     val botype: Botype? = null,

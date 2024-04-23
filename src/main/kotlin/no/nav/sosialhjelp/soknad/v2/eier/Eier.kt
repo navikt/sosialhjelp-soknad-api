@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.eier
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
@@ -28,7 +28,7 @@ data class Eier(
     val navn: Navn,
     @Embedded.Nullable
     val kontonummer: Kontonummer? = null,
-) : AggregateRoot
+) : DomainRoot
 
 data class Kontonummer(
     val harIkkeKonto: Boolean? = null,

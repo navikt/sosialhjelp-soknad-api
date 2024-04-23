@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
@@ -18,4 +18,4 @@ data class Integrasjonstatus(
     val feilUtbetalingerNav: Boolean = false,
     val feilInntektSkatteetaten: Boolean = false,
     val feilStotteHusbanken: Boolean = false,
-) : AggregateRoot
+) : DomainRoot
