@@ -62,6 +62,9 @@ spec:
         - application: tms-utkast
           namespace: min-side
           cluster: dev-gcp
+        - application: tms-mikrofrontend-selector
+          namespace: min-side
+          cluster: dev-gcp
   ingresses:
     - "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
     - "https://sosialhjelp-soknad-api.dev.intern.nav.no/sosialhjelp/soknad-api"
