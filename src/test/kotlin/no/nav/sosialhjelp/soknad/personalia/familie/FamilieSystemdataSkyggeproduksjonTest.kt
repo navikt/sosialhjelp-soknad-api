@@ -98,7 +98,6 @@ class FamilieSystemdataSkyggeproduksjonTest {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = SOKNADSID,
-            tilknyttetBehandlingsId = null,
             eier = EIER,
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
