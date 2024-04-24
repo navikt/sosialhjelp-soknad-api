@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setInntektInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
@@ -66,7 +66,7 @@ class ArbeidsforholdSystemdata(
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
             setUtbetalingInOpplysninger(utbetalinger, SLUTTOPPGJOER, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER]), typeIsInList(jsonVedleggs, "sluttoppgjor"))
-            addInntektIfCheckedElseDeleteInOversikt(inntekter, JOBB, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB]), typeIsInList(jsonVedleggs, "lonnslipp"))
+            setInntektInOversikt(inntekter, JOBB, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB]), typeIsInList(jsonVedleggs, "lonnslipp"))
         }
 
         private fun typeIsInList(

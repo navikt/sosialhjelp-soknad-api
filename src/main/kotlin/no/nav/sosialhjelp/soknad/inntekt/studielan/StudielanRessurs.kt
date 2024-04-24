@@ -52,7 +52,7 @@ class StudielanRessurs(
             textService.getJsonOkonomiTittel("inntekt.student"),
         )
         if (studielanFrontend.bekreftelse != null) {
-            OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt(
+            OkonomiMapper.setInntektInOversikt(
                 inntekter,
                 STUDIELAN,
                 textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
@@ -77,9 +77,6 @@ class StudielanRessurs(
         return StudielanFrontend(erStudent, harStudielan.takeIf { erStudent })
     }
 
-    /**
-     * FIXME: Disse klassene har veldig dårlige navn.
-     */
     data class StudielanFrontend(
         /** Søker er student */
         val skalVises: Boolean,

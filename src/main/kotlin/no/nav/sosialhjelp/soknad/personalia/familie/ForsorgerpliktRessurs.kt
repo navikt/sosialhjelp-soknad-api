@@ -15,8 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setInntektInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -108,16 +107,11 @@ class ForsorgerpliktRessurs(
             val tittelBetaler = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.betaler")
             val betaler = forsorgerpliktFrontend.barnebidrag == Verdi.BETALER || forsorgerpliktFrontend.barnebidrag == Verdi.BEGGE
 
-            if (mottar) {
-                addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
-            } else {
-                removeInntektIfPresentInOversikt(inntekter, barnebidragType)
-            }
-
+            setInntektInOversikt(inntekter, barnebidragType, tittelMottar, mottar)
             setUtgiftInOversikt(utgifter, barnebidragType, tittelBetaler, betaler)
         } else {
             forsorgerplikt.barnebidrag = null
-            removeInntektIfPresentInOversikt(inntekter, barnebidragType)
+            setInntektInOversikt(inntekter, barnebidragType, "", false)
             setUtgiftInOversikt(utgifter, barnebidragType, "", false)
         }
     }
