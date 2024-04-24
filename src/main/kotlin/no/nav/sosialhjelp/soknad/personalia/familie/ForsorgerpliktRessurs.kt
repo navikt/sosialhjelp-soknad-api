@@ -111,8 +111,8 @@ class ForsorgerpliktRessurs(
             setUtgiftInOversikt(utgifter, barnebidragType, betaler, tittelBetaler)
         } else {
             forsorgerplikt.barnebidrag = null
-            setInntektInOversikt(inntekter, barnebidragType, false, "")
-            setUtgiftInOversikt(utgifter, barnebidragType, false, "")
+            setInntektInOversikt(inntekter, barnebidragType, false)
+            setUtgiftInOversikt(utgifter, barnebidragType, false)
         }
     }
 
@@ -172,11 +172,11 @@ class ForsorgerpliktRessurs(
         val opplysningerBarneutgifter = okonomi.opplysninger.utgift
         val oversiktBarneutgifter = okonomi.oversikt.utgift
         okonomi.opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }
-        setUtgiftInOversikt(oversiktBarneutgifter, "barnehage", false, "")
-        setUtgiftInOversikt(oversiktBarneutgifter, "sfo", false, "")
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", false, "")
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", false, "")
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", false, "")
+        setUtgiftInOversikt(oversiktBarneutgifter, "barnehage", false)
+        setUtgiftInOversikt(oversiktBarneutgifter, "sfo", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", false)
     }
 
     private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {

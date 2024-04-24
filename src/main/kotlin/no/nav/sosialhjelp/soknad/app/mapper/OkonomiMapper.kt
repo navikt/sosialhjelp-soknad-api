@@ -47,7 +47,8 @@ object OkonomiMapper {
         } else if (formuer.any { it.type == type }) {
             return
         } else {
-            check(tittel != null) { "tittel must be set when isExpected is true" }
+            checkTittelIsNotNull(tittel)
+
             formuer.add(
                 JsonOkonomioversiktFormue()
                     .withKilde(JsonKilde.BRUKER)
@@ -69,7 +70,7 @@ object OkonomiMapper {
         } else if (inntekter.any { it.type == type }) {
             return
         } else {
-            check(tittel != null) { "tittel must be set when isExpected is true" }
+            checkTittelIsNotNull(tittel)
 
             inntekter.add(
                 JsonOkonomioversiktInntekt()
@@ -92,7 +93,7 @@ object OkonomiMapper {
         } else if (utgifter.any { it.type == type }) {
             return
         } else {
-            check(tittel != null) { "tittel must be set when isExpected is true" }
+            checkTittelIsNotNull(tittel)
 
             utgifter.add(
                 JsonOkonomioversiktUtgift()
@@ -115,7 +116,7 @@ object OkonomiMapper {
         } else if (utgifter.any { it.type == type }) {
             return
         } else {
-            check(tittel != null) { "tittel must be set when isExpected is true" }
+            checkTittelIsNotNull(tittel)
 
             utgifter.add(
                 JsonOkonomiOpplysningUtgift()
@@ -138,7 +139,7 @@ object OkonomiMapper {
         } else if (utbetalinger.any { it.type == type }) {
             return
         } else {
-            check(tittel != null) { "tittel must be set when isExpected is true" }
+            checkTittelIsNotNull(tittel)
 
             utbetalinger.add(
                 JsonOkonomiOpplysningUtbetaling()
@@ -148,5 +149,9 @@ object OkonomiMapper {
                     .withOverstyrtAvBruker(false),
             )
         }
+    }
+
+    private fun checkTittelIsNotNull(tittel: String? = null) {
+        check(tittel != null) { "tittel must be set when isExpected is true" }
     }
 }
