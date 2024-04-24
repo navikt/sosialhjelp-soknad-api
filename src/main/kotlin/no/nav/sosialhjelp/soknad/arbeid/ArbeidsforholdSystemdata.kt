@@ -65,8 +65,8 @@ class ArbeidsforholdSystemdata(
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
-            setUtbetalingInOpplysninger(utbetalinger, SLUTTOPPGJOER, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER]), typeIsInList(jsonVedleggs, "sluttoppgjor"))
-            setInntektInOversikt(inntekter, JOBB, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB]), typeIsInList(jsonVedleggs, "lonnslipp"))
+            setUtbetalingInOpplysninger(utbetalinger, SLUTTOPPGJOER, typeIsInList(jsonVedleggs, "sluttoppgjor"), textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER]))
+            setInntektInOversikt(inntekter, JOBB, typeIsInList(jsonVedleggs, "lonnslipp"), textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB]))
         }
 
         private fun typeIsInList(

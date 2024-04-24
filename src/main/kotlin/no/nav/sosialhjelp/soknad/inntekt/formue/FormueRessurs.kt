@@ -92,7 +92,7 @@ class FormueRessurs(
             FORMUE_VERDIPAPIRER to formueFrontend.verdipapirer,
             FORMUE_ANNET to formueFrontend.annet,
         ).forEach { (type, isExpected) ->
-            setFormueInOversikt(formue, type, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]), isExpected)
+            setFormueInOversikt(formue, type, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
         }
     }
 

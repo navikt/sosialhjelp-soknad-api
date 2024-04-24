@@ -84,8 +84,8 @@ class BostotteRessurs(
             OkonomiMapper.setUtbetalingInOpplysninger(
                 opplysninger.utbetaling,
                 UTBETALING_HUSBANKEN,
-                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE]),
                 it,
+                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE]),
             )
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)

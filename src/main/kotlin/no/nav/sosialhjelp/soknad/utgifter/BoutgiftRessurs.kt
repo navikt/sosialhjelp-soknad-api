@@ -99,7 +99,7 @@ class BoutgiftRessurs(
             UTGIFTER_BOLIGLAN_RENTER to boutgifterFrontend.boliglan,
         )
             .forEach { (soknadJsonType, isExpected) ->
-                setUtgiftInOversikt(oversiktUtgifter, soknadJsonType, getTittel(soknadJsonType), isExpected)
+                setUtgiftInOversikt(oversiktUtgifter, soknadJsonType, isExpected, getTittel(soknadJsonType))
             }
 
         mapOf(
@@ -109,7 +109,7 @@ class BoutgiftRessurs(
             UTGIFTER_ANNET_BO to boutgifterFrontend.annet,
         )
             .forEach { (soknadJsonType, isExpected) ->
-                setUtgiftInOpplysninger(opplysningerUtgifter, soknadJsonType, getTittel(soknadJsonType), isExpected)
+                setUtgiftInOpplysninger(opplysningerUtgifter, soknadJsonType, isExpected, getTittel(soknadJsonType))
             }
     }
 

@@ -101,7 +101,7 @@ class VerdiRessurs(
             VERDI_ANNET to verdierFrontend.annet,
         )
             .forEach { (soknadJsonType, isExpected) ->
-                setFormueInOversikt(oversikt.formue, soknadJsonType, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[soknadJsonType]), isExpected)
+                setFormueInOversikt(oversikt.formue, soknadJsonType, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[soknadJsonType]))
             }
     }
 

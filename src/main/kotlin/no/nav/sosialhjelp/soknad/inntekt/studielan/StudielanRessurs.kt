@@ -55,8 +55,8 @@ class StudielanRessurs(
             OkonomiMapper.setInntektInOversikt(
                 inntekter,
                 STUDIELAN,
-                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
                 studielanFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
             )
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())

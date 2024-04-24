@@ -86,7 +86,7 @@ class UtbetalingRessurs(
             UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
             UTBETALING_ANNET to utbetalingerFrontend.annet,
         ).forEach { (utbetalingJsonType, isExpected) ->
-            setUtbetalingInOpplysninger(utbetalinger, utbetalingJsonType, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]), isExpected)
+            setUtbetalingInOpplysninger(utbetalinger, utbetalingJsonType, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]))
         }
     }
 

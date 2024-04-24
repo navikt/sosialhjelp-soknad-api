@@ -14,7 +14,7 @@ object OkonomiMapper {
         opplysninger: JsonOkonomiopplysninger,
         type: String,
         verdi: Boolean?,
-        tittel: String,
+        tittel: String? = null,
     ) {
         opplysninger.bekreftelse = opplysninger.bekreftelse ?: ArrayList()
 
@@ -39,14 +39,15 @@ object OkonomiMapper {
     fun setFormueInOversikt(
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
-        tittel: String,
         isExpected: Boolean,
+        tittel: String? = null,
     ) {
         if (!isExpected) {
             formuer.removeIf { it.type == type }
         } else if (formuer.any { it.type == type }) {
             return
         } else {
+            check(tittel != null) { "tittel must be set when isExpected is true" }
             formuer.add(
                 JsonOkonomioversiktFormue()
                     .withKilde(JsonKilde.BRUKER)
@@ -60,14 +61,16 @@ object OkonomiMapper {
     fun setInntektInOversikt(
         inntekter: MutableList<JsonOkonomioversiktInntekt>,
         type: String,
-        tittel: String,
         isExpected: Boolean,
+        tittel: String? = null,
     ) {
         if (!isExpected) {
             inntekter.removeIf { it.type == type }
         } else if (inntekter.any { it.type == type }) {
             return
         } else {
+            check(tittel != null) { "tittel must be set when isExpected is true" }
+
             inntekter.add(
                 JsonOkonomioversiktInntekt()
                     .withKilde(JsonKilde.BRUKER)
@@ -81,14 +84,16 @@ object OkonomiMapper {
     fun setUtgiftInOversikt(
         utgifter: MutableList<JsonOkonomioversiktUtgift>,
         type: String,
-        tittel: String,
         isExpected: Boolean,
+        tittel: String? = null,
     ) {
         if (!isExpected) {
             utgifter.removeIf { it.type == type }
         } else if (utgifter.any { it.type == type }) {
             return
         } else {
+            check(tittel != null) { "tittel must be set when isExpected is true" }
+
             utgifter.add(
                 JsonOkonomioversiktUtgift()
                     .withKilde(JsonKilde.BRUKER)
@@ -102,14 +107,16 @@ object OkonomiMapper {
     fun setUtgiftInOpplysninger(
         utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
         type: String,
-        tittel: String,
         isExpected: Boolean,
+        tittel: String? = null,
     ) {
         if (!isExpected) {
             utgifter.removeIf { it.type == type }
         } else if (utgifter.any { it.type == type }) {
             return
         } else {
+            check(tittel != null) { "tittel must be set when isExpected is true" }
+
             utgifter.add(
                 JsonOkonomiOpplysningUtgift()
                     .withKilde(JsonKilde.BRUKER)
@@ -123,14 +130,16 @@ object OkonomiMapper {
     fun setUtbetalingInOpplysninger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         type: String,
-        tittel: String,
         isExpected: Boolean,
+        tittel: String? = null,
     ) {
         if (!isExpected) {
             utbetalinger.removeIf { it.type == type }
         } else if (utbetalinger.any { it.type == type }) {
             return
         } else {
+            check(tittel != null) { "tittel must be set when isExpected is true" }
+
             utbetalinger.add(
                 JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)

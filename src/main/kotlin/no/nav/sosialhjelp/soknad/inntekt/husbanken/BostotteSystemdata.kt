@@ -66,7 +66,7 @@ class BostotteSystemdata(
         okonomiopplysninger.utbetaling.removeIf {
             it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM
         }
-        setUtbetalingInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE]), skalFortsattHaBrukerUtbetaling)
+        setUtbetalingInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, skalFortsattHaBrukerUtbetaling, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE]))
     }
 
     private fun harViDataFraSiste30Dager(bostotte: Bostotte): Boolean {

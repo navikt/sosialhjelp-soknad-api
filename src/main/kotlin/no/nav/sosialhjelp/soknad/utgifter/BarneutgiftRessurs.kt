@@ -98,7 +98,7 @@ class BarneutgiftRessurs(
             UTGIFTER_BARNEHAGE to barneutgifterFrontend.barnehage,
             UTGIFTER_SFO to barneutgifterFrontend.sfo,
         ).forEach { (utgiftJsonType, isExpected) ->
-            setUtgiftInOversikt(oversikt.utgift, utgiftJsonType, utgiftTittel(utgiftJsonType), isExpected)
+            setUtgiftInOversikt(oversikt.utgift, utgiftJsonType, isExpected, utgiftTittel(utgiftJsonType))
         }
 
         mapOf(
@@ -106,7 +106,7 @@ class BarneutgiftRessurs(
             UTGIFTER_BARN_TANNREGULERING to barneutgifterFrontend.tannregulering,
             UTGIFTER_ANNET_BARN to barneutgifterFrontend.annet,
         ).forEach { (utgiftJsonType, isExpected) ->
-            setUtgiftInOpplysninger(opplysninger.utgift, utgiftJsonType, utgiftTittel(utgiftJsonType), isExpected)
+            setUtgiftInOpplysninger(opplysninger.utgift, utgiftJsonType, isExpected, utgiftTittel(utgiftJsonType))
         }
     }
 

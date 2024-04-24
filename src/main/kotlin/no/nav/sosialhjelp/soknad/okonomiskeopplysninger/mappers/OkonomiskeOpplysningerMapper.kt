@@ -84,7 +84,7 @@ object OkonomiskeOpplysningerMapper {
 
             // Dersom AnnetAnnet kun har en tom rad, fjern utgiften
             val isPresent = !(rader.size == 1 && rader[0].belop == null && isEmpty(rader[0].beskrivelse))
-            setUtgiftInOpplysninger(utgifter, soknadType, eksisterendeOpplysningUtgift.tittel, isPresent)
+            setUtgiftInOpplysninger(utgifter, soknadType, isPresent, eksisterendeOpplysningUtgift.tittel)
             if (!isPresent) return
         }
 
