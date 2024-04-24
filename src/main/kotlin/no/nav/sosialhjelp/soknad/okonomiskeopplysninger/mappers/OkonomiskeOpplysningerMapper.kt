@@ -12,8 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktF
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import org.apache.commons.lang3.StringUtils.isEmpty
@@ -72,7 +71,7 @@ object OkonomiskeOpplysningerMapper {
         rader: List<VedleggRadFrontend>,
         vedleggType: VedleggType,
         opplysninger: JsonOkonomiopplysninger,
-        soknadType: String?,
+        soknadType: String,
     ) {
         var eksisterendeOpplysningUtgift = opplysninger.utgift.firstOrNull { it.type == soknadType }
 
@@ -84,12 +83,9 @@ object OkonomiskeOpplysningerMapper {
             val utgifter = opplysninger.utgift
 
             // Dersom AnnetAnnet kun har en tom rad, fjern utgiften
-            if (rader.size == 1 && rader[0].belop == null && isEmpty(rader[0].beskrivelse)) {
-                removeUtgiftIfPresentInOpplysninger(utgifter, soknadType)
-                return
-            } else {
-                addUtgiftIfNotPresentInOpplysninger(utgifter, soknadType, eksisterendeOpplysningUtgift.tittel)
-            }
+            val isPresent = !(rader.size == 1 && rader[0].belop == null && isEmpty(rader[0].beskrivelse))
+            setUtgiftInOpplysninger(utgifter, soknadType, eksisterendeOpplysningUtgift.tittel, isPresent)
+            if (!isPresent) return
         }
 
         val utgift = eksisterendeOpplysningUtgift ?: throw IkkeFunnetException("Utbetaling $soknadType eksisterer ikke i søknad")

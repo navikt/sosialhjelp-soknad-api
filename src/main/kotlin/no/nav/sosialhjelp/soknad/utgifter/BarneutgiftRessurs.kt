@@ -11,9 +11,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -113,7 +113,7 @@ class BarneutgiftRessurs(
             barneutgifterFrontend.sfo,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_FRITIDSAKTIVITETER])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBarneutgifter,
             UTGIFTER_BARN_FRITIDSAKTIVITETER,
             tittel,
@@ -121,7 +121,7 @@ class BarneutgiftRessurs(
         )
         tittel =
             textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_TANNREGULERING])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBarneutgifter,
             UTGIFTER_BARN_TANNREGULERING,
             tittel,
@@ -129,7 +129,7 @@ class BarneutgiftRessurs(
         )
         tittel =
             textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BARN])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBarneutgifter,
             UTGIFTER_ANNET_BARN,
             tittel,

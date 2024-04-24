@@ -80,23 +80,6 @@ object OkonomiMapper {
         }
     }
 
-    fun addUtgiftIfNotPresentInOpplysninger(
-        utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
-        type: String?,
-        tittel: String,
-    ) {
-        val jsonUtgift = utgifter.firstOrNull { it.type == type }
-        if (jsonUtgift == null) {
-            utgifter.add(
-                JsonOkonomiOpplysningUtgift()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withOverstyrtAvBruker(false),
-            )
-        }
-    }
-
     private fun removeFormueIfPresentInOversikt(
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
@@ -114,13 +97,6 @@ object OkonomiMapper {
     fun removeUtgiftIfPresentInOversikt(
         utgifter: MutableList<JsonOkonomioversiktUtgift>,
         type: String,
-    ) {
-        utgifter.removeIf { it.type == type }
-    }
-
-    fun removeUtgiftIfPresentInOpplysninger(
-        utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
-        type: String?,
     ) {
         utgifter.removeIf { it.type == type }
     }
@@ -171,16 +147,24 @@ object OkonomiMapper {
         }
     }
 
-    fun addutgiftIfCheckedElseDeleteInOpplysninger(
+    fun setUtgiftInOpplysninger(
         utgifter: MutableList<JsonOkonomiOpplysningUtgift>,
         type: String,
         tittel: String,
-        isChecked: Boolean,
+        isExpected: Boolean,
     ) {
-        if (isChecked) {
-            addUtgiftIfNotPresentInOpplysninger(utgifter, type, tittel)
+        if (!isExpected) {
+            utgifter.removeIf { it.type == type }
+        } else if (utgifter.any { it.type == type }) {
+            return
         } else {
-            removeUtgiftIfPresentInOpplysninger(utgifter, type)
+            utgifter.add(
+                JsonOkonomiOpplysningUtgift()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withOverstyrtAvBruker(false),
+            )
         }
     }
 

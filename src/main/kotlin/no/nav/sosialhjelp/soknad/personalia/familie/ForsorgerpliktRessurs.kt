@@ -191,9 +191,9 @@ class ForsorgerpliktRessurs(
         okonomi.opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }
         removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, "barnehage")
         removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, "sfo")
-        OkonomiMapper.removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter")
-        OkonomiMapper.removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, "barnTannregulering")
-        OkonomiMapper.removeUtgiftIfPresentInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift")
+        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", "", false)
+        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", "", false)
+        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", "", false)
     }
 
     private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {

@@ -17,9 +17,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -107,21 +107,21 @@ class BoutgiftRessurs(
             boutgifterFrontend.husleie,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_STROM])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_STROM,
             tittel,
             boutgifterFrontend.strom,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_KOMMUNAL_AVGIFT])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_KOMMUNAL_AVGIFT,
             tittel,
             boutgifterFrontend.kommunalAvgift,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_OPPVARMING])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_OPPVARMING,
             tittel,
@@ -142,7 +142,7 @@ class BoutgiftRessurs(
             boutgifterFrontend.boliglan,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BO])
-        addutgiftIfCheckedElseDeleteInOpplysninger(
+        setUtgiftInOpplysninger(
             opplysningerBoutgifter,
             UTGIFTER_ANNET_BO,
             tittel,
