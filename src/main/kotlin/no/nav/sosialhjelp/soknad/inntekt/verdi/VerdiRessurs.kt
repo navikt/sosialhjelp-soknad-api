@@ -12,8 +12,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setFormueInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -95,15 +95,15 @@ class VerdiRessurs(
     ) {
         val verdier = oversikt.formue
         var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_BOLIG])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig)
+        setFormueInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig)
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_CAMPINGVOGN])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, verdierFrontend.campingvogn)
+        setFormueInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, verdierFrontend.campingvogn)
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_KJORETOY])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_KJORETOY, tittel, verdierFrontend.kjoretoy)
+        setFormueInOversikt(verdier, VERDI_KJORETOY, tittel, verdierFrontend.kjoretoy)
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_FRITIDSEIENDOM])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, verdierFrontend.fritidseiendom)
+        setFormueInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, verdierFrontend.fritidseiendom)
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_ANNET])
-        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet)
+        setFormueInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet)
     }
 
     private fun setBeskrivelseAvAnnet(

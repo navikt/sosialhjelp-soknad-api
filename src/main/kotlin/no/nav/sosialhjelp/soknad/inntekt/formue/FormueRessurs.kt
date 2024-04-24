@@ -13,8 +13,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setFormueInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -100,22 +100,22 @@ class FormueRessurs(
         val formue = oversikt.formue
 
         var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BRUKSKONTO])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BRUKSKONTO, tittel, formueFrontend.brukskonto)
+        setFormueInOversikt(formue, FORMUE_BRUKSKONTO, tittel, formueFrontend.brukskonto)
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BSU])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_BSU, tittel, formueFrontend.bsu)
+        setFormueInOversikt(formue, FORMUE_BSU, tittel, formueFrontend.bsu)
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_LIVSFORSIKRING])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_LIVSFORSIKRING, tittel, formueFrontend.livsforsikring)
+        setFormueInOversikt(formue, FORMUE_LIVSFORSIKRING, tittel, formueFrontend.livsforsikring)
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_SPAREKONTO])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_SPAREKONTO, tittel, formueFrontend.sparekonto)
+        setFormueInOversikt(formue, FORMUE_SPAREKONTO, tittel, formueFrontend.sparekonto)
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_VERDIPAPIRER])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_VERDIPAPIRER, tittel, formueFrontend.verdipapirer)
+        setFormueInOversikt(formue, FORMUE_VERDIPAPIRER, tittel, formueFrontend.verdipapirer)
 
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_ANNET])
-        addFormueIfCheckedElseDeleteInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet)
+        setFormueInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet)
     }
 
     private fun setBeskrivelseAvAnnet(
