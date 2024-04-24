@@ -8,10 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
@@ -67,18 +65,8 @@ class ArbeidsforholdSystemdata(
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
-            if (typeIsInList(jsonVedleggs, "sluttoppgjor")) {
-                val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER])
-                addUtbetalingIfNotPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER, tittel)
-            } else {
-                removeUtbetalingIfPresentInOpplysninger(utbetalinger, SLUTTOPPGJOER)
-            }
-            if (typeIsInList(jsonVedleggs, "lonnslipp")) {
-                val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB])
-                addInntektIfNotPresentInOversikt(inntekter, JOBB, tittel)
-            } else {
-                removeInntektIfPresentInOversikt(inntekter, JOBB)
-            }
+            setUtbetalingInOpplysninger(utbetalinger, SLUTTOPPGJOER, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SLUTTOPPGJOER]), typeIsInList(jsonVedleggs, "sluttoppgjor"))
+            addInntektIfCheckedElseDeleteInOversikt(inntekter, JOBB, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[JOBB]), typeIsInList(jsonVedleggs, "lonnslipp"))
         }
 
         private fun typeIsInList(

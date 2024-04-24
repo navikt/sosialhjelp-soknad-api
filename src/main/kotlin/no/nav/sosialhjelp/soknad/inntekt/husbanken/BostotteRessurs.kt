@@ -81,19 +81,12 @@ class BostotteRessurs(
         )
 
         bostotteFrontend.bekreftelse?.let {
-            if (java.lang.Boolean.TRUE == it) {
-                val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
-                OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                    tittel,
-                )
-            } else {
-                OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                )
-            }
+            OkonomiMapper.setUtbetalingInOpplysninger(
+                opplysninger.utbetaling,
+                UTBETALING_HUSBANKEN,
+                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE]),
+                it,
+            )
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }

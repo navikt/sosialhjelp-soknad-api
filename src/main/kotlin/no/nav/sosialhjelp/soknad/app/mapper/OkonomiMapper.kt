@@ -97,23 +97,6 @@ object OkonomiMapper {
         }
     }
 
-    fun addUtbetalingIfNotPresentInOpplysninger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String,
-        tittel: String,
-    ) {
-        val jsonUtbetaling = utbetalinger.firstOrNull { it.type == type }
-        if (jsonUtbetaling == null) {
-            utbetalinger.add(
-                JsonOkonomiOpplysningUtbetaling()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withType(type)
-                    .withTittel(tittel)
-                    .withOverstyrtAvBruker(false),
-            )
-        }
-    }
-
     private fun removeFormueIfPresentInOversikt(
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
@@ -140,13 +123,6 @@ object OkonomiMapper {
         type: String?,
     ) {
         utgifter.removeIf { it.type == type }
-    }
-
-    fun removeUtbetalingIfPresentInOpplysninger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        type: String,
-    ) {
-        utbetalinger.removeIf { it.type == type }
     }
 
     fun removeBekreftelserIfPresent(
@@ -208,16 +184,24 @@ object OkonomiMapper {
         }
     }
 
-    fun addUtbetalingIfCheckedElseDeleteInOpplysninger(
+    fun setUtbetalingInOpplysninger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         type: String,
         tittel: String,
-        isChecked: Boolean,
+        isExpected: Boolean,
     ) {
-        if (isChecked) {
-            addUtbetalingIfNotPresentInOpplysninger(utbetalinger, type, tittel)
+        if (!isExpected) {
+            utbetalinger.removeIf { it.type == type }
+        } else if (utbetalinger.any { it.type == type }) {
+            return
         } else {
-            removeUtbetalingIfPresentInOpplysninger(utbetalinger, type)
+            utbetalinger.add(
+                JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withOverstyrtAvBruker(false),
+            )
         }
     }
 }

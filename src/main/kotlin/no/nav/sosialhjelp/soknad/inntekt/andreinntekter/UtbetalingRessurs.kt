@@ -11,8 +11,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -97,7 +97,7 @@ class UtbetalingRessurs(
             UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
             UTBETALING_ANNET to utbetalingerFrontend.annet,
         ).map { (utbetalingJsonType, isChecked) ->
-            addUtbetalingIfCheckedElseDeleteInOpplysninger(
+            setUtbetalingInOpplysninger(
                 utbetalinger,
                 utbetalingJsonType,
                 textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),

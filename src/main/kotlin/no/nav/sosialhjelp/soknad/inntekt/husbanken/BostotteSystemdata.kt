@@ -10,8 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
@@ -67,12 +66,7 @@ class BostotteSystemdata(
         okonomiopplysninger.utbetaling.removeIf {
             it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM
         }
-        if (skalFortsattHaBrukerUtbetaling) {
-            val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
-            addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, tittel)
-        } else {
-            removeUtbetalingIfPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN)
-        }
+        setUtbetalingInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE]), skalFortsattHaBrukerUtbetaling)
     }
 
     private fun harViDataFraSiste30Dager(bostotte: Bostotte): Boolean {
