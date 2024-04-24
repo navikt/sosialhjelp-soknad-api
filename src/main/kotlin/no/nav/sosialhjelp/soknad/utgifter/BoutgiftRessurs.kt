@@ -15,13 +15,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
 @ProtectedWithClaims(
@@ -50,7 +52,7 @@ class BoutgiftRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BoutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val jsonInternalSoknad =
             soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -77,78 +79,30 @@ class BoutgiftRessurs(
         @RequestBody boutgifterFrontend: BoutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_BOUTGIFTER,
-            boutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.boutgift"),
-        )
-        setBoutgifter(okonomi, boutgifterFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
+        setBekreftelse(opplysninger, BEKREFTELSE_BOUTGIFTER, boutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.boutgift"))
+        setBoutgifter(opplysninger.utgift, oversikt.utgift, boutgifterFrontend)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun setBoutgifter(
-        okonomi: JsonOkonomi,
+        opplysningerUtgifter: MutableList<JsonOkonomiOpplysningUtgift>,
+        oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift>,
         boutgifterFrontend: BoutgifterFrontend,
     ) {
-        val opplysningerBoutgifter = okonomi.opplysninger.utgift
-        val oversiktBoutgifter = okonomi.oversikt.utgift
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_HUSLEIE])
-        setUtgiftInOversikt(
-            oversiktBoutgifter,
-            UTGIFTER_HUSLEIE,
-            tittel,
-            boutgifterFrontend.husleie,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_STROM])
-        setUtgiftInOpplysninger(
-            opplysningerBoutgifter,
-            UTGIFTER_STROM,
-            tittel,
-            boutgifterFrontend.strom,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_KOMMUNAL_AVGIFT])
-        setUtgiftInOpplysninger(
-            opplysningerBoutgifter,
-            UTGIFTER_KOMMUNAL_AVGIFT,
-            tittel,
-            boutgifterFrontend.kommunalAvgift,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_OPPVARMING])
-        setUtgiftInOpplysninger(
-            opplysningerBoutgifter,
-            UTGIFTER_OPPVARMING,
-            tittel,
-            boutgifterFrontend.oppvarming,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_AVDRAG])
-        setUtgiftInOversikt(
-            oversiktBoutgifter,
-            UTGIFTER_BOLIGLAN_AVDRAG,
-            tittel,
-            boutgifterFrontend.boliglan,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_RENTER])
-        setUtgiftInOversikt(
-            oversiktBoutgifter,
-            UTGIFTER_BOLIGLAN_RENTER,
-            tittel,
-            boutgifterFrontend.boliglan,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BO])
-        setUtgiftInOpplysninger(
-            opplysningerBoutgifter,
-            UTGIFTER_ANNET_BO,
-            tittel,
-            boutgifterFrontend.annet,
-        )
+        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_HUSLEIE, getTittel(UTGIFTER_HUSLEIE), boutgifterFrontend.husleie)
+        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_BOLIGLAN_AVDRAG, getTittel(UTGIFTER_BOLIGLAN_AVDRAG), boutgifterFrontend.boliglan)
+        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_BOLIGLAN_RENTER, getTittel(UTGIFTER_BOLIGLAN_RENTER), boutgifterFrontend.boliglan)
+        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_STROM, getTittel(UTGIFTER_STROM), boutgifterFrontend.strom)
+        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_KOMMUNAL_AVGIFT, getTittel(UTGIFTER_KOMMUNAL_AVGIFT), boutgifterFrontend.kommunalAvgift)
+        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_OPPVARMING, getTittel(UTGIFTER_OPPVARMING), boutgifterFrontend.oppvarming)
+        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_ANNET_BO, getTittel(UTGIFTER_ANNET_BO), boutgifterFrontend.annet)
     }
+
+    private fun getTittel(opplysningType: String) = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[opplysningType])
 
     private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
         return opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_BOUTGIFTER }?.verdi
