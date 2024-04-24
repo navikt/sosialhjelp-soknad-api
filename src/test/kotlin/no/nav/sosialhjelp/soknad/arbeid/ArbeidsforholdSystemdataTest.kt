@@ -39,6 +39,7 @@ internal class ArbeidsforholdSystemdataTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
+        every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
         every { v2AdapterService.addArbeidsforholdList(any(), any()) } just runs
     }
 

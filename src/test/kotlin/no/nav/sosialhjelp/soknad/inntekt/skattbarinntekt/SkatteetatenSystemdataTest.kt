@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,11 +25,14 @@ import java.time.LocalDateTime
 internal class SkatteetatenSystemdataTest {
     private val organisasjonService: OrganisasjonService = mockk()
     private val skattbarInntektService: SkattbarInntektService = mockk()
-    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, organisasjonService, mockk())
+    private val textService: TextService = mockk()
+    private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, organisasjonService, textService)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
+        every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
+
         every {
             organisasjonService.mapToJsonOrganisasjon(ORGANISASJONSNR)
         } returns JsonOrganisasjon().withOrganisasjonsnummer(ORGANISASJONSNR)
