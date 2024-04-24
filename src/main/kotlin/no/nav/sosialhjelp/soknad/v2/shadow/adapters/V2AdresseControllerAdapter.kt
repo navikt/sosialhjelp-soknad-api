@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.shadow.adapter
+package no.nav.sosialhjelp.soknad.v2.shadow.adapters
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg

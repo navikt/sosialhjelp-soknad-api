@@ -27,5 +27,9 @@ class EierService(
             .kontonummer!!
     }
 
+    fun updatePersonData(eier: Eier) {
+
+    }
+
     fun updateEier(eier: Eier) = eierRepository.save(eier)
 }

@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseAdapter.toV2Adresse
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
 
 @Service
 @Transactional(propagation = Propagation.NESTED)

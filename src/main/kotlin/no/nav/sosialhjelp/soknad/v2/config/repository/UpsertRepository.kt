@@ -4,9 +4,15 @@ import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.ListCrudRepository
+import org.springframework.data.repository.findByIdOrNull
 
 interface DomainRoot {
     val soknadId: UUID
+}
+
+fun <Entity: DomainRoot, Repo> Repo.findOrCreate(soknadId: UUID, entity: Entity): Entity
+        where Repo: UpsertRepository<Entity>, Repo: ListCrudRepository<Entity, UUID> {
+    return findByIdOrNull(soknadId) ?: save(entity)
 }
 
 /**

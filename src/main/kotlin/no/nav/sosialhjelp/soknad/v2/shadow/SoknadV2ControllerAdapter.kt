@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapters.V2AdresseControllerAdapter
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput

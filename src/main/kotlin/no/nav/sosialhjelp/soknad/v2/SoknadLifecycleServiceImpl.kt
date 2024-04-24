@@ -28,7 +28,7 @@ class SoknadLifecycleServiceImpl(
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
-        registerDataHandler.fetchAndSave(soknadId)
+        registerDataHandler.handle(soknadId)
 
         return soknadId
     }

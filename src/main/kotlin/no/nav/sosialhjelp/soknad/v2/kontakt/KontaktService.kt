@@ -18,7 +18,7 @@ class KontaktService(
         soknadId: UUID,
         telefonnummerBruker: String?,
     ): Telefonnummer {
-        return kontaktRepository.getOrCreateKontakt(soknadId)
+        return kontaktRepository.findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
@@ -31,11 +31,11 @@ class KontaktService(
     ): Kontakt {
         logger.info(
             "Oppdaterer adresse for $soknadId. " +
-                "Adressevalg: $adresseValg, " +
-                "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
+                    "Adressevalg: $adresseValg, " +
+                    "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
         )
 
-        return kontaktRepository.getOrCreateKontakt(soknadId)
+        return kontaktRepository.findOrCreate(soknadId)
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, brukerAdresse = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
     }
@@ -45,20 +45,14 @@ class KontaktService(
         folkeregistrertAdresse: Adresse?,
         midlertidigAdresse: Adresse?,
     ) {
-        logger.info(
-            "Legger til adresser for $soknadId. " +
-                "Folkeregistrert: ${folkeregistrertAdresse?.let { "Funnet" }} " +
-                "Midlertidig: ${midlertidigAdresse?.let { "Funnet" }}",
-        )
-
-        kontaktRepository.getOrCreateKontakt(soknadId)
+        kontaktRepository
+            .findOrCreate(soknadId)
             .run {
                 copy(
-                    adresser =
-                        adresser.copy(
-                            folkeregistrertAdresse = folkeregistrertAdresse,
-                            midlertidigAdresse = midlertidigAdresse,
-                        ),
+                    adresser = adresser.copy(
+                        folkeregistrertAdresse = folkeregistrertAdresse,
+                        midlertidigAdresse = midlertidigAdresse,
+                    ),
                 )
             }
             .also { kontaktRepository.save(it) }
@@ -68,12 +62,13 @@ class KontaktService(
         soknadId: UUID,
         telefonRegister: String,
     ) {
-        kontaktRepository.getOrCreateKontakt(soknadId)
+        kontaktRepository
+            .findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
             .also { kontaktRepository.save(it) }
     }
 }
 
-private fun KontaktRepository.getOrCreateKontakt(soknadId: UUID): Kontakt {
+private fun KontaktRepository.findOrCreate(soknadId: UUID): Kontakt {
     return findByIdOrNull(soknadId) ?: save(Kontakt(soknadId))
 }

@@ -26,7 +26,7 @@ class ForsorgerpliktController(private val familieService: FamilieService) {
     @GetMapping
     fun getForsorgerplikt(
         @PathVariable soknadId: UUID,
-    ): ForsorgerDto? = familieService.findFamilie(soknadId)?.toForsorgerDto()
+    ) = familieService.findFamilie(soknadId)?.toForsorgerDto() ?: ForsorgerDto()
 
     @PutMapping
     fun updateForsorgerplikt(
@@ -51,9 +51,9 @@ data class ForsorgerInput(
 )
 
 data class ForsorgerDto(
-    val harForsorgerplikt: Boolean?,
-    val barnebidrag: Barnebidrag?,
-    val ansvar: List<BarnDto>,
+    val harForsorgerplikt: Boolean? = null,
+    val barnebidrag: Barnebidrag? = null,
+    val ansvar: List<BarnDto> = emptyList(),
 )
 
 private fun Familie.toForsorgerDto(): ForsorgerDto =

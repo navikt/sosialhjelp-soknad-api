@@ -26,8 +26,8 @@ data class Eier(
     val nordiskBorger: Boolean? = null,
     @Embedded.Empty
     val navn: Navn,
-    @Embedded.Nullable
-    val kontonummer: Kontonummer? = null,
+    @Embedded.Empty
+    val kontonummer: Kontonummer = Kontonummer(),
 ) : DomainRoot
 
 data class Kontonummer(

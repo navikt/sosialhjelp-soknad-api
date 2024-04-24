@@ -36,6 +36,7 @@ data class Ektefelle(
     val navn: Navn?,
     val fodselsdato: String?,
     val personId: String?,
+    val harDiskresjonskode: Boolean? = null,
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
     val kildeErSystem: Boolean = true,
@@ -55,4 +56,5 @@ enum class Sivilstatus {
     ENKE,
     SKILT,
     SEPARERT,
+    TOM;
 }
