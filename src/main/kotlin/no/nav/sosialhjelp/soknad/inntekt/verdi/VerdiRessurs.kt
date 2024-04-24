@@ -93,17 +93,16 @@ class VerdiRessurs(
         oversikt: JsonOkonomioversikt,
         verdierFrontend: VerdierFrontend,
     ) {
-        val verdier = oversikt.formue
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_BOLIG])
-        setFormueInOversikt(verdier, VERDI_BOLIG, tittel, verdierFrontend.bolig)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_CAMPINGVOGN])
-        setFormueInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, verdierFrontend.campingvogn)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_KJORETOY])
-        setFormueInOversikt(verdier, VERDI_KJORETOY, tittel, verdierFrontend.kjoretoy)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_FRITIDSEIENDOM])
-        setFormueInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, verdierFrontend.fritidseiendom)
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_ANNET])
-        setFormueInOversikt(verdier, VERDI_ANNET, tittel, verdierFrontend.annet)
+        mapOf(
+            VERDI_BOLIG to verdierFrontend.bolig,
+            VERDI_CAMPINGVOGN to verdierFrontend.campingvogn,
+            VERDI_KJORETOY to verdierFrontend.kjoretoy,
+            VERDI_FRITIDSEIENDOM to verdierFrontend.fritidseiendom,
+            VERDI_ANNET to verdierFrontend.annet,
+        )
+            .forEach { (soknadJsonType, isExpected) ->
+                setFormueInOversikt(oversikt.formue, soknadJsonType, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[soknadJsonType]), isExpected)
+            }
     }
 
     private fun setBeskrivelseAvAnnet(

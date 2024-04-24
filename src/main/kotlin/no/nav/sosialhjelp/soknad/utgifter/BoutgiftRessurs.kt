@@ -93,13 +93,24 @@ class BoutgiftRessurs(
         oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift>,
         boutgifterFrontend: BoutgifterFrontend,
     ) {
-        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_HUSLEIE, getTittel(UTGIFTER_HUSLEIE), boutgifterFrontend.husleie)
-        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_BOLIGLAN_AVDRAG, getTittel(UTGIFTER_BOLIGLAN_AVDRAG), boutgifterFrontend.boliglan)
-        setUtgiftInOversikt(oversiktUtgifter, UTGIFTER_BOLIGLAN_RENTER, getTittel(UTGIFTER_BOLIGLAN_RENTER), boutgifterFrontend.boliglan)
-        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_STROM, getTittel(UTGIFTER_STROM), boutgifterFrontend.strom)
-        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_KOMMUNAL_AVGIFT, getTittel(UTGIFTER_KOMMUNAL_AVGIFT), boutgifterFrontend.kommunalAvgift)
-        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_OPPVARMING, getTittel(UTGIFTER_OPPVARMING), boutgifterFrontend.oppvarming)
-        setUtgiftInOpplysninger(opplysningerUtgifter, UTGIFTER_ANNET_BO, getTittel(UTGIFTER_ANNET_BO), boutgifterFrontend.annet)
+        mapOf(
+            UTGIFTER_HUSLEIE to boutgifterFrontend.husleie,
+            UTGIFTER_BOLIGLAN_AVDRAG to boutgifterFrontend.boliglan,
+            UTGIFTER_BOLIGLAN_RENTER to boutgifterFrontend.boliglan,
+        )
+            .forEach { (soknadJsonType, isExpected) ->
+                setUtgiftInOversikt(oversiktUtgifter, soknadJsonType, getTittel(soknadJsonType), isExpected)
+            }
+
+        mapOf(
+            UTGIFTER_STROM to boutgifterFrontend.strom,
+            UTGIFTER_KOMMUNAL_AVGIFT to boutgifterFrontend.kommunalAvgift,
+            UTGIFTER_OPPVARMING to boutgifterFrontend.oppvarming,
+            UTGIFTER_ANNET_BO to boutgifterFrontend.annet,
+        )
+            .forEach { (soknadJsonType, isExpected) ->
+                setUtgiftInOpplysninger(opplysningerUtgifter, soknadJsonType, getTittel(soknadJsonType), isExpected)
+            }
     }
 
     private fun getTittel(opplysningType: String) = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[opplysningType])

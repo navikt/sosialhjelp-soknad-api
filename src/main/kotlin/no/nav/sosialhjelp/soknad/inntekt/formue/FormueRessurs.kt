@@ -11,12 +11,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setFormueInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -27,13 +26,10 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/inntekt/formue", produces = [MediaType.APPLICATION_JSON_VALUE])
 class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -45,7 +41,7 @@ class FormueRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): FormueFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val soknad =
             soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -72,50 +68,32 @@ class FormueRessurs(
         @RequestBody formueFrontend: FormueFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
-        val hasAnyFormueType =
-            formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
-                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_SPARING,
-            hasAnyFormueType,
-            textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
-        )
-        setFormue(okonomi.oversikt, formueFrontend)
-        setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        val hasAnyFormueType = with(formueFrontend) { listOf(brukskonto, bsu, sparekonto, livsforsikring, verdipapirer, annet).any { it } }
+        setBekreftelse(opplysninger, BEKREFTELSE_SPARING, hasAnyFormueType, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"))
+        setFormue(oversikt.formue, formueFrontend)
+        setBeskrivelseAvAnnet(opplysninger, formueFrontend)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun setFormue(
-        oversikt: JsonOkonomioversikt,
+        formue: MutableList<JsonOkonomioversiktFormue>,
         formueFrontend: FormueFrontend,
     ) {
-        val formue = oversikt.formue
-
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BRUKSKONTO])
-        setFormueInOversikt(formue, FORMUE_BRUKSKONTO, tittel, formueFrontend.brukskonto)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_BSU])
-        setFormueInOversikt(formue, FORMUE_BSU, tittel, formueFrontend.bsu)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_LIVSFORSIKRING])
-        setFormueInOversikt(formue, FORMUE_LIVSFORSIKRING, tittel, formueFrontend.livsforsikring)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_SPAREKONTO])
-        setFormueInOversikt(formue, FORMUE_SPAREKONTO, tittel, formueFrontend.sparekonto)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_VERDIPAPIRER])
-        setFormueInOversikt(formue, FORMUE_VERDIPAPIRER, tittel, formueFrontend.verdipapirer)
-
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[FORMUE_ANNET])
-        setFormueInOversikt(formue, FORMUE_ANNET, tittel, formueFrontend.annet)
+        mapOf(
+            FORMUE_BRUKSKONTO to formueFrontend.brukskonto,
+            FORMUE_BSU to formueFrontend.bsu,
+            FORMUE_SPAREKONTO to formueFrontend.sparekonto,
+            FORMUE_LIVSFORSIKRING to formueFrontend.livsforsikring,
+            FORMUE_VERDIPAPIRER to formueFrontend.verdipapirer,
+            FORMUE_ANNET to formueFrontend.annet,
+        ).forEach { (type, isExpected) ->
+            setFormueInOversikt(formue, type, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]), isExpected)
+        }
     }
 
     private fun setBeskrivelseAvAnnet(

@@ -9,12 +9,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -25,13 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/inntekt/utbetalinger", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -43,14 +38,13 @@ class UtbetalingRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = soknad.soknad.data.okonomi.opplysninger
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val utbetalingerFraNavFeilet = jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
 
         if (opplysninger.bekreftelse == null) {
-            return UtbetalingerFrontend(utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet)
+            return UtbetalingerFrontend(utbetalingerFraNavFeilet = utbetalingerFraNavFeilet)
         }
         return UtbetalingerFrontend(
             bekreftelse = getBekreftelse(opplysninger),
@@ -59,7 +53,7 @@ class UtbetalingRessurs(
             forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
             annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
             beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
+            utbetalingerFraNavFeilet = utbetalingerFraNavFeilet,
         )
     }
 
@@ -69,19 +63,14 @@ class UtbetalingRessurs(
         @RequestBody utbetalingerFrontend: UtbetalingerFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
 
-        setBekreftelse(
-            opplysninger,
-            BEKREFTELSE_UTBETALING,
-            utbetalingerFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.inntekter"),
-        )
+        setBekreftelse(opplysninger, BEKREFTELSE_UTBETALING, utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"))
         setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
@@ -96,13 +85,8 @@ class UtbetalingRessurs(
             UTBETALING_SALG to utbetalingerFrontend.salg,
             UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
             UTBETALING_ANNET to utbetalingerFrontend.annet,
-        ).map { (utbetalingJsonType, isChecked) ->
-            setUtbetalingInOpplysninger(
-                utbetalinger,
-                utbetalingJsonType,
-                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
-                isChecked,
-            )
+        ).forEach { (utbetalingJsonType, isExpected) ->
+            setUtbetalingInOpplysninger(utbetalinger, utbetalingJsonType, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]), isExpected)
         }
     }
 

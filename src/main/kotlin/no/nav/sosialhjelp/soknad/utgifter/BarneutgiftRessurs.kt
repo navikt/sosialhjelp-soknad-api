@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARNEHAGE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -78,63 +77,37 @@ class BarneutgiftRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_BARNEUTGIFTER,
-            barneutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.barn"),
-        )
-        setBarneutgifter(okonomi, barneutgifterFrontend)
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
+
+        setBekreftelse(opplysninger, BEKREFTELSE_BARNEUTGIFTER, barneutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.barn"))
+        setBarneutgifter(opplysninger, oversikt, barneutgifterFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
+    private fun utgiftTittel(opplysningType: String) = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[opplysningType])
+
     private fun setBarneutgifter(
-        okonomi: JsonOkonomi,
+        opplysninger: JsonOkonomiopplysninger,
+        oversikt: JsonOkonomioversikt,
         barneutgifterFrontend: BarneutgifterFrontend,
     ) {
-        val opplysningerBarneutgifter = okonomi.opplysninger.utgift
-        val oversiktBarneutgifter = okonomi.oversikt.utgift
-        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARNEHAGE])
-        setUtgiftInOversikt(
-            oversiktBarneutgifter,
-            UTGIFTER_BARNEHAGE,
-            tittel,
-            barneutgifterFrontend.barnehage,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_SFO])
-        setUtgiftInOversikt(
-            oversiktBarneutgifter,
-            UTGIFTER_SFO,
-            tittel,
-            barneutgifterFrontend.sfo,
-        )
-        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_FRITIDSAKTIVITETER])
-        setUtgiftInOpplysninger(
-            opplysningerBarneutgifter,
-            UTGIFTER_BARN_FRITIDSAKTIVITETER,
-            tittel,
-            barneutgifterFrontend.fritidsaktiviteter,
-        )
-        tittel =
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_TANNREGULERING])
-        setUtgiftInOpplysninger(
-            opplysningerBarneutgifter,
-            UTGIFTER_BARN_TANNREGULERING,
-            tittel,
-            barneutgifterFrontend.tannregulering,
-        )
-        tittel =
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BARN])
-        setUtgiftInOpplysninger(
-            opplysningerBarneutgifter,
-            UTGIFTER_ANNET_BARN,
-            tittel,
-            barneutgifterFrontend.annet,
-        )
+        mapOf(
+            UTGIFTER_BARNEHAGE to barneutgifterFrontend.barnehage,
+            UTGIFTER_SFO to barneutgifterFrontend.sfo,
+        ).forEach { (utgiftJsonType, isExpected) ->
+            setUtgiftInOversikt(oversikt.utgift, utgiftJsonType, utgiftTittel(utgiftJsonType), isExpected)
+        }
+
+        mapOf(
+            UTGIFTER_BARN_FRITIDSAKTIVITETER to barneutgifterFrontend.fritidsaktiviteter,
+            UTGIFTER_BARN_TANNREGULERING to barneutgifterFrontend.tannregulering,
+            UTGIFTER_ANNET_BARN to barneutgifterFrontend.annet,
+        ).forEach { (utgiftJsonType, isExpected) ->
+            setUtgiftInOpplysninger(opplysninger.utgift, utgiftJsonType, utgiftTittel(utgiftJsonType), isExpected)
+        }
     }
 
     private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
