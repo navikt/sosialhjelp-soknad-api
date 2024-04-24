@@ -17,9 +17,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -100,7 +100,7 @@ class BoutgiftRessurs(
         val opplysningerBoutgifter = okonomi.opplysninger.utgift
         val oversiktBoutgifter = okonomi.oversikt.utgift
         var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_HUSLEIE])
-        addutgiftIfCheckedElseDeleteInOversikt(
+        setUtgiftInOversikt(
             oversiktBoutgifter,
             UTGIFTER_HUSLEIE,
             tittel,
@@ -128,14 +128,14 @@ class BoutgiftRessurs(
             boutgifterFrontend.oppvarming,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_AVDRAG])
-        addutgiftIfCheckedElseDeleteInOversikt(
+        setUtgiftInOversikt(
             oversiktBoutgifter,
             UTGIFTER_BOLIGLAN_AVDRAG,
             tittel,
             boutgifterFrontend.boliglan,
         )
         tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BOLIGLAN_RENTER])
-        addutgiftIfCheckedElseDeleteInOversikt(
+        setUtgiftInOversikt(
             oversiktBoutgifter,
             UTGIFTER_BOLIGLAN_RENTER,
             tittel,

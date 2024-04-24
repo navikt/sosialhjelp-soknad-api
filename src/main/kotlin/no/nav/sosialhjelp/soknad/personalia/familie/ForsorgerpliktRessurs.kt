@@ -15,11 +15,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
@@ -104,32 +103,22 @@ class ForsorgerpliktRessurs(
                 forsorgerplikt.barnebidrag.verdi = forsorgerpliktFrontend.barnebidrag
             }
             val tittelMottar = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.mottar")
+            val mottar = forsorgerpliktFrontend.barnebidrag == Verdi.MOTTAR || forsorgerpliktFrontend.barnebidrag == Verdi.BEGGE
+
             val tittelBetaler = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.betaler")
-            when (forsorgerpliktFrontend.barnebidrag) {
-                Verdi.BEGGE -> {
-                    addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
-                    addUtgiftIfNotPresentInOversikt(utgifter, barnebidragType, tittelBetaler)
-                }
+            val betaler = forsorgerpliktFrontend.barnebidrag == Verdi.BETALER || forsorgerpliktFrontend.barnebidrag == Verdi.BEGGE
 
-                Verdi.BETALER -> {
-                    removeInntektIfPresentInOversikt(inntekter, barnebidragType)
-                    addUtgiftIfNotPresentInOversikt(utgifter, barnebidragType, tittelBetaler)
-                }
-
-                Verdi.MOTTAR -> {
-                    addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
-                    removeUtgiftIfPresentInOversikt(utgifter, barnebidragType)
-                }
-
-                Verdi.INGEN -> {
-                    removeInntektIfPresentInOversikt(inntekter, barnebidragType)
-                    removeUtgiftIfPresentInOversikt(utgifter, barnebidragType)
-                }
+            if (mottar) {
+                addInntektIfNotPresentInOversikt(inntekter, barnebidragType, tittelMottar)
+            } else {
+                removeInntektIfPresentInOversikt(inntekter, barnebidragType)
             }
+
+            setUtgiftInOversikt(utgifter, barnebidragType, tittelBetaler, betaler)
         } else {
             forsorgerplikt.barnebidrag = null
             removeInntektIfPresentInOversikt(inntekter, barnebidragType)
-            removeUtgiftIfPresentInOversikt(utgifter, barnebidragType)
+            setUtgiftInOversikt(utgifter, barnebidragType, "", false)
         }
     }
 
@@ -189,11 +178,11 @@ class ForsorgerpliktRessurs(
         val opplysningerBarneutgifter = okonomi.opplysninger.utgift
         val oversiktBarneutgifter = okonomi.oversikt.utgift
         okonomi.opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }
-        removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, "barnehage")
-        removeUtgiftIfPresentInOversikt(oversiktBarneutgifter, "sfo")
-        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", "", false)
-        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", "", false)
-        OkonomiMapper.setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", "", false)
+        setUtgiftInOversikt(oversiktBarneutgifter, "barnehage", "", false)
+        setUtgiftInOversikt(oversiktBarneutgifter, "sfo", "", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", "", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", "", false)
+        setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", "", false)
     }
 
     private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {
