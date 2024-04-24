@@ -10,8 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setFormueInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
@@ -28,11 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/inntekt/verdier", produces = [MediaType.APPLICATION_JSON_VALUE])
 class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,

@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
@@ -69,12 +70,11 @@ class ForsorgerpliktRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
         val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
-        updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+        updateBarnebidrag(forsorgerpliktFrontend, oversikt, forsorgerplikt)
         updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
@@ -87,13 +87,9 @@ class ForsorgerpliktRessurs(
 
     private fun updateBarnebidrag(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
-        jsonInternalSoknad: JsonInternalSoknad,
+        oversikt: JsonOkonomioversikt,
         forsorgerplikt: JsonForsorgerplikt,
     ) {
-        val barnebidragType = "barnebidrag"
-        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
-        val inntekter = oversikt.inntekt
-        val utgifter = oversikt.utgift
         if (forsorgerpliktFrontend.barnebidrag != null) {
             if (forsorgerplikt.barnebidrag == null) {
                 forsorgerplikt.barnebidrag =
@@ -101,18 +97,16 @@ class ForsorgerpliktRessurs(
             } else {
                 forsorgerplikt.barnebidrag.verdi = forsorgerpliktFrontend.barnebidrag
             }
-            val tittelMottar = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.mottar")
-            val mottar = forsorgerpliktFrontend.barnebidrag == Verdi.MOTTAR || forsorgerpliktFrontend.barnebidrag == Verdi.BEGGE
 
-            val tittelBetaler = textService.getJsonOkonomiTittel("opplysninger.familiesituasjon.barnebidrag.betaler")
-            val betaler = forsorgerpliktFrontend.barnebidrag == Verdi.BETALER || forsorgerpliktFrontend.barnebidrag == Verdi.BEGGE
+            val mottar = listOf(Verdi.MOTTAR, Verdi.BEGGE).contains(forsorgerpliktFrontend.barnebidrag)
+            val betaler = listOf(Verdi.BETALER, Verdi.BEGGE).contains(forsorgerpliktFrontend.barnebidrag)
 
-            setInntektInOversikt(inntekter, barnebidragType, mottar, tittelMottar)
-            setUtgiftInOversikt(utgifter, barnebidragType, betaler, tittelBetaler)
+            setInntektInOversikt(oversikt.inntekt, OPPLYSNING_TYPE_BARNEBIDRAG, mottar, textService.getJsonOkonomiTittel(TEXT_KEY_MOTTAR))
+            setUtgiftInOversikt(oversikt.utgift, OPPLYSNING_TYPE_BARNEBIDRAG, betaler, textService.getJsonOkonomiTittel(TEXT_KEY_BETALER))
         } else {
             forsorgerplikt.barnebidrag = null
-            setInntektInOversikt(inntekter, barnebidragType, false)
-            setUtgiftInOversikt(utgifter, barnebidragType, false)
+            setInntektInOversikt(oversikt.inntekt, OPPLYSNING_TYPE_BARNEBIDRAG, false)
+            setUtgiftInOversikt(oversikt.utgift, OPPLYSNING_TYPE_BARNEBIDRAG, false)
         }
     }
 
@@ -210,4 +204,10 @@ class ForsorgerpliktRessurs(
             personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
             fodselsnummer = barn.personIdentifikator,
         )
+
+    companion object {
+        const val OPPLYSNING_TYPE_BARNEBIDRAG = "barnebidrag"
+        const val TEXT_KEY_BETALER = "opplysninger.familiesituasjon.barnebidrag.betaler"
+        const val TEXT_KEY_MOTTAR = "opplysninger.familiesituasjon.barnebidrag.mottar"
+    }
 }

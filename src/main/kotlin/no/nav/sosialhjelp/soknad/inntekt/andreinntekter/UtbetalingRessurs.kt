@@ -63,18 +63,22 @@ class UtbetalingRessurs(
         @RequestBody utbetalingerFrontend: UtbetalingerFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = eier()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
 
-        setBekreftelse(opplysninger, BEKREFTELSE_UTBETALING, utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"))
+        setUtbetalingerBekreftet(opplysninger, utbetalingerFrontend.bekreftelse)
         setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
+
+    private fun setUtbetalingerBekreftet(
+        opplysninger: JsonOkonomiopplysninger,
+        bekreftelse: Boolean?,
+    ) = setBekreftelse(opplysninger, BEKREFTELSE_UTBETALING, bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"))
 
     private fun setUtbetalinger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,

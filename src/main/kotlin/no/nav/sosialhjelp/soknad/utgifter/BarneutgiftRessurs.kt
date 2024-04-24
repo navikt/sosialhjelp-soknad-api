@@ -8,13 +8,11 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_TANNREGUL
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -25,13 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/utgifter/barneutgifter", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BarneutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -43,29 +38,29 @@ class BarneutgiftRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BarneutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
 
-        val harForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt.harForsorgerplikt
+        val harForsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt.harForsorgerplikt
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
+
         if (harForsorgerplikt == null || harForsorgerplikt.verdi == null || !harForsorgerplikt.verdi) {
             return BarneutgifterFrontend()
         }
 
-        val okonomi = soknad.soknad.data.okonomi
-        if (okonomi.opplysninger.bekreftelse == null) {
+        if (opplysninger.bekreftelse == null) {
             return BarneutgifterFrontend(true)
         }
 
         return BarneutgifterFrontend(
             harForsorgerplikt = true,
-            bekreftelse = getBekreftelse(okonomi.opplysninger),
-            fritidsaktiviteter = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_FRITIDSAKTIVITETER),
-            barnehage = getUtgiftstype(okonomi.oversikt, UTGIFTER_BARNEHAGE),
-            sfo = getUtgiftstype(okonomi.oversikt, UTGIFTER_SFO),
-            tannregulering = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_TANNREGULERING),
-            annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BARN),
+            bekreftelse = getBekreftelse(opplysninger),
+            fritidsaktiviteter = getUtgiftstype(opplysninger, UTGIFTER_BARN_FRITIDSAKTIVITETER),
+            barnehage = getUtgiftstype(oversikt, UTGIFTER_BARNEHAGE),
+            sfo = getUtgiftstype(oversikt, UTGIFTER_SFO),
+            tannregulering = getUtgiftstype(opplysninger, UTGIFTER_BARN_TANNREGULERING),
+            annet = getUtgiftstype(opplysninger, UTGIFTER_ANNET_BARN),
         )
     }
 
@@ -75,8 +70,7 @@ class BarneutgiftRessurs(
         @RequestBody barneutgifterFrontend: BarneutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
 
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
@@ -84,7 +78,8 @@ class BarneutgiftRessurs(
 
         setBekreftelse(opplysninger, BEKREFTELSE_BARNEUTGIFTER, barneutgifterFrontend.bekreftelse, textService.getJsonOkonomiTittel("utgifter.barn"))
         setBarneutgifter(opplysninger, oversikt, barneutgifterFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun utgiftTittel(opplysningType: String) = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[opplysningType])

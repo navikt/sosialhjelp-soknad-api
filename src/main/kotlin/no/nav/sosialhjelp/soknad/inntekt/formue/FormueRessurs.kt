@@ -41,24 +41,23 @@ class FormueRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): FormueFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = eier()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = soknad.soknad.data.okonomi
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
-        if (okonomi.opplysninger.bekreftelse == null) {
+        if (opplysninger.bekreftelse == null) {
             return FormueFrontend(beskrivelseAvAnnet = null)
         }
 
         return FormueFrontend(
-            brukskonto = hasFormueType(okonomi.oversikt, FORMUE_BRUKSKONTO),
-            sparekonto = hasFormueType(okonomi.oversikt, FORMUE_SPAREKONTO),
-            bsu = hasFormueType(okonomi.oversikt, FORMUE_BSU),
-            livsforsikring = hasFormueType(okonomi.oversikt, FORMUE_LIVSFORSIKRING),
-            verdipapirer = hasFormueType(okonomi.oversikt, FORMUE_VERDIPAPIRER),
-            annet = hasFormueType(okonomi.oversikt, FORMUE_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing,
+            brukskonto = hasFormueType(oversikt, FORMUE_BRUKSKONTO),
+            sparekonto = hasFormueType(oversikt, FORMUE_SPAREKONTO),
+            bsu = hasFormueType(oversikt, FORMUE_BSU),
+            livsforsikring = hasFormueType(oversikt, FORMUE_LIVSFORSIKRING),
+            verdipapirer = hasFormueType(oversikt, FORMUE_VERDIPAPIRER),
+            annet = hasFormueType(oversikt, FORMUE_ANNET),
+            beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.sparing,
         )
     }
 
