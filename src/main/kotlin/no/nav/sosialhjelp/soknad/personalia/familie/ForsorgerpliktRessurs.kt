@@ -65,7 +65,7 @@ class ForsorgerpliktRessurs(
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
         forsorgerplikt.barnebidrag = forsorgerpliktFrontend.barnebidrag?.let { forsorgerplikt.barnebidrag.getOrCreate().apply { verdi = it } }
-        updateInntektOgUtgift(oversikt, forsorgerpliktFrontend.barnebidrag ?: JsonBarnebidrag.Verdi.INGEN)
+        oversikt.updateInntektOgUtgift(forsorgerpliktFrontend.barnebidrag ?: JsonBarnebidrag.Verdi.INGEN)
         forsorgerplikt.updateAnsvar(forsorgerpliktFrontend)
 
         if (forsorgerplikt.harForsorgerplikt?.kilde == JsonKilde.BRUKER) {
@@ -83,15 +83,14 @@ class ForsorgerpliktRessurs(
 
     private fun JsonBarnebidrag?.getOrCreate(): JsonBarnebidrag = this ?: JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER)
 
-    private fun updateInntektOgUtgift(
-        oversikt: JsonOkonomioversikt,
+    private fun JsonOkonomioversikt.updateInntektOgUtgift(
         barnebidrag: JsonBarnebidrag.Verdi,
     ) {
         val harInntekt = listOf(JsonBarnebidrag.Verdi.MOTTAR, JsonBarnebidrag.Verdi.BEGGE).contains(barnebidrag)
         val harUtgift = listOf(JsonBarnebidrag.Verdi.BETALER, JsonBarnebidrag.Verdi.BEGGE).contains(barnebidrag)
 
-        setInntektInOversikt(oversikt.inntekt, SoknadJsonTyper.BARNEBIDRAG, harInntekt, textService.getJsonOkonomiTittel(TEXT_KEY_MOTTAR))
-        setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.BARNEBIDRAG, harUtgift, textService.getJsonOkonomiTittel(TEXT_KEY_BETALER))
+        setInntektInOversikt(this.inntekt, SoknadJsonTyper.BARNEBIDRAG, harInntekt, textService.getJsonOkonomiTittel(TEXT_KEY_MOTTAR))
+        setUtgiftInOversikt(this.utgift, SoknadJsonTyper.BARNEBIDRAG, harUtgift, textService.getJsonOkonomiTittel(TEXT_KEY_BETALER))
     }
 
     private fun JsonForsorgerplikt.updateAnsvar(
