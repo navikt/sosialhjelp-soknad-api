@@ -11,11 +11,12 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 
 @Service
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val registerDataHandler: RegisterDataHandler,
+    private val registerDataService: RegisterDataService,
     private val soknadService: SoknadService,
     private val kontaktService: KontaktService,
 ) : SoknadLifecycleService {
@@ -28,7 +29,6 @@ class SoknadLifecycleServiceImpl(
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
-        registerDataHandler.handle(soknadId)
 
         return soknadId
     }
