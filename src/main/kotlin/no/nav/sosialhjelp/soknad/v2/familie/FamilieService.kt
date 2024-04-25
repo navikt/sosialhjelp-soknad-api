@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.familie
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
-import kotlin.jvm.optionals.getOrDefault
-import no.nav.sosialhjelp.soknad.v2.config.repository.findOrCreate
 
 @Component
 class FamilieService(private val familieRepository: FamilieRepository) {

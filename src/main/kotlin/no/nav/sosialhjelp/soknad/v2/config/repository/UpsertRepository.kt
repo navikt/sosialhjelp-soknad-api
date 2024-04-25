@@ -10,11 +10,6 @@ interface DomainRoot {
     val soknadId: UUID
 }
 
-fun <Entity: DomainRoot, Repo> Repo.findOrCreate(soknadId: UUID, entity: Entity): Entity
-        where Repo: UpsertRepository<Entity>, Repo: ListCrudRepository<Entity, UUID> {
-    return findByIdOrNull(soknadId) ?: save(entity)
-}
-
 /**
  * UpsertRepository er et fragment interface med egen implementasjon.
  * Overskriver signaturen til ListCrudRepository, slik at disse metodene erstatter default.

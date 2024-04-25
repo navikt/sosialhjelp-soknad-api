@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class HandleEierData(
-    private val eierService: EierService,
     private val kontonummerService: KontonummerService,
+    private val eierService: EierService,
 ): PersonDataHandler {
 
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
     override fun handle(soknadId: UUID, person: Person) {
+        val kontonummer = kontonummerService.getKontonummer(getUserIdFromToken())
 
         person.deriveStatsborgerskap()
             .let {
@@ -30,17 +31,10 @@ class HandleEierData(
                         mellomnavn = person.mellomnavn,
                         etternavn = person.etternavn
                     ),
-                    kontonummer = updateKontonummerFraRegister(soknadId)
+                    kontonummer = Kontonummer(fraRegister = kontonummer)
                 )
             }
-            .also { eier -> eierService.updateEier(eier) }
-    }
-
-    private fun updateKontonummerFraRegister(soknadId: UUID): Kontonummer {
-        // hvis dette kjøres "på nytt" - kan kontonummer også ha innhold fra bruker
-        return runCatching { eierService.getEier(soknadId).kontonummer }
-            .getOrDefault(Kontonummer())
-            .copy(fraRegister = kontonummerService.getKontonummer(getUserIdFromToken()))
+            .also { eier -> eierService.updateEierFromRegister(eier) }
     }
 
     private data class Statsborgerskap(

@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
+import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
@@ -38,7 +39,6 @@ abstract class AbstractRegisterDataTest {
 
     @MockkBean
     protected lateinit var organisasjonClient: OrganisasjonClient
-
 
     protected fun createAnswerForAaregClient(
         answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId)
