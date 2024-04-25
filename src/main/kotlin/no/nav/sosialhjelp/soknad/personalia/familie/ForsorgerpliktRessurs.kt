@@ -11,7 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setInntektInOversikt
@@ -115,7 +114,7 @@ class ForsorgerpliktRessurs(
         opplysninger: JsonOkonomiopplysninger,
         oversikt: JsonOkonomioversikt,
     ) {
-        opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == BEKREFTELSE_BARNEUTGIFTER }
+        opplysninger.bekreftelse.removeIf { it.type == SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER }
         setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_BARNEHAGE, false)
         setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_SFO, false)
         setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, false)
@@ -124,7 +123,6 @@ class ForsorgerpliktRessurs(
     }
 
     companion object {
-        const val BEKREFTELSE_BARNEUTGIFTER = "barneutgifter"
         const val TEXT_KEY_BETALER = "opplysninger.familiesituasjon.barnebidrag.betaler"
         const val TEXT_KEY_MOTTAR = "opplysninger.familiesituasjon.barnebidrag.mottar"
     }
