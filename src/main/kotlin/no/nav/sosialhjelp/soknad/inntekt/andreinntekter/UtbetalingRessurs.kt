@@ -40,21 +40,21 @@ class UtbetalingRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val utbetalingerFraNavFeilet = jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet
 
-        if (opplysninger.bekreftelse == null) {
-            return UtbetalingerFrontend(utbetalingerFraNavFeilet = utbetalingerFraNavFeilet)
-        }
-        return UtbetalingerFrontend(
-            bekreftelse = getBekreftelse(opplysninger),
-            utbytte = hasUtbetalingType(opplysninger, UTBETALING_UTBYTTE),
-            salg = hasUtbetalingType(opplysninger, UTBETALING_SALG),
-            forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
-            annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
-            beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-            utbetalingerFraNavFeilet = utbetalingerFraNavFeilet,
-        )
+        return opplysninger.bekreftelse?.let {
+            UtbetalingerFrontend(
+                bekreftelse = getBekreftelse(opplysninger),
+                utbytte = opplysninger.hasUtbetalingType(UTBETALING_UTBYTTE),
+                salg = opplysninger.hasUtbetalingType(UTBETALING_SALG),
+                forsikring = opplysninger.hasUtbetalingType(UTBETALING_FORSIKRING),
+                annet = opplysninger.hasUtbetalingType(UTBETALING_ANNET),
+                beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
+                utbetalingerFraNavFeilet = utbetalingerFraNavFeilet,
+            )
+        } ?: UtbetalingerFrontend(utbetalingerFraNavFeilet = utbetalingerFraNavFeilet)
     }
 
     @PutMapping
@@ -70,7 +70,7 @@ class UtbetalingRessurs(
 
         setUtbetalingerBekreftet(opplysninger, utbetalingerFrontend.bekreftelse)
         setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
-        setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
+        opplysninger.setBeskrivelseAvAnnet(utbetalingerFrontend.beskrivelseAvAnnet)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
@@ -83,46 +83,23 @@ class UtbetalingRessurs(
     private fun setUtbetalinger(
         utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
         utbetalingerFrontend: UtbetalingerFrontend,
-    ) {
-        listOf(
-            UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
-            UTBETALING_SALG to utbetalingerFrontend.salg,
-            UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
-            UTBETALING_ANNET to utbetalingerFrontend.annet,
-        ).forEach { (utbetalingJsonType, isExpected) ->
-            setUtbetalingInOpplysninger(utbetalinger, utbetalingJsonType, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]))
-        }
+    ) = listOf(
+        UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
+        UTBETALING_SALG to utbetalingerFrontend.salg,
+        UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
+        UTBETALING_ANNET to utbetalingerFrontend.annet,
+    ).forEach { (utbetalingJsonType, isExpected) ->
+        setUtbetalingInOpplysninger(utbetalinger, utbetalingJsonType, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]))
     }
 
-    private fun setBeskrivelseAvAnnet(
-        opplysninger: JsonOkonomiopplysninger,
-        utbetalingerFrontend: UtbetalingerFrontend,
-    ) {
-        if (opplysninger.beskrivelseAvAnnet == null) {
-            opplysninger.withBeskrivelseAvAnnet(
-                JsonOkonomibeskrivelserAvAnnet()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi("")
-                    .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""),
-            )
-        }
-        // TODO Er dette eneste vi fyller ut av denne? Er den nødvendig ref. beskrivelse på Json-objektet?
-        opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
-    }
+    // TODO Er dette eneste vi fyller ut av denne? Er den nødvendig ref. beskrivelse på Json-objektet?
+    private fun JsonOkonomiopplysninger.setBeskrivelseAvAnnet(beskrivelseAvAnnet: String?) = this.beskrivelseAvAnnet?.let { apply { it.utbetaling = beskrivelseAvAnnet } } ?: makeBeskrivelseAvAnnet(beskrivelseAvAnnet)
 
-    private fun hasUtbetalingType(
-        opplysninger: JsonOkonomiopplysninger,
-        type: String,
-    ): Boolean {
-        return opplysninger.utbetaling.any { it.type == type }
-    }
+    private fun JsonOkonomiopplysninger.hasUtbetalingType(type: String): Boolean = this.utbetaling.any { it.type == type }
 
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
-        return opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_UTBETALING }?.verdi
-    }
+    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? = opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_UTBETALING }?.verdi
+
+    private fun makeBeskrivelseAvAnnet(utbetaling: String? = ""): JsonOkonomibeskrivelserAvAnnet = JsonOkonomibeskrivelserAvAnnet().withKilde(JsonKildeBruker.BRUKER).withVerdi("").withSparing("").withUtbetaling(utbetaling).withBoutgifter("").withBarneutgifter("")
 
     data class UtbetalingerFrontend(
         var bekreftelse: Boolean? = null,
