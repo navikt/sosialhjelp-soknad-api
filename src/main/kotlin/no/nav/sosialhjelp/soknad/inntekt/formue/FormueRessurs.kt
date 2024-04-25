@@ -64,31 +64,34 @@ class FormueRessurs(
 
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
-        val hasAnyFormueType = with(formueFrontend) { listOf(brukskonto, bsu, sparekonto, livsforsikring, verdipapirer, annet).any { it } }
 
         oversikt.setFormue(formueFrontend)
-        setBekreftelse(opplysninger, SoknadJsonTyper.BEKREFTELSE_SPARING, hasAnyFormueType, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"))
-        opplysninger.setBeskrivelseAvAnnet(formueFrontend.beskrivelseAvAnnet ?: "")
+        opplysninger.setFormueBekreftet(formueFrontend.hasAnyFormueSet())
+        opplysninger.setBeskrivelseAvAnnet(formueFrontend.beskrivelseAvAnnet)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
+    private fun FormueFrontend.hasAnyFormueSet(): Boolean = with(this) { listOf(brukskonto, bsu, sparekonto, livsforsikring, verdipapirer, annet).any { it } }
+
+    private fun JsonOkonomiopplysninger.setFormueBekreftet(
+        bekreftelse: Boolean?,
+    ) = setBekreftelse(this, SoknadJsonTyper.BEKREFTELSE_SPARING, bekreftelse, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"))
+
     private fun JsonOkonomioversikt.setFormue(
         formueFrontend: FormueFrontend,
-    ) {
-        mapOf(
-            SoknadJsonTyper.FORMUE_BRUKSKONTO to formueFrontend.brukskonto,
-            SoknadJsonTyper.FORMUE_BSU to formueFrontend.bsu,
-            SoknadJsonTyper.FORMUE_SPAREKONTO to formueFrontend.sparekonto,
-            SoknadJsonTyper.FORMUE_LIVSFORSIKRING to formueFrontend.livsforsikring,
-            SoknadJsonTyper.FORMUE_VERDIPAPIRER to formueFrontend.verdipapirer,
-            SoknadJsonTyper.FORMUE_ANNET to formueFrontend.annet,
-        ).forEach { (type, isExpected) ->
-            setFormueInOversikt(this.formue, type, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
-        }
+    ) = mapOf(
+        SoknadJsonTyper.FORMUE_BRUKSKONTO to formueFrontend.brukskonto,
+        SoknadJsonTyper.FORMUE_BSU to formueFrontend.bsu,
+        SoknadJsonTyper.FORMUE_SPAREKONTO to formueFrontend.sparekonto,
+        SoknadJsonTyper.FORMUE_LIVSFORSIKRING to formueFrontend.livsforsikring,
+        SoknadJsonTyper.FORMUE_VERDIPAPIRER to formueFrontend.verdipapirer,
+        SoknadJsonTyper.FORMUE_ANNET to formueFrontend.annet,
+    ).forEach { (type, isExpected) ->
+        setFormueInOversikt(this.formue, type, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
     }
 
-    private fun JsonOkonomiopplysninger.setBeskrivelseAvAnnet(beskrivelseAvAnnet: String) {
+    private fun JsonOkonomiopplysninger.setBeskrivelseAvAnnet(beskrivelseAvAnnet: String? = "") {
         this.beskrivelseAvAnnet = this.beskrivelseAvAnnet?.apply { sparing = beskrivelseAvAnnet } ?: JsonOkonomibeskrivelserAvAnnet().withKilde(JsonKildeBruker.BRUKER).withVerdi("").withSparing(beskrivelseAvAnnet).withUtbetaling("").withBoutgifter("").withBarneutgifter("")
     }
 
