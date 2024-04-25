@@ -1,10 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
-import org.springframework.data.jdbc.repository.query.Query
-import org.springframework.data.repository.ListCrudRepository
-import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 
 interface DomainRoot {
     val soknadId: UUID
