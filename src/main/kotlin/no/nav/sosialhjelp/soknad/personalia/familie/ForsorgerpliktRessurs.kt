@@ -1,17 +1,15 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag.Verdi
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -20,12 +18,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setInntektInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtgiftInOversikt
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
-import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
@@ -54,13 +47,9 @@ class ForsorgerpliktRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = eier()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val jsonForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt
-
-        return mapToForsorgerpliktFrontend(jsonForsorgerplikt)
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+        return ForsorgerpliktFrontend.fromJson(jsonInternalSoknad.soknad.data.familie.forsorgerplikt)
     }
 
     @PutMapping
@@ -71,11 +60,25 @@ class ForsorgerpliktRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
-        updateBarnebidrag(forsorgerpliktFrontend, oversikt, forsorgerplikt)
-        updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+        forsorgerpliktFrontend.barnebidrag?.let { barnebidragFrontend ->
+            forsorgerplikt.barnebidrag = forsorgerplikt.barnebidrag.getOrCreate().apply { verdi = barnebidragFrontend }
+            updateInntektOgUtgift(oversikt, barnebidragFrontend)
+        } ?: run {
+            forsorgerplikt.barnebidrag = null
+            updateInntektOgUtgift(oversikt, JsonBarnebidrag.Verdi.INGEN)
+        }
+
+        updateAnsvar(forsorgerpliktFrontend, forsorgerplikt)
+
+        if (forsorgerplikt.harForsorgerplikt?.kilde == JsonKilde.BRUKER) {
+            forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
+            removeBarneutgifterFromSoknad(opplysninger, oversikt)
+        }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
         runCatching {
@@ -85,125 +88,51 @@ class ForsorgerpliktRessurs(
         }
     }
 
-    private fun updateBarnebidrag(
-        forsorgerpliktFrontend: ForsorgerpliktFrontend,
+    private fun JsonBarnebidrag?.getOrCreate(): JsonBarnebidrag = this ?: JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER)
+
+    private fun updateInntektOgUtgift(
         oversikt: JsonOkonomioversikt,
-        forsorgerplikt: JsonForsorgerplikt,
+        barnebidrag: JsonBarnebidrag.Verdi?,
     ) {
-        if (forsorgerpliktFrontend.barnebidrag != null) {
-            if (forsorgerplikt.barnebidrag == null) {
-                forsorgerplikt.barnebidrag =
-                    JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER).withVerdi(forsorgerpliktFrontend.barnebidrag)
-            } else {
-                forsorgerplikt.barnebidrag.verdi = forsorgerpliktFrontend.barnebidrag
-            }
+        val harInntekt = listOf(JsonBarnebidrag.Verdi.MOTTAR, JsonBarnebidrag.Verdi.BEGGE).contains(barnebidrag)
+        val harUtgift = listOf(JsonBarnebidrag.Verdi.BETALER, JsonBarnebidrag.Verdi.BEGGE).contains(barnebidrag)
 
-            val mottar = listOf(Verdi.MOTTAR, Verdi.BEGGE).contains(forsorgerpliktFrontend.barnebidrag)
-            val betaler = listOf(Verdi.BETALER, Verdi.BEGGE).contains(forsorgerpliktFrontend.barnebidrag)
-
-            setInntektInOversikt(oversikt.inntekt, OPPLYSNING_TYPE_BARNEBIDRAG, mottar, textService.getJsonOkonomiTittel(TEXT_KEY_MOTTAR))
-            setUtgiftInOversikt(oversikt.utgift, OPPLYSNING_TYPE_BARNEBIDRAG, betaler, textService.getJsonOkonomiTittel(TEXT_KEY_BETALER))
-        } else {
-            forsorgerplikt.barnebidrag = null
-            setInntektInOversikt(oversikt.inntekt, OPPLYSNING_TYPE_BARNEBIDRAG, false)
-            setUtgiftInOversikt(oversikt.utgift, OPPLYSNING_TYPE_BARNEBIDRAG, false)
-        }
+        setInntektInOversikt(oversikt.inntekt, OPPLYSNING_TYPE_BARNEBIDRAG, harInntekt, textService.getJsonOkonomiTittel(TEXT_KEY_MOTTAR))
+        setUtgiftInOversikt(oversikt.utgift, OPPLYSNING_TYPE_BARNEBIDRAG, harUtgift, textService.getJsonOkonomiTittel(TEXT_KEY_BETALER))
     }
 
-    private fun updateAnsvarAndHarForsorgerplikt(
+    private fun updateAnsvar(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
-        jsonInternalSoknad: JsonInternalSoknad,
         forsorgerplikt: JsonForsorgerplikt,
     ) {
-        val systemAnsvar: List<JsonAnsvar> =
-            when (forsorgerplikt.ansvar) {
-                null -> listOf()
-                else -> forsorgerplikt.ansvar.filter { it.barn.kilde == JsonKilde.SYSTEM }.toList()
-            }
+        val systemAnsvar = forsorgerplikt.ansvar.orEmpty().filter { it.barn.kilde == JsonKilde.SYSTEM }
 
-        for (ansvarFrontend in forsorgerpliktFrontend.ansvar) {
-            for (ansvar in systemAnsvar) {
-                if (ansvar.barn.personIdentifikator == ansvarFrontend.barn?.fodselsnummer) {
-                    setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar)
+        forsorgerpliktFrontend.ansvar.forEach { ansvarFrontend ->
+            systemAnsvar
+                .filter { it.barn.personIdentifikator == ansvarFrontend.barn?.fodselsnummer }
+                .forEach { ansvar ->
+                    with(ansvarFrontend) {
+                        ansvar.borSammenMed = borSammenMed?.let { JsonBorSammenMed().withKilde(JsonKildeBruker.BRUKER).withVerdi(it) }
+                        ansvar.harDeltBosted = harDeltBosted?.let { JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(it) }
+                        ansvar.samvarsgrad = samvarsgrad?.let { JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(it) }
+                    }
                 }
-            }
-        }
-
-        if (forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.BRUKER) {
-            forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
-            removeBarneutgifterFromSoknad(jsonInternalSoknad)
         }
 
         forsorgerplikt.ansvar = systemAnsvar.takeIf { it.isNotEmpty() }
     }
 
-    private fun setBorSammenDeltBostedAndSamvarsgrad(
-        ansvarFrontend: AnsvarFrontend?,
-        ansvar: JsonAnsvar,
+    private fun removeBarneutgifterFromSoknad(
+        opplysninger: JsonOkonomiopplysninger,
+        oversikt: JsonOkonomioversikt,
     ) {
-        ansvar.borSammenMed =
-            ansvarFrontend?.borSammenMed?.let {
-                JsonBorSammenMed()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(it)
-            }
-        ansvar.harDeltBosted =
-            ansvarFrontend?.harDeltBosted?.let {
-                JsonHarDeltBosted()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(it)
-            }
-        ansvar.samvarsgrad =
-            ansvarFrontend?.samvarsgrad?.let {
-                JsonSamvarsgrad()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi(it)
-            }
+        opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }
+        setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_BARNEHAGE, false)
+        setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_SFO, false)
+        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, false)
+        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING, false)
+        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_ANNET_BARN, false)
     }
-
-    private fun removeBarneutgifterFromSoknad(jsonInternalSoknad: JsonInternalSoknad) {
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        val opplysningerBarneutgifter = okonomi.opplysninger.utgift
-        val oversiktBarneutgifter = okonomi.oversikt.utgift
-        okonomi.opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }
-        setUtgiftInOversikt(oversiktBarneutgifter, "barnehage", false)
-        setUtgiftInOversikt(oversiktBarneutgifter, "sfo", false)
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnFritidsaktiviteter", false)
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "barnTannregulering", false)
-        setUtgiftInOpplysninger(opplysningerBarneutgifter, "annenBarneutgift", false)
-    }
-
-    private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {
-        val ansvar: List<AnsvarFrontend> =
-            jsonForsorgerplikt.ansvar
-                ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
-                ?.filterNotNull()
-                ?.map { mapToAnsvarFrontend(it) }
-                .orEmpty()
-
-        return ForsorgerpliktFrontend(
-            harForsorgerplikt = jsonForsorgerplikt.harForsorgerplikt?.verdi,
-            barnebidrag = jsonForsorgerplikt.barnebidrag?.verdi,
-            ansvar = ansvar,
-        )
-    }
-
-    private fun mapToAnsvarFrontend(jsonAnsvar: JsonAnsvar): AnsvarFrontend =
-        AnsvarFrontend(
-            barn = jsonAnsvar.barn?.let { mapToBarnFrontend(it) },
-            borSammenMed = jsonAnsvar.borSammenMed?.verdi,
-            erFolkeregistrertSammen = jsonAnsvar.erFolkeregistrertSammen?.verdi,
-            harDeltBosted = jsonAnsvar.harDeltBosted?.verdi,
-            samvarsgrad = jsonAnsvar.samvarsgrad?.verdi,
-        )
-
-    private fun mapToBarnFrontend(barn: JsonBarn): BarnFrontend =
-        BarnFrontend(
-            navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn, fulltNavn(barn.navn)),
-            fodselsdato = barn.fodselsdato,
-            personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
-            fodselsnummer = barn.personIdentifikator,
-        )
 
     companion object {
         const val OPPLYSNING_TYPE_BARNEBIDRAG = "barnebidrag"
