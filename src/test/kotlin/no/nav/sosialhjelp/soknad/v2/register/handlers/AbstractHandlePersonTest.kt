@@ -11,7 +11,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
+import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ektefelleFnr
+import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.kontoDto
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.matrikkeladresseDto
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentEktefelle
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentMatrikkelAdresse
@@ -35,8 +37,7 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
 
     @BeforeEach
     fun mockKontonummer() {
-        every { kontonummerClient.getKontonummer(any()) } returns
-                KontoDto("43223244231", null)
+        every { kontonummerClient.getKontonummer(any()) } returns kontoDto
     }
 
     fun createAnswerForHentPersonUgiftMedMatrikkelAdresse(): MatrikkeladresseDto {

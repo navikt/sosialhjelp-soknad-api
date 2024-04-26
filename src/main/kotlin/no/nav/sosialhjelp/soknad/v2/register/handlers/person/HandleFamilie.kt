@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 class HandleFamilie(
     private val familieService: FamilieService,
     private val personService: PersonService,
-): PersonDataHandler {
+): RegisterDataPersonHandler {
     override fun handle(soknadId: UUID, person: Person) {
 
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så

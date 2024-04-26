@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class HandleEierData(
     private val kontonummerService: KontonummerService,
     private val eierService: EierService,
-): PersonDataHandler {
+): RegisterDataPersonHandler {
 
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
     override fun handle(soknadId: UUID, person: Person) {

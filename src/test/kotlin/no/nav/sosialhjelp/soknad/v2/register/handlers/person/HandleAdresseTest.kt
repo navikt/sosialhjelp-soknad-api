@@ -15,9 +15,8 @@ class HandleAdresseTest: AbstractHandlePersonTest() {
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 
-
     @Test
-    fun `Hente fra PDL skal lagre i db`() {
+    fun `Hente fra PDL skal lagre data i db`() {
         val dto = createAnswerForHentPersonUgift().bostedsadresse?.let { it[0].vegadresse } ?: fail("Fant ikke adresse")
 
         handlePerson.handle(soknad.id)

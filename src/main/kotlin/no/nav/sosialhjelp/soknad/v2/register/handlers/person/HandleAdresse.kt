@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 class HandleAdresse(
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
-): PersonDataHandler {
+): RegisterDataPersonHandler {
     override fun handle(soknadId: UUID, person: Person) {
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,

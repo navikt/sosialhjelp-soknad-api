@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.PersonDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
@@ -49,6 +50,7 @@ object DefaultValuesForMockedResponses {
         kommunenummer = "2560",
         bruksenhetsnummer = null
     )
+    val kontoDto = KontoDto(kontonummer = "12341212345", utenlandskKontoInfo = null)
 }
 
 internal fun defaultResponseFromAaregClient(personId: String): List<ArbeidsforholdDto> {
