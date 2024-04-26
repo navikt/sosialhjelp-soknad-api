@@ -1,20 +1,17 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.getBekreftelseVerdi
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.getSamtykkeDato
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateBekreftelse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,13 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -44,19 +38,20 @@ class BostotteRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BostotteFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = soknad.soknad.data.okonomi.opplysninger
-        val bekreftelse = opplysninger.bekreftelse?.run { getBekreftelse(opplysninger) }
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val isBekreftet = opplysninger.getBekreftelseVerdi(SoknadJsonTyper.BOSTOTTE) == true
+        val harSamtykke = opplysninger.getBekreftelseVerdi(SoknadJsonTyper.BOSTOTTE_SAMTYKKE) == true
+
         return BostotteFrontend(
-            bekreftelse = bekreftelse,
-            samtykke = bekreftelse?.run { hentSamtykkeFraSoknad(opplysninger) },
-            utbetalinger = mapToUtbetalinger(soknad),
-            saker = mapToUtSaksStatuser(soknad),
-            stotteFraHusbankenFeilet = soknad.soknad.driftsinformasjon.stotteFraHusbankenFeilet,
-            samtykkeTidspunkt = bekreftelse?.run { hentSamtykkeDatoFraSoknad(opplysninger) },
+            bekreftelse = isBekreftet,
+            samtykke = isBekreftet && harSamtykke,
+            utbetalinger = opplysninger.utbetaling.filter { it.type == SoknadJsonTyper.UTBETALING_HUSBANKEN },
+            saker = opplysninger.bostotte.saker.filter { it.type == SoknadJsonTyper.UTBETALING_HUSBANKEN },
+            stotteFraHusbankenFeilet = jsonInternalSoknad.soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+            samtykkeTidspunkt = opplysninger.getSamtykkeDato(SoknadJsonTyper.BOSTOTTE_SAMTYKKE),
         )
     }
 
@@ -67,88 +62,38 @@ class BostotteRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        OkonomiMapper.setBekreftelse(
-            opplysninger,
-            BOSTOTTE,
-            bostotteFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.bostotte"),
-        )
+
+        opplysninger.updateBekreftelse(SoknadJsonTyper.BOSTOTTE, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"))
 
         bostotteFrontend.bekreftelse?.let {
-            OkonomiMapper.setUtbetalingInOpplysninger(
-                opplysninger.utbetaling,
-                UTBETALING_HUSBANKEN,
-                it,
-                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE]),
-            )
+            val title = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
+            OkonomiMapper.setUtbetalingInOpplysninger(opplysninger.utbetaling, SoknadJsonTyper.UTBETALING_HUSBANKEN, it, title)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     @PostMapping("/samtykke")
     fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody samtykke: Boolean,
+        @RequestBody samtykkeFrontend: Boolean,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+        val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = hentSamtykkeFraSoknad(opplysninger)
-        var skalLagre = samtykke
-        if (lagretSamtykke != samtykke) {
-            skalLagre = true
-            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
-            OkonomiMapper.setBekreftelse(
-                opplysninger,
-                BOSTOTTE_SAMTYKKE,
-                samtykke,
-                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-            )
-        }
-        if (skalLagre) {
+
+        if (samtykkeFrontend != opplysninger.getBekreftelseVerdi(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)) {
+            opplysninger.updateBekreftelse(SoknadJsonTyper.BOSTOTTE, samtykkeFrontend, textService.getJsonOkonomiTittel("inntekt.bostotte"))
             bostotteSystemdata.updateSystemdataIn(soknad, token)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
         }
-    }
-
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean {
-        return opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .any { it.verdi }
-    }
-
-    private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? {
-        return opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .firstOrNull { it.verdi }
-            ?.bekreftelsesDato
-    }
-
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
-        return opplysninger.bekreftelse
-            .firstOrNull { it.type == BOSTOTTE }
-            ?.verdi
-    }
-
-    private fun mapToUtbetalinger(soknad: JsonInternalSoknad): List<JsonOkonomiOpplysningUtbetaling> {
-        return soknad.soknad.data.okonomi.opplysninger.utbetaling
-            .filter { it.type == UTBETALING_HUSBANKEN }
-    }
-
-    private fun mapToUtSaksStatuser(soknad: JsonInternalSoknad): List<JsonBostotteSak> {
-        return soknad.soknad.data.okonomi.opplysninger.bostotte.saker
-            .filter { it.type == UTBETALING_HUSBANKEN }
     }
 
     data class BostotteFrontend(

@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateBekreftelse
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -48,6 +49,7 @@ class ForsorgerpliktRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
         val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("jsonInternalSoknad == null")
+
         return ForsorgerpliktFrontend.fromJson(jsonInternalSoknad.soknad.data.familie.forsorgerplikt)
     }
 
@@ -64,13 +66,16 @@ class ForsorgerpliktRessurs(
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
-        forsorgerplikt.barnebidrag = forsorgerpliktFrontend.barnebidrag?.let { forsorgerplikt.barnebidrag.getOrCreate().apply { verdi = it } }
-        oversikt.updateInntektOgUtgift(forsorgerpliktFrontend.barnebidrag ?: JsonBarnebidrag.Verdi.INGEN)
+        forsorgerplikt.barnebidrag = forsorgerpliktFrontend.barnebidrag?.let { makeBarnebidrag(it) }
         forsorgerplikt.updateAnsvar(forsorgerpliktFrontend)
+        oversikt.updateInntektOgUtgift(forsorgerpliktFrontend.barnebidrag ?: JsonBarnebidrag.Verdi.INGEN)
 
+        // Slett opplysninger dersom harForsorgerplikt kommer fra bruker. Jeg er usikker på hordan dette skulle oppstått?
         if (forsorgerplikt.harForsorgerplikt?.kilde == JsonKilde.BRUKER) {
             forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
-            removeBarneutgifter(opplysninger, oversikt)
+            opplysninger.updateBekreftelse(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER, null)
+            opplysninger.clearBarneutgifter()
+            oversikt.clearBarneutgifter()
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
@@ -81,7 +86,11 @@ class ForsorgerpliktRessurs(
         }
     }
 
-    private fun JsonBarnebidrag?.getOrCreate(): JsonBarnebidrag = this ?: JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER)
+    private fun makeBarnebidrag(barnebidragFrontend: JsonBarnebidrag.Verdi) = JsonBarnebidrag().withKilde(JsonKildeBruker.BRUKER).withVerdi(barnebidragFrontend)
+
+    private fun JsonOkonomioversikt.clearBarneutgifter() = listOf(SoknadJsonTyper.UTGIFTER_BARNEHAGE, SoknadJsonTyper.UTGIFTER_SFO).forEach { setUtgiftInOversikt(this.utgift, it, false) }
+
+    private fun JsonOkonomiopplysninger.clearBarneutgifter() = listOf(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING, SoknadJsonTyper.UTGIFTER_ANNET_BARN).forEach { setUtgiftInOpplysninger(this.utgift, it, false) }
 
     private fun JsonOkonomioversikt.updateInntektOgUtgift(
         barnebidrag: JsonBarnebidrag.Verdi,
@@ -107,18 +116,6 @@ class ForsorgerpliktRessurs(
         }
 
         this.ansvar = systemAnsvar.takeIf { it.isNotEmpty() }
-    }
-
-    private fun removeBarneutgifter(
-        opplysninger: JsonOkonomiopplysninger,
-        oversikt: JsonOkonomioversikt,
-    ) {
-        opplysninger.bekreftelse.removeIf { it.type == SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER }
-        setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_BARNEHAGE, false)
-        setUtgiftInOversikt(oversikt.utgift, SoknadJsonTyper.UTGIFTER_SFO, false)
-        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, false)
-        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING, false)
-        setUtgiftInOpplysninger(opplysninger.utgift, SoknadJsonTyper.UTGIFTER_ANNET_BARN, false)
     }
 
     companion object {

@@ -1,16 +1,17 @@
 package no.nav.sosialhjelp.soknad.inntekt.andreinntekter
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setUtbetalingInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.getBekreftelseVerdi
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.hasUtbetaling
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateBekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateOrCreateBeskrivelseAvAnnet
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -41,11 +42,11 @@ class UtbetalingRessurs(
 
         return opplysninger.bekreftelse?.let {
             UtbetalingerFrontend(
-                bekreftelse = getBekreftelse(opplysninger),
-                utbytte = opplysninger.hasUtbetalingType(SoknadJsonTyper.UTBETALING_UTBYTTE),
-                salg = opplysninger.hasUtbetalingType(SoknadJsonTyper.UTBETALING_SALG),
-                forsikring = opplysninger.hasUtbetalingType(SoknadJsonTyper.UTBETALING_FORSIKRING),
-                annet = opplysninger.hasUtbetalingType(SoknadJsonTyper.UTBETALING_ANNET),
+                bekreftelse = opplysninger.getBekreftelseVerdi(SoknadJsonTyper.BEKREFTELSE_UTBETALING),
+                utbytte = opplysninger.hasUtbetaling(SoknadJsonTyper.UTBETALING_UTBYTTE),
+                salg = opplysninger.hasUtbetaling(SoknadJsonTyper.UTBETALING_SALG),
+                forsikring = opplysninger.hasUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING),
+                annet = opplysninger.hasUtbetaling(SoknadJsonTyper.UTBETALING_ANNET),
                 beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
                 utbetalingerFraNavFeilet = utbetalingerFraNavFeilet,
             )
@@ -63,16 +64,12 @@ class UtbetalingRessurs(
 
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
 
-        opplysninger.setUtbetalingerBekreftet(utbetalingerFrontend.bekreftelse)
+        opplysninger.updateBekreftelse(SoknadJsonTyper.BEKREFTELSE_UTBETALING, utbetalingerFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"))
         opplysninger.setUtbetalinger(utbetalingerFrontend)
-        opplysninger.setBeskrivelseAvAnnet(utbetalingerFrontend.beskrivelseAvAnnet)
+        opplysninger.updateOrCreateBeskrivelseAvAnnet(utbetaling = utbetalingerFrontend.beskrivelseAvAnnet)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
-
-    private fun JsonOkonomiopplysninger.setUtbetalingerBekreftet(
-        bekreftelse: Boolean?,
-    ) = setBekreftelse(this, SoknadJsonTyper.BEKREFTELSE_UTBETALING, bekreftelse, textService.getJsonOkonomiTittel("inntekt.inntekter"))
 
     private fun JsonOkonomiopplysninger.setUtbetalinger(
         utbetalingerFrontend: UtbetalingerFrontend,
@@ -84,15 +81,6 @@ class UtbetalingRessurs(
     ).forEach { (utbetalingJsonType, isExpected) ->
         setUtbetalingInOpplysninger(this.utbetaling, utbetalingJsonType, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]))
     }
-
-    // TODO Er dette eneste vi fyller ut av denne? Er den nødvendig ref. beskrivelse på Json-objektet?
-    private fun JsonOkonomiopplysninger.setBeskrivelseAvAnnet(beskrivelseAvAnnet: String?) = this.beskrivelseAvAnnet?.let { apply { it.utbetaling = beskrivelseAvAnnet } } ?: makeBeskrivelseAvAnnet(beskrivelseAvAnnet)
-
-    private fun JsonOkonomiopplysninger.hasUtbetalingType(type: String): Boolean = this.utbetaling.any { it.type == type }
-
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? = opplysninger.bekreftelse.firstOrNull { it.type == SoknadJsonTyper.BEKREFTELSE_UTBETALING }?.verdi
-
-    private fun makeBeskrivelseAvAnnet(utbetaling: String? = ""): JsonOkonomibeskrivelserAvAnnet = JsonOkonomibeskrivelserAvAnnet().withKilde(JsonKildeBruker.BRUKER).withVerdi("").withSparing("").withUtbetaling(utbetaling).withBoutgifter("").withBarneutgifter("")
 
     data class UtbetalingerFrontend(
         var bekreftelse: Boolean? = null,

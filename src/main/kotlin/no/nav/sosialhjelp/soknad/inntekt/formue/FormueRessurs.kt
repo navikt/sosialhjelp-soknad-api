@@ -1,17 +1,16 @@
 package no.nav.sosialhjelp.soknad.inntekt.formue
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setFormueInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.hasFormue
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateBekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.MigrationToolkit.updateOrCreateBeskrivelseAvAnnet
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -42,15 +41,15 @@ class FormueRessurs(
 
         return opplysninger.bekreftelse?.let {
             FormueFrontend(
-                brukskonto = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_BRUKSKONTO),
-                sparekonto = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_SPAREKONTO),
-                bsu = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_BSU),
-                livsforsikring = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_LIVSFORSIKRING),
-                verdipapirer = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_VERDIPAPIRER),
-                annet = oversikt.hasFormueType(SoknadJsonTyper.FORMUE_ANNET),
+                brukskonto = oversikt.hasFormue(SoknadJsonTyper.FORMUE_BRUKSKONTO),
+                sparekonto = oversikt.hasFormue(SoknadJsonTyper.FORMUE_SPAREKONTO),
+                bsu = oversikt.hasFormue(SoknadJsonTyper.FORMUE_BSU),
+                livsforsikring = oversikt.hasFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING),
+                verdipapirer = oversikt.hasFormue(SoknadJsonTyper.FORMUE_VERDIPAPIRER),
+                annet = oversikt.hasFormue(SoknadJsonTyper.FORMUE_ANNET),
                 beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.sparing,
             )
-        } ?: FormueFrontend(beskrivelseAvAnnet = null)
+        } ?: FormueFrontend()
     }
 
     @PutMapping
@@ -66,17 +65,13 @@ class FormueRessurs(
         val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
 
         oversikt.setFormue(formueFrontend)
-        opplysninger.setFormueBekreftet(formueFrontend.hasAnyFormueSet())
-        opplysninger.setBeskrivelseAvAnnet(formueFrontend.beskrivelseAvAnnet)
+        opplysninger.updateBekreftelse(SoknadJsonTyper.BEKREFTELSE_SPARING, formueFrontend.hasAnyFormueSet(), textService.getJsonOkonomiTittel("inntekt.bankinnskudd"))
+        opplysninger.updateOrCreateBeskrivelseAvAnnet(sparing = formueFrontend.beskrivelseAvAnnet)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun FormueFrontend.hasAnyFormueSet(): Boolean = with(this) { listOf(brukskonto, bsu, sparekonto, livsforsikring, verdipapirer, annet).any { it } }
-
-    private fun JsonOkonomiopplysninger.setFormueBekreftet(
-        bekreftelse: Boolean?,
-    ) = setBekreftelse(this, SoknadJsonTyper.BEKREFTELSE_SPARING, bekreftelse, textService.getJsonOkonomiTittel("inntekt.bankinnskudd"))
 
     private fun JsonOkonomioversikt.setFormue(
         formueFrontend: FormueFrontend,
@@ -91,12 +86,6 @@ class FormueRessurs(
         setFormueInOversikt(this.formue, type, isExpected, textService.getJsonOkonomiTittel(soknadTypeToTitleKey[type]))
     }
 
-    private fun JsonOkonomiopplysninger.setBeskrivelseAvAnnet(beskrivelseAvAnnet: String? = "") {
-        this.beskrivelseAvAnnet = this.beskrivelseAvAnnet?.apply { sparing = beskrivelseAvAnnet } ?: JsonOkonomibeskrivelserAvAnnet().withKilde(JsonKildeBruker.BRUKER).withVerdi("").withSparing(beskrivelseAvAnnet).withUtbetaling("").withBoutgifter("").withBarneutgifter("")
-    }
-
-    private fun JsonOkonomioversikt.hasFormueType(type: String): Boolean = this.formue.any { it.type == type }
-
     data class FormueFrontend(
         val brukskonto: Boolean = false,
         val sparekonto: Boolean = false,
@@ -104,6 +93,6 @@ class FormueRessurs(
         val livsforsikring: Boolean = false,
         val verdipapirer: Boolean = false,
         val annet: Boolean = false,
-        val beskrivelseAvAnnet: String?,
+        val beskrivelseAvAnnet: String? = null,
     )
 }
