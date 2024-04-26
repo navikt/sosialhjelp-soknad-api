@@ -55,7 +55,7 @@ object MigrationToolkit {
 
     fun JsonOkonomiopplysninger.getBekreftelseVerdi(type: String): Boolean? = this.bekreftelse.firstOrNull { it.type == type }?.verdi
 
-    fun JsonOkonomiopplysninger.getSamtykkeDato(type: String): String? = this.bekreftelse.firstOrNull { it.type == type && it.verdi }?.bekreftelsesDato
+    fun JsonOkonomiopplysninger.getSamtykkeDato(type: String): String? = this.bekreftelse.sortedByDescending { it.bekreftelsesDato }.firstOrNull { it.type == type && it.verdi }?.bekreftelsesDato
 
     fun JsonOkonomiopplysninger.hasUtgift(jsonSoknadType: String): Boolean = this.utgift.any { it.type == jsonSoknadType }
 
