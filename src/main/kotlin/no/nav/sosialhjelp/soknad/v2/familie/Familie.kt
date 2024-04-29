@@ -6,6 +6,12 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import org.springframework.data.repository.ListCrudRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Familie, UUID>
 
 @Table
 data class Familie(

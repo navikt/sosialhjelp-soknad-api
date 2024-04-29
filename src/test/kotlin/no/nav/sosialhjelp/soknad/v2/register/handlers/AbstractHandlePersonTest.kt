@@ -5,19 +5,22 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseClient
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerClient
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
+import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieDto
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
-import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ektefelleFnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.kontoDto
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.matrikkeladresseDto
+import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.vegadresseDto
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentBarn
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentEktefelle
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromHentPerson
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseHentPersonWithEktefelleOgBarn
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -65,9 +68,43 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
         }
     }
 
-    fun createAnswerForHentEktefelle(fnr: String = ektefelleFnr, vegAdresse: VegadresseDto? = null): EktefelleDto {
+    fun createAnswerForHentEktefelle(
+        fnr: String = ektefelleFnr,
+        vegAdresse: VegadresseDto? = vegadresseDto
+    ): EktefelleDto {
         return defaultResponseFromHentEktefelle(fnr, vegAdresse).also {
             every { hentPersonClient.hentEktefelle(fnr) } returns it
         }
     }
+
+    fun createAnswerForHentBarn(): List<BarnDto> {
+        var year = 2006
+        return defaultResponseHentPersonWithEktefelleOgBarn().forelderBarnRelasjon!!
+            .map {
+                val dto = defaultResponseFromHentBarn(fnr = it.relatertPersonsIdent!!, year = year)
+                every { hentPersonClient.hentBarn(it.relatertPersonsIdent!!) } returns dto
+                year += 2
+                dto
+            }
+    }
+
+    protected fun createAnswerForPersonMedEktefelleOgBarn(): FamilieDtos {
+        val personDto = defaultResponseHentPersonWithEktefelleOgBarn().also {
+            every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+        }
+        val ektefelleDto = createAnswerForHentEktefelle(ektefelleFnr)
+        val barnDtoList = createAnswerForHentBarn()
+
+        return FamilieDtos(
+            forelder = personDto,
+            ektefelle = ektefelleDto,
+            barn = barnDtoList,
+        )
+    }
+
+    protected data class FamilieDtos (
+        val forelder: PersonDto,
+        val ektefelle: EktefelleDto,
+        val barn: List<BarnDto>
+    )
 }

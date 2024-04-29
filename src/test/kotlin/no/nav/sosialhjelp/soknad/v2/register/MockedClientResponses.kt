@@ -13,16 +13,20 @@ import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.ForelderBarnRelasjonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import no.nav.sosialhjelp.soknad.personalia.person.dto.StatsborgerskapDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
+import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.barn1Fnr
+import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.barn2Fnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ektefelleFnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer1
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer2
@@ -32,6 +36,8 @@ object DefaultValuesForMockedResponses {
     val orgnummer1 = "123456789"
     val orgnummer2 = "987654321"
     val ektefelleFnr = "66666666666"
+    val barn1Fnr = "12345612345"
+    val barn2Fnr = "98765498765"
     val vegadresseDto = VegadresseDto(
         matrikkelId = null,
         adressenavn = "Herborjegveien",
@@ -161,6 +167,24 @@ fun defaultSivilstandList() = listOf(
     )
 )
 
+fun defaultResponseHentPersonWithEktefelleOgBarn(): no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto {
+    return defaultResponseFromHentPerson()
+        .copy(
+            forelderBarnRelasjon = listOf(
+                ForelderBarnRelasjonDto(
+                    relatertPersonsIdent = barn1Fnr,
+                    relatertPersonsRolle = "BARN",
+                    minRolleForPerson = "FAR",
+                ),
+                ForelderBarnRelasjonDto(
+                    relatertPersonsIdent = barn2Fnr,
+                    relatertPersonsRolle = "BARN",
+                    minRolleForPerson = "FAR",
+                ),
+            )
+        )
+}
+
 fun defaultResponseFromHentEktefelle(fnr: String, vegAdresse: VegadresseDto? = null): EktefelleDto {
     return EktefelleDto(
         adressebeskyttelse = null,
@@ -207,5 +231,36 @@ fun defaultResponseFromHentMatrikkelAdresse(): no.nav.sosialhjelp.soknad.persona
             seksjonsnummer = null
         ),
         bydel = null,
+    )
+}
+
+fun defaultResponseFromHentBarn(
+    fnr: String,
+    vegAdresseDto: VegadresseDto = vegadresseDto,
+    year: Int,
+): BarnDto {
+    return BarnDto(
+        adressebeskyttelse = null,
+        bostedsadresse = listOf(BostedsadresseDto(null, vegAdresseDto, null, null)),
+        folkeregisterpersonstatus = null,
+        foedsel = listOf(FoedselDto(foedselsdato = LocalDate.of(year, 5, 12))),
+        navn = listOf(
+            no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
+                fornavn = "Barn $fnr",
+                mellomnavn = null,
+                etternavn = "Barnetternavn $fnr",
+                metadata = MetadataDto(
+                    master = "PDL",
+                    endringer = listOf(
+                        EndringDto(
+                            kilde = "PDL",
+                            registrert = LocalDateTime.of(2006, 5, 15, 0, 0, 0),
+                            type = ""
+                        ),
+                    ),
+                ),
+                folkeregistermetadata = null,
+            ),
+        ),
     )
 }

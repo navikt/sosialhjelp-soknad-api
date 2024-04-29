@@ -1,14 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.kontoDto
 import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
