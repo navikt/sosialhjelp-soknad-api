@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
 import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
 
 @Service
@@ -26,7 +26,7 @@ class SoknadV2AdapterService(
     private val livssituasjonService: LivssituasjonService,
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService,
+    private val eierService: RegisterDataEierService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 

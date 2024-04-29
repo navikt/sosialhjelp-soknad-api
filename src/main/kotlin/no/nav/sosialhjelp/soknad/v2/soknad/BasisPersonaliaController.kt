@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.eier.EierService
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -18,7 +18,7 @@ class BasisPersonaliaController(
     fun getBasisPersonalia(
         @PathVariable("soknadId") soknadId: UUID,
     ): PersonaliaDto {
-        return eierService.getEier(soknadId).toPersonaliaDto()
+        return eierService.findEier(soknadId).toPersonaliaDto()
     }
 }
 

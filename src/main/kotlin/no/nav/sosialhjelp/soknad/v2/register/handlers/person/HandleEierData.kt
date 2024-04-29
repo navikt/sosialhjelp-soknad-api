@@ -5,15 +5,15 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
+import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 
 @Component
 class HandleEierData(
     private val kontonummerService: KontonummerService,
-    private val eierService: EierService,
+    private val eierService: RegisterDataEierService,
 ): RegisterDataPersonHandler {
 
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
@@ -34,7 +34,7 @@ class HandleEierData(
                     kontonummer = Kontonummer(fraRegister = kontonummer)
                 )
             }
-            .also { eier -> eierService.updateEierFromRegister(eier) }
+            .also { eier -> eierService.updateEier(eier) }
     }
 
     private data class Statsborgerskap(

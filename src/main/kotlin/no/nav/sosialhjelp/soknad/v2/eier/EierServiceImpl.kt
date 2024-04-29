@@ -6,22 +6,36 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
-@Service
-class EierService(
-    private val eierRepository: EierRepository,
-) {
-    private val logger by logger()
-
-    fun getEier(soknadId: UUID) =
-        eierRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Finnes ingen Eier for $soknadId. Feil")
-
+interface EierService {
+    fun findEier(soknadId: UUID): Eier
     fun updateKontonummer(
         soknadId: UUID,
         kontonummerBruker: String? = null,
         harIkkeKonto: Boolean? = null,
+    ): Kontonummer
+}
+
+interface RegisterDataEierService {
+    fun updateEier(eier: Eier)
+}
+
+@Service
+class EierServiceImpl(
+    private val eierRepository: EierRepository,
+): EierService, RegisterDataEierService  {
+    private val logger by logger()
+
+    override fun findEier(soknadId: UUID) =
+        eierRepository.findByIdOrNull(soknadId)
+            ?: throw IkkeFunnetException("Finnes ingen Eier for $soknadId. Feil")
+
+    override fun updateKontonummer(
+        soknadId: UUID,
+        kontonummerBruker: String?,
+        harIkkeKonto: Boolean?,
     ): Kontonummer {
-        return getEier(soknadId)
+        logger.info("NyModell: Oppdaterer kontonummerinformasjon fra bruker")
+        return findEier(soknadId)
             .run {
                 copy(
                     kontonummer = kontonummer.copy(
@@ -30,12 +44,9 @@ class EierService(
                 )
             }
             .let { eier -> eierRepository.save(eier).kontonummer }
-
     }
 
-    fun updateEier(eier: Eier) = eierRepository.save(eier)
-
-    fun updateEierFromRegister(eier: Eier) {
+    override fun updateEier(eier: Eier) {
         eierRepository
             .findByIdOrNull(eier.soknadId)
             ?.run {
