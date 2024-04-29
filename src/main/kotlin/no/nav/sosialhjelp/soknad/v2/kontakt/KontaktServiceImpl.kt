@@ -1,20 +1,32 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+
+
+interface KontaktService {
+    fun getKontaktInformasjon(soknadId: UUID): Kontakt?
+    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer
+    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt
+}
+
+interface RegisterDataKontaktService {
+    fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?,)
+    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String,)
+}
 
 @Service
-class KontaktService(
+class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
-) {
-    private val logger = LoggerFactory.getLogger(KontaktService::class.java)
+): KontaktService, RegisterDataKontaktService {
+    private val logger by logger()
 
-    fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
+    override fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
 
-    fun updateTelefonnummer(
+    override fun updateTelefonnummer(
         soknadId: UUID,
         telefonnummerBruker: String?,
     ): Telefonnummer {
@@ -24,7 +36,7 @@ class KontaktService(
             .telefonnummer
     }
 
-    fun updateBrukerAdresse(
+    override fun updateBrukerAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
@@ -40,28 +52,21 @@ class KontaktService(
             .let { kontaktRepository.save(it) }
     }
 
-    fun saveAdresserRegister(
-        soknadId: UUID,
-        folkeregistrertAdresse: Adresse?,
-        midlertidigAdresse: Adresse?,
-    ) {
+    override fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?) {
         kontaktRepository
             .findOrCreate(soknadId)
             .run {
                 copy(
                     adresser = adresser.copy(
-                        folkeregistrertAdresse = folkeregistrertAdresse,
-                        midlertidigAdresse = midlertidigAdresse,
+                        folkeregistrertAdresse = folkeregistrert,
+                        midlertidigAdresse = midlertidig,
                     ),
                 )
             }
             .also { kontaktRepository.save(it) }
     }
 
-    fun updateTelefonRegister(
-        soknadId: UUID,
-        telefonRegister: String,
-    ) {
+    override fun updateTelefonRegister(soknadId: UUID, telefonRegister: String,) {
         kontaktRepository
             .findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }

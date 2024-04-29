@@ -1,30 +1,30 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
+import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
+import no.nav.sosialhjelp.soknad.v2.kontakt.RegisterDataKontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
     private val livssituasjonService: LivssituasjonService,
-    private val kontaktService: KontaktService,
+    private val kontaktService: RegisterDataKontaktService,
     private val hentAdresseService: HentAdresseService,
     private val eierService: RegisterDataEierService,
 ) : V2AdapterService {
@@ -74,8 +74,8 @@ class SoknadV2AdapterService(
             kotlin.runCatching {
                 kontaktService.saveAdresserRegister(
                     soknadId = UUID.fromString(soknadId),
-                    folkeregistrertAdresse = it.bostedsadresse?.toV2Adresse(hentAdresseService),
-                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
+                    folkeregistrert = it.bostedsadresse?.toV2Adresse(hentAdresseService),
+                    midlertidig = it.oppholdsadresse?.toV2Adresse(),
                 )
             }
                 .onFailure { log.warn("NyModell: Legge til Adresser feilet for $soknadId", it) }

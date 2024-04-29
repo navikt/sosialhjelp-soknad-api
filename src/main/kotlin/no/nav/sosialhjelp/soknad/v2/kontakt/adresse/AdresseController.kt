@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.kontakt.adresse
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 
 @RestController
 @ProtectionSelvbetjeningHigh
