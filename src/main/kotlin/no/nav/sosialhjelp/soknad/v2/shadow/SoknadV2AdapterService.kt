@@ -141,7 +141,10 @@ class SoknadV2AdapterService(
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    override fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus) {
+    override fun addEktefelle(
+        behandlingsId: String,
+        systemverdiSivilstatus: JsonSivilstatus,
+    ) {
         log.info("NyModell: Legger til systemdata for ektefelle")
 
         systemverdiSivilstatus.let {
@@ -158,8 +161,8 @@ class SoknadV2AdapterService(
     ) {
         log.info("NyModell: Legger til systemdata for barn")
         ansvarList.let { jsonAnsvarListe ->
-            kotlin.runCatching  {
-            familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
+            kotlin.runCatching {
+                familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
         }
