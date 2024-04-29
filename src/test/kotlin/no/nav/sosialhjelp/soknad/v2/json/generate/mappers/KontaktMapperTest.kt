@@ -32,12 +32,12 @@ class KontaktMapperTest {
 
         KontaktToJsonMapper.doMapping(kontakt, json)
 
-        json.assertMidlertidigAdresse(kontakt.adresser.midlertidigAdresse)
+        json.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
         json.assertNavEnhet(kontakt.mottaker)
 
         with(json.soknad.data.personalia) {
             assertTelefonnummerBruker(kontakt.telefonnummer)
-            assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrertAdresse)
+            assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrert)
             assertOppholdsadresse(kontakt.adresser)
         }
     }
@@ -49,10 +49,10 @@ private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnumme
 }
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
-    when (adresser.adressevalg) {
-        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrertAdresse)
-        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidigAdresse)
-        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.brukerAdresse)
+    when (adresser.valg) {
+        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrert)
+        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidig)
+        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.fraBruker)
         else -> throw IllegalStateException("AdresseValg ikke satt")
     }
 }

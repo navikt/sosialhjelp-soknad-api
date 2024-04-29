@@ -22,7 +22,7 @@ class HandleAdresseTest: AbstractHandlePersonTest() {
         handlePerson.handle(soknad.id)
 
         kontaktRepository
-            .findByIdOrNull(soknad.id)?.adresser?.folkeregistrertAdresse
+            .findByIdOrNull(soknad.id)?.adresser?.folkeregistrert
             ?.let {
                 val vegAdresse = it as VegAdresse
                 assertThat(vegAdresse.gatenavn).isEqualTo(dto.adressenavn)
@@ -37,7 +37,7 @@ class HandleAdresseTest: AbstractHandlePersonTest() {
 
         handlePerson.handle(soknad.id)
 
-        kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrertAdresse?.let {
+        kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
             assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)
             assertThat((it as MatrikkelAdresse).gaardsnummer).isEqualTo(dto.matrikkelnummer?.gaardsnummer)
         }

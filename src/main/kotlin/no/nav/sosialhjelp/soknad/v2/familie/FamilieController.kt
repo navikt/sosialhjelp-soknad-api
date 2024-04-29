@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie", produces = [MediaType.APPLICATION_JSON_VALUE])
 class FamilieController(
-    private val familieService: FamilieService,
+    private val sivilstandService: SivilstandService,
 ) {
     @GetMapping
     fun getFamilie(
         @PathVariable soknadId: UUID,
-    ): FamilieDto? = familieService.findFamilie(soknadId)?.toDto()
+    ): FamilieDto? = sivilstandService.findFamilie(soknadId)?.toDto()
 }
 
 data class FamilieDto(

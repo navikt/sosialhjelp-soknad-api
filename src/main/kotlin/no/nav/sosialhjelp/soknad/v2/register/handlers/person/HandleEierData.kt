@@ -6,14 +6,14 @@ import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
-import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
+import no.nav.sosialhjelp.soknad.v2.eier.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 
 @Component
 class HandleEierData(
     private val kontonummerService: KontonummerService,
-    private val eierService: RegisterDataEierService,
+    private val eierService: EierRegisterService,
 ): RegisterDataPersonHandler {
 
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende

@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 
 @Service
@@ -17,7 +17,7 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val registerDataService: RegisterDataService,
     private val soknadService: SoknadService,
-    private val kontaktService: KontaktService,
+    private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
@@ -52,7 +52,7 @@ class SoknadLifecycleServiceImpl(
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(
-                kontaktService.getKontaktInformasjon(soknadId)?.mottaker?.enhetsnavn,
+                adresseService.findMottaker(soknadId)?.enhetsnavn,
             ),
         )
 

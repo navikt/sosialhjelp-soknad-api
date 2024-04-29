@@ -4,9 +4,13 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
 
-interface FamilieService {
+interface ForsorgerService {
     fun findFamilie(soknadId: UUID): Familie?
     fun updateForsorger(soknadId: UUID, barnebidrag: Barnebidrag?, updated: List<Barn>): Familie
+}
+
+interface SivilstandService {
+    fun findFamilie(soknadId: UUID): Familie?
     fun updateSivilstand(soknadId: UUID, sivilstatus: Sivilstatus?, ektefelle: Ektefelle?): Familie
 }
 
@@ -18,7 +22,7 @@ interface FamilieRegisterService {
 @Component
 class FamilieServiceImpl(
     private val familieRepository: FamilieRepository
-): FamilieService, FamilieRegisterService {
+): ForsorgerService, SivilstandService, FamilieRegisterService {
     override fun findFamilie(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)
 
     override fun updateForsorger(

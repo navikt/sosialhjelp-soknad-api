@@ -17,23 +17,23 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhetService
 
 @Component
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val kontaktService: KontaktService,
+    private val navEnhetService: NavEnhetService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
         val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        val kontaktInformasjon = kontaktService.getKontaktInformasjon(soknad.id)
+        val mottaker = navEnhetService.findMottaker(soknad.id)
 
-        kontaktInformasjon?.mottaker?.let {
+        mottaker?.let {
             log.info(
                 "Starter kryptering av filer for ${soknad.id}, " +
                     "skal sende til kommune ${it.kommunenummer}) med " +
@@ -48,7 +48,7 @@ class SendSoknadHandler(
                     soknadJson = objectMapper.writeValueAsString(json.soknad),
                     tilleggsinformasjonJson =
                         objectMapper.writeValueAsString(
-                            JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer),
+                            JsonTilleggsinformasjon(mottaker?.enhetsnummer),
                         ),
                     vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
                     dokumenter = getFilOpplastingList(json),

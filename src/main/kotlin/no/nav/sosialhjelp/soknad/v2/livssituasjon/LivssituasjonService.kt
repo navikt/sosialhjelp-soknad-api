@@ -1,54 +1,73 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
+import java.util.UUID
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.UUID
+
+interface ArbeidService {
+    fun findArbeid(soknadId: UUID): Arbeid?
+    fun updateKommentarTilArbeid(soknadId: UUID, kommentarTilArbeidsforhold: String, ): Arbeid
+}
+
+interface UtdanningService {
+    fun findUtdanning(soknadId: UUID): Utdanning?
+    fun updateUtdanning(soknadId: UUID, erStudent: Boolean, studentgrad: Studentgrad?): Utdanning
+}
+
+interface BosituasjonService {
+    fun findBosituasjon(soknadId: UUID): Bosituasjon?
+    fun updateBosituasjon(soknadId: UUID, botype: Botype?, antallHusstand: Int?): Bosituasjon
+}
+
+interface LivssituasjonRegisterService {
+    fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>)
+}
+
 
 @Service
 class LivssituasjonService(
     private val repository: LivssituasjonRepository,
-) {
-    fun getLivssituasjon(soknadId: UUID): Livssituasjon? {
-        return repository.findByIdOrNull(soknadId)
-    }
+): BosituasjonService, UtdanningService, ArbeidService, LivssituasjonRegisterService {
+    override fun findBosituasjon(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.bosituasjon
 
-    fun updateBosituasjon(
+    override fun updateBosituasjon(
         soknadId: UUID,
         botype: Botype?,
         antallHusstand: Int?,
     ): Bosituasjon {
-        return getOrCreateLivssituasjon(soknadId)
+        return findOrCreate(soknadId)
             .copy(bosituasjon = Bosituasjon(botype = botype, antallHusstand = antallHusstand))
             .also { repository.save(it) }
             .bosituasjon!!
     }
 
-    fun updateUtdanning(
+    override fun findUtdanning(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.utdanning
+
+    override fun updateUtdanning(
         soknadId: UUID,
         erStudent: Boolean,
         studentgrad: Studentgrad?,
     ): Utdanning {
-        return getOrCreateLivssituasjon(soknadId)
+        return findOrCreate(soknadId)
             .run { copy(utdanning = Utdanning(erStudent = erStudent, studentgrad = studentgrad)) }
             .also { repository.save(it) }
             .utdanning!!
     }
 
-    fun updateKommentarTilArbeid(
+    override fun findArbeid(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.arbeid
+
+    override fun updateKommentarTilArbeid(
         soknadId: UUID,
         kommentarTilArbeidsforhold: String,
     ): Arbeid {
-        return getOrCreateLivssituasjon(soknadId)
+        return findOrCreate(soknadId)
             .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
             .let { repository.save(it) }
             .arbeid!!
     }
 
-    fun updateArbeidsforhold(
-        soknadId: UUID,
-        arbeidsforhold: List<Arbeidsforhold>,
-    ): Arbeid {
-        return getOrCreateLivssituasjon(soknadId)
+    override fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>) {
+        findOrCreate(soknadId)
             .run {
                 (this.arbeid ?: Arbeid())
                     .let { arb -> this.copy(arbeid = arb.copy(arbeidsforhold = arbeidsforhold)) }
@@ -57,5 +76,6 @@ class LivssituasjonService(
             .arbeid ?: error("Arbeid kunne ikke lagres")
     }
 
-    private fun getOrCreateLivssituasjon(soknadId: UUID) = repository.findByIdOrNull(soknadId) ?: repository.save(Livssituasjon(soknadId))
+    private fun findOrCreate(soknadId: UUID) = repository.findByIdOrNull(soknadId)
+        ?: repository.save(Livssituasjon(soknadId))
 }

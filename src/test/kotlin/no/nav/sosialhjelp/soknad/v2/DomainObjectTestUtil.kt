@@ -168,10 +168,10 @@ fun opprettKontakt(
     telefonnummer: Telefonnummer = Telefonnummer("98766554", "12345678"),
     adresser: Adresser =
         Adresser(
-            folkeregistrertAdresse = opprettFolkeregistrertAdresse(),
-            midlertidigAdresse = opprettMatrikkelAdresse(),
-            brukerAdresse = opprettMidlertidigAdresse(),
-            adressevalg = AdresseValg.FOLKEREGISTRERT,
+            folkeregistrert = opprettFolkeregistrertAdresse(),
+            midlertidig = opprettMatrikkelAdresse(),
+            fraBruker = opprettMidlertidigAdresse(),
+            valg = AdresseValg.FOLKEREGISTRERT,
         ),
     navEnhet: NavEnhet = opprettNavEnhet(),
 ): Kontakt {
@@ -184,10 +184,10 @@ fun opprettAdresser(
     brukerAdresse: Adresse = opprettMatrikkelAdresse(),
 ): Adresser {
     return Adresser(
-        adressevalg = AdresseValg.FOLKEREGISTRERT,
-        midlertidigAdresse = midlertidigAdresse,
-        folkeregistrertAdresse = folkeregistrertAdresse,
-        brukerAdresse = brukerAdresse,
+        valg = AdresseValg.FOLKEREGISTRERT,
+        midlertidig = midlertidigAdresse,
+        folkeregistrert = folkeregistrertAdresse,
+        fraBruker = brukerAdresse,
     )
 }
 

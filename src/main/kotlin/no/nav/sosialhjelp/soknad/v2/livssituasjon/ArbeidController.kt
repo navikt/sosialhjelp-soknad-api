@@ -14,16 +14,16 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ArbeidController(
-    private val livssituasjonService: LivssituasjonService,
+    private val arbeidService: ArbeidService,
 ) {
     @GetMapping
     fun getArbeid(
         @PathVariable("soknadId") soknadId: UUID,
     ): ArbeidDto {
-        return livssituasjonService.getLivssituasjon(soknadId)?.let {
+        return arbeidService.findArbeid(soknadId)?.let {
             ArbeidDto(
-                arbeidsforholdList = it.arbeid?.arbeidsforhold?.map { list -> list.toArbeidsforholdDto() } ?: emptyList(),
-                kommentar = it.arbeid?.kommentar,
+                arbeidsforholdList = it.arbeidsforhold.map { list -> list.toArbeidsforholdDto() },
+                kommentar = it.kommentar,
             )
         } ?: ArbeidDto()
     }
@@ -33,7 +33,7 @@ class ArbeidController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: ArbeidInput,
     ): ArbeidDto {
-        return livssituasjonService.updateKommentarTilArbeid(soknadId, input.kommentarTilArbeidsforhold)
+        return arbeidService.updateKommentarTilArbeid(soknadId, input.kommentarTilArbeidsforhold)
             .let {
                 ArbeidDto(
                     arbeidsforholdList = it.arbeidsforhold.map { list -> list.toArbeidsforholdDto() },

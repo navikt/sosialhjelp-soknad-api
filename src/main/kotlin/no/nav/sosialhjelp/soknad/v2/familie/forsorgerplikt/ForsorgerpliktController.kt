@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerService
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
-class ForsorgerpliktController(private val familieService: FamilieService) {
+class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
     @GetMapping
     fun getForsorgerplikt(
         @PathVariable soknadId: UUID,
-    ) = familieService.findFamilie(soknadId)?.toForsorgerDto() ?: ForsorgerDto()
+    ) = forsorgerService.findFamilie(soknadId)?.toForsorgerDto() ?: ForsorgerDto()
 
     @PutMapping
     fun updateForsorgerplikt(
@@ -36,7 +36,7 @@ class ForsorgerpliktController(private val familieService: FamilieService) {
         require(forsorgerInput.ansvar.isNotEmpty()) { "Ansvar kan ikke være en tom liste" }
 
         val updated =
-            familieService.updateForsorger(
+            forsorgerService.updateForsorger(
                 soknadId,
                 forsorgerInput.barnebidrag,
                 forsorgerInput.ansvar.map { it.toDomain() },

@@ -8,9 +8,9 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.RegisterDataEierService
-import no.nav.sosialhjelp.soknad.v2.kontakt.RegisterDataKontaktService
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
+import no.nav.sosialhjelp.soknad.v2.eier.EierRegisterService
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -23,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
-    private val livssituasjonService: LivssituasjonService,
-    private val kontaktService: RegisterDataKontaktService,
+    private val livssituasjonService: LivssituasjonRegisterService,
+    private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: RegisterDataEierService,
+    private val eierService: EierRegisterService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 

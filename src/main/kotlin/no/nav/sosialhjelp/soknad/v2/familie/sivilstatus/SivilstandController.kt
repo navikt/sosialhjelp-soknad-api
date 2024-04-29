@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandService
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
-class SivilstandController(private val familieService: FamilieService) {
+class SivilstandController(private val sivilstandService: SivilstandService) {
     @GetMapping
     fun getSivilstand(
         @PathVariable("soknadId") soknadId: UUID,
-    ): SivilstandDto? = familieService.findFamilie(soknadId)?.toSivilstandDto()
+    ): SivilstandDto? = sivilstandService.findFamilie(soknadId)?.toSivilstandDto()
 
     @PutMapping
     fun updateSivilstand(
@@ -35,7 +35,7 @@ class SivilstandController(private val familieService: FamilieService) {
         if (sivilstandInput.sivilstatus != Sivilstatus.GIFT) {
             require(sivilstandInput.ektefelle == null) { "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift" }
         }
-        val updated = familieService.updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toDomain())
+        val updated = sivilstandService.updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toDomain())
         return ResponseEntity.ok(updated.toSivilstandDto())
     }
 }

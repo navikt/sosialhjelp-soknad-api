@@ -28,16 +28,16 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${soknad.id}/adresser",
             responseBodyClass = AdresserDto::class.java,
         ).also {
-            assertThat(it.adresseValg).isEqualTo(kontakt.adresser.adressevalg)
+            assertThat(it.adresseValg).isEqualTo(kontakt.adresser.valg)
 
             assertThat(it.midlertidigAdresse).isInstanceOf(MatrikkelAdresse::class.java)
-            assertThat(it.midlertidigAdresse).isEqualTo(kontakt.adresser.midlertidigAdresse)
+            assertThat(it.midlertidigAdresse).isEqualTo(kontakt.adresser.midlertidig)
 
             assertThat(it.folkeregistrertAdresse).isInstanceOf(VegAdresse::class.java)
-            assertThat(it.folkeregistrertAdresse).isEqualTo(kontakt.adresser.folkeregistrertAdresse)
+            assertThat(it.folkeregistrertAdresse).isEqualTo(kontakt.adresser.folkeregistrert)
 
             assertThat(it.brukerAdresse).isInstanceOf(UstrukturertAdresse::class.java)
-            assertThat(it.brukerAdresse).isEqualTo(kontakt.adresser.brukerAdresse)
+            assertThat(it.brukerAdresse).isEqualTo(kontakt.adresser.fraBruker)
         }
     }
 
@@ -59,8 +59,8 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.adresser.adressevalg).isEqualTo(adresserInput.adresseValg)
-            assertThat(it.adresser.brukerAdresse).isEqualTo(adresserInput.brukerAdresse)
+            assertThat(it.adresser.valg).isEqualTo(adresserInput.adresseValg)
+            assertThat(it.adresser.fraBruker).isEqualTo(adresserInput.brukerAdresse)
         }
     }
 }

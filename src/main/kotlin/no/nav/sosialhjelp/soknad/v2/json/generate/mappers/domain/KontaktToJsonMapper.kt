@@ -46,14 +46,14 @@ class KontaktToJsonMapper(
             json: JsonInternalSoknad,
         ) {
             val oppholdsadresse = kontakt.adresser.getOppholdsadresse()
-            val adresseValg = kontakt.adresser.adressevalg
+            val adresseValg = kontakt.adresser.valg
 
             json.initializeObjects()
-            json.midlertidigAdresse = kontakt.adresser.midlertidigAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
+            json.midlertidigAdresse = kontakt.adresser.midlertidig?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
 
             with(json.soknad.data.personalia) {
                 telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
-                folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
+                folkeregistrertAdresse = kontakt.adresser.folkeregistrert?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
                 adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
             }
 

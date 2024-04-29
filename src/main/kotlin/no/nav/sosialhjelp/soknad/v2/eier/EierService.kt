@@ -15,14 +15,14 @@ interface EierService {
     ): Kontonummer
 }
 
-interface RegisterDataEierService {
+interface EierRegisterService {
     fun updateEier(eier: Eier)
 }
 
 @Service
 class EierServiceImpl(
     private val eierRepository: EierRepository,
-): EierService, RegisterDataEierService  {
+): EierService, EierRegisterService  {
     private val logger by logger()
 
     override fun findEier(soknadId: UUID) =

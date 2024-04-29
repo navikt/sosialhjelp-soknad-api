@@ -16,13 +16,13 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/utdanning", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtdanningController(
-    private val livssituasjonService: LivssituasjonService,
+    private val utdanningService: UtdanningService,
 ) {
     @GetMapping
     fun getUtdanning(
         @PathVariable("soknadId") soknadId: UUID,
-    ): UtdanningDto? {
-        return livssituasjonService.getLivssituasjon(soknadId)?.utdanning?.toUtdanningDto()
+    ): UtdanningDto {
+        return utdanningService.findUtdanning(soknadId)?.toUtdanningDto() ?: UtdanningDto()
     }
 
     @PutMapping
@@ -32,9 +32,9 @@ class UtdanningController(
     ): UtdanningDto {
         return when (input) {
             is IkkeStudentInput ->
-                livssituasjonService.updateUtdanning(soknadId, erStudent = false, studentgrad = null)
+                utdanningService.updateUtdanning(soknadId, erStudent = false, studentgrad = null)
             is StudentgradInput ->
-                livssituasjonService.updateUtdanning(soknadId, erStudent = true, studentgrad = input.studentgrad)
+                utdanningService.updateUtdanning(soknadId, erStudent = true, studentgrad = input.studentgrad)
             else -> throw IllegalArgumentException("Ukjent type for UtdanningInput")
         }.toUtdanningDto()
     }

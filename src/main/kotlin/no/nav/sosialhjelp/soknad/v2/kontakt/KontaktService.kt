@@ -5,15 +5,21 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 
+interface AdresseService {
+    fun findAdresser(soknadId: UUID): Adresser
+    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Adresser
+    fun findMottaker(soknadId: UUID): NavEnhet?
 
-interface KontaktService {
-    fun getKontaktInformasjon(soknadId: UUID): Kontakt?
-    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer
-    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Kontakt
 }
 
-interface RegisterDataKontaktService {
+interface TelefonService {
+    fun findTelefonInfo(soknadId: UUID): Telefonnummer?
+    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer
+}
+
+interface KontaktRegisterService {
     fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?,)
     fun updateTelefonRegister(soknadId: UUID, telefonRegister: String,)
 }
@@ -21,10 +27,10 @@ interface RegisterDataKontaktService {
 @Service
 class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
-): KontaktService, RegisterDataKontaktService {
+): AdresseService, TelefonService, KontaktRegisterService {
     private val logger by logger()
 
-    override fun getKontaktInformasjon(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
+    override fun findTelefonInfo(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
 
     override fun updateTelefonnummer(
         soknadId: UUID,
@@ -36,11 +42,14 @@ class KontaktServiceImpl(
             .telefonnummer
     }
 
+    override fun findAdresser(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.adresser
+        ?: throw IkkeFunnetException("Fant ikke adresser for soknad")
+
     override fun updateBrukerAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
-    ): Kontakt {
+    ): Adresser {
         logger.info(
             "Oppdaterer adresse for $soknadId. " +
                     "Adressevalg: $adresseValg, " +
@@ -48,8 +57,9 @@ class KontaktServiceImpl(
         )
 
         return kontaktRepository.findOrCreate(soknadId)
-            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, brukerAdresse = brukerAdresse)) }
+            .run { copy(adresser = adresser.copy(valg = adresseValg, fraBruker = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
+            .adresser
     }
 
     override fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?) {
@@ -58,8 +68,8 @@ class KontaktServiceImpl(
             .run {
                 copy(
                     adresser = adresser.copy(
-                        folkeregistrertAdresse = folkeregistrert,
-                        midlertidigAdresse = midlertidig,
+                        folkeregistrert = folkeregistrert,
+                        midlertidig = midlertidig,
                     ),
                 )
             }
@@ -72,6 +82,8 @@ class KontaktServiceImpl(
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
             .also { kontaktRepository.save(it) }
     }
+
+    override fun findMottaker(soknadId: UUID) =  kontaktRepository.findByIdOrNull(soknadId)?.mottaker
 }
 
 private fun KontaktRepository.findOrCreate(soknadId: UUID): Kontakt {

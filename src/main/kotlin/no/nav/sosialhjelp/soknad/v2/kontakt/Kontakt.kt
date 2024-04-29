@@ -33,17 +33,17 @@ data class Telefonnummer(
 )
 
 data class Adresser(
-    val folkeregistrertAdresse: Adresse? = null,
-    val midlertidigAdresse: Adresse? = null,
-    val brukerAdresse: Adresse? = null,
-    val adressevalg: AdresseValg? = null,
+    val folkeregistrert: Adresse? = null,
+    val midlertidig: Adresse? = null,
+    val fraBruker: Adresse? = null,
+    val valg: AdresseValg? = null,
 ) {
     fun getOppholdsadresse(): Adresse {
-        return when (adressevalg) {
-            AdresseValg.FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
-            AdresseValg.MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
-            AdresseValg.SOKNAD -> brukerAdresse ?: valgtAdresseNullError(AdresseValg.SOKNAD)
-            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
+        return when (valg) {
+            AdresseValg.FOLKEREGISTRERT -> folkeregistrert ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
+            AdresseValg.MIDLERTIDIG -> midlertidig ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
+            AdresseValg.SOKNAD -> fraBruker ?: valgtAdresseNullError(AdresseValg.SOKNAD)
+            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $valg")
         }
     }
 

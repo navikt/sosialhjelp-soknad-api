@@ -15,14 +15,13 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonController(
-    private val livssituasjonService: LivssituasjonService,
+    private val bosituasjonService: BosituasjonService,
 ) {
     @GetMapping
     fun getBosituasjon(
         @PathVariable("soknadId") soknadId: UUID,
     ): BosituasjonDto {
-        return livssituasjonService.getLivssituasjon(soknadId)?.bosituasjon?.toBosituasjonDto()
-            ?: BosituasjonDto()
+        return bosituasjonService.findBosituasjon(soknadId)?.toBosituasjonDto() ?: BosituasjonDto()
     }
 
     @PutMapping
@@ -33,7 +32,7 @@ class BosituasjonController(
         SoknadInputValidator(BosituasjonDto::class)
             .validateAllInputNotNullOrEmpty(soknadId, bosituasjonDto.botype, bosituasjonDto.antallPersoner)
 
-        return livssituasjonService.updateBosituasjon(
+        return bosituasjonService.updateBosituasjon(
             soknadId,
             botype = bosituasjonDto.botype,
             antallHusstand = bosituasjonDto.antallPersoner,
