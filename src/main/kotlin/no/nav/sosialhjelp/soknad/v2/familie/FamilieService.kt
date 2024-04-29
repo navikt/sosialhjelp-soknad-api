@@ -68,22 +68,21 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         sivilstatus: Sivilstatus?,
         ektefelle: Ektefelle,
     ) {
-        val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
-        val updatedFamilieMedEktefelleOgSivilstatus = familie.copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
-        familieRepository.save(updatedFamilieMedEktefelleOgSivilstatus)
+        familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
+            .copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
+            .also { familieRepository.save(it) }
     }
 
-    private fun <A : Any, B> Map<A, B?>.filterNotNullValue(): Map<A, B> {
-        return filter { it.value != null }.mapValues { it.value!! }
-    }
 
     fun addBarn(
         soknadId: UUID,
         barnListe: List<Barn>,
         harForsorgerplikt: Boolean,
     ) {
-        val familie = familieRepository.findById(soknadId).getOrDefault(Familie(soknadId))
-        val updatedFamilieMedBarn = familie.copy(harForsorgerplikt = harForsorgerplikt, ansvar = familie.ansvar + barnListe.map { it.familieKey to it })
-        familieRepository.save(updatedFamilieMedBarn)
+        val familie = familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
+        familie.copy(harForsorgerplikt = harForsorgerplikt,
+            ansvar = familie.ansvar + barnListe.map { it.familieKey to it })
+            .also { familieRepository.save(it) }
+
     }
 }

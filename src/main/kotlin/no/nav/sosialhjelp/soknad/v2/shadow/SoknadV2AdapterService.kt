@@ -141,13 +141,10 @@ class SoknadV2AdapterService(
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    override fun addEktefelle(
-        behandlingsId: String,
-        systemverdiSivilstatus: JsonSivilstatus?,
-    ) {
+    override fun addEktefelle(behandlingsId: String, systemverdiSivilstatus: JsonSivilstatus) {
         log.info("NyModell: Legger til systemdata for ektefelle")
 
-        systemverdiSivilstatus?.let {
+        systemverdiSivilstatus.let {
             kotlin.runCatching {
                 familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
@@ -160,9 +157,9 @@ class SoknadV2AdapterService(
         ansvarList: List<JsonAnsvar>,
     ) {
         log.info("NyModell: Legger til systemdata for barn")
-        ansvarList.let {
-            kotlin.runCatching {
-                familieService.addBarn(UUID.fromString(behandlingsId), it.map { it.toV2Barn() }, true)
+        ansvarList.let { jsonAnsvarListe ->
+            kotlin.runCatching  {
+            familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
         }
@@ -187,14 +184,14 @@ private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
     return Ektefelle(
         navn =
             Navn(
-                fornavn = this.ektefelle.navn.fornavn,
-                mellomnavn = this.ektefelle.navn.mellomnavn,
-                etternavn = this.ektefelle.navn.etternavn,
+                fornavn = ektefelle.navn.fornavn,
+                mellomnavn = ektefelle.navn.mellomnavn,
+                etternavn = ektefelle.navn.etternavn,
             ),
-        fodselsdato = this.ektefelle.fodselsdato,
-        personId = this.ektefelle.personIdentifikator,
-        folkeregistrertMedEktefelle = this.folkeregistrertMedEktefelle,
-        borSammen = this.borSammenMed,
+        fodselsdato = ektefelle.fodselsdato,
+        personId = ektefelle.personIdentifikator,
+        folkeregistrertMedEktefelle = folkeregistrertMedEktefelle,
+        borSammen = borSammenMed,
         kildeErSystem = true,
     )
 }
@@ -213,15 +210,15 @@ private fun Status.toV2Sivilstatus(): Sivilstatus {
 private fun JsonAnsvar.toV2Barn(): Barn {
     return Barn(
         familieKey = UUID.randomUUID(),
-        personId = this.barn.personIdentifikator,
+        personId = barn.personIdentifikator,
         navn =
             Navn(
-                fornavn = this.barn.navn.fornavn,
-                mellomnavn = this.barn.navn.mellomnavn,
-                etternavn = this.barn.navn.etternavn,
+                fornavn = barn.navn.fornavn,
+                mellomnavn = barn.navn.mellomnavn,
+                etternavn = barn.navn.etternavn,
             ),
-        fodselsdato = this.barn.fodselsdato,
-        borSammen = this.borSammenMed?.verdi,
-        folkeregistrertSammen = this.erFolkeregistrertSammen.verdi,
+        fodselsdato = barn.fodselsdato,
+        borSammen = borSammenMed?.verdi,
+        folkeregistrertSammen = erFolkeregistrertSammen.verdi,
     )
 }

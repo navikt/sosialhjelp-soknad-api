@@ -43,7 +43,7 @@ interface V2AdapterService {
 
     fun addEktefelle(
         behandlingsId: String,
-        systemverdiSivilstatus: JsonSivilstatus?,
+        systemverdiSivilstatus: JsonSivilstatus,
     )
 
     fun addBarn(
