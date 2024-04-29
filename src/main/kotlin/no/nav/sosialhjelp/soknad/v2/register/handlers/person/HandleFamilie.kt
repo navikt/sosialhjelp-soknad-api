@@ -6,14 +6,14 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 
 @Component
 class HandleFamilie(
-    private val familieService: FamilieService,
+    private val familieService: FamilieRegisterService,
     private val personService: PersonService,
 ): RegisterDataPersonHandler {
     override fun handle(soknadId: UUID, person: Person) {
@@ -21,7 +21,7 @@ class HandleFamilie(
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
-            familieService.updateFamilieFraRegister(
+            familieService.updateSivilstatusFraRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
                 ektefelle = it
@@ -42,13 +42,13 @@ class HandleFamilie(
         personService.hentBarnForPerson(getUserIdFromToken())
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->
-                familieService.updateForsorgerPliktRegister(
+                familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,
                     harForsorgerplikt = true,
                     barn = barnlist.map { it.toV2Barn() }
                 )
             }
-            ?: familieService.updateForsorgerPliktRegister(
+            ?: familieService.updateForsorgerpliktRegister(
                 soknadId = soknadId,
                 harForsorgerplikt = false,
                 barn = emptyList()

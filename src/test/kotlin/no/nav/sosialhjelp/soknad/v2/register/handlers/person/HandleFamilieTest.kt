@@ -1,9 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieServiceImpl
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -13,7 +12,7 @@ class HandleFamilieTest: AbstractHandlePersonTest() {
 
 
     @Autowired
-    private lateinit var familieService: FamilieService
+    private lateinit var familieService: FamilieServiceImpl
 
     @Test
     fun `Hente person skal hente og lagre familie-data`() {

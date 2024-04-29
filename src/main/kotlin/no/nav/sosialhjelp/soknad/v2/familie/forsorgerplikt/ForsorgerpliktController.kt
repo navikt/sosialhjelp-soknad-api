@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.v2.familie.BarnDto
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.familie.toDomain
 import no.nav.sosialhjelp.soknad.v2.familie.toDto
 import org.springframework.http.MediaType
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 
 @RestController
 @ProtectionSelvbetjeningHigh

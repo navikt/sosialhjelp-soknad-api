@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleDto
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.toDomain
 import no.nav.sosialhjelp.soknad.v2.familie.toDto
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 
 @RestController
 @ProtectionSelvbetjeningHigh

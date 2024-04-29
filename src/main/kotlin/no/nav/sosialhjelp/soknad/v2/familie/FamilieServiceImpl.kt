@@ -4,13 +4,24 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
 
-@Component
-class FamilieService(private val familieRepository: FamilieRepository) {
-    fun findFamilie(soknadId: UUID): Familie? {
-        return familieRepository.findByIdOrNull(soknadId)
-    }
+interface FamilieService {
+    fun findFamilie(soknadId: UUID): Familie?
+    fun updateForsorger(soknadId: UUID, barnebidrag: Barnebidrag?, updated: List<Barn>): Familie
+    fun updateSivilstand(soknadId: UUID, sivilstatus: Sivilstatus?, ektefelle: Ektefelle?): Familie
+}
 
-    fun updateForsorger(
+interface FamilieRegisterService {
+    fun updateSivilstatusFraRegister(soknadId: UUID, sivilstatus: Sivilstatus, ektefelle: Ektefelle)
+    fun updateForsorgerpliktRegister(soknadId: UUID, harForsorgerplikt: Boolean, barn: List<Barn>)
+}
+
+@Component
+class FamilieServiceImpl(
+    private val familieRepository: FamilieRepository
+): FamilieService, FamilieRegisterService {
+    override fun findFamilie(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)
+
+    override fun updateForsorger(
         soknadId: UUID,
         barnebidrag: Barnebidrag?,
         updated: List<Barn>,
@@ -44,7 +55,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
             .toMap()
     }
 
-    fun updateSivilstand(
+    override fun updateSivilstand(
         soknadId: UUID,
         sivilstatus: Sivilstatus?,
         ektefelle: Ektefelle?,
@@ -64,7 +75,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
             .also { familieRepository.save(it) }
     }
 
-    fun updateFamilieFraRegister(
+    override fun updateSivilstatusFraRegister(
         soknadId: UUID,
         sivilstatus: Sivilstatus,
         ektefelle: Ektefelle
@@ -78,7 +89,7 @@ class FamilieService(private val familieRepository: FamilieRepository) {
             .also { familieRepository.save(it) }
     }
 
-    fun updateForsorgerPliktRegister(
+    override fun updateForsorgerpliktRegister(
         soknadId: UUID,
         harForsorgerplikt: Boolean,
         barn: List<Barn>
