@@ -15,7 +15,7 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/personalia/telefonnummer", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TelefonnummerController(
-    private val kontaktService: KontaktServiceImpl,
+    private val kontaktService: KontaktService,
 ) {
     @GetMapping
     fun getTelefonnummer(
@@ -40,7 +40,7 @@ class TelefonnummerController(
                 .validateIsNumber(soknadId, it)
         }
 
-        return kontaktService.updateTelefonRegister(soknadId, telefonnummerInput.telefonnummerBruker).let {
+        return kontaktService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
             TelefonnummerDto(
                 telefonnummerRegister = it.fraRegister,
                 telefonnummerBruker = it.fraBruker,
