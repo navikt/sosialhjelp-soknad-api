@@ -12,13 +12,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.data.repository.findByIdOrNull

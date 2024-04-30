@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
@@ -11,11 +10,12 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class LivssituasjonService(
     private val repository: LivssituasjonRepository,
-): BosituasjonService, UtdanningService, ArbeidService, LivssituasjonRegisterService {
+) : BosituasjonService, UtdanningService, ArbeidService, LivssituasjonRegisterService {
     override fun findBosituasjon(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.bosituasjon
 
     override fun updateBosituasjon(
@@ -54,7 +54,10 @@ class LivssituasjonService(
             .arbeid!!
     }
 
-    override fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>) {
+    override fun updateArbeidsforhold(
+        soknadId: UUID,
+        arbeidsforhold: List<Arbeidsforhold>,
+    ) {
         findOrCreate(soknadId)
             .run {
                 (this.arbeid ?: Arbeid())
@@ -64,6 +67,7 @@ class LivssituasjonService(
             .arbeid ?: error("Arbeid kunne ikke lagres")
     }
 
-    private fun findOrCreate(soknadId: UUID) = repository.findByIdOrNull(soknadId)
-        ?: repository.save(Livssituasjon(soknadId))
+    private fun findOrCreate(soknadId: UUID) =
+        repository.findByIdOrNull(soknadId)
+            ?: repository.save(Livssituasjon(soknadId))
 }

@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -36,6 +33,9 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     return JsonInternalSoknad().apply {
@@ -59,7 +59,7 @@ fun createFamilie(
     barnebidrag = barnebidrag,
     ansvar = ansvar.associateBy { it.familieKey },
     sivilstatus = sivilstatus,
-    ektefelle = ektefelle
+    ektefelle = ektefelle,
 )
 
 fun opprettEktefelle(): Ektefelle {

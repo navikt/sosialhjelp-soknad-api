@@ -1,14 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Familie, UUID>
@@ -64,5 +64,5 @@ enum class Sivilstatus {
     ENKE,
     SKILT,
     SEPARERT,
-    TOM;
+    TOM,
 }

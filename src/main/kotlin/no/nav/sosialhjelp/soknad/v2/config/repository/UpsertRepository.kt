@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import java.util.UUID
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
+import java.util.UUID
 
 interface DomainRoot {
     val soknadId: UUID

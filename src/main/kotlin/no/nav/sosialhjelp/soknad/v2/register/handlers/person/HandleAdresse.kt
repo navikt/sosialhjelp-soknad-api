@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
@@ -8,22 +7,26 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class HandleAdresse(
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-): RegisterDataPersonHandler {
-    override fun handle(soknadId: UUID, person: Person) {
+) : RegisterDataPersonHandler {
+    override fun handle(
+        soknadId: UUID,
+        person: Person,
+    ) {
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,
             folkeregistrert = person.bostedsadresse?.toV2Adresse(hentAdresseService),
-            midlertidig = person.oppholdsadresse?.toV2Adresse()
+            midlertidig = person.oppholdsadresse?.toV2Adresse(),
         )
     }
 }

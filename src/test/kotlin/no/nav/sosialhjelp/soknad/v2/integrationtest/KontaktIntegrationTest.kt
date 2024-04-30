@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse

@@ -9,12 +9,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.KontaktToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt

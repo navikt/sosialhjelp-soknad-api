@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
-class HandleUtbetalingerNav: RegisterDataHandler {
+class HandleUtbetalingerNav : RegisterDataHandler {
     override fun handle(soknadId: UUID) {
         TODO("Not yet implemented")
     }

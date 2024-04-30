@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleEierDataTest: AbstractHandlePersonTest() {
-
+class HandleEierDataTest : AbstractHandlePersonTest() {
     @Autowired
     private lateinit var eierRepository: EierRepository
 
@@ -34,18 +33,20 @@ class HandleEierDataTest: AbstractHandlePersonTest() {
 
     @Test
     fun `Eier-data skal overskrives ved ny innhenting, men kontonummer fra bruker skal bestå`() {
-        val existing = eierRepository.save(
-            Eier(
-                soknadId = soknad.id,
-                statsborgerskap = "NOR",
-                nordiskBorger = true,
-                navn = Navn(
-                    fornavn = "Fornavn",
-                    etternavn = "Etternavnesen"
+        val existing =
+            eierRepository.save(
+                Eier(
+                    soknadId = soknad.id,
+                    statsborgerskap = "NOR",
+                    nordiskBorger = true,
+                    navn =
+                        Navn(
+                            fornavn = "Fornavn",
+                            etternavn = "Etternavnesen",
+                        ),
+                    kontonummer = Kontonummer(fraBruker = "98769898765"),
                 ),
-                kontonummer = Kontonummer(fraBruker = "98769898765")
             )
-        )
         val personDto = createAnswerForHentPersonUgift()
         handlePerson.handle(soknad.id)
 

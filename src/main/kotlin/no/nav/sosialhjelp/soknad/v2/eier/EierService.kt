@@ -1,17 +1,15 @@
 package no.nav.sosialhjelp.soknad.v2.eier
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-
 
 @Service
 class EierServiceImpl(
     private val eierRepository: EierRepository,
-): EierService, EierRegisterService  {
-
+) : EierService, EierRegisterService {
     override fun findEier(soknadId: UUID) =
         eierRepository.findByIdOrNull(soknadId)
             ?: throw IkkeFunnetException("Finnes ingen Eier for $soknadId. Feil")
@@ -25,9 +23,11 @@ class EierServiceImpl(
         return findEier(soknadId)
             .run {
                 copy(
-                    kontonummer = kontonummer.copy(
-                        harIkkeKonto = harIkkeKonto,
-                        fraBruker = kontonummerBruker)
+                    kontonummer =
+                        kontonummer.copy(
+                            harIkkeKonto = harIkkeKonto,
+                            fraBruker = kontonummerBruker,
+                        ),
                 )
             }
             .let { eier -> eierRepository.save(eier).kontonummer }
@@ -41,9 +41,10 @@ class EierServiceImpl(
                     navn = eier.navn,
                     statsborgerskap = eier.statsborgerskap,
                     nordiskBorger = eier.nordiskBorger,
-                    kontonummer = kontonummer.copy(
-                        fraRegister = eier.kontonummer.fraRegister
-                    )
+                    kontonummer =
+                        kontonummer.copy(
+                            fraRegister = eier.kontonummer.fraRegister,
+                        ),
                 )
             }
             ?.also { eierRepository.save(it) }
@@ -57,6 +58,7 @@ class EierServiceImpl(
 
 interface EierService {
     fun findEier(soknadId: UUID): Eier
+
     fun updateKontonummer(
         soknadId: UUID,
         kontonummerBruker: String? = null,

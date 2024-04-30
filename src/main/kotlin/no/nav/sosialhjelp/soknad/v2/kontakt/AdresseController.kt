@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -23,7 +23,7 @@ class AdresseController(
     ): AdresserDto {
         return createAdresseDto(
             adresser = adresseService.findAdresser(soknadId),
-            mottaker = adresseService.findMottaker(soknadId)
+            mottaker = adresseService.findMottaker(soknadId),
         )
     }
 
@@ -41,7 +41,7 @@ class AdresseController(
             .let {
                 createAdresseDto(
                     adresser = it,
-                    mottaker = adresseService.findMottaker(soknadId)
+                    mottaker = adresseService.findMottaker(soknadId),
                 )
             }
     }
@@ -68,13 +68,16 @@ data class NavEnhetDto(
     val kommunenavn: String? = null,
 )
 
-fun createAdresseDto(adresser: Adresser, mottaker: NavEnhet?): AdresserDto {
+fun createAdresseDto(
+    adresser: Adresser,
+    mottaker: NavEnhet?,
+): AdresserDto {
     return AdresserDto(
         adresseValg = adresser.adressevalg,
         brukerAdresse = adresser.fraBruker,
         midlertidigAdresse = adresser.midlertidig,
         folkeregistrertAdresse = adresser.folkeregistrert,
-        navenhet = mottaker?.toNavEnhetDto()
+        navenhet = mottaker?.toNavEnhetDto(),
     )
 }
 

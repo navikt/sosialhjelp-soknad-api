@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.familie.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -9,11 +8,12 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class FamilieService(
-    private val familieRepository: FamilieRepository
-): ForsorgerService, SivilstandService, FamilieRegisterService {
+    private val familieRepository: FamilieRepository,
+) : ForsorgerService, SivilstandService, FamilieRegisterService {
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
 
     override fun updateForsorger(
@@ -40,8 +40,9 @@ class FamilieService(
         return existing
             .map { (uuid, existing) ->
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
-                val updatedBarn = updated.find { it.familieKey == uuid }
-                    ?: updated.find { it.personId == existing.personId }
+                val updatedBarn =
+                    updated.find { it.familieKey == uuid }
+                        ?: updated.find { it.personId == existing.personId }
 
                 when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
@@ -67,7 +68,7 @@ class FamilieService(
             }
             .copy(
                 sivilstatus = sivilstatus,
-                ektefelle = ektefelle
+                ektefelle = ektefelle,
             )
             .let { familieRepository.save(it) }
             .toSivilstand()
@@ -76,13 +77,13 @@ class FamilieService(
     override fun updateSivilstatusFraRegister(
         soknadId: UUID,
         sivilstatus: Sivilstatus,
-        ektefelle: Ektefelle
+        ektefelle: Ektefelle,
     ) {
         familieRepository
             .findOrCreate(soknadId)
             .copy(
                 sivilstatus = sivilstatus,
-                ektefelle = ektefelle
+                ektefelle = ektefelle,
             )
             .also { familieRepository.save(it) }
     }
@@ -90,14 +91,14 @@ class FamilieService(
     override fun updateForsorgerpliktRegister(
         soknadId: UUID,
         harForsorgerplikt: Boolean,
-        barn: List<Barn>
+        barn: List<Barn>,
     ) {
         familieRepository
             .findOrCreate(soknadId)
             .run {
                 copy(
                     harForsorgerplikt = harForsorgerplikt,
-                    ansvar = barn.associateBy { UUID.randomUUID() }
+                    ansvar = barn.associateBy { UUID.randomUUID() },
                 )
             }
             .also { familieRepository.save(it) }

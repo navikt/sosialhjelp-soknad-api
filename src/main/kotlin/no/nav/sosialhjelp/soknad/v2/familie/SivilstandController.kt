@@ -1,6 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
+import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -9,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
-import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
 
 @RestController
 @ProtectionSelvbetjeningHigh

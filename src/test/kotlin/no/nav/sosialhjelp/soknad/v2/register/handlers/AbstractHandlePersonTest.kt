@@ -23,8 +23,7 @@ import no.nav.sosialhjelp.soknad.v2.register.defaultResponseHentPersonWithEktefe
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 
-abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
-
+abstract class AbstractHandlePersonTest : AbstractRegisterDataTest() {
     @Autowired
     protected lateinit var handlePerson: HandlePerson
 
@@ -43,11 +42,10 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
     }
 
     fun createAnswerForHentPersonUgiftMedMatrikkelAdresse(): MatrikkeladresseDto {
-
         defaultResponseFromHentPerson(
             sivilstandDto = null,
             vegAdresseDto = null,
-            matrikkeladresseDto = matrikkeladresseDto
+            matrikkeladresseDto = matrikkeladresseDto,
         ).also { every { hentPersonClient.hentPerson(any()) } returns it }
 
         return defaultResponseFromHentMatrikkelAdresse().also {
@@ -69,7 +67,7 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
 
     fun createAnswerForHentEktefelle(
         fnr: String = ektefelleFnr,
-        vegAdresse: VegadresseDto? = vegadresseDto
+        vegAdresse: VegadresseDto? = vegadresseDto,
     ): EktefelleDto {
         return defaultResponseFromHentEktefelle(fnr, vegAdresse).also {
             every { hentPersonClient.hentEktefelle(fnr) } returns it
@@ -88,9 +86,10 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
     }
 
     protected fun createAnswerForPersonMedEktefelleOgBarn(): FamilieDtos {
-        val personDto = defaultResponseHentPersonWithEktefelleOgBarn().also {
-            every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
-        }
+        val personDto =
+            defaultResponseHentPersonWithEktefelleOgBarn().also {
+                every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
+            }
         val ektefelleDto = createAnswerForHentEktefelle(ektefelleFnr)
         val barnDtoList = createAnswerForHentBarn()
 
@@ -101,9 +100,9 @@ abstract class AbstractHandlePersonTest: AbstractRegisterDataTest() {
         )
     }
 
-    protected data class FamilieDtos (
+    protected data class FamilieDtos(
         val forelder: PersonDto,
         val ektefelle: EktefelleDto,
-        val barn: List<BarnDto>
+        val barn: List<BarnDto>,
     )
 }

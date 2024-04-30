@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleAdresseTest: AbstractHandlePersonTest() {
-
+class HandleAdresseTest : AbstractHandlePersonTest() {
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 

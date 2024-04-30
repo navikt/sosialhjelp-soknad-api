@@ -219,15 +219,15 @@ class PdlDtoMapper(
         adr2: VegadresseDto,
     ): Boolean {
         return (
-                adr1.adressenavn == adr2.adressenavn &&
-                        adr1.husnummer == adr2.husnummer &&
-                        adr1.husbokstav == adr2.husbokstav &&
-                        adr1.tilleggsnavn == adr2.tilleggsnavn &&
-                        adr1.postnummer == adr2.postnummer &&
-                        adr1.kommunenummer == adr2.kommunenummer &&
-                        adr1.bruksenhetsnummer == adr2.bruksenhetsnummer &&
-                        adr1.bydelsnummer == adr2.bydelsnummer
-                )
+            adr1.adressenavn == adr2.adressenavn &&
+                adr1.husnummer == adr2.husnummer &&
+                adr1.husbokstav == adr2.husbokstav &&
+                adr1.tilleggsnavn == adr2.tilleggsnavn &&
+                adr1.postnummer == adr2.postnummer &&
+                adr1.kommunenummer == adr2.kommunenummer &&
+                adr1.bruksenhetsnummer == adr2.bruksenhetsnummer &&
+                adr1.bydelsnummer == adr2.bydelsnummer
+        )
     }
 
     private fun isEqualVegadresserWithoutKommunenummer(
@@ -235,13 +235,13 @@ class PdlDtoMapper(
         adr2: VegadresseDto,
     ): Boolean {
         return (
-                adr1.adressenavn == adr2.adressenavn &&
-                        adr1.husnummer == adr2.husnummer &&
-                        adr1.husbokstav == adr2.husbokstav &&
-                        adr1.tilleggsnavn == adr2.tilleggsnavn &&
-                        adr1.postnummer == adr2.postnummer &&
-                        adr1.bruksenhetsnummer == adr2.bruksenhetsnummer
-                )
+            adr1.adressenavn == adr2.adressenavn &&
+                adr1.husnummer == adr2.husnummer &&
+                adr1.husbokstav == adr2.husbokstav &&
+                adr1.tilleggsnavn == adr2.tilleggsnavn &&
+                adr1.postnummer == adr2.postnummer &&
+                adr1.bruksenhetsnummer == adr2.bruksenhetsnummer
+        )
     }
 
     private fun mapToBostedsadresse(dtos: List<BostedsadresseDto>?): Bostedsadresse? {

@@ -1,30 +1,32 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class HandleFamilie(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
-): RegisterDataPersonHandler {
-    override fun handle(soknadId: UUID, person: Person) {
-
+) : RegisterDataPersonHandler {
+    override fun handle(
+        soknadId: UUID,
+        person: Person,
+    ) {
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
             familieService.updateSivilstatusFraRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
-                ektefelle = it
+                ektefelle = it,
             )
         }
         handleForsorgerplikt(soknadId)
@@ -45,13 +47,13 @@ class HandleFamilie(
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,
                     harForsorgerplikt = true,
-                    barn = barnlist.map { it.toV2Barn() }
+                    barn = barnlist.map { it.toV2Barn() },
                 )
             }
             ?: familieService.updateForsorgerpliktRegister(
                 soknadId = soknadId,
                 harForsorgerplikt = false,
-                barn = emptyList()
+                barn = emptyList(),
             )
     }
 }
@@ -60,11 +62,12 @@ private fun Barn.toV2Barn(): no.nav.sosialhjelp.soknad.v2.familie.Barn {
     return no.nav.sosialhjelp.soknad.v2.familie.Barn(
         familieKey = UUID.randomUUID(),
         personId = fnr,
-        navn = Navn(
-            fornavn = fornavn,
-            mellomnavn = mellomnavn,
-            etternavn = etternavn
-        ),
+        navn =
+            Navn(
+                fornavn = fornavn,
+                mellomnavn = mellomnavn,
+                etternavn = etternavn,
+            ),
         fodselsdato = fodselsdato?.toString(),
         folkeregistrertSammen = folkeregistrertSammen,
     )
@@ -76,19 +79,23 @@ private fun Person.toSivilstatus(): Sivilstatus {
 }
 
 private fun no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle.toV2Ektefelle(): Ektefelle {
-    return if (ikkeTilgangTilEktefelle) toSkjermetEktefelle()
-    else Ektefelle(
-        navn = Navn(
-            fornavn = fornavn ?: "fornavn finnes ikke på ektefelle",
-            mellomnavn = mellomnavn,
-            etternavn = etternavn ?: "etternavn finnes ikke på ektefelle"
-        ),
-        fodselsdato = fodselsdato?.toString(),
-        personId = fnr,
-        harDiskresjonskode = false,
-        folkeregistrertMedEktefelle = folkeregistrertSammen,
-        kildeErSystem = true
-    )
+    return if (ikkeTilgangTilEktefelle) {
+        toSkjermetEktefelle()
+    } else {
+        Ektefelle(
+            navn =
+                Navn(
+                    fornavn = fornavn ?: "fornavn finnes ikke på ektefelle",
+                    mellomnavn = mellomnavn,
+                    etternavn = etternavn ?: "etternavn finnes ikke på ektefelle",
+                ),
+            fodselsdato = fodselsdato?.toString(),
+            personId = fnr,
+            harDiskresjonskode = false,
+            folkeregistrertMedEktefelle = folkeregistrertSammen,
+            kildeErSystem = true,
+        )
+    }
 }
 
 private fun toSkjermetEktefelle(): Ektefelle {
@@ -97,6 +104,6 @@ private fun toSkjermetEktefelle(): Ektefelle {
         fodselsdato = null,
         personId = null,
         harDiskresjonskode = true,
-        kildeErSystem = true
+        kildeErSystem = true,
     )
 }

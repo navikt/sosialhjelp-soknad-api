@@ -12,12 +12,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 
 @Component
 class SendSoknadHandler(

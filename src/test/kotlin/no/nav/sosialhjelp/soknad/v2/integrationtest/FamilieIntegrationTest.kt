@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.createBarn
 import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
@@ -18,6 +17,7 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import java.util.UUID
 
 class FamilieIntegrationTest : AbstractIntegrationTest() {
     @Autowired
@@ -30,13 +30,13 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             createFamilie(
                 storedSoknad.id,
                 ansvar =
-                listOf(
-                    createBarn(
-                        UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
-                        personId = "12345678",
-                        deltBosted = true
+                    listOf(
+                        createBarn(
+                            UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
+                            personId = "12345678",
+                            deltBosted = true,
+                        ),
                     ),
-                ),
             ),
         )
 

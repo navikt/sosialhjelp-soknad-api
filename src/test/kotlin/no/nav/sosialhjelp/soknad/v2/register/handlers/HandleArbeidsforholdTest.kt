@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleArbeidsforholdTest: AbstractRegisterDataTest() {
-
+class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
     @Autowired
     private lateinit var handleArbeidsforhold: HandleArbeidsforhold
 
@@ -46,7 +45,7 @@ class HandleArbeidsforholdTest: AbstractRegisterDataTest() {
     @Test
     fun `Exception i Aareg-client kaster feil`() {
         every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } throws
-                TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
+            TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
             handleArbeidsforhold.handle(soknadId = soknad.id)
@@ -73,7 +72,7 @@ class HandleArbeidsforholdTest: AbstractRegisterDataTest() {
     fun `OrganisasjonClient kaster exception`() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } throws
-                TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
+            TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
 
         handleArbeidsforhold.handle(soknadId = soknad.id)
 

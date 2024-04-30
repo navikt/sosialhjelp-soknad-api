@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.livssituasjon
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.UtdanningService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.UtdanningService
 
 @RestController
 @ProtectionSelvbetjeningHigh

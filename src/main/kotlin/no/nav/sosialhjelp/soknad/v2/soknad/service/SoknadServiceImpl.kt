@@ -3,6 +3,10 @@ package no.nav.sosialhjelp.soknad.v2.soknad.service
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -10,10 +14,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 
 @Service
 @Transactional
@@ -21,7 +21,7 @@ class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
     private val sendSoknadHandler: SendSoknadHandler,
-): ServiceSoknad, BegrunnelseService, SoknadShadowAdapterService {
+) : ServiceSoknad, BegrunnelseService, SoknadShadowAdapterService {
     @Transactional(readOnly = true)
     override fun findSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
 
@@ -32,7 +32,7 @@ class SoknadServiceImpl(
     ): UUID {
         return Soknad(
             id = soknadId ?: UUID.randomUUID(),
-            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now() ),
+            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now()),
             eierPersonId = eierId,
         )
             .let { soknadRepository.save(it) }

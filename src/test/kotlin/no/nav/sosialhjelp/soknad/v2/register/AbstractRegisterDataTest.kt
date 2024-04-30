@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.register
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregClient
@@ -16,11 +15,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractRegisterDataTest {
-
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
     protected val soknad = opprettSoknad(id = UUID.randomUUID())
@@ -40,17 +39,17 @@ abstract class AbstractRegisterDataTest {
     protected lateinit var organisasjonClient: OrganisasjonClient
 
     protected fun createAnswerForAaregClient(
-        answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId)
+        answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId),
     ): List<ArbeidsforholdDto> {
         every { aaregClient.finnArbeidsforholdForArbeidstaker(soknad.eierPersonId) } returns answer
         return answer
     }
 
     protected fun createAnswerForOrganisasjonClient(
-        arbeidsforhold: List<ArbeidsforholdDto>
-    ): List<OrganisasjonNoekkelinfoDto>  {
+        arbeidsforhold: List<ArbeidsforholdDto>,
+    ): List<OrganisasjonNoekkelinfoDto> {
         return arbeidsforhold
-            .map {(it.arbeidsgiver as OrganisasjonDto).organisasjonsnummer}
+            .map { (it.arbeidsgiver as OrganisasjonDto).organisasjonsnummer }
             .map {
                 val answer = defaultResponseFromOrganisasjonClient(it!!)
                 every { organisasjonClient.hentOrganisasjonNoekkelinfo(it) } returns answer

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh

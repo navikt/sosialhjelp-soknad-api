@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.featuretoggle.unleash
 
 import io.getunleash.DefaultUnleash
-import io.getunleash.FakeUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
 import org.springframework.beans.factory.annotation.Value
