@@ -36,6 +36,8 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.familie.Forsorger
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstand
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     return JsonInternalSoknad().apply {
@@ -53,7 +55,10 @@ fun createFamilie(
     sivilstatus: Sivilstatus? = Sivilstatus.GIFT,
     ansvar: List<Barn> = listOf(createBarn()),
     ektefelle: Ektefelle? = opprettEktefelle(),
-) = Familie(soknadId, harForsorgerPlikt, barnebidrag, sivilstatus, ansvar.associateBy { it.familieKey }, ektefelle)
+) = Familie(
+    soknadId = soknadId,
+    forsorger = Forsorger( harForsorgerPlikt, barnebidrag, ansvar.associateBy { it.familieKey }),
+    sivilstand = Sivilstand( sivilstatus, ektefelle))
 
 fun opprettEktefelle(): Ektefelle {
     return Ektefelle(

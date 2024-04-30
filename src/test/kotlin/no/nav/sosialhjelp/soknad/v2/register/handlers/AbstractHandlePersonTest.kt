@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieDto
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ektefelleFnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.kontoDto

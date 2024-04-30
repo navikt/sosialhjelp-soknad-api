@@ -19,6 +19,6 @@ internal class KodeverkDtoTest {
                 .readValue<KodeverkDto>(json)
 
         assertThat(response).isNotNull
-        assertThat(response.betydninger!!["NOR"]!![0].beskrivelser!!["nb"]!!.term).isEqualTo("NORGE")
+        assertThat(response.betydninger["NOR"]!![0].beskrivelser["nb"]!!.term).isEqualTo("NORGE")
     }
 }

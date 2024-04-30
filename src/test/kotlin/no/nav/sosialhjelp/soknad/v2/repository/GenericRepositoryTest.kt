@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstand
 
 /**
  * Formålet med testklassen:
@@ -63,7 +64,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Familie`() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
-            updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null),
+            updatedEntity = createFamilie(soknad.id)
+                .copy(sivilstand = Sivilstand(sivilstatus = null)),
         )
     }
 

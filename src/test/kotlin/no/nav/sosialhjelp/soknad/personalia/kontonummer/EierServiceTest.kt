@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.UtenlandskKontoInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class KontonummerServiceTest {
+internal class EierServiceTest {
     private val kontonummerClient: KontonummerClient = mockk()
     private val kontonummerService = KontonummerService(kontonummerClient)
 

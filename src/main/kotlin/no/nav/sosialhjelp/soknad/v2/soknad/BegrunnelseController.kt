@@ -14,15 +14,13 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseController(
-    private val soknadService: SoknadService,
+    private val soknadServiceImpl: SoknadServiceImpl,
 ) {
     @GetMapping
     fun getBegrunnelse(
         @PathVariable("soknadId") soknadId: UUID,
-    ): BegrunnelseDto? {
-        // TODO hva skal vi egentlig returnere når bruker ikke har fylt ut data? null, objekt med null-verdier eller 404?
-        return soknadService.getSoknad(soknadId).begrunnelse?.toBegrunnelseDto()
-            ?: BegrunnelseDto()
+    ): BegrunnelseDto {
+        return soknadServiceImpl.findSoknad(soknadId).begrunnelse.toBegrunnelseDto()
     }
 
     @PutMapping
@@ -32,7 +30,7 @@ class BegrunnelseController(
     ): BegrunnelseDto {
         val brukerdata =
             begrunnelseDto.let {
-                soknadService.updateBegrunnelse(
+                soknadServiceImpl.updateBegrunnelse(
                     soknadId = soknadId,
                     begrunnelse =
                         Begrunnelse(

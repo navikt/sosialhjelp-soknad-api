@@ -13,10 +13,10 @@ import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerInput
-import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktController
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerpliktController
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandController
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerController
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidController

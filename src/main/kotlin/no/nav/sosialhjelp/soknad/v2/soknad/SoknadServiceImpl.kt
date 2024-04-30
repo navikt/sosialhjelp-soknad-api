@@ -13,36 +13,36 @@ import java.util.UUID
 
 @Service
 @Transactional
-class SoknadService(
+class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
     private val sendSoknadHandler: SendSoknadHandler,
-) {
+): ServiceSoknad, BegrunnelseService, SoknadShadowAdapterService {
     @Transactional(readOnly = true)
-    fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
+    override fun findSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
 
-    fun createSoknad(
+    override fun createSoknad(
         eierId: String,
-        soknadId: UUID? = null,
-        opprettetDato: LocalDateTime? = null,
+        soknadId: UUID?,
+        opprettetDato: LocalDateTime?,
     ): UUID {
         return Soknad(
             id = soknadId ?: UUID.randomUUID(),
-            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now() ),
             eierPersonId = eierId,
         )
             .let { soknadRepository.save(it) }
             .id
     }
 
-    fun deleteSoknad(soknadId: UUID) {
+    override fun deleteSoknad(soknadId: UUID) {
         getSoknadOrThrowException(soknadId).also {
             soknadRepository.delete(it)
         }
         mellomlagringService.deleteAll(soknadId)
     }
 
-    fun sendSoknad(id: UUID): UUID {
+    override fun sendSoknad(id: UUID): UUID {
         val digisosId: UUID =
             getSoknadOrThrowException(id).run {
                 tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
@@ -56,25 +56,14 @@ class SoknadService(
         return digisosId
     }
 
-    fun updateBegrunnelse(
-        soknadId: UUID,
-        begrunnelse: Begrunnelse,
-    ): Begrunnelse {
-        return getSoknadOrThrowException(soknadId).run {
-            copy(begrunnelse = begrunnelse)
-                .also { soknadRepository.save(it) }
-                .let { it.begrunnelse!! }
-        }
-    }
-
-    fun slettSoknad(soknadId: UUID) {
+    override fun slettSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
             ?: log.warn("Soknad V2 finnes ikke: $soknadId")
     }
 
-    fun setInnsendingstidspunkt(
+    override fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        innsendingsTidspunkt: LocalDateTime,
     ) {
         soknadRepository.findByIdOrNull(soknadId)
             ?.run {
@@ -91,7 +80,48 @@ class SoknadService(
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
+    override fun findBegrunnelse(soknadId: UUID): Begrunnelse {
+        return getSoknadOrThrowException(soknadId).begrunnelse
+    }
+
+    override fun updateBegrunnelse(
+        soknadId: UUID,
+        begrunnelse: Begrunnelse,
+    ): Begrunnelse {
+        return getSoknadOrThrowException(soknadId)
+            .copy(begrunnelse = begrunnelse)
+            .let { soknadRepository.save(it) }
+            .begrunnelse
+    }
+
     companion object {
         private val log by logger()
     }
+}
+
+interface ServiceSoknad {
+    fun findSoknad(soknadId: UUID): Soknad
+    fun createSoknad(
+        eierId: String,
+        soknadId: UUID? = null,
+        // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
+        opprettetDato: LocalDateTime? = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    ): UUID
+
+    fun sendSoknad(id: UUID): UUID
+    fun deleteSoknad(soknadId: UUID)
+    fun slettSoknad(soknadId: UUID)
+
+}
+
+interface BegrunnelseService {
+    fun findBegrunnelse(soknadId: UUID): Begrunnelse
+    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Begrunnelse
+}
+
+interface SoknadShadowAdapterService {
+    fun setInnsendingstidspunkt(
+        soknadId: UUID,
+        innsendingsTidspunkt: LocalDateTime,
+    )
 }

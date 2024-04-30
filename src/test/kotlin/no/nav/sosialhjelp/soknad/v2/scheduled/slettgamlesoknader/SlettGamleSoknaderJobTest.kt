@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
+import no.nav.sosialhjelp.soknad.v2.scheduled.SlettGamleSoknaderJob
 
 class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @Autowired

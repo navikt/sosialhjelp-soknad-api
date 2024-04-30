@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import org.springframework.web.bind.annotation.GetMapping
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -15,6 +16,7 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierService
 class BasisPersonaliaController(
     private val eierService: EierService,
 ) {
+    @GetMapping
     fun getBasisPersonalia(
         @PathVariable("soknadId") soknadId: UUID,
     ): PersonaliaDto {
@@ -31,6 +33,7 @@ private fun Eier.toPersonaliaDto(): PersonaliaDto {
                 etternavn = navn.etternavn,
             ),
         statsborgerskap = statsborgerskap,
+        nordiskBorger = nordiskBorger
     )
 }
 
@@ -39,6 +42,7 @@ data class PersonaliaDto(
     // TODO Nødvendig / riktig å sende med fødselsnummer i denne Dto'en ?
 //    val fodselsnummer: String? = null,
     val statsborgerskap: String? = null,
+    val nordiskBorger: Boolean? = null,
 )
 
 data class NavnDto(

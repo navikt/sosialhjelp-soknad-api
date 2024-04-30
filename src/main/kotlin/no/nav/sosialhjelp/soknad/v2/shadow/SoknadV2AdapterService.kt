@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRegisterService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadServiceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
-    private val soknadService: SoknadService,
+    private val soknadServiceImpl: SoknadServiceImpl,
     private val livssituasjonService: LivssituasjonRegisterService,
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
@@ -38,7 +38,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
-            soknadService.createSoknad(
+            soknadServiceImpl.createSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
                 eierId = eierId,
@@ -116,7 +116,7 @@ class SoknadV2AdapterService(
         kotlin.runCatching {
             val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
 
-            soknadService.setInnsendingstidspunkt(
+            soknadServiceImpl.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
                 zonedDateTime.toLocalDateTime(),
             )
@@ -128,7 +128,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Sletter SoknadV2")
 
         kotlin.runCatching {
-            soknadService.slettSoknad(UUID.fromString(behandlingsId))
+            soknadServiceImpl.slettSoknad(UUID.fromString(behandlingsId))
         }
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }

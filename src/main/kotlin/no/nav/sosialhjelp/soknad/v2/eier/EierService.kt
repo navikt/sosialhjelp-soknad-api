@@ -6,18 +6,6 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
-interface EierService {
-    fun findEier(soknadId: UUID): Eier
-    fun updateKontonummer(
-        soknadId: UUID,
-        kontonummerBruker: String? = null,
-        harIkkeKonto: Boolean? = null,
-    ): Kontonummer
-}
-
-interface EierRegisterService {
-    fun updateEier(eier: Eier)
-}
 
 @Service
 class EierServiceImpl(
@@ -62,4 +50,17 @@ class EierServiceImpl(
             ?.also { eierRepository.save(it) }
             ?: eierRepository.save(eier)
     }
+}
+
+interface EierService {
+    fun findEier(soknadId: UUID): Eier
+    fun updateKontonummer(
+        soknadId: UUID,
+        kontonummerBruker: String? = null,
+        harIkkeKonto: Boolean? = null,
+    ): Kontonummer
+}
+
+interface EierRegisterService {
+    fun updateEier(eier: Eier)
 }

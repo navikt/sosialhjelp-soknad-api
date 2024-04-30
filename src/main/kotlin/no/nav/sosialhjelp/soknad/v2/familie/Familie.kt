@@ -17,12 +17,17 @@ interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Fami
 data class Familie(
     @Id
     override val soknadId: UUID,
+    @Embedded.Empty
+    val forsorger: Forsorger = Forsorger(),
+    @Embedded.Empty
+    val sivilstand: Sivilstand = Sivilstand(),
+) : DomainRoot
+
+data class Forsorger(
     val harForsorgerplikt: Boolean? = null, // fra JsonForsorgerplikt
     val barnebidrag: Barnebidrag? = null, // fra JsonForsorgerplikt
-    val sivilstatus: Sivilstatus? = null,
     val ansvar: Map<UUID, Barn> = emptyMap(), // jsonForsorgerplikt
-    val ektefelle: Ektefelle? = null, // jsonSivilstatus
-) : DomainRoot
+)
 
 data class Barn(
     // JsonAnsvar
@@ -37,6 +42,11 @@ data class Barn(
     val samvarsgrad: Int? = null,
 )
 
+data class Sivilstand(
+    val sivilstatus: Sivilstatus? = null,
+    val ektefelle: Ektefelle? = null, // jsonSivilstatus
+)
+
 data class Ektefelle(
     @Embedded.Nullable
     val navn: Navn?,
@@ -46,7 +56,9 @@ data class Ektefelle(
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
     val kildeErSystem: Boolean = true,
-)
+) {
+    companion object
+}
 
 enum class Barnebidrag {
     BETALER,

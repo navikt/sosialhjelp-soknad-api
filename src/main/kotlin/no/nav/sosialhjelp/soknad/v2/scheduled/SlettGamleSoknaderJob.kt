@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.scheduled.slettgamlesoknader
+package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger

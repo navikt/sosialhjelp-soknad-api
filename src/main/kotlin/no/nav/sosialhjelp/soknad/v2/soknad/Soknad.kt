@@ -28,8 +28,8 @@ data class Soknad(
     val eierPersonId: String,
     @Embedded.Empty
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
-    @Embedded.Nullable
-    val begrunnelse: Begrunnelse? = null,
+    @Embedded.Empty
+    val begrunnelse: Begrunnelse = Begrunnelse(),
 ) : DomainRoot {
     override val soknadId: UUID get() = id
 }

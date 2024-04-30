@@ -17,21 +17,21 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhetService
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseService
 
 @Component
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val navEnhetService: NavEnhetService,
+    private val adresseService: AdresseService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
         val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        val mottaker = navEnhetService.findMottaker(soknad.id)
+        val mottaker = adresseService.findMottaker(soknad.id)
 
         mottaker?.let {
             log.info(

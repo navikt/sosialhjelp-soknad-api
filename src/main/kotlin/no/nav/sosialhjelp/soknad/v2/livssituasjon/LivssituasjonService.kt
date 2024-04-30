@@ -4,26 +4,6 @@ import java.util.UUID
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
-interface ArbeidService {
-    fun findArbeid(soknadId: UUID): Arbeid?
-    fun updateKommentarTilArbeid(soknadId: UUID, kommentarTilArbeidsforhold: String, ): Arbeid
-}
-
-interface UtdanningService {
-    fun findUtdanning(soknadId: UUID): Utdanning?
-    fun updateUtdanning(soknadId: UUID, erStudent: Boolean, studentgrad: Studentgrad?): Utdanning
-}
-
-interface BosituasjonService {
-    fun findBosituasjon(soknadId: UUID): Bosituasjon?
-    fun updateBosituasjon(soknadId: UUID, botype: Botype?, antallHusstand: Int?): Bosituasjon
-}
-
-interface LivssituasjonRegisterService {
-    fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>)
-}
-
-
 @Service
 class LivssituasjonService(
     private val repository: LivssituasjonRepository,
@@ -78,4 +58,23 @@ class LivssituasjonService(
 
     private fun findOrCreate(soknadId: UUID) = repository.findByIdOrNull(soknadId)
         ?: repository.save(Livssituasjon(soknadId))
+}
+
+interface ArbeidService {
+    fun findArbeid(soknadId: UUID): Arbeid?
+    fun updateKommentarTilArbeid(soknadId: UUID, kommentarTilArbeidsforhold: String, ): Arbeid
+}
+
+interface UtdanningService {
+    fun findUtdanning(soknadId: UUID): Utdanning?
+    fun updateUtdanning(soknadId: UUID, erStudent: Boolean, studentgrad: Studentgrad?): Utdanning
+}
+
+interface BosituasjonService {
+    fun findBosituasjon(soknadId: UUID): Bosituasjon?
+    fun updateBosituasjon(soknadId: UUID, botype: Botype?, antallHusstand: Int?): Bosituasjon
+}
+
+interface LivssituasjonRegisterService {
+    fun updateArbeidsforhold(soknadId: UUID, arbeidsforhold: List<Arbeidsforhold>)
 }

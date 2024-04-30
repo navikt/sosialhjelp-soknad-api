@@ -1,14 +1,11 @@
-package no.nav.sosialhjelp.soknad.v2.familie.sivilstatus
+package no.nav.sosialhjelp.soknad.v2.familie
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleDto
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
-import no.nav.sosialhjelp.soknad.v2.familie.Familie
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.toDomain
 import no.nav.sosialhjelp.soknad.v2.familie.toDto
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.SivilstandService
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -25,20 +22,28 @@ class SivilstandController(private val sivilstandService: SivilstandService) {
     @GetMapping
     fun getSivilstand(
         @PathVariable("soknadId") soknadId: UUID,
-    ): SivilstandDto? = sivilstandService.findFamilie(soknadId)?.toSivilstandDto()
+    ): SivilstandDto = sivilstandService.findSivilstand(soknadId)?.toSivilstandDto() ?: SivilstandDto()
 
     @PutMapping
     fun updateSivilstand(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody sivilstandInput: SivilstandInput,
-    ): ResponseEntity<SivilstandDto> {
+    ): SivilstandDto {
         if (sivilstandInput.sivilstatus != Sivilstatus.GIFT) {
             require(sivilstandInput.ektefelle == null) { "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift" }
         }
-        val updated = sivilstandService.updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toDomain())
-        return ResponseEntity.ok(updated.toSivilstandDto())
+        return sivilstandService
+            .updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toDomain())
+            .toSivilstandDto()
     }
 }
+
+data class EktefelleInput(
+    val personId: String?,
+    val navn: Navn,
+    val fodselsdato: String? = null,
+    val borSammen: Boolean? = null,
+)
 
 data class SivilstandInput(
     val sivilstatus: Sivilstatus?,
@@ -46,12 +51,25 @@ data class SivilstandInput(
 )
 
 data class SivilstandDto(
-    val sivilstatus: Sivilstatus?,
-    val ektefelle: EktefelleDto?,
+    val sivilstatus: Sivilstatus? = null,
+    val ektefelle: EktefelleDto? = null,
 )
 
-fun Familie.toSivilstandDto() =
+data class EktefelleDto(
+    val personId: String?,
+    val navn: Navn?,
+    val fodselsdato: String?,
+    val harDiskresjonskode: Boolean? = null,
+    val folkeregistrertMedEktefelle: Boolean? = null,
+    val borSammen: Boolean? = null,
+)
+
+fun Sivilstand.toSivilstandDto() =
     SivilstandDto(
         this.sivilstatus,
-        if (this.sivilstatus == Sivilstatus.GIFT) this.ektefelle?.toDto() else null,
+        ektefelle?.toDto(),
     )
+
+fun Ektefelle.toDto() = EktefelleDto(personId, navn, fodselsdato, folkeregistrertMedEktefelle, borSammen)
+
+fun EktefelleInput.toDomain() = Ektefelle(navn, fodselsdato, personId, borSammen = borSammen, kildeErSystem = false)

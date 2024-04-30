@@ -43,25 +43,25 @@ internal class NavMessageSourceTest {
 
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
-        val properties = messageSource.getBundleFor("sendsoknad", Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale.of("nb", "NO"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
-        val properties = messageSource.getBundleFor("sendsoknad", Locale("en", "GB"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale.of("en", "GB"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("engelsk felles fra minne")
     }
 
     @Test
     fun skalIkkeHenteAndreSoknadersTekster() {
-        val properties = messageSource.getBundleFor("sendsoknad", Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale.of("nb", "NO"))
         Assertions.assertThat(properties).doesNotContainKey("annen.key")
     }
 
     @Test
     fun skalHenteAlleTeksterHvisTypeMangler() {
-        val properties = messageSource.getBundleFor(null, Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor(null, Locale.of("nb", "NO"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 }
