@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieRegisterService
+import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component

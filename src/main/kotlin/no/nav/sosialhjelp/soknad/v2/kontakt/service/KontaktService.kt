@@ -1,31 +1,19 @@
-package no.nav.sosialhjelp.soknad.v2.kontakt
+package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-
-interface AdresseService {
-    fun findAdresser(soknadId: UUID): Adresser
-    fun updateBrukerAdresse(soknadId: UUID, adresseValg: AdresseValg, brukerAdresse: Adresse?): Adresser
-    fun findMottaker(soknadId: UUID): NavEnhet?
-
-}
-
-interface TelefonService {
-    fun findTelefonInfo(soknadId: UUID): Telefonnummer?
-    fun updateTelefonnummer(soknadId: UUID, telefonnummerBruker: String?): Telefonnummer
-}
-
-interface KontaktRegisterService {
-    fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?,)
-    fun updateTelefonRegister(soknadId: UUID, telefonRegister: String,)
-}
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 
 @Service
-class KontaktServiceImpl(
+class KontaktService(
     private val kontaktRepository: KontaktRepository,
 ): AdresseService, TelefonService, KontaktRegisterService {
     private val logger by logger()
@@ -36,7 +24,7 @@ class KontaktServiceImpl(
         soknadId: UUID,
         telefonnummerBruker: String?,
     ): Telefonnummer {
-        return kontaktRepository.findOrCreate(soknadId)
+        return findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraBruker = telefonnummerBruker)) }
             .let { kontaktRepository.save(it) }
             .telefonnummer
@@ -56,15 +44,14 @@ class KontaktServiceImpl(
                     "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
         )
 
-        return kontaktRepository.findOrCreate(soknadId)
-            .run { copy(adresser = adresser.copy(valg = adresseValg, fraBruker = brukerAdresse)) }
+        return findOrCreate(soknadId)
+            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
             .adresser
     }
 
     override fun saveAdresserRegister(soknadId: UUID, folkeregistrert: Adresse?, midlertidig: Adresse?) {
-        kontaktRepository
-            .findOrCreate(soknadId)
+        findOrCreate(soknadId)
             .run {
                 copy(
                     adresser = adresser.copy(
@@ -77,15 +64,13 @@ class KontaktServiceImpl(
     }
 
     override fun updateTelefonRegister(soknadId: UUID, telefonRegister: String,) {
-        kontaktRepository
-            .findOrCreate(soknadId)
+        findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
             .also { kontaktRepository.save(it) }
     }
 
     override fun findMottaker(soknadId: UUID) =  kontaktRepository.findByIdOrNull(soknadId)?.mottaker
-}
 
-private fun KontaktRepository.findOrCreate(soknadId: UUID): Kontakt {
-    return findByIdOrNull(soknadId) ?: save(Kontakt(soknadId))
+    private fun findOrCreate(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
+        ?: kontaktRepository.save(Kontakt(soknadId))
 }

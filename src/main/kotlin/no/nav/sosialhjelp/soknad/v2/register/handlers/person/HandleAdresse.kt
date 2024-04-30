@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Component
 
 @Component

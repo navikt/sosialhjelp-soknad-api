@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadServiceImpl
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping

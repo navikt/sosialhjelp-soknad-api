@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresseController
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseController
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID

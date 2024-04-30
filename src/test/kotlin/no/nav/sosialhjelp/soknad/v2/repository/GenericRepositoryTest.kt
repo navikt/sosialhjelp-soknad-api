@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstand
+import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 /**
  * Formålet med testklassen:

@@ -19,8 +19,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.v2.familie.Forsorger
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstand
+import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
+import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {

@@ -17,10 +17,10 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
@@ -36,8 +36,8 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.Forsorger
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstand
+import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
+import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     return JsonInternalSoknad().apply {
@@ -58,7 +58,8 @@ fun createFamilie(
 ) = Familie(
     soknadId = soknadId,
     forsorger = Forsorger( harForsorgerPlikt, barnebidrag, ansvar.associateBy { it.familieKey }),
-    sivilstand = Sivilstand( sivilstatus, ektefelle))
+    sivilstand = Sivilstand( sivilstatus, ektefelle)
+)
 
 fun opprettEktefelle(): Ektefelle {
     return Ektefelle(
@@ -176,7 +177,7 @@ fun opprettKontakt(
             folkeregistrert = opprettFolkeregistrertAdresse(),
             midlertidig = opprettMatrikkelAdresse(),
             fraBruker = opprettMidlertidigAdresse(),
-            valg = AdresseValg.FOLKEREGISTRERT,
+            adressevalg = AdresseValg.FOLKEREGISTRERT,
         ),
     navEnhet: NavEnhet = opprettNavEnhet(),
 ): Kontakt {
@@ -189,7 +190,7 @@ fun opprettAdresser(
     brukerAdresse: Adresse = opprettMatrikkelAdresse(),
 ): Adresser {
     return Adresser(
-        valg = AdresseValg.FOLKEREGISTRERT,
+        adressevalg = AdresseValg.FOLKEREGISTRERT,
         midlertidig = midlertidigAdresse,
         folkeregistrert = folkeregistrertAdresse,
         fraBruker = brukerAdresse,

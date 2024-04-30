@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail

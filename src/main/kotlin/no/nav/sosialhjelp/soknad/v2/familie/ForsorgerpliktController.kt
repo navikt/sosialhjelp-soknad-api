@@ -2,9 +2,10 @@ package no.nav.sosialhjelp.soknad.v2.familie
 
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
+import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping

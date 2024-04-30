@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.adresse
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table

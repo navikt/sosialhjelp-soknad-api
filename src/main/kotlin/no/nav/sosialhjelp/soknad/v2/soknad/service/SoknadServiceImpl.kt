@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.soknad
+package no.nav.sosialhjelp.soknad.v2.soknad.service
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -10,6 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 
 @Service
 @Transactional
@@ -97,31 +101,4 @@ class SoknadServiceImpl(
     companion object {
         private val log by logger()
     }
-}
-
-interface ServiceSoknad {
-    fun findSoknad(soknadId: UUID): Soknad
-    fun createSoknad(
-        eierId: String,
-        soknadId: UUID? = null,
-        // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
-        opprettetDato: LocalDateTime? = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-    ): UUID
-
-    fun sendSoknad(id: UUID): UUID
-    fun deleteSoknad(soknadId: UUID)
-    fun slettSoknad(soknadId: UUID)
-
-}
-
-interface BegrunnelseService {
-    fun findBegrunnelse(soknadId: UUID): Begrunnelse
-    fun updateBegrunnelse(soknadId: UUID, begrunnelse: Begrunnelse): Begrunnelse
-}
-
-interface SoknadShadowAdapterService {
-    fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
-    )
 }

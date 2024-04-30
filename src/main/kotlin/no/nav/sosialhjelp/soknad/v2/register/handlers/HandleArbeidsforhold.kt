@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import org.springframework.stereotype.Component
 

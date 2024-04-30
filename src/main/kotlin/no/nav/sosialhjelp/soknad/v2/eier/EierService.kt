@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 class EierServiceImpl(
     private val eierRepository: EierRepository,
 ): EierService, EierRegisterService  {
-    private val logger by logger()
 
     override fun findEier(soknadId: UUID) =
         eierRepository.findByIdOrNull(soknadId)
@@ -49,6 +48,10 @@ class EierServiceImpl(
             }
             ?.also { eierRepository.save(it) }
             ?: eierRepository.save(eier)
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

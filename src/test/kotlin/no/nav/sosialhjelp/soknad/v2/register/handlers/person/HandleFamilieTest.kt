@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieServiceImpl
-import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerService
-import no.nav.sosialhjelp.soknad.v2.familie.SivilstandService
+import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
+import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
 import org.assertj.core.api.Assertions.assertThat

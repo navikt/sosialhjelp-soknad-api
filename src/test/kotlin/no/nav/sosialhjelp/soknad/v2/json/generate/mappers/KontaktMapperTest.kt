@@ -13,10 +13,10 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -49,7 +49,7 @@ private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnumme
 }
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
-    when (adresser.valg) {
+    when (adresser.adressevalg) {
         AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrert)
         AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidig)
         AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.fraBruker)

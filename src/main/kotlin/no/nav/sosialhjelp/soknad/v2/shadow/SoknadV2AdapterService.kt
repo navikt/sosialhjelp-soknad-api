@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseS
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRegisterService
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadServiceImpl
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation

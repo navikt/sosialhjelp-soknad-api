@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserDto
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -28,7 +28,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             uri = "/soknad/${soknad.id}/adresser",
             responseBodyClass = AdresserDto::class.java,
         ).also {
-            assertThat(it.adresseValg).isEqualTo(kontakt.adresser.valg)
+            assertThat(it.adresseValg).isEqualTo(kontakt.adresser.adressevalg)
 
             assertThat(it.midlertidigAdresse).isInstanceOf(MatrikkelAdresse::class.java)
             assertThat(it.midlertidigAdresse).isEqualTo(kontakt.adresser.midlertidig)
@@ -59,7 +59,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.adresser.valg).isEqualTo(adresserInput.adresseValg)
+            assertThat(it.adresser.adressevalg).isEqualTo(adresserInput.adresseValg)
             assertThat(it.adresser.fraBruker).isEqualTo(adresserInput.brukerAdresse)
         }
     }

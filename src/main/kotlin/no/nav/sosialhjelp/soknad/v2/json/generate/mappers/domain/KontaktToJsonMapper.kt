@@ -17,10 +17,10 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -46,7 +46,7 @@ class KontaktToJsonMapper(
             json: JsonInternalSoknad,
         ) {
             val oppholdsadresse = kontakt.adresser.getOppholdsadresse()
-            val adresseValg = kontakt.adresser.valg
+            val adresseValg = kontakt.adresser.adressevalg
 
             json.initializeObjects()
             json.midlertidigAdresse = kontakt.adresser.midlertidig?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)

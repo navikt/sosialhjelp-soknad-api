@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
@@ -33,17 +32,20 @@ data class Telefonnummer(
 )
 
 data class Adresser(
+    @Column("folkeregistrert_adresse")
     val folkeregistrert: Adresse? = null,
+    @Column("midlertidig_adresse")
     val midlertidig: Adresse? = null,
+    @Column("bruker_adresse")
     val fraBruker: Adresse? = null,
-    val valg: AdresseValg? = null,
+    val adressevalg: AdresseValg? = null,
 ) {
     fun getOppholdsadresse(): Adresse {
-        return when (valg) {
+        return when (adressevalg) {
             AdresseValg.FOLKEREGISTRERT -> folkeregistrert ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
             AdresseValg.MIDLERTIDIG -> midlertidig ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
             AdresseValg.SOKNAD -> fraBruker ?: valgtAdresseNullError(AdresseValg.SOKNAD)
-            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $valg")
+            else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
     }
 

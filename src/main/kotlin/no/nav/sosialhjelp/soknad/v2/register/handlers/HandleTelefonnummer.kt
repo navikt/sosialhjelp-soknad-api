@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
 import org.springframework.stereotype.Component
 

@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 
 @Component
 class SendSoknadHandler(
