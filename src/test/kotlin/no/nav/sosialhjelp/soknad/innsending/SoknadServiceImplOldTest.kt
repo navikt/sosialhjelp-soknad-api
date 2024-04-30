@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.LocalDateTime
 
-internal class SoknadServiceOldTest {
+internal class SoknadServiceImplOldTest {
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()

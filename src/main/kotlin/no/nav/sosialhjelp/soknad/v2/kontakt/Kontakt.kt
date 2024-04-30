@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
@@ -23,7 +22,7 @@ data class Kontakt(
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
     val mottaker: NavEnhet = NavEnhet(),
-) : AggregateRoot
+) : DomainRoot
 
 data class Telefonnummer(
     @Column("telefon_register")
@@ -33,16 +32,19 @@ data class Telefonnummer(
 )
 
 data class Adresser(
-    val folkeregistrertAdresse: Adresse? = null,
-    val midlertidigAdresse: Adresse? = null,
-    val brukerAdresse: Adresse? = null,
+    @Column("folkeregistrert_adresse")
+    val folkeregistrert: Adresse? = null,
+    @Column("midlertidig_adresse")
+    val midlertidig: Adresse? = null,
+    @Column("bruker_adresse")
+    val fraBruker: Adresse? = null,
     val adressevalg: AdresseValg? = null,
 ) {
     fun getOppholdsadresse(): Adresse {
         return when (adressevalg) {
-            AdresseValg.FOLKEREGISTRERT -> folkeregistrertAdresse ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
-            AdresseValg.MIDLERTIDIG -> midlertidigAdresse ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
-            AdresseValg.SOKNAD -> brukerAdresse ?: valgtAdresseNullError(AdresseValg.SOKNAD)
+            AdresseValg.FOLKEREGISTRERT -> folkeregistrert ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
+            AdresseValg.MIDLERTIDIG -> midlertidig ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
+            AdresseValg.SOKNAD -> fraBruker ?: valgtAdresseNullError(AdresseValg.SOKNAD)
             else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
     }

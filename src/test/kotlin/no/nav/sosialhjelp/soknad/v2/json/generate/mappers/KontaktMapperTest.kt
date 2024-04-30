@@ -9,14 +9,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.KontaktToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -32,12 +32,12 @@ class KontaktMapperTest {
 
         KontaktToJsonMapper.doMapping(kontakt, json)
 
-        json.assertMidlertidigAdresse(kontakt.adresser.midlertidigAdresse)
+        json.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
         json.assertNavEnhet(kontakt.mottaker)
 
         with(json.soknad.data.personalia) {
             assertTelefonnummerBruker(kontakt.telefonnummer)
-            assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrertAdresse)
+            assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrert)
             assertOppholdsadresse(kontakt.adresser)
         }
     }
@@ -50,9 +50,9 @@ private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnumme
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
     when (adresser.adressevalg) {
-        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrertAdresse)
-        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidigAdresse)
-        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.brukerAdresse)
+        AdresseValg.FOLKEREGISTRERT -> oppholdsadresse.assertAdresse(adresser.folkeregistrert)
+        AdresseValg.MIDLERTIDIG -> oppholdsadresse.assertAdresse(adresser.midlertidig)
+        AdresseValg.SOKNAD -> oppholdsadresse.assertAdresse(adresser.fraBruker)
         else -> throw IllegalStateException("AdresseValg ikke satt")
     }
 }

@@ -26,9 +26,9 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/personalia/kontonummer",
             KontoInformasjonDto::class.java,
         ).also {
-            assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer!!.fraBruker)
-            assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer!!.fraRegister)
-            assertThat(it.harIkkeKonto).isEqualTo(eier.kontonummer!!.harIkkeKonto)
+            assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer.fraBruker)
+            assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer.fraRegister)
+            assertThat(it.harIkkeKonto).isEqualTo(eier.kontonummer.harIkkeKonto)
         }
     }
 
@@ -45,8 +45,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
-            assertThat(it.kontonummer!!.harIkkeKonto).isNull()
-            assertThat(it.kontonummer!!.fraBruker).isEqualTo(input.kontonummer)
+            assertThat(it.kontonummer.harIkkeKonto).isNull()
+            assertThat(it.kontonummer.fraBruker).isEqualTo(input.kontonummer)
         }
             ?: fail("Fant ikke brukerdata")
     }
@@ -63,8 +63,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
-            assertThat(it.kontonummer!!.harIkkeKonto).isTrue()
-            assertThat(it.kontonummer!!.fraBruker).isNull()
+            assertThat(it.kontonummer.harIkkeKonto).isTrue()
+            assertThat(it.kontonummer.fraBruker).isNull()
         }
             ?: fail("Fant ikke brukerdata")
     }

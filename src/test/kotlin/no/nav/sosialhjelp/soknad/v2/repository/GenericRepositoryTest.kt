@@ -63,7 +63,9 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere relevante CRUD-operasjoner for Familie`() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
-            updatedEntity = createFamilie(soknad.id).copy(sivilstatus = null),
+            updatedEntity =
+                createFamilie(soknad.id)
+                    .copy(sivilstatus = null),
         )
     }
 

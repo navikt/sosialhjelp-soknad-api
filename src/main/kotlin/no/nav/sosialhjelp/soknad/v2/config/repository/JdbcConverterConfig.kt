@@ -1,18 +1,23 @@
-package no.nav.sosialhjelp.soknad.v2.config
+package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import com.fasterxml.jackson.databind.DatabindException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.PostboksAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.PostboksAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 
+/**
+ * For å støtte serialisering og de-serialisering av adresse-subtyper.
+ * Vegadresse, MatrikkelAdresse, PostboksAdresse og UstrukturertAdresse.
+ *
+ * Adressene lagres som en streng (JSON) i databasen.
+ */
 @Configuration
 class JdbcConverterConfig : AbstractJdbcConfiguration() {
     override fun userConverters(): MutableList<*> {
@@ -43,10 +48,7 @@ class JdbcConverterConfig : AbstractJdbcConfiguration() {
 
         fun map(json: String): Adresse {
             adresseTyper.forEach {
-                try {
-                    return mapper.readValue(json, it)
-                } catch (ignored: DatabindException) {
-                }
+                kotlin.runCatching { return mapper.readValue(json, it) }
             }
             throw IllegalArgumentException("Kunne ikke mappe adresse")
         }

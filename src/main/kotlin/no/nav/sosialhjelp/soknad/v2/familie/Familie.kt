@@ -1,11 +1,17 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
+import org.springframework.data.repository.ListCrudRepository
+import org.springframework.stereotype.Repository
 import java.util.UUID
+
+@Repository
+interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Familie, UUID>
 
 @Table
 data class Familie(
@@ -13,10 +19,10 @@ data class Familie(
     override val soknadId: UUID,
     val harForsorgerplikt: Boolean? = null, // fra JsonForsorgerplikt
     val barnebidrag: Barnebidrag? = null, // fra JsonForsorgerplikt
-    val sivilstatus: Sivilstatus? = null,
     val ansvar: Map<UUID, Barn> = emptyMap(), // jsonForsorgerplikt
+    val sivilstatus: Sivilstatus? = null,
     val ektefelle: Ektefelle? = null, // jsonSivilstatus
-) : AggregateRoot
+) : DomainRoot
 
 data class Barn(
     // JsonAnsvar
@@ -36,10 +42,13 @@ data class Ektefelle(
     val navn: Navn?,
     val fodselsdato: String?,
     val personId: String?,
+    val harDiskresjonskode: Boolean? = null,
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
     val kildeErSystem: Boolean = true,
-)
+) {
+    companion object
+}
 
 enum class Barnebidrag {
     BETALER,
@@ -55,4 +64,5 @@ enum class Sivilstatus {
     ENKE,
     SKILT,
     SEPARERT,
+    TOM,
 }
