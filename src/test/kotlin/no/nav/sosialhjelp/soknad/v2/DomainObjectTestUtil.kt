@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -12,13 +15,13 @@ import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
@@ -33,11 +36,6 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
-import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad {
     return JsonInternalSoknad().apply {
@@ -57,8 +55,11 @@ fun createFamilie(
     ektefelle: Ektefelle? = opprettEktefelle(),
 ) = Familie(
     soknadId = soknadId,
-    forsorger = Forsorger( harForsorgerPlikt, barnebidrag, ansvar.associateBy { it.familieKey }),
-    sivilstand = Sivilstand( sivilstatus, ektefelle)
+    harForsorgerplikt = harForsorgerPlikt,
+    barnebidrag = barnebidrag,
+    ansvar = ansvar.associateBy { it.familieKey },
+    sivilstatus = sivilstatus,
+    ektefelle = ektefelle
 )
 
 fun opprettEktefelle(): Ektefelle {

@@ -48,7 +48,7 @@ class JdbcConverterConfig : AbstractJdbcConfiguration() {
 
         fun map(json: String): Adresse {
             adresseTyper.forEach {
-                kotlin.runCatching { mapper.readValue(json, it) }
+                kotlin.runCatching { return mapper.readValue(json, it) }
             }
             throw IllegalArgumentException("Kunne ikke mappe adresse")
         }

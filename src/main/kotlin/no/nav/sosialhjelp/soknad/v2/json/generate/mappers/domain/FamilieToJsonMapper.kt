@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
+import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
@@ -11,16 +13,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.navn.toJson
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.UUID
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
-import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
@@ -30,14 +29,14 @@ class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : Do
     ) {
         familieRepository.findByIdOrNull(soknadId)?.let {
             with(jsonInternalSoknad.soknad.data.familie) {
-                sivilstatus = it.sivilstand.toJsonSivilstatus()
-                forsorgerplikt = it.forsorger.toJsonForsorgerplikt()
+                sivilstatus = it.toJsonSivilstatus()
+                forsorgerplikt = it.toJsonForsorgerplikt()
             }
         }
     }
 }
 
-private fun Sivilstand.toJsonSivilstatus() = JsonSivilstatus()
+private fun Familie.toJsonSivilstatus() = JsonSivilstatus()
     .withKilde(ektefelle?.toJsonKilde())
     .withStatus(sivilstatus?.toJson())
     .withEktefelle(ektefelle?.toJson())
@@ -50,7 +49,7 @@ private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
 private fun Ektefelle.toJson() = JsonEktefelle().withNavn(navn?.toJson()).withFodselsdato(fodselsdato).withPersonIdentifikator(personId)
 
-private fun Forsorger.toJsonForsorgerplikt() = JsonForsorgerplikt()
+private fun Familie.toJsonForsorgerplikt() = JsonForsorgerplikt()
     .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(harForsorgerplikt))
     .withBarnebidrag(JsonBarnebidrag().withVerdi(barnebidrag?.toJson()))
     .withAnsvar(ansvar.values.toJson())

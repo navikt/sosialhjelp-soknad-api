@@ -76,7 +76,7 @@ class InterceptorTest : AbstractIntegrationTest() {
             .responseBody!!
 
         familieRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.sivilstand.ektefelle?.personId).isEqualTo("121337")
+            assertThat(it.ektefelle?.personId).isEqualTo("121337")
         }
             ?: fail("Finner ikke familie")
     }

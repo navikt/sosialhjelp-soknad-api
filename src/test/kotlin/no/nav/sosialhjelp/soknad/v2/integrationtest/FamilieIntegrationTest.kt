@@ -55,9 +55,9 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         )
 
         familieRepository.findByIdOrNull(storedSoknad.id)?.let {
-            assertThat(it.forsorger.barnebidrag).isEqualTo(Barnebidrag.BETALER)
-            assertThat(it.forsorger.ansvar.size).isEqualTo(1)
-            it.forsorger.ansvar.values.firstOrNull()?.let { barn ->
+            assertThat(it.barnebidrag).isEqualTo(Barnebidrag.BETALER)
+            assertThat(it.ansvar.size).isEqualTo(1)
+            it.ansvar.values.firstOrNull()?.let { barn ->
                 assertThat(barn.personId).isEqualTo("12345678")
                 assertThat(barn.borSammen).isTrue()
             }
@@ -87,9 +87,9 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         )
 
         familieRepository.findByIdOrNull(storedSoknad.id)?.let {
-            assertThat(it.sivilstand.sivilstatus).isEqualTo(Sivilstatus.GIFT)
-            assertThat(it.sivilstand.ektefelle).isEqualTo(ektefelle.toDomain())
-            assertThat(it.sivilstand.ektefelle?.kildeErSystem).isFalse()
+            assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
+            assertThat(it.ektefelle).isEqualTo(ektefelle.toDomain())
+            assertThat(it.ektefelle?.kildeErSystem).isFalse()
         }
             ?: fail("Fant ikke familie")
     }

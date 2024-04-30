@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
@@ -10,8 +11,6 @@ import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.familie.service.Sivilstand
 
 /**
  * Formålet med testklassen:
@@ -65,7 +64,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity = createFamilie(soknad.id)
-                .copy(sivilstand = Sivilstand(sivilstatus = null)),
+                .copy(sivilstatus = null),
         )
     }
 
