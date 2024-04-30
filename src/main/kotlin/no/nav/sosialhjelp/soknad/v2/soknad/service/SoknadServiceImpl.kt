@@ -1,8 +1,12 @@
-package no.nav.sosialhjelp.soknad.v2.soknad
+package no.nav.sosialhjelp.soknad.v2.soknad.service
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -13,36 +17,36 @@ import java.util.UUID
 
 @Service
 @Transactional
-class SoknadService(
+class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
     private val sendSoknadHandler: SendSoknadHandler,
-) {
+) : ServiceSoknad, BegrunnelseService, SoknadShadowAdapterService {
     @Transactional(readOnly = true)
-    fun getSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
+    override fun findSoknad(soknadId: UUID): Soknad = getSoknadOrThrowException(soknadId)
 
-    fun createSoknad(
+    override fun createSoknad(
         eierId: String,
-        soknadId: UUID? = null,
-        opprettetDato: LocalDateTime? = null,
+        soknadId: UUID?,
+        opprettetDato: LocalDateTime?,
     ): UUID {
         return Soknad(
             id = soknadId ?: UUID.randomUUID(),
-            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now()),
             eierPersonId = eierId,
         )
             .let { soknadRepository.save(it) }
             .id
     }
 
-    fun deleteSoknad(soknadId: UUID) {
+    override fun deleteSoknad(soknadId: UUID) {
         getSoknadOrThrowException(soknadId).also {
             soknadRepository.delete(it)
         }
         mellomlagringService.deleteAll(soknadId)
     }
 
-    fun sendSoknad(id: UUID): UUID {
+    override fun sendSoknad(id: UUID): UUID {
         val digisosId: UUID =
             getSoknadOrThrowException(id).run {
                 tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
@@ -56,25 +60,14 @@ class SoknadService(
         return digisosId
     }
 
-    fun updateBegrunnelse(
-        soknadId: UUID,
-        begrunnelse: Begrunnelse,
-    ): Begrunnelse {
-        return getSoknadOrThrowException(soknadId).run {
-            copy(begrunnelse = begrunnelse)
-                .also { soknadRepository.save(it) }
-                .let { it.begrunnelse!! }
-        }
-    }
-
-    fun slettSoknad(soknadId: UUID) {
+    override fun slettSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
             ?: log.warn("Soknad V2 finnes ikke.")
     }
 
-    fun setInnsendingstidspunkt(
+    override fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        innsendingsTidspunkt: LocalDateTime,
     ) {
         soknadRepository.findByIdOrNull(soknadId)
             ?.run {
@@ -89,6 +82,20 @@ class SoknadService(
     private fun getSoknadOrThrowException(soknadId: UUID): Soknad {
         return soknadRepository.findByIdOrNull(soknadId)
             ?: throw IkkeFunnetException("Soknad finnes ikke")
+    }
+
+    override fun findBegrunnelse(soknadId: UUID): Begrunnelse {
+        return getSoknadOrThrowException(soknadId).begrunnelse
+    }
+
+    override fun updateBegrunnelse(
+        soknadId: UUID,
+        begrunnelse: Begrunnelse,
+    ): Begrunnelse {
+        return getSoknadOrThrowException(soknadId)
+            .copy(begrunnelse = begrunnelse)
+            .let { soknadRepository.save(it) }
+            .begrunnelse
     }
 
     companion object {

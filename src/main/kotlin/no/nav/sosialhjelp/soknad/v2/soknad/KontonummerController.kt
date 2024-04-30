@@ -24,7 +24,7 @@ class KontonummerController(
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID,
     ): KontoInformasjonDto {
-        return eierService.getEier(soknadId).kontonummer?.toKontoInformasjonDto() ?: KontoInformasjonDto()
+        return eierService.findEier(soknadId).kontonummer.toKontoInformasjonDto()
     }
 
     @PutMapping

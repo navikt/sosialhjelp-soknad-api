@@ -8,16 +8,16 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import no.nav.sosialhjelp.soknad.v2.eier.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseAdapter.toV2Adresse
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -29,12 +29,12 @@ import java.util.UUID
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
-    private val soknadService: SoknadService,
-    private val livssituasjonService: LivssituasjonService,
-    private val kontaktService: KontaktService,
+    private val soknadServiceImpl: SoknadServiceImpl,
+    private val livssituasjonService: LivssituasjonRegisterService,
+    private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService,
     private val familieService: FamilieService,
+    private val eierService: EierRegisterService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -46,7 +46,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
-            soknadService.createSoknad(
+            soknadServiceImpl.createSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
                 eierId = eierId,
@@ -82,8 +82,8 @@ class SoknadV2AdapterService(
             kotlin.runCatching {
                 kontaktService.saveAdresserRegister(
                     soknadId = UUID.fromString(soknadId),
-                    folkeregistrertAdresse = it.bostedsadresse?.toV2Adresse(hentAdresseService),
-                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
+                    folkeregistrert = it.bostedsadresse?.toV2Adresse(hentAdresseService),
+                    midlertidig = it.oppholdsadresse?.toV2Adresse(),
                 )
             }
                 .onFailure { log.warn("NyModell: Legge til Adresser feilet.", it) }
@@ -124,7 +124,7 @@ class SoknadV2AdapterService(
         kotlin.runCatching {
             val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
 
-            soknadService.setInnsendingstidspunkt(
+            soknadServiceImpl.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
                 zonedDateTime.toLocalDateTime(),
             )
@@ -136,7 +136,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Sletter SoknadV2")
 
         kotlin.runCatching {
-            soknadService.slettSoknad(UUID.fromString(behandlingsId))
+            soknadServiceImpl.slettSoknad(UUID.fromString(behandlingsId))
         }
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }

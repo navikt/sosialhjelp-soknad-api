@@ -1,10 +1,7 @@
-package no.nav.sosialhjelp.soknad.v2.kontakt.adresse
+package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,14 +15,16 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val kontaktService: KontaktService,
+    private val adresseService: AdresseService,
 ) {
     @GetMapping
     fun getAdresser(
         @PathVariable("soknadId") soknadId: UUID,
     ): AdresserDto {
-        return kontaktService.getKontaktInformasjon(soknadId)?.let { it.toAdresserDto() }
-            ?: AdresserDto()
+        return createAdresseDto(
+            adresser = adresseService.findAdresser(soknadId),
+            mottaker = adresseService.findMottaker(soknadId),
+        )
     }
 
     @PutMapping
@@ -33,13 +32,18 @@ class AdresseController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput,
     ): AdresserDto {
-        return kontaktService
+        return adresseService
             .updateBrukerAdresse(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
                 brukerAdresse = adresserInput.brukerAdresse,
             )
-            .toAdresserDto()
+            .let {
+                createAdresseDto(
+                    adresser = it,
+                    mottaker = adresseService.findMottaker(soknadId),
+                )
+            }
     }
 }
 
@@ -64,14 +68,18 @@ data class NavEnhetDto(
     val kommunenavn: String? = null,
 )
 
-fun Kontakt.toAdresserDto() =
-    AdresserDto(
+fun createAdresseDto(
+    adresser: Adresser,
+    mottaker: NavEnhet?,
+): AdresserDto {
+    return AdresserDto(
         adresseValg = adresser.adressevalg,
-        brukerAdresse = adresser.brukerAdresse,
-        midlertidigAdresse = adresser.midlertidigAdresse,
-        folkeregistrertAdresse = adresser.folkeregistrertAdresse,
-        navenhet = mottaker.toNavEnhetDto(),
+        brukerAdresse = adresser.fraBruker,
+        midlertidigAdresse = adresser.midlertidig,
+        folkeregistrertAdresse = adresser.folkeregistrert,
+        navenhet = mottaker?.toNavEnhetDto(),
     )
+}
 
 fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
     return NavEnhetDto(
