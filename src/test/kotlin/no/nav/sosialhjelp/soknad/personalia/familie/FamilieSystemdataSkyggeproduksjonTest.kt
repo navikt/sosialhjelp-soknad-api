@@ -6,9 +6,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.UUID
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -21,6 +18,9 @@ import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2AdapterService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn as BarnOld
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as EktefelleOld
 import no.nav.sosialhjelp.soknad.v2.familie.Barn as BarnV2
