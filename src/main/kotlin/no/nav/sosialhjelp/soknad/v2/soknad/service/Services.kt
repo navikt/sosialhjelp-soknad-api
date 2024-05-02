@@ -16,7 +16,7 @@ interface SoknadService {
         opprettetDato: LocalDateTime? = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     ): UUID
 
-    fun sendSoknad(id: UUID): UUID
+    fun sendSoknad(soknadId: UUID): UUID
 
     fun deleteSoknad(soknadId: UUID)
 

@@ -8,10 +8,8 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
@@ -26,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
@@ -34,7 +33,7 @@ class SoknadV2AdapterService(
     private val livssituasjonService: LivssituasjonRegisterService,
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-    private val familieService: FamilieService,
+    private val familieService: FamilieRegisterService,
     private val eierService: EierRegisterService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -125,7 +124,7 @@ class SoknadV2AdapterService(
         kotlin.runCatching {
             val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
 
-            soknadServiceImpl.setInnsendingstidspunkt(
+            soknadService.setInnsendingstidspunkt(
                 UUID.fromString(soknadId),
                 zonedDateTime.toLocalDateTime(),
             )
@@ -150,7 +149,7 @@ class SoknadV2AdapterService(
 
         systemverdiSivilstatus.let {
             kotlin.runCatching {
-                familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
+                familieService.updateSivilstatusFraRegister(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }
@@ -163,7 +162,13 @@ class SoknadV2AdapterService(
         log.info("NyModell: Legger til systemdata for barn")
         ansvarList.let { jsonAnsvarListe ->
             kotlin.runCatching {
-                familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
+                if (jsonAnsvarListe.isNotEmpty()) {
+                    familieService.updateForsorgerpliktRegister(
+                        UUID.fromString(behandlingsId),
+                        true,
+                        jsonAnsvarListe.map { it.toV2Barn() },
+                    )
+                }
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
         }
@@ -174,11 +179,11 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
     return Eier(
         soknadId = soknadId,
         navn =
-            Navn(
-                fornavn = this.navn.fornavn,
-                mellomnavn = this.navn.mellomnavn,
-                etternavn = this.navn.etternavn,
-            ),
+        Navn(
+            fornavn = this.navn.fornavn,
+            mellomnavn = this.navn.mellomnavn,
+            etternavn = this.navn.etternavn,
+        ),
         statsborgerskap = this.statsborgerskap.verdi,
         nordiskBorger = this.nordiskBorger.verdi,
     )
@@ -187,11 +192,11 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
 private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
     return Ektefelle(
         navn =
-            Navn(
-                fornavn = ektefelle.navn.fornavn,
-                mellomnavn = ektefelle.navn.mellomnavn,
-                etternavn = ektefelle.navn.etternavn,
-            ),
+        Navn(
+            fornavn = ektefelle.navn.fornavn,
+            mellomnavn = ektefelle.navn.mellomnavn,
+            etternavn = ektefelle.navn.etternavn,
+        ),
         fodselsdato = ektefelle.fodselsdato,
         personId = ektefelle.personIdentifikator,
         folkeregistrertMedEktefelle = folkeregistrertMedEktefelle,
@@ -216,11 +221,11 @@ private fun JsonAnsvar.toV2Barn(): Barn {
         familieKey = UUID.randomUUID(),
         personId = barn.personIdentifikator,
         navn =
-            Navn(
-                fornavn = barn.navn.fornavn,
-                mellomnavn = barn.navn.mellomnavn,
-                etternavn = barn.navn.etternavn,
-            ),
+        Navn(
+            fornavn = barn.navn.fornavn,
+            mellomnavn = barn.navn.mellomnavn,
+            etternavn = barn.navn.etternavn,
+        ),
         fodselsdato = barn.fodselsdato,
         borSammen = borSammenMed?.verdi,
         folkeregistrertSammen = erFolkeregistrertSammen.verdi,
