@@ -1,11 +1,18 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import no.nav.sosialhjelp.soknad.v2.familie.Barn
+import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -27,6 +34,7 @@ class SoknadV2AdapterService(
     private val kontaktService: KontaktService,
     private val hentAdresseService: HentAdresseService,
     private val eierService: EierService,
+    private val familieService: FamilieService,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -132,6 +140,33 @@ class SoknadV2AdapterService(
         }
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
+
+    override fun addEktefelle(
+        behandlingsId: String,
+        systemverdiSivilstatus: JsonSivilstatus,
+    ) {
+        log.info("NyModell: Legger til systemdata for ektefelle")
+
+        systemverdiSivilstatus.let {
+            kotlin.runCatching {
+                familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
+            }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
+        }
+    }
+
+    override fun addBarn(
+        behandlingsId: String,
+        ansvarList: List<JsonAnsvar>,
+    ) {
+        log.info("NyModell: Legger til systemdata for barn")
+        ansvarList.let { jsonAnsvarListe ->
+            kotlin.runCatching {
+                familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
+            }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
+        }
+    }
 }
 
 private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
@@ -145,5 +180,48 @@ private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
             ),
         statsborgerskap = this.statsborgerskap.verdi,
         nordiskBorger = this.nordiskBorger.verdi,
+    )
+}
+
+private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
+    return Ektefelle(
+        navn =
+            Navn(
+                fornavn = ektefelle.navn.fornavn,
+                mellomnavn = ektefelle.navn.mellomnavn,
+                etternavn = ektefelle.navn.etternavn,
+            ),
+        fodselsdato = ektefelle.fodselsdato,
+        personId = ektefelle.personIdentifikator,
+        folkeregistrertMedEktefelle = folkeregistrertMedEktefelle,
+        borSammen = borSammenMed,
+        kildeErSystem = true,
+    )
+}
+
+private fun Status.toV2Sivilstatus(): Sivilstatus {
+    return when (this) {
+        Status.GIFT -> Sivilstatus.GIFT
+        Status.SAMBOER -> Sivilstatus.SAMBOER
+        Status.ENKE -> Sivilstatus.ENKE
+        Status.SKILT -> Sivilstatus.SKILT
+        Status.SEPARERT -> Sivilstatus.SEPARERT
+        Status.UGIFT -> Sivilstatus.UGIFT
+    }
+}
+
+private fun JsonAnsvar.toV2Barn(): Barn {
+    return Barn(
+        familieKey = UUID.randomUUID(),
+        personId = barn.personIdentifikator,
+        navn =
+            Navn(
+                fornavn = barn.navn.fornavn,
+                mellomnavn = barn.navn.mellomnavn,
+                etternavn = barn.navn.etternavn,
+            ),
+        fodselsdato = barn.fodselsdato,
+        borSammen = borSammenMed?.verdi,
+        folkeregistrertSammen = erFolkeregistrertSammen.verdi,
     )
 }

@@ -33,7 +33,8 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         return existing
             .map { (uuid, existing) ->
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
-                val updatedBarn = updated.find { it.familieKey == uuid } ?: updated.find { it.personId == existing.personId }
+                val updatedBarn =
+                    updated.find { it.familieKey == uuid } ?: updated.find { it.personId == existing.personId }
 
                 when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
@@ -61,8 +62,27 @@ class FamilieService(private val familieRepository: FamilieRepository) {
             familieRepository.save(updated)
         }
     }
-}
 
-private fun <A : Any, B> Map<A, B?>.filterNotNullValue(): Map<A, B> {
-    return filter { it.value != null }.mapValues { it.value!! }
+    fun addSivilstatus(
+        soknadId: UUID,
+        sivilstatus: Sivilstatus?,
+        ektefelle: Ektefelle,
+    ) {
+        val familie = familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
+        familie.copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
+            .also { familieRepository.save(it) }
+    }
+
+    fun addBarn(
+        soknadId: UUID,
+        barnListe: List<Barn>,
+        harForsorgerplikt: Boolean,
+    ) {
+        val familie = familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
+        familie.copy(
+            harForsorgerplikt = harForsorgerplikt,
+            ansvar = familie.ansvar + barnListe.map { it.familieKey to it },
+        )
+            .also { familieRepository.save(it) }
+    }
 }

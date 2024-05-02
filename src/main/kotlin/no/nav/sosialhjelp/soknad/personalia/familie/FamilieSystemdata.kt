@@ -15,12 +15,14 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.apache.commons.lang3.StringUtils.isEmpty
 import org.springframework.stereotype.Component
 
 @Component
 class FamilieSystemdata(
     private val personService: PersonService,
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonData = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data ?: return
@@ -30,6 +32,7 @@ class FamilieSystemdata(
 
         if (systemverdiSivilstatus != null || familie.sivilstatus == null || familie.sivilstatus.kilde == JsonKilde.SYSTEM) {
             familie.sivilstatus = systemverdiSivilstatus
+            systemverdiSivilstatus?.let { v2AdapterService.addEktefelle(soknadUnderArbeid.behandlingsId, it) }
         }
 
         val forsorgerplikt = familie.forsorgerplikt
@@ -40,13 +43,15 @@ class FamilieSystemdata(
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt
 
             val ansvarList = forsorgerplikt.ansvar?.toMutableList()
-            if (!ansvarList.isNullOrEmpty()) {
+            if (ansvarList.isNullOrEmpty()) {
+                forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
+                v2AdapterService.addBarn(soknadUnderArbeid.behandlingsId, systemverdiForsorgerplikt.ansvar)
+            } else {
                 ansvarList.removeIf { it.barn.kilde == JsonKilde.SYSTEM && isNotInList(it, systemverdiForsorgerplikt.ansvar) }
                 ansvarList.addAll(
                     systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) },
                 )
-            } else {
-                forsorgerplikt.ansvar = systemverdiForsorgerplikt.ansvar
+                v2AdapterService.addBarn(soknadUnderArbeid.behandlingsId, ansvarList)
             }
         } else if (harForsorgerplikt == null || harForsorgerplikt.kilde == JsonKilde.SYSTEM || !harForsorgerplikt.verdi) {
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt
