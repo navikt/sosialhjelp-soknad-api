@@ -100,8 +100,8 @@ dependencies {
     // flyway / db
     implementation(libs.flyway.core)
     implementation(libs.vault.jdbc)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
-    runtimeOnly("org.postgresql:postgresql:42.7.1")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.12.0")
+    runtimeOnly("org.postgresql:postgresql:42.7.3")
 
     // redis
     implementation(libs.lettuce.core)
@@ -138,8 +138,8 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    testImplementation("org.testcontainers:postgresql:1.19.7")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.7")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
