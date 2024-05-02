@@ -105,5 +105,3 @@ class FamilieServiceImpl(
             ?: familieRepository.save(Familie(soknadId))
     }
 }
-
-

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.eier.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -8,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class EierServiceImpl(
@@ -37,7 +37,7 @@ class EierServiceImpl(
     }
 
     override fun updateFromRegister(eier: Eier) {
-        //oppdatere eier hvis finnes
+        // oppdatere eier hvis finnes
         eierRepository
             .findByIdOrNull(eier.soknadId)
             ?.run {

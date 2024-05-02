@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
+import no.nav.sosialhjelp.soknad.v2.soknad.findOrError
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.soknad.findOrError
 
 @Service
 @Transactional
@@ -24,8 +24,9 @@ class SoknadServiceImpl(
     private val sendSoknadHandler: SendSoknadHandler,
 ) : SoknadService, BegrunnelseService {
     @Transactional(readOnly = true)
-    override fun findOrError(soknadId: UUID): Soknad = soknadRepository.findByIdOrNull(soknadId)
-        ?: throw IkkeFunnetException("Soknad finnes ikke")
+    override fun findOrError(soknadId: UUID): Soknad =
+        soknadRepository.findByIdOrNull(soknadId)
+            ?: throw IkkeFunnetException("Soknad finnes ikke")
 
     override fun createSoknad(
         eierId: String,
