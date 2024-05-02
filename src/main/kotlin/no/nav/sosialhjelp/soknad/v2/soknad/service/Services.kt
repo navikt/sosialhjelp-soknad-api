@@ -6,8 +6,8 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-interface ServiceSoknad {
-    fun findSoknad(soknadId: UUID): Soknad
+interface SoknadService {
+    fun findOrError(soknadId: UUID): Soknad
 
     fun createSoknad(
         eierId: String,
@@ -21,6 +21,11 @@ interface ServiceSoknad {
     fun deleteSoknad(soknadId: UUID)
 
     fun slettSoknad(soknadId: UUID)
+
+    fun setInnsendingstidspunkt(
+        soknadId: UUID,
+        innsendingsTidspunkt: LocalDateTime,
+    )
 }
 
 interface BegrunnelseService {
@@ -30,11 +35,4 @@ interface BegrunnelseService {
         soknadId: UUID,
         begrunnelse: Begrunnelse,
     ): Begrunnelse
-}
-
-interface SoknadShadowAdapterService {
-    fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
-    )
 }

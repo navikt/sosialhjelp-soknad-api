@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class FamilieService(
+class FamilieServiceImpl(
     private val familieRepository: FamilieRepository,
 ) : ForsorgerService, SivilstandService, FamilieRegisterService {
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
@@ -21,8 +21,7 @@ class FamilieService(
         barnebidrag: Barnebidrag?,
         updated: List<Barn>,
     ): Forsorger {
-        return familieRepository
-            .findOrCreate(soknadId)
+        return findOrCreate(soknadId)
             .run {
                 copy(
                     barnebidrag = barnebidrag,
@@ -59,8 +58,7 @@ class FamilieService(
         sivilstatus: Sivilstatus?,
         ektefelle: Ektefelle?,
     ): Sivilstand {
-        return familieRepository
-            .findOrCreate(soknadId)
+        return findOrCreate(soknadId)
             .also {
                 if (it.ektefelle?.kildeErSystem == true) {
                     error("Kan ikke oppdatere ektefelle når ektefelle er innhentet fra folkeregisteret")
@@ -79,8 +77,7 @@ class FamilieService(
         sivilstatus: Sivilstatus,
         ektefelle: Ektefelle,
     ) {
-        familieRepository
-            .findOrCreate(soknadId)
+        findOrCreate(soknadId)
             .copy(
                 sivilstatus = sivilstatus,
                 ektefelle = ektefelle,
@@ -93,8 +90,7 @@ class FamilieService(
         harForsorgerplikt: Boolean,
         barn: List<Barn>,
     ) {
-        familieRepository
-            .findOrCreate(soknadId)
+        findOrCreate(soknadId)
             .run {
                 copy(
                     harForsorgerplikt = harForsorgerplikt,
@@ -103,8 +99,11 @@ class FamilieService(
             }
             .also { familieRepository.save(it) }
     }
+
+    private fun findOrCreate(soknadId: UUID): Familie {
+        return familieRepository.findByIdOrNull(soknadId)
+            ?: familieRepository.save(Familie(soknadId))
+    }
 }
 
-internal fun FamilieRepository.findOrCreate(soknadId: UUID): Familie {
-    return findByIdOrNull(soknadId) ?: Familie(soknadId)
-}
+

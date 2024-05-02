@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class KontaktService(
+class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
 ) : AdresseService, TelefonService, KontaktRegisterService {
     private val logger by logger()

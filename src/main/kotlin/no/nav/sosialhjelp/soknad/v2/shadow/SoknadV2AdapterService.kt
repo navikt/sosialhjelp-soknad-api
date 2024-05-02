@@ -13,11 +13,11 @@ import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.LivssituasjonRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.register.handlers.person.toV2Adresse
-import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -25,11 +25,12 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
-    private val soknadServiceImpl: SoknadServiceImpl,
+    private val soknadService: SoknadService,
     private val livssituasjonService: LivssituasjonRegisterService,
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
@@ -46,7 +47,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
-            soknadServiceImpl.createSoknad(
+            soknadService.createSoknad(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
                 eierId = eierId,
@@ -110,7 +111,7 @@ class SoknadV2AdapterService(
     ) {
         log.info("Ny modell: Legger til Eier")
         kotlin.runCatching {
-            eierService.updateEier(personalia.toV2Eier(UUID.fromString(soknadId)))
+            eierService.updateFromRegister(personalia.toV2Eier(UUID.fromString(soknadId)))
         }
             .onFailure { log.warn("NyModell: Kunne ikke legge til ny Eier fra register", it) }
     }
@@ -136,7 +137,7 @@ class SoknadV2AdapterService(
         log.info("NyModell: Sletter SoknadV2")
 
         kotlin.runCatching {
-            soknadServiceImpl.slettSoknad(UUID.fromString(behandlingsId))
+            soknadService.slettSoknad(UUID.fromString(behandlingsId))
         }
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
     }

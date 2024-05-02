@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
+import no.nav.sosialhjelp.soknad.v2.eier.service.EierService
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,7 +24,7 @@ class KontonummerController(
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID,
     ): KontoInformasjonDto {
-        return eierService.findEier(soknadId).kontonummer.toKontoInformasjonDto()
+        return eierService.findOrError(soknadId).kontonummer.toKontoInformasjonDto()
     }
 
     @PutMapping

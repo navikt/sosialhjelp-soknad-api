@@ -7,16 +7,16 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
-import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 
 @Service
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val registerDataService: RegisterDataService,
-    private val soknadServiceImpl: SoknadServiceImpl,
+    private val soknadServiceImpl: SoknadService,
     private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
     override fun startSoknad(): UUID {

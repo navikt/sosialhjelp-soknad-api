@@ -5,14 +5,14 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
-import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadServiceImpl
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.HandlerMapping
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 
 @Component
-class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadServiceImpl) : HandlerInterceptor {
+class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadService) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -20,7 +20,7 @@ class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadServiceImpl) 
     ): Boolean {
         val method = request.method
         val soknadId = getSoknadId(request) ?: return true
-        val soknad = soknadServiceImpl.findSoknad(UUID.fromString(soknadId))
+        val soknad = soknadServiceImpl.findOrError(UUID.fromString(soknadId))
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         if (method == "GET") {
             if (soknad.eierPersonId != userId) {

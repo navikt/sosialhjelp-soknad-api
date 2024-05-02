@@ -1,16 +1,19 @@
-package no.nav.sosialhjelp.soknad.v2.eier
+package no.nav.sosialhjelp.soknad.v2.eier.service
 
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
+import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class EierServiceImpl(
     private val eierRepository: EierRepository,
 ) : EierService, EierRegisterService {
-    override fun findEier(soknadId: UUID) =
+    override fun findOrError(soknadId: UUID) =
         eierRepository.findByIdOrNull(soknadId)
             ?: throw IkkeFunnetException("Finnes ingen Eier. Feil")
 
@@ -20,7 +23,7 @@ class EierServiceImpl(
         harIkkeKonto: Boolean?,
     ): Kontonummer {
         logger.info("NyModell: Oppdaterer kontonummerinformasjon fra bruker")
-        return findEier(soknadId)
+        return findOrError(soknadId)
             .run {
                 copy(
                     kontonummer =
@@ -33,7 +36,8 @@ class EierServiceImpl(
             .let { eier -> eierRepository.save(eier).kontonummer }
     }
 
-    override fun updateEier(eier: Eier) {
+    override fun updateFromRegister(eier: Eier) {
+        //oppdatere eier hvis finnes
         eierRepository
             .findByIdOrNull(eier.soknadId)
             ?.run {
@@ -48,24 +52,11 @@ class EierServiceImpl(
                 )
             }
             ?.also { eierRepository.save(it) }
+            // lagre hvis ikke finnes
             ?: eierRepository.save(eier)
     }
 
     companion object {
         private val logger by logger()
     }
-}
-
-interface EierService {
-    fun findEier(soknadId: UUID): Eier
-
-    fun updateKontonummer(
-        soknadId: UUID,
-        kontonummerBruker: String? = null,
-        harIkkeKonto: Boolean? = null,
-    ): Kontonummer
-}
-
-interface EierRegisterService {
-    fun updateEier(eier: Eier)
 }

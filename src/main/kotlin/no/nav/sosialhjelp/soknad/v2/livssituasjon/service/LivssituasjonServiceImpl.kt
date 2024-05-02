@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class LivssituasjonService(
+class LivssituasjonServiceImpl(
     private val repository: LivssituasjonRepository,
 ) : BosituasjonService, UtdanningService, ArbeidService, LivssituasjonRegisterService {
     override fun findBosituasjon(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.bosituasjon
