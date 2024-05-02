@@ -68,8 +68,8 @@ class FamilieService(private val familieRepository: FamilieRepository) {
         sivilstatus: Sivilstatus?,
         ektefelle: Ektefelle,
     ) {
-        familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
-            .copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
+        val familie = familieRepository.findByIdOrNull(soknadId) ?: Familie(soknadId)
+        familie.copy(ektefelle = ektefelle, sivilstatus = sivilstatus)
             .also { familieRepository.save(it) }
     }
 
