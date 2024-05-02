@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PersonDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
@@ -31,6 +31,7 @@ import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.veg
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 
 object DefaultValuesForMockedResponses {
     val orgnummer1 = "123456789"
@@ -65,47 +66,47 @@ internal fun defaultResponseFromAaregClient(personId: String): List<Arbeidsforho
     return listOf(
         ArbeidsforholdDto(
             ansettelsesperiode =
-                AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.of(2000, 1, 1),
-                            tom = LocalDate.of(2009, 12, 31),
-                        ),
+            AnsettelsesperiodeDto(
+                periode =
+                PeriodeDto(
+                    fom = LocalDate.of(2000, 1, 1),
+                    tom = LocalDate.of(2009, 12, 31),
                 ),
+            ),
             arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
+            listOf(
+                ArbeidsavtaleDto(stillingsprosent = 100.00),
+            ),
             arbeidsforholdId = UUID.randomUUID().toString(),
             arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer1, type = "fast"),
             arbeidstaker =
-                PersonDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
-                ),
+            PersonArbeidDto(
+                offentligIdent = personId,
+                aktoerId = UUID.randomUUID().toString(),
+                type = "ansatt",
+            ),
         ),
         ArbeidsforholdDto(
             ansettelsesperiode =
-                AnsettelsesperiodeDto(
-                    periode =
-                        PeriodeDto(
-                            fom = LocalDate.of(2010, 1, 1),
-                            tom = LocalDate.of(2019, 12, 31),
-                        ),
+            AnsettelsesperiodeDto(
+                periode =
+                PeriodeDto(
+                    fom = LocalDate.of(2010, 1, 1),
+                    tom = LocalDate.of(2019, 12, 31),
                 ),
+            ),
             arbeidsavtaler =
-                listOf(
-                    ArbeidsavtaleDto(stillingsprosent = 100.00),
-                ),
+            listOf(
+                ArbeidsavtaleDto(stillingsprosent = 100.00),
+            ),
             arbeidsforholdId = UUID.randomUUID().toString(),
             arbeidsgiver = OrganisasjonDto(organisasjonsnummer = orgnummer2, type = "fast"),
             arbeidstaker =
-                PersonDto(
-                    offentligIdent = personId,
-                    aktoerId = UUID.randomUUID().toString(),
-                    type = "ansatt",
-                ),
+            PersonArbeidDto(
+                offentligIdent = personId,
+                aktoerId = UUID.randomUUID().toString(),
+                type = "ansatt",
+            ),
         ),
     )
 }
@@ -113,13 +114,13 @@ internal fun defaultResponseFromAaregClient(personId: String): List<Arbeidsforho
 fun defaultResponseFromOrganisasjonClient(orgnummer: String): OrganisasjonNoekkelinfoDto {
     return OrganisasjonNoekkelinfoDto(
         navn =
-            NavnDto(
-                navnelinje1 = "Et fantastisk firma:${Math.random()}",
-                null,
-                null,
-                null,
-                null,
-            ),
+        NavnDto(
+            navnelinje1 = "Et fantastisk firma:${Math.random()}",
+            null,
+            null,
+            null,
+            null,
+        ),
         organisasjonsnummer = orgnummer,
     )
 }
@@ -128,46 +129,46 @@ fun defaultResponseFromHentPerson(
     sivilstandDto: List<SivilstandDto>? = defaultSivilstandList(),
     vegAdresseDto: VegadresseDto? = vegadresseDto,
     matrikkeladresseDto: MatrikkeladresseDto? = null,
-): no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto {
-    return no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto(
+): PersonDto {
+    return PersonDto(
         bostedsadresse =
-            listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = vegAdresseDto,
-                    matrikkeladresse = matrikkeladresseDto,
-                    ukjentBosted = null,
-                ),
+        listOf(
+            BostedsadresseDto(
+                coAdressenavn = null,
+                vegadresse = vegAdresseDto,
+                matrikkeladresse = matrikkeladresseDto,
+                ukjentBosted = null,
             ),
+        ),
         oppholdsadresse = null,
         forelderBarnRelasjon = null,
         navn =
-            listOf(
-                no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
-                    fornavn = "Et fornavn",
-                    mellomnavn = null,
-                    etternavn = "Et etternavn",
-                    metadata =
-                        MetadataDto(
-                            master = "PDL",
-                            endringer =
-                                listOf(
-                                    EndringDto(
-                                        kilde = "PDL",
-                                        registrert = LocalDateTime.of(2000, 5, 4, 12, 0, 0),
-                                        type = "",
-                                    ),
-                                ),
+        listOf(
+            no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
+                fornavn = "Et fornavn",
+                mellomnavn = null,
+                etternavn = "Et etternavn",
+                metadata =
+                MetadataDto(
+                    master = "PDL",
+                    endringer =
+                    listOf(
+                        EndringDto(
+                            kilde = "PDL",
+                            registrert = LocalDateTime.of(2000, 5, 4, 12, 0, 0),
+                            type = "",
                         ),
-                    folkeregistermetadata = null,
+                    ),
                 ),
+                folkeregistermetadata = null,
             ),
+        ),
         sivilstand = sivilstandDto,
         statsborgerskap =
-            listOf(
-                StatsborgerskapDto("NOR"),
-                StatsborgerskapDto("DNK"),
-            ),
+        listOf(
+            StatsborgerskapDto("NOR"),
+            StatsborgerskapDto("DNK"),
+        ),
     )
 }
 
@@ -177,37 +178,37 @@ fun defaultSivilstandList() =
             type = SivilstandType.GIFT,
             relatertVedSivilstand = ektefelleFnr,
             metadata =
-                MetadataDto(
-                    master = "FREG",
-                    endringer =
-                        listOf(
-                            EndringDto(
-                                kilde = "PDL",
-                                registrert = LocalDateTime.of(2010, 4, 5, 0, 0, 0),
-                                type = "",
-                            ),
-                        ),
+            MetadataDto(
+                master = "FREG",
+                endringer =
+                listOf(
+                    EndringDto(
+                        kilde = "PDL",
+                        registrert = LocalDateTime.of(2010, 4, 5, 0, 0, 0),
+                        type = "",
+                    ),
                 ),
+            ),
             folkeregistermetadata = null,
         ),
     )
 
-fun defaultResponseHentPersonWithEktefelleOgBarn(): no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto {
+fun defaultResponseHentPersonWithEktefelleOgBarn(): PersonDto {
     return defaultResponseFromHentPerson()
         .copy(
             forelderBarnRelasjon =
-                listOf(
-                    ForelderBarnRelasjonDto(
-                        relatertPersonsIdent = barn1Fnr,
-                        relatertPersonsRolle = "BARN",
-                        minRolleForPerson = "FAR",
-                    ),
-                    ForelderBarnRelasjonDto(
-                        relatertPersonsIdent = barn2Fnr,
-                        relatertPersonsRolle = "BARN",
-                        minRolleForPerson = "FAR",
-                    ),
+            listOf(
+                ForelderBarnRelasjonDto(
+                    relatertPersonsIdent = barn1Fnr,
+                    relatertPersonsRolle = "BARN",
+                    minRolleForPerson = "FAR",
                 ),
+                ForelderBarnRelasjonDto(
+                    relatertPersonsIdent = barn2Fnr,
+                    relatertPersonsRolle = "BARN",
+                    minRolleForPerson = "FAR",
+                ),
+            ),
         )
 }
 
@@ -218,39 +219,39 @@ fun defaultResponseFromHentEktefelle(
     return EktefelleDto(
         adressebeskyttelse = null,
         bostedsadresse =
-            listOf(
-                BostedsadresseDto(
-                    coAdressenavn = null,
-                    vegadresse = vegAdresse,
-                    matrikkeladresse = null,
-                    ukjentBosted = null,
-                ),
+        listOf(
+            BostedsadresseDto(
+                coAdressenavn = null,
+                vegadresse = vegAdresse,
+                matrikkeladresse = null,
+                ukjentBosted = null,
             ),
+        ),
         foedsel =
-            listOf(
-                FoedselDto(foedselsdato = LocalDate.of(1999, 8, 21)),
-            ),
+        listOf(
+            FoedselDto(foedselsdato = LocalDate.of(1999, 8, 21)),
+        ),
         navn =
-            listOf(
-                no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
-                    fornavn = "Ektefelle",
-                    mellomnavn = null,
-                    etternavn = "Ektefellesen",
-                    metadata =
-                        MetadataDto(
-                            master = "PDL",
-                            endringer =
-                                listOf(
-                                    EndringDto(
-                                        kilde = "PDL",
-                                        registrert = LocalDateTime.of(2010, 4, 5, 0, 0, 0),
-                                        type = "",
-                                    ),
-                                ),
+        listOf(
+            no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
+                fornavn = "Ektefelle",
+                mellomnavn = null,
+                etternavn = "Ektefellesen",
+                metadata =
+                MetadataDto(
+                    master = "PDL",
+                    endringer =
+                    listOf(
+                        EndringDto(
+                            kilde = "PDL",
+                            registrert = LocalDateTime.of(2010, 4, 5, 0, 0, 0),
+                            type = "",
                         ),
-                    folkeregistermetadata = null,
+                    ),
                 ),
+                folkeregistermetadata = null,
             ),
+        ),
     )
 }
 
@@ -258,13 +259,13 @@ fun defaultResponseFromHentMatrikkelAdresse(): no.nav.sosialhjelp.soknad.persona
     return no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto(
         undernummer = null,
         matrikkelnummer =
-            MatrikkelNummer(
-                kommunenummer = "3215",
-                gaardsnummer = "04",
-                bruksnummer = "121",
-                festenummer = null,
-                seksjonsnummer = null,
-            ),
+        MatrikkelNummer(
+            kommunenummer = "3215",
+            gaardsnummer = "04",
+            bruksnummer = "121",
+            festenummer = null,
+            seksjonsnummer = null,
+        ),
         bydel = null,
     )
 }
@@ -280,25 +281,25 @@ fun defaultResponseFromHentBarn(
         folkeregisterpersonstatus = null,
         foedsel = listOf(FoedselDto(foedselsdato = LocalDate.of(year, 5, 12))),
         navn =
-            listOf(
-                no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
-                    fornavn = "Barn $fnr",
-                    mellomnavn = null,
-                    etternavn = "Barnetternavn $fnr",
-                    metadata =
-                        MetadataDto(
-                            master = "PDL",
-                            endringer =
-                                listOf(
-                                    EndringDto(
-                                        kilde = "PDL",
-                                        registrert = LocalDateTime.of(2006, 5, 15, 0, 0, 0),
-                                        type = "",
-                                    ),
-                                ),
+        listOf(
+            no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
+                fornavn = "Barn $fnr",
+                mellomnavn = null,
+                etternavn = "Barnetternavn $fnr",
+                metadata =
+                MetadataDto(
+                    master = "PDL",
+                    endringer =
+                    listOf(
+                        EndringDto(
+                            kilde = "PDL",
+                            registrert = LocalDateTime.of(2006, 5, 15, 0, 0, 0),
+                            type = "",
                         ),
-                    folkeregistermetadata = null,
+                    ),
                 ),
+                folkeregistermetadata = null,
             ),
+        ),
     )
 }

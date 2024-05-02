@@ -26,10 +26,10 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
 
         handleArbeidsforhold.handle(soknadId = soknad.id)
 
-        livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
-            assertThat(ls.arbeid?.arbeidsforhold).hasSize(2)
-            assertThat(ls.arbeid?.arbeidsforhold?.any { it.orgnummer == orgnummer1 }).isTrue()
-            assertThat(ls.arbeid?.arbeidsforhold?.any { it.orgnummer == orgnummer2 }).isTrue()
+        livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.arbeid?.arbeidsforhold).hasSize(2)
+            assertThat(it.arbeid?.arbeidsforhold?.any { item -> item.orgnummer == orgnummer1 }).isTrue()
+            assertThat(it.arbeid?.arbeidsforhold?.any { item -> item.orgnummer == orgnummer2 }).isTrue()
         }
             ?: fail("Livssituasjon finnes ikke")
     }

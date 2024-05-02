@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
-import no.nav.sosialhjelp.soknad.arbeid.dto.PersonDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -31,12 +31,12 @@ internal class ArbeidsforholdServiceTest {
 
     private val arbeidsgiverOrganisasjon = OrganisasjonDto(organisasjonsnummer = orgnr, type = "Organisasjon")
     private val arbeidsgiverPerson =
-        PersonDto(
+        PersonArbeidDto(
             offentligIdent = "arbeidsgiver_fnr",
             aktoerId = "aktoerid",
             type = "Person",
         )
-    private val arbeidstaker = PersonDto(offentligIdent = "arbeidstaker_fnr", aktoerId = "aktoerid", type = "Person")
+    private val arbeidstaker = PersonArbeidDto(offentligIdent = "arbeidstaker_fnr", aktoerId = "aktoerid", type = "Person")
 
     @BeforeEach
     fun setUp() {

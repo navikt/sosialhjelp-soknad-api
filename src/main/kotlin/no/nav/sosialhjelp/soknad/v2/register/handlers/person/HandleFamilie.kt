@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
 class HandleFamilie(
@@ -78,7 +79,7 @@ private fun Person.toSivilstatus(): Sivilstatus {
         ?: Sivilstatus.TOM
 }
 
-private fun no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle.toV2Ektefelle(): Ektefelle {
+private fun V2Ektefelle.toV2Ektefelle(): Ektefelle {
     return if (ikkeTilgangTilEktefelle) {
         toSkjermetEktefelle()
     } else {
