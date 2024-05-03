@@ -126,7 +126,7 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.")
+                log.info("Mellomlagring av vedlegg ${filForOpplasting.metadata} utført.")
             }
             .doOnError(WebClientResponseException::class.java) {
                 log.warn(

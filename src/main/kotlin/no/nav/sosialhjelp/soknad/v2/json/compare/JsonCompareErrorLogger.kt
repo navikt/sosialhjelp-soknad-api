@@ -20,7 +20,7 @@ class JsonCompareErrorLogger(
     }
 
     private fun logError(error: ErrorRow) {
-        logger.warn("$soknadId - ${error.type} - ${error.message}")
+        logger.warn("${error.type} - ${error.message}")
     }
 
     private fun getFieldFailures(): List<ErrorRow> {

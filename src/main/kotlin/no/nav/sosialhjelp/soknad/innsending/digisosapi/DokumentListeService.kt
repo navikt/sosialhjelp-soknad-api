@@ -31,7 +31,7 @@ class DokumentListeService(
             lagDokumentForJuridiskPdf(internalSoknad),
             lagDokumentForBrukerkvitteringPdf(),
         ).also {
-            log.info("Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}")
+            log.info("Dokumenter(${it.size}) generert. Antall vedlegg på mellomlager: ${mellomlagredeVedlegg.size}")
         }
     }
 

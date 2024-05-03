@@ -69,7 +69,7 @@ class SoknadService(
 
     fun slettSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
-            ?: log.warn("Soknad V2 finnes ikke: $soknadId")
+            ?: log.warn("Soknad V2 finnes ikke.")
     }
 
     fun setInnsendingstidspunkt(

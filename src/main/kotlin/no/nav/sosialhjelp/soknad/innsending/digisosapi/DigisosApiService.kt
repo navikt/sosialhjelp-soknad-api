@@ -57,7 +57,7 @@ class DigisosApiService(
         // Ny modell
         v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
 
-        log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
+        log.info("Starter innsending av søknad")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
@@ -125,7 +125,7 @@ class DigisosApiService(
         }
 
         soknadMetadataRepository.oppdater(soknadMetadata)
-        log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
+        log.info("Oppdaterer metadata ved avslutning av søknad. ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
     private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
@@ -183,7 +183,7 @@ class DigisosApiService(
     }
 
     private fun slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid: SoknadUnderArbeid) {
-        log.info("Sletter SoknadUnderArbeid, behandlingsid ${soknadUnderArbeid.behandlingsId}")
+        log.info("Sletter SoknadUnderArbeid")
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

@@ -35,8 +35,8 @@ class SendSoknadHandler(
 
         kontaktInformasjon?.mottaker?.let {
             log.info(
-                "Starter kryptering av filer for ${soknad.id}, " +
-                    "skal sende til kommune ${it.kommunenummer}) med " +
+                "Starter kryptering av filer." +
+                    "Skal sendes til kommune ${it.kommunenummer}) med " +
                     "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}",
             )
         }
