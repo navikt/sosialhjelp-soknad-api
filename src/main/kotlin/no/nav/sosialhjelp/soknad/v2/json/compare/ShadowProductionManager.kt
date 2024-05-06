@@ -41,7 +41,7 @@ class ShadowProductionManager(
             original: T,
             other: T,
         ) {
-            logger.info("$soknadId - *** COMPARING *** - baseClass: ${original::class.simpleName}")
+            logger.info("*** COMPARING *** - baseClass: ${original::class.simpleName}")
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {

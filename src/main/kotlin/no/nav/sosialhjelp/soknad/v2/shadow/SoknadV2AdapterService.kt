@@ -60,7 +60,7 @@ class SoknadV2AdapterService(
         arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?,
     ) {
         arbeidsforhold?.let {
-            log.info("NyModell: Legger til arbeidsforhold for $soknadId")
+            log.info("NyModell: Legger til arbeidsforhold.")
 
             kotlin.runCatching {
                 livssituasjonService.updateArbeidsforhold(
@@ -76,7 +76,7 @@ class SoknadV2AdapterService(
         soknadId: String,
         person: Person?,
     ) {
-        log.info("NyModell: Legger til adresser for $soknadId")
+        log.info("NyModell: Legger til adresser.")
 
         person?.let {
             kotlin.runCatching {
@@ -86,7 +86,7 @@ class SoknadV2AdapterService(
                     midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
                 )
             }
-                .onFailure { log.warn("NyModell: Legge til Adresser feilet for $soknadId", it) }
+                .onFailure { log.warn("NyModell: Legge til Adresser feilet.", it) }
         }
     }
 
@@ -94,7 +94,7 @@ class SoknadV2AdapterService(
         soknadId: String,
         telefonnummer: String?,
     ) {
-        log.info("NyModell: Legger til Telefonnummer for $soknadId")
+        log.info("NyModell: Legger til Telefonnummer.")
 
         telefonnummer?.let {
             kotlin.runCatching {

@@ -30,7 +30,7 @@ class KontaktService(
         brukerAdresse: Adresse?,
     ): Kontakt {
         logger.info(
-            "Oppdaterer adresse for $soknadId. " +
+            "Oppdaterer adresse." +
                 "Adressevalg: $adresseValg, " +
                 "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
         )
@@ -46,7 +46,7 @@ class KontaktService(
         midlertidigAdresse: Adresse?,
     ) {
         logger.info(
-            "Legger til adresser for $soknadId. " +
+            "Legger til adresser. " +
                 "Folkeregistrert: ${folkeregistrertAdresse?.let { "Funnet" }} " +
                 "Midlertidig: ${midlertidigAdresse?.let { "Funnet" }}",
         )

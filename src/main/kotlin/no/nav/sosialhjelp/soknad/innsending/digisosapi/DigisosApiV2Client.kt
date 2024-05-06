@@ -147,7 +147,7 @@ class DigisosApiV2Client(
                     .block() ?: throw FiksException("Fiks - noe uventet feilet ved innsending av søknad. Response er null?", null)
 
             val digisosId = Utils.stripVekkFnutter(response)
-            log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")
+            log.info("Sendte inn søknad til kommune $kommunenummer og fikk digisosid: $digisosId")
             return digisosId
         } catch (e: WebClientResponseException) {
             val errorResponse = e.responseBodyAsString

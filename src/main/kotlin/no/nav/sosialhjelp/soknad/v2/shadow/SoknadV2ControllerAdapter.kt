@@ -60,7 +60,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
     ) {
-        log.info("NyModell: Oppdaterer Arbeid for $soknadId")
+        log.info("NyModell: Oppdaterer Arbeid.")
 
         arbeidFrontend.kommentarTilArbeidsforhold?.let {
             runWithNestedTransaction {
@@ -74,7 +74,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         begrunnelseFrontend: BegrunnelseRessurs.BegrunnelseFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Begrunnelse for $soknadId")
+        log.info("NyModell: Oppdaterer Begrunnelse.")
 
         runWithNestedTransaction {
             with(begrunnelseFrontend) {
@@ -96,7 +96,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         bosituasjonFrontend: BosituasjonRessurs.BosituasjonFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Bosituasjon for $soknadId")
+        log.info("NyModell: Oppdaterer Bosituasjon.")
 
         runWithNestedTransaction {
             with(bosituasjonFrontend) {
@@ -118,7 +118,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         kontoInputDto: KontonummerInputDTO,
     ) {
-        log.info("NyModell: Oppdaterer Kontonummer for $soknadId")
+        log.info("NyModell: Oppdaterer Kontonummer.")
 
         val kontoInput =
             kontoInputDto.run {
@@ -141,7 +141,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         telefonnummerBruker: String?,
     ) {
-        log.info("NyModell: Oppdaterer Telefonnummer for $soknadId")
+        log.info("NyModell: Oppdaterer Telefonnummer.")
 
         runWithNestedTransaction {
             telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput())
@@ -153,7 +153,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         utdanningFrontend: UtdanningFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Utdanning for $soknadId")
+        log.info("NyModell: Oppdaterer Utdanning.")
 
         val utdanningInput =
             utdanningFrontend.run {
@@ -181,7 +181,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         familieFrontend: SivilstatusFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Sivilstatus for $soknadId")
+        log.info("NyModell: Oppdaterer Sivilstatus.")
 
         val sivilstandInput =
             familieFrontend.run {
@@ -207,7 +207,7 @@ class SoknadV2ControllerAdapter(
         soknadId: String,
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
     ) {
-        log.info("NyModell: Oppdaterer Forsorger for $soknadId")
+        log.info("NyModell: Oppdaterer Forsorger.")
 
         val forsorgerInput =
             forsorgerpliktFrontend.run {

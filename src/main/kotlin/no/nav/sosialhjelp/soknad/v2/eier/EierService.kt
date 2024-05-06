@@ -11,7 +11,7 @@ class EierService(
 ) {
     fun getEier(soknadId: UUID) =
         eierRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Finnes ingen Eier for $soknadId. Feil")
+            ?: throw IkkeFunnetException("Finnes ingen Eier. Feil")
 
     fun updateKontonummer(
         soknadId: UUID,

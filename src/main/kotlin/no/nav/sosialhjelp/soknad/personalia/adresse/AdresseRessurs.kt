@@ -117,12 +117,12 @@ class AdresseRessurs(
                 jsonInternalSoknad.soknad,
                 adresserFrontend.valg,
             )?.also {
-                // TODO Ekstra logging
-                logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
-                logger.info("NavEnhetFrontend: $it")
-
                 setNavEnhetAsMottaker(soknad, it, eier)
                 soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+                // TODO Ekstra logging
+                logger.info("NavEnhetFrontend: $it")
+                logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
             }
 
         // Ny modell
