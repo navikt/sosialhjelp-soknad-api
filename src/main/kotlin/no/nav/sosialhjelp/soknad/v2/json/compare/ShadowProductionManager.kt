@@ -48,8 +48,8 @@ class ShadowProductionManager(
                     JsonCompareErrorLogger(soknadId, result = it).logAllErrors()
                 }
 
-            logger.info("Original JSON: $original")
-            logger.info("Other JSON: $other")
+            logger.info("Original JSON: ${mapper.writeValueAsString(original)}")
+            logger.info("Other JSON: ${mapper.writeValueAsString(other)}")
         }
 
         private fun compare(
