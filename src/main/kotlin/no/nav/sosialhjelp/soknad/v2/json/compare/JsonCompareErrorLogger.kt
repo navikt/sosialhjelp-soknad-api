@@ -10,8 +10,9 @@ class JsonCompareErrorLogger(private val result: JSONCompareResult) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun logAllErrors(asOneString: Boolean) {
-        if (asOneString) { logAllerrorsAsOneString() }
-        else {
+        if (asOneString) {
+            logAllerrorsAsOneString()
+        } else {
             getFieldFailures().forEach { logError(it) }
             getFieldMissing().forEach { logError(it) }
             getArraySizeErrorList().forEach { logError(it) }
