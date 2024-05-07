@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.ARRAY_SIZE
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIELD_FAILURE
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
 class JsonCompareErrorLogger(
     private val soknadId: UUID,
@@ -21,6 +21,25 @@ class JsonCompareErrorLogger(
 
     private fun logError(error: ErrorRow) {
         logger.warn("${error.type} - ${error.message}")
+    }
+
+
+    fun logAllErrorsAsOneString() {
+
+        val fieldFailures = getFieldFailures().map { createStringForError(it) }
+        val fieldsMissing = getFieldMissing().map { createStringForError(it) }
+        val arraySizeErrors = getArraySizeErrorList().map { createStringForError(it) }
+
+        val failList = mutableListOf<String>()
+        failList.addAll(fieldFailures)
+        failList.addAll(fieldsMissing)
+        failList.addAll(arraySizeErrors)
+
+        logger.warn(failList.joinToString(separator = "\n"))
+    }
+
+    private fun createStringForError(error: ErrorRow): String {
+        return "${error.type} - ${error.message}"
     }
 
     private fun getFieldFailures(): List<ErrorRow> {
