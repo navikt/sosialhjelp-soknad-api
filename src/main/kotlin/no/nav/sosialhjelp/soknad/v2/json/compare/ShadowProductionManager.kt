@@ -45,7 +45,7 @@ class ShadowProductionManager(
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {
-                    JsonCompareErrorLogger(soknadId, result = it).logAllErrors()
+                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = true)
                 }
         }
 

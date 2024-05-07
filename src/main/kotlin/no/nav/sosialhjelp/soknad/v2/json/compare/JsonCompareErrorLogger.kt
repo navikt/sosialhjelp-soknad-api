@@ -5,18 +5,32 @@ import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIEL
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
-class JsonCompareErrorLogger(
-    private val soknadId: UUID,
-    private val result: JSONCompareResult,
-) {
+class JsonCompareErrorLogger(private val result: JSONCompareResult) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun logAllErrors() {
-        getFieldFailures().forEach { logError(it) }
-        getFieldMissing().forEach { logError(it) }
-        getArraySizeErrorList().forEach { logError(it) }
+    fun logAllErrors(asOneString: Boolean) {
+        if (asOneString) {
+            logAllerrorsAsOneString()
+        } else {
+            getFieldFailures().forEach { logError(it) }
+            getFieldMissing().forEach { logError(it) }
+            getArraySizeErrorList().forEach { logError(it) }
+        }
+    }
+
+    private fun logAllerrorsAsOneString() {
+        mutableListOf<String>()
+            .apply {
+                getFieldFailures().map { createStringForError(it) }.also { addAll(it) }
+                getFieldMissing().map { createStringForError(it) }.also { addAll(it) }
+                getArraySizeErrorList().map { createStringForError(it) }.also { addAll(it) }
+            }
+            .also { logger.warn(it.joinToString(separator = "\n")) }
+    }
+
+    private fun createStringForError(error: ErrorRow): String {
+        return "${error.type} - ${error.message}"
     }
 
     private fun logError(error: ErrorRow) {
