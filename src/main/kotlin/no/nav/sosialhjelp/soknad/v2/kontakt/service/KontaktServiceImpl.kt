@@ -11,11 +11,33 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+
+interface AdresseService {
+    fun findAdresser(soknadId: UUID): Adresser
+
+    fun updateBrukerAdresse(
+        soknadId: UUID,
+        adresseValg: AdresseValg,
+        brukerAdresse: Adresse?,
+    ): Adresser
+
+    fun findMottaker(soknadId: UUID): NavEnhet?
+}
+
+interface TelefonService {
+    fun findTelefonInfo(soknadId: UUID): Telefonnummer?
+
+    fun updateTelefonnummer(
+        soknadId: UUID,
+        telefonnummerBruker: String?,
+    ): Telefonnummer
+}
 
 @Service
 class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
-) : AdresseService, TelefonService, KontaktRegisterService {
+) : AdresseService, TelefonService {
     private val logger by logger()
 
     override fun findTelefonInfo(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
@@ -49,33 +71,6 @@ class KontaktServiceImpl(
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse)) }
             .let { kontaktRepository.save(it) }
             .adresser
-    }
-
-    override fun saveAdresserRegister(
-        soknadId: UUID,
-        folkeregistrert: Adresse?,
-        midlertidig: Adresse?,
-    ) {
-        findOrCreate(soknadId)
-            .run {
-                copy(
-                    adresser =
-                        adresser.copy(
-                            folkeregistrert = folkeregistrert,
-                            midlertidig = midlertidig,
-                        ),
-                )
-            }
-            .also { kontaktRepository.save(it) }
-    }
-
-    override fun updateTelefonRegister(
-        soknadId: UUID,
-        telefonRegister: String,
-    ) {
-        findOrCreate(soknadId)
-            .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
-            .also { kontaktRepository.save(it) }
     }
 
     override fun findMottaker(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.mottaker

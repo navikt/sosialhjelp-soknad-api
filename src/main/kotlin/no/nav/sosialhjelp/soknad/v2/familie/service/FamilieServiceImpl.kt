@@ -10,10 +10,30 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
 
+interface ForsorgerService {
+    fun findForsorger(soknadId: UUID): Forsorger?
+
+    fun updateForsorger(
+        soknadId: UUID,
+        barnebidrag: Barnebidrag?,
+        updated: List<Barn>,
+    ): Forsorger
+}
+
+interface SivilstandService {
+    fun findSivilstand(soknadId: UUID): Sivilstand?
+
+    fun updateSivilstand(
+        soknadId: UUID,
+        sivilstatus: Sivilstatus?,
+        ektefelle: Ektefelle?,
+    ): Sivilstand
+}
+
 @Service
 class FamilieServiceImpl(
     private val familieRepository: FamilieRepository,
-) : ForsorgerService, SivilstandService, FamilieRegisterService {
+) : ForsorgerService, SivilstandService {
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
 
     override fun updateForsorger(
@@ -72,36 +92,36 @@ class FamilieServiceImpl(
             .toSivilstand()
     }
 
-    override fun updateSivilstatusFraRegister(
-        soknadId: UUID,
-        sivilstatus: Sivilstatus,
-        ektefelle: Ektefelle,
-    ) {
-        findOrCreate(soknadId)
-            .copy(
-                sivilstatus = sivilstatus,
-                ektefelle = ektefelle,
-            )
-            .also { familieRepository.save(it) }
-    }
 
-    override fun updateForsorgerpliktRegister(
-        soknadId: UUID,
-        harForsorgerplikt: Boolean,
-        barn: List<Barn>,
-    ) {
-        findOrCreate(soknadId)
-            .run {
-                copy(
-                    harForsorgerplikt = harForsorgerplikt,
-                    ansvar = barn.associateBy { UUID.randomUUID() },
-                )
-            }
-            .also { familieRepository.save(it) }
-    }
 
     private fun findOrCreate(soknadId: UUID): Familie {
         return familieRepository.findByIdOrNull(soknadId)
             ?: familieRepository.save(Familie(soknadId))
     }
 }
+
+// wrapper-klasse (midlertidig sålenge vi har et såpass fragmentert controller-lag?)
+data class Forsorger(
+    val harForsorgerplikt: Boolean? = null,
+    val barnebidrag: Barnebidrag? = null,
+    val ansvar: Map<UUID, Barn> = emptyMap(),
+)
+
+fun Familie.toForsorger() =
+    Forsorger(
+        harForsorgerplikt = harForsorgerplikt,
+        barnebidrag = barnebidrag,
+        ansvar = ansvar,
+    )
+
+// wrapper-klasse (midlertidig sålenge vi har et såpass fragmentert controller-lag?)
+data class Sivilstand(
+    val sivilstatus: Sivilstatus? = null,
+    val ektefelle: Ektefelle? = null,
+)
+
+internal fun Familie.toSivilstand() =
+    Sivilstand(
+        sivilstatus = sivilstatus,
+        ektefelle = ektefelle,
+    )
