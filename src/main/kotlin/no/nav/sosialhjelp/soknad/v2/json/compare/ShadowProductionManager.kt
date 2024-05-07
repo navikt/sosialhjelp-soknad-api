@@ -47,6 +47,9 @@ class ShadowProductionManager(
                 .also {
                     JsonCompareErrorLogger(soknadId, result = it).logAllErrors()
                 }
+
+            logger.info("Original JSON: $original")
+            logger.info("Other JSON: $other")
         }
 
         private fun compare(
