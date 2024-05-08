@@ -71,10 +71,11 @@ class PdlDtoMapper(
         barnIdent: String,
         personDto: PersonDto,
     ): Barn? {
-        if (barnDto == null ||
-            hasAdressebeskyttelse(
-                barnDto.adressebeskyttelse,
-            ) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)
+        if (
+            barnDto == null ||
+            hasAdressebeskyttelse(barnDto.adressebeskyttelse) ||
+            isMyndig(barnDto.foedsel) ||
+            isDoed(barnDto.folkeregisterpersonstatus)
         ) {
             return null
         }

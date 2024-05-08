@@ -6,8 +6,10 @@ import io.getunleash.util.UnleashConfig
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
+@Profile("!test")
 class UnleashConfig(
     @Value("\${unleash_env}") private val environment: String,
     @Value("\${unleash_server_api_url}") private val baseurl: String,

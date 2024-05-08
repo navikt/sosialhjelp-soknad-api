@@ -12,11 +12,11 @@ import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerpliktController
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandController
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerInput
-import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerpliktController
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandController
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerController
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidController
@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.adapters.V2AdresseControllerAdapter
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput

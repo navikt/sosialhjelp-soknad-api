@@ -3,17 +3,21 @@ package no.nav.sosialhjelp.soknad.v2.config.repository
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
 
+interface DomainRoot {
+    val soknadId: UUID
+}
+
 /**
  * UpsertRepository er et fragment interface med egen implementasjon.
  * Overskriver signaturen til ListCrudRepository, slik at disse metodene erstatter default.
  */
-interface UpsertRepository<T : AggregateRoot> {
+interface UpsertRepository<T : DomainRoot> {
     fun <S : T> save(s: S): S
 
     fun <S : T> saveAll(entities: Iterable<S>): List<S>
 }
 
-class UpsertRepositoryImpl<T : AggregateRoot>(
+class UpsertRepositoryImpl<T : DomainRoot>(
     private val template: JdbcAggregateTemplate,
 ) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
@@ -26,8 +30,4 @@ class UpsertRepositoryImpl<T : AggregateRoot>(
     }
 
     override fun <S : T> saveAll(entities: Iterable<S>): List<S> = entities.map { save(it) }
-}
-
-interface AggregateRoot {
-    val soknadId: UUID
 }

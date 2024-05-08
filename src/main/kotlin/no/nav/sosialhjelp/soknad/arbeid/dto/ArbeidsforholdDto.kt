@@ -12,7 +12,7 @@ data class ArbeidsforholdDto(
     val arbeidsavtaler: List<ArbeidsavtaleDto>?,
     val arbeidsforholdId: String?,
     val arbeidsgiver: OpplysningspliktigArbeidsgiverDto?,
-    val arbeidstaker: PersonDto?,
+    val arbeidstaker: PersonArbeidDto?,
 )
 
 data class AnsettelsesperiodeDto(
@@ -26,7 +26,7 @@ data class ArbeidsavtaleDto(
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = OrganisasjonDto::class, name = "Organisasjon"),
-    JsonSubTypes.Type(value = PersonDto::class, name = "Person"),
+    JsonSubTypes.Type(value = PersonArbeidDto::class, name = "Person"),
 )
 sealed class OpplysningspliktigArbeidsgiverDto()
 
@@ -35,7 +35,7 @@ data class OrganisasjonDto(
     val type: String?,
 ) : OpplysningspliktigArbeidsgiverDto()
 
-data class PersonDto(
+data class PersonArbeidDto(
     val offentligIdent: String,
     val aktoerId: String,
     val type: String?,

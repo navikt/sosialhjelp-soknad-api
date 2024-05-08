@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserDto
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -31,13 +31,13 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.adresseValg).isEqualTo(kontakt.adresser.adressevalg)
 
             assertThat(it.midlertidigAdresse).isInstanceOf(MatrikkelAdresse::class.java)
-            assertThat(it.midlertidigAdresse).isEqualTo(kontakt.adresser.midlertidigAdresse)
+            assertThat(it.midlertidigAdresse).isEqualTo(kontakt.adresser.midlertidig)
 
             assertThat(it.folkeregistrertAdresse).isInstanceOf(VegAdresse::class.java)
-            assertThat(it.folkeregistrertAdresse).isEqualTo(kontakt.adresser.folkeregistrertAdresse)
+            assertThat(it.folkeregistrertAdresse).isEqualTo(kontakt.adresser.folkeregistrert)
 
             assertThat(it.brukerAdresse).isInstanceOf(UstrukturertAdresse::class.java)
-            assertThat(it.brukerAdresse).isEqualTo(kontakt.adresser.brukerAdresse)
+            assertThat(it.brukerAdresse).isEqualTo(kontakt.adresser.fraBruker)
         }
     }
 
@@ -60,7 +60,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
             assertThat(it.adresser.adressevalg).isEqualTo(adresserInput.adresseValg)
-            assertThat(it.adresser.brukerAdresse).isEqualTo(adresserInput.brukerAdresse)
+            assertThat(it.adresser.fraBruker).isEqualTo(adresserInput.brukerAdresse)
         }
     }
 }

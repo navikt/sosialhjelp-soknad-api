@@ -55,7 +55,7 @@ soknadsosialhjelp-filformat = { module = "no.nav.sbl.dialogarena:soknadsosialhje
 
 sosialhjelp-common-api = { module = "no.nav.sosialhjelp:sosialhjelp-common-api", version.ref = "sosialhjelp_common" }
 sosialhjelp-common-selftest = { module = "no.nav.sosialhjelp:sosialhjelp-common-selftest", version.ref = "sosialhjelp_common" }
-sosialhjelp-common-kotlin-utils = { module = "no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils", version.ref = "sosialhjelp_common" }
+#sosialhjelp-common-kotlin-utils = { module = "no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils", version.ref = "sosialhjelp_common" }
 
 vault-jdbc = { module = "no.nav:vault-jdbc", version.ref = "vault_jdbc" }
 
@@ -130,7 +130,7 @@ pdfbox = [
 sosialhjelp-common = [
     "sosialhjelp-common-selftest",
     "sosialhjelp-common-api",
-    "sosialhjelp-common-kotlin-utils",
+#    "sosialhjelp-common-kotlin-utils",
 ]
 
 

@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.adresse
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
@@ -20,7 +20,7 @@ data class AdresserSoknad(
     val folkeregistrertAdresse: Adresse? = null,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL)
     var brukerInput: BrukerInputAdresse? = null,
-) : AggregateRoot {
+) : DomainRoot {
     fun getOppholdsadresse(): Adresse {
         return brukerInput?.let {
             return when (it.valgtAdresse) {

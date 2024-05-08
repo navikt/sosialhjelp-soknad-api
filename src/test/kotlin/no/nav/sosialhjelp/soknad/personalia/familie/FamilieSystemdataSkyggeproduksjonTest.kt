@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
+import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2AdapterService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
@@ -28,9 +28,9 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle as EktefelleV2
 
 class FamilieSystemdataSkyggeproduksjonTest {
     private val personService: PersonService = mockk()
-    private val familieService: FamilieService = mockk()
+    private val familieService: FamilieRegisterService = mockk()
     private val v2AdapterService: V2AdapterService =
-        SoknadV2AdapterService(mockk(), mockk(), mockk(), mockk(), mockk(), familieService)
+        SoknadV2AdapterService(mockk(), mockk(), mockk(), mockk(), familieService, mockk())
     private val familieSystemdata = FamilieSystemdata(personService, v2AdapterService)
 
     @Test
@@ -43,13 +43,13 @@ class FamilieSystemdataSkyggeproduksjonTest {
                 EKTEFELLE,
             )
         every { personService.hentBarnForPerson(EIER) } returns emptyList()
-        every { familieService.addSivilstatus(any(), any(), capture(ektefelleSlot)) } just Runs
+        every { familieService.updateSivilstatusFraRegister(any(), any(), capture(ektefelleSlot)) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         verify(exactly = 1) {
-            familieService.addSivilstatus(any(), any(), any())
+            familieService.updateSivilstatusFraRegister(any(), any(), any())
             assertThat(ektefelleSlot.captured.personId).isEqualTo(EKTEFELLE.fnr)
         }
     }
@@ -60,13 +60,13 @@ class FamilieSystemdataSkyggeproduksjonTest {
 
         every { personService.hentPerson(EIER) } returns createPerson(JsonSivilstatus.Status.UGIFT.toString(), null)
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN)
-        every { familieService.addBarn(any(), capture(barnSlotListe), any()) } just Runs
+        every { familieService.updateForsorgerpliktRegister(any(), any(), capture(barnSlotListe)) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         verify(exactly = 1) {
-            familieService.addBarn(UUID.fromString(SOKNADSID), any(), true)
+            familieService.updateForsorgerpliktRegister(UUID.fromString(SOKNADSID), true, any())
             assertThat(barnSlotListe.captured).hasSize(1)
             assertThat(barnSlotListe.captured[0].personId).isEqualTo(BARN.fnr)
         }

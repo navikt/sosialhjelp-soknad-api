@@ -45,7 +45,7 @@ class EierToJsonMapper(
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
 
-                eier.kontonummer?.let {
+                eier.kontonummer.let {
                     this.kontonummer = it.toJsonKontonummer()
                 }
             }

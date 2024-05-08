@@ -67,7 +67,6 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    @Deprecated("Gammelt repository")
     override fun hentSoknad(
         behandlingsId: String?,
         eier: String,
