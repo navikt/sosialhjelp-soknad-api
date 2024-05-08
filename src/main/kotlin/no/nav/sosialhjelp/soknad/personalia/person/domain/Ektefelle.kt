@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
+import java.io.Serializable
 import java.time.LocalDate
 
 data class Ektefelle(
@@ -10,6 +11,6 @@ data class Ektefelle(
     val fnr: String?,
     val folkeregistrertSammen: Boolean,
     val ikkeTilgangTilEktefelle: Boolean
-) {
+) : Serializable {
     constructor(ikkeTilgangTilEktefelle: Boolean) : this(null, null, null, null, null, false, ikkeTilgangTilEktefelle)
 }
