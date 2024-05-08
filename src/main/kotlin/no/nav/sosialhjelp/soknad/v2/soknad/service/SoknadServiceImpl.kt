@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
-import no.nav.sosialhjelp.soknad.v2.soknad.findOrError
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -72,13 +71,9 @@ class SoknadServiceImpl(
         soknadId: UUID,
         innsendingsTidspunkt: LocalDateTime,
     ) {
-        soknadRepository.findOrError(soknadId)
-            .run {
-                this.tidspunkt
-                    .copy(sendtInn = innsendingsTidspunkt)
-                    .let { tidCopy -> this.copy(tidspunkt = tidCopy) }
-                    .let { sokCopy -> soknadRepository.save(sokCopy) }
-            }
+        findOrError(soknadId)
+            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
+            .also { soknadRepository.save(it) }
     }
 
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
