@@ -9,8 +9,6 @@ import java.nio.charset.StandardCharsets
 import java.util.stream.Collectors
 
 object PdlApiQuery {
-
-    val ADRESSE_SOK = readGraphQLQueryFromFile("graphql-documents/pdl-adressesok.graphql")
     // flere queries?
 
     private fun readGraphQLQueryFromFile(file: String): String {

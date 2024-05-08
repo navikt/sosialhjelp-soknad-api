@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 
 internal class AdressesokServiceTest {
 
@@ -45,7 +46,7 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalKasteFeil_AdresseSokResultErNull() {
-        every { adressesokClient.getAdressesokResult(any()) } returns null
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.empty()
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -53,7 +54,7 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_AdresseSokResultHitsErNull() {
         val adressesokResult = resultDto.copy(hits = null)
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -61,7 +62,7 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_AdresseSokGirTomListe() {
         val adressesokResult = resultDto.copy(hits = emptyList())
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -74,7 +75,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse, 0.7f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -86,7 +87,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101")
     }
@@ -98,7 +99,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse, 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("0301")
     }
@@ -111,7 +112,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune2"), 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -124,7 +125,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "2222"), 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -137,7 +138,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030102"), 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
     }
@@ -150,7 +151,7 @@ internal class AdressesokServiceTest {
                 AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
             )
         )
-        every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(adressesokResult)
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo")
         assertThat(adresseForslag.kommunenummer).isEqualTo("0301")
@@ -167,22 +168,24 @@ internal class AdressesokServiceTest {
 
     @Test
     fun `sokEtterAdresser skal returnere tom liste ved ingen treff i PDL`() {
-        every { adressesokClient.getAdressesokResult(any()) } returns resultDto.copy(hits = null)
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(resultDto.copy(hits = null))
         assertThat(adressesokService.sokEtterAdresser("Oslogaten 2")).isEmpty()
     }
 
     @Test
     fun `sokEtterAdresser skal returnere funn fra PDL`() {
-        every { adressesokClient.getAdressesokResult(any()) } returns resultDto.copy(
-            hits = listOf(
-                AdressesokHitDto(
-                    vegadresse = defaultVegadresse,
-                    score = 1.0f
-                )
-            ),
-            pageNumber = 1,
-            totalPages = 1,
-            totalHits = 1
+        every { adressesokClient.getAdressesokResult(any()) } returns Mono.just(
+            resultDto.copy(
+                hits = listOf(
+                    AdressesokHitDto(
+                        vegadresse = defaultVegadresse,
+                        score = 1.0f
+                    )
+                ),
+                pageNumber = 1,
+                totalPages = 1,
+                totalHits = 1
+            )
         )
 
         val result = adressesokService.sokEtterAdresser("oslogaten 42, 1337 Leet")

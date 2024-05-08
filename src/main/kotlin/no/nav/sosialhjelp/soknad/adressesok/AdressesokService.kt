@@ -26,7 +26,7 @@ class AdressesokService(
 ) {
 
     fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
-        val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
+        val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse)).block()
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
         return vegadresse.toAdresseForslag()
     }
@@ -45,7 +45,7 @@ class AdressesokService(
         if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return emptyList()
         }
-        val adressesokResult = adressesokClient.getAdressesokResult(toVariablesForFritekstSok(sokedata))
+        val adressesokResult = adressesokClient.getAdressesokResult(toVariablesForFritekstSok(sokedata)).block()
         return adressesokResult?.hits?.map { it.vegadresse } ?: emptyList()
     }
 
