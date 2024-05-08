@@ -1,12 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-
+import java.util.UUID
 
 @Service
 class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
@@ -19,10 +18,10 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
             .run {
                 copy(
                     adresser =
-                    adresser.copy(
-                        folkeregistrert = folkeregistrert,
-                        midlertidig = midlertidig,
-                    ),
+                        adresser.copy(
+                            folkeregistrert = folkeregistrert,
+                            midlertidig = midlertidig,
+                        ),
                 )
             }
             .also { kontaktRepository.save(it) }
@@ -37,6 +36,7 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
             .also { kontaktRepository.save(it) }
     }
 
-    private fun findOrCreate(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)
+    private fun findOrCreate(soknadId: UUID) =
+        kontaktRepository.findByIdOrNull(soknadId)
             ?: kontaktRepository.save(Kontakt(soknadId))
 }

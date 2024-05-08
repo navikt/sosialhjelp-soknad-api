@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.eier.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -8,7 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-
+import java.util.UUID
 
 interface EierService {
     fun findOrError(soknadId: UUID): Eier

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
@@ -10,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 interface ArbeidService {
     fun findArbeid(soknadId: UUID): Arbeid?
@@ -81,8 +81,6 @@ class LivssituasjonServiceImpl(
             .let { repository.save(it) }
             .arbeid!!
     }
-
-
 
     private fun findOrCreate(soknadId: UUID) =
         repository.findByIdOrNull(soknadId)

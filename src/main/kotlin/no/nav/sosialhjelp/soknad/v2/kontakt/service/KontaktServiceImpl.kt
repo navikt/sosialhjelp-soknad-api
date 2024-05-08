@@ -7,11 +7,11 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 
 interface AdresseService {
     fun findAdresser(soknadId: UUID): Adresser

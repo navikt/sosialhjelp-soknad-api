@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
-
 @Service
 class EierRegisterService(private val eierRepository: EierRepository) {
     fun updateFromRegister(eier: Eier) {
@@ -18,13 +17,13 @@ class EierRegisterService(private val eierRepository: EierRepository) {
                     statsborgerskap = eier.statsborgerskap,
                     nordiskBorger = eier.nordiskBorger,
                     kontonummer =
-                    kontonummer.copy(
-                        fraRegister = eier.kontonummer.fraRegister,
-                    ),
+                        kontonummer.copy(
+                            fraRegister = eier.kontonummer.fraRegister,
+                        ),
                 )
             }
             ?.also { eierRepository.save(it) }
-        // lagre hvis ikke finnes
+            // lagre hvis ikke finnes
             ?: eierRepository.save(eier)
     }
 }

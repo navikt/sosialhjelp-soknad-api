@@ -92,8 +92,6 @@ class FamilieServiceImpl(
             .toSivilstand()
     }
 
-
-
     private fun findOrCreate(soknadId: UUID): Familie {
         return familieRepository.findByIdOrNull(soknadId)
             ?: familieRepository.save(Familie(soknadId))

@@ -2,12 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
 
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-
+import java.util.UUID
 
 @Service
 class LivssituasjonRegisterService(private val repository: LivssituasjonRepository) {
