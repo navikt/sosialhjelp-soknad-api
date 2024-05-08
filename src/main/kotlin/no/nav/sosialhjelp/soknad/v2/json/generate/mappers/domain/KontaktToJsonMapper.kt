@@ -143,7 +143,7 @@ class KontaktToJsonMapper(
             return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
                 .withEnhetsnummer(enhetsnummer)
                 .withKommunenummer(kommunenummer)
-                .withNavEnhetsnavn(enhetsnavn)
+                .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
         }
     }
 }
