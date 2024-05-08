@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient
 ) {
-    @Cacheable("geografiskTilknytningForIdent")
+    @Cacheable(cacheNames = ["pdl"], key = "#root.methodName + '_' + #ident")
     fun hentGeografiskTilknytning(ident: String): String? {
         val geografiskTilknytningDto = geografiskTilknytningClient.hentGeografiskTilknytning(ident).block() ?: return null
         if (!geografiskTilknytningDto.erNorsk()) return null
