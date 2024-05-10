@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
 interface ForsorgerService {
     fun findForsorger(soknadId: UUID): Forsorger?
@@ -34,6 +35,9 @@ interface SivilstandService {
 class FamilieServiceImpl(
     private val familieRepository: FamilieRepository,
 ) : ForsorgerService, SivilstandService {
+
+    private val logger by logger()
+
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
 
     override fun updateForsorger(
@@ -48,7 +52,11 @@ class FamilieServiceImpl(
                     ansvar = mapAnsvar(ansvar, updated),
                 )
             }
-            .let { familieRepository.save(it) }
+            .let {
+                // TODO Logger ut HELE forsorger-objektet - skal ikke i PROD
+                logger.info("Saving updated forsorger-object: $it")
+                familieRepository.save(it)
+            }
             .toForsorger()
     }
 
