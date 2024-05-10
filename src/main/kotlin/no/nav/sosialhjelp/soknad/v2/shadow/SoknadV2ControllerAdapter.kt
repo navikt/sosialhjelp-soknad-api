@@ -213,7 +213,7 @@ class SoknadV2ControllerAdapter(
             forsorgerpliktFrontend.run {
                 ForsorgerInput(
                     barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
-                    ansvar.map { BarnInput(null, it.barn?.personnummer, it.harDeltBosted) },
+                    ansvar.map { BarnInput(null, it.barn?.fodselsnummer, it.harDeltBosted) },
                 )
             }
         runWithNestedTransaction {
