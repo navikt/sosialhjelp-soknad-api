@@ -33,13 +33,15 @@ class ShadowProductionManager(
         } ?: logger.warn("NyModell : Sammenlikning : Original er null")
     }
 
-    private fun sortAnsvar(original: JsonInternalSoknad, copy: JsonInternalSoknad) {
+    private fun sortAnsvar(
+        original: JsonInternalSoknad,
+        copy: JsonInternalSoknad,
+    ) {
         original.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
         copy.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
     }
 
     internal class JsonContentComparator() {
-
         private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -51,7 +53,7 @@ class ShadowProductionManager(
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {
-                    JsonCompareErrorLogger(result = it,).logAllErrors(asOneString = true)
+                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = true)
                 }
         }
 
