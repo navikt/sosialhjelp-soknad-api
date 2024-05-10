@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPres
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling
@@ -22,6 +21,7 @@ import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.apache.commons.text.WordUtils
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedMicros
 
 @Component
 class BostotteSystemdata(
@@ -39,7 +39,7 @@ class BostotteSystemdata(
             if (bostotte != null) {
                 okonomi.opplysninger.bekreftelse
                     .firstOrNull { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) }
-                    ?.withBekreftelsesDato(nowWithForcedNanoseconds())
+                    ?.withBekreftelsesDato(nowWithForcedMicros())
                 fjernGamleHusbankenData(okonomi, false)
                 val trengerViDataFraDeSiste60Dager = !harViDataFraSiste30Dager(bostotte)
                 val jsonBostotteUtbetalinger =
