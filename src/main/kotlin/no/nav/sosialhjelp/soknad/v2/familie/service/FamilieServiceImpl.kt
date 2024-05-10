@@ -55,7 +55,7 @@ class FamilieServiceImpl(
                 )
             }
             .let {
-                logger.info("Oppdatert Familie-objekt: ${jacksonObjectMapper().writeValueAsString(this)}")
+                logger.info("Oppdatert Familie-objekt: ${jacksonObjectMapper().writeValueAsString(it)}")
                 familieRepository.save(it)
             }
             .toForsorger()
