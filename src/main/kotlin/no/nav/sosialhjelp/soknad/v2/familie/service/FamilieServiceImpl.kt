@@ -65,6 +65,9 @@ class FamilieServiceImpl(
         existing: Map<UUID, Barn>,
         updated: List<Barn>,
     ): Map<UUID, Barn> {
+        logger.info("Existing object: ${jacksonObjectMapper().writeValueAsString(existing) }")
+        logger.info("Update object: ${jacksonObjectMapper().writeValueAsString(updated) }")
+
         return existing
             .map { (uuid, existing) ->
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
@@ -72,15 +75,10 @@ class FamilieServiceImpl(
                     updated.find { it.familieKey == uuid }
                         ?: updated.find { it.personId == existing.personId }
 
-                logger.info("Existing barn: $existing")
-                logger.info("Updated barn: $updated")
-
-                val pair = when (updatedBarn != null) {
+                when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
                     false -> uuid to existing
                 }
-                logger.info("Pair to be saved: $pair")
-                pair
             }
             .toMap()
     }
