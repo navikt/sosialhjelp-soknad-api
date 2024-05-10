@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
@@ -16,21 +17,24 @@ import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
 @Component
 class EierToJsonMapper(
     private val eierRepository: EierRepository,
 ) : DomainToJsonMapper {
+
+    private val logger by logger()
+
     override fun mapToSoknad(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        val eier = (
-            eierRepository.findByIdOrNull(soknadId)
-                ?: throw IllegalStateException("Fant ikke Eier")
-        )
-
-        doMapping(eier, jsonInternalSoknad)
+        eierRepository.findByIdOrNull(soknadId)?.let {
+            logger.info(jacksonObjectMapper().writeValueAsString(it.kontonummer))
+            doMapping(it, jsonInternalSoknad)
+        }
+            ?: throw IllegalStateException("Fant ikke Eier")
     }
 
     internal companion object Mapper {
@@ -45,9 +49,7 @@ class EierToJsonMapper(
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
 
-                eier.kontonummer.let {
-                    this.kontonummer = it.toJsonKontonummer()
-                }
+                this.kontonummer = eier.kontonummer.toJsonKontonummer()
             }
         }
 
@@ -79,7 +81,7 @@ class EierToJsonMapper(
             }
         }
 
-        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? {
+        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer {
             return when {
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
