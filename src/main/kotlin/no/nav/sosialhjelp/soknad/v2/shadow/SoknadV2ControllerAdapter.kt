@@ -217,6 +217,7 @@ class SoknadV2ControllerAdapter(
                 )
             }
         runWithNestedTransaction {
+            log.info("Forsorgerinput: ${forsorgerInput.ansvar}")
             forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
         }
             .onFailure { log.warn("Ny modell: Oppdatering av forsorgerplikt feilet", it) }

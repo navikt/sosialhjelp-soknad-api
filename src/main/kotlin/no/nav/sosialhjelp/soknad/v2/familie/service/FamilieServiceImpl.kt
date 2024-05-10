@@ -47,16 +47,13 @@ class FamilieServiceImpl(
     ): Forsorger {
         return findOrCreate(soknadId)
             .run {
+                logger.info("Familie-objekt: $this")
                 copy(
                     barnebidrag = barnebidrag,
                     ansvar = mapAnsvar(ansvar, updated),
                 )
             }
-            .let {
-                // TODO Logger ut HELE forsorger-objektet - skal ikke i PROD
-                logger.info("Saving updated forsorger-object: $it")
-                familieRepository.save(it)
-            }
+            .let { familieRepository.save(it) }
             .toForsorger()
     }
 
@@ -70,6 +67,9 @@ class FamilieServiceImpl(
                 val updatedBarn =
                     updated.find { it.familieKey == uuid }
                         ?: updated.find { it.personId == existing.personId }
+
+                logger.info("Existing barn: $existing")
+                logger.info("Updated barn: $updated")
 
                 when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
