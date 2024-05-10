@@ -87,7 +87,7 @@ class EierToJsonMapper(
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
                 fraRegister != null ->
                     JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
-                else -> null
+                else -> JsonKontonummer()
             }
         }
     }

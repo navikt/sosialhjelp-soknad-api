@@ -136,7 +136,7 @@ class KontaktToJsonMapper(
         private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
             return JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(orgnummer)
-                .withNavEnhetsnavn(enhetsnavn)
+                .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
         }
 
         private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
