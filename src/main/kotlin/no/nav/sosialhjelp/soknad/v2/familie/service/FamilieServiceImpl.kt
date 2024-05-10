@@ -75,10 +75,12 @@ class FamilieServiceImpl(
                 logger.info("Existing barn: $existing")
                 logger.info("Updated barn: $updated")
 
-                when (updatedBarn != null) {
+                val pair = when (updatedBarn != null) {
                     true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
                     false -> uuid to existing
                 }
+                logger.info("Pair to be saved: $pair")
+                pair
             }
             .toMap()
     }
