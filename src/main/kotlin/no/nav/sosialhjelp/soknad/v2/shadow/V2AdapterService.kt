@@ -50,4 +50,9 @@ interface V2AdapterService {
         behandlingsId: String,
         ansvarList: List<JsonAnsvar>,
     )
+
+    fun saveKontonummer(
+        behandlingsId: String,
+        kontonummer: String?
+    )
 }

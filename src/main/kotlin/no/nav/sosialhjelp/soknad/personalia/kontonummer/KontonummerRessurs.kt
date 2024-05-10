@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -25,6 +26,7 @@ class KontonummerRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerService: KontonummerService,
     private val controllerAdapter: ControllerAdapter,
+    private val v2AdapterService: V2AdapterService,
 ) {
     @GetMapping
     fun hentKontonummer(
@@ -33,15 +35,18 @@ class KontonummerRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val konto = loadKontonummer(behandlingsId)
         if (konto.kilde == JsonKilde.SYSTEM && konto.verdi == null) {
+            val kontonummerRegister = kontonummerService.getKontonummer(eier())
             storeKontonummer(
                 behandlingsId,
                 JsonKontonummer().apply {
                     kilde = JsonKilde.SYSTEM
-                    verdi = kontonummerService.getKontonummer(eier())
-                },
+                    verdi = kontonummerRegister
+                }
             )
+            // ny modell
+            // TODO Dette kjører minst 1 gang fordi kilde settes til SYSTEM. Ingen stabil logikk.
+            v2AdapterService.saveKontonummer(behandlingsId, kontonummerRegister)
         }
-
         return mapDAOtoDTO(loadKontonummer(behandlingsId))
     }
 

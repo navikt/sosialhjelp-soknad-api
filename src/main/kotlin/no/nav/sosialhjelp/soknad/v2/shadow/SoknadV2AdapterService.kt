@@ -170,7 +170,16 @@ class SoknadV2AdapterService(
                     )
                 }
             }
-                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad", it) }
+        }
+    }
+
+    override fun saveKontonummer(behandlingsId: String, kontonummer: String?) {
+        kontonummer?.let {
+            kotlin.runCatching {
+                eierService.updateKontonummerFraRegister(behandlingsId, it)
+            }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til kontonummer for søknad.", it) }
         }
     }
 }
