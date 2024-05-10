@@ -19,8 +19,8 @@ interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRep
 data class Livssituasjon(
     @Id
     override val soknadId: UUID,
-    @Embedded.Nullable
-    val arbeid: Arbeid? = null,
+    @Embedded.Empty
+    val arbeid: Arbeid = Arbeid(),
     @Embedded.Nullable
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
