@@ -48,7 +48,7 @@ class FamilieServiceImpl(
     ): Forsorger {
         return findOrCreate(soknadId)
             .run {
-                logger.info("Familie-objekt: $this")
+                logger.info("Updated barn-list: $updated")
                 copy(
                     barnebidrag = barnebidrag,
                     ansvar = mapAnsvar(ansvar, updated),
