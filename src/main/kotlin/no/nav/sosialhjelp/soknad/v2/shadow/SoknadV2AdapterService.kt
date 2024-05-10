@@ -228,6 +228,7 @@ private fun JsonAnsvar.toV2Barn(): Barn {
             ),
         fodselsdato = barn.fodselsdato,
         borSammen = borSammenMed?.verdi,
+        deltBosted = harDeltBosted?.verdi,
         folkeregistrertSammen = erFolkeregistrertSammen.verdi,
     )
 }
