@@ -20,8 +20,10 @@ import no.nav.sosialhjelp.soknad.v2.navn.toJson
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
@@ -50,12 +52,23 @@ private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else J
 
 private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
-private fun Ektefelle.toJson() = JsonEktefelle().withNavn(navn?.toJson()).withFodselsdato(fodselsdato).withPersonIdentifikator(personId)
+private fun Ektefelle.toJson() = JsonEktefelle()
+    .withNavn(navn?.toJson())
+    .withFodselsdato(fodselsdato)
+    .withPersonIdentifikator(personId)
 
 private fun Familie.toJsonForsorgerplikt() =
     JsonForsorgerplikt()
-        .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(harForsorgerplikt))
-        .withBarnebidrag(JsonBarnebidrag().withVerdi(barnebidrag?.toJson()))
+        .withHarForsorgerplikt(
+            JsonHarForsorgerplikt()
+                .withKilde(JsonKilde.SYSTEM)
+                .withVerdi(harForsorgerplikt)
+        )
+        .withBarnebidrag(
+            JsonBarnebidrag()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(barnebidrag?.toJson())
+        )
         .withAnsvar(ansvar.values.toJson())
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
@@ -74,6 +87,11 @@ private fun Barn.toJson() =
             JsonErFolkeregistrertSammen()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen)
+        )
+        .withHarDeltBosted(
+            JsonHarDeltBosted()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(deltBosted)
         )
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)
