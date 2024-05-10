@@ -53,7 +53,10 @@ class FamilieServiceImpl(
                     ansvar = mapAnsvar(ansvar, updated),
                 )
             }
-            .let { familieRepository.save(it) }
+            .let {
+                logger.info("Oppdatert Familie-objekt: $this")
+                familieRepository.save(it)
+            }
             .toForsorger()
     }
 
