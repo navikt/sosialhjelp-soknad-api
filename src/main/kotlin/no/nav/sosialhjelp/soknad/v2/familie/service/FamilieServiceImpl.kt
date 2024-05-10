@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie.service
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -54,7 +55,7 @@ class FamilieServiceImpl(
                 )
             }
             .let {
-                logger.info("Oppdatert Familie-objekt: $this")
+                logger.info("Oppdatert Familie-objekt: ${jacksonObjectMapper().writeValueAsString(this)}")
                 familieRepository.save(it)
             }
             .toForsorger()
