@@ -20,6 +20,8 @@ import no.nav.sosialhjelp.soknad.v2.navn.toJson
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
@@ -59,6 +61,19 @@ private fun Familie.toJsonForsorgerplikt() =
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
 private fun Barn.toJson() =
-    JsonAnsvar().withBarn(JsonBarn().withFodselsdato(fodselsdato).withNavn(navn?.toJson()).withPersonIdentifikator(personId))
+    JsonAnsvar()
+        .withBarn(
+            JsonBarn()
+                .withKilde(JsonKilde.SYSTEM)
+                .withFodselsdato(fodselsdato)
+                .withNavn(navn?.toJson())
+                .withPersonIdentifikator(personId)
+                .withHarDiskresjonskode(false)
+        )
+        .withErFolkeregistrertSammen(
+            JsonErFolkeregistrertSammen()
+                .withKilde(JsonKildeSystem.SYSTEM)
+                .withVerdi(folkeregistrertSammen)
+        )
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)
