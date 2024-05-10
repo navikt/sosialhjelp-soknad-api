@@ -51,7 +51,7 @@ class DigisosApiService(
             soknadUnderArbeid.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        val innsendingsTidspunkt = SoknadUnderArbeidService.nowWithForcedMicros()
+        val innsendingsTidspunkt = SoknadUnderArbeidService.nowWithForcedMillis()
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
 
         // Ny modell

@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdSystemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedMicros
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedMillis
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.tekster.TextService
@@ -33,7 +33,7 @@ class SkatteetatenSystemdata(
             } else {
                 bekreftelser
                     .firstOrNull { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) }
-                    ?.withBekreftelsesDato(nowWithForcedMicros())
+                    ?.withBekreftelsesDato(nowWithForcedMillis())
                 fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar)
                 jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
