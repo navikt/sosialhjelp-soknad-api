@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
@@ -20,7 +21,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 
 @Component
 class LivssituasjonToJsonMapper(
@@ -69,7 +69,7 @@ private fun Arbeid.toJsonArbeid(): JsonArbeid {
                 JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)
-            }
+            },
         )
         .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
 }

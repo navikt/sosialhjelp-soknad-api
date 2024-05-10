@@ -174,7 +174,10 @@ class SoknadV2AdapterService(
         }
     }
 
-    override fun saveKontonummer(behandlingsId: String, kontonummer: String?) {
+    override fun saveKontonummer(
+        behandlingsId: String,
+        kontonummer: String?,
+    ) {
         kontonummer?.let {
             kotlin.runCatching {
                 eierService.updateKontonummerFraRegister(behandlingsId, it)

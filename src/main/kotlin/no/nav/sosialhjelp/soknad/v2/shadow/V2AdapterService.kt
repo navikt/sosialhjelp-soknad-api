@@ -53,6 +53,6 @@ interface V2AdapterService {
 
     fun saveKontonummer(
         behandlingsId: String,
-        kontonummer: String?
+        kontonummer: String?,
     )
 }

@@ -41,7 +41,7 @@ class KontonummerRessurs(
                 JsonKontonummer().apply {
                     kilde = JsonKilde.SYSTEM
                     verdi = kontonummerRegister
-                }
+                },
             )
             // ny modell
             // TODO Dette kjører minst 1 gang fordi kilde settes til SYSTEM. Ingen stabil logikk.

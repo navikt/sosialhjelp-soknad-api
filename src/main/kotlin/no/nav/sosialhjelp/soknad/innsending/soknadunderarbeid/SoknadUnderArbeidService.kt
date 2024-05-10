@@ -148,7 +148,6 @@ class SoknadUnderArbeidService(
     }
 
     companion object {
-
         fun nowWithForcedMillis(): String {
             val now = OffsetDateTime.now(ZoneOffset.UTC)
             return if (now.nano == 0) {

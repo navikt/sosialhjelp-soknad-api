@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.eier.service
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class EierRegisterService(private val eierRepository: EierRepository) {
@@ -28,7 +28,10 @@ class EierRegisterService(private val eierRepository: EierRepository) {
             ?: eierRepository.save(eier)
     }
 
-    fun updateKontonummerFraRegister(soknadId: String, kontonummerRegister: String) {
+    fun updateKontonummerFraRegister(
+        soknadId: String,
+        kontonummerRegister: String,
+    ) {
         eierRepository
             .findByIdOrNull(UUID.fromString(soknadId))
             ?.run { copy(kontonummer = kontonummer.copy(fraRegister = kontonummerRegister)) }
