@@ -10,6 +10,7 @@ import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import jakarta.validation.Validation
+import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
@@ -21,20 +22,17 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 internal class KontonummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
-    private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
 
     private val kontonummerRessurs =
         KontonummerRessurs(
@@ -42,7 +40,6 @@ internal class KontonummerRessursTest {
             soknadUnderArbeidRepository,
             kontonummerService,
             controllerAdapter,
-            v2AdapterService,
         )
 
     @BeforeEach

@@ -31,14 +31,4 @@ class EierRegisterService(private val eierRepository: EierRepository) {
             // lagre hvis ikke finnes
             ?: eierRepository.save(eier)
     }
-
-    fun updateKontonummerFraRegister(
-        soknadId: String,
-        kontonummerRegister: String,
-    ) {
-        eierRepository
-            .findByIdOrNull(UUID.fromString(soknadId))
-            ?.run { copy(kontonummer = kontonummer.copy(fraRegister = kontonummerRegister)) }
-            ?.also { eierRepository.save(it) }
-    }
 }
