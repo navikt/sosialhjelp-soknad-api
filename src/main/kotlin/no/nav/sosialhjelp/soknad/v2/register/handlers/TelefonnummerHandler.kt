@@ -3,16 +3,16 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class HandleTelefonnummer(
+class TelefonnummerHandler(
     private val mobiltelefonService: MobiltelefonService,
     private val kontaktService: KontaktRegisterService,
-) : RegisterDataHandler {
-    override fun handle(soknadId: UUID) {
+) : RegisterDataFetcher {
+    override fun fetchAndSave(soknadId: UUID) {
         mobiltelefonService.hent(getUserIdFromToken())
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }

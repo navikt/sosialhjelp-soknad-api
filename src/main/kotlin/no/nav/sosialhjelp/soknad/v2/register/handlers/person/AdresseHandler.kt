@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class HandleAdresse(
+class AdresseHandler(
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-) : RegisterDataPersonHandler {
-    override fun handle(
+) : RegisterDataPersonFetcher {
+    override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {

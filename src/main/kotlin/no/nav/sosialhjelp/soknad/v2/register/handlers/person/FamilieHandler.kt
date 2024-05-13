@@ -13,11 +13,11 @@ import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
-class HandleFamilie(
+class FamilieHandler(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
-) : RegisterDataPersonHandler {
-    override fun handle(
+) : RegisterDataPersonFetcher {
+    override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {

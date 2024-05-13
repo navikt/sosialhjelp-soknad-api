@@ -5,18 +5,18 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService
 import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.LivssituasjonRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataHandler
+import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class HandleArbeidsforhold(
+class ArbeidsforholdHandler(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val livssituasjonService: LivssituasjonRegisterService,
-) : RegisterDataHandler {
+) : RegisterDataFetcher {
     private val log by logger()
 
-    override fun handle(soknadId: UUID) {
+    override fun fetchAndSave(soknadId: UUID) {
         arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
             livssituasjonService.updateArbeidsforhold(
                 soknadId = soknadId,

@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class HandleEierData(
+class EierDataHandler(
     private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
-) : RegisterDataPersonHandler {
+) : RegisterDataPersonFetcher {
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
-    override fun handle(
+    override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {

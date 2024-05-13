@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
+class ArbeidsforholdHandlerTest : AbstractRegisterDataTest() {
     @Autowired
-    private lateinit var handleArbeidsforhold: HandleArbeidsforhold
+    private lateinit var arbeidsforholdHandler: ArbeidsforholdHandler
 
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
@@ -24,7 +24,7 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
     fun `Hente arbeidsforhold fra Register skal lagres i db`() {
         createAnswerForAaregClient().also { createAnswerForOrganisasjonClient(it) }
 
-        handleArbeidsforhold.handle(soknadId = soknad.id)
+        arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.arbeid?.arbeidsforhold).hasSize(2)
@@ -38,7 +38,7 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
     fun `Aareg-client returnerer null skal ikke kaste feil eller lagre til db`() {
         every { aaregClient.finnArbeidsforholdForArbeidstaker(any()) } returns null
 
-        handleArbeidsforhold.handle(soknadId = soknad.id)
+        arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
         assertThat(livssituasjonRepository.findByIdOrNull(soknad.id)).isNull()
     }
 
@@ -48,7 +48,7 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
             TjenesteUtilgjengeligException("AAREG", Exception("Dette tryna hardt"))
 
         assertThatThrownBy {
-            handleArbeidsforhold.handle(soknadId = soknad.id)
+            arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
         }.isInstanceOf(TjenesteUtilgjengeligException::class.java)
     }
 
@@ -57,7 +57,7 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
         createAnswerForAaregClient()
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } returns null
 
-        handleArbeidsforhold.handle(soknadId = soknad.id)
+        arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
             ls.arbeid?.arbeidsforhold?.forEach {
@@ -74,7 +74,7 @@ class HandleArbeidsforholdTest : AbstractRegisterDataTest() {
         every { organisasjonClient.hentOrganisasjonNoekkelinfo(any()) } throws
             TjenesteUtilgjengeligException("EREG", Exception("Dette tryna hardt"))
 
-        handleArbeidsforhold.handle(soknadId = soknad.id)
+        arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
             ls.arbeid?.arbeidsforhold?.forEach {

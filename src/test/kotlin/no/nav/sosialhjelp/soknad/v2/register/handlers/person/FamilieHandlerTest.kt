@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
+import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonHandlerTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 
-class HandleFamilieTest : AbstractHandlePersonTest() {
+class FamilieHandlerTest : AbstractPersonHandlerTest() {
     @Autowired
     private lateinit var forsorgerService: ForsorgerService
 
@@ -19,7 +19,7 @@ class HandleFamilieTest : AbstractHandlePersonTest() {
     @Test
     fun `Hente person skal hente og lagre familie-data`() {
         val familieDtos = createAnswerForPersonMedEktefelleOgBarn()
-        handlePerson.handle(soknadId = soknad.id)
+        fetchPerson.fetchAndSave(soknadId = soknad.id)
 
         forsorgerService.findForsorger(soknadId = soknad.id)?.let {
             assertThat(it.ansvar.size).isEqualTo(familieDtos.barn.size)

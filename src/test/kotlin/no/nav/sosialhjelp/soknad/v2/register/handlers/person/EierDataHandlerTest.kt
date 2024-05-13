@@ -5,14 +5,14 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.kontoDto
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
+import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonHandlerTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleEierDataTest : AbstractHandlePersonTest() {
+class EierDataHandlerTest : AbstractPersonHandlerTest() {
     @Autowired
     private lateinit var eierRepository: EierRepository
 
@@ -20,7 +20,7 @@ class HandleEierDataTest : AbstractHandlePersonTest() {
     fun `Hente fra PDL skal lagre eier-data i db`() {
         val personDto = createAnswerForHentPersonUgift()
 
-        handlePerson.handle(soknad.id)
+        fetchPerson.fetchAndSave(soknad.id)
 
         eierRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.navn.fornavn).isEqualTo(personDto.navn?.get(0)?.fornavn)
@@ -48,7 +48,7 @@ class HandleEierDataTest : AbstractHandlePersonTest() {
                 ),
             )
         val personDto = createAnswerForHentPersonUgift()
-        handlePerson.handle(soknad.id)
+        fetchPerson.fetchAndSave(soknad.id)
 
         eierRepository.findByIdOrNull(soknad.id)?.let { updated ->
             assertThat(existing.navn).isNotEqualTo(updated.navn)
