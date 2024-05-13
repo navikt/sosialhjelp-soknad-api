@@ -18,7 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -30,7 +30,7 @@ class KontaktMapperTest {
         val json = createJsonInternalSoknadWithInitializedSuperObjects()
         val kontakt = opprettKontakt(UUID.randomUUID())
 
-        KontaktToJsonMapper.doMapping(kontakt, json)
+        mapper.doMapping(kontakt, json)
 
         json.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
         json.assertNavEnhet(kontakt.mottaker)
@@ -44,8 +44,8 @@ class KontaktMapperTest {
 }
 
 private fun JsonPersonalia.assertTelefonnummerBruker(telefonnummer: Telefonnummer) {
-    Assertions.assertThat(this.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
-    Assertions.assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.fraBruker)
+    assertThat(this.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
+    assertThat(this.telefonnummer.verdi).isEqualTo(telefonnummer.fraBruker)
 }
 
 private fun JsonPersonalia.assertOppholdsadresse(adresser: Adresser) {
@@ -61,18 +61,18 @@ private fun JsonInternalSoknad.assertMidlertidigAdresse(midlertidigAdresseSoknad
     midlertidigAdresseSoknad?.let {
         midlertidigAdresse.assertAdresse(midlertidigAdresseSoknad)
     }
-        ?: Assertions.assertThat(midlertidigAdresse).isNull()
+        ?: assertThat(midlertidigAdresse).isNull()
 }
 
 private fun JsonPersonalia.assertFolkeregistrertAdresse(folkeregistrertAdresseSoknad: Adresse?) {
     folkeregistrertAdresseSoknad?.let {
         folkeregistrertAdresse.assertAdresse(it)
     }
-        ?: Assertions.assertThat(folkeregistrertAdresse).isNull()
+        ?: assertThat(folkeregistrertAdresse).isNull()
 }
 
 private fun JsonAdresse.assertAdresse(adresse: Adresse?) {
-    Assertions.assertThat(adresse).isNotNull
+    assertThat(adresse).isNotNull
     when (adresse) {
         is VegAdresse -> (this as JsonGateAdresse).assertAdresse(adresse)
         is MatrikkelAdresse -> (this as JsonMatrikkelAdresse).assertAdresse(adresse)
@@ -81,35 +81,35 @@ private fun JsonAdresse.assertAdresse(adresse: Adresse?) {
 }
 
 private fun JsonGateAdresse.assertAdresse(vegAdresse: VegAdresse) {
-    Assertions.assertThat(landkode).isEqualTo(vegAdresse.landkode)
-    Assertions.assertThat(kommunenummer).isEqualTo(vegAdresse.kommunenummer)
-    Assertions.assertThat(adresselinjer).isEqualTo(vegAdresse.adresselinjer)
-    Assertions.assertThat(bolignummer).isEqualTo(vegAdresse.bolignummer)
-    Assertions.assertThat(postnummer).isEqualTo(vegAdresse.postnummer)
-    Assertions.assertThat(poststed).isEqualTo(vegAdresse.poststed)
-    Assertions.assertThat(gatenavn).isEqualTo(vegAdresse.gatenavn)
-    Assertions.assertThat(husnummer).isEqualTo(vegAdresse.husnummer)
-    Assertions.assertThat(husbokstav).isEqualTo(vegAdresse.husbokstav)
+    assertThat(landkode).isEqualTo(vegAdresse.landkode)
+    assertThat(kommunenummer).isEqualTo(vegAdresse.kommunenummer)
+    assertThat(adresselinjer).isEqualTo(vegAdresse.adresselinjer)
+    assertThat(bolignummer).isEqualTo(vegAdresse.bolignummer)
+    assertThat(postnummer).isEqualTo(vegAdresse.postnummer)
+    assertThat(poststed).isEqualTo(vegAdresse.poststed)
+    assertThat(gatenavn).isEqualTo(vegAdresse.gatenavn)
+    assertThat(husnummer).isEqualTo(vegAdresse.husnummer)
+    assertThat(husbokstav).isEqualTo(vegAdresse.husbokstav)
 }
 
 private fun JsonMatrikkelAdresse.assertAdresse(matrikkelAdresse: MatrikkelAdresse) {
-    Assertions.assertThat(kommunenummer).isEqualTo(matrikkelAdresse.kommunenummer)
-    Assertions.assertThat(gaardsnummer).isEqualTo(matrikkelAdresse.gaardsnummer)
-    Assertions.assertThat(bruksnummer).isEqualTo(matrikkelAdresse.bruksnummer)
-    Assertions.assertThat(festenummer).isEqualTo(matrikkelAdresse.festenummer)
-    Assertions.assertThat(seksjonsnummer).isEqualTo(matrikkelAdresse.seksjonsnummer)
-    Assertions.assertThat(undernummer).isEqualTo(matrikkelAdresse.undernummer)
+    assertThat(kommunenummer).isEqualTo(matrikkelAdresse.kommunenummer)
+    assertThat(gaardsnummer).isEqualTo(matrikkelAdresse.gaardsnummer)
+    assertThat(bruksnummer).isEqualTo(matrikkelAdresse.bruksnummer)
+    assertThat(festenummer).isEqualTo(matrikkelAdresse.festenummer)
+    assertThat(seksjonsnummer).isEqualTo(matrikkelAdresse.seksjonsnummer)
+    assertThat(undernummer).isEqualTo(matrikkelAdresse.undernummer)
 }
 
 private fun JsonUstrukturertAdresse.assertAdresse(ustrukturertAdresse: UstrukturertAdresse) {
-    Assertions.assertThat(adresse).isEqualTo(ustrukturertAdresse.adresse)
+    assertThat(adresse).isEqualTo(ustrukturertAdresse.adresse)
 }
 
 private fun JsonInternalSoknad.assertNavEnhet(navEnhet: NavEnhet) {
-    Assertions.assertThat(mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
-    Assertions.assertThat(mottaker.organisasjonsnummer).isEqualTo(navEnhet.orgnummer)
+    assertThat(mottaker.navEnhetsnavn).isEqualTo("${navEnhet.enhetsnavn}, ${navEnhet.kommunenavn}")
+    assertThat(mottaker.organisasjonsnummer).isEqualTo(navEnhet.orgnummer)
 
-    Assertions.assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo(navEnhet.enhetsnavn)
-    Assertions.assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet.enhetsnummer)
-    Assertions.assertThat(soknad.mottaker.kommunenummer).isEqualTo(navEnhet.kommunenummer)
+    assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo("${navEnhet.enhetsnavn}, ${navEnhet.kommunenavn}")
+    assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet.enhetsnummer)
+    assertThat(soknad.mottaker.kommunenummer).isEqualTo(navEnhet.kommunenummer)
 }

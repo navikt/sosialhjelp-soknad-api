@@ -24,6 +24,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
@@ -96,7 +97,7 @@ class SoknadUnderArbeidService(
 
     fun settInnsendingstidspunktPaSoknad(
         soknadUnderArbeid: SoknadUnderArbeid?,
-        innsendingsTidspunkt: String = nowWithForcedNanoseconds(),
+        innsendingsTidspunkt: String = nowWithForcedMillis(),
     ) {
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
@@ -147,12 +148,13 @@ class SoknadUnderArbeidService(
     }
 
     companion object {
-        fun nowWithForcedNanoseconds(): String {
+        fun nowWithForcedMillis(): String {
             val now = OffsetDateTime.now(ZoneOffset.UTC)
             return if (now.nano == 0) {
                 now.plusNanos(1000000).toString()
+                now.truncatedTo(ChronoUnit.MILLIS).toString()
             } else {
-                now.toString()
+                now.truncatedTo(ChronoUnit.MILLIS).toString()
             }
         }
 

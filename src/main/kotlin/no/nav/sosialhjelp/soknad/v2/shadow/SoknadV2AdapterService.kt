@@ -149,7 +149,7 @@ class SoknadV2AdapterService(
 
         systemverdiSivilstatus.let {
             kotlin.runCatching {
-                familieService.updateSivilstatusFraRegister(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
+                familieService.updateSivilstatusFromRegister(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }
@@ -170,7 +170,19 @@ class SoknadV2AdapterService(
                     )
                 }
             }
-                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad", it) }
+        }
+    }
+
+    override fun saveKontonummer(
+        behandlingsId: String,
+        kontonummer: String?,
+    ) {
+        kontonummer?.let {
+            kotlin.runCatching {
+                eierService.updateKontonummerFraRegister(behandlingsId, it)
+            }
+                .onFailure { log.warn("NyModell: Kunne ikke legge til kontonummer for søknad.", it) }
         }
     }
 }
@@ -228,6 +240,7 @@ private fun JsonAnsvar.toV2Barn(): Barn {
             ),
         fodselsdato = barn.fodselsdato,
         borSammen = borSammenMed?.verdi,
+        deltBosted = harDeltBosted?.verdi,
         folkeregistrertSammen = erFolkeregistrertSammen.verdi,
     )
 }

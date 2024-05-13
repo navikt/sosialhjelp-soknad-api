@@ -25,12 +25,10 @@ class EierToJsonMapper(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        val eier = (
-            eierRepository.findByIdOrNull(soknadId)
-                ?: throw IllegalStateException("Fant ikke Eier")
-        )
-
-        doMapping(eier, jsonInternalSoknad)
+        eierRepository.findByIdOrNull(soknadId)?.let {
+            doMapping(it, jsonInternalSoknad)
+        }
+            ?: throw IllegalStateException("Fant ikke Eier")
     }
 
     internal companion object Mapper {
@@ -45,9 +43,7 @@ class EierToJsonMapper(
                 this.nordiskBorger = eier.toJsonNordiskBorger()
                 this.statsborgerskap = eier.toJsonStatsborgerskap()
 
-                eier.kontonummer.let {
-                    this.kontonummer = it.toJsonKontonummer()
-                }
+                this.kontonummer = eier.kontonummer.toJsonKontonummer()
             }
         }
 
@@ -79,7 +75,7 @@ class EierToJsonMapper(
             }
         }
 
-        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? {
+        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer {
             return when {
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
@@ -87,7 +83,7 @@ class EierToJsonMapper(
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
                 fraRegister != null ->
                     JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
-                else -> null
+                else -> JsonKontonummer()
             }
         }
     }

@@ -59,28 +59,22 @@ abstract class AbstractHandlePersonTest : AbstractRegisterDataTest() {
         }
     }
 
-    fun createAnswerForHentPerson(): PersonDto {
-        return defaultResponseFromHentPerson().also {
-            every { hentPersonClient.hentPerson(soknad.eierPersonId) } returns it
-        }
-    }
-
     fun createAnswerForHentEktefelle(
         fnr: String = ektefelleFnr,
         vegAdresse: VegadresseDto? = vegadresseDto,
     ): EktefelleDto {
-        return defaultResponseFromHentEktefelle(fnr, vegAdresse).also {
+        return defaultResponseFromHentEktefelle(vegAdresse).also {
             every { hentPersonClient.hentEktefelle(fnr) } returns it
         }
     }
 
     fun createAnswerForHentBarn(): List<BarnDto> {
-        var year = 2006
+        var offsetYear = 4
         return defaultResponseHentPersonWithEktefelleOgBarn().forelderBarnRelasjon!!
             .map {
-                val dto = defaultResponseFromHentBarn(fnr = it.relatertPersonsIdent!!, year = year)
+                val dto = defaultResponseFromHentBarn(fnr = it.relatertPersonsIdent!!, offsetYear = offsetYear)
                 every { hentPersonClient.hentBarn(it.relatertPersonsIdent!!) } returns dto
-                year += 2
+                offsetYear += 2
                 dto
             }
     }

@@ -6,7 +6,9 @@ import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISS
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 
-class JsonCompareErrorLogger(private val result: JSONCompareResult) {
+class JsonCompareErrorLogger(
+    private val result: JSONCompareResult,
+) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun logAllErrors(asOneString: Boolean) {
@@ -14,8 +16,8 @@ class JsonCompareErrorLogger(private val result: JSONCompareResult) {
             logAllerrorsAsOneString()
         } else {
             getFieldFailures().forEach { logError(it) }
-            getFieldMissing().forEach { logError(it) }
-            getArraySizeErrorList().forEach { logError(it) }
+            getFieldsMissing().forEach { logError(it) }
+            getArraySizeError().forEach { logError(it) }
         }
     }
 
@@ -23,8 +25,8 @@ class JsonCompareErrorLogger(private val result: JSONCompareResult) {
         mutableListOf<String>()
             .apply {
                 getFieldFailures().map { createStringForError(it) }.also { addAll(it) }
-                getFieldMissing().map { createStringForError(it) }.also { addAll(it) }
-                getArraySizeErrorList().map { createStringForError(it) }.also { addAll(it) }
+                getFieldsMissing().map { createStringForError(it) }.also { addAll(it) }
+                getArraySizeError().map { createStringForError(it) }.also { addAll(it) }
             }
             .also { logger.warn(it.joinToString(separator = "\n")) }
     }
@@ -44,13 +46,13 @@ class JsonCompareErrorLogger(private val result: JSONCompareResult) {
             }
     }
 
-    private fun getFieldMissing(): List<ErrorRow> {
+    private fun getFieldsMissing(): List<ErrorRow> {
         return result.fieldMissing
             .map { "${it.field} {expected: ${it.expected}, actual: ${it.actual}}" }
             .map { ErrorRow(MISSING_FIELD, it) }
     }
 
-    private fun getArraySizeErrorList() =
+    private fun getArraySizeError() =
         result.message
             .split(";")
             .filter { isArraySizeErrorMessage(it) }

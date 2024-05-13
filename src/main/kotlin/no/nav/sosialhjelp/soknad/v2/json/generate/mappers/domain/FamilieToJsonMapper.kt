@@ -2,11 +2,15 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
@@ -48,17 +52,47 @@ private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else J
 
 private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
-private fun Ektefelle.toJson() = JsonEktefelle().withNavn(navn?.toJson()).withFodselsdato(fodselsdato).withPersonIdentifikator(personId)
+private fun Ektefelle.toJson() =
+    JsonEktefelle()
+        .withNavn(navn?.toJson())
+        .withFodselsdato(fodselsdato)
+        .withPersonIdentifikator(personId)
 
 private fun Familie.toJsonForsorgerplikt() =
     JsonForsorgerplikt()
-        .withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(harForsorgerplikt))
-        .withBarnebidrag(JsonBarnebidrag().withVerdi(barnebidrag?.toJson()))
+        .withHarForsorgerplikt(
+            JsonHarForsorgerplikt()
+                .withKilde(JsonKilde.SYSTEM)
+                .withVerdi(harForsorgerplikt),
+        )
+        .withBarnebidrag(
+            JsonBarnebidrag()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(barnebidrag?.toJson()),
+        )
         .withAnsvar(ansvar.values.toJson())
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
 private fun Barn.toJson() =
-    JsonAnsvar().withBarn(JsonBarn().withFodselsdato(fodselsdato).withNavn(navn?.toJson()).withPersonIdentifikator(personId))
+    JsonAnsvar()
+        .withBarn(
+            JsonBarn()
+                .withKilde(JsonKilde.SYSTEM)
+                .withFodselsdato(fodselsdato)
+                .withNavn(navn?.toJson())
+                .withPersonIdentifikator(personId)
+                .withHarDiskresjonskode(false),
+        )
+        .withErFolkeregistrertSammen(
+            JsonErFolkeregistrertSammen()
+                .withKilde(JsonKildeSystem.SYSTEM)
+                .withVerdi(folkeregistrertSammen),
+        )
+        .withHarDeltBosted(
+            JsonHarDeltBosted()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(deltBosted),
+        )
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

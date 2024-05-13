@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
@@ -43,7 +44,7 @@ class LivssituasjonToJsonMapper(
             json.initializeObjects()
 
             with(json.soknad.data) {
-                livssituasjon.arbeid?.let { this.arbeid = it.toJsonArbeid() }
+                livssituasjon.arbeid.let { this.arbeid = it.toJsonArbeid() }
                 livssituasjon.utdanning?.let { this.utdanning = it.toJsonUtdanning() }
                 livssituasjon.bosituasjon?.let { this.bosituasjon = it.toJsonBosituasjon() }
             }
@@ -61,14 +62,16 @@ private fun JsonInternalSoknad.initializeObjects() {
     }
 }
 
-private fun Arbeid.toJsonArbeid(): JsonArbeid? {
-    return if (kommentar == null && arbeidsforhold.isEmpty()) {
-        null
-    } else {
-        JsonArbeid()
-            .withKommentarTilArbeidsforhold(kommentar?.let { JsonKommentarTilArbeidsforhold().withVerdi(it) })
-            .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
-    }
+private fun Arbeid.toJsonArbeid(): JsonArbeid {
+    return JsonArbeid()
+        .withKommentarTilArbeidsforhold(
+            kommentar?.let {
+                JsonKommentarTilArbeidsforhold()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(kommentar)
+            },
+        )
+        .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
 }
 
 private fun Utdanning.toJsonUtdanning(): JsonUtdanning? {

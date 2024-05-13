@@ -21,6 +21,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -33,12 +34,15 @@ internal class KontonummerRessursTest {
     private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
+    private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
+
     private val kontonummerRessurs =
         KontonummerRessurs(
             tilgangskontroll,
             soknadUnderArbeidRepository,
             kontonummerService,
             controllerAdapter,
+            v2AdapterService,
         )
 
     @BeforeEach
