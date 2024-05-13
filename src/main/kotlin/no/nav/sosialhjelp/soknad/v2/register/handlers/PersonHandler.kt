@@ -16,12 +16,14 @@ class PersonHandler(
     private val personService: PersonService,
     private val registerDataPersonFetchers: List<RegisterDataPersonFetcher>,
 ) : RegisterDataFetcher {
-    private val log by logger()
+    private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
+        logger.info("Henter søker i PDL")
+
         personService.hentPerson(getUserIdFromToken())?.let { person ->
             registerDataPersonFetchers.forEach { it.fetchAndSave(soknadId, person) }
         }
-            ?: log.error("Fant ikke person i PDL")
+            ?: logger.error("Fant ikke søker i PDL")
     }
 }

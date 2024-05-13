@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
@@ -17,13 +18,17 @@ class FamilieHandler(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
 ) : RegisterDataPersonFetcher {
+    private val logger by logger()
+
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
+        logger.info("Register: Henter ut familie-info for søker")
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
+            logger.info("Register: Oppdaterer ektefelle for søker")
             familieService.updateSivilstatusFromRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
@@ -45,6 +50,9 @@ class FamilieHandler(
         personService.hentBarnForPerson(getUserIdFromToken())
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->
+
+                logger.info("Register: Henter info om barn for søker")
+
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,
                     harForsorgerplikt = true,

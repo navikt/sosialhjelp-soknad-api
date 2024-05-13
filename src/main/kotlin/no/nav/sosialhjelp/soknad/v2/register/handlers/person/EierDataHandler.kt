@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
@@ -15,13 +16,17 @@ class EierDataHandler(
     private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
 ) : RegisterDataPersonFetcher {
+    private val logger by logger()
+
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
+        logger.info("Henter ut kontonummer fra Kontoregister")
         val kontonummer = kontonummerService.getKontonummer(getUserIdFromToken())
 
+        logger.info("Register: Henter ut person-info fra søker")
         person.deriveStatsborgerskap()
             .let {
                 Eier(

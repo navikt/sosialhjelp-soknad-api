@@ -31,9 +31,9 @@ class RegisterDataService(
         soknadId: UUID,
         listedFetchers: List<RegisterDataFetcher>,
     ) {
-        listedFetchers.forEach {
-            runCatching { it.fetchAndSave(soknadId) }
-                .onFailure { logger.error("Feil i innhenting av Register-data", it) }
+        listedFetchers.forEach { fetcher ->
+            runCatching { fetcher.fetchAndSave(soknadId) }
+                .onFailure { logger.error("Feil i innhenting av Register-data: $fetcher", it) }
         }
     }
 }

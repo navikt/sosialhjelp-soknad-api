@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
@@ -19,10 +20,14 @@ class AdresseHandler(
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
 ) : RegisterDataPersonFetcher {
+    private val logger by logger()
+
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
+        logger.info("Register: Lagrer adresse for soker")
+
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,
             folkeregistrert = person.bostedsadresse?.toV2Adresse(hentAdresseService),

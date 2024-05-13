@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
@@ -12,10 +13,15 @@ class TelefonnummerHandler(
     private val mobiltelefonService: MobiltelefonService,
     private val kontaktService: KontaktRegisterService,
 ) : RegisterDataFetcher {
+    private val logger by logger()
+
     override fun fetchAndSave(soknadId: UUID) {
+        logger.info("Henter telefonnummer fra KRR-registeret")
+
         mobiltelefonService.hent(getUserIdFromToken())
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }
+            ?: logger.info("Fant ikke telefonnummer i KRR-registeret")
     }
 
     private fun norskTelefonnummer(mobiltelefonnummer: String?): String? {

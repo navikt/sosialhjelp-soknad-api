@@ -14,16 +14,18 @@ class ArbeidsforholdHandler(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val livssituasjonService: LivssituasjonRegisterService,
 ) : RegisterDataFetcher {
-    private val log by logger()
+    private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
+        logger.info("Henter arbeidsforhold fra Aa-registeret")
+
         arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
             livssituasjonService.updateArbeidsforhold(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
             )
             // TODO Aareg-klienten returnerer null for mange exceptions - vanskelig å tolke null her
-        } ?: log.info("Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
+        } ?: logger.info("Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
 
         // TODO Vedleggsforventninger?
     }
