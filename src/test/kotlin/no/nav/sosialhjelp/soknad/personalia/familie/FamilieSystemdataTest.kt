@@ -4,6 +4,8 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import java.time.LocalDate
+import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -29,25 +31,20 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 internal class FamilieSystemdataTest {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     private val personService: PersonService = mockk()
-    private val v2AdapterService: V2AdapterService = mockk()
-    private val familieSystemdata = FamilieSystemdata(personService, v2AdapterService)
+    private val familieSystemdata = FamilieSystemdata(personService)
 
     @Test
     fun skalSetteSivilstatusGiftMedEktefelle() {
         val person = createPerson(JsonSivilstatus.Status.GIFT.toString(), EKTEFELLE)
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -69,7 +66,6 @@ internal class FamilieSystemdataTest {
         val person = createPerson(JsonSivilstatus.Status.GIFT.toString(), null)
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -99,7 +95,6 @@ internal class FamilieSystemdataTest {
         val person = createPerson(JsonSivilstatus.Status.GIFT.toString(), EKTEFELLE_MED_DISKRESJONSKODE)
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -120,8 +115,6 @@ internal class FamilieSystemdataTest {
     fun skalSetteForsorgerpliktMedFlereBarn() {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
-        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -144,7 +137,6 @@ internal class FamilieSystemdataTest {
     fun skalIkkeSetteForsorgerplikt() {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns emptyList()
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -162,8 +154,6 @@ internal class FamilieSystemdataTest {
     fun skalIkkeOverskriveBrukerregistrerteBarnNaarDetFinnesSystemBarn() {
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { personService.hentPerson(any()) } returns null
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
-        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
@@ -200,7 +190,6 @@ internal class FamilieSystemdataTest {
     fun skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns emptyList()
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
@@ -231,8 +220,6 @@ internal class FamilieSystemdataTest {
     fun skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
-        every { v2AdapterService.addBarn(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -260,7 +247,6 @@ internal class FamilieSystemdataTest {
         val person = createPerson(status.toString(), ektefelle)
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
-        every { v2AdapterService.addEktefelle(any(), any()) } just Runs
 
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)

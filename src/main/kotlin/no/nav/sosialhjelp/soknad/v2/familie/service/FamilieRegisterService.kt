@@ -8,7 +8,11 @@ import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
+// TODO Denne kjører med Prop.NESTED fordi den ikke må ødelegge for annen skriving
+@Transactional(propagation = Propagation.NESTED)
 @Service
 class FamilieRegisterService(private val familieRepository: FamilieRepository) {
     fun updateSivilstatusFromRegister(

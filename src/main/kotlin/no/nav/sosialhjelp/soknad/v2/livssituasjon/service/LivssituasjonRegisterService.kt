@@ -1,13 +1,16 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
 
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.UUID
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
+// TODO Denne kjører med Prop.NESTED fordi den ikke må ødelegge for annen skriving
+@Transactional(propagation = Propagation.NESTED)
 @Service
 class LivssituasjonRegisterService(private val repository: LivssituasjonRepository) {
     fun updateArbeidsforhold(
@@ -15,12 +18,9 @@ class LivssituasjonRegisterService(private val repository: LivssituasjonReposito
         arbeidsforhold: List<Arbeidsforhold>,
     ) {
         findOrCreate(soknadId)
-            .run {
-                (this.arbeid ?: Arbeid())
-                    .let { arb -> this.copy(arbeid = arb.copy(arbeidsforhold = arbeidsforhold)) }
-                    .let { livs -> repository.save(livs) }
-            }
-            .arbeid ?: error("Arbeid kunne ikke lagres")
+            .run { copy(arbeid = arbeid.copy(arbeidsforhold = arbeidsforhold)) }
+            .let { repository.save(it) }
+            .arbeid
     }
 
     private fun findOrCreate(soknadId: UUID) =

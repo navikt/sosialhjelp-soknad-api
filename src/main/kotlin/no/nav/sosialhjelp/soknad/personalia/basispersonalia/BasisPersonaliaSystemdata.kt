@@ -10,13 +10,11 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.stereotype.Component
 
 @Component
 class BasisPersonaliaSystemdata(
     private val personService: PersonService,
-    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val personalia = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.personalia ?: return
@@ -27,12 +25,6 @@ class BasisPersonaliaSystemdata(
         personalia.navn = systemPersonalia.navn
         personalia.statsborgerskap = systemPersonalia.statsborgerskap
         personalia.nordiskBorger = systemPersonalia.nordiskBorger
-
-        // ny modell
-        v2AdapterService.updateEier(
-            soknadUnderArbeid.behandlingsId,
-            personalia,
-        )
     }
 
     private fun innhentSystemBasisPersonalia(personIdentifikator: String): JsonPersonalia? {

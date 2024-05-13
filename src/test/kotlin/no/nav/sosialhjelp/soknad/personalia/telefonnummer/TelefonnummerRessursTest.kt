@@ -9,6 +9,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -21,24 +22,20 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 internal class TelefonnummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val v2AdapterService: V2AdapterService = mockk()
     private val mobiltelefonService: MobiltelefonService = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
 
     private val telefonnummerSystemdata: TelefonnummerSystemdata =
         TelefonnummerSystemdata(
             mobiltelefonService = mobiltelefonService,
-            v2AdapterService = v2AdapterService,
         )
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val telefonnummerRessurs =
@@ -54,7 +51,6 @@ internal class TelefonnummerRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         every { mobiltelefonService.hent(any()) } returns TELEFONNUMMER_SYSTEM
-        every { v2AdapterService.updateTelefonRegister(any(), any()) } just runs
         every { controllerAdapter.updateTelefonnummer(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
