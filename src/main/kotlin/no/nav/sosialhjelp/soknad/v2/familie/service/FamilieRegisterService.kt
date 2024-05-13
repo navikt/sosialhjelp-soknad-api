@@ -11,7 +11,7 @@ import java.util.UUID
 
 @Service
 class FamilieRegisterService(private val familieRepository: FamilieRepository) {
-    fun updateSivilstatusFraRegister(
+    fun updateSivilstatusFromRegister(
         soknadId: UUID,
         sivilstatus: Sivilstatus,
         ektefelle: Ektefelle,

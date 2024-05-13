@@ -149,7 +149,7 @@ class SoknadV2AdapterService(
 
         systemverdiSivilstatus.let {
             kotlin.runCatching {
-                familieService.updateSivilstatusFraRegister(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
+                familieService.updateSivilstatusFromRegister(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
             }
                 .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
         }

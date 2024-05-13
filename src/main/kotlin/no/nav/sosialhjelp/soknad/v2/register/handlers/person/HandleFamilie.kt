@@ -24,7 +24,7 @@ class HandleFamilie(
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
-            familieService.updateSivilstatusFraRegister(
+            familieService.updateSivilstatusFromRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
                 ektefelle = it,

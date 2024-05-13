@@ -213,7 +213,6 @@ fun defaultResponseHentPersonWithEktefelleOgBarn(): PersonDto {
 }
 
 fun defaultResponseFromHentEktefelle(
-    fnr: String,
     vegAdresse: VegadresseDto? = null,
 ): EktefelleDto {
     return EktefelleDto(
@@ -273,13 +272,14 @@ fun defaultResponseFromHentMatrikkelAdresse(): no.nav.sosialhjelp.soknad.persona
 fun defaultResponseFromHentBarn(
     fnr: String,
     vegAdresseDto: VegadresseDto = vegadresseDto,
-    year: Int,
+    offsetYear: Int,
 ): BarnDto {
+    val yearOfBirth = LocalDate.now().year.minus(offsetYear)
     return BarnDto(
         adressebeskyttelse = null,
         bostedsadresse = listOf(BostedsadresseDto(null, vegAdresseDto, null, null)),
         folkeregisterpersonstatus = null,
-        foedsel = listOf(FoedselDto(foedselsdato = LocalDate.of(year, 5, 12))),
+        foedsel = listOf(FoedselDto(foedselsdato = LocalDate.of(yearOfBirth, 5, 12))),
         navn =
             listOf(
                 no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(

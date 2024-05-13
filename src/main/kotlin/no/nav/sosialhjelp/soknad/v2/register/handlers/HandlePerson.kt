@@ -22,6 +22,6 @@ class HandlePerson(
         personService.hentPerson(getUserIdFromToken())?.let { person ->
             registerDataPersonHandlers.forEach { it.handle(soknadId, person) }
         }
-            ?: log.error("Fant ikke person for $soknadId")
+            ?: log.error("Fant ikke person i PDL")
     }
 }
