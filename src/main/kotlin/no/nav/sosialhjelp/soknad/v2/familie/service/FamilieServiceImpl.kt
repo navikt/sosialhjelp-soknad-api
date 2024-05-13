@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.familie.service
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
@@ -36,8 +34,6 @@ interface SivilstandService {
 class FamilieServiceImpl(
     private val familieRepository: FamilieRepository,
 ) : ForsorgerService, SivilstandService {
-    private val logger by logger()
-
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
 
     override fun updateForsorger(
@@ -47,16 +43,12 @@ class FamilieServiceImpl(
     ): Forsorger {
         return findOrCreate(soknadId)
             .run {
-                logger.info("Updated barn-list: $updated")
                 copy(
                     barnebidrag = barnebidrag,
                     ansvar = mapAnsvar(ansvar, updated),
                 )
             }
-            .let {
-                logger.info("Oppdatert Familie-objekt: ${jacksonObjectMapper().writeValueAsString(it)}")
-                familieRepository.save(it)
-            }
+            .let { familieRepository.save(it) }
             .toForsorger()
     }
 
@@ -64,9 +56,6 @@ class FamilieServiceImpl(
         existing: Map<UUID, Barn>,
         updated: List<Barn>,
     ): Map<UUID, Barn> {
-        logger.info("Existing object: ${jacksonObjectMapper().writeValueAsString(existing) }")
-        logger.info("Update object: ${jacksonObjectMapper().writeValueAsString(updated) }")
-
         return existing
             .map { (uuid, existing) ->
                 // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs

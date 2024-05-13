@@ -81,8 +81,6 @@ class ForsorgerpliktRessurs(
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
         runCatching {
-            // TODO Skal ikke være med i prod
-            log.info("Logger ut forsorgerpliktFrontend: ${forsorgerpliktFrontend.ansvar}")
             controllerAdapter.updateForsorger(behandlingsId, forsorgerpliktFrontend)
         }.onFailure {
             log.error("Noe feilet under oppdatering av forsorgerplikt i ny datamodell", it)
