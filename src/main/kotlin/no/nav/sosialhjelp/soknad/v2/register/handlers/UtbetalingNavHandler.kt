@@ -11,6 +11,6 @@ class UtbetalingNavHandler : RegisterDataFetcher {
 
     override fun fetchAndSave(soknadId: UUID) {
         // TODO Not implemented
-        logger.info("Henter utbetalinger fra NAV. (Ikke implementert)")
+        logger.info("NyModell: Register: Henter utbetalinger fra NAV. (Ikke implementert)")
     }
 }
