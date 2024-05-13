@@ -17,7 +17,7 @@ class ArbeidsforholdHandler(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Henter arbeidsforhold fra Aa-registeret")
+        logger.info("NyModell: Register: Henter arbeidsforhold fra Aa-registeret")
 
         arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
             livssituasjonService.updateArbeidsforhold(
@@ -25,7 +25,7 @@ class ArbeidsforholdHandler(
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
             )
             // TODO Aareg-klienten returnerer null for mange exceptions - vanskelig å tolke null her
-        } ?: logger.info("Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
+        } ?: logger.info("NyModell: Register: Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
 
         // TODO Vedleggsforventninger?
     }

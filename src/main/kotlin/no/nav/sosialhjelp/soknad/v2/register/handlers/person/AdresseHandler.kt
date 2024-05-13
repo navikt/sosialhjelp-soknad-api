@@ -26,7 +26,7 @@ class AdresseHandler(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("Register: Lagrer adresse for soker")
+        logger.info("NyModell: Register: Lagrer adresse for soker")
 
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,

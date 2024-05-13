@@ -19,7 +19,7 @@ class PersonHandler(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Henter søker i PDL")
+        logger.info("NyModell: Register: Henter søker i PDL")
 
         personService.hentPerson(getUserIdFromToken())?.let { person ->
             registerDataPersonFetchers.forEach { it.fetchAndSave(soknadId, person) }

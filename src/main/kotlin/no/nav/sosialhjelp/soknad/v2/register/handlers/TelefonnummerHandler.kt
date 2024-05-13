@@ -16,12 +16,12 @@ class TelefonnummerHandler(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Henter telefonnummer fra KRR-registeret")
+        logger.info("NyModell: Register: Henter telefonnummer fra KRR-registeret")
 
         mobiltelefonService.hent(getUserIdFromToken())
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }
-            ?: logger.info("Fant ikke telefonnummer i KRR-registeret")
+            ?: logger.info("NyModell: Fant ikke telefonnummer i KRR-registeret")
     }
 
     private fun norskTelefonnummer(mobiltelefonnummer: String?): String? {

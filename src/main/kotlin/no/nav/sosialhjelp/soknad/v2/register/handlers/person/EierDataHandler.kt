@@ -23,10 +23,10 @@ class EierDataHandler(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("Henter ut kontonummer fra Kontoregister")
+        logger.info("NyModell: Henter ut kontonummer fra Kontoregister")
         val kontonummer = kontonummerService.getKontonummer(getUserIdFromToken())
 
-        logger.info("Register: Henter ut person-info fra søker")
+        logger.info("NyModell: Register: Henter ut person-info fra søker")
         person.deriveStatsborgerskap()
             .let {
                 Eier(
