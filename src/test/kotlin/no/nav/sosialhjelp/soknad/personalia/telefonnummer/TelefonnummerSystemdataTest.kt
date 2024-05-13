@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
@@ -11,6 +10,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class TelefonnummerSystemdataTest {
     private val mobiltelefonService: MobiltelefonService = mockk()

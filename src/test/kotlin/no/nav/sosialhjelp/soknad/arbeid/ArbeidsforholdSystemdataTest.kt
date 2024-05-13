@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.arbeid
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
@@ -23,6 +21,8 @@ import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 internal class ArbeidsforholdSystemdataTest {
     private val arbeidsforholdService: ArbeidsforholdService = mockk()

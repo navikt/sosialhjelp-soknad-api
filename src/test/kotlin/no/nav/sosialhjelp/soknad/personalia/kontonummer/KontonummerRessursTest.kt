@@ -10,7 +10,6 @@ import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import jakarta.validation.Validation
-import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
@@ -27,6 +26,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class KontonummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()

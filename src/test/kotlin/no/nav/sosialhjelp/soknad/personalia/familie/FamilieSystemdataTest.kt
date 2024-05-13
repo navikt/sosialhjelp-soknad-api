@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.familie
 
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDate
-import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -31,6 +29,8 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 internal class FamilieSystemdataTest {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()

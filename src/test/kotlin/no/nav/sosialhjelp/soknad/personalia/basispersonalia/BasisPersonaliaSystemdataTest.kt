@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.basispersonalia
 
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
@@ -13,6 +12,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class BasisPersonaliaSystemdataTest {
     private val personService: PersonService = mockk()

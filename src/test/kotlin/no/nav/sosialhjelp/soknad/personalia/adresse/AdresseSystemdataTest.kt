@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.adresse
 
 import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDateTime
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -21,6 +20,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class AdresseSystemdataTest {
     private val personService: PersonService = mockk()
