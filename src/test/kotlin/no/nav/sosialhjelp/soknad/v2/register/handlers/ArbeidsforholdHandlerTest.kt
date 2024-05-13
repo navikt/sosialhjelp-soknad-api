@@ -27,9 +27,9 @@ class ArbeidsforholdHandlerTest : AbstractRegisterDataTest() {
         arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.arbeid?.arbeidsforhold).hasSize(2)
-            assertThat(it.arbeid?.arbeidsforhold?.any { item -> item.orgnummer == orgnummer1 }).isTrue()
-            assertThat(it.arbeid?.arbeidsforhold?.any { item -> item.orgnummer == orgnummer2 }).isTrue()
+            assertThat(it.arbeid.arbeidsforhold).hasSize(2)
+            assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer1 }).isTrue()
+            assertThat(it.arbeid.arbeidsforhold.any { item -> item.orgnummer == orgnummer2 }).isTrue()
         }
             ?: fail("Livssituasjon finnes ikke")
     }
@@ -77,7 +77,7 @@ class ArbeidsforholdHandlerTest : AbstractRegisterDataTest() {
         arbeidsforholdHandler.fetchAndSave(soknadId = soknad.id)
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let { ls ->
-            ls.arbeid?.arbeidsforhold?.forEach {
+            ls.arbeid.arbeidsforhold?.forEach {
                 assertThat(it.orgnummer).isEqualTo(it.arbeidsgivernavn)
             }
                 ?: fail("Finner ikke data")
