@@ -17,6 +17,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 internal class SoknadUnderArbeidServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -81,6 +83,18 @@ internal class SoknadUnderArbeidServiceTest {
             opprettetDato = OPPRETTET_DATO,
             sistEndretDato = SIST_ENDRET_DATO,
         )
+    }
+
+    @Test
+    fun `Valider at innsendingstidspunkt blir riktig satt`() {
+        val tidspunktRegEx = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z\$"
+
+        OffsetDateTime.of(
+            2020, 12, 31, 0, 0, 0, 0,
+            ZoneOffset.UTC
+        )
+            .let { SoknadUnderArbeidService.nowWithForcedMillis(it) }
+            .also { assertThat(it.matches(Regex(tidspunktRegEx))).isTrue() }
     }
 
     companion object {
