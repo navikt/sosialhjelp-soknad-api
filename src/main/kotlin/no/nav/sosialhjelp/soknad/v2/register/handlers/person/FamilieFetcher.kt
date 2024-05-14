@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
@@ -8,22 +9,27 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
-class HandleFamilie(
+class FamilieFetcher(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
-) : RegisterDataPersonHandler {
-    override fun handle(
+) : PersonRegisterDataFetcher {
+    private val logger by logger()
+
+    override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
+        logger.info("NyModell: Register: Henter ut familie-info for søker")
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
+            logger.info("NyModell: Register: Oppdaterer ektefelle for søker")
             familieService.updateSivilstatusFromRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
@@ -45,6 +51,9 @@ class HandleFamilie(
         personService.hentBarnForPerson(getUserIdFromToken())
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->
+
+                logger.info("NyModell: Register: Henter info om barn for søker")
+
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,
                     harForsorgerplikt = true,

@@ -23,9 +23,9 @@ import no.nav.sosialhjelp.soknad.v2.register.defaultResponseHentPersonWithEktefe
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 
-abstract class AbstractHandlePersonTest : AbstractRegisterDataTest() {
+abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
     @Autowired
-    protected lateinit var handlePerson: HandlePerson
+    protected lateinit var fetchPerson: PersonDataFetcher
 
     @MockkBean
     protected lateinit var hentPersonClient: HentPersonClient

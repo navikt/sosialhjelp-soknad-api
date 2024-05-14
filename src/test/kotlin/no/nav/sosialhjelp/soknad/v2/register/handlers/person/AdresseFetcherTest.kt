@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractHandlePersonTest
+import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class HandleAdresseTest : AbstractHandlePersonTest() {
+class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 
@@ -18,7 +18,7 @@ class HandleAdresseTest : AbstractHandlePersonTest() {
     fun `Hente fra PDL skal lagre data i db`() {
         val dto = createAnswerForHentPersonUgift().bostedsadresse?.let { it[0].vegadresse } ?: fail("Fant ikke adresse")
 
-        handlePerson.handle(soknad.id)
+        fetchPerson.fetchAndSave(soknad.id)
 
         kontaktRepository
             .findByIdOrNull(soknad.id)?.adresser?.folkeregistrert
@@ -34,7 +34,7 @@ class HandleAdresseTest : AbstractHandlePersonTest() {
     fun `Hente person med matrikkeladresse skal lagres i db`() {
         val dto = createAnswerForHentPersonUgiftMedMatrikkelAdresse()
 
-        handlePerson.handle(soknad.id)
+        fetchPerson.fetchAndSave(soknad.id)
 
         kontaktRepository.findByIdOrNull(soknad.id)?.adresser?.folkeregistrert?.let {
             assertThat(it).isInstanceOf(MatrikkelAdresse::class.java)

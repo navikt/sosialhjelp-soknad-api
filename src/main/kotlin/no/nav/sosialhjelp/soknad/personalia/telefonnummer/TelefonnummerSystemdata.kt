@@ -5,13 +5,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.stereotype.Component
 
 @Component
 class TelefonnummerSystemdata(
     private val mobiltelefonService: MobiltelefonService,
-    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
@@ -22,9 +20,6 @@ class TelefonnummerSystemdata(
             val personIdentifikator = personalia.personIdentifikator.verdi
             val systemverdi = innhentSystemverdiTelefonnummer(personIdentifikator)
             personalia.telefonnummer = getTelefonnummer(systemverdi, telefonnummer)
-
-            // NyModell
-            v2AdapterService.updateTelefonRegister(soknadUnderArbeid.behandlingsId, systemverdi)
         }
     }
 

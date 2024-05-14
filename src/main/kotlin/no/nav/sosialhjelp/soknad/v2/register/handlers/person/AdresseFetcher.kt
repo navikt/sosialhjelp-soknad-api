@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
@@ -11,23 +12,29 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class HandleAdresse(
+class AdresseFetcher(
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-) : RegisterDataPersonHandler {
-    override fun handle(
+) : PersonRegisterDataFetcher {
+    private val logger by logger()
+
+    override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
+        logger.info("NyModell: Register: Lagrer adresse for soker")
+
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,
             folkeregistrert = person.bostedsadresse?.toV2Adresse(hentAdresseService),
             midlertidig = person.oppholdsadresse?.toV2Adresse(),
         )
+            .also { logger.info("NyModell: Lagret adresser fra PDL") }
     }
 }
 
