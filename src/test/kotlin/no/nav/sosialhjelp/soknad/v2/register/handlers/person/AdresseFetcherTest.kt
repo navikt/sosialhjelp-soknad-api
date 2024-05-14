@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonHandlerTest
+import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class AdresseHandlerTest : AbstractPersonHandlerTest() {
+class AdresseFetcherTest : AbstractPersonDataFetcherTest() {
     @Autowired
     private lateinit var kontaktRepository: KontaktRepository
 

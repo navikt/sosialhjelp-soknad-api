@@ -10,12 +10,13 @@ import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 
 @Component
-class EierDataHandler(
+class EierDataFetcher(
     private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
-) : RegisterDataPersonFetcher {
+) : PersonRegisterDataFetcher {
     private val logger by logger()
 
     // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende

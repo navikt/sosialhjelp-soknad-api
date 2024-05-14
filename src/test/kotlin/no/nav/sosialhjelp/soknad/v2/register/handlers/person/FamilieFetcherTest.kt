@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.v2.register.handlers.person
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonHandlerTest
+import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 
-class FamilieHandlerTest : AbstractPersonHandlerTest() {
+class FamilieFetcherTest : AbstractPersonDataFetcherTest() {
     @Autowired
     private lateinit var forsorgerService: ForsorgerService
 

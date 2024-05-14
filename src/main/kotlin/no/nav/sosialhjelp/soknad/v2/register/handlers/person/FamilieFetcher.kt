@@ -11,13 +11,14 @@ import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
-class FamilieHandler(
+class FamilieFetcher(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
-) : RegisterDataPersonFetcher {
+) : PersonRegisterDataFetcher {
     private val logger by logger()
 
     override fun fetchAndSave(

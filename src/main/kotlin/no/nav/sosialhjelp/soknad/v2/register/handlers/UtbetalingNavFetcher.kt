@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class UtbetalingNavHandler : RegisterDataFetcher {
+class UtbetalingNavFetcher : RegisterDataFetcher {
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
