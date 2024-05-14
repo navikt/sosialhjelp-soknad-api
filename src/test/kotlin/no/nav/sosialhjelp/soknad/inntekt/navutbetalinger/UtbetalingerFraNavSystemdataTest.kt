@@ -25,7 +25,12 @@ internal class UtbetalingerFraNavSystemdataTest {
     private val organisasjonService: OrganisasjonService = mockk()
     private val navUtbetalingerService: NavUtbetalingerService = mockk()
 
-    private val utbetalingerFraNavSystemdata = UtbetalingerFraNavSystemdata(organisasjonService, navUtbetalingerService)
+    private val utbetalingerFraNavSystemdata =
+        UtbetalingerFraNavSystemdata(
+            organisasjonService,
+            navUtbetalingerService,
+            mockk(relaxed = true),
+        )
 
     @BeforeEach
     internal fun setUp() {
