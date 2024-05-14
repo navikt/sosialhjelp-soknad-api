@@ -15,4 +15,9 @@ interface V2AdapterService {
     )
 
     fun slettSoknad(behandlingsId: String)
+
+    fun setUtbetalingFraNav(
+        behandlingsId: String,
+        feilet: Boolean,
+    )
 }

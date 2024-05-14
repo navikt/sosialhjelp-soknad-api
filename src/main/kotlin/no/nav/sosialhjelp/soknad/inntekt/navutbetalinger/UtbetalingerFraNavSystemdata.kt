@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import kotlin.math.roundToInt
@@ -18,6 +19,7 @@ import kotlin.math.roundToInt
 class UtbetalingerFraNavSystemdata(
     private val organisasjonService: OrganisasjonService,
     private val navUtbetalingerService: NavUtbetalingerService,
+    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
@@ -33,6 +35,7 @@ class UtbetalingerFraNavSystemdata(
         log.info("${systemUtbetalingerNav?.size} utbetalinger fra Nav og legges til i økonomiopplysninger")
         if (systemUtbetalingerNav == null) {
             jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = true
+            v2AdapterService.setUtbetalingFraNav(soknadUnderArbeid.behandlingsId, true)
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerNav)
         }

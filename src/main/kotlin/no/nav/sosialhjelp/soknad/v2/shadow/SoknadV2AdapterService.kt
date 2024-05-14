@@ -1,7 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
+import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
+import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -13,6 +16,7 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
+    private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : V2AdapterService {
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -57,5 +61,18 @@ class SoknadV2AdapterService(
             soknadService.slettSoknad(UUID.fromString(behandlingsId))
         }
             .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
+    }
+
+    override fun setUtbetalingFraNav(
+        behandlingsId: String,
+        feilet: Boolean,
+    ) {
+        val integrasjonstatus =
+            integrasjonstatusRepository.findByIdOrNull(UUID.fromString(behandlingsId))
+                ?: Integrasjonstatus(soknadId = UUID.fromString(behandlingsId))
+
+        integrasjonstatus
+            .copy(feilUtbetalingerNav = feilet)
+            .also { integrasjonstatusRepository.save(it) }
     }
 }
