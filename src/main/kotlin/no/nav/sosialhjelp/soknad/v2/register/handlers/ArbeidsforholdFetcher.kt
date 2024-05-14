@@ -20,6 +20,7 @@ class ArbeidsforholdFetcher(
         logger.info("NyModell: Register: Henter arbeidsforhold fra Aa-registeret")
 
         arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
+            logger.info("NyModell: Hentet ${arbeidsforholdList.size} arbeidsforhold fra Aa-registeret")
             livssituasjonService.updateArbeidsforhold(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },

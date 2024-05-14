@@ -83,7 +83,8 @@ class EierToJsonMapper(
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
                 fraRegister != null ->
                     JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
-                else -> JsonKontonummer()
+                // TODO I den gamle logikken opprettes kontonummer som et tomt objekt med kilde = system... Riktig?
+                else -> JsonKontonummer().withKilde(JsonKilde.SYSTEM)
             }
         }
     }
