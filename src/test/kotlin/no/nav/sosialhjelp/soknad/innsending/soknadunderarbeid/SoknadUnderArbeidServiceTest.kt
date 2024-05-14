@@ -90,8 +90,14 @@ internal class SoknadUnderArbeidServiceTest {
         val tidspunktRegEx = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z\$"
 
         OffsetDateTime.of(
-            2020, 12, 31, 0, 0, 0, 0,
-            ZoneOffset.UTC
+            2020,
+            12,
+            31,
+            0,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC,
         )
             .let { SoknadUnderArbeidService.nowWithForcedMillis(it) }
             .also { assertThat(it.matches(Regex(tidspunktRegEx))).isTrue() }
@@ -101,7 +107,6 @@ internal class SoknadUnderArbeidServiceTest {
         private const val EIER = "12345678910"
         private const val SOKNAD_UNDER_ARBEID_ID = 1L
         private const val BEHANDLINGSID = "1100001L"
-        private const val TILKNYTTET_BEHANDLINGSID = "1100002K"
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50)
         private val SIST_ENDRET_DATO = LocalDateTime.now()
     }
