@@ -148,14 +148,10 @@ class SoknadUnderArbeidService(
     }
 
     companion object {
-        fun nowWithForcedMillis(): String {
-            val now = OffsetDateTime.now(ZoneOffset.UTC)
-            return if (now.nano == 0) {
-                now.plusNanos(1000000).toString()
-                now.truncatedTo(ChronoUnit.MILLIS).toString()
-            } else {
-                now.truncatedTo(ChronoUnit.MILLIS).toString()
-            }
+        fun nowWithForcedMillis(now: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)): String {
+            return now
+                .run { if (nano == 0) plusNanos(1000000) else this }
+                .truncatedTo(ChronoUnit.MILLIS).toString()
         }
 
         private val log by logger()
