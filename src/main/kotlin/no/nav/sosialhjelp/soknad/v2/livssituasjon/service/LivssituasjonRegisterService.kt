@@ -23,7 +23,6 @@ class LivssituasjonRegisterService(private val repository: LivssituasjonReposito
         findOrCreate(soknadId)
             .run { copy(arbeid = arbeid.copy(arbeidsforhold = arbeidsforhold)) }
             .let { repository.save(it) }
-            .also { logger.info("NyModell: Lagret arbeidsforhold fra Aa-registeret") }
     }
 
     private fun findOrCreate(soknadId: UUID) =

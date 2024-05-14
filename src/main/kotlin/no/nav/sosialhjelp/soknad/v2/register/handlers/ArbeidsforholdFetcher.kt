@@ -25,6 +25,7 @@ class ArbeidsforholdFetcher(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
             )
+                .also { logger.info("NyModell: Lagret ${arbeidsforholdList.size} arbeidsforhold") }
             // TODO Aareg-klienten returnerer null for mange exceptions - vanskelig å tolke null her
         } ?: logger.info("NyModell: Register: Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
 

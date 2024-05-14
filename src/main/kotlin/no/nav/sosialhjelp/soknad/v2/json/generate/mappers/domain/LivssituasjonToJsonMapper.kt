@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
@@ -9,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeid
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
@@ -36,6 +38,8 @@ class LivssituasjonToJsonMapper(
     }
 
     internal companion object Mapper {
+        private val logger by logger()
+
         fun doMapping(
             livssituasjon: Livssituasjon,
             json: JsonInternalSoknad,
@@ -44,7 +48,10 @@ class LivssituasjonToJsonMapper(
             json.initializeObjects()
 
             with(json.soknad.data) {
-                livssituasjon.arbeid.let { this.arbeid = it.toJsonArbeid() }
+                livssituasjon.arbeid.let {
+                    logger.info("NyModell: Arbeid-mapping: ArbeidObjekt: ${jacksonObjectMapper().writeValueAsString(it)}")
+                    this.arbeid = it.toJsonArbeid()
+                }
                 livssituasjon.utdanning?.let { this.utdanning = it.toJsonUtdanning() }
                 livssituasjon.bosituasjon?.let { this.bosituasjon = it.toJsonBosituasjon() }
             }
