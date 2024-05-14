@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
@@ -13,6 +14,8 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 @Service
 class LivssituasjonRegisterService(private val repository: LivssituasjonRepository) {
+    private val logger by logger()
+
     fun updateArbeidsforhold(
         soknadId: UUID,
         arbeidsforhold: List<Arbeidsforhold>,
@@ -20,7 +23,7 @@ class LivssituasjonRegisterService(private val repository: LivssituasjonReposito
         findOrCreate(soknadId)
             .run { copy(arbeid = arbeid.copy(arbeidsforhold = arbeidsforhold)) }
             .let { repository.save(it) }
-            .arbeid
+            .also { logger.info("NyModell: Lagret arbeidsforhold fra Aa-registeret") }
     }
 
     private fun findOrCreate(soknadId: UUID) =

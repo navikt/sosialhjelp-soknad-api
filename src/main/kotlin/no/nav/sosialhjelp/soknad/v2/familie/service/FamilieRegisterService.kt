@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie.service
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
@@ -15,6 +16,8 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 @Service
 class FamilieRegisterService(private val familieRepository: FamilieRepository) {
+    private val logger by logger()
+
     fun updateSivilstatusFromRegister(
         soknadId: UUID,
         sivilstatus: Sivilstatus,
@@ -26,6 +29,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
                 ektefelle = ektefelle,
             )
             .also { familieRepository.save(it) }
+            .also { logger.info("NyModell: Lagret info om sivilstand fra PDL") }
     }
 
     fun updateForsorgerpliktRegister(
@@ -41,6 +45,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
                 )
             }
             .also { familieRepository.save(it) }
+            .also { logger.info("NyModell: Lagret info om forsorgerplikt fra PDL") }
     }
 
     private fun findOrCreate(soknadId: UUID): Familie {

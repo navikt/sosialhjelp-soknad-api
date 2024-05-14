@@ -12,9 +12,9 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 
 @Component
 class AdresseFetcher(
@@ -34,6 +34,7 @@ class AdresseFetcher(
             folkeregistrert = person.bostedsadresse?.toV2Adresse(hentAdresseService),
             midlertidig = person.oppholdsadresse?.toV2Adresse(),
         )
+            .also { logger.info("NyModell: Lagret adresser fra PDL") }
     }
 }
 

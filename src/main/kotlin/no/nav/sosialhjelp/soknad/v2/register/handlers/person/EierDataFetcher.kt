@@ -8,9 +8,9 @@ import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 
 @Component
 class EierDataFetcher(
@@ -44,6 +44,7 @@ class EierDataFetcher(
                 )
             }
             .also { eier -> eierService.updateFromRegister(eier) }
+            .also { logger.info("NyModell: Lagret personalia og kontonummer for søker") }
     }
 
     private data class Statsborgerskap(

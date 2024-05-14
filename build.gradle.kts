@@ -41,7 +41,7 @@ val installPreCommitHook =
         dirMode = 0b1010001010
     }
 
-tasks.build.get().dependsOn(installPreCommitHook)
+tasks.assemble.get().dependsOn(installPreCommitHook)
 
 flyway {
     encoding = "ISO-8859-1"

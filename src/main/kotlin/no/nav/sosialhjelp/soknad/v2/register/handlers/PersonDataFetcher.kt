@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers
 
-import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -9,6 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 interface PersonRegisterDataFetcher {
     fun fetchAndSave(

@@ -9,9 +9,9 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
