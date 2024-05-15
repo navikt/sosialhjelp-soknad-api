@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.soknad.service
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 interface SoknadService {
@@ -11,9 +10,9 @@ interface SoknadService {
 
     fun createSoknad(
         eierId: String,
-        soknadId: UUID? = null,
+        soknadId: UUID,
         // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
-        opprettetDato: LocalDateTime? = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        opprettetDato: LocalDateTime,
     ): UUID
 
     fun sendSoknad(soknadId: UUID): UUID

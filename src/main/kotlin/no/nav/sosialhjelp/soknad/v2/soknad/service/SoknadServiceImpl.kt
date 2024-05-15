@@ -25,16 +25,16 @@ class SoknadServiceImpl(
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Soknad finnes ikke")
+            ?: throw IkkeFunnetException("NyModell: Soknad finnes ikke")
 
     override fun createSoknad(
         eierId: String,
-        soknadId: UUID?,
-        opprettetDato: LocalDateTime?,
+        soknadId: UUID,
+        opprettetDato: LocalDateTime,
     ): UUID {
         return Soknad(
-            id = soknadId ?: UUID.randomUUID(),
-            tidspunkt = Tidspunkt(opprettet = opprettetDato ?: LocalDateTime.now()),
+            id = soknadId,
+            tidspunkt = Tidspunkt(opprettet = opprettetDato),
             eierPersonId = eierId,
         )
             .let { soknadRepository.save(it) }
@@ -56,7 +56,7 @@ class SoknadServiceImpl(
 
                 sendSoknadHandler.doSendAndReturnDigisosId(this)
             }
-        log.info("Sletter innsendt Soknad $soknadId")
+        logger.info("Sletter innsendt Soknad $soknadId")
         soknadRepository.deleteById(soknadId)
 
         return digisosId
@@ -64,7 +64,7 @@ class SoknadServiceImpl(
 
     override fun slettSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
-            ?: log.warn("Soknad V2 finnes ikke.")
+            ?: logger.warn("Soknad V2 finnes ikke.")
     }
 
     override fun setInnsendingstidspunkt(
@@ -89,6 +89,6 @@ class SoknadServiceImpl(
     }
 
     companion object {
-        private val log by logger()
+        private val logger by logger()
     }
 }
