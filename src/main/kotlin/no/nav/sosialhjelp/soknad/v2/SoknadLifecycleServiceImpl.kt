@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -15,7 +14,6 @@ import java.util.UUID
 @Service
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val registerDataService: RegisterDataService,
     private val soknadServiceImpl: SoknadService,
     private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
@@ -24,7 +22,12 @@ class SoknadLifecycleServiceImpl(
 
         val soknadId =
             SubjectHandlerUtils.getUserIdFromToken().let {
-                soknadServiceImpl.createSoknad(eierId = it)
+                soknadServiceImpl.createSoknad(
+                    eierId = it,
+                    soknadId = UUID.randomUUID(),
+                    // TODO Spesifisert til UTC i filformatet
+                    opprettetDato = LocalDateTime.now(),
+                )
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())

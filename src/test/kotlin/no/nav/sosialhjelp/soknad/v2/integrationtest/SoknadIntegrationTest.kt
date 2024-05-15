@@ -54,7 +54,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             .expectBody(Feilmelding::class.java)
             .returnResult()
             .responseBody!!.also {
-            assertThat(it.message).isEqualTo("Soknad finnes ikke")
+            assertThat(it.message).isEqualTo("NyModell: Soknad finnes ikke")
         }
     }
 }
