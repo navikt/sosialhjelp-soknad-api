@@ -42,6 +42,18 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
     }
 
+    @Test
+    fun `Slettejobb skal slette soknader som er eldre enn 14 dager fra opprettet, ikke sistendret`() {
+        val id =
+            lagSoknadUnderArbeid(BEHANDLINGSID, 20)
+                .apply { sistEndretDato = LocalDateTime.now().minusDays(2) }
+                .let { soknadUnderArbeidRepository.opprettSoknad(it, EIER) }
+
+        val gamleSoknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        assertThat(gamleSoknader.size).isEqualTo(1)
+        assertThat(gamleSoknader).contains(id)
+    }
+
     private fun lagSoknadUnderArbeid(
         behandlingsId: String,
         antallDagerSiden: Int,
@@ -60,7 +72,6 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     companion object {
         private const val EIER = "12345678901"
         private val BEHANDLINGSID = UUID.randomUUID().toString()
-        private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val JSON_INTERNAL_SOKNAD = JsonInternalSoknad()
     }
 }
