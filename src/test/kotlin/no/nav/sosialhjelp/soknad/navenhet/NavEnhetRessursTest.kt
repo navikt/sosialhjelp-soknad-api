@@ -76,7 +76,6 @@ internal class NavEnhetRessursTest {
             tilgangskontroll = tilgangskontroll,
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
             navEnhetService = navEnhetService,
-            adresseRessurs = adresseRessurs,
         )
 
     private val navEnhetFrontend =
