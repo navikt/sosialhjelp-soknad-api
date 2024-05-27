@@ -1,49 +1,27 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sosialhjelp.soknad.arbeid.domain.toV2Arbeidsforhold
-import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
-import no.nav.sosialhjelp.soknad.v2.eier.Eier
-import no.nav.sosialhjelp.soknad.v2.eier.EierService
-import no.nav.sosialhjelp.soknad.v2.familie.Barn
-import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieService
-import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonService
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.shadow.adapter.V2AdresseAdapter.toV2Adresse
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import org.slf4j.LoggerFactory
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
-    private val livssituasjonService: LivssituasjonService,
-    private val kontaktService: KontaktService,
-    private val hentAdresseService: HentAdresseService,
-    private val eierService: EierService,
-    private val familieService: FamilieService,
 ) : V2AdapterService {
-    private val log = LoggerFactory.getLogger(this::class.java)
+    private val logger by logger()
 
     override fun createSoknad(
         behandlingsId: String,
         opprettetDato: LocalDateTime,
         eierId: String,
     ) {
-        log.info("NyModell: Oppretter ny soknad for $behandlingsId")
+        logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
         kotlin.runCatching {
             soknadService.createSoknad(
@@ -52,176 +30,38 @@ class SoknadV2AdapterService(
                 eierId = eierId,
             )
         }
-            .onFailure { log.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
-    }
+            .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
 
-    override fun addArbeidsforholdList(
-        soknadId: String,
-        arbeidsforhold: List<no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold>?,
-    ) {
-        arbeidsforhold?.let {
-            log.info("NyModell: Legger til arbeidsforhold for $soknadId")
-
-            kotlin.runCatching {
-                livssituasjonService.updateArbeidsforhold(
-                    UUID.fromString(soknadId),
-                    it.map { it.toV2Arbeidsforhold() },
-                )
-            }
-                .onFailure { log.warn("Ny modell: Kunne ikke legge til arbeidsforhold", it) }
-        }
-    }
-
-    override fun addAdresserRegister(
-        soknadId: String,
-        person: Person?,
-    ) {
-        log.info("NyModell: Legger til adresser for $soknadId")
-
-        person?.let {
-            kotlin.runCatching {
-                kontaktService.saveAdresserRegister(
-                    soknadId = UUID.fromString(soknadId),
-                    folkeregistrertAdresse = it.bostedsadresse?.toV2Adresse(hentAdresseService),
-                    midlertidigAdresse = it.oppholdsadresse?.toV2Adresse(),
-                )
-            }
-                .onFailure { log.warn("NyModell: Legge til Adresser feilet for $soknadId", it) }
-        }
-    }
-
-    override fun updateTelefonRegister(
-        soknadId: String,
-        telefonnummer: String?,
-    ) {
-        log.info("NyModell: Legger til Telefonnummer for $soknadId")
-
-        telefonnummer?.let {
-            kotlin.runCatching {
-                kontaktService.updateTelefonRegister(UUID.fromString(soknadId), it)
-            }
-                .onFailure { log.warn("Kunne ikke legge til telefonnummer fra register", it) }
-        }
-    }
-
-    override fun updateEier(
-        soknadId: String,
-        personalia: JsonPersonalia,
-    ) {
-        log.info("Ny modell: Legger til Eier")
         kotlin.runCatching {
-            eierService.updateEier(personalia.toV2Eier(UUID.fromString(soknadId)))
+            soknadService.findOrError(UUID.fromString(behandlingsId))
+                .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
         }
-            .onFailure { log.warn("NyModell: Kunne ikke legge til ny Eier fra register", it) }
+            .onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
     }
 
     override fun setInnsendingstidspunkt(
         soknadId: String,
         innsendingsTidspunkt: String,
     ) {
-        log.info("NyModell: Setter innsendingstidspunkt")
+        logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
         kotlin.runCatching {
-            val zonedDateTime = ZonedDateTime.parse(innsendingsTidspunkt)
-
-            soknadService.setInnsendingstidspunkt(
-                UUID.fromString(soknadId),
-                zonedDateTime.toLocalDateTime(),
-            )
+            OffsetDateTime.parse(innsendingsTidspunkt).let {
+                soknadService.setInnsendingstidspunkt(
+                    soknadId = UUID.fromString(soknadId),
+                    innsendingsTidspunkt = it.toLocalDateTime(),
+                )
+            }
         }
-            .onFailure { log.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+            .onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
-        log.info("NyModell: Sletter SoknadV2")
+        logger.info("NyModell: Sletter SoknadV2")
 
         kotlin.runCatching {
             soknadService.slettSoknad(UUID.fromString(behandlingsId))
         }
-            .onFailure { log.warn("NyModell: Kunne ikke slette Soknad V2") }
+            .onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
-
-    override fun addEktefelle(
-        behandlingsId: String,
-        systemverdiSivilstatus: JsonSivilstatus,
-    ) {
-        log.info("NyModell: Legger til systemdata for ektefelle")
-
-        systemverdiSivilstatus.let {
-            kotlin.runCatching {
-                familieService.addSivilstatus(UUID.fromString(behandlingsId), it.status.toV2Sivilstatus(), it.toV2Ektefelle())
-            }
-                .onFailure { log.warn("NyModell: Kunne ikke legge til ektefelle for søknad:  $behandlingsId", it) }
-        }
-    }
-
-    override fun addBarn(
-        behandlingsId: String,
-        ansvarList: List<JsonAnsvar>,
-    ) {
-        log.info("NyModell: Legger til systemdata for barn")
-        ansvarList.let { jsonAnsvarListe ->
-            kotlin.runCatching {
-                familieService.addBarn(UUID.fromString(behandlingsId), jsonAnsvarListe.map { it.toV2Barn() }, true)
-            }
-                .onFailure { log.warn("NyModell: Kunne ikke legge til barn for søknad:  $behandlingsId", it) }
-        }
-    }
-}
-
-private fun JsonPersonalia.toV2Eier(soknadId: UUID): Eier {
-    return Eier(
-        soknadId = soknadId,
-        navn =
-            Navn(
-                fornavn = this.navn.fornavn,
-                mellomnavn = this.navn.mellomnavn,
-                etternavn = this.navn.etternavn,
-            ),
-        statsborgerskap = this.statsborgerskap.verdi,
-        nordiskBorger = this.nordiskBorger.verdi,
-    )
-}
-
-private fun JsonSivilstatus.toV2Ektefelle(): Ektefelle {
-    return Ektefelle(
-        navn =
-            Navn(
-                fornavn = ektefelle.navn.fornavn,
-                mellomnavn = ektefelle.navn.mellomnavn,
-                etternavn = ektefelle.navn.etternavn,
-            ),
-        fodselsdato = ektefelle.fodselsdato,
-        personId = ektefelle.personIdentifikator,
-        folkeregistrertMedEktefelle = folkeregistrertMedEktefelle,
-        borSammen = borSammenMed,
-        kildeErSystem = true,
-    )
-}
-
-private fun Status.toV2Sivilstatus(): Sivilstatus {
-    return when (this) {
-        Status.GIFT -> Sivilstatus.GIFT
-        Status.SAMBOER -> Sivilstatus.SAMBOER
-        Status.ENKE -> Sivilstatus.ENKE
-        Status.SKILT -> Sivilstatus.SKILT
-        Status.SEPARERT -> Sivilstatus.SEPARERT
-        Status.UGIFT -> Sivilstatus.UGIFT
-    }
-}
-
-private fun JsonAnsvar.toV2Barn(): Barn {
-    return Barn(
-        familieKey = UUID.randomUUID(),
-        personId = barn.personIdentifikator,
-        navn =
-            Navn(
-                fornavn = barn.navn.fornavn,
-                mellomnavn = barn.navn.mellomnavn,
-                etternavn = barn.navn.etternavn,
-            ),
-        fodselsdato = barn.fodselsdato,
-        borSammen = borSammenMed?.verdi,
-        folkeregistrertSammen = erFolkeregistrertSammen.verdi,
-    )
 }

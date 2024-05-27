@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import no.nav.sosialhjelp.soknad.app.soknadlock.ConflictAvoidanceDelayInterceptor
-import no.nav.sosialhjelp.soknad.v2.accessinterceptor.SoknadAccessInterceptor
+import no.nav.sosialhjelp.soknad.v2.config.interceptor.SoknadAccessInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry

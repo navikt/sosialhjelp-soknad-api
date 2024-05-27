@@ -12,15 +12,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.MatrikkelAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.UstrukturertAdresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.adresse.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -49,11 +49,11 @@ class KontaktToJsonMapper(
             val adresseValg = kontakt.adresser.adressevalg
 
             json.initializeObjects()
-            json.midlertidigAdresse = kontakt.adresser.midlertidigAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
+            json.midlertidigAdresse = kontakt.adresser.midlertidig?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
 
             with(json.soknad.data.personalia) {
                 telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
-                folkeregistrertAdresse = kontakt.adresser.folkeregistrertAdresse?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
+                folkeregistrertAdresse = kontakt.adresser.folkeregistrert?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
                 adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
             }
 
@@ -136,14 +136,14 @@ class KontaktToJsonMapper(
         private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
             return JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(orgnummer)
-                .withNavEnhetsnavn(enhetsnavn)
+                .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
         }
 
         private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
             return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
                 .withEnhetsnummer(enhetsnummer)
                 .withKommunenummer(kommunenummer)
-                .withNavEnhetsnavn(enhetsnavn)
+                .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
         }
     }
 }

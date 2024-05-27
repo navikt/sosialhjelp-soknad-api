@@ -8,7 +8,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.util.UUID
 
 @Component
 class ShadowProductionManager(
@@ -22,8 +21,10 @@ class ShadowProductionManager(
     ) {
         original?.let {
             kotlin.runCatching {
-                jsonGenerator.copyAndMerge(soknadId, original).let { copy ->
-                    JsonContentComparator(soknadId).doCompareAndLogErrors(original, copy)
+                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
+                    // sortere ansvar før sammenlikning
+                    sortAnsvar(it, copy)
+                    JsonContentComparator().doCompareAndLogErrors(it, copy)
                 }
             }
                 .onFailure {
@@ -32,20 +33,27 @@ class ShadowProductionManager(
         } ?: logger.warn("NyModell : Sammenlikning : Original er null")
     }
 
-    internal class JsonContentComparator(soknadIdString: String) {
+    private fun sortAnsvar(
+        original: JsonInternalSoknad,
+        copy: JsonInternalSoknad,
+    ) {
+        original.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
+        copy.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
+    }
+
+    internal class JsonContentComparator() {
         private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         private val logger = LoggerFactory.getLogger(this::class.java)
-        private val soknadId: UUID = UUID.fromString(soknadIdString)
 
         fun <T : Any> doCompareAndLogErrors(
             original: T,
             other: T,
         ) {
-            logger.info("$soknadId - *** COMPARING *** - baseClass: ${original::class.simpleName}")
+            logger.info("*** COMPARING *** - baseClass: ${original::class.simpleName}")
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {
-                    JsonCompareErrorLogger(soknadId, result = it).logAllErrors()
+                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = true)
                 }
         }
 

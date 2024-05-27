@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
@@ -65,6 +66,8 @@ class SoknadRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        logger.info("Kjører ny runde med innhenting av Systemdata")
         systemdata.update(soknadUnderArbeid)
 
         val updatedJsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
@@ -159,6 +162,8 @@ class SoknadRessurs(
 
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
+
+        private val logger by logger()
 
         private fun xsrfCookie(behandlingId: String): Cookie {
             val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))

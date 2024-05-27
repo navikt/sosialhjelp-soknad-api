@@ -43,7 +43,7 @@ class SoknadToJsonMapper(
                     domainSoknad.tidspunkt.sendtInn
                         ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
 
-                domainSoknad.begrunnelse?.let {
+                domainSoknad.begrunnelse.let {
                     soknad.data.begrunnelse = it.toJsonBegrunnelse()
                 }
             }

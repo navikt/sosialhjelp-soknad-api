@@ -66,6 +66,7 @@ class SoknadServiceOld(
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
+        log.info("Starter søknad")
 
         prometheusMetricsService.reportStartSoknad()
 
@@ -95,8 +96,6 @@ class SoknadServiceOld(
     }
 
     private fun opprettSoknadMetadata(fnr: String): String {
-        log.info("Starter søknad")
-
         val soknadMetadata =
             SoknadMetadata(
                 id = 0,
@@ -109,9 +108,7 @@ class SoknadServiceOld(
                 sistEndretDato = LocalDateTime.now(clock),
             )
         soknadMetadataRepository.opprett(soknadMetadata)
-        return soknadMetadata.behandlingsId.also {
-            log.info("Starter søknad $it")
-        }
+        return soknadMetadata.behandlingsId
     }
 
     fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {

@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
@@ -24,19 +24,19 @@ class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val kontaktService: KontaktService,
+    private val adresseService: AdresseService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
         val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
 
-        val kontaktInformasjon = kontaktService.getKontaktInformasjon(soknad.id)
+        val mottaker = adresseService.findMottaker(soknad.id)
 
-        kontaktInformasjon?.mottaker?.let {
+        mottaker?.let {
             log.info(
-                "Starter kryptering av filer for ${soknad.id}, " +
-                    "skal sende til kommune ${it.kommunenummer}) med " +
+                "Starter kryptering av filer." +
+                    "Skal sendes til kommune ${it.kommunenummer}) med " +
                     "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}",
             )
         }
@@ -48,7 +48,7 @@ class SendSoknadHandler(
                     soknadJson = objectMapper.writeValueAsString(json.soknad),
                     tilleggsinformasjonJson =
                         objectMapper.writeValueAsString(
-                            JsonTilleggsinformasjon(kontaktInformasjon?.mottaker?.enhetsnummer),
+                            JsonTilleggsinformasjon(mottaker?.enhetsnummer),
                         ),
                     vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
                     dokumenter = getFilOpplastingList(json),

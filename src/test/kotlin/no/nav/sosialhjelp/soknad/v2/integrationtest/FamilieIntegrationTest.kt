@@ -5,36 +5,23 @@ import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
-import no.nav.sosialhjelp.soknad.v2.familie.FamilieDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.forsorgerplikt.ForsorgerInput
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.toDomain
-import no.nav.sosialhjelp.soknad.v2.familie.toDto
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
 class FamilieIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
-
-    @Test
-    fun `Skal returnere familie`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
-        val storedFamilie = familieRepository.save(createFamilie(storedSoknad.id))
-
-        doGet(
-            uri = "/soknad/${storedSoknad.id}/familie",
-            responseBodyClass = FamilieDto::class.java,
-        ).also {
-            Assertions.assertThat(it).isEqualTo(storedFamilie.toDto())
-        }
-    }
 
     @Test
     fun `Skal oppdatere familie med forsorger`() {
@@ -44,7 +31,11 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
                 storedSoknad.id,
                 ansvar =
                     listOf(
-                        createBarn(UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"), personId = "12345678", deltBosted = true),
+                        createBarn(
+                            UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
+                            personId = "12345678",
+                            deltBosted = true,
+                        ),
                     ),
             ),
         )
@@ -63,17 +54,15 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             storedSoknad.id,
         )
 
-        familieRepository.findById(
-            storedSoknad.id,
-        ).also { Assertions.assertThat(it).isNotNull() }.get().also {
-            Assertions.assertThat(it).isNotNull()
-            Assertions.assertThat(it.barnebidrag).isEqualTo(Barnebidrag.BETALER)
-            Assertions.assertThat(it.ansvar.size).isEqualTo(1)
-            with(it.ansvar.values.first()) {
-                Assertions.assertThat(personId).isEqualTo("12345678")
-                Assertions.assertThat(deltBosted).isEqualTo(true)
+        familieRepository.findByIdOrNull(storedSoknad.id)?.let {
+            assertThat(it.barnebidrag).isEqualTo(Barnebidrag.BETALER)
+            assertThat(it.ansvar.size).isEqualTo(1)
+            it.ansvar.values.firstOrNull()?.let { barn ->
+                assertThat(barn.personId).isEqualTo("12345678")
+                assertThat(barn.borSammen).isTrue()
             }
-        }
+                ?: fail("Fant ikke barn")
+        } ?: fail("Fant ikke familie")
     }
 
     @Test
@@ -97,13 +86,11 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
             storedSoknad.id,
         )
 
-        familieRepository.findById(
-            storedSoknad.id,
-        ).also { Assertions.assertThat(it).isNotNull() }.get().also {
-            Assertions.assertThat(it).isNotNull()
-            Assertions.assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
-            Assertions.assertThat(it.ektefelle).isEqualTo(ektefelle.toDomain())
-            Assertions.assertThat(it.ektefelle?.kildeErSystem).isFalse()
+        familieRepository.findByIdOrNull(storedSoknad.id)?.let {
+            assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
+            assertThat(it.ektefelle).isEqualTo(ektefelle.toDomain())
+            assertThat(it.ektefelle?.kildeErSystem).isFalse()
         }
+            ?: fail("Fant ikke familie")
     }
 }

@@ -59,7 +59,6 @@ class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
-        log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
         val kommunenummer =
             soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
                 ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
@@ -78,7 +77,7 @@ class SoknadActions(
                     "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
                 )
             SKAL_SENDE_SOKNADER_VIA_FDA -> {
-                log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
+                log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
                 SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
             }

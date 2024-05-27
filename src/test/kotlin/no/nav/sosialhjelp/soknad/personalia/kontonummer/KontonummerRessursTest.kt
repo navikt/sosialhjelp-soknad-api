@@ -33,6 +33,7 @@ internal class KontonummerRessursTest {
     private val kontonummerService: KontonummerService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: ControllerAdapter = mockk()
+
     private val kontonummerRessurs =
         KontonummerRessurs(
             tilgangskontroll,

@@ -88,7 +88,7 @@ class MellomlagringService(
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
             filId = filId,
-        )
+        ).also { log.info("Fil med filId $filId er lastet opp") }
     }
 
     private fun opprettFilOpplasting(

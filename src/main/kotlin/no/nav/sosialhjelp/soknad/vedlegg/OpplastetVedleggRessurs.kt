@@ -57,13 +57,15 @@ class OpplastetVedleggRessurs(
 
         log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
 
-        return mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
+        mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
             val mimeType = detectMimeType(it.data)
-            ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
+            log.info("Fant vedlegg $vedleggId hos KS")
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
         }
-            // hvis vedleggId ikke finnes i KS mellomlagring
-            ?: ResponseEntity.notFound().build()
+        // hvis vedleggId ikke finnes i KS mellomlagring
+        log.error("Fant ikke vedlegg $vedleggId hos KS")
+        return ResponseEntity.notFound().build()
     }
 
     @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])

@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuper
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.EierToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.opprettEier
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -24,13 +24,13 @@ class EierMapperTest {
         val eier = opprettEier(UUID.randomUUID()).also { EierToJsonMapper.doMapping(it, json) }
 
         with(json.soknad.data.personalia) {
-            Assertions.assertThat(this.statsborgerskap.verdi).isEqualTo(eier.statsborgerskap)
-            Assertions.assertThat(this.nordiskBorger.verdi).isEqualTo(eier.nordiskBorger)
+            assertThat(this.statsborgerskap.verdi).isEqualTo(eier.statsborgerskap)
+            assertThat(this.nordiskBorger.verdi).isEqualTo(eier.nordiskBorger)
 
             with(navn) {
-                Assertions.assertThat(this.fornavn).isEqualTo(eier.navn.fornavn)
-                Assertions.assertThat(this.mellomnavn).isEqualTo(eier.navn.mellomnavn)
-                Assertions.assertThat(this.etternavn).isEqualTo(eier.navn.etternavn)
+                assertThat(this.fornavn).isEqualTo(eier.navn.fornavn)
+                assertThat(this.mellomnavn).isEqualTo(eier.navn.mellomnavn)
+                assertThat(this.etternavn).isEqualTo(eier.navn.etternavn)
             }
         }
     }
@@ -49,9 +49,9 @@ class EierMapperTest {
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
-            Assertions.assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
-            Assertions.assertThat(this.kontonummer.harIkkeKonto).isTrue()
-            Assertions.assertThat(this.kontonummer.verdi).isNull()
+            assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
+            assertThat(this.kontonummer.harIkkeKonto).isTrue()
+            assertThat(this.kontonummer.verdi).isNull()
         }
     }
 
@@ -69,9 +69,9 @@ class EierMapperTest {
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
-            Assertions.assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
-            Assertions.assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer!!.fraBruker)
+            assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
+            assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
+            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraBruker)
         }
     }
 
@@ -88,20 +88,24 @@ class EierMapperTest {
         EierToJsonMapper.doMapping(eier, json)
 
         with(json.soknad.data.personalia) {
-            Assertions.assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
-            Assertions.assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
-            Assertions.assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer!!.fraRegister)
+            assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
+            assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
+            assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraRegister)
         }
     }
 
     @Test
-    fun `Ingen verdier satt skal gi json == null`() {
+    fun `Ingen verdier satt skal gi tomt json-objekt`() {
         val eier =
             opprettEier(
                 soknadId = UUID.randomUUID(),
                 kontonummer = Kontonummer(),
             )
         EierToJsonMapper.doMapping(eier, json)
-        Assertions.assertThat(json.soknad.data.personalia.kontonummer).isNull()
+        with(json.soknad.data.personalia.kontonummer) {
+            assertThat(kilde).isNull()
+            assertThat(harIkkeKonto == null).isTrue()
+            assertThat(verdi).isNull()
+        }
     }
 }

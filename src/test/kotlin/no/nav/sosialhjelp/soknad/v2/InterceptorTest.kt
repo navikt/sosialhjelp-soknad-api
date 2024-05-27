@@ -1,18 +1,19 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import junit.framework.TestCase.assertTrue
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.sivilstatus.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 
@@ -26,6 +27,7 @@ class InterceptorTest : AbstractIntegrationTest() {
         val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
         val token = mockOAuth2Server.issueToken("selvbetjening", "abc", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
 
+        // TODO Oppdatere PUT i AbstractIntegrationTest med disse ekstra headerne
         val result =
             webTestClient.put()
                 .uri("/soknad/${soknad.id}/familie/sivilstatus")
@@ -73,9 +75,9 @@ class InterceptorTest : AbstractIntegrationTest() {
             .returnResult()
             .responseBody!!
 
-        familieRepository.findById(soknad.id).let {
-            assertTrue(it.isPresent)
-            assertThat(it.get().ektefelle?.personId).isEqualTo("121337")
+        familieRepository.findByIdOrNull(soknad.id)?.let {
+            assertThat(it.ektefelle?.personId).isEqualTo("121337")
         }
+            ?: fail("Finner ikke familie")
     }
 }

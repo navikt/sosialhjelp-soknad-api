@@ -16,8 +16,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             "/soknad/${soknad.id}/begrunnelse",
             BegrunnelseDto::class.java,
         ).also {
-            assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse!!.hvorforSoke)
-            assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse!!.hvaSokesOm)
+            assertThat(it.hvorforSoke).isEqualTo(soknad.begrunnelse.hvorforSoke)
+            assertThat(it.hvaSokesOm).isEqualTo(soknad.begrunnelse.hvaSokesOm)
         }
     }
 
@@ -39,8 +39,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse!!.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
-            assertThat(it.begrunnelse!!.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
     }
@@ -63,8 +63,8 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse!!.hvaSokesOm).isEqualTo("")
-            assertThat(it.begrunnelse!!.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo("")
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
         }
             ?: fail("Feil i test")
     }

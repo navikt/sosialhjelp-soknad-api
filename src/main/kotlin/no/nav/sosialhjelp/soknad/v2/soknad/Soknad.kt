@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -19,8 +18,6 @@ interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad
     fun findOlderThan(timestamp: LocalDateTime): List<Soknad>
 }
 
-fun SoknadRepository.findOrError(soknadId: UUID) = findByIdOrNull(soknadId) ?: error("Kunne ikke finne soknad: $soknadId")
-
 @Table
 data class Soknad(
     @Id
@@ -28,9 +25,9 @@ data class Soknad(
     val eierPersonId: String,
     @Embedded.Empty
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
-    @Embedded.Nullable
-    val begrunnelse: Begrunnelse? = null,
-) : AggregateRoot {
+    @Embedded.Empty
+    val begrunnelse: Begrunnelse = Begrunnelse(),
+) : DomainRoot {
     override val soknadId: UUID get() = id
 }
 

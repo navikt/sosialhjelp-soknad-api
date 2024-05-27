@@ -33,15 +33,15 @@ class KontonummerRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val konto = loadKontonummer(behandlingsId)
         if (konto.kilde == JsonKilde.SYSTEM && konto.verdi == null) {
+            val kontonummerRegister = kontonummerService.getKontonummer(eier())
             storeKontonummer(
                 behandlingsId,
                 JsonKontonummer().apply {
                     kilde = JsonKilde.SYSTEM
-                    verdi = kontonummerService.getKontonummer(eier())
+                    verdi = kontonummerRegister
                 },
             )
         }
-
         return mapDAOtoDTO(loadKontonummer(behandlingsId))
     }
 

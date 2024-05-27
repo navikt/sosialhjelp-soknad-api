@@ -18,14 +18,12 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.stereotype.Component
 
 @Component
 class AdresseSystemdata(
     private val personService: PersonService,
     private val hentAdresseService: HentAdresseService,
-    private val v2AdapterService: V2AdapterService,
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
@@ -37,9 +35,6 @@ class AdresseSystemdata(
 
         val folkeregistrertAdresse = person?.bostedsadresse?.let { mapToJsonAdresse(it) }
         val midlertidigAdresse = person?.oppholdsadresse?.let { mapToJsonAdresse(it) }
-
-        // NyModell
-        v2AdapterService.addAdresserRegister(soknadUnderArbeid.behandlingsId, person)
 
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.oppholdsadresse = null

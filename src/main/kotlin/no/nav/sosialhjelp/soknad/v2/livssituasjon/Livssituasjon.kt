@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.AggregateRoot
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -19,13 +19,13 @@ interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRep
 data class Livssituasjon(
     @Id
     override val soknadId: UUID,
-    @Embedded.Nullable
-    val arbeid: Arbeid? = null,
+    @Embedded.Empty
+    val arbeid: Arbeid = Arbeid(),
     @Embedded.Nullable
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
     val bosituasjon: Bosituasjon? = null,
-) : AggregateRoot
+) : DomainRoot
 
 data class Bosituasjon(
     val botype: Botype? = null,

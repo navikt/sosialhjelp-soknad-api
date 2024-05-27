@@ -14,10 +14,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
 class JsonContentComparatorTest {
-    private val comparator = ShadowProductionManager.JsonContentComparator(UUID.randomUUID().toString())
+    private val comparator = ShadowProductionManager.JsonContentComparator()
     private var original: JsonInternalSoknad = createJsonInternalSoknad()
     private val logger = LoggerFactory.getLogger(JsonCompareErrorLogger::class.java)
 
