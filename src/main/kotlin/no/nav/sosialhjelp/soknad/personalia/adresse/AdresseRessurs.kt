@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2V2ControllerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -37,7 +37,7 @@ class AdresseRessurs(
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
+    private val soknadV2ControllerAdapter: SoknadV2V2ControllerAdapter,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 

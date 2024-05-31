@@ -28,7 +28,7 @@ data class Soknad(
     @Embedded.Empty
     val begrunnelse: Begrunnelse = Begrunnelse(),
 ) : DomainRoot {
-    override val soknadId: UUID get() = id
+    override fun getDbId() = id
 }
 
 data class Tidspunkt(

@@ -141,6 +141,7 @@ class VerdiRessurs(
         var campingvogn: Boolean = false,
         var kjoretoy: Boolean = false,
         var fritidseiendom: Boolean = false,
+        // TODO Trenger det både være flagg og nullable string?
         var annet: Boolean = false,
         var beskrivelseAvAnnet: String? = null,
     )

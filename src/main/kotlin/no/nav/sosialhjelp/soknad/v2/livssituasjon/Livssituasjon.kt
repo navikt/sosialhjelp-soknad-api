@@ -17,15 +17,16 @@ interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRep
 // TODO Navn?
 @Table
 data class Livssituasjon(
-    @Id
-    override val soknadId: UUID,
+    @Id val soknadId: UUID,
     @Embedded.Empty
     val arbeid: Arbeid = Arbeid(),
     @Embedded.Nullable
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
     val bosituasjon: Bosituasjon? = null,
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
 
 data class Bosituasjon(
     val botype: Botype? = null,

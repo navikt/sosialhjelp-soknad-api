@@ -42,7 +42,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
 
 @Controller
-class SoknadV2ControllerAdapter(
+class SoknadV2V2ControllerAdapter(
     private val arbeidController: ArbeidController,
     private val begrunnelseController: BegrunnelseController,
     private val bosituasjonController: BosituasjonController,
@@ -53,7 +53,7 @@ class SoknadV2ControllerAdapter(
     private val forsorgerpliktController: ForsorgerpliktController,
     private val v2AdresseControllerAdapter: V2AdresseControllerAdapter,
     private val transactionTemplate: TransactionTemplate,
-) : ControllerAdapter {
+) : V2ControllerAdapter {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun updateArbeid(

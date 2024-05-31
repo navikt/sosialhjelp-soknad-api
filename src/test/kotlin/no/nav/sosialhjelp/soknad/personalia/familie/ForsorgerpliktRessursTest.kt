@@ -39,7 +39,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.ControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -51,7 +51,7 @@ internal class ForsorgerpliktRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val controllerAdapter: ControllerAdapter = mockk()
+    private val controllerAdapter: V2ControllerAdapter = mockk()
 
     private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository, controllerAdapter)
 

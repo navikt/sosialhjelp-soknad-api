@@ -3,11 +3,15 @@ package no.nav.sosialhjelp.soknad.v2.repository
 import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
+import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettVedlegg
+import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -20,7 +24,7 @@ import java.util.UUID
  */
 class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
+    fun `Verifisere CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
         UUID.randomUUID().let {
             val original = soknadRepository.save(opprettSoknad(it))
@@ -30,7 +34,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Livssituasjon`() {
+    fun `Verifisere CRUD-operasjoner for Livssituasjon`() {
         livssituasjonRepository.verifyCRUDOperations(
             originalEntity = opprettLivssituasjon(soknad.id),
             updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999)),
@@ -38,7 +42,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Eier`() {
+    fun `Verifisere CRUD-operasjoner for Eier`() {
         eierRepository.verifyCRUDOperations(
             originalEntity = opprettEier(soknad.id),
             updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK"),
@@ -52,7 +56,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Kontakt`() {
+    fun `Verifisere CRUD-operasjoner for Kontakt`() {
         kontaktRepository.verifyCRUDOperations(
             originalEntity = opprettKontakt(soknad.id),
             updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199")),
@@ -60,7 +64,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Familie`() {
+    fun `Verifisere CRUD-operasjoner for Familie`() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity =
@@ -70,10 +74,27 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Integrasjonstatus`() {
+    fun `Verifisere CRUD-operasjoner for Integrasjonstatus`() {
         integrasjonstatusRepository.verifyCRUDOperations(
             originalEntity = opprettIntegrasjonstatus(soknad.id),
             updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true),
+        )
+    }
+
+    @Test
+    fun `Verifisere CRUD-operasjoner for Okonomi`() {
+        okonomiRepository.verifyCRUDOperations(
+            originalEntity = opprettOkonomi(soknad.id),
+            updatedEntity = opprettOkonomi(soknad.id).copy(beskrivelserAnnet = BeskrivelserAnnet()),
+        )
+    }
+
+    @Test
+    fun `Verifisere CRUD-operasjoner for Vedlegg`() {
+        val dbId = UUID.randomUUID()
+        vedleggRepository.verifyCRUDOperations(
+            originalEntity = opprettVedlegg(dbId, soknad.id),
+            updatedEntity = opprettVedlegg(dbId, soknad.id).copy(status = VedleggStatus.LASTET_OPP),
         )
     }
 }

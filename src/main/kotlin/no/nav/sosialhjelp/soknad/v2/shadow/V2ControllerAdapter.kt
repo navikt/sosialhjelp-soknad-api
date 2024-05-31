@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 
-interface ControllerAdapter {
+interface V2ControllerAdapter {
     fun updateArbeid(
         soknadId: String,
         arbeidFrontend: ArbeidRessurs.ArbeidsforholdRequest,
