@@ -14,8 +14,10 @@ interface IntegrasjonstatusRepository : UpsertRepository<Integrasjonstatus>, Lis
 @Table
 data class Integrasjonstatus(
     @Id
-    override val soknadId: UUID,
+    val soknadId: UUID,
     val feilUtbetalingerNav: Boolean = false,
     val feilInntektSkatteetaten: Boolean = false,
     val feilStotteHusbanken: Boolean = false,
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}

@@ -34,43 +34,49 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.StudentV
 object VedleggTypeToSoknadTypeMapper {
     val vedleggTypeToSoknadType: Map<VedleggType, String> =
         mapOf(
-            KontooversiktAksjer to SoknadJsonTyper.FORMUE_VERDIPAPIRER,
-            FakturaAnnetBarnutgift to SoknadJsonTyper.UTGIFTER_ANNET_BARN,
+            AnnetAnnet to SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER,
+            BarnebidragBetaler to SoknadJsonTyper.BARNEBIDRAG,
+            BarnebidragMottar to SoknadJsonTyper.BARNEBIDRAG,
             DokumentasjonAnnetBoutgift to SoknadJsonTyper.UTGIFTER_ANNET_BO,
             DokumentasjonAnnetInntekter to SoknadJsonTyper.UTBETALING_ANNET,
-            FakturaBarnehage to SoknadJsonTyper.UTGIFTER_BARNEHAGE,
-            BarnebidragBetaler to SoknadJsonTyper.BARNEBIDRAG,
-            KontooversiktBrukskonto to SoknadJsonTyper.FORMUE_BRUKSKONTO,
-            KontooversiktBsu to SoknadJsonTyper.FORMUE_BSU,
-            SalgsoppgjorEiendom to SoknadJsonTyper.UTBETALING_SALG,
+            DokumentasjonUtbytte to SoknadJsonTyper.UTBETALING_UTBYTTE,
             DokumentasjonForsikringsutbetaling to SoknadJsonTyper.UTBETALING_FORSIKRING,
+            FakturaBarnehage to SoknadJsonTyper.UTGIFTER_BARNEHAGE,
+            FakturaAnnetBarnutgift to SoknadJsonTyper.UTGIFTER_ANNET_BARN,
             FakturaFritidsaktivitet to SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER,
-            FakturaHusleie to SoknadJsonTyper.UTGIFTER_HUSLEIE,
-            FakturaKommunaleavgifter to SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT,
-            KontooversiktLivsforsikring to SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
-            BarnebidragMottar to SoknadJsonTyper.BARNEBIDRAG,
+            FakturaTannbehandling to SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING,
+            FakturaStrom to SoknadJsonTyper.UTGIFTER_STROM,
             FakturaOppvarming to SoknadJsonTyper.UTGIFTER_OPPVARMING,
             FakturaSfo to SoknadJsonTyper.UTGIFTER_SFO,
-            KontooversiktSparekonto to SoknadJsonTyper.FORMUE_SPAREKONTO,
-            FakturaStrom to SoknadJsonTyper.UTGIFTER_STROM,
-            FakturaTannbehandling to SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING,
-            DokumentasjonUtbytte to SoknadJsonTyper.UTBETALING_UTBYTTE,
+            FakturaKommunaleavgifter to SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT,
+            FakturaHusleie to SoknadJsonTyper.UTGIFTER_HUSLEIE,
             HusbankenVedtak to SoknadJsonTyper.UTBETALING_HUSBANKEN,
-            StudentVedtak to SoknadJsonTyper.STUDIELAN,
-            LonnslippArbeid to SoknadJsonTyper.JOBB,
-            SluttoppgjorArbeid to SoknadJsonTyper.SLUTTOPPGJOER,
+            KontooversiktLivsforsikring to SoknadJsonTyper.FORMUE_LIVSFORSIKRING,
             KontooversiktAnnet to SoknadJsonTyper.FORMUE_ANNET,
-            AnnetAnnet to SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER,
-            // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
+            KontooversiktBrukskonto to SoknadJsonTyper.FORMUE_BRUKSKONTO,
+            KontooversiktAksjer to SoknadJsonTyper.FORMUE_VERDIPAPIRER,
+            KontooversiktSparekonto to SoknadJsonTyper.FORMUE_SPAREKONTO,
+            KontooversiktBsu to SoknadJsonTyper.FORMUE_BSU,
+            LonnslippArbeid to SoknadJsonTyper.JOBB,
             NedbetalingsplanAvdragslan to SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG,
+            SalgsoppgjorEiendom to SoknadJsonTyper.UTBETALING_SALG,
+            StudentVedtak to SoknadJsonTyper.STUDIELAN,
+            SluttoppgjorArbeid to SoknadJsonTyper.SLUTTOPPGJOER,
+            // vedleggstypen er også knyttet til soknadstypen "boliglanRenter"
         )
 
     fun getSoknadPath(vedleggType: VedleggType?): String =
         when (vedleggType) {
-            DokumentasjonAnnetBoutgift, FakturaAnnetBarnutgift, FakturaTannbehandling, FakturaKommunaleavgifter, FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet -> "opplysningerUtgift"
+            DokumentasjonAnnetBoutgift, FakturaAnnetBarnutgift, FakturaTannbehandling, FakturaKommunaleavgifter,
+            FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet,
+            -> "opplysningerUtgift"
             BarnebidragBetaler, FakturaSfo, FakturaBarnehage, FakturaHusleie, NedbetalingsplanAvdragslan -> "oversiktUtgift"
-            KontooversiktBrukskonto, KontooversiktBsu, KontooversiktSparekonto, KontooversiktLivsforsikring, KontooversiktAksjer, KontooversiktAnnet -> "formue"
-            DokumentasjonForsikringsutbetaling, DokumentasjonAnnetInntekter, DokumentasjonUtbytte, SalgsoppgjorEiendom, SluttoppgjorArbeid, HusbankenVedtak -> "utbetaling"
+            KontooversiktBrukskonto, KontooversiktBsu, KontooversiktSparekonto, KontooversiktLivsforsikring,
+            KontooversiktAksjer, KontooversiktAnnet,
+            -> "formue"
+            DokumentasjonForsikringsutbetaling, DokumentasjonAnnetInntekter, DokumentasjonUtbytte, SalgsoppgjorEiendom,
+            SluttoppgjorArbeid, HusbankenVedtak,
+            -> "utbetaling"
             BarnebidragMottar, LonnslippArbeid, StudentVedtak -> "inntekt"
             else -> error("Vedleggstypen eksisterer ikke eller mangler mapping")
         }

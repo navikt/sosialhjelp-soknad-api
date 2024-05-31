@@ -32,7 +32,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2V2ControllerAdapter
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -45,7 +45,7 @@ internal class AdresseRessursTest {
     private val adresseSystemdata: AdresseSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val navEnhetService: NavEnhetService = mockk()
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
+    private val soknadV2ControllerAdapter: SoknadV2V2ControllerAdapter = mockk()
 
     private val adresseRessurs =
         AdresseRessurs(

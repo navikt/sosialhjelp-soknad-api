@@ -6,10 +6,12 @@ import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -45,6 +47,12 @@ abstract class AbstractGenericRepositoryTest {
     @Autowired
     protected lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
+    @Autowired
+    protected lateinit var okonomiRepository: OkonomiRepository
+
+    @Autowired
+    protected lateinit var vedleggRepository: VedleggRepository
+
     protected lateinit var soknad: Soknad
 
     @BeforeEach
@@ -62,20 +70,20 @@ abstract class AbstractGenericRepositoryTest {
         originalEntity: Entity,
         updatedEntity: Entity,
     ) where Repo : UpsertRepository<Entity>, Repo : ListCrudRepository<Entity, UUID> {
-        assertThat(originalEntity.soknadId).isEqualTo(updatedEntity.soknadId)
+        assertThat(originalEntity.getDbId()).isEqualTo(updatedEntity.getDbId())
         assertThat(originalEntity).isNotEqualTo(updatedEntity)
 
         // lagre entitet
         val savedOriginalEntity = save(originalEntity)
-        assertThat(existsById(originalEntity.soknadId)).isTrue()
+        assertThat(existsById(originalEntity.getDbId())).isTrue()
 
         // oppdatere entitet
         val savedUpdatedEntity = save(updatedEntity)
         assertThat(savedUpdatedEntity).isNotEqualTo(savedOriginalEntity)
 
         // slette soknad-entiteten skal også slette denne entiteten
-        soknadRepository.deleteById(originalEntity.soknadId)
-        assertThat(this.existsById(originalEntity.soknadId)).isFalse()
+        soknadRepository.deleteById(soknad.id)
+        assertThat(this.existsById(originalEntity.getDbId())).isFalse()
 
         // lagre en entitet uten eksisterende soknad-referanse skal feile
         assertThatThrownBy { save(originalEntity) }

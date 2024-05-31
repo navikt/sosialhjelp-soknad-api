@@ -29,10 +29,23 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
+import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
+import no.nav.sosialhjelp.soknad.v2.vedlegg.Fil
+import no.nav.sosialhjelp.soknad.v2.vedlegg.Vedlegg
+import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggStatus
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -185,19 +198,6 @@ fun opprettKontakt(
     return Kontakt(soknadId, telefonnummer, adresser, navEnhet)
 }
 
-fun opprettAdresser(
-    midlertidigAdresse: Adresse = opprettMidlertidigAdresse(),
-    folkeregistrertAdresse: Adresse = opprettFolkeregistrertAdresse(),
-    brukerAdresse: Adresse = opprettMatrikkelAdresse(),
-): Adresser {
-    return Adresser(
-        adressevalg = AdresseValg.FOLKEREGISTRERT,
-        midlertidig = midlertidigAdresse,
-        folkeregistrert = folkeregistrertAdresse,
-        fraBruker = brukerAdresse,
-    )
-}
-
 fun opprettMatrikkelAdresse(
     kommunenummer: String = "5432",
     gaardsnummer: String = "231",
@@ -289,4 +289,80 @@ fun opprettBosituasjon(
     antallPersoner: Int = 3,
 ): Bosituasjon {
     return Bosituasjon(botype, antallPersoner)
+}
+
+fun opprettOkonomi(soknadId: UUID): Okonomi {
+    return Okonomi(
+        soknadId = soknadId,
+        inntekter = createInntekter(),
+        utgifter = createUtgifter(),
+        formuer = createFormuer(),
+        bekreftelser = createBekreftelser(),
+        beskrivelserAnnet = createBeskrivelserAnnet(),
+    )
+}
+
+fun createInntekter(): List<Inntekt> {
+    return listOf(
+        Inntekt(
+            type = InntektType.BARNEBIDRAG_MOTTAR,
+            tittel = "Inntekt barnebidrag",
+        ),
+    )
+}
+
+fun createUtgifter(): List<Utgift> {
+    return listOf(
+        Utgift(
+            type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            tittel = "Utgift",
+        ),
+    )
+}
+
+fun createFormuer(): List<Formue> {
+    return listOf(
+        Formue(
+            type = FormueType.FORMUE_BRUKSKONTO,
+            tittel = "Brukskonto",
+        ),
+    )
+}
+
+fun createBekreftelser(): Set<Bekreftelse> {
+    return setOf(
+        Bekreftelse(
+            type = BekreftelseType.BEKREFTELSE_SPARING,
+            tittel = "Sparing",
+            verdi = true,
+        ),
+    )
+}
+
+fun createBeskrivelserAnnet(): BeskrivelserAnnet {
+    return BeskrivelserAnnet(
+        sparing = "En sparekonto",
+    )
+}
+
+fun opprettVedlegg(
+    id: UUID,
+    soknadId: UUID,
+): Vedlegg {
+    return Vedlegg(
+        id = id,
+        soknadId = soknadId,
+        type = FormueType.FORMUE_BRUKSKONTO,
+        status = VedleggStatus.KREVES,
+        filer = createFiler(),
+    )
+}
+
+fun createFiler(): Set<Fil> {
+    return setOf(
+        Fil(
+            filnavn = "utskrift_brukskonto.pdf",
+            sha512 = UUID.randomUUID().toString(),
+        ),
+    )
 }
