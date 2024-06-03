@@ -36,7 +36,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
         val verdiType = FormueType.VERDI_KJORETOY
         Okonomi(
             soknadId = soknad.id,
-            formuer = listOf(Formue(formueType, "tittel"), Formue(verdiType, "tittel")),
+            formuer = listOf(Formue(formueType), Formue(verdiType)),
         ).also { okonomiRepository.save(it) }
 
         with(formueService.getFormuer(soknad.id)) {

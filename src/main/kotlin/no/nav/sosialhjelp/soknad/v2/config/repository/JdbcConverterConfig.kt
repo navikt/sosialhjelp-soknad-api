@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.AdresseToJsonConverter
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.JsonToAdresseConverter
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.OkonomiTypeToStringConverter
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.StringToOkonomiTypeConverter
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseToJsonConverter
+import no.nav.sosialhjelp.soknad.v2.kontakt.JsonToAdresseConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRad
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRaderToStringConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiTypeToStringConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOkonomiRadConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOkonomiTypeConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 
@@ -18,6 +21,8 @@ class JdbcConverterConfig : AbstractJdbcConfiguration() {
             JsonToAdresseConverter,
             OkonomiTypeToStringConverter,
             StringToOkonomiTypeConverter,
+            OkonomiRaderToStringConverter<OkonomiRad>(),
+            StringToOkonomiRadConverter<OkonomiRad>(),
         )
     }
 }

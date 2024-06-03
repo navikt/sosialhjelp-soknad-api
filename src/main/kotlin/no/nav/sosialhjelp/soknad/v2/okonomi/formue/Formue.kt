@@ -1,12 +1,16 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
 @Table
 data class Formue(
     val type: FormueType,
-    val tittel: String,
+    @Column("rader")
+    val okonomiRader: OkonomiRader<Belop>? = null,
 )
 
 enum class FormueType(val vedleggKreves: Boolean, val tittelKey: String) : OkonomiType {

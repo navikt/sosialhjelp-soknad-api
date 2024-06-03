@@ -47,9 +47,7 @@ data class Ektefelle(
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
     val kildeErSystem: Boolean = true,
-) {
-    companion object
-}
+)
 
 enum class Barnebidrag {
     BETALER,

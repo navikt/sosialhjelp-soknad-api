@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggForventningService
@@ -17,7 +16,6 @@ import java.util.UUID
 class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
     private val vedleggForventningService: VedleggForventningService,
-    private val textService: TextService,
 ) {
     fun getFormuer(soknadId: UUID) = okonomiRepository.findByIdOrNull(soknadId)?.formuer ?: emptyList()
 
@@ -34,7 +32,7 @@ class OkonomiService(
 
         okonomi.bekreftelser
             .filter { it.type != type }
-            .plus(Bekreftelse(type, getTittel(type.tittelKey), verdi))
+            .plus(Bekreftelse(type, verdi))
             .let { bekreftelser -> okonomi.copy(bekreftelser = bekreftelser.toSet()) }
             .also { okonomiRepository.save(it) }
     }
@@ -50,7 +48,7 @@ class OkonomiService(
         if (isPresent) {
             okonomi.formuer.firstOrNull { it.type == type }
                 ?: okonomi
-                    .copy(formuer = okonomi.formuer.plus(Formue(type, getTittel(type.tittelKey))))
+                    .copy(formuer = okonomi.formuer.plus(Formue(type)))
                     .also { okonomiRepository.save(it) }
         } else {
             okonomi.formuer
@@ -73,8 +71,6 @@ class OkonomiService(
             .run { copy(beskrivelserAnnet = beskrivelserAnnet) }
             .also { okonomiRepository.save(it) }
     }
-
-    private fun getTittel(typeString: String): String = textService.getJsonOkonomiTittel(typeString)
 
     private fun findOrCreate(soknadId: UUID) =
         okonomiRepository.findByIdOrNull(soknadId)
