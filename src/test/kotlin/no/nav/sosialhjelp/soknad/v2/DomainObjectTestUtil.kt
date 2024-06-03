@@ -31,8 +31,14 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
+import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
+import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -46,6 +52,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.vedlegg.Fil
 import no.nav.sosialhjelp.soknad.v2.vedlegg.Vedlegg
 import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggStatus
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -306,7 +313,30 @@ fun createInntekter(): List<Inntekt> {
     return listOf(
         Inntekt(
             type = InntektType.BARNEBIDRAG_MOTTAR,
-            tittel = "Inntekt barnebidrag",
+            okonomiRader =
+                OkonomiRader(
+                    rader =
+                        listOf(
+                            BruttoNetto(brutto = 40.0, netto = 20.0),
+                            BruttoNetto(brutto = 60.0, netto = 30.0),
+                        ),
+                ),
+        ),
+        Inntekt(
+            type = InntektType.UTBETALING_NAVYTELSE,
+            okonomiRader =
+                OkonomiRader(
+                    rader =
+                        listOf(
+                            UtbetalingMedKomponent(
+                                utbetaling = Utbetaling(brutto = 123.0, utbetalingsdato = LocalDate.now()),
+                                komponenter =
+                                    listOf(
+                                        Komponent(type = "Komponent 1", satsBelop = 400.0),
+                                    ),
+                            ),
+                        ),
+                ),
         ),
     )
 }
@@ -315,7 +345,13 @@ fun createUtgifter(): List<Utgift> {
     return listOf(
         Utgift(
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-            tittel = "Utgift",
+            okonomiRader =
+                OkonomiRader(
+                    rader =
+                        listOf(
+                            Belop(belop = 400.0),
+                        ),
+                ),
         ),
     )
 }
@@ -324,7 +360,13 @@ fun createFormuer(): List<Formue> {
     return listOf(
         Formue(
             type = FormueType.FORMUE_BRUKSKONTO,
-            tittel = "Brukskonto",
+            okonomiRader =
+                OkonomiRader(
+                    rader =
+                        listOf(
+                            Belop(belop = 123.0),
+                        ),
+                ),
         ),
     )
 }
@@ -333,7 +375,6 @@ fun createBekreftelser(): Set<Bekreftelse> {
     return setOf(
         Bekreftelse(
             type = BekreftelseType.BEKREFTELSE_SPARING,
-            tittel = "Sparing",
             verdi = true,
         ),
     )

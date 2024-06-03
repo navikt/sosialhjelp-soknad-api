@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.OkonomiTypeToStringConverter
-import no.nav.sosialhjelp.soknad.v2.config.repository.converters.StringToOkonomiTypeConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType

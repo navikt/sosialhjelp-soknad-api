@@ -42,7 +42,6 @@ class SoknadJsonTypeEnumTest {
     private fun createInntekt(okonomiType: InntektType) {
         Inntekt(
             type = okonomiType,
-            tittel = "Inntekt av typen ${okonomiType.name}",
         )
             .also { listOfInntekter.add(it) }
     }
@@ -50,7 +49,6 @@ class SoknadJsonTypeEnumTest {
     private fun createFormue(okonomiType: FormueType) {
         Formue(
             type = okonomiType,
-            tittel = "Formue av typen: ${okonomiType.name}",
         )
             .also { listOfFormue.addLast(it) }
     }
@@ -58,7 +56,6 @@ class SoknadJsonTypeEnumTest {
     private fun createUtgift(okonomiType: UtgiftType) {
         Utgift(
             type = okonomiType,
-            tittel = "Utgift av typen: ${okonomiType.name}",
         )
             .also { listOfUtgift.addLast(it) }
     }

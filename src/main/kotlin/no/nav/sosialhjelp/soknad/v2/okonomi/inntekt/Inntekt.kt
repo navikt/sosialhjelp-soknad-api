@@ -1,12 +1,16 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRad
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
 @Table
 data class Inntekt(
     val type: InntektType,
-    val tittel: String,
+    @Column("rader")
+    val okonomiRader: OkonomiRader<OkonomiRad>? = null,
 )
 
 // TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes
