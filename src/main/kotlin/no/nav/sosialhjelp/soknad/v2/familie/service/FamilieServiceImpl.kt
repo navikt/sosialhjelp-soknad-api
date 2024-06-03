@@ -6,6 +6,9 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -33,6 +36,7 @@ interface SivilstandService {
 @Service
 class FamilieServiceImpl(
     private val familieRepository: FamilieRepository,
+    private val okonomiService: OkonomiService,
 ) : ForsorgerService, SivilstandService {
     override fun findForsorger(soknadId: UUID) = familieRepository.findByIdOrNull(soknadId)?.toForsorger()
 
@@ -41,15 +45,43 @@ class FamilieServiceImpl(
         barnebidrag: Barnebidrag?,
         updated: List<Barn>,
     ): Forsorger {
-        return findOrCreate(soknadId)
-            .run {
-                copy(
-                    barnebidrag = barnebidrag,
-                    ansvar = mapAnsvar(ansvar, updated),
-                )
-            }
-            .let { familieRepository.save(it) }
-            .toForsorger()
+        val forsorger =
+            findOrCreate(soknadId)
+                .run {
+                    copy(
+                        barnebidrag = barnebidrag,
+                        ansvar = mapAnsvar(ansvar, updated),
+                    )
+                }
+                .let { familieRepository.save(it) }
+                .toForsorger()
+
+        // TODO Trenger denne å være en del av familie-modellen i det hele tatt? Lever på siden uavhengig av om vedkommende...
+        // TODO ...har forsorgerplikt eller ei
+        handleBarnebidrag(soknadId, barnebidrag)
+
+        return forsorger
+    }
+
+    private fun handleBarnebidrag(
+        soknadId: UUID,
+        barnebidrag: Barnebidrag?,
+    ) {
+        when (barnebidrag) {
+            Barnebidrag.BEGGE -> updateBarnebidrag(soknadId, inntektPresent = true, utgiftPresent = true)
+            Barnebidrag.BETALER -> updateBarnebidrag(soknadId, inntektPresent = false, utgiftPresent = true)
+            Barnebidrag.MOTTAR -> updateBarnebidrag(soknadId, inntektPresent = true, utgiftPresent = false)
+            else -> updateBarnebidrag(soknadId, inntektPresent = false, utgiftPresent = false)
+        }
+    }
+
+    private fun updateBarnebidrag(
+        soknadId: UUID,
+        inntektPresent: Boolean,
+        utgiftPresent: Boolean,
+    ) {
+        okonomiService.updateInntekt(soknadId, InntektType.BARNEBIDRAG_MOTTAR, inntektPresent)
+        okonomiService.updateUtgift(soknadId, UtgiftType.BARNEBIDRAG_BETALER, utgiftPresent)
     }
 
     private fun mapAnsvar(

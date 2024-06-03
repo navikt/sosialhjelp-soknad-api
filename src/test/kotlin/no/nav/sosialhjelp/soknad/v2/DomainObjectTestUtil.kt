@@ -49,9 +49,9 @@ import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
-import no.nav.sosialhjelp.soknad.v2.vedlegg.Fil
-import no.nav.sosialhjelp.soknad.v2.vedlegg.Vedlegg
-import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggStatus
+import no.nav.sosialhjelp.soknad.v2.vedlegg.Dokument
+import no.nav.sosialhjelp.soknad.v2.vedlegg.Dokumentasjon
+import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonStatus
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -389,19 +389,19 @@ fun createBeskrivelserAnnet(): BeskrivelserAnnet {
 fun opprettVedlegg(
     id: UUID,
     soknadId: UUID,
-): Vedlegg {
-    return Vedlegg(
+): Dokumentasjon {
+    return Dokumentasjon(
         id = id,
         soknadId = soknadId,
         type = FormueType.FORMUE_BRUKSKONTO,
-        status = VedleggStatus.KREVES,
-        filer = createFiler(),
+        status = DokumentasjonStatus.FORVENTET,
+        dokumenter = createFiler(),
     )
 }
 
-fun createFiler(): Set<Fil> {
+fun createFiler(): Set<Dokument> {
     return setOf(
-        Fil(
+        Dokument(
             filnavn = "utskrift_brukskonto.pdf",
             sha512 = UUID.randomUUID().toString(),
         ),

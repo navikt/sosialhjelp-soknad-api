@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndH
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class JsonVedleggUtilsTest {
+internal class JsonDokumentasjonUtilsTest {
     @Test
     fun addHendelseTypeAndHendelseReferanse_forSoknad() {
         val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()

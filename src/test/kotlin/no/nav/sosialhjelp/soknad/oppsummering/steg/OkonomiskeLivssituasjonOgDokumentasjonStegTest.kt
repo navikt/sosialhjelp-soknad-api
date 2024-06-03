@@ -22,7 +22,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class OkonomiskeLivssituasjonOgVedleggStegTest {
+internal class OkonomiskeLivssituasjonOgDokumentasjonStegTest {
     private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
 
     @Test

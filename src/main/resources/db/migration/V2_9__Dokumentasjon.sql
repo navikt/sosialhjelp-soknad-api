@@ -1,4 +1,4 @@
-create table vedlegg
+create table dokumentasjon
 (
     id uuid primary key,
     soknad_id uuid not null,
@@ -9,12 +9,12 @@ create table vedlegg
             references soknad(id) on delete cascade
 );
 
-create table fil
+create table dokument
 (
-    vedlegg uuid not null,
+    dokumentasjon uuid not null,
     filnavn varchar(255),
     sha512 varchar(60),
-    constraint fk_fil_vedlegg
-        foreign key(vedlegg)
-            references vedlegg(id) on delete cascade
+    constraint fk_dokument_dokumentasjon
+        foreign key(dokumentasjon)
+            references dokumentasjon(id) on delete cascade
 );

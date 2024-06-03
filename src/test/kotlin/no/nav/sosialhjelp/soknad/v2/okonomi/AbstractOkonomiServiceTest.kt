@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggRepository
+import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,7 +20,7 @@ abstract class AbstractOkonomiServiceTest {
     protected lateinit var okonomiRepository: OkonomiRepository
 
     @Autowired
-    protected lateinit var vedleggRepository: VedleggRepository
+    protected lateinit var dokumentasjonRepository: DokumentasjonRepository
 
     @BeforeEach
     fun setup() {
