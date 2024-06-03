@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.UUID
 
-internal class VedleggUtilsTest {
+internal class DokumentasjonUtilsTest {
     @Test
     fun lagerFilnavn() {
         val uuid = UUID.fromString("5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99")

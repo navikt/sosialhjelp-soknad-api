@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettVedlegg
-import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggStatus
+import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -92,9 +92,9 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
     fun `Verifisere CRUD-operasjoner for Vedlegg`() {
         val dbId = UUID.randomUUID()
-        vedleggRepository.verifyCRUDOperations(
+        dokumentasjonRepository.verifyCRUDOperations(
             originalEntity = opprettVedlegg(dbId, soknad.id),
-            updatedEntity = opprettVedlegg(dbId, soknad.id).copy(status = VedleggStatus.LASTET_OPP),
+            updatedEntity = opprettVedlegg(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
         )
     }
 }

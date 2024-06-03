@@ -23,7 +23,7 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
             assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
         }
 
-        assertThat(vedleggRepository.findAllBySoknadId(soknad.id)).isEmpty()
+        assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }
 
     @Test
@@ -54,7 +54,7 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
             assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
             assertThat(beskrivelserAnnet.verdi).isEqualTo(beskrivelseVerdi)
         }
-        assertThat(vedleggRepository.findAllBySoknadId(soknad.id)).isEmpty()
+        assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }
 
     @Test

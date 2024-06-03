@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.v2.vedlegg.VedleggRepository
+import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -51,7 +51,7 @@ abstract class AbstractGenericRepositoryTest {
     protected lateinit var okonomiRepository: OkonomiRepository
 
     @Autowired
-    protected lateinit var vedleggRepository: VedleggRepository
+    protected lateinit var dokumentasjonRepository: DokumentasjonRepository
 
     protected lateinit var soknad: Soknad
 

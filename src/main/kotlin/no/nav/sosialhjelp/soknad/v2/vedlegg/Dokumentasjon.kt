@@ -10,28 +10,28 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface VedleggRepository : UpsertRepository<Vedlegg>, ListCrudRepository<Vedlegg, UUID> {
-    fun findAllBySoknadId(soknadId: UUID): List<Vedlegg>
+interface DokumentasjonRepository : UpsertRepository<Dokumentasjon>, ListCrudRepository<Dokumentasjon, UUID> {
+    fun findAllBySoknadId(soknadId: UUID): List<Dokumentasjon>
 }
 
 @Table
-data class Vedlegg(
+data class Dokumentasjon(
     @Id val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
     val type: OkonomiType,
-    val status: VedleggStatus = VedleggStatus.KREVES,
-    val filer: Set<Fil> = emptySet(),
+    val status: DokumentasjonStatus = DokumentasjonStatus.FORVENTET,
+    val dokumenter: Set<Dokument> = emptySet(),
 ) : DomainRoot {
     override fun getDbId() = id
 }
 
-data class Fil(
+data class Dokument(
     val filnavn: String,
     val sha512: String,
 )
 
-enum class VedleggStatus {
+enum class DokumentasjonStatus {
     LASTET_OPP,
-    KREVES,
+    FORVENTET,
     LEVERT_TIDLIGERE,
 }

@@ -24,7 +24,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
             assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_SPARING }
         }
 
-        with(vedleggRepository.findAllBySoknadId(soknad.id)) {
+        with(dokumentasjonRepository.findAllBySoknadId(soknad.id)) {
             assertThat(this).hasSize(1)
             assertThat(this.any { it.type == FormueType.FORMUE_BRUKSKONTO }).isTrue()
         }
@@ -50,14 +50,14 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
     fun `Fjerne Formue skal slette vedlegg`() {
         FormueInput(hasBrukskonto = true).also { formueService.updateFormue(soknad.id, it) }
 
-        with(vedleggRepository.findAllBySoknadId(soknad.id)) {
+        with(dokumentasjonRepository.findAllBySoknadId(soknad.id)) {
             assertThat(any { it.type == FormueType.FORMUE_BRUKSKONTO }).isTrue()
         }
         // Alle felter false
         FormueInput().also { formueService.updateFormue(soknad.id, it) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.formuer).hasSize(0)
-        assertThat(vedleggRepository.findAllBySoknadId(soknad.id)).hasSize(0)
+        assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).hasSize(0)
     }
 
     @Test
@@ -74,7 +74,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
             assertThat(beskrivelserAnnet.sparing).isEqualTo(beskrivelseString)
         }
 
-        vedleggRepository.findAllBySoknadId(soknad.id).also {
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
             assertThat(it).hasSize(1)
             assertThat(it).anyMatch { vedlegg -> vedlegg.type == formueType }
         }
