@@ -13,49 +13,52 @@ data class Formue(
     val okonomiRader: OkonomiRader<Belop>? = null,
 )
 
-enum class FormueType(val vedleggKreves: Boolean, val tittelKey: String) : OkonomiType {
+enum class FormueType(
+    override val dokumentasjonForventet: Boolean,
+    override val tittelKey: String,
+) : OkonomiType {
     FORMUE_BRUKSKONTO(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.brukskonto",
     ),
     FORMUE_BSU(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.bsu",
     ),
     FORMUE_LIVSFORSIKRING(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.livsforsikring",
     ),
     FORMUE_SPAREKONTO(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.sparekonto",
     ),
     FORMUE_VERDIPAPIRER(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.aksjer",
     ),
     FORMUE_ANNET(
-        vedleggKreves = true,
+        dokumentasjonForventet = true,
         tittelKey = "opplysninger.inntekt.bankinnskudd.annet",
     ),
     VERDI_BOLIG(
-        vedleggKreves = false,
+        dokumentasjonForventet = false,
         tittelKey = "inntekt.eierandeler.true.type.bolig",
     ),
     VERDI_CAMPINGVOGN(
-        vedleggKreves = false,
+        dokumentasjonForventet = false,
         tittelKey = "inntekt.eierandeler.true.type.campingvogn",
     ),
     VERDI_KJORETOY(
-        vedleggKreves = false,
+        dokumentasjonForventet = false,
         tittelKey = "inntekt.eierandeler.true.type.kjoretoy",
     ),
     VERDI_FRITIDSEIENDOM(
-        vedleggKreves = false,
+        dokumentasjonForventet = false,
         tittelKey = "inntekt.eierandeler.true.type.fritidseiendom",
     ),
     VERDI_ANNET(
-        vedleggKreves = false,
+        dokumentasjonForventet = false,
         tittelKey = "inntekt.eierandeler.true.type.annet",
     ),
 }

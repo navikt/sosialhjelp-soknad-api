@@ -14,22 +14,67 @@ data class Utgift(
 )
 
 // TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
-enum class UtgiftType(val vedleggKreves: Boolean) : OkonomiType {
+enum class UtgiftType(
+    override val dokumentasjonForventet: Boolean,
+    override val tittelKey: String,
+) : OkonomiType {
     // JsonOkonomiopplysningUtgift
-    UTGIFTER_ANNET_BO(true),
-    UTGIFTER_ANNET_BARN(true),
-    UTGIFTER_BARN_TANNREGULERING(true),
-    UTGIFTER_KOMMUNAL_AVGIFT(true),
-    UTGIFTER_BARN_FRITIDSAKTIVITETER(true),
-    UTGIFTER_OPPVARMING(true),
-    UTGIFTER_STROM(true),
-    UTGIFTER_ANDRE_UTGIFTER(true),
+    UTGIFTER_ANNET_BO(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_ANNET_BARN(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_BARN_TANNREGULERING(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_KOMMUNAL_AVGIFT(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_BARN_FRITIDSAKTIVITETER(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_OPPVARMING(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_STROM(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_ANDRE_UTGIFTER(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
 
     // JsonOkonomioversiktUtgift
-    BARNEBIDRAG_BETALER(true),
-    UTGIFTER_SFO(true),
-    UTGIFTER_BARNEHAGE(true),
-    UTGIFTER_HUSLEIE(true),
-    UTGIFTER_BOLIGLAN_AVDRAG(true),
-    UTGIFTER_BOLIGLAN_RENTER(false),
+    BARNEBIDRAG_BETALER(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_SFO(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_BARNEHAGE(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_HUSLEIE(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_BOLIGLAN_AVDRAG(
+        dokumentasjonForventet = true,
+        tittelKey = "",
+    ),
+    UTGIFTER_BOLIGLAN_RENTER(
+        dokumentasjonForventet = false,
+        tittelKey = "",
+    ),
 }

@@ -74,6 +74,8 @@ enum class BekreftelseType(val tittelKey: String) {
 interface OkonomiType {
     // denne må hete `name` for å override enum.name
     val name: String
+    val dokumentasjonForventet: Boolean
+    val tittelKey: String
 }
 
 @WritingConverter

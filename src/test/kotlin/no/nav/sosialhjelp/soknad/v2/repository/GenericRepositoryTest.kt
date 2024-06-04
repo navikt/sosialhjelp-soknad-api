@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.createFamilie
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
@@ -11,7 +12,6 @@ import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettVedlegg
-import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
