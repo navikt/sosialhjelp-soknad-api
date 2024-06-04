@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonForventningService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonForventningService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -61,7 +61,7 @@ class OkonomiService(
                 .also { okonomiRepository.save(it) }
         }
 
-        if (type.vedleggKreves) {
+        if (type.dokumentasjonForventet) {
             dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
         }
         return okonomiRepository.findByIdOrNull(soknadId)?.formuer ?: error("Okonomi ble ikke lagret")
@@ -86,7 +86,7 @@ class OkonomiService(
                 .also { okonomiRepository.save(it) }
         }
 
-        if (type.vedleggKreves) {
+        if (type.dokumentasjonForventet) {
             dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
         }
 
@@ -112,7 +112,7 @@ class OkonomiService(
                 .also { okonomiRepository.save(it) }
         }
 
-        if (type.vedleggKreves) {
+        if (type.dokumentasjonForventet) {
             dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
         }
 

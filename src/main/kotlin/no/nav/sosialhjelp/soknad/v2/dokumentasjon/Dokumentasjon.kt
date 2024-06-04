@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.vedlegg
+package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
@@ -12,6 +12,11 @@ import java.util.UUID
 @Repository
 interface DokumentasjonRepository : UpsertRepository<Dokumentasjon>, ListCrudRepository<Dokumentasjon, UUID> {
     fun findAllBySoknadId(soknadId: UUID): List<Dokumentasjon>
+
+    fun findBySoknadIdAndType(
+        soknadId: UUID,
+        type: OkonomiType,
+    ): Dokumentasjon?
 }
 
 @Table

@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.v2.vedlegg.DokumentasjonRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
