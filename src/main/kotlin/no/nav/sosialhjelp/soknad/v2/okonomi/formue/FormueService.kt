@@ -1,21 +1,18 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface FormueService {
-    fun getFormuer(soknadId: UUID): List<Formue>
+    fun getFormuer(soknadId: UUID): Set<Formue>?
 
-    fun getBeskrivelseSparing(soknadId: UUID): String?
-
-    fun updateFormue(
+    fun updateFormuer(
         soknadId: UUID,
         input: FormueInput,
-    ): List<Formue>
+    ): Set<Formue>
 }
 
 /**
@@ -27,29 +24,23 @@ interface FormueService {
 class FormueServiceImpl(
     private val okonomiService: OkonomiService,
 ) : FormueService {
-    override fun getFormuer(soknadId: UUID) =
-        okonomiService.getFormuer(soknadId).filter { formueTyper.contains(it.type) }
+    override fun getFormuer(soknadId: UUID): Set<Formue>? =
+        okonomiService.getFormuer(soknadId)?.filter { formueTyper.contains(it.type) }?.toSet()
 
-    override fun getBeskrivelseSparing(soknadId: UUID): String? = okonomiService.getBeskrivelseAvAnnet(soknadId)?.sparing
-
-    override fun updateFormue(
+    override fun updateFormuer(
         soknadId: UUID,
         input: FormueInput,
-    ): List<Formue> {
+    ): Set<Formue> {
         val hasAny = input.hasAny()
         updateBekreftelse(soknadId = soknadId, verdi = hasAny)
 
         if (hasAny) {
-            updateFormuer(soknadId, input)
-
-            val beskrivelserAnnet = okonomiService.getBeskrivelseAvAnnet(soknadId) ?: BeskrivelserAnnet()
-            beskrivelserAnnet.copy(sparing = input.beskrivelseSparing)
-                .also { okonomiService.updateBeskrivelse(soknadId, it) }
+            updateAllFormuer(soknadId, input)
         } else {
-            updateFormuer(soknadId = soknadId, input = FormueInput())
+            updateAllFormuer(soknadId = soknadId, input = FormueInput())
         }
 
-        return okonomiService.getFormuer(soknadId)
+        return okonomiService.getFormuer(soknadId) ?: error("FEIL i lagring av formue")
     }
 
     private fun updateBekreftelse(
@@ -63,16 +54,36 @@ class FormueServiceImpl(
         )
     }
 
-    private fun updateFormuer(
+    private fun updateAllFormuer(
         soknadId: UUID,
         input: FormueInput,
     ) {
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_BRUKSKONTO, input.hasBrukskonto)
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_BSU, input.hasBsu)
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_SPAREKONTO, input.hasSparekonto)
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_LIVSFORSIKRING, input.hasLivsforsikring)
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_VERDIPAPIRER, input.hasVerdipapirer)
-        okonomiService.updateFormue(soknadId, FormueType.FORMUE_ANNET, input.beskrivelseSparing != null)
+        updateFormue(soknadId, FormueType.FORMUE_BRUKSKONTO, input.hasBrukskonto)
+        updateFormue(soknadId, FormueType.FORMUE_BSU, input.hasBsu)
+        updateFormue(soknadId, FormueType.FORMUE_SPAREKONTO, input.hasSparekonto)
+        updateFormue(soknadId, FormueType.FORMUE_LIVSFORSIKRING, input.hasLivsforsikring)
+        updateFormue(soknadId, FormueType.FORMUE_VERDIPAPIRER, input.hasVerdipapirer)
+        updateFormue(
+            soknadId,
+            FormueType.FORMUE_ANNET,
+            input.hasBeskrivelseSparing,
+            if (input.hasBeskrivelseSparing) input.beskrivelseSparing else null,
+        )
+    }
+
+    private fun updateFormue(
+        soknadId: UUID,
+        type: FormueType,
+        isPresent: Boolean,
+        beskrivelse: String? = null,
+    ) {
+        type.let {
+            if (isPresent) {
+                okonomiService.addType(soknadId, it, beskrivelse)
+            } else {
+                okonomiService.removeType(soknadId, it)
+            }
+        }
     }
 
     companion object {
@@ -89,5 +100,5 @@ class FormueServiceImpl(
 }
 
 private fun FormueInput.hasAny(): Boolean {
-    return hasBrukskonto || hasBsu || hasSparekonto || hasLivsforsikring || hasVerdipapirer || beskrivelseSparing != null
+    return hasBrukskonto || hasBsu || hasSparekonto || hasLivsforsikring || hasVerdipapirer || hasBeskrivelseSparing
 }

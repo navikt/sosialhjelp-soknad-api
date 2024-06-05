@@ -18,8 +18,8 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
         forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyList())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
-            assertThat(inntekter).hasSize(1).allMatch { it.type == BARNEBIDRAG_MOTTAR }
-            assertThat(utgifter).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
+            assertThat(inntekter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_MOTTAR }
+            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
         }
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also { doklist ->
@@ -40,7 +40,7 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
             assertThat(inntekter).isEmpty()
-            assertThat(utgifter).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
+            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
         }
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also { doklist ->

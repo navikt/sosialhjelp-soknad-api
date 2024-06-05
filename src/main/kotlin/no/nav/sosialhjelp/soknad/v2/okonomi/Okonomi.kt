@@ -12,8 +12,6 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.data.annotation.Id
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
-import org.springframework.data.relational.core.mapping.Column
-import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -25,12 +23,10 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 @Table
 data class Okonomi(
     @Id val soknadId: UUID,
-    val inntekter: List<Inntekt> = emptyList(),
-    val utgifter: List<Utgift> = emptyList(),
-    val formuer: List<Formue> = emptyList(),
+    val inntekter: Set<Inntekt> = emptySet(),
+    val utgifter: Set<Utgift> = emptySet(),
+    val formuer: Set<Formue> = emptySet(),
     val bekreftelser: Set<Bekreftelse> = emptySet(),
-    @Embedded.Empty
-    val beskrivelserAnnet: BeskrivelserAnnet = BeskrivelserAnnet(),
 ) : DomainRoot {
     override fun getDbId() = soknadId
 }
@@ -41,41 +37,36 @@ data class Bekreftelse(
     val verdi: Boolean,
 )
 
-@Table
-data class BeskrivelserAnnet(
-    @Column("beskrivelse_verdi")
-    val verdi: String? = null,
-    @Column("beskrivelse_sparing")
-    val sparing: String? = null,
-    @Column("beskrivelse_utbetaling")
-    val utbetaling: String? = null,
-    @Column("beskrivelse_boutgifter")
-    val boutgifter: String? = null,
-    @Column("beskrivelse_barneutgifter")
-    val barneutgifter: String? = null,
-)
+enum class BekreftelseType {
+    // TODO Vedrørende fjerning av disse - de introduserer egentlig et 3.nivå av "svar"..
+    // TODO hvis bruker IKKE svarer, vil det ikke finnes bekreftelse
+    // TODO hvis bruker svarer nei, vil denne være false
+    // TODO hvis bruker svarer ja, vil den være true
+    // TODO Hvordan utlede dette kun på bakgrunn av om det finnes en f.eks. Formue eller ikke ?
+    BEKREFTELSE_BARNEUTGIFTER,
+    BEKREFTELSE_BOUTGIFTER,
+    BEKREFTELSE_SPARING,
+    BEKREFTELSE_UTBETALING,
+    BEKREFTELSE_VERDI,
 
-enum class BekreftelseType(val tittelKey: String) {
-    BEKREFTELSE_BARNEUTGIFTER(tittelKey = "utgifter.barn"),
-    BEKREFTELSE_BOUTGIFTER(tittelKey = "utgifter.boutgift"),
-    BEKREFTELSE_SPARING(tittelKey = "inntekt.bankinnskudd"),
-    BEKREFTELSE_UTBETALING(tittelKey = "inntekt.inntekter"),
-    BEKREFTELSE_VERDI(tittelKey = "inntekt.eierandeler"),
+    // // TODO Samme som over
+    BOSTOTTE,
 
-    // TODO sjekk bruk av disse
-    BOSTOTTE(tittelKey = "inntekt.bostotte"),
+    // TODO Samtykker kan leve i en 2-dimensjonal greie -> Gitt / Ikke gitt. Kunne kanskje vært persistert et annet sted?
+    BOSTOTTE_SAMTYKKE,
+    STUDIELAN_BEKREFTELSE,
+    UTBETALING_SKATTEETATEN_SAMTYKKE,
+}
 
-    // TODO sjekk bruk av disse
-    BOSTOTTE_SAMTYKKE(tittelKey = "inntekt.bostotte.samtykke"),
-    STUDIELAN_BEKREFTELSE(tittelKey = "inntekt.student"),
-    UTBETALING_SKATTEETATEN_SAMTYKKE(tittelKey = "utbetalinger.skattbar.samtykke"),
+interface OkonomiPost {
+    val type: OkonomiType
+    val beskrivelse: String?
 }
 
 interface OkonomiType {
-    // denne må hete `name` for å override enum.name
+    // denne må hete `name` for pga enum.name
     val name: String
     val dokumentasjonForventet: Boolean
-    val tittelKey: String
 }
 
 @WritingConverter

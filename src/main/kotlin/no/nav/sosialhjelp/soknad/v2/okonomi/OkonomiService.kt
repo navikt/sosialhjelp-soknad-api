@@ -19,11 +19,9 @@ import java.util.UUID
 @Transactional
 class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
-    private val dokumentasjonForventningService: DokumentasjonForventningService,
+    private val dokumentasjonService: DokumentasjonForventningService,
 ) {
-    fun getFormuer(soknadId: UUID) = okonomiRepository.findByIdOrNull(soknadId)?.formuer ?: emptyList()
-
-    fun getBeskrivelseAvAnnet(soknadId: UUID) = okonomiRepository.findByIdOrNull(soknadId)?.beskrivelserAnnet
+    fun getFormuer(soknadId: UUID): Set<Formue>? = okonomiRepository.findByIdOrNull(soknadId)?.formuer
 
     fun getBekreftelser(soknadId: UUID) = okonomiRepository.findByIdOrNull(soknadId)?.bekreftelser ?: emptyList()
 
@@ -41,91 +39,86 @@ class OkonomiService(
             .also { okonomiRepository.save(it) }
     }
 
-    fun updateFormue(
+    fun addType(
         soknadId: UUID,
-        type: FormueType,
-        isPresent: Boolean,
-    ): List<Formue> {
-        val okonomi = findOrCreate(soknadId)
+        type: OkonomiType,
+        beskrivelse: String? = null,
+    ): Set<*> {
+        val updatedSet =
+            findOrCreate(soknadId).run {
+                when (type) {
+                    is FormueType -> addAndSave(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
+                    is UtgiftType -> addAndSave(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
+                    is InntektType -> addAndSave(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
+                    else -> error("Ukjent OkonomiType for oppretting")
+                }
+            }
+        if (type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, type)
 
-        // TODO Slik logikken er nå (og tidligere), så bevarer den ikke eventuell rad/beløp-info hvis bruker sjekker av - riktig?
-        if (isPresent) {
-            okonomi.formuer.firstOrNull { it.type == type }
-                ?: okonomi
-                    .copy(formuer = okonomi.formuer.plus(Formue(type)))
-                    .also { okonomiRepository.save(it) }
-        } else {
-            okonomi.formuer
-                .filter { it.type != type }
-                .let { formuer -> okonomi.copy(formuer = formuer) }
-                .also { okonomiRepository.save(it) }
-        }
-
-        if (type.dokumentasjonForventet) {
-            dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
-        }
-        return okonomiRepository.findByIdOrNull(soknadId)?.formuer ?: error("Okonomi ble ikke lagret")
+        return updatedSet
     }
 
-    fun updateInntekt(
+    fun removeType(
         soknadId: UUID,
-        type: InntektType,
-        isPresent: Boolean,
-    ): List<Inntekt> {
-        val okonomi = findOrCreate(soknadId)
+        type: OkonomiType,
+    ): Set<*> {
+        val updatedSet =
+            findOrCreate(soknadId).run {
+                when (type) {
+                    is FormueType -> removeAndSave(formuer, type) { copy(formuer = it) }
+                    is UtgiftType -> removeAndSave(utgifter, type) { copy(utgifter = it) }
+                    is InntektType -> removeAndSave(inntekter, type) { copy(inntekter = it) }
+                    else -> error("Ukjent OkonomiType for removal")
+                }
+            }
+        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetVedlegg(soknadId, type)
 
-        if (isPresent) {
-            okonomi.inntekter.firstOrNull { it.type == type }
-                ?: okonomi
-                    .copy(inntekter = okonomi.inntekter.plus(Inntekt(type = type)))
-                    .also { okonomiRepository.save(it) }
-        } else {
-            okonomi.inntekter
-                .filter { it.type != type }
-                .let { inntekter -> okonomi.copy(inntekter = inntekter) }
-                .also { okonomiRepository.save(it) }
-        }
-
-        if (type.dokumentasjonForventet) {
-            dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
-        }
-
-        return okonomiRepository.findByIdOrNull(soknadId)?.inntekter ?: error("Okonomi ble ikke lagret")
+        return updatedSet
     }
 
-    fun updateUtgift(
-        soknadId: UUID,
-        type: UtgiftType,
-        isPresent: Boolean,
-    ): List<Utgift> {
-        val okonomi = findOrCreate(soknadId)
-
-        if (isPresent) {
-            okonomi.utgifter.firstOrNull { it.type == type }
-                ?: okonomi
-                    .copy(utgifter = okonomi.utgifter.plus(Utgift(type = type)))
-                    .also { okonomiRepository.save(it) }
+    /**
+     * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
+     * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
+     */
+    private fun <E : OkonomiPost> addAndSave(
+        sourceSet: Set<E>,
+        entity: E,
+        updateOkonomiFunction: (Set<E>) -> Okonomi,
+    ): Set<E> {
+        return if (existsAndEqualBeskrivelse(sourceSet, entity.type, entity.beskrivelse)) {
+            sourceSet
         } else {
-            okonomi.utgifter
-                .filter { it.type != type }
-                .let { utgifter -> okonomi.copy(utgifter = utgifter) }
-                .also { okonomiRepository.save(it) }
+            sourceSet
+                .filter { it.type != entity.type }.toSet()
+                .plus(entity)
+                .also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
         }
-
-        if (type.dokumentasjonForventet) {
-            dokumentasjonForventningService.updateForventedeVedlegg(soknadId, type, isPresent)
-        }
-
-        return okonomiRepository.findByIdOrNull(soknadId)?.utgifter ?: error("Okonomi ble ikke lagret")
     }
 
-    fun updateBeskrivelse(
-        soknadId: UUID,
-        beskrivelserAnnet: BeskrivelserAnnet,
-    ) {
-        findOrCreate(soknadId)
-            .run { copy(beskrivelserAnnet = beskrivelserAnnet) }
-            .also { okonomiRepository.save(it) }
+    /**
+     * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
+     * Sjekker om elementet finnes, lager en kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
+     */
+    private fun <E : OkonomiPost> removeAndSave(
+        sourceSet: Set<E>,
+        type: OkonomiType,
+        updateOkonomiFunction: (Set<E>) -> Okonomi,
+    ): Set<E> {
+        return sourceSet.find { it.type == type }
+            ?.let { existingEntity -> sourceSet.minus(existingEntity) }
+            ?.also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
+            ?: sourceSet
+    }
+
+    private fun <E : OkonomiPost> existsAndEqualBeskrivelse(
+        set: Set<E>,
+        type: OkonomiType,
+        beskrivelse: String?,
+    ): Boolean {
+        set.find { it.type == type }?.let {
+            if (it.beskrivelse == beskrivelse) return true
+        }
+        return false
     }
 
     private fun findOrCreate(soknadId: UUID) =

@@ -1,26 +1,20 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface VerdiService {
-    fun getVerdier(soknadId: UUID): List<Formue>
-
-    fun getBekreftelse(soknadId: UUID): Bekreftelse?
-
-    fun getBeskrivelseVerdi(soknadId: UUID): String?
+    fun getVerdier(soknadId: UUID): Set<Formue>?
 
     fun removeVerdier(soknadId: UUID)
 
     fun updateVerdier(
         soknadId: UUID,
         input: HarVerdierInput,
-    ): List<Formue>
+    ): Set<Formue>
 }
 
 /**
@@ -31,53 +25,57 @@ interface VerdiService {
 class VerdiServiceImpl(
     private val okonomiService: OkonomiService,
 ) : VerdiService {
-    override fun getVerdier(soknadId: UUID) =
-        okonomiService.getFormuer(soknadId).filter { verdiTyper.contains(it.type) }
-
-    override fun getBekreftelse(soknadId: UUID) =
-        okonomiService.getBekreftelser(soknadId).firstOrNull { it.type == BekreftelseType.BEKREFTELSE_VERDI }
-
-    override fun getBeskrivelseVerdi(soknadId: UUID) = okonomiService.getBeskrivelseAvAnnet(soknadId)?.verdi
+    override fun getVerdier(soknadId: UUID): Set<Formue>? =
+        okonomiService.getFormuer(soknadId)?.filter { verdiTyper.contains(it.type) }?.toSet()
 
     override fun removeVerdier(soknadId: UUID) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, false)
 
         okonomiService.getFormuer(soknadId)
-            .filter { verdiTyper.contains(it.type) }
-            .forEach { okonomiService.updateFormue(soknadId, it.type, false) }
-
-        val updatedBeskrivelser =
-            okonomiService.getBeskrivelseAvAnnet(soknadId)?.copy(verdi = null)
-                ?: BeskrivelserAnnet()
-
-        okonomiService.updateBeskrivelse(soknadId, updatedBeskrivelser)
+            ?.filter { verdiTyper.contains(it.type) }
+            ?.forEach { okonomiService.removeType(soknadId, it.type) }
     }
 
     override fun updateVerdier(
         soknadId: UUID,
         input: HarVerdierInput,
-    ): List<Formue> {
+    ): Set<Formue> {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, true)
 
         updateAllVerdier(soknadId, input)
 
-        val beskrivelserAnnet = okonomiService.getBeskrivelseAvAnnet(soknadId) ?: BeskrivelserAnnet()
-        beskrivelserAnnet
-            .copy(verdi = input.beskrivelseVerdi)
-            .also { okonomiService.updateBeskrivelse(soknadId, it) }
-
-        return okonomiService.getFormuer(soknadId)
+        return okonomiService.getFormuer(soknadId) ?: error("Kunne ikke oppdatere verdier")
     }
 
     private fun updateAllVerdier(
         soknadId: UUID,
         input: HarVerdierInput,
     ) {
-        okonomiService.updateFormue(soknadId, FormueType.VERDI_BOLIG, input.hasBolig)
-        okonomiService.updateFormue(soknadId, FormueType.VERDI_KJORETOY, input.hasKjoretoy)
-        okonomiService.updateFormue(soknadId, FormueType.VERDI_CAMPINGVOGN, input.hasCampingvogn)
-        okonomiService.updateFormue(soknadId, FormueType.VERDI_FRITIDSEIENDOM, input.hasFritidseiendom)
-        okonomiService.updateFormue(soknadId, FormueType.VERDI_ANNET, input.beskrivelseVerdi != null)
+        updateFormue(soknadId, FormueType.VERDI_BOLIG, input.hasBolig)
+        updateFormue(soknadId, FormueType.VERDI_KJORETOY, input.hasKjoretoy)
+        updateFormue(soknadId, FormueType.VERDI_CAMPINGVOGN, input.hasCampingvogn)
+        updateFormue(soknadId, FormueType.VERDI_FRITIDSEIENDOM, input.hasFritidseiendom)
+        updateFormue(
+            soknadId,
+            FormueType.VERDI_ANNET,
+            input.hasBeskrivelseAnnet,
+            if (input.hasBeskrivelseAnnet) input.beskrivelseVerdi else null,
+        )
+    }
+
+    private fun updateFormue(
+        soknadId: UUID,
+        type: FormueType,
+        isPresent: Boolean,
+        beskrivelse: String? = null,
+    ) {
+        type.let {
+            if (isPresent) {
+                okonomiService.addType(soknadId, type, beskrivelse)
+            } else {
+                okonomiService.removeType(soknadId, type)
+            }
+        }
     }
 
     companion object {

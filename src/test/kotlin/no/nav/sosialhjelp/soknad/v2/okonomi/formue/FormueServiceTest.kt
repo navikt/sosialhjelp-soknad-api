@@ -15,7 +15,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
     @Test
     fun `Oppdatere formue skal generere formue-objekt, bekreftelse og vedlegg`() {
         FormueInput(hasBrukskonto = true)
-            .also { formueService.updateFormue(soknad.id, it) }
+            .also { formueService.updateFormuer(soknad.id, it) }
 
         with(okonomiRepository.findByIdOrNull(soknad.id)!!) {
             assertThat(formuer).hasSize(1)
@@ -36,7 +36,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
         val verdiType = FormueType.VERDI_KJORETOY
         Okonomi(
             soknadId = soknad.id,
-            formuer = listOf(Formue(formueType), Formue(verdiType)),
+            formuer = setOf(Formue(formueType), Formue(verdiType)),
         ).also { okonomiRepository.save(it) }
 
         with(formueService.getFormuer(soknad.id)) {
@@ -48,13 +48,13 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
 
     @Test
     fun `Fjerne Formue skal slette vedlegg`() {
-        FormueInput(hasBrukskonto = true).also { formueService.updateFormue(soknad.id, it) }
+        FormueInput(hasBrukskonto = true).also { formueService.updateFormuer(soknad.id, it) }
 
         with(dokumentasjonRepository.findAllBySoknadId(soknad.id)) {
             assertThat(any { it.type == FormueType.FORMUE_BRUKSKONTO }).isTrue()
         }
         // Alle felter false
-        FormueInput().also { formueService.updateFormue(soknad.id, it) }
+        FormueInput().also { formueService.updateFormuer(soknad.id, it) }
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.formuer).hasSize(0)
         assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).hasSize(0)
@@ -63,7 +63,7 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
     @Test
     fun `Legge til beskrivelse skal generere 1 formue-objekt, 1 bekreftelse og 1 vedlegg`() {
         val beskrivelseString = "Beskrivelse av annet"
-        FormueInput(beskrivelseSparing = beskrivelseString).also { formueService.updateFormue(soknad.id, it) }
+        FormueInput(beskrivelseSparing = beskrivelseString).also { formueService.updateFormuer(soknad.id, it) }
         val formueType = FormueType.FORMUE_ANNET
 
         with(okonomiRepository.findByIdOrNull(soknad.id)!!) {
@@ -71,12 +71,34 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
             assertThat(formuer).anyMatch { it.type == formueType }
             assertThat(bekreftelser).hasSize(1)
             assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_SPARING }
-            assertThat(beskrivelserAnnet.sparing).isEqualTo(beskrivelseString)
+
+            assertThat(formuer.find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse).isEqualTo(beskrivelseString)
         }
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
             assertThat(it).hasSize(1)
             assertThat(it).anyMatch { vedlegg -> vedlegg.type == formueType }
+        }
+    }
+
+    @Test
+    fun `Endre beskrivelse skal oppdateres`() {
+        val beskrivelseString = "Beskrivelse av annet"
+
+        FormueInput(
+            hasBeskrivelseSparing = true,
+            beskrivelseSparing = beskrivelseString,
+        ).also { formueService.updateFormuer(soknad.id, it) }
+        okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
+            assertThat(toList()).hasSize(1).allMatch { it.beskrivelse == beskrivelseString }
+        }
+
+        FormueInput(
+            hasBeskrivelseSparing = true,
+            beskrivelseSparing = null,
+        ).also { formueService.updateFormuer(soknad.id, it) }
+        okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
+            assertThat(toList()).hasSize(1).allMatch { it.beskrivelse == null }
         }
     }
 }

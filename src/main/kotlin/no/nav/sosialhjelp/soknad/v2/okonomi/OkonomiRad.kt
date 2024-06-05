@@ -27,11 +27,9 @@ import java.time.LocalDate
 )
 interface OkonomiRad
 
-class OkonomiRader<T : OkonomiRad>(
+data class OkonomiRader<T : OkonomiRad>(
     val rader: List<T> = emptyList(),
-) {
-    fun addRad(input: T): List<T> = rader.plus(input)
-}
+)
 
 data class Belop(
     val belop: Double,

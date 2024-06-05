@@ -35,7 +35,6 @@ import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
-import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
@@ -305,12 +304,11 @@ fun opprettOkonomi(soknadId: UUID): Okonomi {
         utgifter = createUtgifter(),
         formuer = createFormuer(),
         bekreftelser = createBekreftelser(),
-        beskrivelserAnnet = createBeskrivelserAnnet(),
     )
 }
 
-fun createInntekter(): List<Inntekt> {
-    return listOf(
+fun createInntekter(): Set<Inntekt> {
+    return setOf(
         Inntekt(
             type = InntektType.BARNEBIDRAG_MOTTAR,
             okonomiRader =
@@ -341,8 +339,8 @@ fun createInntekter(): List<Inntekt> {
     )
 }
 
-fun createUtgifter(): List<Utgift> {
-    return listOf(
+fun createUtgifter(): Set<Utgift> {
+    return setOf(
         Utgift(
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             okonomiRader =
@@ -356,8 +354,8 @@ fun createUtgifter(): List<Utgift> {
     )
 }
 
-fun createFormuer(): List<Formue> {
-    return listOf(
+fun createFormuer(): Set<Formue> {
+    return setOf(
         Formue(
             type = FormueType.FORMUE_BRUKSKONTO,
             okonomiRader =
@@ -377,12 +375,6 @@ fun createBekreftelser(): Set<Bekreftelse> {
             type = BekreftelseType.BEKREFTELSE_SPARING,
             verdi = true,
         ),
-    )
-}
-
-fun createBeskrivelserAnnet(): BeskrivelserAnnet {
-    return BeskrivelserAnnet(
-        sparing = "En sparekonto",
     )
 }
 

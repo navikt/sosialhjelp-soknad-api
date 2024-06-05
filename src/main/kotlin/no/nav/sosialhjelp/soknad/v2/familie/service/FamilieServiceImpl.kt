@@ -80,8 +80,21 @@ class FamilieServiceImpl(
         inntektPresent: Boolean,
         utgiftPresent: Boolean,
     ) {
-        okonomiService.updateInntekt(soknadId, InntektType.BARNEBIDRAG_MOTTAR, inntektPresent)
-        okonomiService.updateUtgift(soknadId, UtgiftType.BARNEBIDRAG_BETALER, utgiftPresent)
+        InntektType.BARNEBIDRAG_MOTTAR.let {
+            if (inntektPresent) {
+                okonomiService.addType(soknadId, it)
+            } else {
+                okonomiService.removeType(soknadId, it)
+            }
+        }
+
+        UtgiftType.BARNEBIDRAG_BETALER.let {
+            if (utgiftPresent) {
+                okonomiService.addType(soknadId, it)
+            } else {
+                okonomiService.removeType(soknadId, it)
+            }
+        }
     }
 
     private fun mapAnsvar(
