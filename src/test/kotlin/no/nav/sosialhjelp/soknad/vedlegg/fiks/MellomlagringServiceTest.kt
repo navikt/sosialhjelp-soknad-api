@@ -206,12 +206,12 @@ internal class MellomlagringServiceTest {
     }
 
     private fun createSoknadUnderArbeid(
-        behandligsId: String,
+        behandlingsId: String,
         jsonInternalSoknad: JsonInternalSoknad,
     ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
-            behandlingsId = behandligsId,
+            behandlingsId = behandlingsId,
             eier = "EIER",
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
