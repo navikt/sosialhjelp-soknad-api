@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.assertj.core.api.Assertions.assertThat
@@ -53,7 +53,7 @@ internal class VedleggUtilsTest {
     fun `Validering av excel-fil kaster feil`() {
         val file = EXCEL_FILE
         assertThatThrownBy { validerFil(file.readBytes(), file.name) }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .isInstanceOf(DokumentUploadUnsupportedMediaType::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
     }
 

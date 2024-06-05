@@ -5,7 +5,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
 import okhttp3.mockwebserver.MockResponse
@@ -50,7 +50,7 @@ class VirusScannerTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND)))),
         )
-        assertThatExceptionOfType(OpplastingException::class.java)
+        assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
             .withMessageStartingWith("Fant virus")
     }
@@ -65,7 +65,7 @@ class VirusScannerTest {
     @Test
     fun scanFile_filenameIsVirustest_isInfected() {
         every { MiljoUtils.isNonProduction() } returns true
-        assertThatExceptionOfType(OpplastingException::class.java)
+        assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan("virustest", data, behandlingsId, "pdf") }
     }
 
@@ -108,7 +108,7 @@ class VirusScannerTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND)))),
         )
-        assertThatExceptionOfType(OpplastingException::class.java)
+        assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
     }
 
@@ -120,7 +120,7 @@ class VirusScannerTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.ERROR)))),
         )
-        assertThatExceptionOfType(OpplastingException::class.java)
+        assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
     }
 }

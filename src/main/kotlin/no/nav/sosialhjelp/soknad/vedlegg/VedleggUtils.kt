@@ -5,8 +5,9 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.apache.commons.io.IOUtils
@@ -103,10 +104,8 @@ object VedleggUtils {
 
         if (fileType == TikaFileType.UNKNOWN) {
             val filType = findFileExtension(filnavn)
-            throw UgyldigOpplastingTypeException(
+            throw DokumentUploadUnsupportedMediaType(
                 "Ugyldig filtype for opplasting. Mimetype var $mimeType, filtype var $filType",
-                null,
-                "opplasting.feilmelding.feiltype",
             )
         }
         if (fileType == TikaFileType.JPEG || fileType == TikaFileType.PNG) {
@@ -154,10 +153,8 @@ object VedleggUtils {
         }
         val lowercaseFilenavn = filnavn.lowercase(Locale.getDefault())
         if (lowercaseFilenavn.endsWith(".jfif") || lowercaseFilenavn.endsWith(".pjpeg") || lowercaseFilenavn.endsWith(".pjp")) {
-            throw UgyldigOpplastingTypeException(
+            throw DokumentUploadUnsupportedMediaType(
                 "Ugyldig filtype for opplasting. Filtype var $fileExtension",
-                null,
-                "opplasting.feilmelding.feiltype",
             )
         }
     }
@@ -170,22 +167,12 @@ object VedleggUtils {
                     if (text == null || text.isEmpty()) {
                         log.warn("PDF er tom") // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
                     }
-                    if (document.isEncrypted) {
-                        throw UgyldigOpplastingTypeException(
-                            "PDF kan ikke være kryptert.",
-                            null,
-                            "opplasting.feilmelding.pdf.kryptert",
-                        )
-                    }
+                    if (document.isEncrypted) throw DokumentUploadFileEncrypted()
                 }
         } catch (e: InvalidPasswordException) {
-            throw UgyldigOpplastingTypeException(
-                "PDF kan ikke være krypert.",
-                null,
-                "opplasting.feilmelding.pdf.kryptert",
-            )
+            throw DokumentUploadFileEncrypted()
         } catch (e: IOException) {
-            throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
+            throw DokumentUploadError("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
     }
 
@@ -212,7 +199,7 @@ object VedleggUtils {
                 IOUtils.toByteArray(it)
             }
         } catch (e: IOException) {
-            throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
+            throw DokumentUploadError("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
     }
 }

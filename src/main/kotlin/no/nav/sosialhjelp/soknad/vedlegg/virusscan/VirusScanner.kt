@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadPossibleVirus
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
 import org.slf4j.LoggerFactory.getLogger
@@ -25,7 +25,7 @@ class VirusScanner(
 
         // Filnavn brukes kun for testing i mock(!), og behandlingsId og fileType kun til logging
         if (isInfected("N/A", data, "N/A", "N/A")) {
-            throw OpplastingException("Fant virus i fil", null, "vedlegg.opplasting.feil.muligVirus")
+            throw DokumentUploadPossibleVirus("Fant virus i fil")
         }
     }
 
@@ -41,7 +41,7 @@ class VirusScanner(
         }
 
         if (isInfected(filnavn, data, behandlingsId, fileType)) {
-            throw OpplastingException("Fant virus i fil for behandlingsId $behandlingsId", null, "vedlegg.opplasting.feil.muligVirus")
+            throw DokumentUploadPossibleVirus("Fant virus i fil for behandlingsId $behandlingsId")
         }
     }
 

@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
@@ -72,7 +72,7 @@ abstract class AbstractIntegrationTest {
         requestBody: Any,
         httpStatus: HttpStatus,
         soknadId: UUID? = null,
-    ): Feilmelding {
+    ): SoknadApiError {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -81,7 +81,7 @@ abstract class AbstractIntegrationTest {
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
             .expectStatus().isEqualTo(httpStatus)
-            .expectBody(Feilmelding::class.java)
+            .expectBody(SoknadApiError::class.java)
             .returnResult()
             .responseBody!!
     }
