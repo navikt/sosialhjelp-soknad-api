@@ -15,6 +15,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.util.unit.DataSize
 
 internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
@@ -42,6 +43,7 @@ internal class InformasjonRessursTest {
             personService = personService,
             soknadMetadataRepository = soknadMetadataRepository,
             pabegynteSoknaderService = pabegynteSoknaderService,
+            maxUploadSize = DataSize.ofTerabytes(10),
         )
 
     @BeforeEach
