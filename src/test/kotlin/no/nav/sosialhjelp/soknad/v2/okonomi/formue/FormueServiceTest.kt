@@ -63,14 +63,16 @@ class FormueServiceTest : AbstractOkonomiServiceTest() {
     @Test
     fun `Legge til beskrivelse skal generere 1 formue-objekt, 1 bekreftelse og 1 vedlegg`() {
         val beskrivelseString = "Beskrivelse av annet"
-        FormueInput(beskrivelseSparing = beskrivelseString).also { formueService.updateFormuer(soknad.id, it) }
         val formueType = FormueType.FORMUE_ANNET
 
+        FormueInput(
+            hasBeskrivelseSparing = true,
+            beskrivelseSparing = beskrivelseString,
+        ).also { formueService.updateFormuer(soknad.id, it) }
+
         with(okonomiRepository.findByIdOrNull(soknad.id)!!) {
-            assertThat(formuer).hasSize(1)
-            assertThat(formuer).anyMatch { it.type == formueType }
-            assertThat(bekreftelser).hasSize(1)
-            assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_SPARING }
+            assertThat(formuer.toList()).hasSize(1).anyMatch { it.type == formueType }
+            assertThat(bekreftelser.toList()).hasSize(1).anyMatch { it.type == BekreftelseType.BEKREFTELSE_SPARING }
 
             assertThat(formuer.find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse).isEqualTo(beskrivelseString)
         }
