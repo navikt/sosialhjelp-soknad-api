@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.ma
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.web.bind.annotation.GetMapping
@@ -165,7 +165,7 @@ class OkonomiskeOpplysningerRessurs(
                     VedleggFrontend(
                         type = vedleggstype,
                         gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
-                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) },
+                        filer = ikkePaakrevdVedlegg.filer.map { DokumentUpload(filename = it.filnavn, dokumentId = "invalid-" + it.filnavn) },
                     ),
                 )
             }
