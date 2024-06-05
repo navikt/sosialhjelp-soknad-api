@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
-import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 
 object VedleggMapper {
@@ -203,7 +203,7 @@ object VedleggMapper {
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
         jsonVedlegg: JsonVedlegg,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
-    ): List<FilFrontend> {
+    ): List<DokumentUpload> {
         return jsonVedlegg.filer
             .map { fil: JsonFiler ->
                 if (jsonVedlegg.status != Vedleggstatus.LastetOpp.toString()) {
@@ -211,7 +211,7 @@ object VedleggMapper {
                 }
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
-                    ?.let { FilFrontend(fil.filnavn, it.filId) }
+                    ?.let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
                     ?: throw IllegalStateException("Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} tilleggsinfo=${jsonVedlegg.tilleggsinfo} status=${jsonVedlegg.status}")
             }
     }
