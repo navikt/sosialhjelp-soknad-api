@@ -79,9 +79,9 @@ class FormueServiceImpl(
     ) {
         type.let {
             if (isPresent) {
-                okonomiService.addType(soknadId, it, beskrivelse)
+                okonomiService.addElementToOkonomi(soknadId, it, beskrivelse)
             } else {
-                okonomiService.removeType(soknadId, it)
+                okonomiService.removeElementFromOkonomi(soknadId, it)
             }
         }
     }

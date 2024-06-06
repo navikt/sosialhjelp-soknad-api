@@ -82,17 +82,17 @@ class FamilieServiceImpl(
     ) {
         InntektType.BARNEBIDRAG_MOTTAR.let {
             if (inntektPresent) {
-                okonomiService.addType(soknadId, it)
+                okonomiService.addElementToOkonomi(soknadId, it)
             } else {
-                okonomiService.removeType(soknadId, it)
+                okonomiService.removeElementFromOkonomi(soknadId, it)
             }
         }
 
         UtgiftType.BARNEBIDRAG_BETALER.let {
             if (utgiftPresent) {
-                okonomiService.addType(soknadId, it)
+                okonomiService.addElementToOkonomi(soknadId, it)
             } else {
-                okonomiService.removeType(soknadId, it)
+                okonomiService.removeElementFromOkonomi(soknadId, it)
             }
         }
     }

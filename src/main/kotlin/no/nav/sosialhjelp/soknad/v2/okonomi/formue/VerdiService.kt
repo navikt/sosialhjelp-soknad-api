@@ -33,7 +33,7 @@ class VerdiServiceImpl(
 
         okonomiService.getFormuer(soknadId)
             ?.filter { verdiTyper.contains(it.type) }
-            ?.forEach { okonomiService.removeType(soknadId, it.type) }
+            ?.forEach { okonomiService.removeElementFromOkonomi(soknadId, it.type) }
     }
 
     override fun updateVerdier(
@@ -71,9 +71,9 @@ class VerdiServiceImpl(
     ) {
         type.let {
             if (isPresent) {
-                okonomiService.addType(soknadId, type, beskrivelse)
+                okonomiService.addElementToOkonomi(soknadId, type, beskrivelse)
             } else {
-                okonomiService.removeType(soknadId, type)
+                okonomiService.removeElementFromOkonomi(soknadId, type)
             }
         }
     }

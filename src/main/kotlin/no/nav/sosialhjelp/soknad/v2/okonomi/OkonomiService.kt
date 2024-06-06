@@ -21,16 +21,20 @@ class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
     private val dokumentasjonService: DokumentasjonForventningService,
 ) {
-    fun getFormuer(soknadId: UUID): Set<Formue>? = okonomiRepository.findByIdOrNull(soknadId)?.formuer
+    fun getFormuer(soknadId: UUID): Set<Formue>? = findOkonomi(soknadId)?.formuer
 
-    fun getBekreftelser(soknadId: UUID) = okonomiRepository.findByIdOrNull(soknadId)?.bekreftelser ?: emptyList()
+    fun getInntekter(soknadId: UUID): Set<Inntekt>? = findOkonomi(soknadId)?.inntekter
+
+    fun getUtgifter(soknadId: UUID): Set<Utgift>? = findOkonomi(soknadId)?.utgifter
+
+    fun getBekreftelser(soknadId: UUID): Set<Bekreftelse>? = findOkonomi(soknadId)?.bekreftelser
 
     fun updateBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
         verdi: Boolean,
     ) {
-        val okonomi = findOrCreate(soknadId)
+        val okonomi = findOrCreateOkonomi(soknadId)
 
         okonomi.bekreftelser
             .filter { it.type != type }
@@ -39,17 +43,17 @@ class OkonomiService(
             .also { okonomiRepository.save(it) }
     }
 
-    fun addType(
+    fun addElementToOkonomi(
         soknadId: UUID,
         type: OkonomiType,
         beskrivelse: String? = null,
     ): Set<*> {
         val updatedSet =
-            findOrCreate(soknadId).run {
+            findOrCreateOkonomi(soknadId).run {
                 when (type) {
-                    is FormueType -> addAndSave(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
-                    is UtgiftType -> addAndSave(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
-                    is InntektType -> addAndSave(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
+                    is FormueType -> addAndSaveElement(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
+                    is UtgiftType -> addAndSaveElement(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
+                    is InntektType -> addAndSaveElement(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
                     else -> error("Ukjent OkonomiType for oppretting")
                 }
             }
@@ -58,16 +62,16 @@ class OkonomiService(
         return updatedSet
     }
 
-    fun removeType(
+    fun removeElementFromOkonomi(
         soknadId: UUID,
         type: OkonomiType,
     ): Set<*> {
         val updatedSet =
-            findOrCreate(soknadId).run {
+            findOrCreateOkonomi(soknadId).run {
                 when (type) {
-                    is FormueType -> removeAndSave(formuer, type) { copy(formuer = it) }
-                    is UtgiftType -> removeAndSave(utgifter, type) { copy(utgifter = it) }
-                    is InntektType -> removeAndSave(inntekter, type) { copy(inntekter = it) }
+                    is FormueType -> removeElementByTypeAndSave(formuer, type) { copy(formuer = it) }
+                    is UtgiftType -> removeElementByTypeAndSave(utgifter, type) { copy(utgifter = it) }
+                    is InntektType -> removeElementByTypeAndSave(inntekter, type) { copy(inntekter = it) }
                     else -> error("Ukjent OkonomiType for removal")
                 }
             }
@@ -80,18 +84,18 @@ class OkonomiService(
      * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
      * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
      */
-    private fun <E : OkonomiElement> addAndSave(
+    private fun <E : OkonomiElement> addAndSaveElement(
         sourceSet: Set<E>,
-        entity: E,
-        updateOkonomiFunction: (Set<E>) -> Okonomi,
+        element: E,
+        updateSetInOkonomiFunc: (Set<E>) -> Okonomi,
     ): Set<E> {
-        return if (existsAndEqualBeskrivelse(sourceSet, entity.type, entity.beskrivelse)) {
+        return if (typeExistsAndEqualBeskrivelse(sourceSet, element.type, element.beskrivelse)) {
             sourceSet
         } else {
             sourceSet
-                .filter { it.type != entity.type }.toSet()
-                .plus(entity)
-                .also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
+                .filter { it.type != element.type }.toSet()
+                .plus(element)
+                .also { updatedSet -> okonomiRepository.save(updateSetInOkonomiFunc.invoke(updatedSet)) }
         }
     }
 
@@ -99,7 +103,7 @@ class OkonomiService(
      * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
      * Sjekker om elementet finnes, lager en kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
      */
-    private fun <E : OkonomiElement> removeAndSave(
+    private fun <E : OkonomiElement> removeElementByTypeAndSave(
         sourceSet: Set<E>,
         type: OkonomiType,
         updateOkonomiFunction: (Set<E>) -> Okonomi,
@@ -110,7 +114,7 @@ class OkonomiService(
             ?: sourceSet
     }
 
-    private fun <E : OkonomiElement> existsAndEqualBeskrivelse(
+    private fun <E : OkonomiElement> typeExistsAndEqualBeskrivelse(
         set: Set<E>,
         type: OkonomiType,
         beskrivelse: String?,
@@ -121,7 +125,7 @@ class OkonomiService(
         return false
     }
 
-    private fun findOrCreate(soknadId: UUID) =
-        okonomiRepository.findByIdOrNull(soknadId)
-            ?: okonomiRepository.save(Okonomi(soknadId))
+    private fun findOrCreateOkonomi(soknadId: UUID) = findOkonomi(soknadId) ?: okonomiRepository.save(Okonomi(soknadId))
+
+    private fun findOkonomi(soknadId: UUID): Okonomi? = okonomiRepository.findByIdOrNull(soknadId)
 }
