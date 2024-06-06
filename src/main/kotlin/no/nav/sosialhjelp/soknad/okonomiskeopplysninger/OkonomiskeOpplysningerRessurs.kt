@@ -165,6 +165,8 @@ class OkonomiskeOpplysningerRessurs(
                     VedleggFrontend(
                         type = vedleggstype,
                         gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
+                        // dokumentId ligger ikke i JSON, så det ville være vanskelig å få tilbake.
+                        // Listen slettedeVedlegg blir ikke brukt av frontend, så det er ikke noe krav om at dokumentId er gyldig her.
                         filer = ikkePaakrevdVedlegg.filer.map { DokumentUpload(filename = it.filnavn, dokumentId = "invalid-" + it.filnavn) },
                     ),
                 )
