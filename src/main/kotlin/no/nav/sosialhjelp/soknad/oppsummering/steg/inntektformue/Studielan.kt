@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUt
 class Studielan {
     fun getAvsnitt(opplysninger: JsonOkonomiopplysninger): Avsnitt {
         return Avsnitt(
-            tittel = "inntekt.studielan.titel",
+            tittel = "inntekt.studielan.tittel",
             sporsmal = studielanSporsmal(opplysninger),
         )
     }
