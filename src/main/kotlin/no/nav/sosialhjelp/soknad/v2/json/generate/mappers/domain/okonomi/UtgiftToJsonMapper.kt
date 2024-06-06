@@ -1,6 +1,88 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 
-class UtgiftToJsonMapper(utgifter: Set<Utgift>, jsonOkonomi: JsonOkonomi)
+class UtgiftToJsonMapper(
+    private val utgifter: Set<Utgift>,
+    jsonOkonomi: JsonOkonomi,
+) : OkonomiDelegateMapper {
+    private val oversikt = jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt()).oversikt
+    private val opplysninger = jsonOkonomi.opplysninger ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger()).opplysninger
+
+    override fun doMapping() {
+        utgifter.forEach { it.mapToJsonObject() }
+    }
+
+    private fun Utgift.mapToJsonObject() {
+        when (type) {
+            UtgiftType.BARNEBIDRAG_BETALER, UtgiftType.UTGIFTER_SFO, UtgiftType.UTGIFTER_BARNEHAGE,
+            UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG,
+            UtgiftType.UTGIFTER_BOLIGLAN_RENTER,
+            -> oversikt.utgift.addAll(toJsonOversiktUtgifter())
+            else -> opplysninger.utgift.addAll(toJsonOpplysningUtgifter())
+        }
+    }
+
+    private fun Utgift.toJsonOversiktUtgifter(): List<JsonOkonomioversiktUtgift> {
+        return utgiftDetaljer.detaljer.let { detaljer ->
+            if (detaljer.isEmpty()) {
+                listOf(toJsonOversiktUtgift())
+            } else {
+                detaljer.map { this.copy().toJsonOversiktUtgift(it) }
+            }
+        }
+    }
+
+    private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
+        JsonOkonomioversiktUtgift()
+            .withKilde(JsonKilde.BRUKER)
+            .withType(type.name)
+            .withTittel(toTittel())
+            .withBelop(belop?.belop?.toInt())
+            .withOverstyrtAvBruker(false)
+
+    private fun Utgift.toJsonOpplysningUtgifter(): List<JsonOkonomiOpplysningUtgift> {
+        return utgiftDetaljer.detaljer.let { detaljer ->
+            if (detaljer.isEmpty()) {
+                listOf(toJsonOpplysningUtgift())
+            } else {
+                detaljer.map { this.copy().toJsonOpplysningUtgift(it) }
+            }
+        }
+    }
+
+    private fun Utgift.toJsonOpplysningUtgift(belop: Belop? = null) =
+        JsonOkonomiOpplysningUtgift()
+            .withKilde(JsonKilde.BRUKER)
+            .withType(type.name)
+            .withTittel(toTittel())
+            .withBelop(belop?.belop?.toInt())
+            .withOverstyrtAvBruker(false)
+}
+
+private fun Utgift.toTittel(): String {
+    return when (type) {
+        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): $beskrivelse"
+        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt): $beskrivelse"
+        UtgiftType.UTGIFTER_BARN_TANNREGULERING -> "Tannregulering for barn (siste regning)"
+        UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT -> "Kommunal avgift (siste regning)"
+        UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning):"
+        UtgiftType.UTGIFTER_OPPVARMING -> "Oppvarming (siste regning)"
+        UtgiftType.UTGIFTER_STROM -> "Strøm (siste regning)"
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): $beskrivelse"
+        UtgiftType.BARNEBIDRAG_BETALER -> "Betaler Barnebidrag"
+        UtgiftType.UTGIFTER_SFO -> "SFO"
+        UtgiftType.UTGIFTER_BARNEHAGE -> "Barnehage"
+        UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
+        UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> "Avdrag på boliglån"
+        UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> "Renter på boliglån"
+    }
+}
