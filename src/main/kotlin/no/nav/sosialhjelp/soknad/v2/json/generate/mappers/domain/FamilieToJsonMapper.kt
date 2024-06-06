@@ -27,7 +27,7 @@ import java.util.UUID
 
 @Component
 class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {

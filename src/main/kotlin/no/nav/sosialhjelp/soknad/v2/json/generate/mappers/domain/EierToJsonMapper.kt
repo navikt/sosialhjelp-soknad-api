@@ -21,7 +21,7 @@ import java.util.UUID
 class EierToJsonMapper(
     private val eierRepository: EierRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {

@@ -12,7 +12,7 @@ data class Formue(
     override val type: FormueType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val formueDetaljer: OkonomiskeDetaljer<Belop>? = null,
+    val formueDetaljer: OkonomiskeDetaljer<Belop> = OkonomiskeDetaljer(),
 ) : OkonomiElement
 
 enum class FormueType(

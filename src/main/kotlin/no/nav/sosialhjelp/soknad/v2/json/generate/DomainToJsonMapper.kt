@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import java.util.UUID
 
 interface DomainToJsonMapper {
-    fun mapToSoknad(
+    fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     )

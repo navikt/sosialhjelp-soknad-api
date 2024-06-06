@@ -29,7 +29,7 @@ import java.util.UUID
 class KontaktToJsonMapper(
     private val kontaktRepository: KontaktRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {

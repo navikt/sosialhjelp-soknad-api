@@ -26,7 +26,7 @@ import java.util.UUID
 class LivssituasjonToJsonMapper(
     private val livssituasjonRepository: LivssituasjonRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
