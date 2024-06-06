@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
-import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -28,32 +26,22 @@ class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val adresseRessurs: AdresseRessurs,
 ) {
-    @Deprecated("Brukes ikke")
+    @Deprecated("Skal ikke brukes")
     @GetMapping("/navEnheter")
     fun getNavEnheter(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): List<NavEnhetFrontend> {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
-                ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val oppholdsadresse = soknad.data.personalia.oppholdsadresse
-        val adresseValg: JsonAdresseValg? = oppholdsadresse?.adresseValg
-
-        // TODO Ekstra logging
-        LoggerFactory.getLogger(this::class.java).info("Henter navEnhet path /navEnheter")
-        val navEnhetFrontend = navEnhetService.getNavEnhet(eier, soknad, adresseValg)
-
-        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+        error("Deprecated")
     }
 
     @GetMapping("/navEnhet")
     fun getValgtNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): NavEnhetFrontend? {
+        // TODO - sjekk om den brukes
+        LoggerFactory.getLogger(this::class.java).info("Get valgt navEnhet path /navEnhet")
+
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadsmottaker =
@@ -67,19 +55,12 @@ class NavEnhetRessurs(
         }
     }
 
+    @Deprecated("Skal ikke brukes")
     @PutMapping("/navEnheter")
     fun putNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody navEnhetFrontend: NavEnhetFrontend,
     ) {
-        tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-
-        // TODO Ekstra logging
-        LoggerFactory.getLogger(this::class.java).warn("Setter navEnhet - PUT path /navEnheter")
-
-        adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        error("Deprecated")
     }
 }
