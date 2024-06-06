@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
-import no.nav.sosialhjelp.soknad.v2.okonomi.BeskrivelserAnnet
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
@@ -85,12 +84,12 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere CRUD-operasjoner for Okonomi`() {
         okonomiRepository.verifyCRUDOperations(
             originalEntity = opprettOkonomi(soknad.id),
-            updatedEntity = opprettOkonomi(soknad.id).copy(beskrivelserAnnet = BeskrivelserAnnet()),
+            updatedEntity = opprettOkonomi(soknad.id).copy(utgifter = emptySet()),
         )
     }
 
     @Test
-    fun `Verifisere CRUD-operasjoner for Vedlegg`() {
+    fun `Verifisere CRUD-operasjoner for Dokumentasjon`() {
         val dbId = UUID.randomUUID()
         dokumentasjonRepository.verifyCRUDOperations(
             originalEntity = opprettVedlegg(dbId, soknad.id),

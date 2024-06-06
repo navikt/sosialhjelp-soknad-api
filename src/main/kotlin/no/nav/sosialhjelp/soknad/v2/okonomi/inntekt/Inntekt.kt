@@ -1,68 +1,36 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRad
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
 @Table
 data class Inntekt(
-    val type: InntektType,
-    @Column("rader")
-    val okonomiRader: OkonomiRader<OkonomiRad>? = null,
-)
+    override val type: InntektType,
+    override val beskrivelse: String? = null,
+    @Column("detaljer")
+    val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj>? = null,
+) : OkonomiElement
 
 // TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes
 enum class InntektType(
     override val dokumentasjonForventet: Boolean,
-    override val tittelKey: String,
 ) : OkonomiType {
     // JsonOkonomioversiktInntekt
-    BARNEBIDRAG_MOTTAR(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    JOBB(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    STUDIELAN_INNTEKT(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
+    BARNEBIDRAG_MOTTAR(dokumentasjonForventet = true),
+    JOBB(dokumentasjonForventet = true),
+    STUDIELAN_INNTEKT(dokumentasjonForventet = true),
 
     // JsonOkonomiopplysningUtbetaling
-    UTBETALING_FORSIKRING(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_ANNET(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_UTBYTTE(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_SALG(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    SLUTTOPPGJOER(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_HUSBANKEN(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_SKATTEETATEN(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
-    UTBETALING_NAVYTELSE(
-        dokumentasjonForventet = true,
-        tittelKey = "",
-    ),
+    UTBETALING_FORSIKRING(dokumentasjonForventet = true),
+    UTBETALING_ANNET(dokumentasjonForventet = true),
+    UTBETALING_UTBYTTE(dokumentasjonForventet = true),
+    UTBETALING_SALG(dokumentasjonForventet = true),
+    SLUTTOPPGJOER(dokumentasjonForventet = true),
+    UTBETALING_HUSBANKEN(dokumentasjonForventet = true),
+    UTBETALING_SKATTEETATEN(dokumentasjonForventet = true),
+    UTBETALING_NAVYTELSE(dokumentasjonForventet = true),
 }

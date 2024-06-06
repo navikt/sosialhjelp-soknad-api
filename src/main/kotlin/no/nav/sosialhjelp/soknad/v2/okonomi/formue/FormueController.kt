@@ -19,9 +19,7 @@ class FormueController(
     fun getFormue(
         @PathVariable("soknadId") soknadId: UUID,
     ): FormueDto {
-        return formueService.getBeskrivelseSparing(soknadId).let {
-            formueService.getFormuer(soknadId).toFormueDto(it)
-        }
+        return formueService.getFormuer(soknadId)?.toFormueDto() ?: FormueDto()
     }
 
     @PutMapping
@@ -29,9 +27,7 @@ class FormueController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: FormueInput,
     ): FormueDto {
-        return formueService
-            .updateFormue(soknadId = soknadId, input = input)
-            .toFormueDto(beskrivelseSparing = formueService.getBeskrivelseSparing(soknadId))
+        return formueService.updateFormuer(soknadId = soknadId, input = input).toFormueDto()
     }
 }
 
@@ -46,15 +42,15 @@ data class FormueDto(
     val beskrivelseSparing: String? = null,
 )
 
-private fun List<Formue>.toFormueDto(beskrivelseSparing: String?): FormueDto {
+private fun Set<Formue>.toFormueDto(): FormueDto {
     return FormueDto(
         hasBrukskonto = any { it.type == FormueType.FORMUE_BRUKSKONTO },
         hasSparekonto = any { it.type == FormueType.FORMUE_SPAREKONTO },
         hasBsu = any { it.type == FormueType.FORMUE_BSU },
         hasLivsforsikring = any { it.type == FormueType.FORMUE_LIVSFORSIKRING },
         hasVerdipapirer = any { it.type == FormueType.FORMUE_VERDIPAPIRER },
-        hasSparing = beskrivelseSparing != null,
-        beskrivelseSparing = beskrivelseSparing,
+        hasSparing = any { it.type == FormueType.FORMUE_ANNET },
+        beskrivelseSparing = find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse,
     )
 }
 
@@ -64,5 +60,6 @@ data class FormueInput(
     val hasBsu: Boolean = false,
     val hasLivsforsikring: Boolean = false,
     val hasVerdipapirer: Boolean = false,
+    val hasBeskrivelseSparing: Boolean = false,
     val beskrivelseSparing: String? = null,
 )

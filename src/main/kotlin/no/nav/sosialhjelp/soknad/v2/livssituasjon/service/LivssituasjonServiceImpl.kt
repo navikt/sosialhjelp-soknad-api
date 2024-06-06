@@ -79,7 +79,7 @@ class LivssituasjonServiceImpl(
         return findOrCreate(soknadId)
             .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
             .let { repository.save(it) }
-            .arbeid!!
+            .arbeid
     }
 
     private fun findOrCreate(soknadId: UUID) =
