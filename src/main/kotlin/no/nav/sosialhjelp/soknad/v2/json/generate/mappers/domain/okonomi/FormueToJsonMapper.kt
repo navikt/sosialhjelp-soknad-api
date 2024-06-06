@@ -35,26 +35,26 @@ class FormueToJsonMapper(
     }
 
     private fun Formue.toJsonFormuer(): List<JsonOkonomioversiktFormue> {
-        return if (formueDetaljer.detaljer.isEmpty()) {
-            listOf(this.toJsonFormue())
-        } else {
-            formueDetaljer.detaljer.map {
-                this.copy().toJsonFormue(it.belop.toInt())
+        return formueDetaljer.detaljer.let { detaljer ->
+            if (detaljer.isEmpty()) {
+                listOf(this.toJsonFormue())
+            } else {
+                detaljer.map { this.copy().toJsonFormue(it.belop.toInt()) }
             }
         }
     }
-
-    private fun Formue.toJsonFormue(belop: Int? = null) =
-        JsonOkonomioversiktFormue()
-            .withKilde(JsonKilde.BRUKER)
-            .withType(type.name)
-            .withTittel(type.toTittel())
-            .withBelop(belop)
-            .withOverstyrtAvBruker(false)
 }
 
-private fun FormueType.toTittel(): String {
-    return when (this) {
+private fun Formue.toJsonFormue(belop: Int? = null) =
+    JsonOkonomioversiktFormue()
+        .withKilde(JsonKilde.BRUKER)
+        .withType(type.name)
+        .withTittel(toTittel())
+        .withBelop(belop)
+        .withOverstyrtAvBruker(false)
+
+private fun Formue.toTittel(): String {
+    return when (type) {
         FormueType.FORMUE_BRUKSKONTO -> "Brukskonto"
         FormueType.FORMUE_BSU -> "BSU"
         FormueType.FORMUE_LIVSFORSIKRING -> "Livsforsikringssparedel"
