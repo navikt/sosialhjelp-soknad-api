@@ -11,6 +11,8 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.util.unit.DataSize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -32,6 +34,7 @@ class InformasjonRessurs(
     private val personService: PersonService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
+    @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     companion object {
         private val log by logger()
@@ -80,6 +83,7 @@ class InformasjonRessurs(
             daysBeforeDeletion = FJORTEN_DAGER,
             open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier),
             numRecentlySent = numRecentlySent,
+            maxUploadSizeBytes = maxUploadSize.toBytes(),
         )
     }
 
@@ -95,5 +99,7 @@ class InformasjonRessurs(
         val open: List<PabegyntSoknad>,
         @Schema(description = "Antall nylig innsendte søknader")
         val numRecentlySent: Int,
+        @Schema(description = "Max file upload size, in bytes")
+        val maxUploadSizeBytes: Long,
     )
 }
