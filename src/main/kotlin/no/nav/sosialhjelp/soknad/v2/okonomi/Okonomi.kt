@@ -58,11 +58,13 @@ enum class BekreftelseType {
     UTBETALING_SKATTEETATEN_SAMTYKKE,
 }
 
-interface OkonomiPost {
+// Inntekt, Utgift, Formue
+interface OkonomiElement {
     val type: OkonomiType
     val beskrivelse: String?
 }
 
+// InntektType, UtgiftType, FormueType
 interface OkonomiType {
     // denne må hete `name` for pga enum.name
     val name: String
@@ -80,15 +82,10 @@ object StringToOkonomiTypeConverter : Converter<String, OkonomiType> {
 }
 
 private object StringToOkonomiTypeMapper {
-    private val okonomiTyper = mutableSetOf<OkonomiType>()
-
-    init {
-        okonomiTyper.addAll(FormueType.entries)
-        okonomiTyper.addAll(InntektType.entries)
-        okonomiTyper.addAll(UtgiftType.entries)
-    }
-
     fun map(typeString: String): OkonomiType {
-        return okonomiTyper.firstOrNull { it.name == typeString } ?: error("Fant ikke OkonomiType")
+        return InntektType.entries.find { it.name == typeString }
+            ?: UtgiftType.entries.find { it.name == typeString }
+            ?: FormueType.entries.find { it.name == typeString }
+            ?: error("Kunne ikke mappe OkonomiType")
     }
 }

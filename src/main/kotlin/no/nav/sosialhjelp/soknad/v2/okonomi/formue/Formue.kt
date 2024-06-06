@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiPost
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
 import org.springframework.data.relational.core.mapping.Column
@@ -13,7 +13,7 @@ data class Formue(
     override val beskrivelse: String? = null,
     @Column("rader")
     val okonomiRader: OkonomiRader<Belop>? = null,
-) : OkonomiPost
+) : OkonomiElement
 
 enum class FormueType(
     override val dokumentasjonForventet: Boolean,

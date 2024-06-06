@@ -80,7 +80,7 @@ class OkonomiService(
      * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
      * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
      */
-    private fun <E : OkonomiPost> addAndSave(
+    private fun <E : OkonomiElement> addAndSave(
         sourceSet: Set<E>,
         entity: E,
         updateOkonomiFunction: (Set<E>) -> Okonomi,
@@ -99,7 +99,7 @@ class OkonomiService(
      * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
      * Sjekker om elementet finnes, lager en kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
      */
-    private fun <E : OkonomiPost> removeAndSave(
+    private fun <E : OkonomiElement> removeAndSave(
         sourceSet: Set<E>,
         type: OkonomiType,
         updateOkonomiFunction: (Set<E>) -> Okonomi,
@@ -110,7 +110,7 @@ class OkonomiService(
             ?: sourceSet
     }
 
-    private fun <E : OkonomiPost> existsAndEqualBeskrivelse(
+    private fun <E : OkonomiElement> existsAndEqualBeskrivelse(
         set: Set<E>,
         type: OkonomiType,
         beskrivelse: String?,
