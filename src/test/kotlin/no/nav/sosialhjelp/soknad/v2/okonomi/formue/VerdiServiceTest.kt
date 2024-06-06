@@ -17,10 +17,8 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
         HarVerdierInput(hasBolig = true).also { verdiService.updateVerdier(soknad.id, it) }
 
         with(okonomiRepository.findByIdOrNull(soknad.id)!!) {
-            assertThat(formuer).hasSize(1)
-            assertThat(formuer).anyMatch { it.type == FormueType.VERDI_BOLIG }
-            assertThat(bekreftelser).hasSize(1)
-            assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
+            assertThat(formuer.toList()).hasSize(1).allMatch { it.type == FormueType.VERDI_BOLIG }
+            assertThat(bekreftelser.toList()).hasSize(1).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
         }
 
         assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).isEmpty()
@@ -32,7 +30,7 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
         val verdiType = FormueType.VERDI_KJORETOY
         Okonomi(
             soknadId = soknad.id,
-            formuer = listOf(Formue(formueType), Formue(verdiType)),
+            formuer = setOf(Formue(formueType), Formue(verdiType)),
         ).also { okonomiRepository.save(it) }
 
         with(verdiService.getVerdier(soknad.id)) {
@@ -45,14 +43,15 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
     @Test
     fun `Legge til beskrivelse skal generere formue-objekt og bekreftelse, men ikke vedlegg`() {
         val beskrivelseVerdi = "Beskrivelse av verdi"
-        HarVerdierInput(beskrivelseVerdi = beskrivelseVerdi).also { verdiService.updateVerdier(soknad.id, it) }
+        HarVerdierInput(
+            hasBeskrivelseAnnet = true,
+            beskrivelseVerdi = beskrivelseVerdi,
+        ).also { verdiService.updateVerdier(soknad.id, it) }
 
         with(okonomiRepository.findByIdOrNull(soknad.id)!!) {
-            assertThat(formuer).hasSize(1)
-            assertThat(formuer).anyMatch { it.type == FormueType.VERDI_ANNET }
-            assertThat(bekreftelser).hasSize(1)
-            assertThat(bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
-            assertThat(beskrivelserAnnet.verdi).isEqualTo(beskrivelseVerdi)
+            assertThat(formuer.toList()).hasSize(1).anyMatch { it.type == FormueType.VERDI_ANNET }
+            assertThat(bekreftelser.toList()).hasSize(1).anyMatch { it.type == BekreftelseType.BEKREFTELSE_VERDI }
+            assertThat(formuer.find { it.type == FormueType.VERDI_ANNET }?.beskrivelse).isEqualTo(beskrivelseVerdi)
         }
         assertThat(dokumentasjonRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }
@@ -69,6 +68,24 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
             assertThat(bekreftelser).anyMatch {
                 it.type == BekreftelseType.BEKREFTELSE_VERDI && !it.verdi
             }
+        }
+    }
+
+    @Test
+    fun `Endre beskrivelse skal oppdateres`() {
+        val beskrivelseAvAnent = "Beskrivelse av annet"
+        HarVerdierInput(hasBeskrivelseAnnet = true, beskrivelseVerdi = beskrivelseAvAnent)
+            .also { verdiService.updateVerdier(soknad.id, it) }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
+            assertThat(toList()).hasSize(1).allMatch { it.beskrivelse == beskrivelseAvAnent }
+        }
+
+        HarVerdierInput(hasBeskrivelseAnnet = true)
+            .also { verdiService.updateVerdier(soknad.id, it) }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
+            assertThat(toList()).hasSize(1).allMatch { it.beskrivelse == null }
         }
     }
 }

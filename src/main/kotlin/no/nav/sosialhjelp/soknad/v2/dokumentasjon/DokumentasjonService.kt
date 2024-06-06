@@ -6,10 +6,14 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface DokumentasjonForventningService {
-    fun updateForventedeVedlegg(
+    fun opprettForventetVedlegg(
         soknadId: UUID,
         okonomiType: OkonomiType,
-        isPresent: Boolean,
+    )
+
+    fun fjernForventetVedlegg(
+        soknadId: UUID,
+        okonomiType: OkonomiType,
     )
 }
 
@@ -26,18 +30,20 @@ interface DokumentasjonStatusService {
 class DokumentasjonService(
     private val dokumentasjonRepository: DokumentasjonRepository,
 ) : DokumentasjonForventningService, DokumentasjonStatusService {
-    override fun updateForventedeVedlegg(
+    override fun opprettForventetVedlegg(
         soknadId: UUID,
         okonomiType: OkonomiType,
-        isPresent: Boolean,
     ) {
-        val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(soknadId).firstOrNull { it.type == okonomiType }
+        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == okonomiType }
+            ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = okonomiType))
+    }
 
-        if (isPresent) {
-            dokumentasjon ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = okonomiType))
-        } else {
-            dokumentasjon?.let { dokumentasjonRepository.deleteById(it.id) }
-        }
+    override fun fjernForventetVedlegg(
+        soknadId: UUID,
+        okonomiType: OkonomiType,
+    ) {
+        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == okonomiType }
+            ?.let { dokumentasjonRepository.deleteById(it.id) }
     }
 
     override fun updateDokumentStatus(

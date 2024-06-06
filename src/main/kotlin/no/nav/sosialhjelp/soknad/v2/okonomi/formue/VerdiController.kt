@@ -21,17 +21,14 @@ class VerdiController(
     fun getVerdier(
         @PathVariable("soknadId") soknadId: UUID,
     ): VerdierDto {
-        return verdiService.getBekreftelse(soknadId)
-            ?.let {
-                if (it.verdi) {
-                    verdiService.getVerdier(soknadId).toVerdierDto(
-                        hasBekreftelse = true,
-                        beskrivelseVerdi = verdiService.getBeskrivelseVerdi(soknadId),
-                    )
-                } else {
-                    VerdierDto(bekreftelse = false)
-                }
-            } ?: VerdierDto()
+        return verdiService.getVerdier(soknadId)?.let { verdier ->
+
+            if (verdier.isEmpty()) {
+                VerdierDto(bekreftelse = false)
+            } else {
+                verdier.toVerdierDto(hasBekreftelse = true)
+            }
+        } ?: VerdierDto()
     }
 
     @PutMapping
@@ -47,10 +44,7 @@ class VerdiController(
     }
 }
 
-private fun List<Formue>.toVerdierDto(
-    hasBekreftelse: Boolean,
-    beskrivelseVerdi: String?,
-): VerdierDto {
+private fun Set<Formue>.toVerdierDto(hasBekreftelse: Boolean): VerdierDto {
     return VerdierDto(
         bekreftelse = hasBekreftelse,
         hasBolig = any { it.type == FormueType.VERDI_BOLIG },
@@ -58,7 +52,7 @@ private fun List<Formue>.toVerdierDto(
         hasKjoretoy = any { it.type == FormueType.VERDI_KJORETOY },
         hasFritidseiendom = any { it.type == FormueType.VERDI_FRITIDSEIENDOM },
         hasAnnet = any { it.type == FormueType.VERDI_ANNET },
-        beskrivelseVerdi = beskrivelseVerdi,
+        beskrivelseVerdi = find { it.type == FormueType.VERDI_ANNET }?.beskrivelse,
     )
 }
 
@@ -88,5 +82,6 @@ data class HarVerdierInput(
     val hasCampingvogn: Boolean = false,
     val hasKjoretoy: Boolean = false,
     val hasFritidseiendom: Boolean = false,
+    val hasBeskrivelseAnnet: Boolean = false,
     val beskrivelseVerdi: String? = null,
 ) : VerdierInput

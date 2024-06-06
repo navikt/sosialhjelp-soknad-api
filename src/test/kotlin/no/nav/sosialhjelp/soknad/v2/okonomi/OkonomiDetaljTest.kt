@@ -4,68 +4,68 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class OkonomiRadTest {
+class OkonomiDetaljTest {
     @Test
     fun `Mappe liste med Belop til json og tilbake skal fungere`() {
-        val okonomiRader: OkonomiRader<Belop> =
-            OkonomiRader(
+        val okonomiskeDetaljer: OkonomiskeDetaljer<Belop> =
+            OkonomiskeDetaljer(
                 listOf(
                     Belop(belop = 40.0),
                     Belop(belop = 50.0),
                 ),
             )
 
-        val jsonString = OkonomiRaderToStringConverter<Belop>().convert(okonomiRader)
+        val jsonString = OkonomiskeDetaljerToStringConverter<Belop>().convert(okonomiskeDetaljer)
         assertThat(jsonString).contains("40.0").contains(("50.0"))
 
-        val okonomiRader2 = StringToOkonomiRadConverter<Belop>().convert(jsonString)
-        assertThat(okonomiRader2.rader.size).isEqualTo(okonomiRader.rader.size)
-        assertThat(okonomiRader2.rader).allMatch { it is Belop }
+        val okonomidetaljer2 = StringToOkonomiskeDetaljerConverter<Belop>().convert(jsonString)
+        assertThat(okonomidetaljer2.detaljer.size).isEqualTo(okonomiskeDetaljer.detaljer.size)
+        assertThat(okonomidetaljer2.detaljer).allMatch { it is Belop }
     }
 
     @Test
     fun `Mappe BruttoNetto til json og tilbake skal fungere`() {
-        val okonomiRader =
-            OkonomiRader(
+        val okonomiskeDetaljer =
+            OkonomiskeDetaljer(
                 listOf(
                     BruttoNetto(brutto = 50.0, netto = 40.0),
                     BruttoNetto(brutto = 70.0, netto = 30.0),
                 ),
             )
 
-        val json = OkonomiRaderToStringConverter<BruttoNetto>().convert(okonomiRader)
+        val json = OkonomiskeDetaljerToStringConverter<BruttoNetto>().convert(okonomiskeDetaljer)
         assertThat(json).contains("50.0").contains("40.0").contains("70.0").contains("30.0")
 
-        val okonomiRader2 = StringToOkonomiRadConverter<BruttoNetto>().convert(json)
-        assertThat(okonomiRader2.rader.size).isEqualTo(okonomiRader.rader.size)
-        assertThat(okonomiRader2.rader).allMatch { it is BruttoNetto }
+        val okonomidetaljer2 = StringToOkonomiskeDetaljerConverter<BruttoNetto>().convert(json)
+        assertThat(okonomidetaljer2.detaljer.size).isEqualTo(okonomiskeDetaljer.detaljer.size)
+        assertThat(okonomidetaljer2.detaljer).allMatch { it is BruttoNetto }
     }
 
     @Test
     fun `Mappe Utbetaling til json og tilbake skal fungere`() {
         val now = LocalDate.now()
-        val okonomiRader =
-            OkonomiRader(
+        val okonomiskeDetaljer =
+            OkonomiskeDetaljer(
                 listOf(
                     Utbetaling(brutto = 50.0, netto = 40.0, utbetalingsdato = now),
                     Utbetaling(brutto = 70.0, netto = 30.0, periodeTom = now),
                 ),
             )
 
-        val json = OkonomiRaderToStringConverter<Utbetaling>().convert(okonomiRader)
+        val json = OkonomiskeDetaljerToStringConverter<Utbetaling>().convert(okonomiskeDetaljer)
         assertThat(json).contains("50.0").contains("40.0").contains("70.0").contains("30.0")
-        assertThat(okonomiRader.rader).anyMatch { (it as Utbetaling).utbetalingsdato == now }
-        assertThat(okonomiRader.rader).anyMatch { (it as Utbetaling).periodeTom == now }
+        assertThat(okonomiskeDetaljer.detaljer).anyMatch { (it as Utbetaling).utbetalingsdato == now }
+        assertThat(okonomiskeDetaljer.detaljer).anyMatch { (it as Utbetaling).periodeTom == now }
 
-        val okonomiRader2 = StringToOkonomiRadConverter<Utbetaling>().convert(json)
-        assertThat(okonomiRader2.rader.size).isEqualTo(okonomiRader.rader.size)
-        assertThat(okonomiRader2.rader).allMatch { it is Utbetaling }
+        val okonomidetaljer2 = StringToOkonomiskeDetaljerConverter<Utbetaling>().convert(json)
+        assertThat(okonomidetaljer2.detaljer.size).isEqualTo(okonomiskeDetaljer.detaljer.size)
+        assertThat(okonomidetaljer2.detaljer).allMatch { it is Utbetaling }
     }
 
     @Test
     fun `Mappe UtbetalingMedKomponenter til json og tilbake skal fungere`() {
-        val okonomiRader =
-            OkonomiRader(
+        val okonomiskeDetaljer =
+            OkonomiskeDetaljer(
                 listOf(
                     UtbetalingMedKomponent(
                         utbetaling = Utbetaling(brutto = 50.0, netto = 40.0, utbetalingsdato = LocalDate.now()),
@@ -81,12 +81,12 @@ class OkonomiRadTest {
                 ),
             )
 
-        val json = OkonomiRaderToStringConverter<UtbetalingMedKomponent>().convert(okonomiRader)
+        val json = OkonomiskeDetaljerToStringConverter<UtbetalingMedKomponent>().convert(okonomiskeDetaljer)
         assertThat(json).contains("50.0").contains("40.0").contains("70.0").contains("30.0").contains("Komponent 1")
 
-        val okonomiRader2 = StringToOkonomiRadConverter<UtbetalingMedKomponent>().convert(json)
-        assertThat(okonomiRader2.rader.size).isEqualTo(okonomiRader.rader.size)
-        assertThat(okonomiRader2.rader).allMatch { it is UtbetalingMedKomponent }
-        assertThat(okonomiRader2.rader).anyMatch { (it as UtbetalingMedKomponent).komponenter.size == 2 }
+        val okonomidetaljer2 = StringToOkonomiskeDetaljerConverter<UtbetalingMedKomponent>().convert(json)
+        assertThat(okonomidetaljer2.detaljer.size).isEqualTo(okonomiskeDetaljer.detaljer.size)
+        assertThat(okonomidetaljer2.detaljer).allMatch { it is UtbetalingMedKomponent }
+        assertThat(okonomidetaljer2.detaljer).anyMatch { (it as UtbetalingMedKomponent).komponenter.size == 2 }
     }
 }
