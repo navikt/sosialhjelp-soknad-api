@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table
 data class Inntekt(
     override val type: InntektType,
     override val beskrivelse: String? = null,
-    @Column("rader")
+    @Column("detaljer")
     val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj>? = null,
 ) : OkonomiElement
 

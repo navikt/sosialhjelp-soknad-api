@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table
 data class Formue(
     override val type: FormueType,
     override val beskrivelse: String? = null,
-    @Column("rader")
+    @Column("detaljer")
     val formueDetaljer: OkonomiskeDetaljer<Belop>? = null,
 ) : OkonomiElement
 

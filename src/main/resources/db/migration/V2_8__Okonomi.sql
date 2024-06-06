@@ -11,7 +11,7 @@ create table inntekt
     okonomi uuid not null,
     type varchar(50) not null,
     beskrivelse text,
-    rader text,
+    detaljer text,
     constraint pk_inntekt
         primary key (okonomi, type),
     constraint fk_inntekt_okonomi
@@ -24,7 +24,7 @@ create table utgift
     okonomi uuid not null,
     type varchar(50) not null,
     beskrivelse text,
-    rader text,
+    detaljer text,
     constraint pk_utgift
         primary key (okonomi, type),
     constraint fk_utgift_okonomi
@@ -37,7 +37,7 @@ create table formue
     okonomi uuid not null,
     type varchar(50) not null,
     beskrivelse text,
-    rader text,
+    detaljer text,
     constraint pk_formue
         primary key (okonomi, type),
     constraint fk_formue_okonomi
