@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -12,7 +12,7 @@ data class Utgift(
     override val type: UtgiftType,
     override val beskrivelse: String? = null,
     @Column("rader")
-    val okonomiRader: OkonomiRader<Belop>? = null,
+    val utgiftDetaljer: OkonomiskeDetaljer<Belop>? = null,
 ) : OkonomiElement
 
 // TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
@@ -20,9 +20,7 @@ enum class UtgiftType(
     override val dokumentasjonForventet: Boolean,
 ) : OkonomiType {
     // JsonOkonomiopplysningUtgift
-    UTGIFTER_ANNET_BO(
-        dokumentasjonForventet = true,
-    ),
+    UTGIFTER_ANNET_BO(dokumentasjonForventet = true),
     UTGIFTER_ANNET_BARN(dokumentasjonForventet = true),
     UTGIFTER_BARN_TANNREGULERING(dokumentasjonForventet = true),
     UTGIFTER_KOMMUNAL_AVGIFT(dokumentasjonForventet = true),

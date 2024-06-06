@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRad
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -12,7 +12,7 @@ data class Inntekt(
     override val type: InntektType,
     override val beskrivelse: String? = null,
     @Column("rader")
-    val okonomiRader: OkonomiRader<OkonomiRad>? = null,
+    val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj>? = null,
 ) : OkonomiElement
 
 // TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes

@@ -38,7 +38,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRader
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
@@ -311,9 +311,9 @@ fun createInntekter(): Set<Inntekt> {
     return setOf(
         Inntekt(
             type = InntektType.BARNEBIDRAG_MOTTAR,
-            okonomiRader =
-                OkonomiRader(
-                    rader =
+            inntektDetaljer =
+                OkonomiskeDetaljer(
+                    detaljer =
                         listOf(
                             BruttoNetto(brutto = 40.0, netto = 20.0),
                             BruttoNetto(brutto = 60.0, netto = 30.0),
@@ -322,9 +322,9 @@ fun createInntekter(): Set<Inntekt> {
         ),
         Inntekt(
             type = InntektType.UTBETALING_NAVYTELSE,
-            okonomiRader =
-                OkonomiRader(
-                    rader =
+            inntektDetaljer =
+                OkonomiskeDetaljer(
+                    detaljer =
                         listOf(
                             UtbetalingMedKomponent(
                                 utbetaling = Utbetaling(brutto = 123.0, utbetalingsdato = LocalDate.now()),
@@ -343,9 +343,9 @@ fun createUtgifter(): Set<Utgift> {
     return setOf(
         Utgift(
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-            okonomiRader =
-                OkonomiRader(
-                    rader =
+            utgiftDetaljer =
+                OkonomiskeDetaljer(
+                    detaljer =
                         listOf(
                             Belop(belop = 400.0),
                         ),
@@ -358,9 +358,9 @@ fun createFormuer(): Set<Formue> {
     return setOf(
         Formue(
             type = FormueType.FORMUE_BRUKSKONTO,
-            okonomiRader =
-                OkonomiRader(
-                    rader =
+            formueDetaljer =
+                OkonomiskeDetaljer(
+                    detaljer =
                         listOf(
                             Belop(belop = 123.0),
                         ),

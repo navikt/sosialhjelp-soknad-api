@@ -25,20 +25,20 @@ import java.time.LocalDate
     JsonSubTypes.Type(value = Utbetaling::class, name = "Utbetaling"),
     JsonSubTypes.Type(value = UtbetalingMedKomponent::class, name = "UtbetalingMedKomponent"),
 )
-interface OkonomiRad
+interface OkonomiDetalj
 
-data class OkonomiRader<T : OkonomiRad>(
-    val rader: List<T> = emptyList(),
+data class OkonomiskeDetaljer<T : OkonomiDetalj>(
+    val detaljer: List<T> = emptyList(),
 )
 
 data class Belop(
     val belop: Double,
-) : OkonomiRad
+) : OkonomiDetalj
 
 data class BruttoNetto(
     val brutto: Double? = null,
     val netto: Double? = null,
-) : OkonomiRad
+) : OkonomiDetalj
 
 // TODO Sjekk bruk av utbetaling og om det trengs alle feltene
 
@@ -53,12 +53,12 @@ data class Utbetaling(
     val periodeFom: LocalDate? = null,
     val periodeTom: LocalDate? = null,
     val mottaker: Mottaker? = null,
-) : OkonomiRad
+) : OkonomiDetalj
 
 data class UtbetalingMedKomponent(
     val utbetaling: Utbetaling? = Utbetaling(),
     val komponenter: List<Komponent> = emptyList(),
-) : OkonomiRad
+) : OkonomiDetalj
 
 data class Komponent(
     val type: String? = null,
@@ -79,13 +79,13 @@ private val mapper =
     }
 
 @WritingConverter
-class OkonomiRaderToStringConverter<T : OkonomiRad> : Converter<OkonomiRader<T>, String> {
-    override fun convert(source: OkonomiRader<T>): String = mapper.writeValueAsString(source)
+class OkonomiskeDetaljerToStringConverter<T : OkonomiDetalj> : Converter<OkonomiskeDetaljer<T>, String> {
+    override fun convert(source: OkonomiskeDetaljer<T>): String = mapper.writeValueAsString(source)
 }
 
 @ReadingConverter
-class StringToOkonomiRadConverter<T : OkonomiRad> : Converter<String, OkonomiRader<T>> {
-    override fun convert(source: String): OkonomiRader<T> = mapper.readValue(source)
+class StringToOkonomiskeDetaljerConverter<T : OkonomiDetalj> : Converter<String, OkonomiskeDetaljer<T>> {
+    override fun convert(source: String): OkonomiskeDetaljer<T> = mapper.readValue(source)
 }
 
 // object OkonomiRaderMapper {
