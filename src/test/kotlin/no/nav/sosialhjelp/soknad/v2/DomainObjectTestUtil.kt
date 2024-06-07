@@ -35,12 +35,15 @@ import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -304,6 +307,7 @@ fun opprettOkonomi(soknadId: UUID): Okonomi {
         utgifter = createUtgifter(),
         formuer = createFormuer(),
         bekreftelser = createBekreftelser(),
+        bostotteSaker = createBostotteSaker(),
     )
 }
 
@@ -374,6 +378,23 @@ fun createBekreftelser(): Set<Bekreftelse> {
         Bekreftelse(
             type = BekreftelseType.BEKREFTELSE_SPARING,
             verdi = true,
+        ),
+    )
+}
+
+fun createBostotteSaker(): List<BostotteSak> {
+    return listOf(
+        BostotteSak(
+            LocalDate.now(),
+            BostotteStatus.UNDER_BEHANDLING,
+            "Beskrivelse av bostotte",
+            null,
+        ),
+        BostotteSak(
+            LocalDate.now(),
+            BostotteStatus.VEDTATT,
+            "Annen beskrivelse av Bostotte",
+            Vedtaksstatus.AVVIST,
         ),
     )
 }

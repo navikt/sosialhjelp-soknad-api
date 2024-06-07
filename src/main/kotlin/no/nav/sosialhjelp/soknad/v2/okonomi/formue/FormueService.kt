@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.util.UUID
 
 interface FormueService {
@@ -45,12 +46,14 @@ class FormueServiceImpl(
 
     private fun updateBekreftelse(
         soknadId: UUID,
+        dato: LocalDate = LocalDate.now(),
         verdi: Boolean,
     ) {
         okonomiService.updateBekreftelse(
             soknadId = soknadId,
             type = BekreftelseType.BEKREFTELSE_SPARING,
-            verdi,
+            dato = dato,
+            verdi = verdi,
         )
     }
 

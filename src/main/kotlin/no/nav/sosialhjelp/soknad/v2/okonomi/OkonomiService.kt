@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.util.UUID
 
 /**
@@ -32,13 +33,14 @@ class OkonomiService(
     fun updateBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
+        dato: LocalDate = LocalDate.now(),
         verdi: Boolean,
     ) {
         val okonomi = findOrCreateOkonomi(soknadId)
 
         okonomi.bekreftelser
             .filter { it.type != type }
-            .plus(Bekreftelse(type, verdi))
+            .plus(Bekreftelse(type, dato, verdi))
             .let { bekreftelser -> okonomi.copy(bekreftelser = bekreftelser.toSet()) }
             .also { okonomiRepository.save(it) }
     }

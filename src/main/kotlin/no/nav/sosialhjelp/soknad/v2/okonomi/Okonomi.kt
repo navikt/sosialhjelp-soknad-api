@@ -15,6 +15,7 @@ import org.springframework.data.convert.WritingConverter
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import java.util.UUID
 
 @Repository
@@ -27,6 +28,7 @@ data class Okonomi(
     val utgifter: Set<Utgift> = emptySet(),
     val formuer: Set<Formue> = emptySet(),
     val bekreftelser: Set<Bekreftelse> = emptySet(),
+    val bostotteSaker: List<BostotteSak> = emptyList(),
 ) : DomainRoot {
     override fun getDbId() = soknadId
 }
@@ -34,7 +36,16 @@ data class Okonomi(
 @Table
 data class Bekreftelse(
     val type: BekreftelseType,
+    val dato: LocalDate = LocalDate.now(),
     val verdi: Boolean,
+)
+
+@Table
+data class BostotteSak(
+    val dato: LocalDate,
+    val status: BostotteStatus,
+    val beskrivelse: String?,
+    val vedtaksstatus: Vedtaksstatus?,
 )
 
 enum class BekreftelseType {
@@ -56,6 +67,17 @@ enum class BekreftelseType {
     BOSTOTTE_SAMTYKKE,
     STUDIELAN_BEKREFTELSE,
     UTBETALING_SKATTEETATEN_SAMTYKKE,
+}
+
+enum class Vedtaksstatus {
+    INNVILGET,
+    AVSLAG,
+    AVVIST,
+}
+
+enum class BostotteStatus {
+    UNDER_BEHANDLING,
+    VEDTATT,
 }
 
 // Inntekt, Utgift, Formue
