@@ -41,7 +41,6 @@ data class BruttoNetto(
 ) : OkonomiDetalj
 
 // TODO Sjekk bruk av utbetaling og om det trengs alle feltene
-
 data class Utbetaling(
     val brutto: Double? = null,
     val netto: Double? = null,
@@ -56,13 +55,13 @@ data class Utbetaling(
 ) : OkonomiDetalj
 
 data class UtbetalingMedKomponent(
-    val utbetaling: Utbetaling? = Utbetaling(),
+    val utbetaling: Utbetaling = Utbetaling(),
     val komponenter: List<Komponent> = emptyList(),
 ) : OkonomiDetalj
 
 data class Komponent(
     val type: String? = null,
-    val belop: String? = null,
+    val belop: Double? = null,
     val satsType: String? = null,
     val satsAntall: Double? = null,
     val satsBelop: Double? = null,

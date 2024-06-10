@@ -12,7 +12,7 @@ data class Inntekt(
     override val type: InntektType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj>? = null,
+    val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj> = OkonomiskeDetaljer(),
 ) : OkonomiElement
 
 // TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes

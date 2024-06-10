@@ -29,7 +29,7 @@ class VerdiServiceImpl(
         okonomiService.getFormuer(soknadId)?.filter { verdiTyper.contains(it.type) }?.toSet()
 
     override fun removeVerdier(soknadId: UUID) {
-        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, false)
+        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, verdi = false)
 
         okonomiService.getFormuer(soknadId)
             ?.filter { verdiTyper.contains(it.type) }
@@ -40,7 +40,7 @@ class VerdiServiceImpl(
         soknadId: UUID,
         input: HarVerdierInput,
     ): Set<Formue> {
-        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, true)
+        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, verdi = true)
 
         updateAllVerdier(soknadId, input)
 

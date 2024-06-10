@@ -12,7 +12,7 @@ data class Utgift(
     override val type: UtgiftType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val utgiftDetaljer: OkonomiskeDetaljer<Belop>? = null,
+    val utgiftDetaljer: OkonomiskeDetaljer<Belop> = OkonomiskeDetaljer(),
 ) : OkonomiElement
 
 // TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
