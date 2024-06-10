@@ -1,16 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.BekreftelseToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class BekreftelseToJsonMapperTest {
+class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
     @Test
     fun `Liste med Bekreftelser skal opprette tilsvarende antall innslag i Json-strukturen`() {
-        val jsonOkonomi = JsonOkonomi()
         val bekreftelser =
             setOf(
                 Bekreftelse(type = BekreftelseType.BEKREFTELSE_SPARING, verdi = true),

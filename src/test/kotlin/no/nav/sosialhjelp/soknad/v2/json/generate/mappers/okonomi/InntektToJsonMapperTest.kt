@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.createInntekter
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
@@ -14,10 +13,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class InntektToJsonMapperTest {
+class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
     @Test
     fun `Inntekt med type BARNEBIDRAG_MOTTAR skal mappes til JsonOkonomioversiktInntekt`() {
-        val jsonOkonomi = JsonOkonomi()
         val inntekter = createInntekter()
 
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
@@ -29,7 +27,6 @@ class InntektToJsonMapperTest {
 
     @Test
     fun `Inntekt med type NAVYTELSE skal mappes til JsonOkonomiopplysningUtbetaling`() {
-        val jsonOkonomi = JsonOkonomi()
         val inntekter =
             setOf(
                 Inntekt(
@@ -49,7 +46,6 @@ class InntektToJsonMapperTest {
 
     @Test
     fun `Flere okonomiske detaljer skal generere flere Inntekter`() {
-        val jsonOkonomi = JsonOkonomi()
         val inntekter =
             setOf(
                 Inntekt(
@@ -73,7 +69,6 @@ class InntektToJsonMapperTest {
 
     @Test
     fun `Type med Beskrivelse skal mappes til JsonBeskrivelseAvAnnet`() {
-        val jsonOkonomi = JsonOkonomi()
         val inntekter = setOf(Inntekt(InntektType.UTBETALING_ANNET, "Beskrivelse av annet"))
 
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()

@@ -2,9 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
@@ -13,25 +10,16 @@ class FormueToJsonMapper(
     private val formuer: Set<Formue>,
     jsonOkonomi: JsonOkonomi,
 ) : OkonomiDelegateMapper {
-    private val oversikt = jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt()).oversikt
-    private val beskrivelseAvAnnet: JsonOkonomibeskrivelserAvAnnet
-
-    init {
-        val opplysninger =
-            jsonOkonomi.opplysninger
-                ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger()).opplysninger
-
-        beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet
-            ?: opplysninger.withBeskrivelseAvAnnet(JsonOkonomibeskrivelserAvAnnet()).beskrivelseAvAnnet
-    }
+    private val oversikt = jsonOkonomi.oversikt
+    private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
         oversikt.formue.addAll(
             formuer.flatMap { it.toJsonFormuer() },
         )
         // TODO JsonOkonomibeskrivelseAvAnnet er merket som "overflødig" i filformatet
-        formuer.find { it.type == FormueType.FORMUE_ANNET }?.let { beskrivelseAvAnnet.sparing = it.beskrivelse }
-        formuer.find { it.type == FormueType.VERDI_ANNET }?.let { beskrivelseAvAnnet.verdi = it.beskrivelse }
+        formuer.find { it.type == FormueType.FORMUE_ANNET }?.let { addBeskrivelseSparing(it.beskrivelse) }
+        formuer.find { it.type == FormueType.VERDI_ANNET }?.let { addBeskrivelseVerdi(it.beskrivelse) }
     }
 
     private fun Formue.toJsonFormuer(): List<JsonOkonomioversiktFormue> {
@@ -42,6 +30,16 @@ class FormueToJsonMapper(
                 detaljer.map { this.copy().toJsonFormue(it.belop.toInt()) }
             }
         }
+    }
+
+    private fun addBeskrivelseSparing(beskrivelse: String?) {
+        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+        beskrivelse?.let { jsonBeskrivelser.sparing = it }
+    }
+
+    private fun addBeskrivelseVerdi(beskrivelse: String?) {
+        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+        beskrivelse?.let { jsonBeskrivelser.verdi = it }
     }
 }
 

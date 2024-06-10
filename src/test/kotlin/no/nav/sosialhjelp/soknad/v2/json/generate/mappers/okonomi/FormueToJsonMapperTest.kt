@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.createFormuer
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.FormueToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -10,10 +9,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class FormueToJsonMapperTest {
+class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
     @Test
     fun `Formue skal mappes til JsonOkonomioversiktFormue`() {
-        val jsonOkonomi = JsonOkonomi()
         val formuer = createFormuer()
 
         FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
@@ -25,7 +23,6 @@ class FormueToJsonMapperTest {
 
     @Test
     fun `Formue med flere rader skal generere flere JsonOkonomioversiktFormue-innslag`() {
-        val jsonOkonomi = JsonOkonomi()
         val formuer = setOf(Formue(type = FormueType.FORMUE_BRUKSKONTO, formueDetaljer = createOkonomiskeDetaljer()))
 
         FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
@@ -42,7 +39,6 @@ class FormueToJsonMapperTest {
 
     @Test
     fun `FormueType ANNET skal lagre beskrivelse i JsonBeskrivelserAvAnnet`() {
-        val jsonOkonomi = JsonOkonomi()
         val formuer =
             setOf(
                 Formue(

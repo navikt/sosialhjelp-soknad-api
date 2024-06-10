@@ -2,11 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
@@ -21,20 +18,17 @@ class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,
     jsonOkonomi: JsonOkonomi,
 ) : OkonomiDelegateMapper {
-    private val oversikt = jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt()).oversikt
-    private val opplysninger =
-        jsonOkonomi.opplysninger
-            ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger()).opplysninger
-    private val beskrivelseAvAnnet =
-        opplysninger.beskrivelseAvAnnet
-            ?: opplysninger.withBeskrivelseAvAnnet(JsonOkonomibeskrivelserAvAnnet()).beskrivelseAvAnnet
+    private val oversikt = jsonOkonomi.oversikt
+    private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
         inntekter.forEach { it.mapToJsonObject() }
 
-        inntekter.find { it.type == InntektType.UTBETALING_ANNET }?.let {
-            beskrivelseAvAnnet.utbetaling = it.beskrivelse
-        }
+        inntekter.find { it.type == InntektType.UTBETALING_ANNET }
+            ?.let {
+                val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+                jsonBeskrivelser.utbetaling = it.beskrivelse ?: ""
+            }
     }
 
     private fun Inntekt.mapToJsonObject() {
@@ -58,6 +52,7 @@ private fun Inntekt.toJsonOversiktInntekter(): List<JsonOkonomioversiktInntekt> 
 
 private fun Inntekt.toJsonOversiktInntekt(detalj: BruttoNetto? = null) =
     JsonOkonomioversiktInntekt()
+        // TODO Typene må mappes til Kilde
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())
@@ -77,6 +72,7 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling()
+        // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())

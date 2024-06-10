@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -14,8 +12,8 @@ class UtgiftToJsonMapper(
     private val utgifter: Set<Utgift>,
     jsonOkonomi: JsonOkonomi,
 ) : OkonomiDelegateMapper {
-    private val oversikt = jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt()).oversikt
-    private val opplysninger = jsonOkonomi.opplysninger ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger()).opplysninger
+    private val oversikt = jsonOkonomi.oversikt
+    private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
         utgifter.forEach { it.mapToJsonObject() }
@@ -43,6 +41,7 @@ class UtgiftToJsonMapper(
 
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
         JsonOkonomioversiktUtgift()
+            // TODO Sjekk om alle utgifter er kilde = BRUKER
             .withKilde(JsonKilde.BRUKER)
             .withType(type.name)
             .withTittel(toTittel())

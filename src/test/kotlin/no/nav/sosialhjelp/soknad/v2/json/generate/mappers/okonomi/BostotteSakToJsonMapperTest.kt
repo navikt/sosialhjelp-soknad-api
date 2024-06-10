@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.createBostotteSaker
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.BostotteSakToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
@@ -8,10 +7,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class BostotteSakToJsonMapperTest {
+class BostotteSakToJsonMapperTest : AbstractOkonomiMapperTest() {
     @Test
     fun `Bostottesaker skal mappes til tilsvarende innslag i JsonBostotteSaker`() {
-        val jsonOkonomi = JsonOkonomi()
         val bostotteSaker = createBostotteSaker()
 
         BostotteSakToJsonMapper(bostotteSaker, jsonOkonomi).doMapping()

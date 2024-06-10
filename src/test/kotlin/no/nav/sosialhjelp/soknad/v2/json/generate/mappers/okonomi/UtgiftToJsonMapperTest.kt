@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.UtgiftToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
@@ -9,10 +8,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class UtgiftToJsonMapperTest {
+class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     @Test
     fun `Utgift med type SFO skal lage JsonOkonomioversiktUtgift`() {
-        val jsonOkonomi = JsonOkonomi()
         val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_SFO))
 
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
@@ -24,7 +22,6 @@ class UtgiftToJsonMapperTest {
 
     @Test
     fun `Utgift med type STROM skal lage JsonOkonomiopplysningUtgift`() {
-        val jsonOkonomi = JsonOkonomi()
         val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_STROM))
 
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
@@ -36,7 +33,6 @@ class UtgiftToJsonMapperTest {
 
     @Test
     fun `Utgift med flere okonomiske detaljer skal gi flere innslag`() {
-        val jsonOkonomi = JsonOkonomi()
         val utgifter =
             setOf(
                 Utgift(
@@ -54,7 +50,6 @@ class UtgiftToJsonMapperTest {
 
     @Test
     fun `Beskrivelse for Annen Bosituasjon eller Annen utgift barn skal gi beskrivelse i tittel`() {
-        val jsonOkonomi = JsonOkonomi()
         val utgifter =
             setOf(
                 Utgift(UtgiftType.UTGIFTER_ANNET_BO, "Beskrivelse av Bo"),

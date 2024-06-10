@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -11,7 +10,7 @@ class BekreftelseToJsonMapper(
     private val bekreftelser: Set<Bekreftelse>,
     jsonOkonomi: JsonOkonomi,
 ) : OkonomiDelegateMapper {
-    private val opplysninger = jsonOkonomi.opplysninger ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger()).opplysninger
+    private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
         opplysninger.bekreftelse.addAll(bekreftelser.map { it.toJsonBekreftelse() })
