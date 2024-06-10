@@ -62,7 +62,6 @@ create table bostotte_sak
 (
     okonomi_key numeric not null,
     okonomi uuid not null,
-    type varchar(50) not null,
     dato date,
     status varchar(50),
     beskrivelse text,
