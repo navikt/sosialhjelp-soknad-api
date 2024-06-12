@@ -58,8 +58,8 @@ class VerdiServiceImpl(
         updateFormue(
             soknadId,
             FormueType.VERDI_ANNET,
-            input.hasBeskrivelseAnnet,
-            if (input.hasBeskrivelseAnnet) input.beskrivelseVerdi else null,
+            input.hasBeskrivelseVerdi,
+            if (input.hasBeskrivelseVerdi) input.beskrivelseVerdi else null,
         )
     }
 

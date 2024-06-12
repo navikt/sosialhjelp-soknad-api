@@ -44,7 +44,7 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
     fun `Legge til beskrivelse skal generere formue-objekt og bekreftelse, men ikke vedlegg`() {
         val beskrivelseVerdi = "Beskrivelse av verdi"
         HarVerdierInput(
-            hasBeskrivelseAnnet = true,
+            hasBeskrivelseVerdi = true,
             beskrivelseVerdi = beskrivelseVerdi,
         ).also { verdiService.updateVerdier(soknad.id, it) }
 
@@ -74,14 +74,14 @@ class VerdiServiceTest : AbstractOkonomiServiceTest() {
     @Test
     fun `Endre beskrivelse skal oppdateres`() {
         val beskrivelseAvAnent = "Beskrivelse av annet"
-        HarVerdierInput(hasBeskrivelseAnnet = true, beskrivelseVerdi = beskrivelseAvAnent)
+        HarVerdierInput(hasBeskrivelseVerdi = true, beskrivelseVerdi = beskrivelseAvAnent)
             .also { verdiService.updateVerdier(soknad.id, it) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
             assertThat(toList()).hasSize(1).allMatch { it.beskrivelse == beskrivelseAvAnent }
         }
 
-        HarVerdierInput(hasBeskrivelseAnnet = true)
+        HarVerdierInput(hasBeskrivelseVerdi = true)
             .also { verdiService.updateVerdier(soknad.id, it) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.run {
