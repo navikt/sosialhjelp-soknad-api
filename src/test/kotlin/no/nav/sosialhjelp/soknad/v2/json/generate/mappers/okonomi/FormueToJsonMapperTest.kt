@@ -17,7 +17,8 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
         FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.oversikt) {
-            assertThat(formue).hasSize(1).allMatch { it.type == formuer.first().type.name }
+            assertThat(formue).hasSize(2)
+            formuer.forEach { domain -> assertThat(formue.find { it.type == domain.type.name }).isNotNull }
         }
     }
 
