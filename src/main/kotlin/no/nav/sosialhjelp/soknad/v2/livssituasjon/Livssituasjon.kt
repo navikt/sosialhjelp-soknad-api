@@ -34,7 +34,7 @@ data class Bosituasjon(
 )
 
 data class Utdanning(
-    val erStudent: Boolean? = null,
+    val erStudent: Boolean = false,
     val studentgrad: Studentgrad? = null,
 )
 

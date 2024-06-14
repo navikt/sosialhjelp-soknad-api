@@ -24,6 +24,8 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 @Table
 data class Okonomi(
     @Id val soknadId: UUID,
+    // TODO inntekter, utgifter, formuer og bekreftelser bør være map for å gjenspeile kun 1 innslag pr. type
+    // TODO eventuelt må equals for disse kun sammenlikne på typen
     val inntekter: Set<Inntekt> = emptySet(),
     val utgifter: Set<Utgift> = emptySet(),
     val formuer: Set<Formue> = emptySet(),
@@ -54,6 +56,7 @@ enum class BekreftelseType {
     // TODO hvis bruker svarer nei, vil denne være false
     // TODO hvis bruker svarer ja, vil den være true
     // TODO Hvordan utlede dette kun på bakgrunn av om det finnes en f.eks. Formue eller ikke ?
+    // TODO Alternativt kunne man flyttet boolean til OkonomiElementet - da kan det representere alle 3 alternativene
     BEKREFTELSE_BARNEUTGIFTER,
     BEKREFTELSE_BOUTGIFTER,
     BEKREFTELSE_SPARING,

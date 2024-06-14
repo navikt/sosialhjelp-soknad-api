@@ -31,11 +31,17 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class StudielanRessursTest {
+internal class StudielanControllerTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val studielanRessurs = StudielanRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val studielanRessurs =
+        StudielanRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            v2InntektAdapter = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

@@ -26,6 +26,13 @@ interface V2FormueAdapter {
     )
 }
 
+interface V2FormueAdapter {
+    fun leggTilFormue(
+        behandlingsId: String,
+        formueFrontend: FormueRessurs.FormueFrontend,
+    )
+}
+
 @Service
 class SoknadV2FormueAdapter(
     private val formueController: FormueController,
