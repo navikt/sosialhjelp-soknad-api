@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.shadow.okonomi
 
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudielanController
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudielanInput
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanController
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanInput
 import no.nav.sosialhjelp.soknad.v2.shadow.runWithNestedTransaction
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate

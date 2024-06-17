@@ -1,9 +1,6 @@
-package no.nav.sosialhjelp.soknad.v2.livssituasjon.service
+package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation

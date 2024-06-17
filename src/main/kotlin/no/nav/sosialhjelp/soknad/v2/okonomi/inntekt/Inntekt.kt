@@ -19,17 +19,25 @@ data class Inntekt(
 enum class InntektType(
     override val dokumentasjonForventet: Boolean,
 ) : OkonomiType {
-    // JsonOkonomioversiktInntekt
+    // * * * JsonOkonomioversiktInntekt * * *
+    // bruker
     BARNEBIDRAG_MOTTAR(dokumentasjonForventet = true),
-    JOBB(dokumentasjonForventet = true),
     STUDIELAN_INNTEKT(dokumentasjonForventet = true),
 
-    // JsonOkonomiopplysningUtbetaling
+    // register - arbeidsforhold
+    JOBB(dokumentasjonForventet = true),
+
+    // * * * JsonOkonomiopplysningUtbetaling * * *
+    // Andre inntekter
     UTBETALING_FORSIKRING(dokumentasjonForventet = true),
-    UTBETALING_ANNET(dokumentasjonForventet = true),
     UTBETALING_UTBYTTE(dokumentasjonForventet = true),
     UTBETALING_SALG(dokumentasjonForventet = true),
+    UTBETALING_ANNET(dokumentasjonForventet = true),
+
+    // register - arbeidsforhold
     SLUTTOPPGJOER(dokumentasjonForventet = true),
+
+    // register
     UTBETALING_HUSBANKEN(dokumentasjonForventet = true),
     UTBETALING_SKATTEETATEN(dokumentasjonForventet = true),
     UTBETALING_NAVYTELSE(dokumentasjonForventet = true),

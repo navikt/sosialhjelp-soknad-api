@@ -1,8 +1,7 @@
-package no.nav.sosialhjelp.soknad.v2.livssituasjon
+package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.UtdanningService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
