@@ -41,6 +41,6 @@ enum class InntektType(
     UTBETALING_NAVYTELSE(dokumentasjonForventet = false),
 
     // TODO Forventes dokumentasjon for disse 2?
-    UTBETALING_HUSBANKEN(dokumentasjonForventet = true),
-    UTBETALING_SKATTEETATEN(dokumentasjonForventet = true),
+    UTBETALING_SKATTEETATEN(dokumentasjonForventet = false),
+    UTBETALING_HUSBANKEN(dokumentasjonForventet = false),
 }

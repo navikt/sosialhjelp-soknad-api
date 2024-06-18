@@ -35,7 +35,6 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
             assertThat(inntektDetaljer.detaljer).hasSize(4)
                 .allMatch { it is UtbetalingMedKomponent }
         }
-
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilUtbetalingerNav).isFalse()
     }
 

@@ -40,6 +40,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling as UtbetalingSkatteetaten
 
 object DefaultValuesForMockedResponses {
     val orgnummer1 = "123456789"
@@ -446,5 +447,28 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                 ),
             ),
         feilet = false,
+    )
+}
+
+fun defaultResponseForSkattbarInntektService(): List<UtbetalingSkatteetaten> {
+    return listOf(
+        UtbetalingSkatteetaten(
+            type = "Lønn fra arbeidsgiver 1",
+            brutto = 5000.0,
+            skattetrekk = 1333.0,
+            periodeFom = LocalDate.now().minusMonths(1),
+            periodeTom = LocalDate.now(),
+            tittel = "Lønn",
+            orgnummer = "12345123",
+        ),
+        UtbetalingSkatteetaten(
+            type = "Lønn fra arbeidsgiver 2",
+            brutto = 6000.0,
+            skattetrekk = 1633.0,
+            periodeFom = LocalDate.now().minusMonths(1),
+            periodeTom = LocalDate.now(),
+            tittel = "Lønn",
+            orgnummer = "98765432",
+        ),
     )
 }
