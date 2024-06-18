@@ -370,6 +370,16 @@ fun createFormuer(): Set<Formue> {
                         ),
                 ),
         ),
+        Formue(
+            type = FormueType.VERDI_KJORETOY,
+            formueDetaljer =
+                OkonomiskeDetaljer(
+                    detaljer =
+                        listOf(
+                            Belop(belop = 500000.0),
+                        ),
+                ),
+        ),
     )
 }
 

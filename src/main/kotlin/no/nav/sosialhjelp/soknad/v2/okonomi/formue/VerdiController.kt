@@ -51,7 +51,7 @@ private fun Set<Formue>.toVerdierDto(hasBekreftelse: Boolean): VerdierDto {
         hasCampingvogn = any { it.type == FormueType.VERDI_CAMPINGVOGN },
         hasKjoretoy = any { it.type == FormueType.VERDI_KJORETOY },
         hasFritidseiendom = any { it.type == FormueType.VERDI_FRITIDSEIENDOM },
-        hasAnnet = any { it.type == FormueType.VERDI_ANNET },
+        hasAnnetVerdi = any { it.type == FormueType.VERDI_ANNET },
         beskrivelseVerdi = find { it.type == FormueType.VERDI_ANNET }?.beskrivelse,
     )
 }
@@ -62,7 +62,7 @@ data class VerdierDto(
     val hasCampingvogn: Boolean = false,
     val hasKjoretoy: Boolean = false,
     val hasFritidseiendom: Boolean = false,
-    val hasAnnet: Boolean = false,
+    val hasAnnetVerdi: Boolean = false,
     val beskrivelseVerdi: String? = null,
 )
 
@@ -78,10 +78,11 @@ data class HarIkkeVerdierInput(
 ) : VerdierInput
 
 data class HarVerdierInput(
+    val hasBekreftelse: Boolean = true,
     val hasBolig: Boolean = false,
     val hasCampingvogn: Boolean = false,
     val hasKjoretoy: Boolean = false,
     val hasFritidseiendom: Boolean = false,
-    val hasBeskrivelseAnnet: Boolean = false,
+    val hasBeskrivelseVerdi: Boolean = false,
     val beskrivelseVerdi: String? = null,
 ) : VerdierInput
