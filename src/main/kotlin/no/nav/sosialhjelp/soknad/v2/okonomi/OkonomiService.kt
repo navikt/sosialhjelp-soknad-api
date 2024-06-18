@@ -47,6 +47,24 @@ class OkonomiService(
 
     fun addElementToOkonomi(
         soknadId: UUID,
+        element: OkonomiElement,
+    ): Set<*> {
+        val updatedSet =
+            findOrCreateOkonomi(soknadId).run {
+                when (element) {
+                    is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
+                    is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
+                    is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
+                    else -> error("Ukjent OkonomiType for oppretting")
+                }
+            }
+        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, element.type)
+
+        return updatedSet
+    }
+
+    fun addElementToOkonomi(
+        soknadId: UUID,
         type: OkonomiType,
         beskrivelse: String? = null,
     ): Set<*> {

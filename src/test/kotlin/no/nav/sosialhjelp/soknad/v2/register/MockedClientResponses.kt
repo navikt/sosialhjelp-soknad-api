@@ -6,6 +6,13 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoer
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoertype
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelse
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
 import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
@@ -29,6 +36,7 @@ import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ekt
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer1
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer2
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.vegadresseDto
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -301,5 +309,142 @@ fun defaultResponseFromHentBarn(
                     folkeregistermetadata = null,
                 ),
             ),
+    )
+}
+
+fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
+    val navn = "Navn Navnesen"
+    return UtbetalDataDto(
+        utbetalinger =
+            listOf(
+                Utbetaling(
+                    posteringsdato = null,
+                    utbetaltTil = Aktoer(Aktoertype.PERSON, "123456123451234", navn),
+                    utbetalingNettobeloep = null,
+                    utbetalingsdato = LocalDate.now().minusDays(10),
+                    forfallsdato = null,
+                    utbetalingsmelding = null,
+                    utbetaltTilKonto = null,
+                    utbetalingsmetode = null,
+                    utbetalingsstatus = null,
+                    ytelseListe =
+                        listOf(
+                            Ytelse(
+                                ytelsestype = "Utbetaling 1 Ytelse 1",
+                                ytelsesperiode = Periode(LocalDate.now().minusMonths(2), LocalDate.now()),
+                                ytelseNettobeloep = BigDecimal(5000.0),
+                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                skattsum = BigDecimal(1300.0),
+                                trekksum = BigDecimal(600.0),
+                                ytelseskomponentersum = BigDecimal(2500.0),
+                                skattListe = null,
+                                trekkListe = null,
+                                bilagsnummer = "13123421",
+                                refundertForOrg = null,
+                                ytelseskomponentListe =
+                                    listOf(
+                                        Ytelseskomponent(
+                                            ytelseskomponenttype = "Utbetaling 1 Ytelse 1 Komponent 1",
+                                            satsbeloep = BigDecimal(852.0),
+                                            satstype = "Timelønn",
+                                            satsantall = 2.0,
+                                            ytelseskomponentbeloep = BigDecimal(555.0),
+                                        ),
+                                        Ytelseskomponent(
+                                            ytelseskomponenttype = "Utbetaling 1 Ytelse 1 Komponent 2",
+                                            satsbeloep = BigDecimal(666.0),
+                                            satstype = "Timelønn",
+                                            satsantall = 2.0,
+                                            ytelseskomponentbeloep = BigDecimal(333.0),
+                                        ),
+                                    ),
+                            ),
+                            Ytelse(
+                                ytelsestype = "Utbetaling 1 Ytelse 2",
+                                ytelsesperiode = Periode(LocalDate.now().minusMonths(4), LocalDate.now().minusMonths(2)),
+                                ytelseNettobeloep = BigDecimal(5000.0),
+                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                skattsum = BigDecimal(1200.0),
+                                trekksum = BigDecimal(300.0),
+                                ytelseskomponentersum = BigDecimal(2400.0),
+                                skattListe = null,
+                                trekkListe = null,
+                                bilagsnummer = "1312342112",
+                                refundertForOrg = null,
+                                ytelseskomponentListe =
+                                    listOf(
+                                        Ytelseskomponent(
+                                            ytelseskomponenttype = "Utbetaling 1 Ytelse 2 Komponent 1",
+                                            satsbeloep = BigDecimal(812.0),
+                                            satstype = "Timelønn",
+                                            satsantall = 3.0,
+                                            ytelseskomponentbeloep = BigDecimal(555.0),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
+                Utbetaling(
+                    posteringsdato = null,
+                    utbetaltTil = Aktoer(Aktoertype.PERSON, "31212152", navn),
+                    utbetalingNettobeloep = null,
+                    utbetalingsdato = LocalDate.now().minusDays(10),
+                    forfallsdato = null,
+                    utbetalingsmelding = null,
+                    utbetaltTilKonto = null,
+                    utbetalingsmetode = null,
+                    utbetalingsstatus = null,
+                    ytelseListe =
+                        listOf(
+                            Ytelse(
+                                ytelsestype = "Utbetaling 2 Ytelse 1",
+                                ytelsesperiode = Periode(LocalDate.now().minusMonths(2), LocalDate.now()),
+                                ytelseNettobeloep = BigDecimal(5000.0),
+                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                skattsum = BigDecimal(1300.0),
+                                trekksum = BigDecimal(600.0),
+                                ytelseskomponentersum = BigDecimal(2500.0),
+                                skattListe = null,
+                                trekkListe = null,
+                                bilagsnummer = "13123421",
+                                refundertForOrg = null,
+                                ytelseskomponentListe =
+                                    listOf(
+                                        Ytelseskomponent(
+                                            ytelseskomponenttype = "Utbetaling 2 Ytelse 1 Komponent 1",
+                                            satsbeloep = BigDecimal(852.0),
+                                            satstype = "Timelønn",
+                                            satsantall = 2.0,
+                                            ytelseskomponentbeloep = BigDecimal(555.0),
+                                        ),
+                                    ),
+                            ),
+                            Ytelse(
+                                ytelsestype = "Utbetaling 2 Ytelse 2",
+                                ytelsesperiode = Periode(LocalDate.now().minusMonths(4), LocalDate.now().minusMonths(2)),
+                                ytelseNettobeloep = BigDecimal(5000.0),
+                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                skattsum = BigDecimal(1200.0),
+                                trekksum = BigDecimal(300.0),
+                                ytelseskomponentersum = BigDecimal(2400.0),
+                                skattListe = null,
+                                trekkListe = null,
+                                bilagsnummer = "1312342112",
+                                refundertForOrg = null,
+                                ytelseskomponentListe =
+                                    listOf(
+                                        Ytelseskomponent(
+                                            ytelseskomponenttype = "Utbetaling 2 Ytelse 1 Komponent 1",
+                                            satsbeloep = BigDecimal(812.0),
+                                            satstype = "Timelønn",
+                                            satsantall = 3.0,
+                                            ytelseskomponentbeloep = BigDecimal(555.0),
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
+            ),
+        feilet = false,
     )
 }

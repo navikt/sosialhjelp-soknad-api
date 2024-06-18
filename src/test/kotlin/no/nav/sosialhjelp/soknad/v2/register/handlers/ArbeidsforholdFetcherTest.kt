@@ -1,11 +1,19 @@
 package no.nav.sosialhjelp.soknad.v2.register.handlers
 
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.arbeid.AaregClient
+import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
+import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
+import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.register.AbstractRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer1
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.orgnummer2
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromAaregClient
+import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromOrganisasjonClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
@@ -83,5 +91,30 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
                 ?: fail("Finner ikke data")
         }
             ?: fail("Livssituasjon finnes ikke")
+    }
+
+    @MockkBean
+    protected lateinit var aaregClient: AaregClient
+
+    @MockkBean
+    protected lateinit var organisasjonClient: OrganisasjonClient
+
+    private fun createAnswerForAaregClient(
+        answer: List<ArbeidsforholdDto> = defaultResponseFromAaregClient(soknad.eierPersonId),
+    ): List<ArbeidsforholdDto> {
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(soknad.eierPersonId) } returns answer
+        return answer
+    }
+
+    private fun createAnswerForOrganisasjonClient(
+        arbeidsforhold: List<ArbeidsforholdDto>,
+    ): List<OrganisasjonNoekkelinfoDto> {
+        return arbeidsforhold
+            .map { (it.arbeidsgiver as OrganisasjonDto).organisasjonsnummer }
+            .map {
+                val answer = defaultResponseFromOrganisasjonClient(it!!)
+                every { organisasjonClient.hentOrganisasjonNoekkelinfo(it) } returns answer
+                answer
+            }
     }
 }

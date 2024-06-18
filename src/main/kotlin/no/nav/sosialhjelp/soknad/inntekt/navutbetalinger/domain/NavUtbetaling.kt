@@ -12,12 +12,12 @@ data class NavUtbetaling(
     val utbetalingsdato: LocalDate?,
     val periodeFom: LocalDate?,
     val periodeTom: LocalDate?,
-    val komponenter: List<Komponent>,
+    val komponenter: List<NavKomponent>,
     val tittel: String,
     val orgnummer: String,
 )
 
-data class Komponent(
+data class NavKomponent(
     val type: String?,
     val belop: Double?,
     val satsType: String?,

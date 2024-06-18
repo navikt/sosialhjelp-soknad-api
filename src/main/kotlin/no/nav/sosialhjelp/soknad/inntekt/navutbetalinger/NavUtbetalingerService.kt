@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
@@ -21,7 +21,7 @@ class NavUtbetalingerService(
         if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
             return null
         }
-
+        // TODO Unødvendig mellomledd når gammel logikk er fjernet
         utbetalinger = mapToNavutbetalinger(utbetalDataDto)
 
         log.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")
@@ -97,14 +97,14 @@ class NavUtbetalingerService(
             return utbetaltTil.trim().equals(navn.trim(), ignoreCase = true)
         }
 
-        private fun mapToKomponenter(ytelseskomponentList: List<Ytelseskomponent>?): List<Komponent> {
+        private fun mapToKomponenter(ytelseskomponentList: List<Ytelseskomponent>?): List<NavKomponent> {
             if (ytelseskomponentList == null) {
                 return emptyList()
             }
             log.info("Antall navytelser komponent {}", ytelseskomponentList.size)
             return ytelseskomponentList
                 .map {
-                    Komponent(
+                    NavKomponent(
                         type = it.ytelseskomponenttype,
                         belop = it.ytelseskomponentbeloep?.toDouble(),
                         satsType = it.satstype,

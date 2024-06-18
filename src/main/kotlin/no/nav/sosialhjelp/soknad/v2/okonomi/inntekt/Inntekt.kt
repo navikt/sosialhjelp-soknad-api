@@ -38,7 +38,9 @@ enum class InntektType(
     SLUTTOPPGJOER(dokumentasjonForventet = true),
 
     // register
+    UTBETALING_NAVYTELSE(dokumentasjonForventet = false),
+
+    // TODO Forventes dokumentasjon for disse 2?
     UTBETALING_HUSBANKEN(dokumentasjonForventet = true),
     UTBETALING_SKATTEETATEN(dokumentasjonForventet = true),
-    UTBETALING_NAVYTELSE(dokumentasjonForventet = true),
 }
