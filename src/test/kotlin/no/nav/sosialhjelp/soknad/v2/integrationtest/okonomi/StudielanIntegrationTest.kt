@@ -1,34 +1,27 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanInput
-import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
-class StudielanIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var okonomiRepository: OkonomiRepository
-
+class StudielanIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
     @Test
     fun `Hent studielan skal returnere korrekte date`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id, utdanning = Utdanning(erStudent = true)))
 
         val okonomi =
@@ -54,7 +47,6 @@ class StudielanIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hvis erStudent er false skal mottarStudielan = null`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id, utdanning = Utdanning(erStudent = false)))
 
         doGet(
@@ -69,7 +61,6 @@ class StudielanIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere studielan skal lagres i db`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id, utdanning = Utdanning(erStudent = true)))
 
         doPut(
@@ -89,11 +80,14 @@ class StudielanIntegrationTest : AbstractIntegrationTest() {
             assertThat(okonomi.inntekter.toList()).hasSize(1)
                 .allMatch { it.type == InntektType.STUDIELAN_INNTEKT }
         }
+
+        dokRepository.findAllBySoknadId(soknad.id).also {
+            assertThat(it).hasSize(1).allMatch { it.type == InntektType.STUDIELAN_INNTEKT }
+        }
     }
 
     @Test
     fun `Oppdatere studielan med erStudent = false skal ignoreres`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id, utdanning = Utdanning(erStudent = false)))
 
         doPut(

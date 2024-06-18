@@ -1,29 +1,21 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarIkkeUtbetalingerInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarUtbetalingerInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.UtbetalingerDto
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
-import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
-class UtbetalingerIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var okonomiRepository: OkonomiRepository
-
+class UtbetalingerIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Test
     fun `Hente utbetalinger skal returnere eksisterende data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val beskrivelse = "Beskrivelse av Utbetaling"
         setOf(
             Inntekt(InntektType.UTBETALING_SALG),
@@ -54,7 +46,6 @@ class UtbetalingerIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere input skal lagres i db`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val beskrivelse = "Beskrivelse av Utbetaling"
 
         val input =
@@ -79,11 +70,15 @@ class UtbetalingerIntegrationTest : AbstractIntegrationTest() {
                 .anyMatch { it.type == InntektType.UTBETALING_UTBYTTE }
                 .anyMatch { it.type == InntektType.UTBETALING_ANNET && it.beskrivelse == beskrivelse }
         }
+        dokRepository.findAllBySoknadId(soknad.id).also { dok ->
+            assertThat(dok).hasSize(2)
+                .anyMatch { it.type == InntektType.UTBETALING_UTBYTTE }
+                .anyMatch { it.type == InntektType.UTBETALING_ANNET }
+        }
     }
 
     @Test
     fun `Oppdatere med HarIkkeUtbetalinger skal fjerne alle eksisterende elementer`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         okonomiRepository.save(
             opprettOkonomi(soknad.id).copy(
                 inntekter = setOf(Inntekt(type = InntektType.UTBETALING_UTBYTTE)),
@@ -103,6 +98,7 @@ class UtbetalingerIntegrationTest : AbstractIntegrationTest() {
             assertThat(okonomi.bekreftelser).anyMatch { it.type == BekreftelseType.BEKREFTELSE_UTBETALING && !it.verdi }
             assertThat(okonomi.inntekter).isEmpty()
         }
+        assertThat(dokRepository.findAllBySoknadId(soknad.id)).isEmpty()
     }
 
     companion object {
