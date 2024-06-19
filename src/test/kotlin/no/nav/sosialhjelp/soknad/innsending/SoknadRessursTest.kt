@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -94,7 +95,7 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadServiceOld.startSoknad() } returns "null"
+        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse(brukerBehandlingId = "null", false)
 
         ressurs.opprettSoknad(response)
 
@@ -106,7 +107,7 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadServiceOld.startSoknad() } returns "null"
+        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse("null", false)
 
         ressurs.opprettSoknad(response)
 
@@ -271,8 +272,8 @@ internal class SoknadRessursTest {
         private fun createSoknadUnderArbeid(
             eier: String,
             jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = eier,
@@ -281,6 +282,5 @@ internal class SoknadRessursTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }
