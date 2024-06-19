@@ -30,11 +30,13 @@ class OkonomiService(
 
     fun getBekreftelser(soknadId: UUID): Set<Bekreftelse>? = findOkonomi(soknadId)?.bekreftelser
 
+    fun getBostotteSaker(soknadId: UUID): List<BostotteSak>? = findOkonomi(soknadId)?.bostotteSaker
+
     fun updateBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
-        dato: LocalDate = LocalDate.now(),
         verdi: Boolean,
+        dato: LocalDate = LocalDate.now(),
     ) {
         val okonomi = findOrCreateOkonomi(soknadId)
 
@@ -42,6 +44,15 @@ class OkonomiService(
             .filter { it.type != type }
             .plus(Bekreftelse(type, dato, verdi))
             .let { bekreftelser -> okonomi.copy(bekreftelser = bekreftelser.toSet()) }
+            .also { okonomiRepository.save(it) }
+    }
+
+    fun updateBostotteSaker(
+        soknadId: UUID,
+        saker: List<BostotteSak>,
+    ) {
+        findOrCreateOkonomi(soknadId)
+            .copy(bostotteSaker = saker)
             .also { okonomiRepository.save(it) }
     }
 

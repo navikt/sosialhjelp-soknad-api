@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers.person
+package no.nav.sosialhjelp.soknad.v2.register.handlers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseForSkattbarInntektService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

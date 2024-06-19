@@ -6,6 +6,13 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PersonArbeidDto
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.VedtakDto
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteMottaker
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteRolle
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoer
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoertype
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
@@ -30,6 +37,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import no.nav.sosialhjelp.soknad.personalia.person.dto.StatsborgerskapDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.barn1Fnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.barn2Fnr
 import no.nav.sosialhjelp.soknad.v2.register.DefaultValuesForMockedResponses.ektefelleFnr
@@ -470,5 +478,52 @@ fun defaultResponseForSkattbarInntektService(): List<UtbetalingSkatteetaten> {
             tittel = "Lønn",
             orgnummer = "98765432",
         ),
+    )
+}
+
+fun defaultResponseForHusbankenClient(): BostotteDto {
+    return BostotteDto(
+        saker =
+            listOf(
+                SakDto(
+                    mnd = LocalDate.now().month.value,
+                    ar = LocalDate.now().year,
+                    status = BostotteStatus.UNDER_BEHANDLING,
+                    rolle = BostotteRolle.HOVEDPERSON,
+                    vedtak =
+                        VedtakDto(
+                            kode = "Kode for Vedtak",
+                            beskrivelse = "beskrivelse om vedtak",
+                            type = Vedtaksstatus.INNVILGET.name,
+                        ),
+                ),
+                SakDto(
+                    mnd = LocalDate.now().month.value,
+                    ar = LocalDate.now().year,
+                    status = BostotteStatus.VEDTATT,
+                    rolle = BostotteRolle.HOVEDPERSON,
+                    vedtak =
+                        VedtakDto(
+                            kode = "En annen kode for vedtak",
+                            beskrivelse = "En annen beskrivelse om vedtak",
+                            type = Vedtaksstatus.AVVIST.name,
+                        ),
+                ),
+            ),
+        utbetalinger =
+            listOf(
+                UtbetalingDto(
+                    utbetalingsdato = LocalDate.now(),
+                    belop = BigDecimal(5000.0),
+                    mottaker = BostotteMottaker.HUSSTAND,
+                    rolle = BostotteRolle.HOVEDPERSON,
+                ),
+                UtbetalingDto(
+                    utbetalingsdato = LocalDate.now(),
+                    belop = BigDecimal(6000.0),
+                    mottaker = BostotteMottaker.HUSSTAND,
+                    rolle = BostotteRolle.HOVEDPERSON,
+                ),
+            ),
     )
 }
