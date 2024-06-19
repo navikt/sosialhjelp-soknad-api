@@ -62,13 +62,13 @@ enum class BekreftelseType {
     BEKREFTELSE_SPARING,
     BEKREFTELSE_UTBETALING,
     BEKREFTELSE_VERDI,
+    STUDIELAN_BEKREFTELSE,
 
     // // TODO Samme som over
     BOSTOTTE,
 
     // TODO Samtykker kan leve i en 2-dimensjonal greie -> Gitt / Ikke gitt. Kunne kanskje vært persistert et annet sted?
     BOSTOTTE_SAMTYKKE,
-    STUDIELAN_BEKREFTELSE,
     UTBETALING_SKATTEETATEN_SAMTYKKE,
 }
 

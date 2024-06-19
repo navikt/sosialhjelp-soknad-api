@@ -4,9 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
-import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
+import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseForSkattbarInntektService
@@ -23,6 +21,9 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Autowired
     private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
+
+    @Autowired
+    private lateinit var samtykkeService: SamtykkeService
 
     @Test
     fun `Hente inntekt skal lagres i db`() {
@@ -77,9 +78,21 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilInntektSkatteetaten).isTrue()
     }
 
+    @Test
+    fun `Sette samtykke = false skal fjerne inntekt`() {
+        createAnswerForSkatteetatenClient()
+
+        setBekreftelse(true)
+        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
+
+        samtykkeService.updateSamtykkeSkatteetaten(soknad.id, false)
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(0)
+    }
+
     private fun setBekreftelse(samtykke: Boolean) {
-        Bekreftelse(BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE, verdi = samtykke)
-            .also { okonomiRepository.save(Okonomi(soknad.id, bekreftelser = setOf(it))) }
+        samtykkeService.updateSamtykkeSkatteetaten(soknad.id, gitt = samtykke)
     }
 
     @MockkBean
