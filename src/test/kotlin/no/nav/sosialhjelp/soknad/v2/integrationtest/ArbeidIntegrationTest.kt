@@ -4,10 +4,10 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidDto
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -32,21 +32,20 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
                 ArbeidDto::class.java,
             )
 
-        livssituasjon.arbeid?.let {
+        livssituasjon.arbeid.let {
             assertThat(arbeidDto.kommentar).isEqualTo(it.kommentar)
 
             arbeidDto.arbeidsforholdList.forEachIndexed { index, arbeidsforholdDto ->
                 with(it.arbeidsforhold[index]) {
                     assertThat(arbeidsforholdDto.arbeidsgivernavn).isEqualTo(arbeidsgivernavn)
                     assertThat(arbeidsforholdDto.orgnummer).isEqualTo(orgnummer)
-                    assertThat(arbeidsforholdDto.start).isEqualTo(start)
-                    assertThat(arbeidsforholdDto.slutt).isEqualTo(slutt)
+                    assertThat(arbeidsforholdDto.start).isEqualTo(start?.toIsoString())
+                    assertThat(arbeidsforholdDto.slutt).isEqualTo(slutt?.toIsoString())
                     assertThat(arbeidsforholdDto.harFastStilling).isEqualTo(harFastStilling)
                     assertThat(arbeidsforholdDto.fastStillingsprosent).isEqualTo(fastStillingsprosent)
                 }
             }
         }
-            ?: fail("Arbeid er null")
     }
 
     @Test
@@ -66,7 +65,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
         }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.arbeid!!.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
+            assertThat(it.arbeid.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
     }
 }

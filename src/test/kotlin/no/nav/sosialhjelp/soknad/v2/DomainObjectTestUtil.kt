@@ -124,8 +124,8 @@ fun opprettArbeidsforholdList(
 fun opprettArbeidsforhold(
     arbeidsgivernavn: String = "Arbeidsgiversen",
     orgnummer: String? = "1234567890",
-    start: String? = "01012010",
-    slutt: String? = "01012020",
+    start: LocalDate? = LocalDate.now().minusYears(4),
+    slutt: LocalDate? = null,
     fastStillingsprosent: Int? = 100,
     harFastStilling: Boolean? = true,
 ): Arbeidsforhold {

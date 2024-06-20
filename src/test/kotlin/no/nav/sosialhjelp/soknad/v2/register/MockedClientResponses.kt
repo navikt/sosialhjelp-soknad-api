@@ -86,8 +86,8 @@ internal fun defaultResponseFromAaregClient(personId: String): List<Arbeidsforho
                 AnsettelsesperiodeDto(
                     periode =
                         PeriodeDto(
-                            fom = LocalDate.of(2000, 1, 1),
-                            tom = LocalDate.of(2009, 12, 31),
+                            fom = LocalDate.now().minusYears(2),
+                            tom = LocalDate.now(),
                         ),
                 ),
             arbeidsavtaler =
@@ -108,8 +108,8 @@ internal fun defaultResponseFromAaregClient(personId: String): List<Arbeidsforho
                 AnsettelsesperiodeDto(
                     periode =
                         PeriodeDto(
-                            fom = LocalDate.of(2010, 1, 1),
-                            tom = LocalDate.of(2019, 12, 31),
+                            fom = LocalDate.now().minusYears(8),
+                            tom = null,
                         ),
                 ),
             arbeidsavtaler =

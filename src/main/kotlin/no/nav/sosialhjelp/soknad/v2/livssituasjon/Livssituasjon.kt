@@ -9,6 +9,8 @@ import org.springframework.data.relational.core.mapping.MappedCollection
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Repository
@@ -48,11 +50,13 @@ data class Arbeid(
 data class Arbeidsforhold(
     val arbeidsgivernavn: String,
     val orgnummer: String?,
-    val start: String?,
-    val slutt: String?,
+    val start: LocalDate?,
+    val slutt: LocalDate?,
     val fastStillingsprosent: Int? = 0,
     val harFastStilling: Boolean?,
 )
+
+fun LocalDate.toIsoString(): String = this.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 enum class Studentgrad {
     HELTID,

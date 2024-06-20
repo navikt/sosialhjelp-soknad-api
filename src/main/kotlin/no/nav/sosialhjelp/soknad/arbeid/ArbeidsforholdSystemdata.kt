@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -45,8 +46,8 @@ class ArbeidsforholdSystemdata(
     private fun mapToJsonArbeidsforhold(arbeidsforhold: Arbeidsforhold): JsonArbeidsforhold {
         return JsonArbeidsforhold()
             .withArbeidsgivernavn(arbeidsforhold.arbeidsgivernavn)
-            .withFom(arbeidsforhold.fom)
-            .withTom(arbeidsforhold.tom)
+            .withFom(arbeidsforhold.fom?.toIsoString())
+            .withTom(arbeidsforhold.tom?.toIsoString())
             .withKilde(JsonKilde.SYSTEM)
             .withStillingsprosent(arbeidsforhold.fastStillingsprosent?.let { Math.toIntExact(it) })
             .withStillingstype(arbeidsforhold.harFastStilling?.let { tilJsonStillingstype(it) })

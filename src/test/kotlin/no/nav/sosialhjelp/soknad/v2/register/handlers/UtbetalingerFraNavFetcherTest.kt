@@ -40,7 +40,8 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Tom liste lagrer ingen Inntekt`() {
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(utbetalinger = null, feilet = false)
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns
+            UtbetalDataDto(utbetalinger = emptyList(), feilet = false)
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
 
