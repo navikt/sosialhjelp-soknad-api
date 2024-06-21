@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
+// TODO Selve oppdateringen av Barnebidrag kunne vært testet via integrasjonstest, fremfor direkte på service-laget
 class BarnebidragTest : AbstractOkonomiServiceTest() {
     @Autowired
     private lateinit var forsorgerService: ForsorgerService
