@@ -20,23 +20,26 @@ class SoknadV2AdapterService(
         behandlingsId: String,
         opprettetDato: LocalDateTime,
         eierId: String,
+        kortSoknad: Boolean,
     ) {
         logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
-        kotlin.runCatching {
-            soknadService.createSoknad(
-                soknadId = UUID.fromString(behandlingsId),
-                opprettetDato = opprettetDato,
-                eierId = eierId,
-            )
-        }
-            .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+        kotlin
+            .runCatching {
+                soknadService.createSoknad(
+                    soknadId = UUID.fromString(behandlingsId),
+                    opprettetDato = opprettetDato,
+                    eierId = eierId,
+                    kortSoknad = kortSoknad,
+                )
+            }.onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
 
-        kotlin.runCatching {
-            soknadService.findOrError(UUID.fromString(behandlingsId))
-                .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
-        }
-            .onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
+        kotlin
+            .runCatching {
+                soknadService
+                    .findOrError(UUID.fromString(behandlingsId))
+                    .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
+            }.onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
     }
 
     override fun setInnsendingstidspunkt(
@@ -45,23 +48,23 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
-        kotlin.runCatching {
-            OffsetDateTime.parse(innsendingsTidspunkt).let {
-                soknadService.setInnsendingstidspunkt(
-                    soknadId = UUID.fromString(soknadId),
-                    innsendingsTidspunkt = it.toLocalDateTime(),
-                )
-            }
-        }
-            .onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+        kotlin
+            .runCatching {
+                OffsetDateTime.parse(innsendingsTidspunkt).let {
+                    soknadService.setInnsendingstidspunkt(
+                        soknadId = UUID.fromString(soknadId),
+                        innsendingsTidspunkt = it.toLocalDateTime(),
+                    )
+                }
+            }.onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
         logger.info("NyModell: Sletter SoknadV2")
 
-        kotlin.runCatching {
-            soknadService.slettSoknad(UUID.fromString(behandlingsId))
-        }
-            .onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
+        kotlin
+            .runCatching {
+                soknadService.slettSoknad(UUID.fromString(behandlingsId))
+            }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 }

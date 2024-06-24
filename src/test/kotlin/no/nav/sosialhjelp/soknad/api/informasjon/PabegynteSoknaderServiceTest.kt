@@ -30,6 +30,7 @@ internal class PabegynteSoknaderServiceTest {
                 opprettetDato = now,
                 sistEndretDato = now,
                 innsendtDato = now,
+                kortSoknad = false,
             )
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker(any()) } returns listOf(soknadMetadata)
 

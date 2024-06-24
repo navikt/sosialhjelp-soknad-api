@@ -25,6 +25,7 @@ object SoknadMetadataRowMapper {
                 sistEndretDato = SQLUtils.timestampTilTid(rs.getTimestamp("sistendretdato")),
                 innsendtDato = SQLUtils.nullableTimestampTilTid(rs.getTimestamp("innsendtdato")),
                 lest = rs.getBoolean("lest_ditt_nav"),
+                kortSoknad = rs.getBoolean("is_kort_soknad"),
             )
         }
 }
