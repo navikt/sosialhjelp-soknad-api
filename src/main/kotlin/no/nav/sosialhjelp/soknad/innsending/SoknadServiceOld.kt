@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -61,14 +62,16 @@ class SoknadServiceOld(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
+    private val unleash: Unleash,
 ) {
     @Transactional
     fun startSoknad(): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
+        val kortSoknadEnabled = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
         val harSendtSoknadSiste4mnd = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eierId, LocalDateTime.now(clock).minusWeeks(4)).any()
 
-        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = harSendtSoknadSiste4mnd) // TODO NyModell Metadata returnerer UUID
+        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknadEnabled && harSendtSoknadSiste4mnd) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
         log.info("Starter søknad")
 
@@ -90,7 +93,7 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
-            harSendtSoknadSiste4mnd,
+            kortSoknadEnabled && harSendtSoknadSiste4mnd,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater

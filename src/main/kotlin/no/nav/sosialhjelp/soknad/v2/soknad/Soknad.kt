@@ -20,7 +20,7 @@ interface SoknadRepository :
     @Query("SELECT * FROM soknad WHERE opprettet < :timestamp")
     fun findOlderThan(timestamp: LocalDateTime): List<Soknad>
 
-    @Query("SELECT * FROM soknad WHERE opprettet > :timestamp and eier_person_id = :eierId")
+    @Query("SELECT * FROM soknad WHERE sendt_inn > :timestamp and eier_person_id = :eierId")
     fun findNewerThan(
         eierId: String,
         timestamp: LocalDateTime,
