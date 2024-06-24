@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
+import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -15,7 +16,7 @@ interface BoutgiftService {
 
     fun updateBoutgifter(
         soknadId: UUID,
-        input: HarBoutgifterInput,
+        existingBoutgifter: Set<UtgiftType>,
     )
 
     fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean
@@ -28,65 +29,83 @@ class BoutgiftServiceImpl(
     private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : BoutgiftService {
     override fun getBoutgifter(soknadId: UUID): Set<Utgift>? {
-        return okonomiService.getUtgifter(soknadId)
-            ?.filter { boutgiftTyper.contains(it.type) }
-            ?.toSet()
+        return okonomiService.getBekreftelser(soknadId).find { it.type == BekreftelseType.BEKREFTELSE_BOUTGIFTER }
+            ?.let { bostotteBekreftelse ->
+                if (!bostotteBekreftelse.verdi) {
+                    emptySet()
+                } else {
+                    okonomiService.getUtgifter(soknadId)
+                        .filter { boutgiftTypes.contains(it.type) }
+                        .toSet()
+                }
+            }
     }
 
     override fun removeBoutgifter(soknadId: UUID) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = false)
-
-        okonomiService.getUtgifter(soknadId)
-            ?.filter { boutgiftTyper.contains(it.type) }
-            ?.forEach { okonomiService.removeElementFromOkonomi(soknadId, it.type) }
+        boutgiftTypes.forEach { okonomiService.removeElementFromOkonomi(soknadId, it) }
     }
 
     override fun updateBoutgifter(
         soknadId: UUID,
-        input: HarBoutgifterInput,
+        existingBoutgifter: Set<UtgiftType>,
     ) {
-        TODO("Not yet implemented")
-    }
+        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = true)
 
-    override fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
-        val hasBostotteBekreftelse =
-            okonomiService.getBekreftelser(soknadId)
-                ?.any { it.type == BekreftelseType.BOSTOTTE }
-        val hasInntektHusbanken =
-            okonomiService.getInntekter(soknadId)
-                ?.any { it.type == InntektType.UTBETALING_HUSBANKEN } ?: false
-        val hasBostotteSaker =
-            okonomiService.getBostotteSaker(soknadId)
-                ?.isNotEmpty() ?: false
-        val fetchBostotteFailed = integrasjonstatusRepository.findByIdOrNull(soknadId)?.feilStotteHusbanken == true
-        val missingBostotteSamtykke =
-            okonomiService.getBekreftelser(soknadId)
-                ?.none { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE && it.verdi } ?: true
-
-        // IF henting av bostotte har feilet ELLER vi mangler samtykke
-        // -> sjekk om vi har noen bekreftelser -> hvis ikke returner false
-        // -> sjekk om vi har bekreftelse BOSTOTTE -> hvis ikke returner true
-        // -> sjekk at verdien ikke er null OG at den er false -> hvis det inntreffer, returner true
-        // ELSE ingen husbanken-saker OG ingen husbanken-utbetalinger
-
-        return if (fetchBostotteFailed || missingBostotteSamtykke) {
-            okonomiService.getBekreftelser(soknadId)
-                .let { bekreftelser ->
-                    if (bekreftelser == null) {
-                        return false
-                    } else {
-                        bekreftelser.find { bekreftelse -> bekreftelse.type == BekreftelseType.BOSTOTTE }
-                    }
-                }
-                .let { bekreftelse -> if (bekreftelse == null) true else !bekreftelse.verdi }
-        } else {
-            !hasInntektHusbanken && !hasBostotteSaker
+        boutgiftTypes.forEach {
+            if (existingBoutgifter.contains(it)) {
+                okonomiService.addElementToOkonomi(soknadId, it)
+            } else {
+                okonomiService.removeElementFromOkonomi(soknadId, it)
+            }
         }
     }
 
+    // TODO "kopiering" og forsøk på enklere fremstilling av BoutgiftRessurs#getSkalViseInfoVedBekreftelse
+    // TODO denne presiserer hvilke bekreftelser vi er interessert i - og ikke hva som helst som tidligere
+    // TODO Skal backend egentlig eie denne logikken?
+    override fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
+        return if (fetchBostotteFailedOrMissingSamtykke(soknadId)) {
+            getBostotteRelatedBekreftelser(soknadId)
+                // hvis bruker ikke har svart på noe relatert til bostotte - ikke vis
+                .ifEmpty { return false }
+                // hvis bruker har svart nei, eller ikke svart - vis info (returner true)
+                .isBostotteBekreftelseFalseOrNull()
+        } else {
+            // ingen bostotte-utbetalinger eller saker - vis info (returnerer true)
+            trueIfNoBostottesakerOrUtbetalinger(soknadId)
+        }
+    }
+
+    private fun getBostotteRelatedBekreftelser(soknadId: UUID) =
+        okonomiService.getBekreftelser(soknadId)
+            .filter { bekreftelse -> boutgiftsRelevanteBekreftelser.contains(bekreftelse.type) }
+
+    private fun fetchBostotteFailedOrMissingSamtykke(soknadId: UUID): Boolean {
+        return integrasjonstatusRepository.findByIdOrNull(soknadId)?.feilStotteHusbanken == true ||
+            okonomiService.getBekreftelser(soknadId).none {
+                it.type == BekreftelseType.BOSTOTTE_SAMTYKKE && it.verdi
+            }
+    }
+
+    private fun trueIfNoBostottesakerOrUtbetalinger(soknadId: UUID): Boolean {
+        return okonomiService.getInntekter(soknadId).none { it.type == InntektType.UTBETALING_HUSBANKEN } &&
+            okonomiService.getBostotteSaker(soknadId).isEmpty()
+    }
+
+    private fun List<Bekreftelse>.isBostotteBekreftelseFalseOrNull() =
+        find { it.type == BekreftelseType.BOSTOTTE }
+            ?.let { !it.verdi } ?: true
+
     companion object {
-        private val boutgiftTyper: List<UtgiftType> =
+        private val boutgiftsRelevanteBekreftelser: List<BekreftelseType> =
             listOf(
+                BekreftelseType.BEKREFTELSE_BOUTGIFTER,
+                BekreftelseType.BOSTOTTE,
+                BekreftelseType.BOSTOTTE_SAMTYKKE,
+            )
+        private val boutgiftTypes: Set<UtgiftType> =
+            setOf(
                 UtgiftType.UTGIFTER_HUSLEIE,
                 UtgiftType.UTGIFTER_STROM,
                 UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT,

@@ -34,6 +34,8 @@ enum class UtgiftType(
     UTGIFTER_SFO(dokumentasjonForventet = true),
     UTGIFTER_BARNEHAGE(dokumentasjonForventet = true),
     UTGIFTER_HUSLEIE(dokumentasjonForventet = true),
+
+    // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
     UTGIFTER_BOLIGLAN_AVDRAG(dokumentasjonForventet = true),
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
 }

@@ -22,15 +22,15 @@ class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
     private val dokumentasjonService: DokumentasjonForventningService,
 ) {
-    fun getFormuer(soknadId: UUID): Set<Formue>? = findOkonomi(soknadId)?.formuer
+    fun getFormuer(soknadId: UUID): Set<Formue> = findOkonomi(soknadId)?.formuer ?: emptySet()
 
-    fun getInntekter(soknadId: UUID): Set<Inntekt>? = findOkonomi(soknadId)?.inntekter
+    fun getInntekter(soknadId: UUID): Set<Inntekt> = findOkonomi(soknadId)?.inntekter ?: emptySet()
 
-    fun getUtgifter(soknadId: UUID): Set<Utgift>? = findOkonomi(soknadId)?.utgifter
+    fun getUtgifter(soknadId: UUID): Set<Utgift> = findOkonomi(soknadId)?.utgifter ?: emptySet()
 
-    fun getBekreftelser(soknadId: UUID): Set<Bekreftelse>? = findOkonomi(soknadId)?.bekreftelser
+    fun getBekreftelser(soknadId: UUID): Set<Bekreftelse> = findOkonomi(soknadId)?.bekreftelser ?: emptySet()
 
-    fun getBostotteSaker(soknadId: UUID): List<BostotteSak>? = findOkonomi(soknadId)?.bostotteSaker
+    fun getBostotteSaker(soknadId: UUID): List<BostotteSak> = findOkonomi(soknadId)?.bostotteSaker ?: emptyList()
 
     fun updateBekreftelse(
         soknadId: UUID,
@@ -47,31 +47,19 @@ class OkonomiService(
             .also { okonomiRepository.save(it) }
     }
 
-    fun updateBostotteSaker(
+    fun addBostotteSaker(
         soknadId: UUID,
-        saker: List<BostotteSak>,
+        sak: BostotteSak,
     ) {
         findOrCreateOkonomi(soknadId)
-            .copy(bostotteSaker = saker)
+            .run { copy(bostotteSaker = bostotteSaker.plus(sak)) }
             .also { okonomiRepository.save(it) }
     }
 
-    fun addElementToOkonomi(
-        soknadId: UUID,
-        element: OkonomiElement,
-    ): Set<*> {
-        val updatedSet =
-            findOrCreateOkonomi(soknadId).run {
-                when (element) {
-                    is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
-                    is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
-                    is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
-                    else -> error("Ukjent OkonomiType for oppretting")
-                }
-            }
-        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, element.type)
-
-        return updatedSet
+    fun fjernBostotteSaker(soknadId: UUID) {
+        okonomiRepository.findByIdOrNull(soknadId)
+            ?.run { copy(bostotteSaker = emptyList()) }
+            ?.also { okonomiRepository.save(it) }
     }
 
     fun addElementToOkonomi(

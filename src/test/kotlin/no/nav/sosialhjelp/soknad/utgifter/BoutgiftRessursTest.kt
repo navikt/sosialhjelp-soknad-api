@@ -51,7 +51,13 @@ internal class BoutgiftRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
 
-    private val boutgiftRessurs = BoutgiftRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val boutgiftRessurs =
+        BoutgiftRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            v2ControllerAdapter = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

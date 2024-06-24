@@ -430,3 +430,11 @@ fun createFiler(): Set<Dokument> {
         ),
     )
 }
+
+fun createBostotteSak(beskrivelse: String? = null) =
+    BostotteSak(
+        dato = LocalDate.now(),
+        status = BostotteStatus.UNDER_BEHANDLING,
+        beskrivelse = beskrivelse,
+        vedtaksstatus = null,
+    )

@@ -22,40 +22,50 @@ class BoutgiftController(
     fun getBoutgifter(
         @PathVariable("soknadId") soknadId: UUID,
     ): BoutgifterDto {
-        return boutgiftService.getBoutgifter(soknadId)?.let {
-            if (it.isEmpty()) {
-                BoutgifterDto(bekreftelse = false)
-            } else {
-                it.toBoutgifterDto()
+        val skalVise = boutgiftService.skalViseInfoVedBekreftelse(soknadId)
+
+        return boutgiftService.getBoutgifter(soknadId)
+            ?.let {
+                if (it.isNotEmpty()) {
+                    it.toBoutgifterDto(skalVise)
+                } else {
+                    BoutgifterDto(
+                        bekreftelse = false,
+                        skalViseInfoVedBekreftelse = skalVise,
+                    )
+                }
             }
-        }
-            ?: BoutgifterDto()
+            ?: BoutgifterDto(skalViseInfoVedBekreftelse = skalVise)
     }
 
     @PutMapping
     fun updateBoutgifter(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) boutgifterInput: BoutgifterInput,
+        @RequestBody(required = true) input: BoutgifterInput,
     ): BoutgifterDto {
+        when (input) {
+            is HarBoutgifterInput -> boutgiftService.updateBoutgifter(soknadId, input.toUtgiftTypeSet())
+            else -> boutgiftService.removeBoutgifter(soknadId)
+        }
         return getBoutgifter(soknadId)
     }
 
-    private fun Set<Utgift>.toBoutgifterDto() =
-        BoutgifterDto(
-            bekreftelse = true,
-            husleie = any { it.type == UtgiftType.UTGIFTER_HUSLEIE },
-            strom = any { it.type == UtgiftType.UTGIFTER_STROM },
-            kommunalAvgift = any { it.type == UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT },
-            oppvarming = any { it.type == UtgiftType.UTGIFTER_OPPVARMING },
-            boliglan = any { it.type == UtgiftType.UTGIFTER_BOLIGLAN_RENTER || it.type == UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG },
-            annet = any { it.type == UtgiftType.UTGIFTER_ANNET_BO },
-        )
-
     private fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
-        val skalVise: Boolean = boutgiftService.skalViseInfoVedBekreftelse(soknadId)
-
-        return false
+        return boutgiftService.skalViseInfoVedBekreftelse(soknadId)
     }
+}
+
+private fun HarBoutgifterInput.toUtgiftTypeSet(): Set<UtgiftType> {
+    return setOf(
+        if (hasHusleie) UtgiftType.UTGIFTER_HUSLEIE else null,
+        if (hasStrom) UtgiftType.UTGIFTER_STROM else null,
+        if (hasKommunalAvgift) UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT else null,
+        if (hasOppvarming) UtgiftType.UTGIFTER_OPPVARMING else null,
+        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG else null,
+        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_RENTER else null,
+        if (hasAnnenBoutgift) UtgiftType.UTGIFTER_ANNET_BO else null,
+    )
+        .filterNotNull().toSet()
 }
 
 data class BoutgifterDto(
@@ -69,6 +79,18 @@ data class BoutgifterDto(
     val skalViseInfoVedBekreftelse: Boolean = false,
 )
 
+private fun Set<Utgift>.toBoutgifterDto(skalViseInfoVedBekreftelse: Boolean) =
+    BoutgifterDto(
+        bekreftelse = true,
+        husleie = any { it.type == UtgiftType.UTGIFTER_HUSLEIE },
+        strom = any { it.type == UtgiftType.UTGIFTER_STROM },
+        kommunalAvgift = any { it.type == UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT },
+        oppvarming = any { it.type == UtgiftType.UTGIFTER_OPPVARMING },
+        boliglan = any { it.type == UtgiftType.UTGIFTER_BOLIGLAN_RENTER || it.type == UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG },
+        annet = any { it.type == UtgiftType.UTGIFTER_ANNET_BO },
+        skalViseInfoVedBekreftelse = skalViseInfoVedBekreftelse,
+    )
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
     JsonSubTypes.Type(HarIkkeBoutgifterInput::class),
@@ -81,12 +103,13 @@ class HarIkkeBoutgifterInput : BoutgifterInput {
 }
 
 data class HarBoutgifterInput(
-    val hasBolig: Boolean = false,
-    val hasCampingvogn: Boolean = false,
-    val hasKjoretoy: Boolean = false,
-    val hasFritidseiendom: Boolean = false,
-    val hasBeskrivelseVerdi: Boolean = false,
-    val beskrivelseVerdi: String? = null,
+    val hasHusleie: Boolean = false,
+    val hasStrom: Boolean = false,
+    val hasKommunalAvgift: Boolean = false,
+    val hasOppvarming: Boolean = false,
+    val hasBoliglan: Boolean = false,
+    val hasAnnenBoutgift: Boolean = false,
+    val beskrivelseAnnenBoutgift: String? = null,
 ) : BoutgifterInput {
     val hasBekreftelse: Boolean = true
 }

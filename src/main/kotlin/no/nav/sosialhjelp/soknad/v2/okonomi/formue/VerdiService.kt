@@ -27,14 +27,14 @@ class VerdiServiceImpl(
     private val okonomiService: OkonomiService,
 ) : VerdiService {
     override fun getVerdier(soknadId: UUID): Set<Formue>? =
-        okonomiService.getFormuer(soknadId)?.filter { verdiTyper.contains(it.type) }?.toSet()
+        okonomiService.getFormuer(soknadId).filter { verdiTyper.contains(it.type) }.toSet()
 
     override fun removeVerdier(soknadId: UUID) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, verdi = false)
 
         okonomiService.getFormuer(soknadId)
-            ?.filter { verdiTyper.contains(it.type) }
-            ?.forEach { okonomiService.removeElementFromOkonomi(soknadId, it.type) }
+            .filter { verdiTyper.contains(it.type) }
+            .forEach { okonomiService.removeElementFromOkonomi(soknadId, it.type) }
     }
 
     override fun updateVerdier(
