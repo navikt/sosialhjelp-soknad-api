@@ -119,6 +119,7 @@ internal class TilgangskontrollTest {
                 fnr = userId,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
         every { soknadMetadataRepository.hent("123") } returns metadata
         every { personService.harAdressebeskyttelse(userId) } returns false
@@ -136,6 +137,7 @@ internal class TilgangskontrollTest {
                 fnr = "other_user",
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
         every { soknadMetadataRepository.hent("123") } returns metadata
 

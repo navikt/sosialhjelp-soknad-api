@@ -21,7 +21,8 @@ class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
     private val sendSoknadHandler: SendSoknadHandler,
-) : SoknadService, BegrunnelseService {
+) : SoknadService,
+    BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -31,15 +32,15 @@ class SoknadServiceImpl(
         eierId: String,
         soknadId: UUID,
         opprettetDato: LocalDateTime,
-    ): UUID {
-        return Soknad(
+        kortSoknad: Boolean,
+    ): UUID =
+        Soknad(
             id = soknadId,
             tidspunkt = Tidspunkt(opprettet = opprettetDato),
             eierPersonId = eierId,
-        )
-            .let { soknadRepository.save(it) }
+            kortSoknad = kortSoknad,
+        ).let { soknadRepository.save(it) }
             .id
-    }
 
     override fun deleteSoknad(soknadId: UUID) {
         findOrError(soknadId).also {
@@ -76,17 +77,21 @@ class SoknadServiceImpl(
             .also { soknadRepository.save(it) }
     }
 
+    override fun hasSoknadNewerThan(
+        eierId: String,
+        timestamp: LocalDateTime,
+    ): Boolean = soknadRepository.findNewerThan(eierId, timestamp).any()
+
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 
     override fun updateBegrunnelse(
         soknadId: UUID,
         begrunnelse: Begrunnelse,
-    ): Begrunnelse {
-        return findOrError(soknadId)
+    ): Begrunnelse =
+        findOrError(soknadId)
             .copy(begrunnelse = begrunnelse)
             .let { soknadRepository.save(it) }
             .begrunnelse
-    }
 
     companion object {
         private val logger by logger()

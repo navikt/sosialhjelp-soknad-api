@@ -108,6 +108,7 @@ internal class SoknadActionsTest {
                 status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -145,6 +146,7 @@ internal class SoknadActionsTest {
                 status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
@@ -158,7 +160,8 @@ internal class SoknadActionsTest {
     fun sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         val behandlingsId = "fiksNedetidOgTomCache"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns FIKS_NEDETID_OG_TOM_CACHE
@@ -173,7 +176,8 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
         val behandlingsId = "kommuneUtenKonfigurasjon"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns MANGLER_KONFIGURASJON
@@ -186,7 +190,8 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
         val behandlingsId = "kommuneMedSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MED_MANGLER
@@ -199,7 +204,8 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
         val behandlingsId = "kommuneMedFDA"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
@@ -214,7 +220,8 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneMedMidlertidigFeilSkalKasteException() {
         val behandlingsId = "kommuneMedMidlertidigFeil"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
@@ -229,7 +236,8 @@ internal class SoknadActionsTest {
     fun sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
         val behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut"
         val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MED_MANGLER
@@ -255,8 +263,8 @@ internal class SoknadActionsTest {
     companion object {
         private const val KOMMUNE_I_SVARUT_LISTEN = "0301"
 
-        private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = eier,
@@ -265,6 +273,5 @@ internal class SoknadActionsTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

@@ -65,7 +65,10 @@ class SoknadServiceOld(
     @Transactional
     fun startSoknad(): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
-        val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
+
+        val harSendtSoknadSiste4mnd = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eierId, LocalDateTime.now(clock).minusWeeks(4)).any()
+
+        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = harSendtSoknadSiste4mnd) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
         log.info("Starter søknad")
 
@@ -87,16 +90,20 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
+            harSendtSoknadSiste4mnd,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return StartSoknadResponse(behandlingsId, false)
+        return StartSoknadResponse(behandlingsId, harSendtSoknadSiste4mnd)
     }
 
-    private fun opprettSoknadMetadata(fnr: String): String {
+    private fun opprettSoknadMetadata(
+        fnr: String,
+        kortSoknad: Boolean,
+    ): String {
         val soknadMetadata =
             SoknadMetadata(
                 id = 0,
@@ -107,6 +114,7 @@ class SoknadServiceOld(
                 status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(clock),
                 sistEndretDato = LocalDateTime.now(clock),
+                kortSoknad = kortSoknad,
             )
         soknadMetadataRepository.opprett(soknadMetadata)
         return soknadMetadata.behandlingsId

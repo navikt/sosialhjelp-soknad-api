@@ -7,6 +7,7 @@ interface V2AdapterService {
         behandlingsId: String,
         opprettetDato: LocalDateTime,
         eierId: String,
+        kortSoknad: Boolean,
     )
 
     fun setInnsendingstidspunkt(
