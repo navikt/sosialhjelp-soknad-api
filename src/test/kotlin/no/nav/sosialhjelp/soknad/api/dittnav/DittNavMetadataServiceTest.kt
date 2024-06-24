@@ -23,14 +23,15 @@ internal class DittNavMetadataServiceTest {
     private val soknadMetadata =
         SoknadMetadata(
             id = 0L,
-            fnr = "12345",
             behandlingsId = "beh123",
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            fnr = "12345",
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now().minusDays(10),
-            innsendtDato = LocalDateTime.now().minusDays(2),
             sistEndretDato = LocalDateTime.now().minusDays(2),
+            innsendtDato = LocalDateTime.now().minusDays(2),
             lest = false,
+            kortSoknad = false,
         )
 
     @BeforeEach
