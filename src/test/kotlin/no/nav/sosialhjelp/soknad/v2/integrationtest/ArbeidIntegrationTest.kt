@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -17,9 +16,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
-    private fun getPath(soknadId: UUID): String {
-        return "/soknad/$soknadId/arbeid"
-    }
+    private fun getPath(soknadId: UUID): String = "/soknad/$soknadId/arbeid"
 
     @Test
     fun `Hente arbeid skal returnere korrekte data`() {
@@ -32,7 +29,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
                 ArbeidDto::class.java,
             )
 
-        livssituasjon.arbeid?.let {
+        livssituasjon.arbeid.let {
             assertThat(arbeidDto.kommentar).isEqualTo(it.kommentar)
 
             arbeidDto.arbeidsforholdList.forEachIndexed { index, arbeidsforholdDto ->
@@ -46,7 +43,6 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
                 }
             }
         }
-            ?: fail("Arbeid er null")
     }
 
     @Test
@@ -66,7 +62,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
         }
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.arbeid!!.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
+            assertThat(it.arbeid.kommentar).isEqualTo(input.kommentarTilArbeidsforhold)
         }
     }
 }

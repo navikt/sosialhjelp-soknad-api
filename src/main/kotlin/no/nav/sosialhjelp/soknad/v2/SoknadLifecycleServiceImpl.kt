@@ -17,22 +17,29 @@ class SoknadLifecycleServiceImpl(
     private val soknadServiceImpl: SoknadService,
     private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
-    override fun startSoknad(): UUID {
+    override fun startSoknad(): Pair<UUID, Boolean> {
         prometheusMetricsService.reportStartSoknad()
 
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+        val hasSoknadNewerThan4Months =
+            soknadServiceImpl.hasSoknadNewerThan(
+                eierId = fnr,
+                tidspunkt = LocalDateTime.now().minusMonths(4),
+            )
         val soknadId =
-            SubjectHandlerUtils.getUserIdFromToken().let {
+            fnr.let {
                 soknadServiceImpl.createSoknad(
                     eierId = it,
                     soknadId = UUID.randomUUID(),
                     // TODO Spesifisert til UTC i filformatet
                     opprettetDato = LocalDateTime.now(),
+                    kortSoknad = hasSoknadNewerThan4Months,
                 )
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
 
-        return soknadId
+        return soknadId to hasSoknadNewerThan4Months
     }
 
     override fun cancelSoknad(
