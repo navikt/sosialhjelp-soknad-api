@@ -113,6 +113,7 @@ internal class DigisosApiServiceTest {
                 fnr = "12345678910",
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()

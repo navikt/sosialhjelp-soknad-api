@@ -24,6 +24,7 @@ internal class MineSakerMetadataServiceTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
                 innsendtDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
 
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)

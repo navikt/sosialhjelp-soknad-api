@@ -13,6 +13,7 @@ interface SoknadService {
         soknadId: UUID,
         // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
         opprettetDato: LocalDateTime,
+        kortSoknad: Boolean,
     ): UUID
 
     fun sendSoknad(soknadId: UUID): UUID
@@ -25,6 +26,11 @@ interface SoknadService {
         soknadId: UUID,
         innsendingsTidspunkt: LocalDateTime,
     )
+
+    fun hasSoknadNewerThan(
+        eierId: String,
+        tidspunkt: LocalDateTime,
+    ): Boolean
 }
 
 interface BegrunnelseService {

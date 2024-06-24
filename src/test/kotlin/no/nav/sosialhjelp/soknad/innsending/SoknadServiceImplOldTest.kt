@@ -78,28 +78,51 @@ internal class SoknadServiceImplOldTest {
     @Test
     fun skalStarteSoknad() {
         val soknadMetadata: SoknadMetadata = mockk()
+        val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
-        every { soknadMetadataRepository.opprett(any()) } just runs
+        every { soknadMetadataRepository.opprett(capture(soknadMetadataSlot)) } just runs
+        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadata.behandlingsId } returns "123"
-        every { v2AdapterService.createSoknad(any(), any(), any()) } just runs
+        every { v2AdapterService.createSoknad(any(), any(), any(), false) } just runs
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
         soknadServiceOld.startSoknad()
 
-        val bekreftelser = soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeidSlot.captured.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
         assertThat(bekreftelser.any { harBekreftelseFor(it, BOSTOTTE_SAMTYKKE) }).isFalse
+        assertThat(soknadMetadataSlot.captured.kortSoknad).isFalse()
+    }
+
+    @Test
+    fun skalStarteKortSoknadHvisNyligSoknad() {
+        val soknadMetadata: SoknadMetadata = mockk()
+        val slot = slot<SoknadMetadata>()
+        every { soknadMetadataRepository.hentNesteId() } returns 999_999L
+        every { soknadMetadataRepository.opprett(capture(slot)) } just runs
+        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(mockk())
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadMetadata.behandlingsId } returns "123"
+        val kortSoknadSlot = slot<Boolean>()
+        every { v2AdapterService.createSoknad(any(), any(), any(), capture(kortSoknadSlot)) } just runs
+
+        every { soknadUnderArbeidRepository.opprettSoknad(any(), any()) } returns 123L
+
+        soknadServiceOld.startSoknad()
+
+        assertThat(slot.captured.kortSoknad).isTrue()
+        assertThat(kortSoknadSlot.captured).isTrue()
     }
 
     private fun harBekreftelseFor(
         bekreftelse: JsonOkonomibekreftelse,
         bekreftelsesType: String,
-    ): Boolean {
-        return bekreftelse.verdi && bekreftelse.type.equals(bekreftelsesType, ignoreCase = true)
-    }
+    ): Boolean = bekreftelse.verdi && bekreftelse.type.equals(bekreftelsesType, ignoreCase = true)
 
     @Test
     fun skalAvbryteSoknad() {
@@ -124,15 +147,15 @@ internal class SoknadServiceImplOldTest {
         verify(exactly = 1) { prometheusMetricsService.reportAvbruttSoknad("3") }
     }
 
-    private fun createSoknadMetadata(): SoknadMetadata {
-        return SoknadMetadata(
+    private fun createSoknadMetadata(): SoknadMetadata =
+        SoknadMetadata(
             id = 0L,
             behandlingsId = BEHANDLINGSID,
             fnr = EIER,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
+            kortSoknad = false,
         )
-    }
 
     companion object {
         private const val EIER = "Hans og Grete"

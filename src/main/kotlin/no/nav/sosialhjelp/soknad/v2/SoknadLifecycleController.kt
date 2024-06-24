@@ -22,6 +22,12 @@ import java.util.UUID
  * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
  * som direkte opererer/muterer data.
  */
+
+data class StartSoknadResponseDto(
+    val soknadId: String,
+    val useKortSoknad: Boolean,
+)
+
 @RestController
 @Unprotected
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -31,7 +37,7 @@ class SoknadLifecycleController(
     private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     @PostMapping("/opprettSoknad")
-    fun createSoknad(response: HttpServletResponse): Map<String, String> {
+    fun createSoknad(response: HttpServletResponse): StartSoknadResponseDto {
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
@@ -39,12 +45,13 @@ class SoknadLifecycleController(
             )
         }
 
-        return soknadLifecycleService.startSoknad()
-            .let { id ->
+        return soknadLifecycleService
+            .startSoknad()
+            .let { (id, useKortSoknad) ->
                 response.addCookie(xsrfCookie(id.toString()))
                 response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
 
-                mapOf("soknadId" to id.toString())
+                StartSoknadResponseDto(id.toString(), useKortSoknad)
             }
     }
 
