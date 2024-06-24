@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.getunleash.Unleash
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -43,6 +44,7 @@ internal class SoknadServiceImplOldTest {
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
+    private val unleash: Unleash = mockk()
 
     private val soknadServiceOld =
         SoknadServiceOld(
@@ -55,6 +57,7 @@ internal class SoknadServiceImplOldTest {
             prometheusMetricsService,
             Clock.systemDefaultZone(),
             v2AdapterService,
+            unleash,
         )
 
     @BeforeEach
@@ -67,6 +70,7 @@ internal class SoknadServiceImplOldTest {
 
         every { systemdataUpdater.update(any()) } just runs
         every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
+        every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
     }
 
     @AfterEach
