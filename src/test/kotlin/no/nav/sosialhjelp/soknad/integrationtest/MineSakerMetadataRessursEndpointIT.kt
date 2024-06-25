@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
+import com.ninjasquad.springmockk.MockkBean
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -33,10 +36,17 @@ class MineSakerMetadataRessursEndpointIT {
     @Autowired
     private lateinit var jdbcTemplate: JdbcTemplate
 
+    @MockkBean(relaxed = true)
+    private lateinit var digisosApiV2Client: DigisosApiV2Client
+
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
         jdbcTemplate.update("delete from soknadmetadata")
+    }
+
+    @BeforeEach
+    fun setUp() {
     }
 
     @Test
@@ -46,10 +56,12 @@ class MineSakerMetadataRessursEndpointIT {
         opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
 
         webClient
-            .get().uri("/minesaker/innsendte")
+            .get()
+            .uri("/minesaker/innsendte")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isUnauthorized
+            .expectStatus()
+            .isUnauthorized
     }
 
     @Test
@@ -60,10 +72,12 @@ class MineSakerMetadataRessursEndpointIT {
 
         // Skal kun godta tokenx som issuer
         webClient
-            .get().uri("/minesaker/innsendte")
+            .get()
+            .uri("/minesaker/innsendte")
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize())
             .exchange()
-            .expectStatus().isUnauthorized
+            .expectStatus()
+            .isUnauthorized
     }
 }

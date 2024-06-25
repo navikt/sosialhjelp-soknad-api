@@ -22,7 +22,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -31,12 +30,11 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -63,19 +61,23 @@ class SoknadServiceOld(
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
     private val unleash: Unleash,
+    private val digisosApiService: DigisosApiService,
 ) {
     @Transactional
     fun startSoknad(): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknadEnabled = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
-        val harSendtSoknadSiste4mnd = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eierId, LocalDateTime.now(clock).minusWeeks(4)).any()
+        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(eierId)
 
-        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknadEnabled && harSendtSoknadSiste4mnd) // TODO NyModell Metadata returnerer UUID
+        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
+
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
-        log.info("Starter søknad")
-
-        prometheusMetricsService.reportStartSoknad()
+        if (kortSoknad) {
+            log.info("Starter kort søknad")
+        } else {
+            log.info("Starter søknad")
+        }
+        prometheusMetricsService.reportStartSoknad(kortSoknad)
 
         val soknadUnderArbeid =
             SoknadUnderArbeid(
@@ -93,15 +95,26 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
-            kortSoknadEnabled && harSendtSoknadSiste4mnd,
+            qualifiesForKortSoknad(eierId),
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return StartSoknadResponse(behandlingsId, harSendtSoknadSiste4mnd)
+        return StartSoknadResponse(behandlingsId, kortSoknad)
     }
+
+    private fun qualifiesForKortSoknad(fnr: String): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(fnr) || hasRecentOrUpcomingUtbetalinger(fnr)
+
+    private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
+
+    private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
+        soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr, LocalDateTime.now(clock).minusDays(120)).any()
+
+    private fun hasRecentSoknadFromFiks(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(fnr, LocalDateTime.now().minusDays(120))
+
+    private fun hasRecentOrUpcomingUtbetalinger(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(fnr, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
 
     private fun opprettSoknadMetadata(
         fnr: String,
@@ -246,15 +259,5 @@ class SoknadServiceOld(
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(JsonVedleggSpesifikasjon())
-
-        private fun mapJsonVedleggToVedleggMetadata(jsonVedlegg: JsonVedlegg): VedleggMetadata =
-            VedleggMetadata(
-                skjema = jsonVedlegg.type,
-                tillegg = jsonVedlegg.tilleggsinfo,
-                filnavn = jsonVedlegg.type,
-                status = Vedleggstatus.valueOf(jsonVedlegg.status),
-                hendelseType = jsonVedlegg.hendelseType,
-                hendelseReferanse = jsonVedlegg.hendelseReferanse,
-            )
     }
 }
