@@ -24,18 +24,16 @@ class BoutgiftController(
     ): BoutgifterDto {
         val skalVise = boutgiftService.skalViseInfoVedBekreftelse(soknadId)
 
-        return boutgiftService.getBoutgifter(soknadId)
-            ?.let {
-                if (it.isNotEmpty()) {
-                    it.toBoutgifterDto(skalVise)
-                } else {
-                    BoutgifterDto(
-                        bekreftelse = false,
-                        skalViseInfoVedBekreftelse = skalVise,
-                    )
-                }
+        return boutgiftService.getBoutgifter(soknadId)?.let {
+            if (it.isNotEmpty()) {
+                it.toBoutgifterDto(skalVise)
+            } else {
+                BoutgifterDto(
+                    bekreftelse = false,
+                    skalViseInfoVedBekreftelse = skalVise,
+                )
             }
-            ?: BoutgifterDto(skalViseInfoVedBekreftelse = skalVise)
+        } ?: BoutgifterDto(skalViseInfoVedBekreftelse = skalVise)
     }
 
     @PutMapping
@@ -45,7 +43,8 @@ class BoutgiftController(
     ): BoutgifterDto {
         when (input) {
             is HarBoutgifterInput -> boutgiftService.updateBoutgifter(soknadId, input.toUtgiftTypeSet())
-            else -> boutgiftService.removeBoutgifter(soknadId)
+            is HarIkkeBoutgifterInput -> boutgiftService.removeBoutgifter(soknadId)
+            else -> error("Ukjent BoutgiftInput")
         }
         return getBoutgifter(soknadId)
     }
@@ -82,12 +81,12 @@ data class BoutgifterDto(
 private fun Set<Utgift>.toBoutgifterDto(skalViseInfoVedBekreftelse: Boolean) =
     BoutgifterDto(
         bekreftelse = true,
-        husleie = any { it.type == UtgiftType.UTGIFTER_HUSLEIE },
-        strom = any { it.type == UtgiftType.UTGIFTER_STROM },
-        kommunalAvgift = any { it.type == UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT },
-        oppvarming = any { it.type == UtgiftType.UTGIFTER_OPPVARMING },
-        boliglan = any { it.type == UtgiftType.UTGIFTER_BOLIGLAN_RENTER || it.type == UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG },
-        annet = any { it.type == UtgiftType.UTGIFTER_ANNET_BO },
+        husleie = hasType(UtgiftType.UTGIFTER_HUSLEIE),
+        strom = hasType(UtgiftType.UTGIFTER_STROM),
+        kommunalAvgift = hasType(UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT),
+        oppvarming = hasType(UtgiftType.UTGIFTER_OPPVARMING),
+        boliglan = hasType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER) || hasType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG),
+        annet = hasType(UtgiftType.UTGIFTER_ANNET_BO),
         skalViseInfoVedBekreftelse = skalViseInfoVedBekreftelse,
     )
 

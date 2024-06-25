@@ -23,6 +23,8 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
+    // TODO Dokumentasjonsforventninger
+
     @Test
     fun `Hente boutgifter skal returnere lagrede data`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = true)
