@@ -17,14 +17,18 @@ class CacheConfig {
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
         @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
+        @Value("\${digisos.cache.digisos_soker.time-to-live}") digisosSokerTTL: Long,
+        @Value("\${digisos.cache.digisos_sak.time-to-live}") digisosSakTTL: Long,
     ): CacheManager =
-        RedisCacheManager.builder(redisConnectionFactory)
+        RedisCacheManager
+            .builder(redisConnectionFactory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
             .withInitialCacheConfigurations(
                 mapOf(
                     "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
+                    "digisos_sak" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(digisosSakTTL)),
+                    "digisos_soker" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(digisosSokerTTL)),
                 ),
-            )
-            .enableStatistics()
+            ).enableStatistics()
             .build()
 }

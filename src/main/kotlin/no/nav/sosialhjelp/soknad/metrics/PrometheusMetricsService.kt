@@ -14,6 +14,7 @@ class PrometheusMetricsService(
     private val meterRegistry: MeterRegistry,
 ) {
     private val startSoknadCounter = Counter.builder("start_soknad_counter")
+    private val startKortSoknadCounter = Counter.builder("start_kort_soknad_counter")
 
     private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
 
@@ -33,10 +34,16 @@ class PrometheusMetricsService(
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
-    fun reportStartSoknad() {
-        startSoknadCounter
-            .register(meterRegistry)
-            .increment()
+    fun reportStartSoknad(kort: Boolean) {
+        if (kort) {
+            startKortSoknadCounter
+                .register(meterRegistry)
+                .increment()
+        } else {
+            startSoknadCounter
+                .register(meterRegistry)
+                .increment()
+        }
     }
 
     fun reportSoknadMottaker(navEnhet: String) {

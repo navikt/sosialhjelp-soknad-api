@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
+import com.ninjasquad.springmockk.MockkBean
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -39,6 +41,9 @@ class SoknadActionsEndpointIT {
     @Autowired
     private lateinit var soknadRepository: SoknadRepository
 
+    @MockkBean(relaxed = true)
+    private lateinit var digisosApiV2Client: DigisosApiV2Client
+
     @AfterEach
     fun tearDown() {
         jdbcTemplate.update("delete from soknad_under_arbeid")
@@ -50,11 +55,13 @@ class SoknadActionsEndpointIT {
         soknadRepository.save(opprettSoknad(id = UUID.fromString(behandlingsId)))
 
         webClient
-            .post().uri("/soknader/$behandlingsId/actions/send")
+            .post()
+            .uri("/soknader/$behandlingsId/actions/send")
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, ANNEN_BRUKER).serialize())
             .exchange()
-            .expectStatus().isForbidden
+            .expectStatus()
+            .isForbidden
     }
 
     @Test
@@ -63,9 +70,11 @@ class SoknadActionsEndpointIT {
         soknadRepository.save(opprettSoknad(id = UUID.fromString(behandlingsId)))
 
         webClient
-            .post().uri("/soknader/$behandlingsId/actions/send")
+            .post()
+            .uri("/soknader/$behandlingsId/actions/send")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isUnauthorized
+            .expectStatus()
+            .isUnauthorized
     }
 }
