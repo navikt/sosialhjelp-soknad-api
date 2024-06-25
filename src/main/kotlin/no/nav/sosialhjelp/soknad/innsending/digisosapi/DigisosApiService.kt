@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -106,6 +108,61 @@ class DigisosApiService(
         return digisosId
     }
 
+    fun qualifiesForKortSoknadThroughUtbetalinger(
+        token: String,
+        utbetaltSince: LocalDateTime,
+        planlagtBefore: LocalDateTime,
+    ): Boolean {
+        val soknader = digisosApiV2Client.getSoknader(token)
+        val innsynsfiler =
+            soknader.map { soknad ->
+                soknad.digisosSoker?.metadata?.let {
+                    digisosApiV2Client.getInnsynsfil(token, soknad.fiksDigisosId, it)
+                }
+            }
+        val utbetalte =
+            innsynsfiler.flatMap { innsynsfil ->
+                innsynsfil
+                    ?.hendelser
+                    ?.filterIsInstance<JsonUtbetaling>()
+                    ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
+                    ?.map { LocalDateTime.parse(it.utbetalingsdato) } ?: emptyList()
+            }
+
+        if (utbetalte.any { it >= utbetaltSince }) {
+            return true
+        }
+
+        val planlagte =
+            innsynsfiler.flatMap { innsynsfil ->
+                innsynsfil
+                    ?.hendelser
+                    ?.filterIsInstance<JsonUtbetaling>()
+                    ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
+                    ?.map { LocalDateTime.parse(it.forfallsdato) } ?: emptyList()
+            }
+
+        return planlagte.any { it < planlagtBefore }
+    }
+
+    fun qualifiesForKortSoknadThroughSoknader(
+        token: String,
+        hendelseSince: LocalDateTime,
+    ): Boolean {
+        val soknader = digisosApiV2Client.getSoknader(token)
+        val hendelseTidspunkt =
+            soknader.flatMap { soknad ->
+                soknad.digisosSoker
+                    ?.metadata
+                    ?.let {
+                        digisosApiV2Client.getInnsynsfil(token, soknad.fiksDigisosId, it)
+                    }?.hendelser
+                    ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
+                    ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
+            }
+        return hendelseTidspunkt.any { LocalDateTime.parse(it) >= hendelseSince }
+    }
+
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
@@ -128,15 +185,14 @@ class DigisosApiService(
         log.info("Oppdaterer metadata ved avslutning av søknad. ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
-    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return try {
+    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+        try {
             val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.soknad)
             ensureValidSoknad(soknadJson)
             soknadJson
         } catch (e: JsonProcessingException) {
             throw IllegalArgumentException("Klarer ikke serialisere sonadJson", e)
         }
-    }
 
     fun getTilleggsinformasjonJson(soknad: JsonSoknad?): String {
         if (soknad == null || soknad.mottaker == null) {
@@ -157,15 +213,14 @@ class DigisosApiService(
         }
     }
 
-    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return try {
+    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+        try {
             val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.vedlegg)
             ensureValidVedlegg(vedleggJson)
             vedleggJson
         } catch (e: JsonProcessingException) {
             throw IllegalArgumentException("Klarer ikke serialisere vedleggJson", e)
         }
-    }
 
     private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
         val vedleggMetadataListe = VedleggMetadataListe()
