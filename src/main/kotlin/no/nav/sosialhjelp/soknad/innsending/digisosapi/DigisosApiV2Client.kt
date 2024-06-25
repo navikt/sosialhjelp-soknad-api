@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
+import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -16,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
@@ -57,16 +60,13 @@ class DigisosApiV2Client(
                             it
                                 .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
                                 .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                        }
-                        .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+                        }.responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
                 ),
-            )
-            .codecs {
+            ).codecs {
                 it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
-            }
-            .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            }.defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .filter(mdcExchangeFilter)
             .build()
@@ -114,6 +114,52 @@ class DigisosApiV2Client(
         return digisosId
     }
 
+    @Cacheable("digisos_sak", unless = "")
+    fun getSoknader(token: String): List<DigisosSak> {
+        val startTime = System.currentTimeMillis()
+        return try {
+            fiksWebClient
+                .get()
+                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/soknader")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono<List<DigisosSak>>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block() ?: throw FiksException("Fiks - noe uventet feilet ved henting av søknader. Response er null?", null)
+        } catch (e: WebClientResponseException) {
+            val errorResponse = e.responseBodyAsString
+            throw IllegalStateException("Henting av søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
+        } catch (e: IOException) {
+            throw IllegalStateException("Henting av søknader hos Fiks feilet", e)
+        }
+    }
+
+    @Cacheable("digisos_soker")
+    fun getInnsynsfil(
+        token: String,
+        digisosId: String,
+        dokumentLagerId: String,
+    ): JsonDigisosSoker {
+        val startTime = System.currentTimeMillis()
+        return try {
+            fiksWebClient
+                .get()
+                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}", digisosId, dokumentLagerId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono<JsonDigisosSoker>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block() ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsynsfil. Response er null?", null)
+        } catch (e: WebClientResponseException) {
+            val errorResponse = e.responseBodyAsString
+            throw IllegalStateException("Henting av innsynsfil hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
+        } catch (e: IOException) {
+            throw IllegalStateException("Henting av innsynsfil hos Fiks feilet", e)
+        }
+    }
+
     private fun lastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
@@ -136,7 +182,8 @@ class DigisosApiV2Client(
         val startTime = System.currentTimeMillis()
         try {
             val response =
-                fiksWebClient.post()
+                fiksWebClient
+                    .post()
                     .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
                     .header(AUTHORIZATION, token)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -162,11 +209,10 @@ class DigisosApiV2Client(
         }
     }
 
-    private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
-        return try {
+    private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String =
+        try {
             digisosObjectMapper.writeValueAsString(objectFilForOpplasting.metadata)
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }
-    }
 }
