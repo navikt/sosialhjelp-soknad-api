@@ -20,7 +20,8 @@ interface UtbetalingerService {
 
     fun updateUtbetalinger(
         soknadId: UUID,
-        input: HarUtbetalingerInput,
+        eksisterendeTyper: Set<InntektType>,
+        beskrivelseAnnet: String?,
     )
 
     fun removeUtbetalinger(soknadId: UUID)
@@ -70,19 +71,22 @@ class InntektService(
 
     override fun updateUtbetalinger(
         soknadId: UUID,
-        input: HarUtbetalingerInput,
+        eksisterendeTyper: Set<InntektType>,
+        beskrivelseAnnet: String?,
     ) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_UTBETALING, verdi = true)
 
-        updateUtbetaling(soknadId, InntektType.UTBETALING_UTBYTTE, input.hasUtbytte)
-        updateUtbetaling(soknadId, InntektType.UTBETALING_SALG, input.hasSalg)
-        updateUtbetaling(soknadId, InntektType.UTBETALING_FORSIKRING, input.hasForsikring)
-        updateUtbetaling(
-            soknadId = soknadId,
-            type = InntektType.UTBETALING_ANNET,
-            hasUtbetaling = input.hasAnnet,
-            beskrivelse = if (input.hasAnnet) input.beskrivelseUtbetaling else null,
-        )
+        utbetalingerTypes.forEach { type ->
+            if (eksisterendeTyper.contains(type)) {
+                okonomiService.addElementToOkonomi(
+                    soknadId = soknadId,
+                    type = type,
+                    beskrivelse = if (type == InntektType.UTBETALING_ANNET) beskrivelseAnnet else null,
+                )
+            } else {
+                okonomiService.removeElementFromOkonomi(soknadId, type)
+            }
+        }
     }
 
     override fun removeUtbetalinger(soknadId: UUID) {
@@ -90,19 +94,6 @@ class InntektService(
 
         utbetalingerTypes.forEach {
             okonomiService.removeElementFromOkonomi(soknadId, it)
-        }
-    }
-
-    private fun updateUtbetaling(
-        soknadId: UUID,
-        type: InntektType,
-        hasUtbetaling: Boolean,
-        beskrivelse: String? = null,
-    ) {
-        if (hasUtbetaling) {
-            okonomiService.addElementToOkonomi(soknadId, type, beskrivelse)
-        } else {
-            okonomiService.removeElementFromOkonomi(soknadId, type)
         }
     }
 

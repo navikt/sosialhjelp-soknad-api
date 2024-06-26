@@ -38,11 +38,26 @@ class UtbetalingController(
         @RequestBody input: UtbetalingerInput,
     ): UtbetalingerDto {
         when (input) {
-            is HarUtbetalingerInput -> utbetalingService.updateUtbetalinger(soknadId, input)
+            is HarUtbetalingerInput ->
+                utbetalingService.updateUtbetalinger(
+                    soknadId = soknadId,
+                    eksisterendeTyper = input.toTypeSet(),
+                    beskrivelseAnnet = if (input.hasAnnet) input.beskrivelseUtbetaling else null,
+                )
             else -> utbetalingService.removeUtbetalinger(soknadId)
         }
         return getUtbetalinger(soknadId)
     }
+}
+
+private fun HarUtbetalingerInput.toTypeSet(): Set<InntektType> {
+    return setOf(
+        if (hasUtbytte) InntektType.UTBETALING_UTBYTTE else null,
+        if (hasSalg) InntektType.UTBETALING_SALG else null,
+        if (hasForsikring) InntektType.UTBETALING_FORSIKRING else null,
+        if (hasAnnet) InntektType.UTBETALING_ANNET else null,
+    )
+        .filterNotNull().toSet()
 }
 
 data class UtbetalingerDto(

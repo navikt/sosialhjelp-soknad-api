@@ -91,7 +91,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     private fun setBekreftelse(samtykke: Boolean) {
-        samtykkeService.updateSamtykkeSkatteetaten(soknad.id, gitt = samtykke)
+        samtykkeService.updateSamtykkeSkatteetaten(soknad.id, samtykkeGitt = samtykke)
     }
 
     @MockkBean
