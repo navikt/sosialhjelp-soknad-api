@@ -26,7 +26,7 @@ class InntektSkatteetatenFetcher(
         okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
 
         okonomiService.getBekreftelser(soknadId)
-            ?.find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
+            .find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
             ?.let { if (it.verdi) getSkattbarInntekt(soknadId) }
     }
 

@@ -56,7 +56,7 @@ class OkonomiService(
             .also { okonomiRepository.save(it) }
     }
 
-    fun fjernBostotteSaker(soknadId: UUID) {
+    fun removeBostotteSaker(soknadId: UUID) {
         okonomiRepository.findByIdOrNull(soknadId)
             ?.run { copy(bostotteSaker = emptyList()) }
             ?.also { okonomiRepository.save(it) }
@@ -66,7 +66,7 @@ class OkonomiService(
         soknadId: UUID,
         type: OkonomiType,
         beskrivelse: String? = null,
-    ): Set<*> {
+    ) {
         val updatedSet =
             findOrCreateOkonomi(soknadId).run {
                 when (type) {
@@ -77,14 +77,27 @@ class OkonomiService(
                 }
             }
         if (type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, type)
+    }
 
-        return updatedSet
+    fun <T : OkonomiElement> addElementToOkonomi(
+        soknadId: UUID,
+        element: T,
+    ) {
+        findOrCreateOkonomi(soknadId).run {
+            when (element) {
+                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
+                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
+                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
+                else -> error("Ukjent OkonomiType for oppretting")
+            }
+        }
+        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, element.type)
     }
 
     fun removeElementFromOkonomi(
         soknadId: UUID,
         type: OkonomiType,
-    ): Set<*> {
+    ) {
         val updatedSet =
             findOrCreateOkonomi(soknadId).run {
                 when (type) {
@@ -95,8 +108,6 @@ class OkonomiService(
                 }
             }
         if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetVedlegg(soknadId, type)
-
-        return updatedSet
     }
 
     /**

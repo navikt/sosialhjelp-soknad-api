@@ -30,10 +30,10 @@ class BostotteHusbankenFetcher(
         token: String,
     ) {
         okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
-        okonomiService.updateBostotteSaker(soknadId, saker = emptyList())
+        okonomiService.removeBostotteSaker(soknadId)
 
         okonomiService.getBekreftelser(soknadId)
-            ?.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }
+            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }
             ?.let { if (it.verdi) getBostotte(soknadId, token) }
     }
 
@@ -56,13 +56,12 @@ class BostotteHusbankenFetcher(
         soknadId: UUID,
         bostotte: Bostotte,
     ) {
-        okonomiService.updateBostotteSaker(
-            soknadId = soknadId,
-            saker =
-                bostotte.saker
-                    .filter { it.dato.isAfter(LocalDate.now().minusDays(daysToSubtract(bostotte))) }
-                    .map { it.toBostotteSak() },
-        )
+        bostotte.saker
+            .filter { it.dato.isAfter(LocalDate.now().minusDays(daysToSubtract(bostotte))) }
+            .map { it.toBostotteSak() }
+            .forEach {
+                okonomiService.addBostotteSaker(soknadId, it)
+            }
     }
 
     private fun saveToUtbetalinger(
