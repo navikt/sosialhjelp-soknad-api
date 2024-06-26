@@ -34,11 +34,17 @@ class VerdiController(
     @PutMapping
     fun updateVerdier(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) verdierInput: VerdierInput,
+        @RequestBody(required = true) input: VerdierInput,
     ): VerdierDto {
-        when (verdierInput) {
-            is HarVerdierInput -> verdiService.updateVerdier(soknadId, verdierInput)
-            else -> verdiService.removeVerdier(soknadId)
+        when (input) {
+            is HarVerdierInput ->
+                verdiService.updateVerdier(
+                    soknadId = soknadId,
+                    existingTypes = input.toTypeSet(),
+                    beskrivelseAnnet = if (input.hasBeskrivelseVerdi) input.beskrivelseVerdi else null,
+                )
+            is HarIkkeVerdierInput -> verdiService.removeVerdier(soknadId)
+            else -> error("Ukjent VerdiInput-type")
         }
         return getVerdier(soknadId = soknadId)
     }
@@ -86,3 +92,14 @@ data class HarVerdierInput(
     val hasBeskrivelseVerdi: Boolean = false,
     val beskrivelseVerdi: String? = null,
 ) : VerdierInput
+
+private fun HarVerdierInput.toTypeSet(): Set<FormueType> {
+    return setOf(
+        if (hasBolig) FormueType.VERDI_BOLIG else null,
+        if (hasCampingvogn) FormueType.VERDI_CAMPINGVOGN else null,
+        if (hasKjoretoy) FormueType.VERDI_KJORETOY else null,
+        if (hasFritidseiendom) FormueType.VERDI_FRITIDSEIENDOM else null,
+        if (hasBeskrivelseVerdi) FormueType.VERDI_ANNET else null,
+    )
+        .filterNotNull().toSet()
+}

@@ -13,7 +13,8 @@ interface VerdiService {
 
     fun updateVerdier(
         soknadId: UUID,
-        input: HarVerdierInput,
+        existingTypes: Set<FormueType>,
+        beskrivelseAnnet: String?,
     ): Set<Formue>
 }
 
@@ -38,44 +39,24 @@ class VerdiServiceImpl(
 
     override fun updateVerdier(
         soknadId: UUID,
-        input: HarVerdierInput,
+        existingTypes: Set<FormueType>,
+        beskrivelseAnnet: String?,
     ): Set<Formue> {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, verdi = true)
 
-        updateAllVerdier(soknadId, input)
-
-        return okonomiService.getFormuer(soknadId) ?: error("Kunne ikke oppdatere verdier")
-    }
-
-    private fun updateAllVerdier(
-        soknadId: UUID,
-        input: HarVerdierInput,
-    ) {
-        updateFormue(soknadId, FormueType.VERDI_BOLIG, input.hasBolig)
-        updateFormue(soknadId, FormueType.VERDI_KJORETOY, input.hasKjoretoy)
-        updateFormue(soknadId, FormueType.VERDI_CAMPINGVOGN, input.hasCampingvogn)
-        updateFormue(soknadId, FormueType.VERDI_FRITIDSEIENDOM, input.hasFritidseiendom)
-        updateFormue(
-            soknadId,
-            FormueType.VERDI_ANNET,
-            input.hasBeskrivelseVerdi,
-            if (input.hasBeskrivelseVerdi) input.beskrivelseVerdi else null,
-        )
-    }
-
-    private fun updateFormue(
-        soknadId: UUID,
-        type: FormueType,
-        isPresent: Boolean,
-        beskrivelse: String? = null,
-    ) {
-        type.let {
-            if (isPresent) {
-                okonomiService.addElementToOkonomi(soknadId, type, beskrivelse)
+        verdiTyper.forEach { type ->
+            if (existingTypes.contains(type)) {
+                okonomiService.addElementToOkonomi(
+                    soknadId = soknadId,
+                    type = type,
+                    beskrivelse = if (type == FormueType.VERDI_ANNET) beskrivelseAnnet else null,
+                )
             } else {
                 okonomiService.removeElementFromOkonomi(soknadId, type)
             }
         }
+
+        return okonomiService.getFormuer(soknadId) ?: error("Kunne ikke oppdatere verdier")
     }
 
     companion object {

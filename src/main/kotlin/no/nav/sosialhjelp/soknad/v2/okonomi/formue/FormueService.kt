@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 import java.util.UUID
 
 interface FormueService {
@@ -12,8 +11,11 @@ interface FormueService {
 
     fun updateFormuer(
         soknadId: UUID,
-        input: FormueInput,
-    ): Set<Formue>
+        existingTypes: Set<FormueType>,
+        beskrivelse: String?,
+    )
+
+    fun removeFormuer(soknadId: UUID)
 }
 
 /**
@@ -30,63 +32,28 @@ class FormueServiceImpl(
 
     override fun updateFormuer(
         soknadId: UUID,
-        input: FormueInput,
-    ): Set<Formue> {
-        val hasAny = input.hasAny()
-        updateBekreftelse(soknadId = soknadId, verdi = hasAny)
-
-        if (hasAny) {
-            updateAllFormuer(soknadId, input)
-        } else {
-            updateAllFormuer(soknadId = soknadId, input = FormueInput())
-        }
-
-        return okonomiService.getFormuer(soknadId) ?: error("FEIL i lagring av formue")
-    }
-
-    private fun updateBekreftelse(
-        soknadId: UUID,
-        dato: LocalDate = LocalDate.now(),
-        verdi: Boolean,
+        existingTypes: Set<FormueType>,
+        beskrivelse: String?,
     ) {
-        okonomiService.updateBekreftelse(
-            soknadId = soknadId,
-            type = BekreftelseType.BEKREFTELSE_SPARING,
-            dato = dato,
-            verdi = verdi,
-        )
-    }
+        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_SPARING, verdi = true)
 
-    private fun updateAllFormuer(
-        soknadId: UUID,
-        input: FormueInput,
-    ) {
-        updateFormue(soknadId, FormueType.FORMUE_BRUKSKONTO, input.hasBrukskonto)
-        updateFormue(soknadId, FormueType.FORMUE_BSU, input.hasBsu)
-        updateFormue(soknadId, FormueType.FORMUE_SPAREKONTO, input.hasSparekonto)
-        updateFormue(soknadId, FormueType.FORMUE_LIVSFORSIKRING, input.hasLivsforsikring)
-        updateFormue(soknadId, FormueType.FORMUE_VERDIPAPIRER, input.hasVerdipapirer)
-        updateFormue(
-            soknadId,
-            FormueType.FORMUE_ANNET,
-            input.hasBeskrivelseSparing,
-            if (input.hasBeskrivelseSparing) input.beskrivelseSparing else null,
-        )
-    }
-
-    private fun updateFormue(
-        soknadId: UUID,
-        type: FormueType,
-        isPresent: Boolean,
-        beskrivelse: String? = null,
-    ) {
-        type.let {
-            if (isPresent) {
-                okonomiService.addElementToOkonomi(soknadId, it, beskrivelse)
+        formueTyper.forEach { type ->
+            if (existingTypes.contains(type)) {
+                okonomiService.addElementToOkonomi(
+                    soknadId = soknadId,
+                    type = type,
+                    beskrivelse = if (type == FormueType.FORMUE_ANNET) beskrivelse else null,
+                )
             } else {
-                okonomiService.removeElementFromOkonomi(soknadId, it)
+                okonomiService.removeElementFromOkonomi(soknadId, type)
             }
         }
+    }
+
+    override fun removeFormuer(soknadId: UUID) {
+        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_SPARING, verdi = false)
+
+        formueTyper.forEach { type -> okonomiService.removeElementFromOkonomi(soknadId, type) }
     }
 
     companion object {
@@ -100,8 +67,4 @@ class FormueServiceImpl(
                 FormueType.FORMUE_ANNET,
             )
     }
-}
-
-private fun FormueInput.hasAny(): Boolean {
-    return hasBrukskonto || hasBsu || hasSparekonto || hasLivsforsikring || hasVerdipapirer || hasBeskrivelseSparing
 }

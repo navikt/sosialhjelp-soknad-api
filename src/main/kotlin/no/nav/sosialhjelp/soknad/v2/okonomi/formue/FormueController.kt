@@ -27,7 +27,17 @@ class FormueController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: FormueInput,
     ): FormueDto {
-        return formueService.updateFormuer(soknadId = soknadId, input = input).toFormueDto()
+        if (input.isAllFalse()) {
+            formueService.removeFormuer(soknadId)
+        } else {
+            formueService.updateFormuer(
+                soknadId = soknadId,
+                existingTypes = input.toTypeSet(),
+                beskrivelse = if (input.hasBeskrivelseSparing) input.beskrivelseSparing else null,
+            )
+        }
+
+        return getFormue(soknadId)
     }
 }
 
@@ -63,3 +73,19 @@ data class FormueInput(
     val hasBeskrivelseSparing: Boolean = false,
     val beskrivelseSparing: String? = null,
 )
+
+private fun FormueInput.toTypeSet(): Set<FormueType> {
+    return setOf(
+        if (hasBrukskonto) FormueType.FORMUE_BRUKSKONTO else null,
+        if (hasSparekonto) FormueType.FORMUE_SPAREKONTO else null,
+        if (hasBsu) FormueType.FORMUE_BSU else null,
+        if (hasLivsforsikring) FormueType.FORMUE_LIVSFORSIKRING else null,
+        if (hasVerdipapirer) FormueType.FORMUE_VERDIPAPIRER else null,
+        if (hasBeskrivelseSparing) FormueType.FORMUE_ANNET else null,
+    )
+        .filterNotNull().toSet()
+}
+
+private fun FormueInput.isAllFalse(): Boolean {
+    return !hasBrukskonto && !hasSparekonto && !hasBsu && !hasLivsforsikring && !hasVerdipapirer && !hasBeskrivelseSparing
+}

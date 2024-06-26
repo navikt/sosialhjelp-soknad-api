@@ -57,7 +57,7 @@ class SoknadV2FormueAdapter(
             runWithNestedTransaction {
                 verdiController.updateVerdier(
                     soknadId = UUID.fromString(behandlingsId),
-                    verdierInput = input,
+                    input = input,
                 )
             }
         }
