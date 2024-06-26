@@ -31,7 +31,7 @@ class VerdierIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.hasBolig).isTrue()
-                assertThat(dto.hasAnnet).isTrue()
+                assertThat(dto.hasAnnetVerdi).isTrue()
                 assertThat(dto.beskrivelseVerdi).isEqualTo("beskrivelse")
             }
     }
@@ -40,7 +40,7 @@ class VerdierIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere verdier skal lagres i db`() {
         doPut(
             uri = getUrl(soknad.id),
-            requestBody = HarVerdierInput(hasBeskrivelseAnnet = true, beskrivelseVerdi = "beskrivelse"),
+            requestBody = HarVerdierInput(hasBeskrivelseVerdi = true, beskrivelseVerdi = "beskrivelse"),
             responseBodyClass = VerdierDto::class.java,
             soknadId = soknad.id,
         )
