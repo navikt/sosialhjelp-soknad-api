@@ -8,3 +8,5 @@ spring:
     url: jdbc:tc:postgresql:15-alpine:///soknad
     username: user
     password: password
+    hikari:
+      maximum-pool-size: 2

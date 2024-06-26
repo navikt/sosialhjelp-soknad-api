@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.apache.commons.lang3.StringUtils
@@ -67,7 +67,7 @@ class UtbetalingerFraNavSystemdata(
             .withOverstyrtAvBruker(false)
     }
 
-    private fun tilUtbetalingskomponentListe(komponenter: List<Komponent>?): List<JsonOkonomiOpplysningUtbetalingKomponent> {
+    private fun tilUtbetalingskomponentListe(komponenter: List<NavKomponent>?): List<JsonOkonomiOpplysningUtbetalingKomponent> {
         return komponenter?.map {
             JsonOkonomiOpplysningUtbetalingKomponent()
                 .withBelop(it.belop)

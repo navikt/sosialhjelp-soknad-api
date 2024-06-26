@@ -38,7 +38,7 @@ class OkonomiMappingHandler(
             UtgiftToJsonMapper(utgifter, json),
         )
             .let { list ->
-                if (formuer.isNotEmpty()) {
+                if (bekreftelser.isNotEmpty()) {
                     list.plus(BekreftelseToJsonMapper(bekreftelser, json))
                 } else {
                     list

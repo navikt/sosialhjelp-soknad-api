@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.LivssituasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettUtdanning
 import org.assertj.core.api.Assertions
@@ -29,7 +30,7 @@ class MapperTest {
                 .arbeid
 
         with(json.soknad.data) {
-            Assertions.assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid!!.kommentar)
+            Assertions.assertThat(this.arbeid.kommentarTilArbeidsforhold.verdi).isEqualTo(arbeid.kommentar)
             this.arbeid.forhold.forEachIndexed { index, json ->
                 json.assertArbeidsforhold(arbeid.arbeidsforhold[index])
             }
@@ -82,8 +83,8 @@ class MapperTest {
 private fun JsonArbeidsforhold.assertArbeidsforhold(arbeidsforhold: Arbeidsforhold) {
     Assertions.assertThat(kilde).isEqualTo(JsonKilde.SYSTEM)
     Assertions.assertThat(arbeidsgivernavn).isEqualTo(arbeidsforhold.arbeidsgivernavn)
-    Assertions.assertThat(fom).isEqualTo(arbeidsforhold.start)
-    Assertions.assertThat(tom).isEqualTo(arbeidsforhold.slutt)
+    Assertions.assertThat(fom).isEqualTo(arbeidsforhold.start?.toIsoString())
+    Assertions.assertThat(tom).isEqualTo(arbeidsforhold.slutt?.toIsoString())
     Assertions.assertThat(stillingsprosent).isEqualTo(arbeidsforhold.fastStillingsprosent)
     when (arbeidsforhold.harFastStilling) {
         null -> Assertions.assertThat(stillingstype).isNull()

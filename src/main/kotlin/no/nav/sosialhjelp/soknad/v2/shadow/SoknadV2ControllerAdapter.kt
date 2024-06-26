@@ -36,13 +36,13 @@ import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
 import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
+import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
 
-@Controller
-class SoknadV2V2ControllerAdapter(
+@Component
+class SoknadV2ControllerAdapter(
     private val arbeidController: ArbeidController,
     private val begrunnelseController: BegrunnelseController,
     private val bosituasjonController: BosituasjonController,

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.service.ArbeidService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -66,8 +65,8 @@ private fun Arbeidsforhold.toArbeidsforholdDto(): ArbeidsforholdDto {
     return ArbeidsforholdDto(
         arbeidsgivernavn = arbeidsgivernavn,
         orgnummer = orgnummer,
-        start = start,
-        slutt = slutt,
+        start = start?.toIsoString(),
+        slutt = slutt?.toIsoString(),
         fastStillingsprosent = fastStillingsprosent,
         harFastStilling = harFastStilling,
     )
