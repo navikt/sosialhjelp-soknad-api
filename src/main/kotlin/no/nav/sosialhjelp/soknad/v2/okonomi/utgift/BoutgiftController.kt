@@ -48,10 +48,6 @@ class BoutgiftController(
         }
         return getBoutgifter(soknadId)
     }
-
-    private fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
-        return boutgiftService.skalViseInfoVedBekreftelse(soknadId)
-    }
 }
 
 private fun HarBoutgifterInput.toUtgiftTypeSet(): Set<UtgiftType> {
@@ -97,9 +93,7 @@ private fun Set<Utgift>.toBoutgifterDto(skalViseInfoVedBekreftelse: Boolean) =
 )
 interface BoutgifterInput
 
-class HarIkkeBoutgifterInput : BoutgifterInput {
-    val hasBekreftelse: Boolean = false
-}
+class HarIkkeBoutgifterInput : BoutgifterInput
 
 data class HarBoutgifterInput(
     val hasHusleie: Boolean = false,
@@ -109,6 +103,4 @@ data class HarBoutgifterInput(
     val hasBoliglan: Boolean = false,
     val hasAnnenBoutgift: Boolean = false,
     val beskrivelseAnnenBoutgift: String? = null,
-) : BoutgifterInput {
-    val hasBekreftelse: Boolean = true
-}
+) : BoutgifterInput

@@ -87,9 +87,7 @@ private fun Set<Utgift>.toBarneutgifterDto(hasForsorgerplikt: Boolean) =
 )
 interface BarneutgifterInput
 
-class HarIkkeBarneutgifterInput : BarneutgifterInput {
-    val hasBekreftelse: Boolean = false
-}
+class HarIkkeBarneutgifterInput : BarneutgifterInput
 
 data class HarBarneutgifterInput(
     val hasFritidsaktiviteter: Boolean = false,
@@ -97,11 +95,7 @@ data class HarBarneutgifterInput(
     val hasSfo: Boolean = false,
     val hasTannregulering: Boolean = false,
     val hasAnnenUtgiftBarn: Boolean = false,
-) : BarneutgifterInput {
-    val hasBekreftelse: Boolean = true
-    // TODO Skal vi validere at minst 1 flagg skal være true?
-    // TODO Hvis ikke betyr det jo egentlig at det ikke finnes noen, men bruker kan fortsatt svare Ja på bekreftelsen
-}
+) : BarneutgifterInput
 
 private fun HarBarneutgifterInput.toUtgiftTypeSet(): Set<UtgiftType> {
     return setOf(
