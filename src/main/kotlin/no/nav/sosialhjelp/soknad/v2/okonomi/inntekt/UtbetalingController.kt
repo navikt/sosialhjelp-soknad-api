@@ -88,9 +88,7 @@ private fun List<Inntekt>.toDto(hasBekreftelse: Boolean?) =
 )
 interface UtbetalingerInput
 
-data class HarIkkeUtbetalingerInput(
-    val bekreftelse: Boolean,
-) : UtbetalingerInput
+class HarIkkeUtbetalingerInput : UtbetalingerInput
 
 data class HarUtbetalingerInput(
     val hasUtbytte: Boolean,
