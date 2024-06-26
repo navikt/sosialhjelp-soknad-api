@@ -89,7 +89,7 @@ class UtbetalingerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         doPut(
             uri = getUrl(soknad.id),
-            requestBody = HarIkkeUtbetalingerInput(bekreftelse = false),
+            requestBody = HarIkkeUtbetalingerInput(),
             responseBodyClass = UtbetalingerDto::class.java,
             soknadId = soknad.id,
         )
