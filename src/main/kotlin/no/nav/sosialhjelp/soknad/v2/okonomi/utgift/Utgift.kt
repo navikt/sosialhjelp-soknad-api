@@ -19,21 +19,34 @@ data class Utgift(
 enum class UtgiftType(
     override val dokumentasjonForventet: Boolean,
 ) : OkonomiType {
-    // JsonOkonomiopplysningUtgift
+    // * * * JsonOkonomiopplysningUtgift * * *
+    // boutgifter
     UTGIFTER_ANNET_BO(dokumentasjonForventet = true),
-    UTGIFTER_ANNET_BARN(dokumentasjonForventet = true),
-    UTGIFTER_BARN_TANNREGULERING(dokumentasjonForventet = true),
     UTGIFTER_KOMMUNAL_AVGIFT(dokumentasjonForventet = true),
-    UTGIFTER_BARN_FRITIDSAKTIVITETER(dokumentasjonForventet = true),
     UTGIFTER_OPPVARMING(dokumentasjonForventet = true),
     UTGIFTER_STROM(dokumentasjonForventet = true),
+
+    // barneutgifter
+    UTGIFTER_BARN_TANNREGULERING(dokumentasjonForventet = true),
+    UTGIFTER_BARN_FRITIDSAKTIVITETER(dokumentasjonForventet = true),
+    UTGIFTER_ANNET_BARN(dokumentasjonForventet = true),
+
     UTGIFTER_ANDRE_UTGIFTER(dokumentasjonForventet = true),
 
-    // JsonOkonomioversiktUtgift
+    // * * * JsonOkonomioversiktUtgift * * *
     BARNEBIDRAG_BETALER(dokumentasjonForventet = true),
+
+    // barneutgifter
     UTGIFTER_SFO(dokumentasjonForventet = true),
     UTGIFTER_BARNEHAGE(dokumentasjonForventet = true),
+
+    // boutgift
     UTGIFTER_HUSLEIE(dokumentasjonForventet = true),
+
+    // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
+    // boutgifter
     UTGIFTER_BOLIGLAN_AVDRAG(dokumentasjonForventet = true),
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
 }
+
+fun Set<Utgift>.hasType(type: UtgiftType): Boolean = any { it.type == type }

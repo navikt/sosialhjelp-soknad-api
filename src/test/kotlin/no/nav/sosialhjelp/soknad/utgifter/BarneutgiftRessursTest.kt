@@ -44,7 +44,13 @@ internal class BarneutgiftRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val barneutgiftRessurs = BarneutgiftRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val barneutgiftRessurs =
+        BarneutgiftRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            v2ControllerAdapter = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

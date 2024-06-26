@@ -9,6 +9,8 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
+import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
+import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
 
 interface V2ControllerAdapter {
     fun updateArbeid(
@@ -55,5 +57,15 @@ interface V2ControllerAdapter {
         soknadId: String,
         adresser: AdresserFrontendInput,
         navEnhet: NavEnhetFrontend?,
+    )
+
+    fun updateBoutgifter(
+        behandlingsId: String,
+        boutgifterFrontend: BoutgiftRessurs.BoutgifterFrontend,
+    )
+
+    fun updateBarneutgifter(
+        behandlingsId: String,
+        barneutgifterFrontend: BarneutgiftRessurs.BarneutgifterFrontend,
     )
 }

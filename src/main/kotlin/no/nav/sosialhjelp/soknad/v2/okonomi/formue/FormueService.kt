@@ -28,7 +28,7 @@ class FormueServiceImpl(
     private val okonomiService: OkonomiService,
 ) : FormueService {
     override fun getFormuer(soknadId: UUID): Set<Formue>? =
-        okonomiService.getFormuer(soknadId)?.filter { formueTyper.contains(it.type) }?.toSet()
+        okonomiService.getFormuer(soknadId).filter { formueTyper.contains(it.type) }.toSet()
 
     override fun updateFormuer(
         soknadId: UUID,
