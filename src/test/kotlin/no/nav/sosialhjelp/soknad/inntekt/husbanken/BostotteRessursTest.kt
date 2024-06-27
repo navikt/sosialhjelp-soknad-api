@@ -96,11 +96,15 @@ internal class BostotteRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val bostotteFrontend = BostotteFrontend(true, null, null, null, null, null)
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token")
+        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend)
 
         val soknadUnderArbeid = argument.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
-        val utbetaling = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
+        val utbetaling =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetaling[0].type).isEqualTo(SoknadJsonTyper.UTBETALING_HUSBANKEN)
 
         val bostotte = bekreftelser[0]
@@ -115,7 +119,8 @@ internal class BostotteRessursTest {
         val soknad = createSoknadUnderArbeid()
         val inntekt = ArrayList<JsonOkonomioversiktInntekt>()
         inntekt.add(JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.BOSTOTTE))
-        soknad.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt = inntekt
+        soknad.jsonInternalSoknad!!
+            .soknad.data.okonomi.oversikt.inntekt = inntekt
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -123,11 +128,15 @@ internal class BostotteRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val bostotteFrontend = BostotteFrontend(false, null, null, null, null, null)
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token")
+        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend)
 
         val soknadUnderArbeid = argument.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
-        val utbetaling = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
+        val utbetaling =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetaling).isEmpty()
 
         val bostotte = bekreftelser[0]
@@ -192,15 +201,22 @@ internal class BostotteRessursTest {
 
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
 
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
+        val okonomi =
+            systemdataSlot.captured.jsonInternalSoknad!!
+                .soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isTrue
 
         // Sjekker lagring av soknaden
         val spartSoknad = argument.captured
-        assertThat(spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).hasSize(1)
-        val spartBekreftelse = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse[0]
+        assertThat(
+            spartSoknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse,
+        ).hasSize(1)
+        val spartBekreftelse =
+            soknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
         assertThat(spartBekreftelse.verdi).isTrue
     }
@@ -209,7 +225,9 @@ internal class BostotteRessursTest {
     fun bostotte_skalTaBortSamtykke() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
-        val opplysninger = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
+        val opplysninger =
+            soknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, SoknadJsonTyper.BOSTOTTE_SAMTYKKE, true, "")
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -223,14 +241,18 @@ internal class BostotteRessursTest {
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til bostotteSystemdata
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
+        val okonomi =
+            systemdataSlot.captured.jsonInternalSoknad!!
+                .soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isFalse
 
         // Sjekker lagring av soknaden
         val spartSoknad = argument.captured
-        val sparteOpplysninger = spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
+        val sparteOpplysninger =
+            spartSoknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger
         assertThat(sparteOpplysninger.bekreftelse).hasSize(1)
         val spartBekreftelse = sparteOpplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
@@ -251,7 +273,10 @@ internal class BostotteRessursTest {
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
 
         // Sjekker soknaden
-        assertThat(soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).isEmpty()
+        assertThat(
+            soknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse,
+        ).isEmpty()
     }
 
     @Test
@@ -273,7 +298,6 @@ internal class BostotteRessursTest {
                 bostotteRessurs.updateBostotte(
                     BEHANDLINGSID,
                     bostotteFrontend,
-                    "token",
                 )
             }
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
@@ -328,7 +352,8 @@ internal class BostotteRessursTest {
                     .withTittel("tittel"),
             )
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
         return soknadUnderArbeid
     }
 
@@ -354,7 +379,8 @@ internal class BostotteRessursTest {
                     .withStatus("UNDER_BEHANDLING"),
             )
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker = saker
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.bostotte.saker = saker
         return soknadUnderArbeid
     }
 
@@ -362,8 +388,8 @@ internal class BostotteRessursTest {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
@@ -372,6 +398,5 @@ internal class BostotteRessursTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

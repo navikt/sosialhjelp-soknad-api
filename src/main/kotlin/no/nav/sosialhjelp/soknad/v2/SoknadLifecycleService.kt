@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadLifecycleService {
-    fun startSoknad(): Pair<UUID, Boolean>
+    fun startSoknad(token: String): Pair<UUID, Boolean>
 
     fun cancelSoknad(
         soknadId: UUID,

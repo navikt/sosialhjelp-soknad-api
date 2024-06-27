@@ -95,9 +95,9 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse(brukerBehandlingId = "null", false)
+        every { soknadServiceOld.startSoknad(any()) } returns StartSoknadResponse(brukerBehandlingId = "null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", response)
 
         assertThat(cookieSlot.captured.name).isEqualTo(SoknadRessurs.XSRF_TOKEN + "-null")
     }
@@ -107,11 +107,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse("null", false)
+        every { soknadServiceOld.startSoknad(any()) } returns StartSoknadResponse("null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", response)
 
-        verify(exactly = 1) { soknadServiceOld.startSoknad() }
+        verify(exactly = 1) { soknadServiceOld.startSoknad("") }
     }
 
     @Test
@@ -260,7 +260,7 @@ internal class SoknadRessursTest {
         } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.opprettSoknad(mockk()) }
+            .isThrownBy { ressurs.opprettSoknad("", mockk()) }
 
         verify { soknadServiceOld wasNot called }
     }

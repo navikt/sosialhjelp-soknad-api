@@ -19,15 +19,14 @@ class SoknadMetadataRepositoryJdbc(
     private val antallRowMapper = RowMapper { rs: ResultSet, _: Int -> rs.getInt("antall") }
     private val mapper = jacksonObjectMapper()
 
-    override fun hentNesteId(): Long {
-        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
+    override fun hentNesteId(): Long =
+        jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
             ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
-    }
 
     @Transactional
     override fun opprett(metadata: SoknadMetadata) {
         jdbcTemplate.update(
-            "INSERT INTO soknadmetadata (behandlingsid, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO soknadmetadata (behandlingsid, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato, is_kort_soknad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
             metadata.skjema,
             metadata.fnr,
@@ -41,6 +40,7 @@ class SoknadMetadataRepositoryJdbc(
             tidTilTimestamp(metadata.opprettetDato),
             tidTilTimestamp(metadata.sistEndretDato),
             tidTilTimestamp(metadata.innsendtDato),
+            metadata.kortSoknad,
         )
     }
 
@@ -62,19 +62,19 @@ class SoknadMetadataRepositoryJdbc(
         )
     }
 
-    override fun hent(behandlingsId: String?): SoknadMetadata? {
-        return jdbcTemplate.query(
-            "SELECT * FROM soknadmetadata WHERE behandlingsid = ?",
-            soknadMetadataRowMapper,
-            behandlingsId,
-        ).firstOrNull()
-    }
+    override fun hent(behandlingsId: String?): SoknadMetadata? =
+        jdbcTemplate
+            .query(
+                "SELECT * FROM soknadmetadata WHERE behandlingsid = ?",
+                soknadMetadataRowMapper,
+                behandlingsId,
+            ).firstOrNull()
 
     override fun hentAntallInnsendteSoknaderEtterTidspunkt(
         fnr: String?,
         tidspunkt: LocalDateTime?,
-    ): Int? {
-        return try {
+    ): Int? =
+        try {
             jdbcTemplate.queryForObject(
                 "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?",
                 antallRowMapper,
@@ -85,33 +85,30 @@ class SoknadMetadataRepositoryJdbc(
         } catch (e: Exception) {
             0
         }
-    }
 
-    override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
-        return jdbcTemplate.query(
+    override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
+        jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.FERDIG.name,
             SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
         )
-    }
 
-    override fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
-        return jdbcTemplate.query(
+    override fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
+        jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
-    }
 
     override fun hentPabegynteSoknaderForBruker(
         fnr: String,
         lest: Boolean,
-    ): List<SoknadMetadata> {
-        return jdbcTemplate.query(
+    ): List<SoknadMetadata> =
+        jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND lest_ditt_nav = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
@@ -119,13 +116,12 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
-    }
 
     override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
         fnr: String,
         tidsgrense: LocalDateTime,
-    ): List<SoknadMetadata> {
-        return jdbcTemplate.query(
+    ): List<SoknadMetadata> =
+        jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
@@ -133,7 +129,6 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
             tidTilTimestamp(tidsgrense),
         )
-    }
 
     override fun oppdaterLest(
         soknadMetadata: SoknadMetadata,
