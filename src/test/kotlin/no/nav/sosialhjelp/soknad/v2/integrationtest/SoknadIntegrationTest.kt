@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -84,9 +85,9 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 DigisosSoker("123", emptyList(), Instant.now().toEpochMilli()),
                 null,
             )
-        val digisosSoker = JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(Status.MOTTATT).withHendelsestidspunkt(LocalDateTime.now().minusDays(30).toString())))
+        val digisosSoker = JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(Status.MOTTATT).withHendelsestidspunkt(OffsetDateTime.now().minusDays(30).toString())))
         every { digisosApiV2Client.getSoknader(any()) } returns listOf(digisosSak)
-        every { digisosApiV2Client.getInnsynsfil(any(), "abc", "123") } returns digisosSoker
+        every { digisosApiV2Client.getInnsynsfil("abc", "123", any()) } returns digisosSoker
 
         val (id, useKortSoknad) =
             webTestClient
@@ -110,9 +111,9 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Opprett søknad skal bli kort hvis bruker nylig har fått utbetaling`() {
-        val (digisosSak, digisosSoker) = digisosSakOgSoker(listOf(JsonUtbetaling().withStatus(JsonUtbetaling.Status.UTBETALT).withUtbetalingsdato(LocalDateTime.now().minusDays(30).toString())))
+        val (digisosSak, digisosSoker) = digisosSakOgSoker(listOf(JsonUtbetaling().withStatus(JsonUtbetaling.Status.UTBETALT).withUtbetalingsdato(OffsetDateTime.now().minusDays(30).toString())))
         every { digisosApiV2Client.getSoknader(any()) } returns listOf(digisosSak)
-        every { digisosApiV2Client.getInnsynsfil(any(), "abc", "123") } returns digisosSoker
+        every { digisosApiV2Client.getInnsynsfil("abc", "123", any()) } returns digisosSoker
 
         val (id, useKortSoknad) =
             webTestClient

@@ -28,6 +28,9 @@ import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class DigisosApiService(
@@ -109,7 +112,7 @@ class DigisosApiService(
     }
 
     fun qualifiesForKortSoknadThroughUtbetalinger(
-        token: String,
+        token: String?,
         utbetaltSince: LocalDateTime,
         planlagtBefore: LocalDateTime,
     ): Boolean {
@@ -117,7 +120,7 @@ class DigisosApiService(
         val innsynsfiler =
             soknader.map { soknad ->
                 soknad.digisosSoker?.metadata?.let {
-                    digisosApiV2Client.getInnsynsfil(token, soknad.fiksDigisosId, it)
+                    digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
                 }
             }
         val utbetalte =
@@ -126,7 +129,7 @@ class DigisosApiService(
                     ?.hendelser
                     ?.filterIsInstance<JsonUtbetaling>()
                     ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
-                    ?.map { LocalDateTime.parse(it.utbetalingsdato) } ?: emptyList()
+                    ?.map { it.utbetalingsdato.toLocalDateTime() } ?: emptyList()
             }
 
         if (utbetalte.any { it >= utbetaltSince }) {
@@ -139,14 +142,14 @@ class DigisosApiService(
                     ?.hendelser
                     ?.filterIsInstance<JsonUtbetaling>()
                     ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                    ?.map { LocalDateTime.parse(it.forfallsdato) } ?: emptyList()
+                    ?.map { it.forfallsdato.toLocalDateTime() } ?: emptyList()
             }
 
         return planlagte.any { it < planlagtBefore }
     }
 
     fun qualifiesForKortSoknadThroughSoknader(
-        token: String,
+        token: String?,
         hendelseSince: LocalDateTime,
     ): Boolean {
         val soknader = digisosApiV2Client.getSoknader(token)
@@ -155,13 +158,19 @@ class DigisosApiService(
                 soknad.digisosSoker
                     ?.metadata
                     ?.let {
-                        digisosApiV2Client.getInnsynsfil(token, soknad.fiksDigisosId, it)
+                        digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
                     }?.hendelser
                     ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
                     ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
             }
-        return hendelseTidspunkt.any { LocalDateTime.parse(it) >= hendelseSince }
+        return hendelseTidspunkt.any { it.toLocalDateTime() >= hendelseSince }
     }
+
+    private fun String.toLocalDateTime() =
+        ZonedDateTime
+            .parse(this, DateTimeFormatter.ISO_DATE_TIME)
+            .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
+            .toLocalDateTime()
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
