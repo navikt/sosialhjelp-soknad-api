@@ -64,7 +64,6 @@ class BostotteRessurs(
     fun updateBostotte(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody bostotteFrontend: BostotteFrontend,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -129,34 +128,29 @@ class BostotteRessurs(
         }
     }
 
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean {
-        return opplysninger.bekreftelse
+    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean =
+        opplysninger.bekreftelse
             .filter { it.type == BOSTOTTE_SAMTYKKE }
             .any { it.verdi }
-    }
 
-    private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? {
-        return opplysninger.bekreftelse
+    private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? =
+        opplysninger.bekreftelse
             .filter { it.type == BOSTOTTE_SAMTYKKE }
             .firstOrNull { it.verdi }
             ?.bekreftelsesDato
-    }
 
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
-        return opplysninger.bekreftelse
+    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? =
+        opplysninger.bekreftelse
             .firstOrNull { it.type == BOSTOTTE }
             ?.verdi
-    }
 
-    private fun mapToUtbetalinger(soknad: JsonInternalSoknad): List<JsonOkonomiOpplysningUtbetaling> {
-        return soknad.soknad.data.okonomi.opplysninger.utbetaling
+    private fun mapToUtbetalinger(soknad: JsonInternalSoknad): List<JsonOkonomiOpplysningUtbetaling> =
+        soknad.soknad.data.okonomi.opplysninger.utbetaling
             .filter { it.type == UTBETALING_HUSBANKEN }
-    }
 
-    private fun mapToUtSaksStatuser(soknad: JsonInternalSoknad): List<JsonBostotteSak> {
-        return soknad.soknad.data.okonomi.opplysninger.bostotte.saker
+    private fun mapToUtSaksStatuser(soknad: JsonInternalSoknad): List<JsonBostotteSak> =
+        soknad.soknad.data.okonomi.opplysninger.bostotte.saker
             .filter { it.type == UTBETALING_HUSBANKEN }
-    }
 
     data class BostotteFrontend(
         val bekreftelse: Boolean?,
