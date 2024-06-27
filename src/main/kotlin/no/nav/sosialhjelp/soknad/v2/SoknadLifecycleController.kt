@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -18,26 +17,27 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
 
-/**
- * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
- * som direkte opererer/muterer data.
- */
-
 data class StartSoknadResponseDto(
     val soknadId: String,
     val useKortSoknad: Boolean,
 )
 
+/**
+ * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
+ * som direkte opererer/muterer data.
+ */
 @RestController
 @Unprotected
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleService,
     private val nedetidService: NedetidService,
-    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     @PostMapping("/opprettSoknad")
-    fun createSoknad(response: HttpServletResponse): StartSoknadResponseDto {
+    fun createSoknad(
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = true) token: String,
+        response: HttpServletResponse,
+    ): StartSoknadResponseDto {
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
@@ -46,7 +46,7 @@ class SoknadLifecycleController(
         }
 
         return soknadLifecycleService
-            .startSoknad()
+            .startSoknad(token)
             .let { (id, useKortSoknad) ->
                 response.addCookie(xsrfCookie(id.toString()))
                 response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))

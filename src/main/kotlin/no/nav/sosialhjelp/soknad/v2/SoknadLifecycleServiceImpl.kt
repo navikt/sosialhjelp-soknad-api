@@ -21,10 +21,10 @@ class SoknadLifecycleServiceImpl(
     private val unleash: Unleash,
     private val digisosApiService: DigisosApiService,
 ) : SoknadLifecycleService {
-    override fun startSoknad(): Pair<UUID, Boolean> {
+    override fun startSoknad(token: String): Pair<UUID, Boolean> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(fnr)
+        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(fnr, token)
 
         prometheusMetricsService.reportStartSoknad(kortSoknad)
 
@@ -46,7 +46,10 @@ class SoknadLifecycleServiceImpl(
 
     private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
 
-    private fun qualifiesForKortSoknad(fnr: String): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(fnr) || hasRecentOrUpcomingUtbetalinger(fnr)
+    private fun qualifiesForKortSoknad(
+        fnr: String,
+        token: String,
+    ): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(token) || hasRecentOrUpcomingUtbetalinger(token)
 
     private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
         soknadServiceImpl.hasSoknadNewerThan(
@@ -54,9 +57,9 @@ class SoknadLifecycleServiceImpl(
             tidspunkt = LocalDateTime.now().minusDays(120),
         )
 
-    private fun hasRecentSoknadFromFiks(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(fnr, LocalDateTime.now().minusDays(120))
+    private fun hasRecentSoknadFromFiks(token: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(token, LocalDateTime.now().minusDays(120))
 
-    private fun hasRecentOrUpcomingUtbetalinger(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(fnr, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
+    private fun hasRecentOrUpcomingUtbetalinger(token: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(token, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
 
     override fun cancelSoknad(
         soknadId: UUID,

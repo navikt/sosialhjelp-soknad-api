@@ -114,8 +114,8 @@ class DigisosApiV2Client(
         return digisosId
     }
 
-    @Cacheable("digisos_sak", unless = "")
-    fun getSoknader(token: String): List<DigisosSak> {
+    @Cacheable("digisos_sak")
+    fun getSoknader(token: String?): List<DigisosSak> {
         val startTime = System.currentTimeMillis()
         return try {
             fiksWebClient
@@ -137,9 +137,9 @@ class DigisosApiV2Client(
 
     @Cacheable("digisos_soker")
     fun getInnsynsfil(
-        token: String,
         digisosId: String,
         dokumentLagerId: String,
+        token: String?,
     ): JsonDigisosSoker {
         val startTime = System.currentTimeMillis()
         return try {
