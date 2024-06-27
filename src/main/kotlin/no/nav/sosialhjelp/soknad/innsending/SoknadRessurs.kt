@@ -150,6 +150,7 @@ class SoknadRessurs(
 
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
         response: HttpServletResponse,
     ): StartSoknadResponse {
         if (nedetidService.isInnenforNedetid) {
@@ -158,7 +159,7 @@ class SoknadRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
         return soknadServiceOld
-            .startSoknad()
+            .startSoknad(token)
             .also {
                 response.addCookie(xsrfCookie(it.brukerBehandlingId))
                 response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))
@@ -172,6 +173,14 @@ class SoknadRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         soknadServiceOld.avbrytSoknad(behandlingsId, referer)
+    }
+
+    @GetMapping("/{behandlingsId}/isKort")
+    fun isKortSoknad(
+        @PathVariable behandlingsId: String,
+    ): Boolean {
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
+        return soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
     }
 
     companion object {

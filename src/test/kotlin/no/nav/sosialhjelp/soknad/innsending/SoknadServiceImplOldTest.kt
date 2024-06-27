@@ -72,7 +72,7 @@ internal class SoknadServiceImplOldTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any()) } returns false
-        every { digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(any(), any(), any()) } returns false
+        every { digisosApiService.qualifiesForKortSoknadThroughUtbetalinger("", any(), any()) } returns false
         every { systemdataUpdater.update(any()) } just runs
         every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
@@ -98,7 +98,7 @@ internal class SoknadServiceImplOldTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
-        soknadServiceOld.startSoknad()
+        soknadServiceOld.startSoknad("")
 
         val bekreftelser =
             soknadUnderArbeidSlot.captured.jsonInternalSoknad!!
@@ -122,7 +122,7 @@ internal class SoknadServiceImplOldTest {
 
         every { soknadUnderArbeidRepository.opprettSoknad(any(), any()) } returns 123L
 
-        soknadServiceOld.startSoknad()
+        soknadServiceOld.startSoknad("")
 
         assertThat(slot.captured.kortSoknad).isTrue()
         assertThat(kortSoknadSlot.captured).isTrue()

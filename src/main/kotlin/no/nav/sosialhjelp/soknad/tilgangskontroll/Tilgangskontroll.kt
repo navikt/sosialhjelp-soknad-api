@@ -50,9 +50,10 @@ class Tilgangskontroll(
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
         val personId = getUserIdFromToken()
         val soknadEier =
-            soknadMetadataRepository.hent(
-                behandlingsId,
-            )?.fnr ?: AuthorizationException("henting av eier for søknad $behandlingsId feilet, nekter adgang")
+            soknadMetadataRepository
+                .hent(
+                    behandlingsId,
+                )?.fnr ?: AuthorizationException("henting av eier for søknad $behandlingsId feilet, nekter adgang")
         if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
         verifiserAtBrukerIkkeHarAdressebeskyttelse(personId)
     }

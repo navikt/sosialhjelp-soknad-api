@@ -23,6 +23,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
@@ -64,10 +65,10 @@ class SoknadServiceOld(
     private val digisosApiService: DigisosApiService,
 ) {
     @Transactional
-    fun startSoknad(): StartSoknadResponse {
+    fun startSoknad(token: String?): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(eierId)
+        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
 
         val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
 
@@ -95,7 +96,7 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
-            qualifiesForKortSoknad(eierId),
+            kortSoknad,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
@@ -105,16 +106,19 @@ class SoknadServiceOld(
         return StartSoknadResponse(behandlingsId, kortSoknad)
     }
 
-    private fun qualifiesForKortSoknad(fnr: String): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(fnr) || hasRecentOrUpcomingUtbetalinger(fnr)
+    private fun qualifiesForKortSoknad(
+        fnr: String,
+        token: String?,
+    ): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(token) || hasRecentOrUpcomingUtbetalinger(token)
 
     private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
 
     private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
         soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr, LocalDateTime.now(clock).minusDays(120)).any()
 
-    private fun hasRecentSoknadFromFiks(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(fnr, LocalDateTime.now().minusDays(120))
+    private fun hasRecentSoknadFromFiks(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(token, LocalDateTime.now().minusDays(120))
 
-    private fun hasRecentOrUpcomingUtbetalinger(fnr: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(fnr, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
+    private fun hasRecentOrUpcomingUtbetalinger(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(token, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
 
     private fun opprettSoknadMetadata(
         fnr: String,
@@ -192,6 +196,8 @@ class SoknadServiceOld(
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
+
+    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata = soknadMetadataRepository.hent(behandlingsId) ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
