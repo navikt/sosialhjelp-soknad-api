@@ -29,7 +29,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.ma
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.web.bind.annotation.GetMapping
@@ -165,7 +165,9 @@ class OkonomiskeOpplysningerRessurs(
                     VedleggFrontend(
                         type = vedleggstype,
                         gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
-                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) },
+                        // dokumentId ligger ikke i JSON, så det ville være vanskelig å få tilbake.
+                        // Listen slettedeVedlegg blir ikke brukt av frontend, så det er ikke noe krav om at dokumentId er gyldig her.
+                        filer = ikkePaakrevdVedlegg.filer.map { DokumentUpload(filename = it.filnavn, dokumentId = "invalid-" + it.filnavn) },
                     ),
                 )
             }

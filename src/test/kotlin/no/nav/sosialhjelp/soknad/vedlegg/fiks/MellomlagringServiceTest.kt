@@ -25,7 +25,7 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -165,7 +165,7 @@ internal class MellomlagringServiceTest {
         assertThatThrownBy {
             mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", EXCEL_FILE_OLD.readBytes(), EXCEL_FILE.name)
         }
-            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .isInstanceOf(DokumentUploadUnsupportedMediaType::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
     }
 
@@ -206,12 +206,12 @@ internal class MellomlagringServiceTest {
     }
 
     private fun createSoknadUnderArbeid(
-        behandligsId: String,
+        behandlingsId: String,
         jsonInternalSoknad: JsonInternalSoknad,
     ): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
-            behandlingsId = behandligsId,
+            behandlingsId = behandlingsId,
             eier = "EIER",
             jsonInternalSoknad = jsonInternalSoknad,
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
