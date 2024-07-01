@@ -66,7 +66,10 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportAntallVedleggSendtInn( fiksDigisosId: String, antallVedlegg: Int) {
+    fun reportAntallVedleggSendtInn(
+        fiksDigisosId: String,
+        antallVedlegg: Int,
+    ) {
         innsendtVedleggMetric
             .tag("fiksDigisosId", fiksDigisosId)
             .register(meterRegistry)
