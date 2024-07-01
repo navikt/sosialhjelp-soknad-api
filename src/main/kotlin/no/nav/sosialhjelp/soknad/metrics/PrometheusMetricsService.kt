@@ -25,7 +25,7 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
-    private val vedleggSendtMedSoknadCounter = Counter.builder("vedlegg_sendt_med_soknad_counter")
+    private val innsendtVedleggMetric = Counter.builder("vedlegg_sendt_med_soknad_counter")
 
     fun reportInnsendingTid(antallSekunder: Long) {
         soknadInnsendingTidTimer
@@ -66,8 +66,9 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportAntallVedleggSendtInn(antallVedlegg: Int) {
-        vedleggSendtMedSoknadCounter
+    fun reportAntallVedleggSendtInn( fiksDigisosId: String, antallVedlegg: Int) {
+        innsendtVedleggMetric
+            .tag("fiksDigisosId", fiksDigisosId)
             .register(meterRegistry)
             .increment(antallVedlegg.toDouble())
     }
