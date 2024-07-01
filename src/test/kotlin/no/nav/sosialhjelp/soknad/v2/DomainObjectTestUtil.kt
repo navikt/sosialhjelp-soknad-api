@@ -29,6 +29,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.situasjonsendring.Situasjonsendring
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
@@ -44,6 +45,17 @@ fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad =
         mottaker = JsonSoknadsmottaker()
         midlertidigAdresse = JsonAdresse()
     }
+
+fun createSituasjonsendring(
+    soknadId: UUID,
+    hvaErEndret: String? = "Ingenting",
+    endring: Boolean? = true,
+): Situasjonsendring =
+    Situasjonsendring(
+        soknadId = soknadId,
+        hvaErEndret = hvaErEndret,
+        endring = endring,
+    )
 
 fun createFamilie(
     soknadId: UUID,

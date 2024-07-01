@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
+import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 
 interface ControllerAdapter {
@@ -55,5 +56,10 @@ interface ControllerAdapter {
         soknadId: String,
         adresser: AdresserFrontendInput,
         navEnhet: NavEnhetFrontend?,
+    )
+
+    fun updateSituasjonsendring(
+        soknadId: String,
+        situasjonsendring: SituasjonsendringFrontend,
     )
 }
