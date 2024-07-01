@@ -94,6 +94,7 @@ class DigisosApiService(
 
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
+        prometheusMetricsService.reportAntallVedleggSendtInn(filOpplastinger.size)
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
         shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)
