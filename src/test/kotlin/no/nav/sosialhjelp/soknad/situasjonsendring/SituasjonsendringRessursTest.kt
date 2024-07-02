@@ -8,6 +8,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -92,10 +93,11 @@ class SituasjonsendringRessursTest {
                 sistEndretDato = LocalDateTime.now(),
             )
         soknadUnderArbeid.jsonInternalSoknad!!
-            .soknad.data.situasjonendring
-            .withHarNoeEndretSeg(endring)
-            .withHvaHarEndretSeg(hvaErEndret)
-            .withKilde(JsonKildeBruker.BRUKER)
+            .soknad.data.situasjonendring =
+            JsonSituasjonendring()
+                .withHarNoeEndretSeg(endring)
+                .withHvaHarEndretSeg(hvaErEndret)
+                .withKilde(JsonKildeBruker.BRUKER)
         return soknadUnderArbeid
     }
 }

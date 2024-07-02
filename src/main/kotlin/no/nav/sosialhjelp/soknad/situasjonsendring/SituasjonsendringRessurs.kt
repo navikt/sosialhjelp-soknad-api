@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.situasjonsendring
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -54,11 +55,16 @@ class SituasjonsendringRessurs(
         @RequestBody situasjonsendring: SituasjonsendringFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        requireNotNull(situasjonsendring.endring) { "Endring kan ikke være null" }
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        if (jsonInternalSoknad.soknad.data.situasjonendring == null) {
+            jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring()
+        }
+
         with(jsonInternalSoknad.soknad.data.situasjonendring) {
             harNoeEndretSeg = situasjonsendring.endring
             hvaHarEndretSeg = situasjonsendring.hvaErEndret
