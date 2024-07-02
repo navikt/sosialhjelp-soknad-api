@@ -170,7 +170,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -194,7 +194,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -271,7 +271,7 @@ internal class SoknadRessursTest {
 
         private fun createSoknadUnderArbeid(
             eier: String,
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
         ): SoknadUnderArbeid =
             SoknadUnderArbeid(
                 versjon = 1L,

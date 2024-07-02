@@ -112,7 +112,9 @@ internal class ArbeidRessursTest {
 
         val soknadUnderArbeid = slot.captured
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
-        val kommentarTilArbeidsforhold = internalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            internalSoknad!!
+                .soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
 
@@ -129,13 +131,17 @@ internal class ArbeidRessursTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
         // skal ikke være mulig:
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
+            ?.arbeid
+            ?.forhold = null
 
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
@@ -147,7 +153,9 @@ internal class ArbeidRessursTest {
 
         val captured = slot.captured
         val internalSoknad = captured.jsonInternalSoknad
-        val kommentarTilArbeidsforhold = internalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            internalSoknad!!
+                .soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
 
@@ -170,7 +178,9 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
     }
@@ -188,7 +198,9 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold).isNull()
     }
 
@@ -238,9 +250,7 @@ internal class ArbeidRessursTest {
         }
     }
 
-    private fun createArbeidsforholdListe(): List<JsonArbeidsforhold> {
-        return mutableListOf(ARBEIDSFORHOLD_1, ARBEIDSFORHOLD_2)
-    }
+    private fun createArbeidsforholdListe(): List<JsonArbeidsforhold> = mutableListOf(ARBEIDSFORHOLD_1, ARBEIDSFORHOLD_2)
 
     private fun createJsonInternalSoknadWithArbeid(
         arbeidsforholdList: List<JsonArbeidsforhold>?,
@@ -251,14 +261,24 @@ internal class ArbeidRessursTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        arbeidsforholdList?.let { soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = it }
+        arbeidsforholdList?.let {
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.arbeid
+                ?.forhold = it
+        }
         kommentar?.let {
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.kommentarTilArbeidsforhold =
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.arbeid
+                ?.kommentarTilArbeidsforhold =
                 JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)

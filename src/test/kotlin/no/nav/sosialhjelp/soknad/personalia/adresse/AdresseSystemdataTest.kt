@@ -36,7 +36,9 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        val folkeregistrertAdresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.folkeregistrertAdresse
         val bostedsadresseVegadresse = personWithBostedsadresseVegadresse.bostedsadresse?.vegadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.GATEADRESSE)
@@ -66,7 +68,9 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        val folkeregistrertAdresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.folkeregistrertAdresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE)
         val matrikkeladresse = folkeregistrertAdresse as JsonMatrikkelAdresse
@@ -114,7 +118,9 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        val folkeregistrertAdresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.folkeregistrertAdresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE)
         val matrikkeladresse = folkeregistrertAdresse as JsonMatrikkelAdresse
@@ -129,7 +135,8 @@ internal class AdresseSystemdataTest {
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_oppholdsadresse_fraPdl() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
         val personWithOppholdsadresse =
@@ -141,9 +148,15 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
+        val folkeregistrertAdresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.folkeregistrertAdresse
+        val oppholdsadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.oppholdsadresse
+        val postadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.postadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(postadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -160,7 +173,8 @@ internal class AdresseSystemdataTest {
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
         val personWithBostedsadresseVegadresse =
@@ -169,9 +183,15 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
+        val folkeregistrertAdresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.folkeregistrertAdresse
+        val oppholdsadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.oppholdsadresse
+        val postadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.postadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(postadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -183,15 +203,20 @@ internal class AdresseSystemdataTest {
     @Test
     fun skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia
             .withOppholdsadresse(JsonAdresse())
             .withPostadresse(JsonAdresse())
         val personWithBostedsadresseVegadresse =
             createPersonWithBostedsadresse(Bostedsadresse("", DEFAULT_VEGADRESSE, null))
         every { personService.hentPerson(any()) } returns personWithBostedsadresseVegadresse
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
+        val oppholdsadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.oppholdsadresse
+        val postadresse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.postadresse
         assertThat(postadresse.adresseValg).isNull()
         assertThat(postadresse.type).isNull()
         assertThat(oppholdsadresse.adresseValg).isNull()
@@ -213,8 +238,8 @@ internal class AdresseSystemdataTest {
         assertThat(gateAdresse.poststed).isEqualTo(vegadresse?.poststed)
     }
 
-    private fun createPersonWithBostedsadresse(bostedsadresse: Bostedsadresse): Person {
-        return Person(
+    private fun createPersonWithBostedsadresse(bostedsadresse: Bostedsadresse): Person =
+        Person(
             fornavn = "fornavn",
             mellomnavn = "mellomnavn",
             etternavn = "etternavn",
@@ -225,13 +250,12 @@ internal class AdresseSystemdataTest {
             bostedsadresse = bostedsadresse,
             oppholdsadresse = null,
         )
-    }
 
     private fun createPersonWithBostedsadresseOgOppholdsadresse(
         bostedsadresse: Bostedsadresse,
         oppholdsadresse: Oppholdsadresse,
-    ): Person {
-        return Person(
+    ): Person =
+        Person(
             fornavn = "fornavn",
             mellomnavn = "mellomnavn",
             etternavn = "etternavn",
@@ -242,7 +266,6 @@ internal class AdresseSystemdataTest {
             bostedsadresse = bostedsadresse,
             oppholdsadresse = oppholdsadresse,
         )
-    }
 
     companion object {
         private const val EIER = "12345678901"
@@ -271,16 +294,15 @@ internal class AdresseSystemdataTest {
                 bydelsnummer = null,
             )
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

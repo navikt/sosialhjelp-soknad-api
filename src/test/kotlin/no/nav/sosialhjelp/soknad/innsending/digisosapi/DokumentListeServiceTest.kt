@@ -29,7 +29,7 @@ internal class DokumentListeServiceTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = eier,
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
