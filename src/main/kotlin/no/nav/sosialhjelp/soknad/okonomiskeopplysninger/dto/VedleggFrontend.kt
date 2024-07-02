@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 
 data class VedleggFrontend(
     val type: VedleggType,
@@ -12,7 +12,7 @@ data class VedleggFrontend(
     @Schema(description = "Vedlegg er levert inn utenom denne søknaden (f. eks. levert til NAV-kontor)")
     val alleredeLevert: Boolean? = null,
     @Schema(readOnly = true)
-    val filer: List<FilFrontend>?,
+    val filer: List<DokumentUpload>?,
 )
 
 data class VedleggRadFrontend(

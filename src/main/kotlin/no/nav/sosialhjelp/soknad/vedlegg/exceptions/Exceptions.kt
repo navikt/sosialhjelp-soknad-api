@@ -2,14 +2,13 @@ package no.nav.sosialhjelp.soknad.vedlegg.exceptions
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 
-class OpplastingException(message: String?, cause: Throwable?, id: String?) :
+open class DokumentUploadError(message: String, cause: Throwable? = null, id: String? = null) :
     SosialhjelpSoknadApiException(message, cause, id)
 
-class UgyldigOpplastingTypeException(message: String?, cause: Throwable?, id: String?) :
-    SosialhjelpSoknadApiException(message, cause, id)
+class DokumentUploadPossibleVirus(message: String) : DokumentUploadError(message)
 
-class KonverteringTilPdfException(message: String?, cause: Throwable?, id: String? = null) :
-    SosialhjelpSoknadApiException(message, cause, id)
+class DokumentUploadUnsupportedMediaType(message: String) : DokumentUploadError(message)
 
-class DuplikatFilException(message: String?, e: Exception? = null) :
-    SosialhjelpSoknadApiException(message, e)
+class DokumentUploadFileEncrypted : DokumentUploadError("PDF kan ikke være kryptert")
+
+class DokumentUploadDuplicateFilename : DokumentUploadError("fil med samme navn eksisterer allerede i søknad")

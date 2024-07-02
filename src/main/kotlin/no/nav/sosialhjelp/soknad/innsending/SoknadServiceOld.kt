@@ -36,6 +36,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -62,7 +63,7 @@ class SoknadServiceOld(
     private val v2AdapterService: V2AdapterService,
 ) {
     @Transactional
-    fun startSoknad(): String {
+    fun startSoknad(): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
@@ -92,7 +93,7 @@ class SoknadServiceOld(
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return behandlingsId
+        return StartSoknadResponse(behandlingsId, false)
     }
 
     private fun opprettSoknadMetadata(fnr: String): String {
@@ -125,7 +126,8 @@ class SoknadServiceOld(
         log.info("Soknad avbrutt av bruker - slettes")
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
+        soknadUnderArbeidRepository
+            .hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
                 if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
                     mellomlagringService.deleteAllVedlegg(behandlingsId)
@@ -170,83 +172,72 @@ class SoknadServiceOld(
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
 
-        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad {
-            return JsonInternalSoknad().withSoknad(
-                JsonSoknad()
-                    .withData(
-                        JsonData()
-                            .withPersonalia(
-                                JsonPersonalia()
-                                    .withPersonIdentifikator(
-                                        JsonPersonIdentifikator()
-                                            .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                            .withVerdi(eier),
-                                    )
-                                    .withNavn(
-                                        JsonSokernavn()
-                                            .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                                            .withFornavn("")
-                                            .withMellomnavn("")
-                                            .withEtternavn(""),
-                                    )
-                                    .withKontonummer(
-                                        JsonKontonummer()
-                                            .withKilde(JsonKilde.SYSTEM),
-                                    ),
-                            )
-                            .withArbeid(JsonArbeid())
-                            .withUtdanning(
-                                JsonUtdanning()
-                                    .withKilde(JsonKilde.BRUKER),
-                            )
-                            .withFamilie(
-                                JsonFamilie()
-                                    .withForsorgerplikt(JsonForsorgerplikt()),
-                            )
-                            .withBegrunnelse(
-                                JsonBegrunnelse()
-                                    .withKilde(JsonKildeBruker.BRUKER)
-                                    .withHvorforSoke("")
-                                    .withHvaSokesOm(""),
-                            )
-                            .withBosituasjon(
-                                JsonBosituasjon()
-                                    .withKilde(JsonKildeBruker.BRUKER),
-                            )
-                            .withOkonomi(
-                                JsonOkonomi()
-                                    .withOpplysninger(
-                                        JsonOkonomiopplysninger()
-                                            .withUtbetaling(ArrayList())
-                                            .withUtgift(ArrayList())
-                                            .withBostotte(JsonBostotte())
-                                            .withBekreftelse(ArrayList()),
-                                    )
-                                    .withOversikt(
-                                        JsonOkonomioversikt()
-                                            .withInntekt(ArrayList())
-                                            .withUtgift(ArrayList())
-                                            .withFormue(ArrayList()),
-                                    ),
-                            ),
-                    )
-                    .withMottaker(
-                        JsonSoknadsmottaker()
-                            .withNavEnhetsnavn("")
-                            .withEnhetsnummer(""),
-                    )
-                    .withDriftsinformasjon(
-                        JsonDriftsinformasjon()
-                            .withUtbetalingerFraNavFeilet(false)
-                            .withInntektFraSkatteetatenFeilet(false)
-                            .withStotteFraHusbankenFeilet(false),
-                    )
-                    .withKompatibilitet(ArrayList()),
-            ).withVedlegg(JsonVedleggSpesifikasjon())
-        }
+        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad =
+            JsonInternalSoknad()
+                .withSoknad(
+                    JsonSoknad()
+                        .withData(
+                            JsonData()
+                                .withPersonalia(
+                                    JsonPersonalia()
+                                        .withPersonIdentifikator(
+                                            JsonPersonIdentifikator()
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                .withVerdi(eier),
+                                        ).withNavn(
+                                            JsonSokernavn()
+                                                .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                                .withFornavn("")
+                                                .withMellomnavn("")
+                                                .withEtternavn(""),
+                                        ).withKontonummer(
+                                            JsonKontonummer()
+                                                .withKilde(JsonKilde.SYSTEM),
+                                        ),
+                                ).withArbeid(JsonArbeid())
+                                .withUtdanning(
+                                    JsonUtdanning()
+                                        .withKilde(JsonKilde.BRUKER),
+                                ).withFamilie(
+                                    JsonFamilie()
+                                        .withForsorgerplikt(JsonForsorgerplikt()),
+                                ).withBegrunnelse(
+                                    JsonBegrunnelse()
+                                        .withKilde(JsonKildeBruker.BRUKER)
+                                        .withHvorforSoke("")
+                                        .withHvaSokesOm(""),
+                                ).withBosituasjon(
+                                    JsonBosituasjon()
+                                        .withKilde(JsonKildeBruker.BRUKER),
+                                ).withOkonomi(
+                                    JsonOkonomi()
+                                        .withOpplysninger(
+                                            JsonOkonomiopplysninger()
+                                                .withUtbetaling(ArrayList())
+                                                .withUtgift(ArrayList())
+                                                .withBostotte(JsonBostotte())
+                                                .withBekreftelse(ArrayList()),
+                                        ).withOversikt(
+                                            JsonOkonomioversikt()
+                                                .withInntekt(ArrayList())
+                                                .withUtgift(ArrayList())
+                                                .withFormue(ArrayList()),
+                                        ),
+                                ),
+                        ).withMottaker(
+                            JsonSoknadsmottaker()
+                                .withNavEnhetsnavn("")
+                                .withEnhetsnummer(""),
+                        ).withDriftsinformasjon(
+                            JsonDriftsinformasjon()
+                                .withUtbetalingerFraNavFeilet(false)
+                                .withInntektFraSkatteetatenFeilet(false)
+                                .withStotteFraHusbankenFeilet(false),
+                        ).withKompatibilitet(ArrayList()),
+                ).withVedlegg(JsonVedleggSpesifikasjon())
 
-        private fun mapJsonVedleggToVedleggMetadata(jsonVedlegg: JsonVedlegg): VedleggMetadata {
-            return VedleggMetadata(
+        private fun mapJsonVedleggToVedleggMetadata(jsonVedlegg: JsonVedlegg): VedleggMetadata =
+            VedleggMetadata(
                 skjema = jsonVedlegg.type,
                 tillegg = jsonVedlegg.tilleggsinfo,
                 filnavn = jsonVedlegg.type,
@@ -254,6 +245,5 @@ class SoknadServiceOld(
                 hendelseType = jsonVedlegg.hendelseType,
                 hendelseReferanse = jsonVedlegg.hendelseReferanse,
             )
-        }
     }
 }

@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -74,13 +75,21 @@ class SoknadRessurs(
         val notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.jsonInternalSoknad
 
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
 
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
@@ -128,7 +137,13 @@ class SoknadRessurs(
         soknadUnderArbeid: SoknadUnderArbeid,
         samtykke: String,
     ): JsonOkonomibekreftelse? {
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.okonomi
+                ?.opplysninger
+                ?.bekreftelse
         return bekreftelser
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
@@ -136,18 +151,17 @@ class SoknadRessurs(
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
         response: HttpServletResponse,
-    ): Map<String, String> {
+    ): StartSoknadResponse {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        return soknadServiceOld.startSoknad()
-            .let {
-                response.addCookie(xsrfCookie(it))
-                response.addCookie(xsrfCookieMedBehandlingsid(it))
-
-                mapOf("brukerBehandlingId" to it)
+        return soknadServiceOld
+            .startSoknad()
+            .also {
+                response.addCookie(xsrfCookie(it.brukerBehandlingId))
+                response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))
             }
     }
 
