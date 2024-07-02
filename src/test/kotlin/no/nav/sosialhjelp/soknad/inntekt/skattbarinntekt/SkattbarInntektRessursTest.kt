@@ -105,15 +105,22 @@ internal class SkattbarInntektRessursTest {
         // Sjekker kaller til skatteetatenSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
+        val okonomi =
+            systemdataSlot.captured.jsonInternalSoknad!!
+                .soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isTrue
 
         // Sjekker lagring av soknaden
         val spartSoknad = soknadUnderArbeidSlot.captured
-        assertThat(spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).hasSize(1)
-        val spartBekreftelse = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse[0]
+        assertThat(
+            spartSoknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse,
+        ).hasSize(1)
+        val spartBekreftelse =
+            soknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(spartBekreftelse.verdi).isTrue
     }
@@ -121,7 +128,9 @@ internal class SkattbarInntektRessursTest {
     @Test
     fun skattbarInntekt_skalTaBortSamtykke() {
         val soknad = createJsonInternalSoknadWithSkattbarInntekt(false)
-        val opplysninger = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
+        val opplysninger =
+            soknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, true, "")
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -138,14 +147,18 @@ internal class SkattbarInntektRessursTest {
         // Sjekker kaller til skattbarInntektSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
+        val okonomi =
+            systemdataSlot.captured.jsonInternalSoknad!!
+                .soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isFalse
 
         // Sjekker lagring av soknaden
         val spartSoknad = soknadUnderArbeidSlot.captured
-        val sparteOpplysninger = spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
+        val sparteOpplysninger =
+            spartSoknad.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger
         assertThat(sparteOpplysninger.bekreftelse).hasSize(1)
         val spartBekreftelse = sparteOpplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
@@ -184,11 +197,12 @@ internal class SkattbarInntektRessursTest {
                         JsonOrganisasjon()
                             .withNavn("Arbeidsgiver")
                             .withOrganisasjonsnummer("123456789"),
-                    )
-                    .withBelop(123456)
+                    ).withBelop(123456)
                     .withPeriodeFom("2020-01-01")
                     .withPeriodeTom("2020-02-01")
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
+                .add(utbetaling)
         }
         return soknadUnderArbeid
     }
@@ -197,16 +211,15 @@ internal class SkattbarInntektRessursTest {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

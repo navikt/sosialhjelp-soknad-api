@@ -49,7 +49,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(sivilstatus.status).isEqualTo(JsonSivilstatus.Status.GIFT)
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE, sivilstatus.ektefelle)
@@ -70,7 +72,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
     }
 
@@ -99,7 +103,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(sivilstatus.status).isEqualTo(JsonSivilstatus.Status.GIFT)
         assertThatEktefelleIsCorrectlyConverted(TOM_EKTEFELLE, sivilstatus.ektefelle)
@@ -119,7 +125,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -141,7 +149,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isFalse
         val ansvarList = forsorgerplikt.ansvar
@@ -153,20 +163,21 @@ internal class FamilieSystemdataTest {
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
         every { personService.hentPerson(any()) } returns null
 
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(true),
-            )
-            .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
+            ).withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -189,20 +200,21 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns emptyList()
 
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.BRUKER)
                     .withVerdi(true),
-            )
-            .withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
+            ).withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -224,7 +236,9 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         assertThat(forsorgerplikt.barnebidrag.kilde).isEqualTo(JsonKildeBruker.BRUKER)
@@ -251,19 +265,20 @@ internal class FamilieSystemdataTest {
 
         val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
     }
 
     private fun createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn(): JsonInternalSoknad {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         jsonInternalSoknad.soknad.data.familie.forsorgerplikt
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(true),
-            )
-            .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2))
+            ).withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2))
             .withBarnebidrag(
                 JsonBarnebidrag()
                     .withKilde(JsonKildeBruker.BRUKER)
@@ -307,8 +322,8 @@ internal class FamilieSystemdataTest {
     private fun createPerson(
         sivilstatus: String,
         ektefelle: Ektefelle?,
-    ): Person {
-        return Person(
+    ): Person =
+        Person(
             fornavn = "fornavn",
             mellomnavn = "mellomnavn",
             etternavn = "etternavn",
@@ -319,7 +334,6 @@ internal class FamilieSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-    }
 
     companion object {
         private const val EIER = "12345678901"
@@ -373,16 +387,13 @@ internal class FamilieSystemdataTest {
                                 .withFornavn(FORNAVN_BARN)
                                 .withMellomnavn(MELLOMNAVN_BARN)
                                 .withEtternavn(ETTERNAVN_BARN),
-                        )
-                        .withFodselsdato(FODSELSDATO_BARN.toString())
+                        ).withFodselsdato(FODSELSDATO_BARN.toString())
                         .withPersonIdentifikator(FNR_BARN),
-                )
-                .withErFolkeregistrertSammen(
+                ).withErFolkeregistrertSammen(
                     JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN),
-                )
-                .withHarDeltBosted(
+                ).withHarDeltBosted(
                     JsonHarDeltBosted()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(HAR_DELT_BOSTED_BARN),
@@ -397,16 +408,13 @@ internal class FamilieSystemdataTest {
                                 .withFornavn(FORNAVN_BARN_2)
                                 .withMellomnavn(MELLOMNAVN_BARN_2)
                                 .withEtternavn(ETTERNAVN_BARN_2),
-                        )
-                        .withFodselsdato(FODSELSDATO_BARN_2.toString())
+                        ).withFodselsdato(FODSELSDATO_BARN_2.toString())
                         .withPersonIdentifikator(FNR_BARN_2),
-                )
-                .withErFolkeregistrertSammen(
+                ).withErFolkeregistrertSammen(
                     JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
                         .withVerdi(ER_FOLKEREGISTRERT_SAMMEN_BARN_2),
-                )
-                .withSamvarsgrad(
+                ).withSamvarsgrad(
                     JsonSamvarsgrad()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(SAMVARSGRAD_BARN_2),
@@ -421,24 +429,21 @@ internal class FamilieSystemdataTest {
                                 .withFornavn(FORNAVN_BARN_3)
                                 .withMellomnavn(MELLOMNAVN_BARN_3)
                                 .withEtternavn(ETTERNAVN_BARN_3),
-                        )
-                        .withFodselsdato(FODSELSDATO_BARN_3.toString()),
-                )
-                .withBorSammenMed(
+                        ).withFodselsdato(FODSELSDATO_BARN_3.toString()),
+                ).withBorSammenMed(
                     JsonBorSammenMed()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(false),
-                )
-                .withSamvarsgrad(
+                ).withSamvarsgrad(
                     JsonSamvarsgrad()
                         .withKilde(JsonKildeBruker.BRUKER)
                         .withVerdi(SAMVARSGRAD_BARN_3),
                 )
 
         private fun createSoknadUnderArbeid(
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
@@ -447,6 +452,5 @@ internal class FamilieSystemdataTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

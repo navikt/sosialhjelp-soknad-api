@@ -48,7 +48,7 @@ class OkonomiskeLivssituasjonRessursTest {
             versjon = 1L,
             behandlingsId = behandlingsId,
             eier = "eier",
-            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier"),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier", false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
@@ -69,7 +69,7 @@ class OkonomiskeLivssituasjonRessursTest {
         val soknadMedVedlegg =
             soknadUnderArbeid.copy(
                 jsonInternalSoknad =
-                    createEmptyJsonInternalSoknad("eier")
+                    createEmptyJsonInternalSoknad("eier", false)
                         .withVedlegg(
                             JsonVedleggSpesifikasjon()
                                 .withVedlegg(
@@ -125,7 +125,7 @@ class OkonomiskeLivssituasjonRessursTest {
         val soknadMedVedlegg =
             soknadUnderArbeid.copy(
                 jsonInternalSoknad =
-                    createEmptyJsonInternalSoknad("eier")
+                    createEmptyJsonInternalSoknad("eier", false)
                         .withVedlegg(
                             JsonVedleggSpesifikasjon()
                                 .withVedlegg(
@@ -170,7 +170,7 @@ class OkonomiskeLivssituasjonRessursTest {
         val soknadMedVedlegg =
             soknadUnderArbeid.copy(
                 jsonInternalSoknad =
-                    createEmptyJsonInternalSoknad("eier")
+                    createEmptyJsonInternalSoknad("eier", false)
                         .withVedlegg(
                             JsonVedleggSpesifikasjon()
                                 .withVedlegg(

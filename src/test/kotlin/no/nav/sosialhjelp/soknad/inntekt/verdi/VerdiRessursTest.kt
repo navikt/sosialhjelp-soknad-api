@@ -129,9 +129,13 @@ internal class VerdiRessursTest {
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val verdier = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val verdier =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         assertThat(verdiBekreftelse.verdi).isFalse
         assertThat(verdier.isEmpty()).isTrue
     }
@@ -154,10 +158,16 @@ internal class VerdiRessursTest {
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val verdier = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
+        val verdier =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
         assertThat(verdiBekreftelse.verdi).isFalse
         assertThat(verdier.isEmpty()).isTrue
         assertThat(beskrivelse).isBlank
@@ -184,9 +194,13 @@ internal class VerdiRessursTest {
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val verdier = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val verdier =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         assertThat(verdiBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(verdiBekreftelse.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_VERDI)
         assertThat(verdiBekreftelse.verdi).isTrue
@@ -218,9 +232,13 @@ internal class VerdiRessursTest {
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val verdier = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val verdier =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         assertThat(verdiBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(verdiBekreftelse.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_VERDI)
         assertThat(verdiBekreftelse.verdi).isTrue
@@ -245,9 +263,13 @@ internal class VerdiRessursTest {
         verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val verdiBekreftelse = bekreftelser[0]
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.verdi
         assertThat(verdiBekreftelse.verdi).isFalse
         assertThat(beskrivelse).isBlank
     }
@@ -287,28 +309,30 @@ internal class VerdiRessursTest {
                     .withTittel("tittel"),
             )
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(SoknadJsonTyper.BEKREFTELSE_VERDI)
                     .withVerdi(harVerdier),
             )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue = verdier
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.oversikt.formue = verdier
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
             JsonOkonomibeskrivelserAvAnnet().withVerdi(beskrivelseAvAnnet)
         return soknadUnderArbeid
     }
 
-    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+        SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
         )
-    }
 }

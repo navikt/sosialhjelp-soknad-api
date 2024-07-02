@@ -21,6 +21,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
+import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -85,7 +86,7 @@ class SoknadServiceOld(
                 versjon = 1L,
                 behandlingsId = behandlingsId,
                 eier = eierId,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId, kortSoknad),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -202,40 +203,46 @@ class SoknadServiceOld(
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
 
-        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad =
-            JsonInternalSoknad()
-                .withSoknad(
-                    JsonSoknad()
-                        .withData(
-                            JsonData()
-                                .withPersonalia(
-                                    JsonPersonalia()
-                                        .withPersonIdentifikator(
-                                            JsonPersonIdentifikator()
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                .withVerdi(eier),
-                                        ).withNavn(
-                                            JsonSokernavn()
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                                                .withFornavn("")
-                                                .withMellomnavn("")
-                                                .withEtternavn(""),
-                                        ).withKontonummer(
-                                            JsonKontonummer()
-                                                .withKilde(JsonKilde.SYSTEM),
-                                        ),
-                                ).withArbeid(JsonArbeid())
+        fun createEmptyJsonInternalSoknad(
+            eier: String,
+            kortSoknad: Boolean,
+        ): JsonInternalSoknad {
+            val jsonData =
+                JsonData()
+                    .withPersonalia(
+                        JsonPersonalia()
+                            .withPersonIdentifikator(
+                                JsonPersonIdentifikator()
+                                    .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                    .withVerdi(eier),
+                            ).withNavn(
+                                JsonSokernavn()
+                                    .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                    .withFornavn("")
+                                    .withMellomnavn("")
+                                    .withEtternavn(""),
+                            ).withKontonummer(
+                                JsonKontonummer()
+                                    .withKilde(JsonKilde.SYSTEM),
+                            ),
+                    ).withBegrunnelse(
+                        JsonBegrunnelse()
+                            .withKilde(JsonKildeBruker.BRUKER)
+                            .withHvorforSoke("")
+                            .withHvaSokesOm(""),
+                    ).let {
+                        if (kortSoknad) {
+                            it.withSituasjonendring(JsonSituasjonendring()).withSoknadstype(JsonData.Soknadstype.KORT)
+                        } else {
+                            it
+                                .withSoknadstype(JsonData.Soknadstype.STANDARD)
+                                .withArbeid(JsonArbeid())
                                 .withUtdanning(
                                     JsonUtdanning()
                                         .withKilde(JsonKilde.BRUKER),
                                 ).withFamilie(
                                     JsonFamilie()
                                         .withForsorgerplikt(JsonForsorgerplikt()),
-                                ).withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvorforSoke("")
-                                        .withHvaSokesOm(""),
                                 ).withBosituasjon(
                                     JsonBosituasjon()
                                         .withKilde(JsonKildeBruker.BRUKER),
@@ -253,8 +260,14 @@ class SoknadServiceOld(
                                                 .withUtgift(ArrayList())
                                                 .withFormue(ArrayList()),
                                         ),
-                                ),
-                        ).withMottaker(
+                                )
+                        }
+                    }
+            return JsonInternalSoknad()
+                .withSoknad(
+                    JsonSoknad()
+                        .withData(jsonData)
+                        .withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
                                 .withEnhetsnummer(""),
@@ -265,5 +278,6 @@ class SoknadServiceOld(
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(JsonVedleggSpesifikasjon())
+        }
     }
 }
