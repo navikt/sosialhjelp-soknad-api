@@ -70,6 +70,7 @@ class SoknadLifecycleServiceImpl(
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
+        val soknad = soknadServiceImpl.findOrError(soknadId)
         val digisosId =
             try {
                 soknadServiceImpl.sendSoknad(soknadId)
@@ -78,7 +79,7 @@ class SoknadLifecycleServiceImpl(
                 throw e
             }
 
-        prometheusMetricsService.reportSendt()
+        prometheusMetricsService.reportSendt(soknad.kortSoknad)
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(
                 adresseService.findMottaker(soknadId)?.enhetsnavn,
