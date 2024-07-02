@@ -17,7 +17,7 @@ class DokumentListeService(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
-    ) {
+) {
     fun getFilOpplastingList(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
