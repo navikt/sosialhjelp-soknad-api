@@ -190,7 +190,9 @@ internal class SivilstatusRessursTest {
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(sivilstatus.status).isEqualTo(JsonSivilstatus.Status.GIFT)
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE_FRONTEND, sivilstatus.ektefelle)
@@ -245,7 +247,9 @@ internal class SivilstatusRessursTest {
 
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
+        val sivilstatus =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(sivilstatus.status).isEqualTo(status)
     }
@@ -259,7 +263,8 @@ internal class SivilstatusRessursTest {
         borSammen: Boolean?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.familie
             .withSivilstatus(
                 brukerutfylt?.let {
                     JsonSivilstatus()
@@ -284,8 +289,7 @@ internal class SivilstatusRessursTest {
                         .withFornavn("Alfred")
                         .withMellomnavn("Thaddeus Crane")
                         .withEtternavn("Pennyworth"),
-                )
-                .withFodselsdato("1940-01-01")
+                ).withFodselsdato("1940-01-01")
                 .withPersonIdentifikator("11111111111")
         private val EKTEFELLE_FRONTEND =
             EktefelleFrontend(
@@ -294,16 +298,15 @@ internal class SivilstatusRessursTest {
                 personnummer = "12345",
             )
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

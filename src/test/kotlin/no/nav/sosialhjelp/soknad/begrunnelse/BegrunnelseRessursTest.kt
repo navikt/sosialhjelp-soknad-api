@@ -81,7 +81,9 @@ internal class BegrunnelseRessursTest {
         begrunnelseRessurs.updateBegrunnelse(BEHANDLINGSID, begrunnelseFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val begrunnelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
+        val begrunnelse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.begrunnelse
         assertThat(begrunnelse.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(begrunnelse.hvaSokesOm).isEqualTo(SOKER_OM)
         assertThat(begrunnelse.hvorforSoke).isEqualTo(SOKER_FORDI)
@@ -117,12 +119,13 @@ internal class BegrunnelseRessursTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)
             .withHvorforSoke(hvorforSoke)
         return soknadUnderArbeid
