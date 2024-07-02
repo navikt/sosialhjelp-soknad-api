@@ -14,7 +14,6 @@ class PrometheusMetricsService(
     private val meterRegistry: MeterRegistry,
 ) {
     private val startSoknadCounter = Counter.builder("start_soknad_counter")
-    private val startKortSoknadCounter = Counter.builder("start_kort_soknad_counter")
 
     private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
 
@@ -35,15 +34,10 @@ class PrometheusMetricsService(
     }
 
     fun reportStartSoknad(kort: Boolean) {
-        if (kort) {
-            startKortSoknadCounter
-                .register(meterRegistry)
-                .increment()
-        } else {
-            startSoknadCounter
-                .register(meterRegistry)
-                .increment()
-        }
+        startSoknadCounter
+            .tag("kortSoknad", kort.toString())
+            .register(meterRegistry)
+            .increment()
     }
 
     fun reportSoknadMottaker(navEnhet: String) {
@@ -53,8 +47,9 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendt() {
+    fun reportSendt(kort: Boolean) {
         sendtSoknadDigisosApiCounter
+            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }

@@ -16,7 +16,7 @@ class SituasjonsendringServiceImpl(
         hvaErEndret: String?,
         endring: Boolean?,
     ): Situasjonsendring {
-        val situasjonsendring = situasjonsendringRepository.findById(soknadId).getOrNull() ?: error("Manglende situasjonsendring på soknadId: $soknadId")
+        val situasjonsendring = situasjonsendringRepository.findById(soknadId).getOrNull() ?: Situasjonsendring(soknadId, hvaErEndret, endring)
         val oppdatert = situasjonsendring.copy(hvaErEndret = hvaErEndret, endring = endring)
         return situasjonsendringRepository.save(oppdatert)
     }

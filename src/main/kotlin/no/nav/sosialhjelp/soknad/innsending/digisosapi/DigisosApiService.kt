@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -97,7 +98,7 @@ class DigisosApiService(
 
         genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendt()
+        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
