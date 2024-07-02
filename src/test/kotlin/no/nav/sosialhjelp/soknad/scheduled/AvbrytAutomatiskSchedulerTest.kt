@@ -94,7 +94,7 @@ internal class AvbrytAutomatiskSchedulerTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGS_ID,
                 eier = "11111111111",
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111", false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),

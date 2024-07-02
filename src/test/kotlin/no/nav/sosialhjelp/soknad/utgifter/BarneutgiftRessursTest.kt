@@ -148,10 +148,16 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
+        val oversiktBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.verdi).isFalse
         assertThat(oversiktBarneutgifter.isEmpty()).isTrue
         assertThat(opplysningerBarneutgifter.isEmpty()).isTrue
@@ -178,10 +184,16 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
+        val oversiktBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(barneutgiftBekreftelse.type).isEqualTo(BEKREFTELSE_BARNEUTGIFTER)
         assertThat(barneutgiftBekreftelse.verdi).isTrue
@@ -213,10 +225,16 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
+        val oversiktBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(barneutgiftBekreftelse.type).isEqualTo(BEKREFTELSE_BARNEUTGIFTER)
         assertThat(barneutgiftBekreftelse.verdi).isTrue
@@ -277,16 +295,20 @@ internal class BarneutgiftRessursTest {
                 )
             }
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(BEKREFTELSE_BARNEUTGIFTER)
                     .withVerdi(harUtgifter),
             )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.familie.forsorgerplikt =
             JsonForsorgerplikt()
                 .withHarForsorgerplikt(
                     JsonHarForsorgerplikt()
@@ -296,17 +318,16 @@ internal class BarneutgiftRessursTest {
         return soknadUnderArbeid
     }
 
-    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+        SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
         )
-    }
 
     companion object {
         private const val BEHANDLINGSID = "123"
