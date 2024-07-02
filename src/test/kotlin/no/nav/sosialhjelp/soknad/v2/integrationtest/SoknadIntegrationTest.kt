@@ -14,8 +14,8 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus.Sta
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
