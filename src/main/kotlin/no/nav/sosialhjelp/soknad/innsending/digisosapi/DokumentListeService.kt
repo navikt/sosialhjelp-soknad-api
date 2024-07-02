@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
@@ -15,7 +16,8 @@ import java.io.ByteArrayInputStream
 class DokumentListeService(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val mellomlagringService: MellomlagringService,
-) {
+    private val prometheusMetricsService: PrometheusMetricsService,
+    ) {
     fun getFilOpplastingList(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
@@ -25,6 +27,7 @@ class DokumentListeService(
         }
 
         val mellomlagredeVedlegg = mellomlagringService.getAllVedlegg(soknadUnderArbeid.behandlingsId)
+        prometheusMetricsService.reportAntallVedleggSendtInn(soknadUnderArbeid.behandlingsId, mellomlagredeVedlegg.size)
 
         return listOf(
             lagDokumentForSaksbehandlerPdf(internalSoknad),
