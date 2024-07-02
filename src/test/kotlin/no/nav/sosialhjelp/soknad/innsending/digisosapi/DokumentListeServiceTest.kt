@@ -5,6 +5,7 @@ import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
@@ -15,8 +16,9 @@ import java.time.LocalDateTime
 internal class DokumentListeServiceTest {
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
-    private val dokumentListeService = DokumentListeService(sosialhjelpPdfGenerator, mellomlagringService)
+    private val dokumentListeService = DokumentListeService(sosialhjelpPdfGenerator, mellomlagringService, prometheusMetricsService)
 
     private val eier = "12345678910"
 
