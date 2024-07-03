@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
@@ -114,7 +113,6 @@ class DigisosApiV2Client(
         return digisosId
     }
 
-    @Cacheable("digisos_sak")
     fun getSoknader(token: String?): List<DigisosSak> {
         val startTime = System.currentTimeMillis()
         return try {
@@ -135,7 +133,6 @@ class DigisosApiV2Client(
         }
     }
 
-    @Cacheable("digisos_soker")
     fun getInnsynsfil(
         digisosId: String,
         dokumentLagerId: String,
