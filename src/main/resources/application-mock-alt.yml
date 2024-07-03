@@ -6,7 +6,7 @@ spring:
     redis:
       password: ${REDIS_PASSWORD_CACHE:pw}
       username: ${REDIS_USERNAME_CACHE:default}
-      url: ${REDIS_HOST_URI:localhost}
+      url: ${REDIS_URI_CACHE:localhost}
   flyway:
     enabled: true
     baseline-on-migrate: true
