@@ -11,7 +11,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory
 import java.time.Duration
 
 @Configuration
-@EnableCaching()
+@EnableCaching
 class CacheConfig {
     @Bean
     fun cacheManager(
