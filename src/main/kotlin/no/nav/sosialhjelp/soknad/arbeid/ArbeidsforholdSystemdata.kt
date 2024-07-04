@@ -63,6 +63,9 @@ class ArbeidsforholdSystemdata(
             internalSoknad: JsonInternalSoknad,
             textService: TextService,
         ) {
+            if (internalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
+                return
+            }
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)

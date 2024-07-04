@@ -200,7 +200,9 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata = soknadMetadataRepository.hent(behandlingsId) ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
+    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata =
+        soknadMetadataRepository.hent(behandlingsId)
+            ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
@@ -214,7 +216,6 @@ class SoknadServiceOld(
                     JsonSoknad()
                         .withData(
                             JsonData()
-                                .withSoknadstype(if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD)
                                 .withPersonalia(
                                     JsonPersonalia()
                                         .withPersonIdentifikator(
@@ -231,36 +232,7 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
-                                ).withArbeid(JsonArbeid())
-                                .withUtdanning(
-                                    JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER),
-                                ).withFamilie(
-                                    JsonFamilie()
-                                        .withForsorgerplikt(JsonForsorgerplikt()),
-                                ).withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvorforSoke("")
-                                        .withHvaSokesOm(""),
-                                ).withBosituasjon(
-                                    JsonBosituasjon()
-                                        .withKilde(JsonKildeBruker.BRUKER),
-                                ).withOkonomi(
-                                    JsonOkonomi()
-                                        .withOpplysninger(
-                                            JsonOkonomiopplysninger()
-                                                .withUtbetaling(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withBostotte(JsonBostotte())
-                                                .withBekreftelse(ArrayList()),
-                                        ).withOversikt(
-                                            JsonOkonomioversikt()
-                                                .withInntekt(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withFormue(ArrayList()),
-                                        ),
-                                ),
+                                ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
@@ -274,3 +246,45 @@ class SoknadServiceOld(
                 ).withVedlegg(JsonVedleggSpesifikasjon())
     }
 }
+
+fun JsonData.withStandardSoknadFelter() =
+    withSoknadstype(JsonData.Soknadstype.STANDARD)
+        .withArbeid(JsonArbeid())
+        .withUtdanning(
+            JsonUtdanning()
+                .withKilde(JsonKilde.BRUKER),
+        ).withFamilie(
+            JsonFamilie()
+                .withForsorgerplikt(JsonForsorgerplikt()),
+        ).withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvorforSoke("")
+                .withHvaSokesOm(""),
+        ).withBosituasjon(
+            JsonBosituasjon()
+                .withKilde(JsonKildeBruker.BRUKER),
+        ).withOkonomi(
+            JsonOkonomi()
+                .withOpplysninger(
+                    JsonOkonomiopplysninger()
+                        .withUtbetaling(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withBostotte(JsonBostotte())
+                        .withBekreftelse(ArrayList()),
+                ).withOversikt(
+                    JsonOkonomioversikt()
+                        .withInntekt(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withFormue(ArrayList()),
+                ),
+        )
+
+fun JsonData.withKortSoknadFelter() =
+    withSoknadstype(JsonData.Soknadstype.KORT)
+        .withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvaSokesOm(""),
+        ).withBegrunnelse(JsonBegrunnelse().withHvaSokesOm("").withKilde(JsonKildeBruker.BRUKER))
+        .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBekreftelse(ArrayList())))
