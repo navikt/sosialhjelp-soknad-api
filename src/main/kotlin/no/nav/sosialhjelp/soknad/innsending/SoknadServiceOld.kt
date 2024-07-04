@@ -65,10 +65,13 @@ class SoknadServiceOld(
     private val digisosApiService: DigisosApiService,
 ) {
     @Transactional
-    fun startSoknad(token: String?): StartSoknadResponse {
+    fun startSoknad(
+        token: String?,
+        type: JsonData.Soknadstype?,
+    ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
+        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
 
         val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
 
