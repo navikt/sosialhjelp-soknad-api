@@ -91,6 +91,7 @@ mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
 [bundles]
 spring-boot = [
+    "spring-boot-docker-compose",
     "spring-boot-starter-actuator",
     "spring-boot-starter-aop",
     "spring-boot-starter-cache",
