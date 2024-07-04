@@ -55,12 +55,14 @@ class SituasjonsendringRessurs(
         @RequestBody situasjonsendring: SituasjonsendringFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        requireNotNull(situasjonsendring.endring) { "Endring kan ikke være null" }
+        if (situasjonsendring.endring == null) {
+            return
+        }
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+                ?: error("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         if (jsonInternalSoknad.soknad.data.situasjonendring == null) {
             jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring()
         }
