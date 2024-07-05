@@ -54,7 +54,7 @@ class BegrunnelseRessurs(
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
         begrunnelse.kilde = JsonKildeBruker.BRUKER
         begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
-        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke ?: ""
+        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // NyModell

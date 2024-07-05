@@ -51,6 +51,7 @@ val githubUser: String by project
 val githubPassword: String by project
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")

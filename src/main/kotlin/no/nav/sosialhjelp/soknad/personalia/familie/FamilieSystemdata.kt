@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
@@ -24,6 +25,9 @@ class FamilieSystemdata(
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonData = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data ?: return
+        if (jsonData.soknadstype == JsonData.Soknadstype.KORT) {
+            return
+        }
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val familie = jsonData.familie
         val systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator)
@@ -104,8 +108,8 @@ class FamilieSystemdata(
         return jsonForsorgerplikt
     }
 
-    private fun mapToJsonAnsvar(barn: Barn): JsonAnsvar {
-        return JsonAnsvar()
+    private fun mapToJsonAnsvar(barn: Barn): JsonAnsvar =
+        JsonAnsvar()
             .withBarn(
                 JsonBarn()
                     .withKilde(JsonKilde.SYSTEM)
@@ -114,21 +118,18 @@ class FamilieSystemdata(
                             .withFornavn(barn.fornavn)
                             .withMellomnavn(barn.mellomnavn)
                             .withEtternavn(barn.etternavn),
-                    )
-                    .withFodselsdato(barn.fodselsdato?.toString())
+                    ).withFodselsdato(barn.fodselsdato?.toString())
                     .withPersonIdentifikator(barn.fnr)
                     .withHarDiskresjonskode(false),
-            )
-            .withErFolkeregistrertSammen(
+            ).withErFolkeregistrertSammen(
                 JsonErFolkeregistrertSammen()
                     .withKilde(JsonKildeSystem.SYSTEM)
                     .withVerdi(barn.folkeregistrertSammen),
             )
-    }
 
     companion object {
-        private fun tilSystemregistrertJsonEktefelle(ektefelle: Ektefelle?): JsonEktefelle {
-            return if (ektefelle == null || ektefelle.ikkeTilgangTilEktefelle) {
+        private fun tilSystemregistrertJsonEktefelle(ektefelle: Ektefelle?): JsonEktefelle =
+            if (ektefelle == null || ektefelle.ikkeTilgangTilEktefelle) {
                 JsonEktefelle().withNavn(
                     JsonNavn()
                         .withFornavn("")
@@ -141,13 +142,11 @@ class FamilieSystemdata(
                     .withFodselsdato(ektefelle.fodselsdato?.toString())
                     .withPersonIdentifikator(ektefelle.fnr)
             }
-        }
 
-        private fun mapToJsonNavn(ektefelle: Ektefelle): JsonNavn {
-            return JsonNavn()
+        private fun mapToJsonNavn(ektefelle: Ektefelle): JsonNavn =
+            JsonNavn()
                 .withFornavn(ektefelle.fornavn ?: "")
                 .withMellomnavn(ektefelle.mellomnavn ?: "")
                 .withEtternavn(ektefelle.etternavn ?: "")
-        }
     }
 }

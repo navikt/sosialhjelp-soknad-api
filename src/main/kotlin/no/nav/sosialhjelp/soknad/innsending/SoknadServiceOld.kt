@@ -65,10 +65,13 @@ class SoknadServiceOld(
     private val digisosApiService: DigisosApiService,
 ) {
     @Transactional
-    fun startSoknad(token: String?): StartSoknadResponse {
+    fun startSoknad(
+        token: String?,
+        type: JsonData.Soknadstype?,
+    ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
+        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
 
         val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
 
@@ -85,7 +88,7 @@ class SoknadServiceOld(
                 versjon = 1L,
                 behandlingsId = behandlingsId,
                 eier = eierId,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId, kortSoknad),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -197,12 +200,17 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata = soknadMetadataRepository.hent(behandlingsId) ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
+    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata =
+        soknadMetadataRepository.hent(behandlingsId)
+            ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
 
-        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad =
+        fun createEmptyJsonInternalSoknad(
+            eier: String,
+            kortSoknad: Boolean,
+        ): JsonInternalSoknad =
             JsonInternalSoknad()
                 .withSoknad(
                     JsonSoknad()
@@ -224,36 +232,7 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
-                                ).withArbeid(JsonArbeid())
-                                .withUtdanning(
-                                    JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER),
-                                ).withFamilie(
-                                    JsonFamilie()
-                                        .withForsorgerplikt(JsonForsorgerplikt()),
-                                ).withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvorforSoke("")
-                                        .withHvaSokesOm(""),
-                                ).withBosituasjon(
-                                    JsonBosituasjon()
-                                        .withKilde(JsonKildeBruker.BRUKER),
-                                ).withOkonomi(
-                                    JsonOkonomi()
-                                        .withOpplysninger(
-                                            JsonOkonomiopplysninger()
-                                                .withUtbetaling(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withBostotte(JsonBostotte())
-                                                .withBekreftelse(ArrayList()),
-                                        ).withOversikt(
-                                            JsonOkonomioversikt()
-                                                .withInntekt(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withFormue(ArrayList()),
-                                        ),
-                                ),
+                                ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
@@ -267,3 +246,45 @@ class SoknadServiceOld(
                 ).withVedlegg(JsonVedleggSpesifikasjon())
     }
 }
+
+fun JsonData.withStandardSoknadFelter() =
+    withSoknadstype(JsonData.Soknadstype.STANDARD)
+        .withArbeid(JsonArbeid())
+        .withUtdanning(
+            JsonUtdanning()
+                .withKilde(JsonKilde.BRUKER),
+        ).withFamilie(
+            JsonFamilie()
+                .withForsorgerplikt(JsonForsorgerplikt()),
+        ).withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvorforSoke("")
+                .withHvaSokesOm(""),
+        ).withBosituasjon(
+            JsonBosituasjon()
+                .withKilde(JsonKildeBruker.BRUKER),
+        ).withOkonomi(
+            JsonOkonomi()
+                .withOpplysninger(
+                    JsonOkonomiopplysninger()
+                        .withUtbetaling(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withBostotte(JsonBostotte())
+                        .withBekreftelse(ArrayList()),
+                ).withOversikt(
+                    JsonOkonomioversikt()
+                        .withInntekt(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withFormue(ArrayList()),
+                ),
+        )
+
+fun JsonData.withKortSoknadFelter() =
+    withSoknadstype(JsonData.Soknadstype.KORT)
+        .withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvaSokesOm(""),
+        ).withBegrunnelse(JsonBegrunnelse().withHvaSokesOm("").withKilde(JsonKildeBruker.BRUKER))
+        .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBostotte(JsonBostotte()).withBekreftelse(ArrayList())))

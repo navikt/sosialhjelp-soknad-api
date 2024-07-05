@@ -126,10 +126,12 @@ internal class StudielanRessursTest {
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val bekreftelser =
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data
                 .okonomi.opplysninger.bekreftelse
         val inntekt =
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data
                 .okonomi.oversikt.inntekt
         assertThat(inntekt[0].type).isEqualTo(SoknadJsonTyper.STUDIELAN)
 
@@ -145,7 +147,8 @@ internal class StudielanRessursTest {
         val soknad = createSoknadUnderArbeid()
         val inntekt = ArrayList<JsonOkonomioversiktInntekt>()
         inntekt.add(JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.STUDIELAN))
-        soknad.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt = inntekt
+        soknad.jsonInternalSoknad!!
+            .soknad.data.okonomi.oversikt.inntekt = inntekt
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
@@ -156,8 +159,12 @@ internal class StudielanRessursTest {
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
-        val jsonInntekt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
+        val jsonInntekt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.inntekt
         assertThat(jsonInntekt).isEmpty()
 
         val studielan = bekreftelser[0]
@@ -196,7 +203,8 @@ internal class StudielanRessursTest {
                     .withVerdi(verdi),
             ),
         )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning.erStudent = erStudent
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.utdanning.erStudent = erStudent
         return soknadUnderArbeid
     }
 
@@ -204,16 +212,15 @@ internal class StudielanRessursTest {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

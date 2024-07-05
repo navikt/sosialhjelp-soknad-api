@@ -35,10 +35,6 @@ digisos:
   cache:
     kodeverk:
       time-to-live: 86400 # 24 timer
-    digisos_sak:
-        time-to-live: 60
-    digisos_soker:
-        time-to-live: 60
 
 management:
   endpoints:
