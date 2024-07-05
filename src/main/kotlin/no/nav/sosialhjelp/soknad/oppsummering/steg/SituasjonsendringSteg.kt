@@ -8,11 +8,15 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Steg
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
+import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.BostotteHusbanken
+import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SkattbarInntekt
 
 class SituasjonsendringSteg {
+    private val bostotteHusbanken = BostotteHusbanken()
+    private val skatt = SkattbarInntekt()
+
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val situasjonsendring = jsonInternalSoknad.soknad.data.situasjonendring
-        val isUntouched = situasjonsendring == null
         val harFyltUtEndring = situasjonsendring?.harNoeEndretSeg != null
         val harFyltUtHvaErEndret = !situasjonsendring?.hvaHarEndretSeg.isNullOrBlank()
 
@@ -29,6 +33,8 @@ class SituasjonsendringSteg {
                                 Sporsmal("situasjon.kort.hvaErEndret.label", situasjonsendring?.hvaHarEndretSeg?.toFelt(), harFyltUtHvaErEndret),
                             ),
                     ),
+                    skatt.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi, jsonInternalSoknad.soknad.driftsinformasjon),
+                    bostotteHusbanken.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi.opplysninger, jsonInternalSoknad.soknad.driftsinformasjon),
                 ),
         )
     }

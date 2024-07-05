@@ -287,4 +287,4 @@ fun JsonData.withKortSoknadFelter() =
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withHvaSokesOm(""),
         ).withBegrunnelse(JsonBegrunnelse().withHvaSokesOm("").withKilde(JsonKildeBruker.BRUKER))
-        .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBekreftelse(ArrayList())))
+        .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBostotte(JsonBostotte()).withBekreftelse(ArrayList())))

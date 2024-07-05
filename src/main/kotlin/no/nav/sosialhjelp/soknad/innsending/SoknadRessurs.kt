@@ -165,8 +165,8 @@ class SoknadRessurs(
         val type =
             if (MiljoUtils.isNonProduction()) {
                 when (soknadstype) {
-                    "Kort" -> JsonData.Soknadstype.KORT
-                    "Standard" -> JsonData.Soknadstype.STANDARD
+                    "kort" -> JsonData.Soknadstype.KORT
+                    "standard" -> JsonData.Soknadstype.STANDARD
                     else -> null
                 }
             } else {
