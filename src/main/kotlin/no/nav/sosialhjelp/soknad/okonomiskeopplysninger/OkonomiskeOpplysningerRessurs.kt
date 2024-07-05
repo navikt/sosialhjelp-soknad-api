@@ -157,8 +157,12 @@ class OkonomiskeOpplysningerRessurs(
         paakrevdeVedlegg: List<JsonVedlegg>,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): List<VedleggFrontend> {
-        val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(it, paakrevdeVedlegg) }.toMutableList()
-        excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg)
+        val ikkeLengerPaakrevdeVedlegg =
+            jsonVedleggs
+                .filter { isNotInList(it, paakrevdeVedlegg) }
+                .filter {
+                    it.type != "annet" && it.type != "kort"
+                }.toMutableList()
         jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg)
         val slettedeVedlegg: MutableList<VedleggFrontend> = ArrayList()
         for (ikkePaakrevdVedlegg in ikkeLengerPaakrevdeVedlegg) {
@@ -183,10 +187,6 @@ class OkonomiskeOpplysningerRessurs(
             }
         }
         return slettedeVedlegg
-    }
-
-    private fun excludeTypeAnnetAnnetFromList(jsonVedleggs: MutableList<JsonVedlegg>) {
-        jsonVedleggs.removeAll(jsonVedleggs.filter { it.type == "annet" && it.tilleggsinfo == "annet" })
     }
 
     private fun addPaakrevdeVedlegg(

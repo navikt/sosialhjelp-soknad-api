@@ -39,7 +39,7 @@ object VedleggMapper {
             type = vedleggType,
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
-            vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
+            vedleggStatus = vedlegg.status?.let { VedleggStatus.valueOf(it) } ?: VedleggStatus.VedleggKreves,
             filer = filer,
         )
     }

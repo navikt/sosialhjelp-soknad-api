@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.situasjonsendring
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -71,6 +72,12 @@ class SituasjonsendringRessurs(
             harNoeEndretSeg = situasjonsendring.endring
             hvaHarEndretSeg = situasjonsendring.hvaErEndret
             kilde = JsonKildeBruker.BRUKER
+        }
+
+        if (situasjonsendring.endring) {
+            jsonInternalSoknad.vedlegg.vedlegg.add(JsonVedlegg().withType("kort").withTilleggsinfo("situasjonsendring"))
+        } else {
+            jsonInternalSoknad.vedlegg.vedlegg.removeIf { it.type == "kort" && it.tilleggsinfo == "situasjonsendring" }
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)

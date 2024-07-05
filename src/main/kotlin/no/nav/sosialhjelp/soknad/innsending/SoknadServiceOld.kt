@@ -22,6 +22,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
@@ -243,11 +244,17 @@ class SoknadServiceOld(
                                 .withInntektFraSkatteetatenFeilet(false)
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
-                ).withVedlegg(JsonVedleggSpesifikasjon())
+                ).withVedlegg(
+                    if (kortSoknad) {
+                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov")))
+                    } else {
+                        JsonVedleggSpesifikasjon()
+                    },
+                )
     }
 }
 
-fun JsonData.withStandardSoknadFelter() =
+fun JsonData.withStandardSoknadFelter(): JsonData =
     withSoknadstype(JsonData.Soknadstype.STANDARD)
         .withArbeid(JsonArbeid())
         .withUtdanning(
@@ -280,7 +287,7 @@ fun JsonData.withStandardSoknadFelter() =
                 ),
         )
 
-fun JsonData.withKortSoknadFelter() =
+fun JsonData.withKortSoknadFelter(): JsonData =
     withSoknadstype(JsonData.Soknadstype.KORT)
         .withBegrunnelse(
             JsonBegrunnelse()

@@ -236,6 +236,7 @@ class DigisosApiService(
         val vedleggMetadataListe = VedleggMetadataListe()
         vedleggMetadataListe.vedleggListe =
             getVedleggFromInternalSoknad(soknadUnderArbeid)
+                .filter { it.type != "kort" || it.filer.isNotEmpty() }
                 .map {
                     VedleggMetadata(
                         skjema = it.type,
