@@ -105,21 +105,21 @@ internal class BasisPersonaliaRessursTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
 
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia
             .withNavn(
                 JsonSokernavn()
                     .withKilde(JsonSokernavn.Kilde.SYSTEM)
                     .withFornavn(FORNAVN)
                     .withMellomnavn(MELLOMNAVN)
                     .withEtternavn(ETTERNAVN),
-            )
-            .withStatsborgerskap(
+            ).withStatsborgerskap(
                 if (!withStatsborgerskap) {
                     null
                 } else {
@@ -145,15 +145,13 @@ internal class BasisPersonaliaRessursTest {
                     JsonPersonIdentifikator()
                         .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
                         .withVerdi(EIER),
-                )
-                .withNavn(
+                ).withNavn(
                     JsonSokernavn()
                         .withKilde(JsonSokernavn.Kilde.SYSTEM)
                         .withFornavn(FORNAVN)
                         .withMellomnavn(MELLOMNAVN)
                         .withEtternavn(ETTERNAVN),
-                )
-                .withStatsborgerskap(
+                ).withStatsborgerskap(
                     JsonStatsborgerskap()
                         .withKilde(JsonKilde.SYSTEM)
                         .withVerdi("NOR"),
@@ -164,8 +162,7 @@ internal class BasisPersonaliaRessursTest {
                     JsonPersonIdentifikator()
                         .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
                         .withVerdi(EIER),
-                )
-                .withNavn(
+                ).withNavn(
                     JsonSokernavn()
                         .withKilde(JsonSokernavn.Kilde.SYSTEM)
                         .withFornavn(FORNAVN)

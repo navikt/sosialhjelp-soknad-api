@@ -47,7 +47,9 @@ internal class UtbetalingerFraNavSystemdataTest {
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -63,7 +65,9 @@ internal class UtbetalingerFraNavSystemdataTest {
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         val utbetaling2 = jsonUtbetalinger[2]
@@ -81,7 +85,9 @@ internal class UtbetalingerFraNavSystemdataTest {
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -91,10 +97,11 @@ internal class UtbetalingerFraNavSystemdataTest {
     }
 
     private fun createJsonInternalSoknadWithUtbetalinger(): JsonInternalSoknad {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val jsonUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
         jsonUtbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
-        jsonInternalSoknad.soknad.data.okonomi.opplysninger.withUtbetaling(jsonUtbetalinger)
+        jsonInternalSoknad.soknad.data.okonomi.opplysninger
+            .withUtbetaling(jsonUtbetalinger)
         return jsonInternalSoknad
     }
 
@@ -204,9 +211,9 @@ internal class UtbetalingerFraNavSystemdataTest {
             )
 
         private fun createSoknadUnderArbeid(
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
@@ -215,6 +222,5 @@ internal class UtbetalingerFraNavSystemdataTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

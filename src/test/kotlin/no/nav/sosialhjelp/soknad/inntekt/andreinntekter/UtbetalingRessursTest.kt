@@ -134,9 +134,13 @@ internal class UtbetalingRessursTest {
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalingBekreftelse.verdi).isFalse
         assertThat(utbetalinger).isEmpty()
     }
@@ -160,10 +164,16 @@ internal class UtbetalingRessursTest {
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
         assertThat(utbetalingBekreftelse.verdi).isFalse
         assertThat(utbetalinger).isEmpty()
         assertThat(beskrivelse).isBlank
@@ -190,9 +200,13 @@ internal class UtbetalingRessursTest {
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalingBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utbetalingBekreftelse.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
         assertThat(utbetalingBekreftelse.verdi).isTrue
@@ -223,9 +237,13 @@ internal class UtbetalingRessursTest {
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalingBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utbetalingBekreftelse.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
         assertThat(utbetalingBekreftelse.verdi).isTrue
@@ -249,9 +267,13 @@ internal class UtbetalingRessursTest {
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val utbetalingBekreftelse = bekreftelser[0]
-        val beskrivelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
+        val beskrivelse =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.utbetaling
         assertThat(utbetalingBekreftelse.verdi).isFalse
         assertThat(beskrivelse).isBlank
     }
@@ -292,28 +314,30 @@ internal class UtbetalingRessursTest {
                     .withTittel("tittel"),
             )
         }
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(SoknadJsonTyper.BEKREFTELSE_UTBETALING)
                     .withVerdi(harUtbetalinger),
             )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.utbetaling = utbetalinger
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
             JsonOkonomibeskrivelserAvAnnet().withUtbetaling(beskrivelseAvAnnet)
         return soknadUnderArbeid
     }
 
-    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+        SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
         )
-    }
 }

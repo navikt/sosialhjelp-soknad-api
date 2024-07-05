@@ -23,7 +23,9 @@ internal class TelefonnummerSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.telefonnummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.telefonnummer.verdi).isEqualTo("+47$TELEFONNUMMER_SYSTEM")
     }
@@ -35,7 +37,9 @@ internal class TelefonnummerSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.telefonnummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.telefonnummer.verdi).isEqualTo("+47$TELEFONNUMMER_SYSTEM")
     }
@@ -45,7 +49,9 @@ internal class TelefonnummerSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithUserDefinedTelefonnummer())
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(jsonPersonalia.telefonnummer.verdi).isEqualTo(TELEFONNUMMER_BRUKER)
     }
@@ -57,7 +63,9 @@ internal class TelefonnummerSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.telefonnummer).isNull()
     }
 
@@ -68,12 +76,14 @@ internal class TelefonnummerSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.telefonnummer).isNull()
     }
 
     private fun createJsonInternalSoknadWithUserDefinedTelefonnummer(): JsonInternalSoknad {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         jsonInternalSoknad.soknad.data.personalia.telefonnummer =
             JsonTelefonnummer()
                 .withKilde(JsonKilde.BRUKER)
@@ -87,9 +97,9 @@ internal class TelefonnummerSystemdataTest {
         private const val TELEFONNUMMER_BRUKER = "+4723456789"
 
         private fun createSoknadUnderArbeid(
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
@@ -98,6 +108,5 @@ internal class TelefonnummerSystemdataTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

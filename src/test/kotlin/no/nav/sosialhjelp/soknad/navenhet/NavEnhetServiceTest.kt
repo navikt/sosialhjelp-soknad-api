@@ -70,7 +70,10 @@ class NavEnhetServiceTest {
     @Test
     fun `getNavEnhet - adressevalg er soknad - skal returnere NavEnhetFrontend riktig konvertert`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { finnAdresseService.finnAdresseFraSoknad(any(), JsonAdresseValg.SOKNAD) } returns SOKNADSMOTTAKER_FORSLAG
@@ -89,7 +92,10 @@ class NavEnhetServiceTest {
     internal fun `getNavEnhet - adressevalg er soknad - skal returnere NavEnhetFrontend riktig konvertert ved bydel Marka`() {
         val annenBydel = "030112"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER_2).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER_2)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { finnAdresseService.finnAdresseFraSoknad(any(), JsonAdresseValg.SOKNAD) } returns SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA
@@ -108,7 +114,10 @@ class NavEnhetServiceTest {
     @Test
     internal fun `getNavEnhet - adressevalg er soknad - skal returnere null hvis norgService gir null`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER_2).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER_2)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { finnAdresseService.finnAdresseFraSoknad(any(), JsonAdresseValg.SOKNAD) } returns SOKNADSMOTTAKER_FORSLAG
@@ -129,7 +138,8 @@ class NavEnhetServiceTest {
     @Test
     internal fun `getNavEnhet skal returnere null hvis oppholdsadresse ikke er valgt`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
 
         every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns null
@@ -143,7 +153,10 @@ class NavEnhetServiceTest {
         every { MiljoUtils.isNonProduction() } returns false
 
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_KOMMUNENR
@@ -168,7 +181,10 @@ class NavEnhetServiceTest {
         every { MiljoUtils.isNonProduction() } returns false
 
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_BYDELSNR
@@ -191,7 +207,10 @@ class NavEnhetServiceTest {
     @Test
     internal fun `getNavEnhet - adressevalg er folkeregistrert - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad
+            .withMottaker(SOKNADSMOTTAKER)
+            .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } throws PdlApiException("pdl feil")
@@ -228,17 +247,16 @@ class NavEnhetServiceTest {
         assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
     }
 
-    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid =
+        SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = eier,
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier),
+            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
         )
-    }
 
     companion object {
         private const val BEHANDLINGSID = "123"

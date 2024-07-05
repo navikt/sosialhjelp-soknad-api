@@ -20,14 +20,16 @@ class ShadowProductionManager(
         original: JsonInternalSoknad?,
     ) {
         original?.let {
-            kotlin.runCatching {
-                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
-                    // sortere ansvar før sammenlikning
-                    sortAnsvar(it, copy)
-                    JsonContentComparator().doCompareAndLogErrors(it, copy)
-                }
-            }
-                .onFailure {
+            kotlin
+                .runCatching {
+                    jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
+                        if (it.soknad.data.familie != null) {
+                            // sortere ansvar før sammenlikning
+                            sortAnsvar(it, copy)
+                        }
+                        JsonContentComparator().doCompareAndLogErrors(it, copy)
+                    }
+                }.onFailure {
                     logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
                 }
         } ?: logger.warn("NyModell : Sammenlikning : Original er null")
@@ -37,11 +39,13 @@ class ShadowProductionManager(
         original: JsonInternalSoknad,
         copy: JsonInternalSoknad,
     ) {
-        original.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
-        copy.soknad.data.familie.forsorgerplikt.ansvar.sortBy { it.barn.fodselsdato }
+        original.soknad.data.familie.forsorgerplikt.ansvar
+            .sortBy { it.barn.fodselsdato }
+        copy.soknad.data.familie.forsorgerplikt.ansvar
+            .sortBy { it.barn.fodselsdato }
     }
 
-    internal class JsonContentComparator() {
+    internal class JsonContentComparator {
         private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         private val logger = LoggerFactory.getLogger(this::class.java)
 
