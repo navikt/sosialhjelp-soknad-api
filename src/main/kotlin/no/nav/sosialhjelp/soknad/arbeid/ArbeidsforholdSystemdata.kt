@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.arbeid
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
@@ -27,6 +28,9 @@ class ArbeidsforholdSystemdata(
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
+        if (internalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
+            return
+        }
         internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(soknadUnderArbeid) ?: emptyList()
         updateVedleggForventninger(internalSoknad, textService)
     }
@@ -42,8 +46,8 @@ class ArbeidsforholdSystemdata(
         return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
     }
 
-    private fun mapToJsonArbeidsforhold(arbeidsforhold: Arbeidsforhold): JsonArbeidsforhold {
-        return JsonArbeidsforhold()
+    private fun mapToJsonArbeidsforhold(arbeidsforhold: Arbeidsforhold): JsonArbeidsforhold =
+        JsonArbeidsforhold()
             .withArbeidsgivernavn(arbeidsforhold.arbeidsgivernavn)
             .withFom(arbeidsforhold.fom)
             .withTom(arbeidsforhold.tom)
@@ -51,7 +55,6 @@ class ArbeidsforholdSystemdata(
             .withStillingsprosent(arbeidsforhold.fastStillingsprosent?.let { Math.toIntExact(it) })
             .withStillingstype(arbeidsforhold.harFastStilling?.let { tilJsonStillingstype(it) })
             .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
-    }
 
     companion object {
         private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
@@ -60,6 +63,9 @@ class ArbeidsforholdSystemdata(
             internalSoknad: JsonInternalSoknad,
             textService: TextService,
         ) {
+            if (internalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
+                return
+            }
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
             val jsonVedleggs = VedleggsforventningMaster.finnPaakrevdeVedleggForArbeid(internalSoknad)
@@ -80,12 +86,8 @@ class ArbeidsforholdSystemdata(
         private fun typeIsInList(
             jsonVedleggs: List<JsonVedlegg>,
             vedleggstype: String,
-        ): Boolean {
-            return jsonVedleggs.any { it.type == vedleggstype }
-        }
+        ): Boolean = jsonVedleggs.any { it.type == vedleggstype }
 
-        private fun tilJsonStillingstype(harFastStilling: Boolean): Stillingstype {
-            return if (harFastStilling) Stillingstype.FAST else Stillingstype.VARIABEL
-        }
+        private fun tilJsonStillingstype(harFastStilling: Boolean): Stillingstype = if (harFastStilling) Stillingstype.FAST else Stillingstype.VARIABEL
     }
 }

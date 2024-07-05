@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Query
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
@@ -13,9 +14,17 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
-interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {
+interface SoknadRepository :
+    UpsertRepository<Soknad>,
+    ListCrudRepository<Soknad, UUID> {
     @Query("SELECT * FROM soknad WHERE opprettet < :timestamp")
     fun findOlderThan(timestamp: LocalDateTime): List<Soknad>
+
+    @Query("SELECT * FROM soknad WHERE sendt_inn > :timestamp and eier_person_id = :eierId")
+    fun findNewerThan(
+        eierId: String,
+        timestamp: LocalDateTime,
+    ): List<Soknad>
 }
 
 @Table
@@ -27,6 +36,8 @@ data class Soknad(
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
     @Embedded.Empty
     val begrunnelse: Begrunnelse = Begrunnelse(),
+    @Column("is_kort_soknad")
+    val kortSoknad: Boolean,
 ) : DomainRoot {
     override val soknadId: UUID get() = id
 }

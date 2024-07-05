@@ -34,12 +34,11 @@ object JsonVedleggUtils {
 
     fun addHendelseTypeAndHendelseReferanse(
         jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        isSoknad: Boolean,
     ) {
         jsonVedleggSpesifikasjon.vedlegg.forEach {
             if (isVedleggskravAnnet(it)) {
                 it.hendelseType = JsonVedlegg.HendelseType.BRUKER
-            } else if (isSoknad) {
+            } else {
                 it.hendelseType = JsonVedlegg.HendelseType.SOKNAD
                 it.hendelseReferanse = UUID.randomUUID().toString()
             }

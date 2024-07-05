@@ -23,7 +23,7 @@ internal class BasisPersonaliaSystemdataTest {
             versjon = 1L,
             behandlingsId = "BEHANDLINGSID",
             eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
@@ -36,7 +36,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -66,7 +68,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -98,7 +102,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.statsborgerskap.verdi).isEqualTo(NORSK_STATSBORGERSKAP)
         assertThat(jsonPersonalia.nordiskBorger.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -128,7 +134,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.statsborgerskap.verdi).isEqualTo(NORDISK_STATSBORGERSKAP)
         assertThat(jsonPersonalia.nordiskBorger.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -157,7 +165,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -189,7 +199,9 @@ internal class BasisPersonaliaSystemdataTest {
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        val jsonPersonalia =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap).isNull()
         assertThat(jsonPersonalia.nordiskBorger).isNull()
     }

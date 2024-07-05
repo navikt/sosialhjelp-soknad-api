@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.pdf.ArbeidOgUtdanning.leggTilArbeidOgUtdanning
 import no.nav.sosialhjelp.soknad.pdf.Begrunnelse.leggTilBegrunnelse
@@ -11,6 +12,7 @@ import no.nav.sosialhjelp.soknad.pdf.JuridiskInformasjon.leggTilJuridiskInformas
 import no.nav.sosialhjelp.soknad.pdf.Metainformasjon.leggTilMetainformasjon
 import no.nav.sosialhjelp.soknad.pdf.OkonomiskeOpplysningerOgVedlegg.leggTilOkonomiskeOpplysningerOgVedlegg
 import no.nav.sosialhjelp.soknad.pdf.Personalia.leggTilPersonalia
+import no.nav.sosialhjelp.soknad.pdf.Situasjonsendring.leggTilSituasjonsendring
 import no.nav.sosialhjelp.soknad.pdf.UtgifterOgGjeld.leggTilUtgifterOgGjeld
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
@@ -26,8 +28,8 @@ class SosialhjelpPdfGenerator(
     fun generate(
         jsonInternalSoknad: JsonInternalSoknad,
         utvidetSoknad: Boolean,
-    ): ByteArray {
-        return try {
+    ): ByteArray =
+        try {
             val pdf = PdfGenerator()
 
             val data = jsonInternalSoknad.soknad.data
@@ -38,6 +40,8 @@ class SosialhjelpPdfGenerator(
             val jsonPersonIdentifikator = jsonPersonalia.personIdentifikator // required
             val jsonSokernavn = jsonPersonalia.navn // required
 
+            val isKortSoknad = jsonInternalSoknad.soknad.data?.soknadstype == JsonData.Soknadstype.KORT
+
             val navn = getJsonNavnTekst(jsonSokernavn)
 
             val fnr = jsonPersonIdentifikator.verdi // required
@@ -45,13 +49,19 @@ class SosialhjelpPdfGenerator(
             leggTilHeading(pdf, heading, navn, fnr)
 
             leggTilPersonalia(pdf, pdfUtils, textHelpers, data.personalia, jsonInternalSoknad.midlertidigAdresse, utvidetSoknad)
-            leggTilBegrunnelse(pdf, pdfUtils, data.begrunnelse, utvidetSoknad)
-            leggTilArbeidOgUtdanning(pdf, pdfUtils, data.arbeid, data.utdanning, utvidetSoknad)
-            leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad)
-            leggTilBosituasjon(pdf, pdfUtils, data.bosituasjon, utvidetSoknad)
-            leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad)
-            leggTilUtgifterOgGjeld(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad)
-            leggTilOkonomiskeOpplysningerOgVedlegg(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.vedlegg, utvidetSoknad)
+            leggTilBegrunnelse(pdf, pdfUtils, data.begrunnelse, utvidetSoknad, isKortSoknad)
+            if (isKortSoknad) {
+                leggTilSituasjonsendring(pdf, pdfUtils, utvidetSoknad, data.situasjonendring)
+                leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad = true)
+            } else {
+                leggTilPersonalia(pdf, pdfUtils, textHelpers, data.personalia, jsonInternalSoknad.midlertidigAdresse, utvidetSoknad)
+                leggTilArbeidOgUtdanning(pdf, pdfUtils, data.arbeid, data.utdanning, utvidetSoknad)
+                leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad)
+                leggTilBosituasjon(pdf, pdfUtils, data.bosituasjon, utvidetSoknad)
+                leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad = false)
+                leggTilUtgifterOgGjeld(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad)
+                leggTilOkonomiskeOpplysningerOgVedlegg(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.vedlegg, utvidetSoknad)
+            }
             leggTilInformasjonFraForsiden(pdf, pdfUtils, data.personalia, utvidetSoknad)
             leggTilJuridiskInformasjon(pdf, jsonInternalSoknad.soknad, utvidetSoknad)
             leggTilMetainformasjon(pdf, jsonInternalSoknad.soknad)
@@ -63,10 +73,9 @@ class SosialhjelpPdfGenerator(
             }
             throw PdfGenereringException("Kunne ikke generere Soknad.pdf", e)
         }
-    }
 
-    fun generateBrukerkvitteringPdf(): ByteArray {
-        return try {
+    fun generateBrukerkvitteringPdf(): ByteArray =
+        try {
             val pdf = PdfGenerator()
 
             leggTilHeading(pdf, "Brukerkvittering")
@@ -79,11 +88,8 @@ class SosialhjelpPdfGenerator(
         } catch (e: Exception) {
             throw PdfGenereringException("Kunne ikke generere Brukerkvittering.pdf", e)
         }
-    }
 
-    fun getTekst(key: String?): String {
-        return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key)
-    }
+    fun getTekst(key: String?): String = navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key)
 
     private fun leggTilHeading(
         pdf: PdfGenerator,

@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import io.getunleash.Unleash
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
@@ -16,24 +18,48 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val soknadServiceImpl: SoknadService,
     private val adresseService: AdresseService,
+    private val unleash: Unleash,
+    private val digisosApiService: DigisosApiService,
 ) : SoknadLifecycleService {
-    override fun startSoknad(): UUID {
-        prometheusMetricsService.reportStartSoknad()
+    override fun startSoknad(token: String): Pair<UUID, Boolean> {
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+
+        val kortSoknad = isKortSoknadEnabled() && qualifiesForKortSoknad(fnr, token)
+
+        prometheusMetricsService.reportStartSoknad(kortSoknad)
 
         val soknadId =
-            SubjectHandlerUtils.getUserIdFromToken().let {
+            fnr.let {
                 soknadServiceImpl.createSoknad(
                     eierId = it,
                     soknadId = UUID.randomUUID(),
                     // TODO Spesifisert til UTC i filformatet
                     opprettetDato = LocalDateTime.now(),
+                    kortSoknad = kortSoknad,
                 )
             }
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
 
-        return soknadId
+        return soknadId to kortSoknad
     }
+
+    private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
+
+    private fun qualifiesForKortSoknad(
+        fnr: String,
+        token: String,
+    ): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(token) || hasRecentOrUpcomingUtbetalinger(token)
+
+    private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
+        soknadServiceImpl.hasSoknadNewerThan(
+            eierId = fnr,
+            tidspunkt = LocalDateTime.now().minusDays(120),
+        )
+
+    private fun hasRecentSoknadFromFiks(token: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(token, LocalDateTime.now().minusDays(120))
+
+    private fun hasRecentOrUpcomingUtbetalinger(token: String): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(token, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
 
     override fun cancelSoknad(
         soknadId: UUID,
@@ -44,6 +70,7 @@ class SoknadLifecycleServiceImpl(
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
+        val soknad = soknadServiceImpl.findOrError(soknadId)
         val digisosId =
             try {
                 soknadServiceImpl.sendSoknad(soknadId)
@@ -52,7 +79,7 @@ class SoknadLifecycleServiceImpl(
                 throw e
             }
 
-        prometheusMetricsService.reportSendt()
+        prometheusMetricsService.reportSendt(soknad.kortSoknad)
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(
                 adresseService.findMottaker(soknadId)?.enhetsnavn,

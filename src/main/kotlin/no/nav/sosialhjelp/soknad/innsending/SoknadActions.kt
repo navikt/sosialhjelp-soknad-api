@@ -60,7 +60,10 @@ class SoknadActions(
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
         val kommunenummer =
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.mottaker
+                ?.kommunenummer
                 ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
@@ -90,10 +93,8 @@ class SoknadActions(
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
 
-        addHendelseTypeAndHendelseReferanse(
-            jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
-            isSoknad = true,
-        )
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon)
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 

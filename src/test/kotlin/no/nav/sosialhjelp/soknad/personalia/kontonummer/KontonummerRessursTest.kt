@@ -99,8 +99,19 @@ internal class KontonummerRessursTest {
     @Test
     fun ugyldigKontonummerValidererIkke() {
         val invalidInput = KontonummerInputDTO(brukerutfyltVerdi = "invalid; should match ^\\d{11}$")
-        println(Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).map { it.message })
-        val isValid = Validation.buildDefaultValidatorFactory().validator.validate(invalidInput).isEmpty()
+        println(
+            Validation
+                .buildDefaultValidatorFactory()
+                .validator
+                .validate(invalidInput)
+                .map { it.message },
+        )
+        val isValid =
+            Validation
+                .buildDefaultValidatorFactory()
+                .validator
+                .validate(invalidInput)
+                .isEmpty()
         assertThat(isValid).isFalse()
     }
 
@@ -116,7 +127,9 @@ internal class KontonummerRessursTest {
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kontonummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
+        val kontonummer =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.kontonummer
         assertThat(kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
         // todo kontonummer.harIkkeKonto er null, men assertion gir NPE?
 //        assertThat(kontonummer.harIkkeKonto).isNull()
@@ -135,7 +148,9 @@ internal class KontonummerRessursTest {
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kontonummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
+        val kontonummer =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.personalia.kontonummer
         assertThat(kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         // todo kontonummer.harIkkeKonto er null, men assertion gir NPE?
 //        assertThat(kontonummer.harIkkeKonto).isNull()
@@ -178,7 +193,8 @@ internal class KontonummerRessursTest {
         verdi: String?,
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.personalia.kontonummer
             .withKilde(kilde)
             .withVerdi(verdi)
         return soknadUnderArbeid
@@ -190,16 +206,15 @@ internal class KontonummerRessursTest {
         private const val KONTONUMMER_BRUKER = "11122233344"
         private const val KONTONUMMER_SYSTEM = "44333222111"
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

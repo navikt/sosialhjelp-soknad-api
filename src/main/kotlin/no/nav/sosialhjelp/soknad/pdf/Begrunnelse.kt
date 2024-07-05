@@ -8,6 +8,7 @@ object Begrunnelse {
         pdfUtils: PdfUtils,
         jsonBegrunnelse: JsonBegrunnelse,
         utvidetSoknad: Boolean,
+        isKortSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("begrunnelsebolk.tittel"))
         pdf.addBlankLine()
@@ -24,12 +25,15 @@ object Begrunnelse {
         }
         pdf.addBlankLine()
 
-        pdf.skrivTekstBold(pdfUtils.getTekst("begrunnelse.hvorfor.sporsmal"))
-        if (jsonBegrunnelse.hvorforSoke == null || jsonBegrunnelse.hvorforSoke.isEmpty()) {
-            pdfUtils.skrivIkkeUtfylt(pdf)
-        } else {
-            pdf.skrivTekst(jsonBegrunnelse.hvorforSoke)
+        // Bare ett av spørsmålene er med på kort søknad
+        if (!isKortSoknad) {
+            pdf.skrivTekstBold(pdfUtils.getTekst("begrunnelse.hvorfor.sporsmal"))
+            if (jsonBegrunnelse.hvorforSoke == null || jsonBegrunnelse.hvorforSoke.isEmpty()) {
+                pdfUtils.skrivIkkeUtfylt(pdf)
+            } else {
+                pdf.skrivTekst(jsonBegrunnelse.hvorforSoke)
+            }
+            pdf.addBlankLine()
         }
-        pdf.addBlankLine()
     }
 }

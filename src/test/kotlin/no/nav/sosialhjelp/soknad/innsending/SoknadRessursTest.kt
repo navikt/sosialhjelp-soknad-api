@@ -95,9 +95,9 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse(brukerBehandlingId = "null", false)
+        every { soknadServiceOld.startSoknad(any(), null) } returns StartSoknadResponse(brukerBehandlingId = "null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", null, response)
 
         assertThat(cookieSlot.captured.name).isEqualTo(SoknadRessurs.XSRF_TOKEN + "-null")
     }
@@ -107,11 +107,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadServiceOld.startSoknad() } returns StartSoknadResponse("null", false)
+        every { soknadServiceOld.startSoknad(any(), null) } returns StartSoknadResponse("null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", null, response)
 
-        verify(exactly = 1) { soknadServiceOld.startSoknad() }
+        verify(exactly = 1) { soknadServiceOld.startSoknad("", null) }
     }
 
     @Test
@@ -170,7 +170,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -194,7 +194,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -260,7 +260,7 @@ internal class SoknadRessursTest {
         } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.opprettSoknad(mockk()) }
+            .isThrownBy { ressurs.opprettSoknad("", null, mockk()) }
 
         verify { soknadServiceOld wasNot called }
     }
@@ -271,7 +271,7 @@ internal class SoknadRessursTest {
 
         private fun createSoknadUnderArbeid(
             eier: String,
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
         ): SoknadUnderArbeid =
             SoknadUnderArbeid(
                 versjon = 1L,

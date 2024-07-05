@@ -18,13 +18,14 @@ class CacheConfig {
         redisConnectionFactory: RedisConnectionFactory,
         @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
     ): CacheManager =
-        RedisCacheManager.builder(redisConnectionFactory)
-            .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-            .withInitialCacheConfigurations(
+        RedisCacheManager
+            .builder(redisConnectionFactory)
+            .cacheDefaults(
+                RedisCacheConfiguration.defaultCacheConfig(),
+            ).withInitialCacheConfigurations(
                 mapOf(
                     "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
                 ),
-            )
-            .enableStatistics()
+            ).enableStatistics()
             .build()
 }

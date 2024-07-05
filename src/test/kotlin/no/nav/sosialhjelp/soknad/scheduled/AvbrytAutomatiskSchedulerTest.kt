@@ -94,13 +94,16 @@ internal class AvbrytAutomatiskSchedulerTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGS_ID,
                 eier = "11111111111",
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111"),
+                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111", false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
 
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.mottaker
+            ?.kommunenummer = "1234"
 
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
@@ -129,19 +132,19 @@ internal class AvbrytAutomatiskSchedulerTest {
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int,
-    ): SoknadMetadata {
-        return SoknadMetadata(
+    ): SoknadMetadata =
+        SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
             behandlingsId = behandlingsId,
             fnr = EIER,
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             skjema = "",
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             status = status,
-            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            kortSoknad = false,
         )
-    }
 
     companion object {
         private const val EIER = "11111111111"

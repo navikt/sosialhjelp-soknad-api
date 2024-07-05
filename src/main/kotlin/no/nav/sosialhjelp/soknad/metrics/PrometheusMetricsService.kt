@@ -33,8 +33,9 @@ class PrometheusMetricsService(
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
-    fun reportStartSoknad() {
+    fun reportStartSoknad(kort: Boolean) {
         startSoknadCounter
+            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }
@@ -46,8 +47,9 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendt() {
+    fun reportSendt(kort: Boolean) {
         sendtSoknadDigisosApiCounter
+            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }

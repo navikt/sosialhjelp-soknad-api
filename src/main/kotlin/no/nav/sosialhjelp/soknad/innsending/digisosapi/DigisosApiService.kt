@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -26,6 +29,9 @@ import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Component
 class DigisosApiService(
@@ -92,7 +98,7 @@ class DigisosApiService(
 
         genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendt()
+        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
@@ -105,6 +111,67 @@ class DigisosApiService(
 
         return digisosId
     }
+
+    fun qualifiesForKortSoknadThroughUtbetalinger(
+        token: String?,
+        utbetaltSince: LocalDateTime,
+        planlagtBefore: LocalDateTime,
+    ): Boolean {
+        val soknader = digisosApiV2Client.getSoknader(token)
+        val innsynsfiler =
+            soknader.map { soknad ->
+                soknad.digisosSoker?.metadata?.let {
+                    digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
+                }
+            }
+        val utbetalte =
+            innsynsfiler.flatMap { innsynsfil ->
+                innsynsfil
+                    ?.hendelser
+                    ?.filterIsInstance<JsonUtbetaling>()
+                    ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
+                    ?.map { it.utbetalingsdato.toLocalDateTime() } ?: emptyList()
+            }
+
+        if (utbetalte.any { it >= utbetaltSince }) {
+            return true
+        }
+
+        val planlagte =
+            innsynsfiler.flatMap { innsynsfil ->
+                innsynsfil
+                    ?.hendelser
+                    ?.filterIsInstance<JsonUtbetaling>()
+                    ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
+                    ?.map { it.forfallsdato.toLocalDateTime() } ?: emptyList()
+            }
+
+        return planlagte.any { it < planlagtBefore }
+    }
+
+    fun qualifiesForKortSoknadThroughSoknader(
+        token: String?,
+        hendelseSince: LocalDateTime,
+    ): Boolean {
+        val soknader = digisosApiV2Client.getSoknader(token)
+        val hendelseTidspunkt =
+            soknader.flatMap { soknad ->
+                soknad.digisosSoker
+                    ?.metadata
+                    ?.let {
+                        digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
+                    }?.hendelser
+                    ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
+                    ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
+            }
+        return hendelseTidspunkt.any { it.toLocalDateTime() >= hendelseSince }
+    }
+
+    private fun String.toLocalDateTime() =
+        ZonedDateTime
+            .parse(this, DateTimeFormatter.ISO_DATE_TIME)
+            .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
+            .toLocalDateTime()
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
@@ -128,15 +195,14 @@ class DigisosApiService(
         log.info("Oppdaterer metadata ved avslutning av søknad. ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
-    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return try {
+    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+        try {
             val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.soknad)
             ensureValidSoknad(soknadJson)
             soknadJson
         } catch (e: JsonProcessingException) {
             throw IllegalArgumentException("Klarer ikke serialisere sonadJson", e)
         }
-    }
 
     fun getTilleggsinformasjonJson(soknad: JsonSoknad?): String {
         if (soknad == null || soknad.mottaker == null) {
@@ -157,20 +223,20 @@ class DigisosApiService(
         }
     }
 
-    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return try {
+    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+        try {
             val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.vedlegg)
             ensureValidVedlegg(vedleggJson)
             vedleggJson
         } catch (e: JsonProcessingException) {
             throw IllegalArgumentException("Klarer ikke serialisere vedleggJson", e)
         }
-    }
 
     private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
         val vedleggMetadataListe = VedleggMetadataListe()
         vedleggMetadataListe.vedleggListe =
             getVedleggFromInternalSoknad(soknadUnderArbeid)
+                .filter { it.type != "kort" || it.filer.isNotEmpty() }
                 .map {
                     VedleggMetadata(
                         skjema = it.type,

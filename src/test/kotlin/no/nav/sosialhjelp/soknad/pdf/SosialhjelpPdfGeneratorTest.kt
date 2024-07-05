@@ -72,7 +72,8 @@ internal class SosialhjelpPdfGeneratorTest {
         }
 
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse.withHvaSokesOm(text.toString())
+        internalSoknad.soknad.data.begrunnelse
+            .withHvaSokesOm(text.toString())
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
@@ -80,7 +81,8 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun generatePdfWithVeryLongWords() {
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse.withHvaSokesOm("a".repeat(1000))
+        internalSoknad.soknad.data.begrunnelse
+            .withHvaSokesOm("a".repeat(1000))
 
         sosialhjelpPdfGenerator.generate(internalSoknad, false)
     }
@@ -95,7 +97,8 @@ internal class SosialhjelpPdfGeneratorTest {
         }
 
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse.withHvaSokesOm(text.toString())
+        internalSoknad.soknad.data.begrunnelse
+            .withHvaSokesOm(text.toString())
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
@@ -117,51 +120,44 @@ internal class SosialhjelpPdfGeneratorTest {
                         .withData(
                             JsonData()
                                 .withPersonalia(
-                                    JsonPersonalia().withPersonIdentifikator(
-                                        JsonPersonIdentifikator()
-                                            .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                            .withVerdi("1234"),
-                                    )
-                                        .withNavn(
+                                    JsonPersonalia()
+                                        .withPersonIdentifikator(
+                                            JsonPersonIdentifikator()
+                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                                .withVerdi("1234"),
+                                        ).withNavn(
                                             JsonSokernavn()
                                                 .withFornavn("Navn")
                                                 .withMellomnavn("")
                                                 .withEtternavn("Navnesen")
                                                 .withKilde(JsonSokernavn.Kilde.SYSTEM),
-                                        )
-                                        .withKontonummer(
+                                        ).withKontonummer(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM)
                                                 .withVerdi("0000"),
                                         ),
-                                )
-                                .withArbeid(JsonArbeid())
+                                ).withArbeid(JsonArbeid())
                                 .withUtdanning(
                                     JsonUtdanning()
                                         .withKilde(JsonKilde.SYSTEM),
-                                )
-                                .withFamilie(
+                                ).withFamilie(
                                     JsonFamilie()
                                         .withForsorgerplikt(JsonForsorgerplikt()),
-                                )
-                                .withBegrunnelse(
+                                ).withBegrunnelse(
                                     JsonBegrunnelse()
                                         .withKilde(JsonKildeBruker.BRUKER)
                                         .withHvaSokesOm("")
                                         .withHvorforSoke(""),
-                                )
-                                .withBosituasjon(
+                                ).withBosituasjon(
                                     JsonBosituasjon()
                                         .withKilde(JsonKildeBruker.BRUKER),
-                                )
-                                .withOkonomi(
+                                ).withOkonomi(
                                     JsonOkonomi()
                                         .withOpplysninger(
                                             JsonOkonomiopplysninger()
                                                 .withUtbetaling(emptyList())
                                                 .withUtgift(emptyList()),
-                                        )
-                                        .withOversikt(
+                                        ).withOversikt(
                                             JsonOkonomioversikt()
                                                 .withInntekt(emptyList())
                                                 .withUtgift(emptyList())
@@ -173,7 +169,7 @@ internal class SosialhjelpPdfGeneratorTest {
 
     @Test
     fun skalGenererePdfA() {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest")
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest", false)
 
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val file = File("pdfaTest.pdf")

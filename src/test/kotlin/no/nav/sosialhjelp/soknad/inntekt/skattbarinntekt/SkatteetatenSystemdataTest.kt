@@ -47,7 +47,9 @@ internal class SkatteetatenSystemdataTest {
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -63,7 +65,9 @@ internal class SkatteetatenSystemdataTest {
             listOf(SKATTBAR_UTBETALING_ANNEN, SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON)
         every { skattbarInntektService.hentUtbetalinger(any()) } returns skattbareUtbetalinger
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         val utbetaling2 = jsonUtbetalinger[2]
@@ -82,7 +86,9 @@ internal class SkatteetatenSystemdataTest {
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -98,12 +104,17 @@ internal class SkatteetatenSystemdataTest {
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utbetaling).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING)
         assertThat(jsonUtbetalinger).hasSize(1)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -115,7 +126,9 @@ internal class SkatteetatenSystemdataTest {
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalingerA = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalingerA =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetalingA = jsonUtbetalingerA[0]
         val utbetalingA1 = jsonUtbetalingerA[1]
 
@@ -128,7 +141,9 @@ internal class SkatteetatenSystemdataTest {
         // TEST:
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad!!, false)
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        val jsonUtbetalingerB = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalingerB =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         val utbetalingB = jsonUtbetalingerB[0]
         assertThat(utbetalingB.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utbetalingB).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING)
@@ -140,7 +155,9 @@ internal class SkatteetatenSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         utbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
 
         // Mock:
@@ -153,15 +170,19 @@ internal class SkatteetatenSystemdataTest {
         assertThat(utbetaling.kilde).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.kilde)
         assertThat(utbetaling.type).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.type)
         assertThat(utbetaling.belop).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.belop)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet).isTrue
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
+        ).isTrue
     }
 
     private fun createJsonInternalSoknadWithUtbetalinger(): JsonInternalSoknad {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val jsonUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
         setSamtykke(jsonInternalSoknad, true)
         jsonUtbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
-        jsonInternalSoknad.soknad.data.okonomi.opplysninger.withUtbetaling(jsonUtbetalinger)
+        jsonInternalSoknad.soknad.data.okonomi.opplysninger
+            .withUtbetaling(jsonUtbetalinger)
         return jsonInternalSoknad
     }
 
@@ -228,9 +249,9 @@ internal class SkatteetatenSystemdataTest {
             Utbetaling("skatteopplysninger", BRUTTO_2, SKATT_2, PERIODE_FOM, PERIODE_TOM, TITTEL_2, PERSONNR)
 
         private fun createSoknadUnderArbeid(
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
@@ -239,6 +260,5 @@ internal class SkatteetatenSystemdataTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

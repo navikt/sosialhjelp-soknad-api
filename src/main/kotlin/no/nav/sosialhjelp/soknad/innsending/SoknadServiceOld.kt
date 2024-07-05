@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -23,6 +24,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
@@ -30,12 +32,11 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -61,22 +62,34 @@ class SoknadServiceOld(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
+    private val unleash: Unleash,
+    private val digisosApiService: DigisosApiService,
 ) {
     @Transactional
-    fun startSoknad(): StartSoknadResponse {
+    fun startSoknad(
+        token: String?,
+        type: JsonData.Soknadstype?,
+    ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
-        val behandlingsId = opprettSoknadMetadata(eierId) // TODO NyModell Metadata returnerer UUID
-        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
-        log.info("Starter søknad")
 
-        prometheusMetricsService.reportStartSoknad()
+        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
+
+        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
+
+        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
+        if (kortSoknad) {
+            log.info("Starter kort søknad")
+        } else {
+            log.info("Starter søknad")
+        }
+        prometheusMetricsService.reportStartSoknad(kortSoknad)
 
         val soknadUnderArbeid =
             SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = behandlingsId,
                 eier = eierId,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId, kortSoknad),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -87,16 +100,34 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
+            kortSoknad,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return StartSoknadResponse(behandlingsId, false)
+        return StartSoknadResponse(behandlingsId, kortSoknad)
     }
 
-    private fun opprettSoknadMetadata(fnr: String): String {
+    private fun qualifiesForKortSoknad(
+        fnr: String,
+        token: String?,
+    ): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(token) || hasRecentOrUpcomingUtbetalinger(token)
+
+    private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
+
+    private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
+        soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr, LocalDateTime.now(clock).minusDays(120)).any()
+
+    private fun hasRecentSoknadFromFiks(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(token, LocalDateTime.now().minusDays(120))
+
+    private fun hasRecentOrUpcomingUtbetalinger(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(token, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
+
+    private fun opprettSoknadMetadata(
+        fnr: String,
+        kortSoknad: Boolean,
+    ): String {
         val soknadMetadata =
             SoknadMetadata(
                 id = 0,
@@ -107,6 +138,7 @@ class SoknadServiceOld(
                 status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(clock),
                 sistEndretDato = LocalDateTime.now(clock),
+                kortSoknad = kortSoknad,
             )
         soknadMetadataRepository.opprett(soknadMetadata)
         return soknadMetadata.behandlingsId
@@ -169,10 +201,17 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
+    fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata =
+        soknadMetadataRepository.hent(behandlingsId)
+            ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
+
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
 
-        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad =
+        fun createEmptyJsonInternalSoknad(
+            eier: String,
+            kortSoknad: Boolean,
+        ): JsonInternalSoknad =
             JsonInternalSoknad()
                 .withSoknad(
                     JsonSoknad()
@@ -194,36 +233,7 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
-                                ).withArbeid(JsonArbeid())
-                                .withUtdanning(
-                                    JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER),
-                                ).withFamilie(
-                                    JsonFamilie()
-                                        .withForsorgerplikt(JsonForsorgerplikt()),
-                                ).withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvorforSoke("")
-                                        .withHvaSokesOm(""),
-                                ).withBosituasjon(
-                                    JsonBosituasjon()
-                                        .withKilde(JsonKildeBruker.BRUKER),
-                                ).withOkonomi(
-                                    JsonOkonomi()
-                                        .withOpplysninger(
-                                            JsonOkonomiopplysninger()
-                                                .withUtbetaling(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withBostotte(JsonBostotte())
-                                                .withBekreftelse(ArrayList()),
-                                        ).withOversikt(
-                                            JsonOkonomioversikt()
-                                                .withInntekt(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withFormue(ArrayList()),
-                                        ),
-                                ),
+                                ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
@@ -234,16 +244,54 @@ class SoknadServiceOld(
                                 .withInntektFraSkatteetatenFeilet(false)
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
-                ).withVedlegg(JsonVedleggSpesifikasjon())
-
-        private fun mapJsonVedleggToVedleggMetadata(jsonVedlegg: JsonVedlegg): VedleggMetadata =
-            VedleggMetadata(
-                skjema = jsonVedlegg.type,
-                tillegg = jsonVedlegg.tilleggsinfo,
-                filnavn = jsonVedlegg.type,
-                status = Vedleggstatus.valueOf(jsonVedlegg.status),
-                hendelseType = jsonVedlegg.hendelseType,
-                hendelseReferanse = jsonVedlegg.hendelseReferanse,
-            )
+                ).withVedlegg(
+                    if (kortSoknad) {
+                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov")))
+                    } else {
+                        JsonVedleggSpesifikasjon()
+                    },
+                )
     }
 }
+
+fun JsonData.withStandardSoknadFelter(): JsonData =
+    withSoknadstype(JsonData.Soknadstype.STANDARD)
+        .withArbeid(JsonArbeid())
+        .withUtdanning(
+            JsonUtdanning()
+                .withKilde(JsonKilde.BRUKER),
+        ).withFamilie(
+            JsonFamilie()
+                .withForsorgerplikt(JsonForsorgerplikt()),
+        ).withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvorforSoke("")
+                .withHvaSokesOm(""),
+        ).withBosituasjon(
+            JsonBosituasjon()
+                .withKilde(JsonKildeBruker.BRUKER),
+        ).withOkonomi(
+            JsonOkonomi()
+                .withOpplysninger(
+                    JsonOkonomiopplysninger()
+                        .withUtbetaling(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withBostotte(JsonBostotte())
+                        .withBekreftelse(ArrayList()),
+                ).withOversikt(
+                    JsonOkonomioversikt()
+                        .withInntekt(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withFormue(ArrayList()),
+                ),
+        )
+
+fun JsonData.withKortSoknadFelter(): JsonData =
+    withSoknadstype(JsonData.Soknadstype.KORT)
+        .withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvaSokesOm(""),
+        ).withBegrunnelse(JsonBegrunnelse().withHvaSokesOm("").withKilde(JsonKildeBruker.BRUKER))
+        .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBostotte(JsonBostotte()).withBekreftelse(ArrayList())))
