@@ -29,10 +29,27 @@ class OkonomiskeOpplysningerController(
     @PutMapping
     fun updateOkonomiskeDetaljer(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: OkonomiskeOpplysningerInput,
+        @RequestBody input: OkonomiOgDokumentasjonInput,
     ): ForventetDokumentasjonDto {
-        // TODO OkonomiElement for Andre Utgifter "må" opprettes her, da det kun finnes dialog på side 8
-
+        input.detaljer.let {
+            if (it.isEmpty()) {
+                updateOkonomiService.updateOkonomiskeOpplysninger(soknadId, input.type, emptyList())
+            } else {
+                updateOkonomiService.updateOkonomiskeOpplysninger(
+                    soknadId = soknadId,
+                    type = input.type,
+                    detaljer =
+                        it.map { detaljInput ->
+                            if (detaljInput.belop != null) {
+                                Belop(belop = detaljInput.belop)
+                            } else {
+                                BruttoNetto(brutto = detaljInput.brutto, netto = detaljInput.netto)
+                            }
+                        },
+                )
+            }
+        }
+        forventetDokumentasjonService.updateDokumentasjonStatus(soknadId, input.type, input.dokumentasjonLevert)
         return forventetDokumentasjonService.getForventetDokumentasjon(soknadId)
     }
 }
@@ -62,13 +79,13 @@ data class DokumentDto(
     val filnavn: String,
 )
 
-data class OkonomiskeOpplysningerInput(
+data class OkonomiOgDokumentasjonInput(
     val type: OkonomiType,
     val dokumentasjonLevert: Boolean = false,
-    val inputList: List<OkonomiOpplysningInput> = emptyList(),
+    val detaljer: List<OkonomiskDetaljInput> = emptyList(),
 )
 
-data class OkonomiOpplysningInput(
+data class OkonomiskDetaljInput(
     val beskrivelse: String? = null,
     val belop: Double? = null,
     val brutto: Double? = null,
