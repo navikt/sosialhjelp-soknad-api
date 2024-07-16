@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonForventningService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -20,7 +20,7 @@ import java.util.UUID
 @Transactional
 class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
-    private val dokumentasjonService: DokumentasjonForventningService,
+    private val dokumentasjonService: DokumentasjonService,
 ) {
     fun getFormuer(soknadId: UUID): Set<Formue> = findOkonomi(soknadId)?.formuer ?: emptySet()
 
@@ -31,6 +31,18 @@ class OkonomiService(
     fun getBekreftelser(soknadId: UUID): Set<Bekreftelse> = findOkonomi(soknadId)?.bekreftelser ?: emptySet()
 
     fun getBostotteSaker(soknadId: UUID): List<BostotteSak> = findOkonomi(soknadId)?.bostotteSaker ?: emptyList()
+
+    fun findDetaljerOrNull(
+        soknadId: UUID,
+        type: OkonomiType,
+    ): List<OkonomiDetalj>? {
+        return when (type) {
+            is InntektType -> getInntekter(soknadId).find { it.type == type }?.inntektDetaljer?.detaljer
+            is UtgiftType -> getUtgifter(soknadId).find { it.type == type }?.utgiftDetaljer?.detaljer
+            is FormueType -> getFormuer(soknadId).find { it.type == type }?.formueDetaljer?.detaljer
+            else -> null
+        }
+    }
 
     fun updateBekreftelse(
         soknadId: UUID,

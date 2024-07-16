@@ -33,6 +33,9 @@ data class OkonomiskeDetaljer<T : OkonomiDetalj>(
 
 data class Belop(
     val belop: Double,
+    // TODO For "Andre utgifter til barn" og "Andre utgifter" knyttes beskrivelse til det eksakte beløpet
+    // TODO Når det mappes til JSON lages det en utgift pr. rad med "Annen (brukerangitt):" som prefix
+    val beskrivelse: String? = null,
 ) : OkonomiDetalj
 
 data class BruttoNetto(
@@ -92,11 +95,3 @@ class OkonomiskeDetaljerToStringConverter<T : OkonomiDetalj> : Converter<Okonomi
 class StringToOkonomiskeDetaljerConverter<T : OkonomiDetalj> : Converter<String, OkonomiskeDetaljer<T>> {
     override fun convert(source: String): OkonomiskeDetaljer<T> = mapper.readValue(source)
 }
-
-// object OkonomiRaderMapper {
-//
-//    fun mapToOkonomiRad(source: String): OkonomiRader<OkonomiRad> {
-// //        return mapper.readValue()
-//    }
-//
-// }

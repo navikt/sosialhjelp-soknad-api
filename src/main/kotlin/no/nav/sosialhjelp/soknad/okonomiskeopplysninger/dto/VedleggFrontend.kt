@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 
 data class VedleggFrontend(
     val type: VedleggType,
+    // TODO Trenger vi gruppe?
     val gruppe: VedleggGruppe,
     val rader: List<VedleggRadFrontend>? = null,
     @Schema(description = "Ignoreres dersom alleredeLevert === true", readOnly = true, deprecated = true)
@@ -16,6 +17,7 @@ data class VedleggFrontend(
 )
 
 data class VedleggRadFrontend(
+    // TODO trenger beskrivelse å være en del av dette? Skal det vises i frontend?
     @Schema(nullable = true)
     val beskrivelse: String? = null,
     @Schema(nullable = true)
