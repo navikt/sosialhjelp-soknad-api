@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
@@ -16,9 +17,14 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var dokRepository: DokumentasjonRepository
 
     protected lateinit var soknad: Soknad
+    protected lateinit var okonomi: Okonomi
 
     @BeforeEach
     protected fun setup() {
         soknad = soknadRepository.save(opprettSoknad())
+        okonomi =
+            okonomiRepository.save(
+                Okonomi(soknadId = soknad.id),
+            )
     }
 }

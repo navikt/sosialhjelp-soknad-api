@@ -10,6 +10,10 @@ import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import java.time.LocalDate
 
+data class OkonomiskeDetaljer<T : OkonomiDetalj>(
+    val detaljer: List<T> = emptyList(),
+)
+
 /**
  * Inntekter, Utgifter, Formue og Utbetaling har veldig forskjellige "behov"
  * Tanken er å kun måtte lagre nødvendige felter for hver klasse
@@ -26,10 +30,6 @@ import java.time.LocalDate
     JsonSubTypes.Type(value = UtbetalingMedKomponent::class, name = "UtbetalingMedKomponent"),
 )
 interface OkonomiDetalj
-
-data class OkonomiskeDetaljer<T : OkonomiDetalj>(
-    val detaljer: List<T> = emptyList(),
-)
 
 data class Belop(
     val belop: Double,

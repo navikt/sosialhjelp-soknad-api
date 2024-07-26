@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
@@ -90,6 +92,16 @@ interface OkonomiElement {
 }
 
 // InntektType, UtgiftType, FormueType
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type",
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = FormueType::class, name = "FormueType"),
+    JsonSubTypes.Type(value = InntektType::class, name = "InntektType"),
+    JsonSubTypes.Type(value = UtgiftType::class, name = "UtgiftType"),
+)
 interface OkonomiType {
     // denne må hete `name` for pga enum.name
     val name: String
@@ -106,6 +118,7 @@ object StringToOkonomiTypeConverter : Converter<String, OkonomiType> {
     override fun convert(source: String): OkonomiType = StringToOkonomiTypeMapper.map(source)
 }
 
+// polymorphic deserialisering av enums støttes ikke ut av boksen
 private object StringToOkonomiTypeMapper {
     fun map(typeString: String): OkonomiType {
         return InntektType.entries.find { it.name == typeString }

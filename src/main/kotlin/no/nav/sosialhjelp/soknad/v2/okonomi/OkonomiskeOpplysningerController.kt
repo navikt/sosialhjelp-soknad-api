@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -15,15 +16,16 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/okonomiskeOpplysninger")
 class OkonomiskeOpplysningerController(
-    private val forventetDokumentasjonService: ForventetDokumentasjonService,
-    private val updateOkonomiService: UpdateOkonomiService,
+    private val okonomiskeOpplysningerService: OkonomiskeOpplysningerService,
 ) {
     // TODO Skal vi fortsette med denne "en kvern for alt"-løsningen, eller skal vi tenkte litt annerledes ?
     @GetMapping
     fun getForventetDokumentasjon(
         @PathVariable("soknadId") soknadId: UUID,
     ): ForventetDokumentasjonDto {
-        return forventetDokumentasjonService.getForventetDokumentasjon(soknadId)
+        return okonomiskeOpplysningerService.getForventetDokumentasjon(soknadId)
+            .map { it.toDokumentasjonDto() }
+            .let { dtos -> ForventetDokumentasjonDto(dtos) }
     }
 
     @PutMapping
@@ -33,9 +35,9 @@ class OkonomiskeOpplysningerController(
     ): ForventetDokumentasjonDto {
         input.detaljer.let {
             if (it.isEmpty()) {
-                updateOkonomiService.updateOkonomiskeOpplysninger(soknadId, input.type, emptyList())
+                okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(soknadId, input.type, emptyList())
             } else {
-                updateOkonomiService.updateOkonomiskeOpplysninger(
+                okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
                     soknadId = soknadId,
                     type = input.type,
                     detaljer =
@@ -49,8 +51,9 @@ class OkonomiskeOpplysningerController(
                 )
             }
         }
-        forventetDokumentasjonService.updateDokumentasjonStatus(soknadId, input.type, input.dokumentasjonLevert)
-        return forventetDokumentasjonService.getForventetDokumentasjon(soknadId)
+        okonomiskeOpplysningerService.updateDokumentasjonStatus(soknadId, input.type, input.dokumentasjonLevert)
+
+        return getForventetDokumentasjon(soknadId)
     }
 }
 
@@ -64,6 +67,31 @@ data class DokumentasjonDto(
     val dokumentasjonStatus: DokumentasjonStatus,
     val dokumenter: List<DokumentDto>,
 )
+
+private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>>.toDokumentasjonDto(): DokumentasjonDto {
+    return DokumentasjonDto(
+        type = key.type,
+        dokumentasjonStatus = key.status,
+        detaljer = value.map { it.toOkonomiskeDetaljerDto() },
+        dokumenter = key.dokumenter.map { it.toDokumentDto() },
+    )
+}
+
+private fun OkonomiDetalj.toOkonomiskeDetaljerDto(): OkonomiskeDetaljerDto {
+    return when (this) {
+        is Belop -> OkonomiskeDetaljerDto(belop = belop)
+        is BruttoNetto -> OkonomiskeDetaljerDto(brutto = brutto, netto = netto)
+        is Utbetaling -> OkonomiskeDetaljerDto(belop = belop)
+        is UtbetalingMedKomponent -> OkonomiskeDetaljerDto(belop = utbetaling.belop)
+        else -> error("Ukjent type for OkonomiskeDetaljerDto")
+    }
+}
+
+private fun Dokument.toDokumentDto() =
+    DokumentDto(
+        uuid = sha512,
+        filnavn = filnavn,
+    )
 
 // TODO Skal vi ha en "one takes all"-løsning som det er nå, eller type det basert på belop/brutto-netto/avdrag-renter?
 // TODO Renter og avdrag er kun en utgift - og frontend kan sjekke type for å tilpasse teksten, og vi kan fortsatt forholde oss til belop internt
