@@ -7,6 +7,7 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.NotValidInputException
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
@@ -178,6 +179,14 @@ class ExceptionMapper(
                                 message = e.message,
                             ),
                         )
+                }
+                is OkonomiElementFinnesIkkeException -> {
+                    log.error("Feil ved oppdatering av okonomi-element: ${e.message}")
+
+                    return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Feilmelding(id = e.id, message = e.message))
                 }
                 else -> {
                     log.error("REST-kall feilet", e)

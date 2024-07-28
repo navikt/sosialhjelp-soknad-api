@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
@@ -129,7 +130,7 @@ class OkonomiService(
         return okonomi.inntekter
             .run {
                 if (none { it.type == inntekt.type }) {
-                    error("Finnes ikke Inntekt for oppdatering")
+                    throw OkonomiElementFinnesIkkeException("Inntekt finnes ikke: ${inntekt.type}")
                 } else {
                     okonomi.copy(inntekter = map { if (it.type == inntekt.type) inntekt else it }.toSet())
                 }
@@ -143,7 +144,7 @@ class OkonomiService(
         return okonomi.utgifter
             .run {
                 if (none { it.type == utgift.type }) {
-                    error("Finnes ikke Utgift for oppdatering")
+                    throw OkonomiElementFinnesIkkeException("Utgift finnes ikke: + ${utgift.type}")
                 } else {
                     okonomi.copy(utgifter = map { if (it.type == utgift.type) utgift else it }.toSet())
                 }
@@ -157,7 +158,7 @@ class OkonomiService(
         return okonomi.formuer
             .run {
                 if (none { it.type == formue.type }) {
-                    error("Finnes ikke Formue< for oppdatering")
+                    throw OkonomiElementFinnesIkkeException("Formue finnes ikke: + ${formue.type}")
                 } else {
                     okonomi.copy(formuer = map { if (it.type == formue.type) formue else it }.toSet())
                 }
@@ -228,3 +229,13 @@ class OkonomiService(
 
     private fun findOkonomi(soknadId: UUID): Okonomi? = okonomiRepository.findByIdOrNull(soknadId)
 }
+
+data class OkonomiElementFinnesIkkeException(
+    override val message: String,
+    override val cause: Throwable? = null,
+    val soknadId: UUID? = null,
+) : SosialhjelpSoknadApiException(
+        message = message,
+        cause = null,
+        id = soknadId?.toString(),
+    )
