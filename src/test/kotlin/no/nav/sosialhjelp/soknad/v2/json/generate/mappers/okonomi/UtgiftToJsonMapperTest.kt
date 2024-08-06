@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.UtgiftToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
@@ -38,7 +39,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
                 Utgift(
                     UtgiftType.BARNEBIDRAG_BETALER,
                     null,
-                    OkonomiskeDetaljer(listOf(Belop(444.0), Belop(1242.0))),
+                    OkonomiDetaljer(listOf(Belop(444.0), Belop(1242.0))),
                 ),
             )
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
@@ -64,6 +65,30 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
             beskrivelser.forEach { beskrivelse ->
                 assertThat(utgift).anyMatch { it.tittel.contains(beskrivelse!!) }
             }
+        }
+    }
+
+    @Test
+    fun `Hver detalj med AvdragRenter skal lage 2 Okonomi-innslag`() {
+        val nyUtgift =
+            Utgift(
+                type = UtgiftType.UTGIFTER_BOLIGLAN,
+                beskrivelse = "Boliglan",
+                utgiftDetaljer =
+                    OkonomiDetaljer(
+                        listOf(
+                            AvdragRenter(avdrag = 3500.0, renter = 11500.0),
+                            AvdragRenter(avdrag = 2500.0, renter = null),
+                            AvdragRenter(avdrag = null, renter = 4000.0),
+                            AvdragRenter(null, null),
+                        ),
+                    ),
+            )
+
+        UtgiftToJsonMapper(setOf(nyUtgift), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi.oversikt) {
+            assertThat(utgift).hasSize(nyUtgift.utgiftDetaljer.detaljer.size * 2)
         }
     }
 }

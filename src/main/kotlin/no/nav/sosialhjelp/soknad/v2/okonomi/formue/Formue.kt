@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -12,7 +12,7 @@ data class Formue(
     override val type: FormueType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val formueDetaljer: OkonomiskeDetaljer<Belop> = OkonomiskeDetaljer(),
+    val formueDetaljer: OkonomiDetaljer<Belop> = OkonomiDetaljer(),
 ) : OkonomiElement
 
 enum class FormueType(
@@ -29,4 +29,7 @@ enum class FormueType(
     VERDI_KJORETOY(dokumentasjonForventet = false),
     VERDI_FRITIDSEIENDOM(dokumentasjonForventet = false),
     VERDI_ANNET(dokumentasjonForventet = false),
+    ;
+
+    override val group: String get() = "Inntekt"
 }

@@ -7,8 +7,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -75,7 +75,7 @@ class BostotteHusbankenFetcher(
                     Inntekt(
                         type = InntektType.UTBETALING_HUSBANKEN,
                         inntektDetaljer =
-                            OkonomiskeDetaljer(
+                            OkonomiDetaljer(
                                 detaljer =
                                     bostotte.utbetalinger
                                         .filter { it.utbetalingsdato.isAfter(LocalDate.now().minusDays(daysToSubtract(bostotte))) }

@@ -88,7 +88,7 @@ class OkonomiService(
                 else -> error("Ukjent OkonomiType for oppretting")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, type)
+        if (type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
 
     fun addElementToOkonomi(
@@ -103,7 +103,7 @@ class OkonomiService(
                 else -> error("Ukjent OkonomiType for oppretting")
             }
         }
-        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettForventetVedlegg(soknadId, element.type)
+        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
     }
 
     fun updateElement(

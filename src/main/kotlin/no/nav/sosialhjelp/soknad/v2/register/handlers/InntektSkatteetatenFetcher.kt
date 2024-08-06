@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -47,7 +47,7 @@ class InntektSkatteetatenFetcher(
     ) {
         Inntekt(
             type = InntektType.UTBETALING_SKATTEETATEN,
-            inntektDetaljer = OkonomiskeDetaljer(utbetalinger.map { it.toUtbetaling() }),
+            inntektDetaljer = OkonomiDetaljer(utbetalinger.map { it.toUtbetaling() }),
         )
             .also { okonomiService.addElementToOkonomi(soknadId, it) }
     }

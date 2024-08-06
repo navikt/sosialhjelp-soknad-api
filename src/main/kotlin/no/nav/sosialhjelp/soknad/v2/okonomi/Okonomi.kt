@@ -106,6 +106,9 @@ interface OkonomiType {
     // denne må hete `name` for pga enum.name
     val name: String
     val dokumentasjonForventet: Boolean
+
+    // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på?
+    val group: String
 }
 
 @WritingConverter

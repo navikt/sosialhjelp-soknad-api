@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -12,7 +12,7 @@ data class Utgift(
     override val type: UtgiftType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val utgiftDetaljer: OkonomiskeDetaljer<Belop> = OkonomiskeDetaljer(),
+    val utgiftDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
 ) : OkonomiElement
 
 // TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
@@ -45,8 +45,21 @@ enum class UtgiftType(
 
     // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
     // boutgifter
+    // felles håndtering av renter og avdrag fordi de knyttes sammen
+    UTGIFTER_BOLIGLAN(dokumentasjonForventet = true),
+
+    // TODO Mulig disse kun trenger å være en del av JSON-mappingen
     UTGIFTER_BOLIGLAN_AVDRAG(dokumentasjonForventet = true),
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
+    ;
+
+    override val group: String get() =
+        when (this) {
+            UTGIFTER_HUSLEIE, UTGIFTER_ANNET_BO -> "Bosituasjon"
+            BARNEBIDRAG_BETALER -> "Familie"
+            UTGIFTER_ANDRE_UTGIFTER -> "Andre utgifter"
+            else -> "Utgifter"
+        }
 }
 
 fun Set<Utgift>.hasType(type: UtgiftType): Boolean = any { it.type == type }

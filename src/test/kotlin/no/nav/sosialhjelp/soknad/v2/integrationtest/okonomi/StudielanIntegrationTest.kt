@@ -88,6 +88,8 @@ class StudielanIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Oppdatere studielan med erStudent = false skal ignoreres`() {
+        okonomiRepository.deleteAll()
+
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id, utdanning = Utdanning(erStudent = false)))
 
         doPut(

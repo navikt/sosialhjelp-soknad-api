@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -22,8 +23,7 @@ class UtgiftToJsonMapper(
     private fun Utgift.mapToJsonObject() {
         when (type) {
             UtgiftType.BARNEBIDRAG_BETALER, UtgiftType.UTGIFTER_SFO, UtgiftType.UTGIFTER_BARNEHAGE,
-            UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG,
-            UtgiftType.UTGIFTER_BOLIGLAN_RENTER,
+            UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN,
             -> oversikt.utgift.addAll(toJsonOversiktUtgifter())
             else -> opplysninger.utgift.addAll(toJsonOpplysningUtgifter())
         }
@@ -34,9 +34,31 @@ class UtgiftToJsonMapper(
             if (detaljer.isEmpty()) {
                 listOf(toJsonOversiktUtgift())
             } else {
-                detaljer.map { this.copy().toJsonOversiktUtgift(it) }
+                detaljer.flatMap { detalj ->
+                    when (detalj) {
+                        is AvdragRenter -> this.copy().handleAvdragRenter(detalj)
+                        else -> listOf(this.copy().toJsonOversiktUtgift(detalj as Belop))
+                    }
+                }
             }
         }
+    }
+
+    private fun Utgift.handleAvdragRenter(detalj: AvdragRenter): List<JsonOkonomioversiktUtgift> {
+        return listOf(
+            JsonOkonomioversiktUtgift()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.name)
+                .withTittel(toTittel())
+                .withBelop(detalj.avdrag?.toInt())
+                .withOverstyrtAvBruker(false),
+            JsonOkonomioversiktUtgift()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.name)
+                .withTittel(toTittel())
+                .withBelop(detalj.renter?.toInt())
+                .withOverstyrtAvBruker(false),
+        )
     }
 
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
@@ -53,7 +75,7 @@ class UtgiftToJsonMapper(
             if (detaljer.isEmpty()) {
                 listOf(toJsonOpplysningUtgift())
             } else {
-                detaljer.map { this.copy().toJsonOpplysningUtgift(it) }
+                detaljer.map { this.copy().toJsonOpplysningUtgift(it as Belop) }
             }
         }
     }
@@ -83,5 +105,6 @@ private fun Utgift.toTittel(): String {
         UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
         UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> "Avdrag på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> "Renter på boliglån"
+        UtgiftType.UTGIFTER_BOLIGLAN -> "Renter og avdrag på boliglån"
     }
 }

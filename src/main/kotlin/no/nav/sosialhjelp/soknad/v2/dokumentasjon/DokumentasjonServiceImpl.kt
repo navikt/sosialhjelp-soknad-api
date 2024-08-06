@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface DokumentasjonService {
-    fun opprettForventetVedlegg(
+    fun opprettDokumentasjon(
         soknadId: UUID,
         okonomiType: OkonomiType,
     )
@@ -43,7 +43,7 @@ interface DokumentasjonStatusService {
 class DokumentasjonServiceImpl(
     private val dokumentasjonRepository: DokumentasjonRepository,
 ) : DokumentasjonService, DokumentasjonStatusService {
-    override fun opprettForventetVedlegg(
+    override fun opprettDokumentasjon(
         soknadId: UUID,
         okonomiType: OkonomiType,
     ) {

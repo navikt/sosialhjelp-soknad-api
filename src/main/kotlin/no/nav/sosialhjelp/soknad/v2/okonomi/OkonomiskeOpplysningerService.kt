@@ -16,16 +16,11 @@ interface OkonomiskeOpplysningerService {
     fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
         type: OkonomiType,
+        dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     )
 
     fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>>
-
-    fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        type: OkonomiType,
-        levertTidligere: Boolean,
-    )
 }
 
 @Service
@@ -36,6 +31,7 @@ class OkonomiskeOpplysningerServiceImpl(
     override fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
         type: OkonomiType,
+        dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     ) {
         addSpecialCaseElement(soknadId, type)
@@ -51,6 +47,7 @@ class OkonomiskeOpplysningerServiceImpl(
                 )
             }
         }
+        updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
     }
 
     // Typer som ikke er opprettet før i søknaden
@@ -68,9 +65,9 @@ class OkonomiskeOpplysningerServiceImpl(
         detaljer: List<OkonomiDetalj>,
     ): OkonomiElement {
         return when (type) {
-            is InntektType -> Inntekt(type, inntektDetaljer = OkonomiskeDetaljer(detaljer))
-            is UtgiftType -> Utgift(type, utgiftDetaljer = OkonomiskeDetaljer(detaljer.mapToBelopList()))
-            is FormueType -> Formue(type, formueDetaljer = OkonomiskeDetaljer(detaljer.mapToBelopList()))
+            is InntektType -> Inntekt(type, inntektDetaljer = OkonomiDetaljer(detaljer))
+            is UtgiftType -> Utgift(type, utgiftDetaljer = OkonomiDetaljer(detaljer))
+            is FormueType -> Formue(type, formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
             else -> error("Ukjent Okonomi-type")
         }
     }
@@ -90,7 +87,7 @@ class OkonomiskeOpplysningerServiceImpl(
             .associateWith { getOkonomiskeDetaljerForType(soknadId, it.type) }
     }
 
-    override fun updateDokumentasjonStatus(
+    private fun updateDokumentasjonStatus(
         soknadId: UUID,
         type: OkonomiType,
         levertTidligere: Boolean,
@@ -115,8 +112,4 @@ class OkonomiskeOpplysningerServiceImpl(
 
 private fun List<OkonomiDetalj>.mapToBelopList(): List<Belop> {
     return this.map { it as Belop }
-}
-
-private fun OkonomiType.isNotRenterOrAvdrag(): Boolean {
-    return this != UtgiftType.UTGIFTER_BOLIGLAN_RENTER && this != UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG
 }
