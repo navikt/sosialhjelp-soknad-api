@@ -41,6 +41,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
@@ -409,22 +410,20 @@ fun createBostotteSaker(): List<BostotteSak> {
     )
 }
 
-fun opprettVedlegg(
-    id: UUID,
+fun opprettDokumentasjon(
+    id: UUID = UUID.randomUUID(),
     soknadId: UUID,
+    status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
+    type: OkonomiType = UtgiftType.UTGIFTER_STROM,
+    dokumenter: Set<Dokument> = opprettDokumenter(),
 ): Dokumentasjon {
-    return Dokumentasjon(
-        id = id,
-        soknadId = soknadId,
-        type = FormueType.FORMUE_BRUKSKONTO,
-        status = DokumentasjonStatus.FORVENTET,
-        dokumenter = createFiler(),
-    )
+    return Dokumentasjon(id, soknadId, type, status, dokumenter)
 }
 
-fun createFiler(): Set<Dokument> {
+fun opprettDokumenter(): Set<Dokument> {
     return setOf(
         Dokument(
+            dokumentId = UUID.randomUUID(),
             filnavn = "utskrift_brukskonto.pdf",
             sha512 = UUID.randomUUID().toString(),
         ),

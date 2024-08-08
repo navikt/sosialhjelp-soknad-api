@@ -117,7 +117,7 @@ data class AvdragRenterDto(
 ) : OkonomiDetaljDto
 
 data class DokumentDto(
-    val uuid: String,
+    val uuid: UUID,
     val filnavn: String,
 )
 
@@ -169,6 +169,6 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
 
 private fun Dokument.toDokumentDto() =
     DokumentDto(
-        uuid = sha512,
+        uuid = dokumentId,
         filnavn = filnavn,
     )

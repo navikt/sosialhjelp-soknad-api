@@ -19,6 +19,34 @@ interface DokumentasjonRepository : UpsertRepository<Dokumentasjon>, ListCrudRep
     ): Dokumentasjon?
 }
 
+fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
+    soknadId: UUID,
+    dokumentId: UUID,
+): Dokumentasjon {
+    return findDokumentasjonForDokument(soknadId, dokumentId)
+        .removeDokument(dokumentId)
+        .let { dokumentasjon -> save(dokumentasjon) }
+}
+
+private fun DokumentasjonRepository.findDokumentasjonForDokument(
+    soknadId: UUID,
+    dokumentId: UUID,
+): Dokumentasjon {
+    return findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
+        ?: error("Dokument finnes ikke på noe Dokumentasjon")
+}
+
+private fun Dokumentasjon.hasDokument(dokumentId: UUID): Boolean {
+    return dokumenter.map { it.dokumentId }.contains(dokumentId)
+}
+
+private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon {
+    return dokumenter
+        .find { it.dokumentId == dokumentId }
+        ?.let { dokument -> copy(dokumenter = dokumenter.minus(dokument)) }
+        ?: error("Dokument finnes ikke på Dokumentasjon")
+}
+
 @Table
 data class Dokumentasjon(
     @Id val id: UUID = UUID.randomUUID(),
@@ -31,6 +59,7 @@ data class Dokumentasjon(
 }
 
 data class Dokument(
+    val dokumentId: UUID,
     val filnavn: String,
     val sha512: String,
 )
@@ -39,4 +68,14 @@ enum class DokumentasjonStatus {
     LASTET_OPP,
     FORVENTET,
     LEVERT_TIDLIGERE,
+}
+
+// TODO For dokumenter som ikke er tilknyttet et okonomi-element
+// TODO Passer ikke helt at denne arver OkonomiType - men.....
+// TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
+enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean) : OkonomiType {
+    SKATTEMELDING(dokumentasjonForventet = true),
+    ;
+
+    override val group: String get() = "Generell Dokumentasjon"
 }

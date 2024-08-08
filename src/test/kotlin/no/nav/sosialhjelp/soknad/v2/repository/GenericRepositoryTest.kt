@@ -4,13 +4,13 @@ import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettVedlegg
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -92,8 +92,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     fun `Verifisere CRUD-operasjoner for Dokumentasjon`() {
         val dbId = UUID.randomUUID()
         dokumentasjonRepository.verifyCRUDOperations(
-            originalEntity = opprettVedlegg(dbId, soknad.id),
-            updatedEntity = opprettVedlegg(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
+            originalEntity = opprettDokumentasjon(dbId, soknad.id),
+            updatedEntity = opprettDokumentasjon(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
         )
     }
 }
