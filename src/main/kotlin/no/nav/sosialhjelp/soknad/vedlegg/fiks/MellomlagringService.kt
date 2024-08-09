@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
@@ -20,6 +21,7 @@ class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner,
+    private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val navEksternId = getNavEksternId(behandlingsId)
@@ -67,8 +69,9 @@ class MellomlagringService(
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
         soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
+        val sha512 = VedleggUtils.getSha512FromByteArray(data)
         soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
-            VedleggUtils.getSha512FromByteArray(data),
+            sha512,
             behandlingsId,
             vedleggstype,
             filnavn,
@@ -84,6 +87,15 @@ class MellomlagringService(
         val filId =
             mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
                 ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+
+        // nyModell
+        dokumentasjonAdapter.saveDokumentMetadata(
+            behandlingsId = behandlingsId,
+            vedleggTypeString = vedleggstype,
+            dokumentId = filId,
+            filnavn = filnavn,
+            sha512 = sha512,
+        )
 
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
