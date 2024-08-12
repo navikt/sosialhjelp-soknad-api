@@ -1,19 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
-import org.springframework.core.convert.converter.Converter
 import org.springframework.data.annotation.Id
-import org.springframework.data.convert.ReadingConverter
-import org.springframework.data.convert.WritingConverter
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -27,7 +19,7 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 data class Okonomi(
     @Id val soknadId: UUID,
     // TODO inntekter, utgifter, formuer og bekreftelser bør være map for å gjenspeile kun 1 innslag pr. type
-    // TODO eventuelt må equals for disse kun sammenlikne på typen
+    // TODO eventuelt for set må equals-metoden for disse kun sammenlikne på typen
     val inntekter: Set<Inntekt> = emptySet(),
     val utgifter: Set<Utgift> = emptySet(),
     val formuer: Set<Formue> = emptySet(),
@@ -89,44 +81,4 @@ enum class BostotteStatus {
 interface OkonomiElement {
     val type: OkonomiType
     val beskrivelse: String?
-}
-
-// InntektType, UtgiftType, FormueType
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type",
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(value = FormueType::class, name = "FormueType"),
-    JsonSubTypes.Type(value = InntektType::class, name = "InntektType"),
-    JsonSubTypes.Type(value = UtgiftType::class, name = "UtgiftType"),
-)
-interface OkonomiType {
-    // denne må hete `name` for pga enum.name
-    val name: String
-    val dokumentasjonForventet: Boolean
-
-    // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på?
-    val group: String
-}
-
-@WritingConverter
-object OkonomiTypeToStringConverter : Converter<OkonomiType, String> {
-    override fun convert(source: OkonomiType): String = source.name
-}
-
-@ReadingConverter
-object StringToOkonomiTypeConverter : Converter<String, OkonomiType> {
-    override fun convert(source: String): OkonomiType = StringToOkonomiTypeMapper.map(source)
-}
-
-// polymorphic deserialisering av enums støttes ikke ut av boksen
-private object StringToOkonomiTypeMapper {
-    fun map(typeString: String): OkonomiType {
-        return InntektType.entries.find { it.name == typeString }
-            ?: UtgiftType.entries.find { it.name == typeString }
-            ?: FormueType.entries.find { it.name == typeString }
-            ?: error("Kunne ikke mappe OkonomiType")
-    }
 }

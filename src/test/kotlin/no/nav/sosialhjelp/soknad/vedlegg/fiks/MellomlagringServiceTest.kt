@@ -51,6 +51,7 @@ internal class MellomlagringServiceTest {
             mellomlagringClient,
             soknadUnderArbeidService,
             virusScanner,
+            dokumentasjonAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach
@@ -72,13 +73,13 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    internal fun `skal returnere tom liste når det ikke finnes innslag for behandlingsid i mellomlager`() {
+    internal fun `skal returnere tom liste nar det ikke finnes innslag for behandlingsid i mellomlager`() {
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns null
         assertThat(mellomlagringService.getAllVedlegg("behandlingsId")).isEmpty()
     }
 
     @Test
-    internal fun `skal returnere tom liste når det ikke finnes vedlegg for gitt behandlingsid`() {
+    internal fun `skal returnere tom liste nar det ikke finnes vedlegg for gitt behandlingsid`() {
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
             MellomlagringDto(
                 navEksternRefId = "behandlingsId",
@@ -88,7 +89,7 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    internal fun `skal returnere liste med vedlegg når det finnes mellomlagrede vedlegg`() {
+    internal fun `skal returnere liste med vedlegg nar det finnes mellomlagrede vedlegg`() {
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
             MellomlagringDto(
                 navEksternRefId = "behandlingsId",

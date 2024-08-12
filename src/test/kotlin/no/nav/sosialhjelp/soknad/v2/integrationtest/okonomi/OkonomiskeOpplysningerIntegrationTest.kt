@@ -84,7 +84,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = FormueType.FORMUE_BRUKSKONTO,
+                    okonomiType = FormueType.FORMUE_BRUKSKONTO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -110,7 +110,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere OkonomiType som ikke finnes skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                type = FormueType.FORMUE_BRUKSKONTO,
+                okonomiType = FormueType.FORMUE_BRUKSKONTO,
                 dokumentasjonLevert = true,
                 detaljer =
                     listOf(
@@ -139,7 +139,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+                    okonomiType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -193,7 +193,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BO,
+                    okonomiType = UtgiftType.UTGIFTER_ANNET_BO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -243,7 +243,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BARN,
+                    okonomiType = UtgiftType.UTGIFTER_ANNET_BARN,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(

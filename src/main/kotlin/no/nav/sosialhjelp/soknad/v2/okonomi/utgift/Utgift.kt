@@ -43,12 +43,12 @@ enum class UtgiftType(
     // boutgift
     UTGIFTER_HUSLEIE(dokumentasjonForventet = true),
 
-    // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
     // boutgifter
     // felles håndtering av renter og avdrag fordi de knyttes sammen
     UTGIFTER_BOLIGLAN(dokumentasjonForventet = true),
 
     // TODO Mulig disse kun trenger å være en del av JSON-mappingen
+    // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
     UTGIFTER_BOLIGLAN_AVDRAG(dokumentasjonForventet = true),
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
     ;

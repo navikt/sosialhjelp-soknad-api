@@ -75,7 +75,7 @@ private fun VedleggFrontend.toBoliglanInput() =
 
 private fun VedleggFrontend.toGenericOkonomiInput(okonomiType: OkonomiType) =
     GenericOkonomiInput(
-        type = okonomiType,
+        okonomiType = okonomiType,
         dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
             rader?.map {

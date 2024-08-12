@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class MapperTest {
+class LivssituasjonMapperTest {
     private lateinit var json: JsonInternalSoknad
 
     @BeforeEach

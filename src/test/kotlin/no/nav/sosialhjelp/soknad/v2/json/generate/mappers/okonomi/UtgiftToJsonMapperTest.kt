@@ -50,20 +50,58 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     }
 
     @Test
-    fun `Beskrivelse for Annen Bosituasjon eller Annen utgift barn skal gi beskrivelse i tittel`() {
-        val utgifter =
-            setOf(
-                Utgift(UtgiftType.UTGIFTER_ANNET_BO, "Beskrivelse av Bo"),
-                Utgift(UtgiftType.UTGIFTER_ANNET_BARN, "Beskrivelse av annet Barn"),
-            )
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+    fun `Beskrivelse for andre boutgifter skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BO)
 
-        with(jsonOkonomi.opplysninger) {
-            assertThat(utgift).hasSize(2)
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
 
-            val beskrivelser = utgifter.map { it.beskrivelse }
-            beskrivelser.forEach { beskrivelse ->
-                assertThat(utgift).anyMatch { it.tittel.contains(beskrivelse!!) }
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BO.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
+            }
+        }
+    }
+
+    @Test
+    fun `Beskrivelse for andre utgifter barn skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BARN)
+
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BARN.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
+            }
+        }
+    }
+
+    @Test
+    fun `Beskrivelse for andre utgifter skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BARN)
+
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
             }
         }
     }
@@ -90,5 +128,25 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         with(jsonOkonomi.oversikt) {
             assertThat(utgift).hasSize(nyUtgift.utgiftDetaljer.detaljer.size * 2)
         }
+    }
+
+    private fun createUtgiftForAnnet(utgiftType: UtgiftType): Set<Utgift> {
+        return setOf(
+            Utgift(
+                type = utgiftType,
+                utgiftDetaljer =
+                    OkonomiDetaljer(
+                        listOf(
+                            Belop(belop = belopBeskrivelse1.first, beskrivelse = belopBeskrivelse1.second),
+                            Belop(belop = belopBeskrivelse2.first, beskrivelse = belopBeskrivelse2.second),
+                        ),
+                    ),
+            ),
+        )
+    }
+
+    companion object {
+        private val belopBeskrivelse1 = Pair(4444.4, "Beskrivelse av første utgift")
+        private val belopBeskrivelse2 = Pair(5555.5, "Beskrivelse av andre utgift")
     }
 }

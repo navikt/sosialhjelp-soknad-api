@@ -33,9 +33,9 @@ data class OkonomiDetaljer<T : OkonomiDetalj>(
 )
 sealed interface OkonomiDetalj
 
+// For UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO og "UTGIFTER_ANDRE_UTGIFTER" knyttes beskrivelse til det eksakte beløpet
 data class Belop(
     val belop: Double,
-    // TODO For "Andre utgifter til barn" og "Andre utgifter" knyttes beskrivelse til det eksakte beløpet
     // TODO Når det mappes til JSON lages det en utgift pr. rad med "Annen (brukerangitt):" som prefix
     val beskrivelse: String? = null,
 ) : OkonomiDetalj

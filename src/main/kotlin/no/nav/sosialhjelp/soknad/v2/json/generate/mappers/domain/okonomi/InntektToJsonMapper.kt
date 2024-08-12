@@ -41,18 +41,17 @@ class InntektToJsonMapper(
     }
 }
 
-// TODO Denne kan da umulig være riktig.... Inntektene Studielån og Barnebidrag_Mottar er vel kun ett beløp..
 private fun Inntekt.toJsonOversiktInntekter(): List<JsonOkonomioversiktInntekt> {
     return inntektDetaljer.detaljer.let { detaljer ->
         if (detaljer.isEmpty()) {
             listOf(toJsonOversiktInntekt())
         } else {
-            detaljer.map { this.copy().toJsonOversiktInntekt(it as BruttoNetto) }
+            detaljer.map { this.copy().toJsonOversiktInntekt(it) }
         }
     }
 }
 
-private fun Inntekt.toJsonOversiktInntekt(detalj: BruttoNetto? = null) =
+private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
     JsonOkonomioversiktInntekt()
         // TODO Typene må mappes til Kilde
         .withKilde(JsonKilde.BRUKER)
@@ -61,6 +60,9 @@ private fun Inntekt.toJsonOversiktInntekt(detalj: BruttoNetto? = null) =
         .withOverstyrtAvBruker(false)
         .let { oversikt -> detalj?.addDetaljToOversiktForInntekt(oversikt) ?: oversikt }
 
+// TODO Enda et eksempel på den merkelig oppdelingen av strukturerte okonomiske data i JsonOkonomiOversikt og okonomiske...
+// TODO ... opplysninger (JsonOkonomiopplysning). Data-klassene som brukes i JsonOkonomiopplysning har jo alt av...
+// TODO ... felter (belop, brutto, netto, etc) så alt av inntekter kunne heller vært mappet dit..
 private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
     jsonInntekt: JsonOkonomioversiktInntekt,
 ): JsonOkonomioversiktInntekt {
@@ -84,6 +86,7 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling()
         // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
+        // TODO For de fleste okonomitypene vil det enkleste være mapping pr. OkonomiType
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())

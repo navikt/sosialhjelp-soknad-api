@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -18,7 +17,8 @@ import java.util.UUID
 
 // TODO 1. For f.eks. annen boutgift og annen barneutgift - skal frontend oppdatere for hver eneste bokstav/skrivepause...
 // TODO... eller holder det kanskje å gjøre det når skrivefelt mister fokus?
-// TODO 2. Nå håndteres andre utgifter forskjellig - FORMUE_ANNET og VERDI_ANNET innhenter beskrivelse i første dialog,
+// TODO 2. Nå håndteres andre utgifter forskjellig - FORMUE_ANNET, VERDI_ANNET og (inntekt) UTBETALING_ANNET..
+// TODO ...innhenter beskrivelse i første dialog,
 // TODO... men UTGIFTER_ANNET_BO, UTGIFTER_ANNET_BARN og UTGIFTER_ANDRE_UTGIFTER har beskrivelse pr. okonomiske detalj.
 // TODO... Litt vanskelig å håndtere det likt fordi beskrivelse for sistnevnte er knyttet til beløpet, mens første er
 // TODO... knyttet til elementet før beløp er hentet inn... La det være sånn - eller prøve finne en felles måte?
@@ -48,33 +48,11 @@ class OkonomiskeOpplysningerController(
     ): ForventetDokumentasjonDto {
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
-            type = input.getType(),
+            type = input.getOkonomiType(),
             dokumentasjonLevert = input.dokumentasjonLevert,
             detaljer = input.mapToOkonomiDetalj(),
         )
         return getForventetDokumentasjon(soknadId)
-    }
-}
-
-private fun AbstractOkonomiInput.getType(): OkonomiType =
-    when (this) {
-        is GenericOkonomiInput -> type
-        is LonnsInput -> InntektType.JOBB
-        is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
-    }
-
-private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj> =
-    when (this) {
-        is GenericOkonomiInput -> detaljer.map { it.toOkonomiDetalj() }
-        is LonnsInput -> listOf(detalj.toOkonomiDetalj())
-        is BoliglanInput -> detaljer.map { it.toOkonomiDetalj() }
-    }
-
-private fun OkonomiDetaljDto.toOkonomiDetalj(): OkonomiDetalj {
-    return when (this) {
-        is BelopDto -> Belop(belop = belop, beskrivelse = beskrivelse)
-        is LonnsInntektDto -> BruttoNetto(brutto = brutto, netto = netto)
-        is AvdragRenterDto -> AvdragRenter(avdrag = avdrag, renter = renter)
     }
 }
 
@@ -89,6 +67,67 @@ data class DokumentasjonDto(
     val dokumentasjonStatus: DokumentasjonStatus,
     val dokumenter: List<DokumentDto>,
 )
+
+data class DokumentDto(
+    val dokumentId: UUID,
+    val filnavn: String,
+)
+
+private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>>.toDokumentasjonDto(): DokumentasjonDto {
+    return DokumentasjonDto(
+        type = key.type,
+        gruppe = key.type.group,
+        dokumentasjonStatus = key.status,
+        detaljer = value.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
+        dokumenter =
+            key.dokumenter.map { dokument ->
+                DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)
+            },
+    )
+}
+
+private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
+    return when (this) {
+        is Belop -> BelopDto(belop = belop, beskrivelse = beskrivelse)
+        is BruttoNetto -> LonnsInntektDto(brutto = brutto, netto = netto)
+        is AvdragRenter -> AvdragRenterDto(avdrag = avdrag, renter = renter)
+        is Utbetaling -> BelopDto(belop = belop ?: 0.0)
+        is UtbetalingMedKomponent -> BelopDto(belop = utbetaling.belop ?: 0.0)
+    }
+}
+
+// TODO Når det gjelder Input fra bruker - så er dette enten et eller flere beløp i de fleste tilfeller, men for...
+// TODO ... boliglån er det et eller flere renter og avdrag-par, og for lønnsinntekt kan vedkommende fylle ut...
+// TODO ... ett brutto/netto-par. Derfor er input skilt på dette for å få litt separasjon på et endepunkt...
+// TODO ... som håndterer veldig mye, i tillegg til å bidra til bedre datahåndtering og konsistens på input-data.
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes(
+    JsonSubTypes.Type(GenericOkonomiInput::class),
+    JsonSubTypes.Type(LonnsInput::class),
+    JsonSubTypes.Type(BoliglanInput::class),
+)
+sealed interface AbstractOkonomiInput {
+    val dokumentasjonLevert: Boolean
+}
+
+// For de fleste felter hvor bruker legger til okonomiske opplysninger
+data class GenericOkonomiInput(
+    val okonomiType: OkonomiType,
+    override val dokumentasjonLevert: Boolean,
+    val detaljer: List<BelopDto>,
+) : AbstractOkonomiInput
+
+// Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
+data class LonnsInput(
+    override val dokumentasjonLevert: Boolean,
+    val detalj: LonnsInntektDto,
+) : AbstractOkonomiInput
+
+// For boliglån hentes det inn ett eller flere renter og avdrag-par.
+data class BoliglanInput(
+    override val dokumentasjonLevert: Boolean,
+    val detaljer: List<AvdragRenterDto>,
+) : AbstractOkonomiInput
 
 // TODO Navngivning på disse dtos og inputs?
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
@@ -116,59 +155,16 @@ data class AvdragRenterDto(
     val renter: Double?,
 ) : OkonomiDetaljDto
 
-data class DokumentDto(
-    val uuid: UUID,
-    val filnavn: String,
-)
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(
-    JsonSubTypes.Type(GenericOkonomiInput::class),
-    JsonSubTypes.Type(LonnsInput::class),
-    JsonSubTypes.Type(BoliglanInput::class),
-)
-sealed interface AbstractOkonomiInput {
-    val dokumentasjonLevert: Boolean
-}
-
-data class GenericOkonomiInput(
-    val type: OkonomiType,
-    override val dokumentasjonLevert: Boolean,
-    val detaljer: List<BelopDto>,
-) : AbstractOkonomiInput
-
-data class LonnsInput(
-    override val dokumentasjonLevert: Boolean,
-    val detalj: LonnsInntektDto,
-) : AbstractOkonomiInput
-
-data class BoliglanInput(
-    override val dokumentasjonLevert: Boolean,
-    val detaljer: List<AvdragRenterDto>,
-) : AbstractOkonomiInput
-
-private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>>.toDokumentasjonDto(): DokumentasjonDto {
-    return DokumentasjonDto(
-        type = key.type,
-        gruppe = key.type.group,
-        dokumentasjonStatus = key.status,
-        detaljer = value.map { it.toOkonomiskDetaljDto() },
-        dokumenter = key.dokumenter.map { it.toDokumentDto() },
-    )
-}
-
-private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
-    return when (this) {
-        is Belop -> BelopDto(belop = belop, beskrivelse = beskrivelse)
-        is BruttoNetto -> LonnsInntektDto(brutto = brutto, netto = netto)
-        is AvdragRenter -> AvdragRenterDto(avdrag = avdrag, renter = renter)
-        is Utbetaling -> BelopDto(belop = belop ?: 0.0)
-        is UtbetalingMedKomponent -> BelopDto(belop = utbetaling.belop ?: 0.0)
+private fun AbstractOkonomiInput.getOkonomiType(): OkonomiType =
+    when (this) {
+        is GenericOkonomiInput -> okonomiType
+        is LonnsInput -> InntektType.JOBB
+        is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }
-}
 
-private fun Dokument.toDokumentDto() =
-    DokumentDto(
-        uuid = dokumentId,
-        filnavn = filnavn,
-    )
+private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj> =
+    when (this) {
+        is GenericOkonomiInput -> detaljer.map { Belop(belop = it.belop, beskrivelse = it.beskrivelse) }
+        is LonnsInput -> listOf(BruttoNetto(brutto = detalj.brutto, netto = detalj.netto))
+        is BoliglanInput -> detaljer.map { AvdragRenter(it.avdrag, it.renter) }
+    }

@@ -75,30 +75,34 @@ class UtgiftToJsonMapper(
             if (detaljer.isEmpty()) {
                 listOf(toJsonOpplysningUtgift())
             } else {
-                detaljer.map { this.copy().toJsonOpplysningUtgift(it as Belop) }
+                detaljer.map { detalj -> this.copy().toJsonOpplysningUtgift(detalj as Belop, detalj.beskrivelse) }
             }
         }
     }
 
-    private fun Utgift.toJsonOpplysningUtgift(belop: Belop? = null) =
+    private fun Utgift.toJsonOpplysningUtgift(
+        belop: Belop? = null,
+        detaljBeskrivelse: String? = null,
+    ) =
         JsonOkonomiOpplysningUtgift()
             .withKilde(JsonKilde.BRUKER)
             .withType(type.name)
-            .withTittel(toTittel())
+            .withTittel(toTittel(detaljBeskrivelse))
             .withBelop(belop?.belop?.toInt())
             .withOverstyrtAvBruker(false)
 }
 
-private fun Utgift.toTittel(): String {
+// TODO For Annet skal beskrivelsen følge detaljen - derfor er beskrivelse ikke riktig
+private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
     return when (type) {
-        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): $beskrivelse"
-        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt): $beskrivelse"
+        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): $detaljBeskrivelse"
+        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt): $detaljBeskrivelse"
         UtgiftType.UTGIFTER_BARN_TANNREGULERING -> "Tannregulering for barn (siste regning)"
         UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT -> "Kommunal avgift (siste regning)"
         UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning):"
         UtgiftType.UTGIFTER_OPPVARMING -> "Oppvarming (siste regning)"
         UtgiftType.UTGIFTER_STROM -> "Strøm (siste regning)"
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): $beskrivelse"
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): $detaljBeskrivelse"
         UtgiftType.BARNEBIDRAG_BETALER -> "Betaler Barnebidrag"
         UtgiftType.UTGIFTER_SFO -> "SFO"
         UtgiftType.UTGIFTER_BARNEHAGE -> "Barnehage"

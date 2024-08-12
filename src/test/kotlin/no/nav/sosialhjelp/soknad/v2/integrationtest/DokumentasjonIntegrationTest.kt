@@ -125,7 +125,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 dokumentasjon.dokumenter.first()
             }
             .also { dokument ->
-                assertThat(dokument.dokumentId).isEqualTo(dokumentDto.uuid)
+                assertThat(dokument.dokumentId).isEqualTo(dokumentDto.dokumentId)
                 assertThat(dokument.filnavn).isEqualTo(dokumentDto.filnavn)
                 assertThat(dokument.sha512).isEqualTo(VedleggUtils.getSha512FromByteArray(pdfFil.readBytes()))
             }
