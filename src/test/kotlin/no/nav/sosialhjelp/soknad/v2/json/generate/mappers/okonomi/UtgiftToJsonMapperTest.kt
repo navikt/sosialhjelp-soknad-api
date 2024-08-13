@@ -89,7 +89,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
 
     @Test
     fun `Beskrivelse for andre utgifter skal gi flere innslag`() {
-        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BARN)
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
 
         UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
 
