@@ -101,7 +101,7 @@ dependencies {
     // flyway / db
     implementation(libs.flyway.core)
     implementation(libs.vault.jdbc)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.17.0")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.17.1")
     runtimeOnly("org.postgresql:postgresql:42.7.3")
 
     // redis
@@ -139,8 +139,8 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.20.0")
-    testImplementation("org.testcontainers:junit-jupiter:1.20.0")
+    testImplementation("org.testcontainers:postgresql:1.20.1")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.1")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
