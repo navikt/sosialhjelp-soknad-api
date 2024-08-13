@@ -19,8 +19,5 @@ class FeatureToggleRessurs(
     private val unleash: Unleash,
 ) {
     @GetMapping
-    fun featureToggles(): Map<String, Boolean> {
-        println(unleash.more().evaluateAllToggles())
-        return unleash.more().evaluateAllToggles().associate { it.name to it.isEnabled }
-    }
+    fun featureToggles(): Map<String, Boolean> = unleash.more().evaluateAllToggles().associate { it.name to it.isEnabled }
 }

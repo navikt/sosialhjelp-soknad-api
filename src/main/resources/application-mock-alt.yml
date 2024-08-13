@@ -9,7 +9,7 @@ spring:
     clean-on-validation-error: true
   docker:
     compose:
-      file: "compose/docker-compose-local.yml"
+      file: compose/docker-compose-local.yml
       lifecycle-management: start-only
       enabled: true
       # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
