@@ -37,5 +37,5 @@ class UnleashConfig(
 
     @Bean
     @Profile("mock-alt")
-    fun unleashClientMock(): Unleash = FakeUnleash().also { it.enableAll() }
+    fun unleashClientMock(): Unleash = FakeUnleash().also { it.enable("sosialhjelp.soknad.kategorier", "sosialhjelp.soknad.kort_soknad") }
 }

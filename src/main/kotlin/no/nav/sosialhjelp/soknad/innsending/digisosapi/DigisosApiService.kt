@@ -1,12 +1,15 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -33,6 +36,14 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+private data class Kategori(
+    val text: String = "",
+    val hvaSokesOm: String? = null,
+    val subCategories: List<String> = emptyList(),
+)
+
+private typealias Kategorier = List<Kategori>
+
 @Component
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
@@ -47,6 +58,37 @@ class DigisosApiService(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
+    private fun JsonInternalSoknad.humanifyHvaSokesOm() {
+        val humanifiedText =
+            soknad
+                ?.data
+                ?.begrunnelse
+                ?.hvaSokesOm
+                ?.let {
+                    runCatching { ObjectMapper().readValue(it, jacksonTypeRef<Kategorier>()) }
+                        .onFailure { log.warn("Kunne ikke deserialisere", it) }
+                        .map {
+                            if (it.isNotEmpty()) {
+                                it.joinToString("\n", prefix = "Bruker har valgt følgende kategorier:\n") { kategori ->
+                                    when {
+                                        kategori.text == "Annet" -> "Annet:\n\t${kategori.hvaSokesOm ?: ""}"
+                                        kategori.subCategories.isNotEmpty() -> kategori.subCategories.joinToString("\n\t", prefix = "${kategori.text}:\n\t")
+                                        else -> kategori.text
+                                    }
+                                }
+                            } else {
+                                null
+                            }
+                        }.getOrNull()
+                }
+        if (humanifiedText != null) {
+            soknad
+                ?.data
+                ?.begrunnelse
+                ?.hvaSokesOm = humanifiedText
+        }
+    }
+
     fun sendSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         token: String?,
@@ -59,6 +101,8 @@ class DigisosApiService(
 
         val innsendingsTidspunkt = SoknadUnderArbeidService.nowWithForcedMillis()
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
+
+        jsonInternalSoknad.humanifyHvaSokesOm()
 
         // Ny modell
         v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
