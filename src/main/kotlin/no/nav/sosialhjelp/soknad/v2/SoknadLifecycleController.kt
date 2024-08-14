@@ -90,6 +90,10 @@ data class OpprettetSoknadDto(
 )
 
 data class SoknadSendtDto(
+    val soknadId: UUID,
+)
+
+data class SoknadSendtDto(
     val digisosId: UUID,
     val tidspunkt: LocalDateTime,
 )

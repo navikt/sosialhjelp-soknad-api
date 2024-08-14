@@ -59,16 +59,6 @@ abstract class AbstractIntegrationTest {
             .returnResult().responseBody!!
     }
 
-    protected fun doGetFullResponse(
-        uri: String,
-    ): ResponseSpec {
-        return webTestClient.get()
-            .uri(uri)
-            .header("Authorization", "Bearer ${token.serialize()}")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-    }
-
     protected fun <T> doPost(
         uri: String,
         responseBodyClass: Class<T>,
@@ -78,13 +68,11 @@ abstract class AbstractIntegrationTest {
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
-            .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
             .expectBody(responseBodyClass)
-            .returnResult()
-            .responseBody!!
+            .returnResult().responseBody!!
     }
 
     protected fun doPostFullResponse(
