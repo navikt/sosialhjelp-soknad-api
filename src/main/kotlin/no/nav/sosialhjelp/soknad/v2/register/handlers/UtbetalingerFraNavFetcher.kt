@@ -5,9 +5,10 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -26,26 +27,27 @@ class UtbetalingerFraNavFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_NAVYTELSE)
+        okonomiService.getBekreftelser(soknadId)
+            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }
+            ?.let { if (it.verdi) getAndSaveUtbetalingerFraNav(soknadId) else null }
+            ?: okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_NAVYTELSE)
+    }
 
-        val utbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())
+    private fun getAndSaveUtbetalingerFraNav(soknadId: UUID) {
+        navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())
+            ?.let { utbetalinger ->
+                logger.info("NyModell: Hentet ${utbetalinger.size} utbetalinger fra NAV")
+                integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
 
-        utbetalinger?.let { navUtbetalinger ->
-            logger.info("NyModell: Hentet ${navUtbetalinger.size} utbetalinger fra NAV")
-            integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
+                if (utbetalinger.isEmpty()) return
 
-            if (navUtbetalinger.isEmpty()) return
-
-            val inntekt =
-                Inntekt(
-                    type = InntektType.UTBETALING_NAVYTELSE,
-                    inntektDetaljer =
-                        OkonomiDetaljer(
-                            navUtbetalinger.map { it.toUtbetalingMedKomponent() },
-                        ),
-                )
-            okonomiService.addElementToOkonomi(soknadId, inntekt)
-        }
+                val inntekt =
+                    Inntekt(
+                        type = InntektType.UTBETALING_NAVYTELSE,
+                        inntektDetaljer = OkonomiskeDetaljer(utbetalinger.map { it.toUtbetalingMedKomponent() }),
+                    )
+                okonomiService.addElementToOkonomi(soknadId, inntekt)
+            }
             ?: integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = true)
     }
 }

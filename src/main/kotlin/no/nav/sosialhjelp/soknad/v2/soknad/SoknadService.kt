@@ -1,26 +1,48 @@
-package no.nav.sosialhjelp.soknad.v2.soknad.service
+package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
-import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
+
+interface SoknadService {
+    fun findOrError(soknadId: UUID): Soknad
+
+    fun createSoknad(
+        eierId: String,
+        soknadId: UUID,
+        // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
+        opprettetDato: LocalDateTime,
+    ): UUID
+
+    fun deleteSoknad(soknadId: UUID)
+
+    fun setInnsendingstidspunkt(
+        soknadId: UUID,
+        innsendingsTidspunkt: LocalDateTime,
+    )
+
+    fun getSoknad(soknadId: UUID): Soknad
+}
+
+interface BegrunnelseService {
+    fun findBegrunnelse(soknadId: UUID): Begrunnelse
+
+    fun updateBegrunnelse(
+        soknadId: UUID,
+        begrunnelse: Begrunnelse,
+    ): Begrunnelse
+}
 
 @Service
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
-    private val sendSoknadHandler: SendSoknadHandler,
 ) : SoknadService, BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
@@ -42,28 +64,11 @@ class SoknadServiceImpl(
     }
 
     override fun deleteSoknad(soknadId: UUID) {
-        findOrError(soknadId).also {
-            soknadRepository.delete(it)
-        }
-        mellomlagringService.deleteAll(soknadId)
-    }
-
-    override fun sendSoknad(soknadId: UUID): UUID {
-        val digisosId: UUID =
-            findOrError(soknadId).run {
-                tidspunkt.sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-                soknadRepository.save(this)
-
-                sendSoknadHandler.doSendAndReturnDigisosId(this)
+        soknadRepository.findByIdOrNull(soknadId)
+            ?.let {
+                mellomlagringService.deleteAll(soknadId)
+                soknadRepository.delete(it)
             }
-        logger.info("Sletter innsendt Soknad $soknadId")
-        soknadRepository.deleteById(soknadId)
-
-        return digisosId
-    }
-
-    override fun slettSoknad(soknadId: UUID) {
-        soknadRepository.findByIdOrNull(soknadId)?.let { soknadRepository.delete(it) }
             ?: logger.warn("Soknad V2 finnes ikke.")
     }
 
@@ -75,6 +80,10 @@ class SoknadServiceImpl(
             .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
             .also { soknadRepository.save(it) }
     }
+
+    override fun getSoknad(soknadId: UUID) =
+        soknadRepository.findByIdOrNull(soknadId)
+            ?: error("Soknad finnes ikke")
 
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 

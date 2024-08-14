@@ -21,10 +21,10 @@ class RegisterDataService(
 
     fun runSpecificFetchers(
         soknadId: UUID,
-        listedHandlers: List<RegisterDataFetcher>,
+        listedFetchers: List<RegisterDataFetcher>,
     ) {
-        logger.info("NyModell: Henter Register-data: ${listedHandlers.joinToString(separator = ", ")}")
-        doRunListedFetchers(soknadId = soknadId, listedFetchers = listedHandlers)
+        logger.info("NyModell: Henter Register-data: ${listedFetchers.joinToString(separator = ", ")}")
+        doRunListedFetchers(soknadId = soknadId, listedFetchers = listedFetchers)
     }
 
     private fun doRunListedFetchers(

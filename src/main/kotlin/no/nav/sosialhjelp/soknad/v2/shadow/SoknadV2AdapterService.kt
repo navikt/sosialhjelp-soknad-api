@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -60,7 +60,7 @@ class SoknadV2AdapterService(
         logger.info("NyModell: Sletter SoknadV2")
 
         kotlin.runCatching {
-            soknadService.slettSoknad(UUID.fromString(behandlingsId))
+            soknadService.deleteSoknad(UUID.fromString(behandlingsId))
         }
             .onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }

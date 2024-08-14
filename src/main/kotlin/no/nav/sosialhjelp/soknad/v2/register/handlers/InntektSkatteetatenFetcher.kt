@@ -23,14 +23,13 @@ class InntektSkatteetatenFetcher(
     private val organisasjonService: OrganisasjonService,
 ) : RegisterDataFetcher {
     override fun fetchAndSave(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
-
         okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
-            ?.let { if (it.verdi) getSkattbarInntekt(soknadId) }
+            ?.let { if (it.verdi) getAndSaveSkattbarInntekt(soknadId) else null }
+            ?: okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
     }
 
-    private fun getSkattbarInntekt(soknadId: UUID) {
+    private fun getAndSaveSkattbarInntekt(soknadId: UUID) {
         skattbarInntektService.hentUtbetalinger(getUserIdFromToken())?.let { utbetalinger ->
             setIntegrasjonStatus(soknadId, feilet = false)
 
