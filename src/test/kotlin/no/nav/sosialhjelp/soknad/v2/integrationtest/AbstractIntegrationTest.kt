@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.UUID
 
@@ -56,6 +57,32 @@ abstract class AbstractIntegrationTest {
             .expectStatus().isOk
             .expectBody(responseBodyClass)
             .returnResult().responseBody!!
+    }
+
+    protected fun <T> doPost(
+        uri: String,
+        responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
+    ): T {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(responseBodyClass)
+            .returnResult().responseBody!!
+    }
+
+    protected fun doPostFullResponse(
+        uri: String,
+    ): ResponseSpec {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
     }
 
     protected fun <T> doPut(
@@ -149,10 +176,9 @@ abstract class AbstractIntegrationTest {
 
     protected fun doDelete(
         uri: String,
-        soknadId: UUID?,
-    ) {
-        webTestClient
-            .delete()
+        soknadId: UUID? = null,
+    ): ResponseSpec {
+        return webTestClient.delete()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
