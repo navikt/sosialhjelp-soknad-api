@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.v2.OpprettetSoknadDto
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
-import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,12 +26,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Opprette soknad skal generere soknads-objekt og hente register-data`() {
-        doPost(
-            uri = postUri,
-            responseBodyClass = OpprettetSoknadDto::class.java,
-        )
-            .also { assertThat(it.soknadId).isInstanceOf(UUID::class.java) }
-            .soknadId
+        createNewSoknad()
+            .also { soknadId -> assertThat(soknadId).isInstanceOf(UUID::class.java) }
             .also { soknadId ->
                 assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(
@@ -45,14 +41,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Slette soknad skal fjerne soknad`() {
-//        val soknadId = doPost(
-//            uri = postUri,
-//            responseBodyClass = OpprettetSoknadDto::class.java
-//        ).soknadId
+        val soknadId = createNewSoknad()
 
-        val soknadId = opprettSoknad().let { soknadRepository.save(it) }.id
-
-        doDelete(uri = deleteUri(soknadId), soknadId)
+        doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
         assertThat(eierRepository.findByIdOrNull(soknadId)).isNull()
@@ -64,7 +55,11 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Sende soknad skal avslutte soknad i db`() {
-        val soknadId = opprettSoknad().let { soknadRepository.save(it) }.id
+        val soknadId = createNewSoknad()
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run { copy(adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT)) }
+            .also { kontaktRepository.save(it) }
 
         doPost(
             uri = sendUri(soknadId),
@@ -75,8 +70,15 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     // TODO Hvis det kastes exception underveis i opprettelsen - sjekk at ingenting lagres
 
+    private fun createNewSoknad(): UUID {
+        return doPost(
+            uri = createUri,
+            responseBodyClass = OpprettetSoknadDto::class.java,
+        ).soknadId
+    }
+
     companion object {
-        private val postUri = "/soknad/create"
+        private val createUri = "/soknad/create"
 
         private fun deleteUri(soknadId: UUID) = "/soknad/$soknadId/delete"
 
