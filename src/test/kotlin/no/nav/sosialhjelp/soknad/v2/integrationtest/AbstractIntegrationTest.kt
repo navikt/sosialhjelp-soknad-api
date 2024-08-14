@@ -31,7 +31,7 @@ abstract class AbstractIntegrationTest {
 
     @BeforeEach
     fun before() {
-        token = mockOAuth2Server.issueToken("selvbetjening", "54352345353", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
     protected fun doGetFullResponse(
@@ -142,5 +142,9 @@ abstract class AbstractIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isNoContent
+    }
+
+    companion object {
+        val userId = "05058548523"
     }
 }

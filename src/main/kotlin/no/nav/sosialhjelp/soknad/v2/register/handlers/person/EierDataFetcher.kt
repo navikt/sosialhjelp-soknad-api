@@ -37,7 +37,7 @@ class EierDataFetcher(
                     navn =
                         Navn(
                             fornavn = person.fornavn,
-                            mellomnavn = person.mellomnavn,
+                            mellomnavn = person.mellomnavn ?: "",
                             etternavn = person.etternavn,
                         ),
                     kontonummer = Kontonummer(fraRegister = kontonummer),

@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
@@ -32,12 +33,27 @@ class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : Do
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
         familieRepository.findByIdOrNull(soknadId)?.let {
-            with(jsonInternalSoknad.soknad.data.familie) {
-                sivilstatus = it.toJsonSivilstatus()
-                forsorgerplikt = it.toJsonForsorgerplikt()
+            doMapping(it, jsonInternalSoknad)
+        }
+    }
+
+    internal companion object Mapper {
+        fun doMapping(
+            familie: Familie,
+            json: JsonInternalSoknad,
+        ) {
+            json.initializeObjects()
+
+            with(json.soknad.data.familie) {
+                sivilstatus = familie.toJsonSivilstatus()
+                forsorgerplikt = familie.toJsonForsorgerplikt()
             }
         }
     }
+}
+
+private fun JsonInternalSoknad.initializeObjects() {
+    soknad.data.familie ?: soknad.data.withFamilie(JsonFamilie())
 }
 
 private fun Familie.toJsonSivilstatus() =
@@ -92,7 +108,7 @@ private fun Barn.toJson() =
         .withHarDeltBosted(
             JsonHarDeltBosted()
                 .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(deltBosted),
+                .withVerdi(deltBosted ?: false),
         )
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

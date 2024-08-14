@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 
 data class Navn(
     val fornavn: String,
-    val mellomnavn: String? = null,
+    val mellomnavn: String = "",
     val etternavn: String,
 )
 

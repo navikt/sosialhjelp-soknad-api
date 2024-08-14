@@ -87,7 +87,7 @@ fun createFamilie(
 
 fun opprettEktefelle(): Ektefelle {
     return Ektefelle(
-        navn = Navn("Kone", null, "Konesen"),
+        navn = Navn("Kone", "", "Konesen"),
         fodselsdato = "432341",
         personId = "1234512345",
         folkeregistrertMedEktefelle = true,

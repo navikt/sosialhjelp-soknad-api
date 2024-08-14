@@ -75,7 +75,7 @@ private fun Barn.toV2Barn(): no.nav.sosialhjelp.soknad.v2.familie.Barn {
         navn =
             Navn(
                 fornavn = fornavn,
-                mellomnavn = mellomnavn,
+                mellomnavn = mellomnavn ?: "",
                 etternavn = etternavn,
             ),
         fodselsdato = fodselsdato?.toString(),
@@ -96,7 +96,7 @@ private fun V2Ektefelle.toV2Ektefelle(): Ektefelle {
             navn =
                 Navn(
                     fornavn = fornavn ?: "fornavn finnes ikke på ektefelle",
-                    mellomnavn = mellomnavn,
+                    mellomnavn = mellomnavn ?: "",
                     etternavn = etternavn ?: "etternavn finnes ikke på ektefelle",
                 ),
             fodselsdato = fodselsdato?.toString(),

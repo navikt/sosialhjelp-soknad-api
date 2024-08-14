@@ -29,7 +29,6 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleFoedselDato
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleId
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.orgnr
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.userId
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
@@ -81,7 +80,6 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     }
 
     companion object {
-        val userId = "05058548523"
         val orgnr = "12345678"
         val arbeidsgiverNavn = "Arbeidsgiveren"
         val barnPersonId = "01011012345"
@@ -96,7 +94,7 @@ fun createPersonAnswer(): Person {
         "Fornavnet",
         null,
         "Fornavnesen",
-        userId,
+        AbstractIntegrationTest.userId,
         "GIFT",
         listOf("NOR"),
         createEktefelleAnswer(),
