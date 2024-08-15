@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
@@ -12,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
@@ -36,14 +35,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-private data class Kategori(
-    val text: String = "",
-    val hvaSokesOm: String? = null,
-    val subCategories: List<String> = emptyList(),
-)
-
-private typealias Kategorier = List<Kategori>
-
 @Component
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
@@ -64,22 +55,8 @@ class DigisosApiService(
                 ?.data
                 ?.begrunnelse
                 ?.hvaSokesOm
-                ?.let {
-                    runCatching { ObjectMapper().readValue(it, jacksonTypeRef<Kategorier>()) }
-                        .onFailure { log.warn("Kunne ikke deserialisere", it) }
-                        .map {
-                            if (it.isNotEmpty()) {
-                                it.joinToString("\n", prefix = "Bruker har valgt følgende kategorier:\n") { kategori ->
-                                    when {
-                                        kategori.text == "Annet" -> "Annet:\n\t${kategori.hvaSokesOm ?: ""}"
-                                        kategori.subCategories.isNotEmpty() -> kategori.subCategories.joinToString("\n\t", prefix = "${kategori.text}:\n\t")
-                                        else -> kategori.text
-                                    }
-                                }
-                            } else {
-                                null
-                            }
-                        }.getOrNull()
+                ?.let { hvaSokesOm ->
+                    BegrunnelseUtils.jsonToHvoSokesOm(hvaSokesOm)
                 }
         if (humanifiedText != null) {
             soknad
