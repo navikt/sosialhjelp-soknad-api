@@ -36,7 +36,6 @@ class SoknadLifecycleController(
                 "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
             )
         }
-
         return soknadLifecycleService.startSoknad()
             .let { soknadId ->
                 response.addCookie(xsrfCookie(soknadId.toString()))
@@ -54,9 +53,9 @@ class SoknadLifecycleController(
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
 
-        val (id, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
+        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
-        return SoknadSendtDto(id, innsendingstidspunkt)
+        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
     @DeleteMapping("/{soknadId}/delete")
@@ -91,6 +90,6 @@ data class OpprettetSoknadDto(
 )
 
 data class SoknadSendtDto(
-    val soknadId: UUID,
+    val digisosId: UUID,
     val tidspunkt: LocalDateTime,
 )
