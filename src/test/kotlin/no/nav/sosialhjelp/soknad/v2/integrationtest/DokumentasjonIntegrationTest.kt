@@ -93,7 +93,6 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Laste opp dokument skal lagres i db og oppdatere dokumentasjonsstatus`() {
-        // TODO Synes dette er litt vel komplekst... Kunne koden vært refaktorert for å forenkle testbarheten?
         val filnavnSlot = slot<String>()
         every { mellomlagringClient.postDokument(any(), capture(filnavnSlot), any()) } just runs
         every { mellomlagringClient.getDokumentMetadata(any()) } answers { createMellomlagringDto(filnavnSlot.captured) }

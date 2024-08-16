@@ -56,8 +56,6 @@ class FamilieServiceImpl(
                 .let { familieRepository.save(it) }
                 .toForsorger()
 
-        // TODO Trenger denne å være en del av familie-modellen i det hele tatt? Lever på siden uavhengig av om vedkommende...
-        // TODO ...har forsorgerplikt eller ei
         handleBarnebidrag(soknadId, barnebidrag)
 
         return forsorger

@@ -146,7 +146,6 @@ class VerdiRessurs(
         val campingvogn: Boolean = false,
         val kjoretoy: Boolean = false,
         val fritidseiendom: Boolean = false,
-        // TODO Trenger det både være flagg og nullable string?
         val annet: Boolean = false,
         val beskrivelseAvAnnet: String? = null,
     )

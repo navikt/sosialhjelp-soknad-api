@@ -53,6 +53,8 @@ interface DokumentService {
         soknadId: UUID,
         dokumentId: UUID,
     ): Dokumentasjon
+
+    fun deleteAllDokumenter(soknadId: UUID)
 }
 
 // TODO Logging
@@ -147,6 +149,19 @@ class DokumentasjonServiceImpl(
                 runCatching { mellomlagringClient.deleteDokument(soknadId, dokumentId) }
                     .onFailure { throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", it) }
             }
+    }
+
+    override fun deleteAllDokumenter(soknadId: UUID) {
+        dokumentasjonRepository.findAllBySoknadId(soknadId)
+            .map { dokumentasjon -> dokumentasjon.copy(dokumenter = emptySet(), status = dokumentasjon.updateStatus()) }
+            .let { list -> dokumentasjonRepository.saveAll(list) }
+
+        mellomlagringClient.deleteDokumenter(soknadId)
+    }
+
+    private fun Dokumentasjon.updateStatus(): DokumentasjonStatus {
+        return DokumentasjonStatus.LEVERT_TIDLIGERE.let { if (status == it) it else null }
+            ?: if (dokumenter.isEmpty()) DokumentasjonStatus.FORVENTET else DokumentasjonStatus.LASTET_OPP
     }
 
     private fun lastOppDokumentOgHentGenerertId(

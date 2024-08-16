@@ -70,8 +70,6 @@ enum class DokumentasjonStatus {
     LEVERT_TIDLIGERE,
 }
 
-// TODO For dokumenter som ikke er tilknyttet et okonomi-element
-// TODO Passer ikke helt at denne arver OkonomiType - men.....
 // TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
 enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean) : OkonomiType {
     SKATTEMELDING(dokumentasjonForventet = true),

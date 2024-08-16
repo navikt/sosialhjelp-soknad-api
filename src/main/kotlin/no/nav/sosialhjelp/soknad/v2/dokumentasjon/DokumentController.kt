@@ -60,7 +60,6 @@ class DokumentController(
         @PathVariable("type") okonomiTypeString: String,
         @RequestParam("file") dokument: MultipartFile,
     ): DokumentDto {
-        // TODO Hvordan konfigurere jackson så denne kan være OkonomiType
         val okonomiType = StringToOkonomiTypeConverter.convert(okonomiTypeString)
 
         return dokumentService.saveDokument(

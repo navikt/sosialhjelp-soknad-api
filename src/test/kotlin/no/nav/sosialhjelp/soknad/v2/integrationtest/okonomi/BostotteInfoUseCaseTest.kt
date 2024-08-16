@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-// TODO Er ikke kjempeglad i at denne logikken eies og testes av backend
 class BostotteInfoUseCaseTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var okonomiService: OkonomiService
@@ -24,9 +23,6 @@ class BostotteInfoUseCaseTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
-    // TODO Klarer ikke helt å se hvilken innvirkning innhenting av bostotte feilet har på dette...
-    // TODO Det kan ikke feile, uten at BOSTOTTE == true og BOSTOTTE_SAMTYKKE == true ->
-    // TODO ...og på det tidspunktet er det ikke relevant om den har feilet eller ei?
     @Test
     fun `Hente bostotte feilet-scenario`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)

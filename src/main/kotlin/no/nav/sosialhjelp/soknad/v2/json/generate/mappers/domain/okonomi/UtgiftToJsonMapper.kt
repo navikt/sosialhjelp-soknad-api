@@ -92,7 +92,6 @@ class UtgiftToJsonMapper(
             .withOverstyrtAvBruker(false)
 }
 
-// TODO For Annet skal beskrivelsen følge detaljen - derfor er beskrivelse ikke riktig
 private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
     return when (type) {
         UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): $detaljBeskrivelse"

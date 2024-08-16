@@ -60,9 +60,6 @@ private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
         .withOverstyrtAvBruker(false)
         .let { oversikt -> detalj?.addDetaljToOversiktForInntekt(oversikt) ?: oversikt }
 
-// TODO Enda et eksempel på den merkelig oppdelingen av strukturerte okonomiske data i JsonOkonomiOversikt og okonomiske...
-// TODO ... opplysninger (JsonOkonomiopplysning). Data-klassene som brukes i JsonOkonomiopplysning har jo alt av...
-// TODO ... felter (belop, brutto, netto, etc) så alt av inntekter kunne heller vært mappet dit..
 private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
     jsonInntekt: JsonOkonomioversiktInntekt,
 ): JsonOkonomioversiktInntekt {

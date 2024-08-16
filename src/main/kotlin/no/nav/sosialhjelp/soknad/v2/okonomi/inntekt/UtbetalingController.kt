@@ -67,7 +67,7 @@ data class UtbetalingerDto(
     val hasForsikring: Boolean = false,
     val hasAnnenUtbetaling: Boolean = false,
     val beskrivelseUtbetaling: String? = null,
-    // TODO Skal / trenger denne være en del av denne dto'en ?
+    // TODO Skal / trenger denne være en del av denne dto'en ? - Tore
     val utbetalingerFraNavFeilet: Boolean? = null,
 )
 

@@ -16,14 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 // TODO 1. For f.eks. annen boutgift og annen barneutgift - skal frontend oppdatere for hver eneste bokstav/skrivepause...
-// TODO... eller holder det kanskje å gjøre det når skrivefelt mister fokus?
-// TODO 2. Nå håndteres andre utgifter forskjellig - FORMUE_ANNET, VERDI_ANNET og (inntekt) UTBETALING_ANNET..
-// TODO ...innhenter beskrivelse i første dialog,
-// TODO... men UTGIFTER_ANNET_BO, UTGIFTER_ANNET_BARN og UTGIFTER_ANDRE_UTGIFTER har beskrivelse pr. okonomiske detalj.
-// TODO... Litt vanskelig å håndtere det likt fordi beskrivelse for sistnevnte er knyttet til beløpet, mens første er
-// TODO... knyttet til elementet før beløp er hentet inn... La det være sånn - eller prøve finne en felles måte?
-// TODO 3. Skal vi ha en "one takes all"-løsning som det er nå, eller type det basert på belop/brutto-netto/avdrag-renter?
-// TODO ...Renter og avdrag er kun en utgift - og frontend kan sjekke type for å tilpasse teksten, og vi kan fortsatt forholde oss til belop internt
+// TODO... eller holder det kanskje å gjøre det når skrivefelt mister fokus? - Tore
 
 @RestController
 @ProtectionSelvbetjeningHigh
@@ -96,10 +89,6 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
     }
 }
 
-// TODO Når det gjelder Input fra bruker - så er dette enten et eller flere beløp i de fleste tilfeller, men for...
-// TODO ... boliglån er det et eller flere renter og avdrag-par, og for lønnsinntekt kan vedkommende fylle ut...
-// TODO ... ett brutto/netto-par. Derfor er input skilt på dette for å få litt separasjon på et endepunkt...
-// TODO ... som håndterer veldig mye, i tillegg til å bidra til bedre datahåndtering og konsistens på input-data.
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
     JsonSubTypes.Type(GenericOkonomiInput::class),

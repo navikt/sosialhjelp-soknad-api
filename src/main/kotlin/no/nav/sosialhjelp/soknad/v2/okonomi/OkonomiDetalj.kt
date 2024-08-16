@@ -36,7 +36,6 @@ sealed interface OkonomiDetalj
 // For UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO og "UTGIFTER_ANDRE_UTGIFTER" knyttes beskrivelse til det eksakte beløpet
 data class Belop(
     val belop: Double,
-    // TODO Når det mappes til JSON lages det en utgift pr. rad med "Annen (brukerangitt):" som prefix
     val beskrivelse: String? = null,
 ) : OkonomiDetalj
 
@@ -45,7 +44,7 @@ data class BruttoNetto(
     val netto: Double? = null,
 ) : OkonomiDetalj
 
-// TODO Spesialhåndtering fordi avdrag og renter knyttes sammen
+// Spesialhåndtering fordi avdrag og renter knyttes sammen
 data class AvdragRenter(
     val avdrag: Double? = null,
     val renter: Double? = null,

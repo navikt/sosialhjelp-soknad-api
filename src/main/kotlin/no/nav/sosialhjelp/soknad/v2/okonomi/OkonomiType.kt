@@ -9,6 +9,7 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 
+// TODO OpplysningType
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
@@ -24,7 +25,7 @@ interface OkonomiType {
     val name: String
     val dokumentasjonForventet: Boolean
 
-    // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på?
+    // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på? - Tore
     val group: String
 }
 

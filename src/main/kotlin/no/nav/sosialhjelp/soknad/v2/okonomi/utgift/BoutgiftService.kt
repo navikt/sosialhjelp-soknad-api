@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -25,7 +26,7 @@ interface BoutgiftService {
 @Service
 class BoutgiftServiceImpl(
     private val okonomiService: OkonomiService,
-    // TODO Bruk integrasjonService (ligger i okonomi.inntekt - så den kan merges først)
+    private val integrasjonService: IntegrasjonStatusService,
     private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : BoutgiftService {
     override fun getBoutgifter(soknadId: UUID): Set<Utgift>? {
@@ -63,7 +64,7 @@ class BoutgiftServiceImpl(
 
     // TODO "kopiering" og forsøk på enklere fremstilling av BoutgiftRessurs#getSkalViseInfoVedBekreftelse
     // TODO denne presiserer hvilke bekreftelser vi er interessert i - og ikke hva som helst som tidligere
-    // TODO Skal backend egentlig eie denne logikken?
+    // TODO Skal backend egentlig eie denne logikken? Tore
     override fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
         return if (fetchBostotteFailedOrMissingSamtykke(soknadId)) {
             getBostotteRelatedBekreftelser(soknadId)

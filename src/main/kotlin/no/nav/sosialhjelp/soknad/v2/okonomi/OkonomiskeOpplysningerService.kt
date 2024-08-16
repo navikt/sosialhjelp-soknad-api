@@ -94,6 +94,7 @@ class OkonomiskeOpplysningerServiceImpl(
     ) {
         // TODO hvis 'levertTidligere' er false - er det ikke sikkert man skal røre noe mer
         // TODO er den true, bør man kanskje slette eventuelle lagret Dokumentasjon (og Dokumenter)?
+        // TODO Hvis status er LEVERT_TIDLIGERE ved innsending - slett alle referanser og filer i mellomlager
         when {
             levertTidligere -> DokumentasjonStatus.LEVERT_TIDLIGERE
             dokumentasjonService.hasDokumenterForType(soknadId, type) -> DokumentasjonStatus.LASTET_OPP
