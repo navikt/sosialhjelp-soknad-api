@@ -187,7 +187,7 @@ class MellomlagringClientImpl(
     }
 
     override fun deleteDokumenter(soknadId: UUID) {
-        TODO("Not yet implemented")
+        deleteAllVedlegg(soknadId.toString())
     }
 
     /**
