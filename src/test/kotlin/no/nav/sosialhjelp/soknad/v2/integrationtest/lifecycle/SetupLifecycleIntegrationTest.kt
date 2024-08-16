@@ -1,13 +1,17 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
+import io.mockk.slot
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
@@ -23,6 +27,13 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.dokumenterSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.kommunenummerSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.navEksternRefSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.soknadJsonSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tilleggsinformasjonSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tokenSlot
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.vedleggJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.arbeidsgiverNavn
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnFoedselsDato
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnPersonId
@@ -32,31 +43,35 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
+import java.util.UUID
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
-    private lateinit var personService: PersonService
+    protected lateinit var personService: PersonService
 
     @MockkBean
-    private lateinit var arbeidsforholdService: ArbeidsforholdService
+    protected lateinit var arbeidsforholdService: ArbeidsforholdService
 
     @MockkBean
-    private lateinit var skattbarInntektService: SkattbarInntektService
+    protected lateinit var skattbarInntektService: SkattbarInntektService
 
     @MockkBean
-    private lateinit var organisasjonService: OrganisasjonService
+    protected lateinit var organisasjonService: OrganisasjonService
 
     @MockkBean
-    private lateinit var mobiltelefonService: MobiltelefonService
+    protected lateinit var mobiltelefonService: MobiltelefonService
 
     @MockkBean
-    private lateinit var navUtbetalingerService: NavUtbetalingerService
+    protected lateinit var navUtbetalingerService: NavUtbetalingerService
 
     @MockkBean
-    private lateinit var kontonummerService: KontonummerService
+    protected lateinit var kontonummerService: KontonummerService
 
     @MockkBean
     protected lateinit var mellomlagringService: MellomlagringService
+
+    @MockkBean
+    protected lateinit var digisosApiV2Client: DigisosApiV2Client
 
     @BeforeEach
     protected fun setup() {
@@ -77,6 +92,27 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { mobiltelefonService.hent(userId) } returns "44553366"
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(userId) } returns createNavUtbetaling()
         every { mellomlagringService.deleteAll(any()) } just runs
+        every {
+            digisosApiV2Client.krypterOgLastOppFiler(
+                soknadJson = capture(soknadJsonSlot),
+                tilleggsinformasjonJson = capture(tilleggsinformasjonSlot),
+                vedleggJson = capture(vedleggJsonSlot),
+                dokumenter = capture(dokumenterSlot),
+                kommunenr = capture(kommunenummerSlot),
+                navEksternRefId = capture(navEksternRefSlot),
+                token = capture(tokenSlot),
+            )
+        } returns UUID.randomUUID().toString()
+    }
+
+    protected object CapturedValues {
+        val soknadJsonSlot: CapturingSlot<String> = slot()
+        val tilleggsinformasjonSlot: CapturingSlot<String> = slot()
+        val vedleggJsonSlot: CapturingSlot<String> = slot()
+        val dokumenterSlot: CapturingSlot<List<FilOpplasting>> = slot()
+        val kommunenummerSlot: CapturingSlot<String> = slot()
+        val navEksternRefSlot: CapturingSlot<String> = slot()
+        val tokenSlot: CapturingSlot<String> = slot()
     }
 
     companion object {

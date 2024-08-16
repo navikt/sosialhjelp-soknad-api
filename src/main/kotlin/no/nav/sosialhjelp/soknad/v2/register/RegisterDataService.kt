@@ -31,6 +31,8 @@ class RegisterDataService(
         soknadId: UUID,
         listedFetchers: List<RegisterDataFetcher>,
     ) {
+        // TODO Denne spiser opp eventuelle Throwables - så for "vanlig flyt" (Ikke skyggeprod) kan ikke denne gjøre det
+        // TODO ... i denne koden. Det må håndteres av caller
         listedFetchers.forEach { fetcher ->
             runCatching { fetcher.fetchAndSave(soknadId) }
                 .onFailure { logger.error("Feil i innhenting av Register-data: $fetcher", it) }

@@ -1,12 +1,18 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
+import io.mockk.every
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.v2.OpprettetSoknadDto
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,7 +64,12 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         kontaktRepository.findByIdOrNull(soknadId)!!
-            .run { copy(adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT)) }
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
             .also { kontaktRepository.save(it) }
 
         doPost(
@@ -66,9 +77,22 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             responseBodyClass = SoknadSendtDto::class.java,
             soknadId = soknadId,
         )
+            .also { dto ->
+                assertThat(dto.digisosId).isNotEqualTo(soknadId)
+                assertThat(dto.tidspunkt).isAfter(LocalDateTime.now().minusSeconds(10))
+            }
+
+        // TODO Litt usikker på hva vi egentlig bør / trenger å asserte her?
+        assertCapturedValues(soknadId)
     }
 
-    // TODO Hvis det kastes exception underveis i opprettelsen - sjekk at ingenting lagres
+    // TODO Exception må kastes når dette kjører alene - men må kjøre i transaksjon i skyggeprod.. fiks
+    @Test
+    fun `Exception underveis i oppstarten skal rulle tilbake alt`() {
+        every { mobiltelefonService.hent(any()) } throws IllegalArgumentException("Feil ved henting av telefonnummer")
+
+        val response = doPostFullResponse(createUri)
+    }
 
     private fun createNewSoknad(): UUID {
         return doPost(
@@ -77,11 +101,51 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         ).soknadId
     }
 
+    private fun createNavEnhet(): NavEnhet {
+        return NavEnhet(
+            "navEnhet",
+            "1234456",
+            createVegadresse().kommunenummer,
+            "12345678",
+            "kommunen",
+        )
+    }
+
+    private fun assertCapturedValues(soknadId: UUID) {
+        with(CapturedValues) {
+            assertSoknadJson(soknadId)
+            assertTilleggsinformasjon(soknadId)
+            assertDokumenterIsPdf()
+        }
+    }
+
+    private fun CapturedValues.assertSoknadJson(soknadId: UUID) {
+        objectMapper.readValue(soknadJsonSlot.captured, JsonSoknad::class.java)
+            .also { jsonSoknad ->
+                assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(userId)
+                assertThat(jsonSoknad.mottaker.enhetsnummer).isNotNull()
+            }
+    }
+
+    private fun CapturedValues.assertDokumenterIsPdf() {
+        dokumenterSlot.captured.forEach {
+            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_PDF)
+        }
+    }
+
+    private fun CapturedValues.assertTilleggsinformasjon(soknadId: UUID) {
+        kontaktRepository.findByIdOrNull(soknadId)!!.mottaker.enhetsnummer!!.let {
+            assertThat(tilleggsinformasjonSlot.captured).contains(it)
+        }
+    }
+
     companion object {
         private val createUri = "/soknad/create"
 
         private fun deleteUri(soknadId: UUID) = "/soknad/$soknadId/delete"
 
         private fun sendUri(soknadId: UUID) = "/soknad/$soknadId/send"
+
+        private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     }
 }

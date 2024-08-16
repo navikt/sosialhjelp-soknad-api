@@ -36,28 +36,16 @@ class SoknadLifecycleServiceImpl(
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
 
-        val soknadId =
-            SubjectHandlerUtils.getUserIdFromToken().let {
-                soknadService.createSoknad(
-                    eierId = it,
-                    soknadId = UUID.randomUUID(),
-                    // TODO Spesifisert til UTC i filformatet
-                    opprettetDato = LocalDateTime.now(),
-                )
-            }.also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
-
-        // TODO Må vel hente eksterne data (spesielt person-data) et eller annet sted på dette tidspunktet?
-        registerDataService.runAllRegisterDataFetchers(soknadId)
-
-        return soknadId
-    }
-
-    override fun cancelSoknad(
-        soknadId: UUID,
-        referer: String?,
-    ) {
-        soknadService.deleteSoknad(soknadId)
-        prometheusMetricsService.reportAvbruttSoknad(referer)
+        return soknadService.createSoknad(
+            eierId = SubjectHandlerUtils.getUserIdFromToken(),
+            soknadId = UUID.randomUUID(),
+            // TODO Spesifisert til UTC i filformatet
+            opprettetDato = LocalDateTime.now(),
+        )
+            .also { soknadId ->
+                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
+                registerDataService.runAllRegisterDataFetchers(soknadId)
+            }
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
@@ -82,6 +70,14 @@ class SoknadLifecycleServiceImpl(
         )
 
         return Pair(digisosId, LocalDateTime.now())
+    }
+
+    override fun cancelSoknad(
+        soknadId: UUID,
+        referer: String?,
+    ) {
+        soknadService.deleteSoknad(soknadId)
+        prometheusMetricsService.reportAvbruttSoknad(referer)
     }
 
     companion object {
