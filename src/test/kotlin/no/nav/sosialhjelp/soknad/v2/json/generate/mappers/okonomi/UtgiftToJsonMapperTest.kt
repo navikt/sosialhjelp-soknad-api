@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.UtgiftToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
@@ -38,7 +39,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
                 Utgift(
                     UtgiftType.BARNEBIDRAG_BETALER,
                     null,
-                    OkonomiskeDetaljer(listOf(Belop(444.0), Belop(1242.0))),
+                    OkonomiDetaljer(listOf(Belop(444.0), Belop(1242.0))),
                 ),
             )
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
@@ -49,21 +50,103 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
     }
 
     @Test
-    fun `Beskrivelse for Annen Bosituasjon eller Annen utgift barn skal gi beskrivelse i tittel`() {
-        val utgifter =
-            setOf(
-                Utgift(UtgiftType.UTGIFTER_ANNET_BO, "Beskrivelse av Bo"),
-                Utgift(UtgiftType.UTGIFTER_ANNET_BARN, "Beskrivelse av annet Barn"),
-            )
-        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+    fun `Beskrivelse for andre boutgifter skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BO)
 
-        with(jsonOkonomi.opplysninger) {
-            assertThat(utgift).hasSize(2)
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
 
-            val beskrivelser = utgifter.map { it.beskrivelse }
-            beskrivelser.forEach { beskrivelse ->
-                assertThat(utgift).anyMatch { it.tittel.contains(beskrivelse!!) }
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BO.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
             }
         }
+    }
+
+    @Test
+    fun `Beskrivelse for andre utgifter barn skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANNET_BARN)
+
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BARN.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
+            }
+        }
+    }
+
+    @Test
+    fun `Beskrivelse for andre utgifter skal gi flere innslag`() {
+        val utgifterDomain = createUtgiftForAnnet(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+
+        UtgiftToJsonMapper(utgifterDomain, jsonOkonomi).doMapping()
+
+        jsonOkonomi.opplysninger.utgift.also { utgifter ->
+            assertThat(utgifter).hasSize(2)
+            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER.name }
+
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
+            }
+            assertThat(utgifter).anyMatch {
+                it.belop == belopBeskrivelse2.first.toInt() && it.tittel.contains(belopBeskrivelse2.second)
+            }
+        }
+    }
+
+    @Test
+    fun `Hver detalj med AvdragRenter skal lage 2 Okonomi-innslag`() {
+        val nyUtgift =
+            Utgift(
+                type = UtgiftType.UTGIFTER_BOLIGLAN,
+                beskrivelse = "Boliglan",
+                utgiftDetaljer =
+                    OkonomiDetaljer(
+                        listOf(
+                            AvdragRenter(avdrag = 3500.0, renter = 11500.0),
+                            AvdragRenter(avdrag = 2500.0, renter = null),
+                            AvdragRenter(avdrag = null, renter = 4000.0),
+                            AvdragRenter(null, null),
+                        ),
+                    ),
+            )
+
+        UtgiftToJsonMapper(setOf(nyUtgift), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi.oversikt) {
+            assertThat(utgift).hasSize(nyUtgift.utgiftDetaljer.detaljer.size * 2)
+        }
+    }
+
+    private fun createUtgiftForAnnet(utgiftType: UtgiftType): Set<Utgift> {
+        return setOf(
+            Utgift(
+                type = utgiftType,
+                utgiftDetaljer =
+                    OkonomiDetaljer(
+                        listOf(
+                            Belop(belop = belopBeskrivelse1.first, beskrivelse = belopBeskrivelse1.second),
+                            Belop(belop = belopBeskrivelse2.first, beskrivelse = belopBeskrivelse2.second),
+                        ),
+                    ),
+            ),
+        )
+    }
+
+    companion object {
+        private val belopBeskrivelse1 = Pair(4444.4, "Beskrivelse av første utgift")
+        private val belopBeskrivelse2 = Pair(5555.5, "Beskrivelse av andre utgift")
     }
 }

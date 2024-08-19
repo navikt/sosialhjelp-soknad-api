@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 import no.nav.sosialhjelp.soknad.v2.createFormuer
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.FormueToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import org.assertj.core.api.Assertions.assertThat
@@ -45,12 +45,12 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
                 Formue(
                     type = FormueType.FORMUE_ANNET,
                     beskrivelse = "Beskrivelse av Formue",
-                    formueDetaljer = OkonomiskeDetaljer(listOf(Belop(423.0), Belop(288.0))),
+                    formueDetaljer = OkonomiDetaljer(listOf(Belop(423.0), Belop(288.0))),
                 ),
                 Formue(
                     type = FormueType.VERDI_ANNET,
                     beskrivelse = "Beskrivelse av Verdi",
-                    formueDetaljer = OkonomiskeDetaljer(listOf(Belop(523.0), Belop(121.0))),
+                    formueDetaljer = OkonomiDetaljer(listOf(Belop(523.0), Belop(121.0))),
                 ),
             )
         FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
@@ -69,8 +69,8 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
     }
 }
 
-private fun createOkonomiskeDetaljer(): OkonomiskeDetaljer<Belop> {
-    return OkonomiskeDetaljer(
+private fun createOkonomiskeDetaljer(): OkonomiDetaljer<Belop> {
+    return OkonomiDetaljer(
         detaljer =
             listOf(
                 Belop(344.0),

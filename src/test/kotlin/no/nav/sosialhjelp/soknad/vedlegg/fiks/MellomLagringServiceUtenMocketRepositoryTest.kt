@@ -57,7 +57,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         mockkObject(VedleggUtils)
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns lagMellomlagringDto()
         every { SubjectHandlerUtils.getUserIdFromToken() } returns EIER
-        every { VedleggUtils.behandleFilOgReturnerFildata(any(), any()) } returns Pair(FILNAVN, PDF_FILE.readBytes())
+        every { VedleggUtils.validerFilOgReturnerNyttFilnavn(any(), any()) } returns Pair(FILNAVN, PDF_FILE.readBytes())
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
     }
 

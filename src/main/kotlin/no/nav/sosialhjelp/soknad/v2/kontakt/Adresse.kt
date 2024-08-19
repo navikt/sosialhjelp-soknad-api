@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.kontakt
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
@@ -59,20 +60,21 @@ object AdresseToJsonConverter : Converter<Adresse, String> {
 
 @ReadingConverter
 object JsonToAdresseConverter : Converter<String, Adresse> {
-    override fun convert(source: String): Adresse = JsonToAdresseMapper.map(source)
+//    override fun convert(source: String): Adresse = JsonToAdresseMapper.map(source)
+    override fun convert(source: String): Adresse = jacksonObjectMapper().readValue(source)
 }
 
-private object JsonToAdresseMapper {
-    val adresseTyper =
-        setOf(
-            VegAdresse::class.java,
-            MatrikkelAdresse::class.java,
-            PostboksAdresse::class.java,
-            UstrukturertAdresse::class.java,
-        )
-
-    fun map(json: String): Adresse {
-        adresseTyper.forEach { kotlin.runCatching { return mapper.readValue(json, it) } }
-        throw IllegalArgumentException("Kunne ikke mappe adresse")
-    }
-}
+// private object JsonToAdresseMapper {
+//    val adresseTyper =
+//        setOf(
+//            VegAdresse::class.java,
+//            MatrikkelAdresse::class.java,
+//            PostboksAdresse::class.java,
+//            UstrukturertAdresse::class.java,
+//        )
+//
+//    fun map(json: String): Adresse {
+//        adresseTyper.forEach { kotlin.runCatching { return mapper.readValue(json, it) } }
+//        throw IllegalArgumentException("Kunne ikke mappe adresse")
+//    }
+// }

@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -12,7 +12,7 @@ data class Inntekt(
     override val type: InntektType,
     override val beskrivelse: String? = null,
     @Column("detaljer")
-    val inntektDetaljer: OkonomiskeDetaljer<OkonomiDetalj> = OkonomiskeDetaljer(),
+    val inntektDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
 ) : OkonomiElement
 
 // TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes
@@ -43,4 +43,13 @@ enum class InntektType(
     // TODO Forventes dokumentasjon for disse 2?
     UTBETALING_SKATTEETATEN(dokumentasjonForventet = false),
     UTBETALING_HUSBANKEN(dokumentasjonForventet = false),
+    ;
+
+    override val group: String
+        get() =
+            when (this) {
+                STUDIELAN_INNTEKT, SLUTTOPPGJOER, JOBB -> "Arbeid"
+                BARNEBIDRAG_MOTTAR -> "Familie"
+                else -> "Inntekt"
+            }
 }

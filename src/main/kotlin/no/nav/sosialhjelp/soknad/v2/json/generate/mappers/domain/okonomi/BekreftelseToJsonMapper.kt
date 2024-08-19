@@ -21,11 +21,12 @@ private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {
     return JsonOkonomibekreftelse()
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
+        .withVerdi(verdi)
         .withTittel(type.toTittel())
         .withBekreftelsesDato(dato.toString())
 }
 
-private fun BekreftelseType.toTittel(): String {
+internal fun BekreftelseType.toTittel(): String {
     return when (this) {
         BekreftelseType.BEKREFTELSE_BARNEUTGIFTER -> "Utgifter til barn"
         BekreftelseType.BEKREFTELSE_BOUTGIFTER -> "Boutgifter"

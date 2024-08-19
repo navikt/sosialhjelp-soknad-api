@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-class OkonomiskeLivssituasjonRessursTest {
+class OkonomiskeOpplysningerRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
@@ -39,6 +39,7 @@ class OkonomiskeLivssituasjonRessursTest {
             tilgangskontroll = tilgangskontroll,
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
             mellomlagringService = mellomlagringService,
+            v2OkonomiAdapter = mockk(relaxed = true),
         )
 
     private val behandlingsId = "123"

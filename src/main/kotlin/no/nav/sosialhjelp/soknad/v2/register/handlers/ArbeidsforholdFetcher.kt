@@ -25,8 +25,6 @@ class ArbeidsforholdFetcher(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
             )
-            // TODO Aareg-klienten returnerer null for mange exceptions - vanskelig å tolke null her
-            // TODO Hvis denne er kjørt tidligere og det er lagret data - beholder vi disse hvis denne går galt?
         } ?: logger.info("NyModell: Register: Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
     }
 }

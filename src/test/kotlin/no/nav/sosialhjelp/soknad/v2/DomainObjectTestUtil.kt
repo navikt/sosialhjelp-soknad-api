@@ -40,7 +40,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
@@ -314,9 +315,9 @@ fun opprettOkonomi(soknadId: UUID): Okonomi {
 fun createInntekter(): Set<Inntekt> {
     return setOf(
         Inntekt(
-            type = InntektType.BARNEBIDRAG_MOTTAR,
+            type = InntektType.JOBB,
             inntektDetaljer =
-                OkonomiskeDetaljer(
+                OkonomiDetaljer(
                     detaljer =
                         listOf(
                             BruttoNetto(brutto = 40.0, netto = 20.0),
@@ -327,7 +328,7 @@ fun createInntekter(): Set<Inntekt> {
         Inntekt(
             type = InntektType.UTBETALING_NAVYTELSE,
             inntektDetaljer =
-                OkonomiskeDetaljer(
+                OkonomiDetaljer(
                     detaljer =
                         listOf(
                             UtbetalingMedKomponent(
@@ -348,7 +349,7 @@ fun createUtgifter(): Set<Utgift> {
         Utgift(
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             utgiftDetaljer =
-                OkonomiskeDetaljer(
+                OkonomiDetaljer(
                     detaljer =
                         listOf(
                             Belop(belop = 400.0),
@@ -363,7 +364,7 @@ fun createFormuer(): Set<Formue> {
         Formue(
             type = FormueType.FORMUE_BRUKSKONTO,
             formueDetaljer =
-                OkonomiskeDetaljer(
+                OkonomiDetaljer(
                     detaljer =
                         listOf(
                             Belop(belop = 123.0),
@@ -373,7 +374,7 @@ fun createFormuer(): Set<Formue> {
         Formue(
             type = FormueType.VERDI_KJORETOY,
             formueDetaljer =
-                OkonomiskeDetaljer(
+                OkonomiDetaljer(
                     detaljer =
                         listOf(
                             Belop(belop = 500000.0),
@@ -409,22 +410,20 @@ fun createBostotteSaker(): List<BostotteSak> {
     )
 }
 
-fun opprettVedlegg(
-    id: UUID,
+fun opprettDokumentasjon(
+    id: UUID = UUID.randomUUID(),
     soknadId: UUID,
+    status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
+    type: OkonomiType = UtgiftType.UTGIFTER_STROM,
+    dokumenter: Set<Dokument> = opprettDokumenter(),
 ): Dokumentasjon {
-    return Dokumentasjon(
-        id = id,
-        soknadId = soknadId,
-        type = FormueType.FORMUE_BRUKSKONTO,
-        status = DokumentasjonStatus.FORVENTET,
-        dokumenter = createFiler(),
-    )
+    return Dokumentasjon(id, soknadId, type, status, dokumenter)
 }
 
-fun createFiler(): Set<Dokument> {
+fun opprettDokumenter(): Set<Dokument> {
     return setOf(
         Dokument(
+            dokumentId = UUID.randomUUID(),
             filnavn = "utskrift_brukskonto.pdf",
             sha512 = UUID.randomUUID().toString(),
         ),

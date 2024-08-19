@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
@@ -45,20 +46,29 @@ private fun Inntekt.toJsonOversiktInntekter(): List<JsonOkonomioversiktInntekt> 
         if (detaljer.isEmpty()) {
             listOf(toJsonOversiktInntekt())
         } else {
-            detaljer.map { this.copy().toJsonOversiktInntekt(it as BruttoNetto) }
+            detaljer.map { this.copy().toJsonOversiktInntekt(it) }
         }
     }
 }
 
-private fun Inntekt.toJsonOversiktInntekt(detalj: BruttoNetto? = null) =
+private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
     JsonOkonomioversiktInntekt()
         // TODO Typene må mappes til Kilde
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())
-        .withBrutto(detalj?.brutto?.toInt())
-        .withNetto(detalj?.netto?.toInt())
         .withOverstyrtAvBruker(false)
+        .let { oversikt -> detalj?.addDetaljToOversiktForInntekt(oversikt) ?: oversikt }
+
+private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
+    jsonInntekt: JsonOkonomioversiktInntekt,
+): JsonOkonomioversiktInntekt {
+    return when (this) {
+        is Belop -> jsonInntekt.withBrutto(belop.toInt()).withNetto(belop.toInt())
+        is BruttoNetto -> jsonInntekt.withBrutto(brutto?.toInt()).withNetto(netto?.toInt())
+        else -> error("Ugyldig OkonomiDetalj-type for Oversikt Inntekt")
+    }
+}
 
 private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUtbetaling> {
     return inntektDetaljer.detaljer.let { detaljer ->
@@ -73,19 +83,22 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling()
         // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
+        // TODO For de fleste okonomitypene vil det enkleste være mapping pr. OkonomiType
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())
         .withOverstyrtAvBruker(false)
-        .let { detalj?.addOkonomiskeDetaljer(it) ?: it }
+        .let { opplysning -> detalj?.addDetaljToOpplysningForInntekt(opplysning) ?: opplysning }
 }
 
-private fun OkonomiDetalj.addOkonomiskeDetaljer(
+private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
 ): JsonOkonomiOpplysningUtbetaling {
     when (this) {
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
+        is Belop -> addUtbetaling(jsonUtbetaling)
+        else -> error("Ugyldig detalj-type for Inntekt")
     }
     return jsonUtbetaling
 }
@@ -106,6 +119,10 @@ private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbeta
         .withPeriodeFom(periodeFom?.toString())
         .withPeriodeTom(periodeTom?.toString())
         .withMottaker(mottaker?.toJsonMottaker())
+}
+
+private fun Belop.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling) {
+    jsonUtbetaling.withBelop(belop.toInt())
 }
 
 private fun Mottaker.toJsonMottaker(): JsonOkonomiOpplysningUtbetaling.Mottaker? {

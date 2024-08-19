@@ -10,6 +10,11 @@ import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import java.time.LocalDate
 
+// Wrapper-objekt som persisteres som en json-streng i databasen
+data class OkonomiDetaljer<T : OkonomiDetalj>(
+    val detaljer: List<T> = emptyList(),
+)
+
 /**
  * Inntekter, Utgifter, Formue og Utbetaling har veldig forskjellige "behov"
  * Tanken er å kun måtte lagre nødvendige felter for hver klasse
@@ -22,22 +27,27 @@ import java.time.LocalDate
 @JsonSubTypes(
     JsonSubTypes.Type(value = Belop::class, name = "Belop"),
     JsonSubTypes.Type(value = BruttoNetto::class, name = "BruttoNetto"),
+    JsonSubTypes.Type(value = AvdragRenter::class, name = "AvdragRenter"),
     JsonSubTypes.Type(value = Utbetaling::class, name = "Utbetaling"),
     JsonSubTypes.Type(value = UtbetalingMedKomponent::class, name = "UtbetalingMedKomponent"),
 )
-interface OkonomiDetalj
+sealed interface OkonomiDetalj
 
-data class OkonomiskeDetaljer<T : OkonomiDetalj>(
-    val detaljer: List<T> = emptyList(),
-)
-
+// For UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO og "UTGIFTER_ANDRE_UTGIFTER" knyttes beskrivelse til det eksakte beløpet
 data class Belop(
     val belop: Double,
+    val beskrivelse: String? = null,
 ) : OkonomiDetalj
 
 data class BruttoNetto(
     val brutto: Double? = null,
     val netto: Double? = null,
+) : OkonomiDetalj
+
+// Spesialhåndtering fordi avdrag og renter knyttes sammen
+data class AvdragRenter(
+    val avdrag: Double? = null,
+    val renter: Double? = null,
 ) : OkonomiDetalj
 
 // TODO Sjekk bruk av utbetaling og om det trengs alle feltene
@@ -84,19 +94,11 @@ private val mapper =
     }
 
 @WritingConverter
-class OkonomiskeDetaljerToStringConverter<T : OkonomiDetalj> : Converter<OkonomiskeDetaljer<T>, String> {
-    override fun convert(source: OkonomiskeDetaljer<T>): String = mapper.writeValueAsString(source)
+class OkonomiskeDetaljerToStringConverter<T : OkonomiDetalj> : Converter<OkonomiDetaljer<T>, String> {
+    override fun convert(source: OkonomiDetaljer<T>): String = mapper.writeValueAsString(source)
 }
 
 @ReadingConverter
-class StringToOkonomiskeDetaljerConverter<T : OkonomiDetalj> : Converter<String, OkonomiskeDetaljer<T>> {
-    override fun convert(source: String): OkonomiskeDetaljer<T> = mapper.readValue(source)
+class StringToOkonomiskeDetaljerConverter<T : OkonomiDetalj> : Converter<String, OkonomiDetaljer<T>> {
+    override fun convert(source: String): OkonomiDetaljer<T> = mapper.readValue(source)
 }
-
-// object OkonomiRaderMapper {
-//
-//    fun mapToOkonomiRad(source: String): OkonomiRader<OkonomiRad> {
-// //        return mapper.readValue()
-//    }
-//
-// }

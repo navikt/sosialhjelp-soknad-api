@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -26,26 +27,47 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.util.Collections
+import java.util.UUID
 import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto?
+
+    fun getDokumentMetadata(soknadId: UUID): MellomlagringDto?
 
     fun postVedlegg(
         navEksternId: String,
         filOpplasting: FilOpplasting,
     )
 
+    fun postDokument(
+        soknadId: UUID,
+        filnavn: String,
+        data: ByteArray,
+    )
+
     fun deleteAllVedlegg(navEksternId: String)
+
+    fun deleteDokumenter(soknadId: UUID)
 
     fun getVedlegg(
         navEksternId: String,
         digisosDokumentId: String,
     ): ByteArray
 
+    fun getDokument(
+        soknadId: UUID,
+        dokumentId: UUID,
+    ): ByteArray
+
     fun deleteVedlegg(
         navEksternId: String,
         digisosDokumentId: String,
+    )
+
+    fun deleteDokument(
+        soknadId: UUID,
+        dokumentId: UUID,
     )
 }
 
@@ -82,6 +104,10 @@ class MellomlagringClientImpl(
         return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
 
+    override fun getDokumentMetadata(soknadId: UUID): MellomlagringDto? {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Last opp vedlegg til mellomlagring for `navEksternId`
      */
@@ -108,6 +134,14 @@ class MellomlagringClientImpl(
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
+    }
+
+    override fun postDokument(
+        soknadId: UUID,
+        filnavn: String,
+        data: ByteArray,
+    ) {
+        TODO("Not yet implemented")
     }
 
     private fun lastOpp(
@@ -152,6 +186,10 @@ class MellomlagringClientImpl(
             .block()
     }
 
+    override fun deleteDokumenter(soknadId: UUID) {
+        deleteAllVedlegg(soknadId.toString())
+    }
+
     /**
      * Last ned mellomlagret vedlegg
      */
@@ -166,6 +204,19 @@ class MellomlagringClientImpl(
             .bodyToMono<ByteArray>()
             .block()
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
+    }
+
+    override fun getDokument(
+        soknadId: UUID,
+        dokumentId: UUID,
+    ): ByteArray {
+        return webClient.get()
+            .uri(MELLOMLAGRING_DOKUMENT_PATH, soknadId, dokumentId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .retrieve()
+            .bodyToMono<ByteArray>()
+            .block()
+            ?: throw IkkeFunnetException("Dokument ikke funnet hos Fiks mellomlager")
     }
 
     /**
@@ -187,6 +238,13 @@ class MellomlagringClientImpl(
                 log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
+    }
+
+    override fun deleteDokument(
+        soknadId: UUID,
+        dokumentId: UUID,
+    ) {
+        TODO("Not yet implemented")
     }
 
     private fun createHttpEntityOfString(

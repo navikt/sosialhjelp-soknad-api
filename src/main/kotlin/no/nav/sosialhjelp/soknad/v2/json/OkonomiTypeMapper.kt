@@ -27,6 +27,7 @@ object OkonomiTypeMapper {
             UtgiftType.UTGIFTER_HUSLEIE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.FakturaHusleie)
             UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
             UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_RENTER, null)
+            UtgiftType.UTGIFTER_BOLIGLAN -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
         }
     }
 

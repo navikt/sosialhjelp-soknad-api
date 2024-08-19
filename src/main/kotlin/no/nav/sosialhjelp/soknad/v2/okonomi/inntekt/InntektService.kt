@@ -43,6 +43,7 @@ class InntektService(
         mottarStudielan: Boolean,
     ) {
         // TODO bruker har huket av for "erStudent", huket av for "harStudielån", men så fjerner "erStudent" - hva da?
+        // Svar -> Fjern alt
         okonomiService.updateBekreftelse(
             soknadId = soknadId,
             type = BekreftelseType.STUDIELAN_BEKREFTELSE,

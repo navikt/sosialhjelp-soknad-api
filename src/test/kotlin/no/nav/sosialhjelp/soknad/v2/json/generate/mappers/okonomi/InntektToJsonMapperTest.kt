@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.createInntekter
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -32,7 +32,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                 Inntekt(
                     type = InntektType.UTBETALING_NAVYTELSE,
                     beskrivelse = "Tittel på Navytelse",
-                    inntektDetaljer = OkonomiskeDetaljer(listOf(createFullNavYtelseInntekt())),
+                    inntektDetaljer = OkonomiDetaljer(listOf(createFullNavYtelseInntekt())),
                 ),
             )
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
@@ -52,7 +52,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                     type = InntektType.UTBETALING_SALG,
                     beskrivelse = null,
                     inntektDetaljer =
-                        OkonomiskeDetaljer(
+                        OkonomiDetaljer(
                             listOf(
                                 Utbetaling(brutto = 4325.0, utbetalingsdato = LocalDate.now().minusDays(5)),
                                 Utbetaling(netto = 2435.0, utbetalingsdato = LocalDate.now().minusDays(10)),
