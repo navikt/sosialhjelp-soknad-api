@@ -30,6 +30,6 @@ private fun BostotteSak.toJsonBostotteSak() =
         .withBeskrivelse(beskrivelse)
         .withVedtaksstatus(vedtaksstatus?.toJsonVedtaksstatus())
 
-private fun Vedtaksstatus.toJsonVedtaksstatus(): JsonBostotteSak.Vedtaksstatus {
+internal fun Vedtaksstatus.toJsonVedtaksstatus(): JsonBostotteSak.Vedtaksstatus {
     return JsonBostotteSak.Vedtaksstatus.entries.find { it.name == this.name } ?: error("Finner ikke JsonVedtaksstatus")
 }
