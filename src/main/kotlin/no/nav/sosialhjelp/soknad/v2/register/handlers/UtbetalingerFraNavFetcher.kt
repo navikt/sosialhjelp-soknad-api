@@ -7,8 +7,8 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -44,7 +44,7 @@ class UtbetalingerFraNavFetcher(
                 val inntekt =
                     Inntekt(
                         type = InntektType.UTBETALING_NAVYTELSE,
-                        inntektDetaljer = OkonomiskeDetaljer(utbetalinger.map { it.toUtbetalingMedKomponent() }),
+                        inntektDetaljer = OkonomiDetaljer(utbetalinger.map { it.toUtbetalingMedKomponent() }),
                     )
                 okonomiService.addElementToOkonomi(soknadId, inntekt)
             }

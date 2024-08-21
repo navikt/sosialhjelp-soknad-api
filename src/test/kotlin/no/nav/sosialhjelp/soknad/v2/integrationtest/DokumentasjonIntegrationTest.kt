@@ -105,7 +105,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             .also { dokumentasjonRepository.save(it) }
 
         val dokumentDto =
-            doPost(
+            doPostWithBody(
                 uri = saveUrl(soknad.id, InntektType.UTBETALING_UTBYTTE),
                 requestBody = createFileUpload(),
                 responseBodyClass = DokumentDto::class.java,

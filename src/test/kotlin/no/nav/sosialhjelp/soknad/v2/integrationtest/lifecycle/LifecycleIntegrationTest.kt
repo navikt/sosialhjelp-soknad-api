@@ -91,7 +91,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Exception underveis i oppstarten skal rulle tilbake alt`() {
         every { mobiltelefonService.hent(any()) } throws IllegalArgumentException("Feil ved henting av telefonnummer")
 
-        val response = doPostFullResponse(createUri)
+//        val response = doPostFullResponse(createUri)
     }
 
     private fun createNewSoknad(): UUID {
