@@ -5,6 +5,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -71,6 +72,8 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
         every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
+        every { soknadMetadataRepository.hent(any()) } returns SoknadMetadata(1L, "behandlingsid", "125125125125", kortSoknad = false, opprettetDato = LocalDateTime.now(), sistEndretDato = LocalDateTime.now())
+        every { soknadMetadataRepository.oppdater(any()) } just runs
 
         scheduler.slettGamleSoknadUnderArbeid()
 
