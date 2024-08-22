@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -16,6 +18,7 @@ class SlettSoknadUnderArbeidScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
@@ -45,7 +48,7 @@ class SlettSoknadUnderArbeidScheduler(
     }
 
     private fun slett() {
-        val soknadUnderArbeidIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        val soknadUnderArbeidIdList = batchSoknadUnderArbeidRepository.hentGamleSoknaderUnderArbeidForBatch()
         soknadUnderArbeidIdList.forEach { soknadUnderArbeidId ->
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
@@ -55,10 +58,24 @@ class SlettSoknadUnderArbeidScheduler(
                 if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
                     mellomlagringService.deleteAllVedlegg(it.behandlingsId)
                 }
+
+                // oppdatere status på metadata - hente søknader under arbeid spør metadata-tabellen
+                oppdaterMetadataStatus(it.behandlingsId)
             }
+
             batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
             vellykket++
         }
+    }
+
+    private fun oppdaterMetadataStatus(behandlingsId: String) {
+        soknadMetadataRepository.hent(behandlingsId)
+            ?.apply {
+                status = SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+                sistEndretDato = LocalDateTime.now()
+            }
+            ?.also { soknadMetadataRepository.oppdater(it) }
+            ?: logger.error("Fant ikke Metadata for Soknad eldre enn 14 dager: $behandlingsId")
     }
 
     private fun harGaattForLangTid(): Boolean {

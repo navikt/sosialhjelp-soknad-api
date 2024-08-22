@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
@@ -26,6 +27,9 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
+
+    @Autowired
+    protected lateinit var jdbcTemplate: JdbcTemplate
 
     protected lateinit var token: SignedJWT
 
