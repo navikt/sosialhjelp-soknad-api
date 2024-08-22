@@ -7,8 +7,10 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
@@ -47,6 +49,23 @@ class DigisosApiService(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
+    private fun JsonInternalSoknad.humanifyHvaSokesOm() {
+        val humanifiedText =
+            soknad
+                ?.data
+                ?.begrunnelse
+                ?.hvaSokesOm
+                ?.let { hvaSokesOm ->
+                    BegrunnelseUtils.jsonToHvoSokesOm(hvaSokesOm)
+                }
+        if (humanifiedText != null) {
+            soknad
+                ?.data
+                ?.begrunnelse
+                ?.hvaSokesOm = humanifiedText
+        }
+    }
+
     fun sendSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         token: String?,
@@ -59,6 +78,8 @@ class DigisosApiService(
 
         val innsendingsTidspunkt = SoknadUnderArbeidService.nowWithForcedMillis()
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
+
+        jsonInternalSoknad.humanifyHvaSokesOm()
 
         // Ny modell
         v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)

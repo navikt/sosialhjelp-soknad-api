@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -29,7 +30,7 @@ class BegrunnelseSteg {
                                 Sporsmal(
                                     tittel = "begrunnelse.hva.sporsmal",
                                     erUtfylt = harUtfyltHvaSokesOm,
-                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse) else null,
+                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvoSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
                                 ),
                                 if (!isKortSoknad) {
                                     Sporsmal(
@@ -46,11 +47,11 @@ class BegrunnelseSteg {
         )
     }
 
-    private fun hvaSokerOmFelt(begrunnelse: JsonBegrunnelse): List<Felt> =
+    private fun hvaSokerOmFelt(hvaSokesOm: String): List<Felt> =
         listOf(
             Felt(
                 type = Type.TEKST,
-                svar = createSvar(begrunnelse.hvaSokesOm, SvarType.TEKST),
+                svar = createSvar(hvaSokesOm, SvarType.TEKST),
             ),
         )
 
