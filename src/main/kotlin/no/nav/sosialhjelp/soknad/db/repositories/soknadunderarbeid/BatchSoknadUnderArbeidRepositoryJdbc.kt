@@ -37,7 +37,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
-    override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {
+    override fun hentGamleSoknaderUnderArbeidForBatch(): List<Long> {
         val datoMinusFjortenDager = LocalDateTime.now().minusDays(14)
         return jdbcTemplate.query(
             "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where OPPRETTETDATO < ? and STATUS = ?",

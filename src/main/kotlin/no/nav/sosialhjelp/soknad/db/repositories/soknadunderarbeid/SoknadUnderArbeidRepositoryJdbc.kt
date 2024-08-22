@@ -29,27 +29,27 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    @Deprecated("Gammel logikk. Nye søknader skal lagres via SoknadRepository")
     override fun opprettSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
     ): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
-        jdbcTemplate.update(
-            """
-            insert into SOKNAD_UNDER_ARBEID 
-            (VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
-             values (?,?,?,?,?,?,?)
-            """.trimIndent(),
-            soknadUnderArbeid.versjon,
-            soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.eier,
-            soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
-            soknadUnderArbeid.status.toString(),
-            Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
-            Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
-        )
+        val rows =
+            jdbcTemplate.update(
+                """
+                insert into SOKNAD_UNDER_ARBEID 
+                (VERSJON, BEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)
+                 values (?,?,?,?,?,?,?)
+                """.trimIndent(),
+                soknadUnderArbeid.versjon,
+                soknadUnderArbeid.behandlingsId,
+                soknadUnderArbeid.eier,
+                soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
+                soknadUnderArbeid.status.toString(),
+                Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+            )
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }

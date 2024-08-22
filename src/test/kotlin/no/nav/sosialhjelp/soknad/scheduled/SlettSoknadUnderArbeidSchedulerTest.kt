@@ -5,6 +5,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -19,6 +20,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
     private val scheduler =
         SlettSoknadUnderArbeidScheduler(
@@ -27,6 +29,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             leaderElection,
             batchSoknadUnderArbeidRepository,
             mellomlagringService,
+            soknadMetadataRepository,
         )
 
     @BeforeEach
@@ -61,7 +64,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             )
 
         every {
-            batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+            batchSoknadUnderArbeidRepository.hentGamleSoknaderUnderArbeidForBatch()
         } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2

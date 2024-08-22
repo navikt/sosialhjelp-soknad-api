@@ -26,7 +26,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
         val skalSlettes = lagSoknadUnderArbeid(UUID.randomUUID().toString(), 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
-        val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknaderUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
         assertThat(soknader[0]).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
     }
@@ -49,7 +49,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
                 .apply { sistEndretDato = LocalDateTime.now().minusDays(2) }
                 .let { soknadUnderArbeidRepository.opprettSoknad(it, EIER) }
 
-        val gamleSoknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        val gamleSoknader = batchSoknadUnderArbeidRepository.hentGamleSoknaderUnderArbeidForBatch()
         assertThat(gamleSoknader.size).isEqualTo(1)
         assertThat(gamleSoknader).contains(id)
     }
