@@ -31,7 +31,7 @@ class SivilstandController(private val sivilstandService: SivilstandService) {
             require(sivilstandInput.ektefelle == null) { "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift" }
         }
         return sivilstandService
-            .updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toDomain())
+            .updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toBarn())
             .toSivilstandDto()
     }
 }
@@ -70,4 +70,4 @@ fun Sivilstand.toSivilstandDto() =
 
 fun Ektefelle.toDto() = EktefelleDto(personId, navn, fodselsdato, folkeregistrertMedEktefelle, borSammen)
 
-fun EktefelleInput.toDomain() = Ektefelle(navn, fodselsdato, personId, borSammen = borSammen, kildeErSystem = false)
+fun EktefelleInput.toBarn() = Ektefelle(navn, fodselsdato, personId, borSammen = borSammen, kildeErSystem = false)
