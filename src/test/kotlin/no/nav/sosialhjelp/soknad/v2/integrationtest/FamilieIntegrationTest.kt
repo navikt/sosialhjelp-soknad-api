@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.toDomain
+import no.nav.sosialhjelp.soknad.v2.familie.toBarn
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -32,7 +32,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
                 ansvar =
                     listOf(
                         createBarn(
-                            UUID.fromString("e70c6f15-0e59-4978-a6d1-cf1704594cdd"),
                             personId = "12345678",
                             deltBosted = true,
                         ),
@@ -88,7 +87,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
         familieRepository.findByIdOrNull(storedSoknad.id)?.let {
             assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
-            assertThat(it.ektefelle).isEqualTo(ektefelle.toDomain())
+            assertThat(it.ektefelle).isEqualTo(ektefelle.toBarn())
             assertThat(it.ektefelle?.kildeErSystem).isFalse()
         }
             ?: fail("Fant ikke familie")
