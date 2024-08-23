@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -23,7 +22,8 @@ class SlettSoknadUnderArbeidScheduler(
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
-    @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
+    // TODO AvbrytAutomatiskScheduler gjør også denne slettingen
+//    @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
     fun slettGamleSoknadUnderArbeid() {
         if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
