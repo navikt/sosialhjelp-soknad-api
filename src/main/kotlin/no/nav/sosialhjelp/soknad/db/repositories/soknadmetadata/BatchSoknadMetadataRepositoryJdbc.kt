@@ -37,6 +37,16 @@ class BatchSoknadMetadataRepositoryJdbc(
         }
     }
 
+    override fun hentSoknaderEldreEnn14Dager(): List<SoknadMetadata> {
+        val frist = LocalDateTime.now().minusDays(14)
+
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND innsendingstatus = 'UNDER_ARBEID' " + SQLUtils.limit(100),
+            soknadMetadataRowMapper,
+            frist,
+        )
+    }
+
     @Transactional
     override fun hentEldreEnn(antallDagerGammel: Int): List<SoknadMetadata> {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
