@@ -73,12 +73,35 @@ class NavEnhetService(
     ): NavEnhetFrontend? {
         // TODO Ekstra logging
         log.info("Finner Nav-enhet fra GT")
-        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
+        validerKommunenummerFraOppholdsadresse(personalia)
+
+        // TODO I gammel logikk hentet vi fra oppholdsadresse - som på dette tidspunktet egentlig skulle vært det samme..
+        // TODO ..som folkeregistrert adresse. Det er ikke alltid tilfelle, men vi kan hente fra folkeregistrert.
+//        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
+
+        // TODO Man kommer ikke inn i denne uten at valgt adresse er folkeregistrert. Henter derfor fra den.
+        val kommunenummer = getKommunenummer(personalia.folkeregistrertAdresse) ?: return null
+
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
         // TODO Ekstra logging
+
         logUtDiverseInfo(kommunenummer, geografiskTilknytning, navEnhet)
+
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
+    }
+
+    // TODO Ekstra funksjon og logging for å validere innholdet i strukturen
+    private fun validerKommunenummerFraOppholdsadresse(personalia: JsonPersonalia) {
+        val folkeregistrert = getKommunenummer(personalia.folkeregistrertAdresse)
+        val opphold = getKommunenummer(personalia.oppholdsadresse)
+
+        if (folkeregistrert != opphold) {
+            log.warn(
+                "Ved henting av NavEnhet fra GT er adressevalg '${personalia.oppholdsadresse.adresseValg}', kommunenummer" +
+                    "for folkeregistrert adresse: $folkeregistrert og kommunenummer for oppholdsadresse: $opphold.",
+            )
+        }
     }
 
     private fun finnNavEnhetFraAdresse(

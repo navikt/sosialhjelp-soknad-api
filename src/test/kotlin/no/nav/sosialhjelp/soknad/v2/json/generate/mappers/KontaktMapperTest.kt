@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -8,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
+import no.nav.sosialhjelp.soknad.v2.json.createJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.KontaktToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
@@ -40,6 +42,17 @@ class KontaktMapperTest {
             assertFolkeregistrertAdresse(kontakt.adresser.folkeregistrert)
             assertOppholdsadresse(kontakt.adresser)
         }
+    }
+
+    @Test
+    fun verifyCopiedObject() {
+        val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+
+        val json = createJsonInternalSoknad()
+        val jsonCopy = objectMapper.readValue(objectMapper.writeValueAsString(json), JsonInternalSoknad::class.java)
+
+        assertThat(json).isEqualTo(jsonCopy)
+        assertThat(json).isNotSameAs(jsonCopy)
     }
 }
 
