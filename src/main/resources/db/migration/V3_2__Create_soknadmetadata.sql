@@ -1,4 +1,4 @@
-create table soknadmetadata
+create table innsendt_soknadmetadata
 (
     soknad_id uuid primary key,
     personId varchar(30),
