@@ -11,12 +11,12 @@ import java.util.UUID
 
 
 @Repository
-interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadMetadata>, ListCrudRepository<InnsendtSoknadMetadata, UUID>
+interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadmetadata>, ListCrudRepository<InnsendtSoknadmetadata, UUID>
 
 @Table
-data class InnsendtSoknadMetadata(
+data class InnsendtSoknadmetadata(
     @Id override val soknadId: UUID,
-    val personID: String,
+    val personId: String,
     val sendt_inn_dato: LocalDateTime,
     val opprettet_dato: LocalDateTime,
 //    val soknadType: SoknadType,
