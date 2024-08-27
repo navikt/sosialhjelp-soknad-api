@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import org.hibernate.validator.constraints.UUID
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
