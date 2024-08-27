@@ -64,7 +64,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Dokument som ikke finnes skal gi feil og at den ble slettes hos mellomlagrind`() {
+    fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
         every { mellomlagringClient.deleteDokument(any(), any()) } just runs
 
         doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
