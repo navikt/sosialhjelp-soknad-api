@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
+import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -46,7 +47,7 @@ abstract class AbstractGenericRepositoryTest {
     protected lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
     @Autowired
-    protected lateinit var soknadMetadataRepository: SoknadMetadataRepository
+    protected lateinit var innsendtSoknadMetadataRepository: InnsendtSoknadMetadataRepository
 
     protected lateinit var soknad: Soknad
 
