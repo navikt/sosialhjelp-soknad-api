@@ -1,5 +1,6 @@
-package no.nav.sosialhjelp.soknad.v2.soknadmetadata
+package no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata
 
+import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
@@ -10,16 +11,15 @@ import java.util.UUID
 
 
 @Repository
-interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudRepository<SoknadMetadata, UUID>
+interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadMetadata>, ListCrudRepository<InnsendtSoknadMetadata, UUID>
 
 @Table
-data class SoknadMetadata(
-    @Id
-    override val soknadID: UUID,
+data class InnsendtSoknadMetadata(
+    @Id override val soknadId: UUID,
     val personID: String,
     val sendt_inn_dato: LocalDateTime,
     val opprettet_dato: LocalDateTime,
 //    val soknadType: SoknadType,
     // TODO Legg til søknadstype i ny modell
-)
+): DomainRoot
 
