@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadmetadata
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -274,3 +275,15 @@ fun opprettBosituasjon(
     botype: Botype = Botype.EIER,
     antallPersoner: Int = 3,
 ): Bosituasjon = Bosituasjon(botype, antallPersoner)
+
+fun opprettInnsendtSoknadMetadata(
+    soknadId: UUID,
+    personId: String = "12345678901",
+    sendt_inn_dato: LocalDateTime = LocalDateTime.now(),
+    opprettet_dato:LocalDateTime = LocalDateTime.now().minusMinutes(5)): InnsendtSoknadmetadata =
+    InnsendtSoknadmetadata(
+        soknadId = soknadId,
+        personId = personId,
+        sendt_inn_dato = sendt_inn_dato,
+        opprettet_dato = opprettet_dato,
+    )
