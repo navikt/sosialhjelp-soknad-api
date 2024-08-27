@@ -45,6 +45,9 @@ abstract class AbstractGenericRepositoryTest {
     @Autowired
     protected lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
+    @Autowired
+    protected lateinit var soknadMetadataRepository: SoknadMetadataRepository
+
     protected lateinit var soknad: Soknad
 
     @BeforeEach

@@ -76,4 +76,12 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
             updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true),
         )
     }
+
+    @Test
+    fun `Verifisere at SoknadMetadata ikke er slettet ved sletting av Soknad`() {
+        val soknadMetadata = soknadMetadataRepository.save(opprettSoknadMetadata(soknad.id))
+        assertThat(soknadMetadataRepository.existsById(soknadMetadata.soknadID)).isTrue
+        soknadRepository.deleteById(soknad.id)
+        assertThat(soknadMetadataRepository.existsById(soknadMetadata.soknadID)).isTrue
+    }
 }
