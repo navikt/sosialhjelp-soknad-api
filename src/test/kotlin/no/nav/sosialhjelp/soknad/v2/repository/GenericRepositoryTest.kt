@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.createFamilie
+import no.nav.sosialhjelp.soknad.v2.opprettInnsendtSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
@@ -11,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
+
 
 /**
  * Formålet med testklassen:
@@ -64,8 +66,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity =
-                createFamilie(soknad.id)
-                    .copy(sivilstatus = null),
+            createFamilie(soknad.id)
+                .copy(sivilstatus = null),
         )
     }
 
@@ -78,10 +80,12 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere at SoknadMetadata ikke er slettet ved sletting av Soknad`() {
-        val soknadMetadata = soknadMetadataRepository.save(opprettSoknadMetadata(soknad.id))
-        assertThat(soknadMetadataRepository.existsById(soknadMetadata.soknadID)).isTrue
+    fun `Verifisere at Innsendt_SoknadMetadata ikke er slettet ved sletting av Soknad`() {
+        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.save(opprettInnsendtSoknadMetadata(soknad.id))
+        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
         soknadRepository.deleteById(soknad.id)
-        assertThat(soknadMetadataRepository.existsById(soknadMetadata.soknadID)).isTrue
+        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
     }
+
+
 }
