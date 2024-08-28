@@ -129,13 +129,6 @@ class NavEnhetServiceTest {
     }
 
     @Test
-    internal fun `getValgtNavEnhet skal returnere NavEnhet riktig konvertert`() {
-        val response = navEnhetService.getValgtNavEnhet(SOKNADSMOTTAKER)
-        assertThatEnhetIsCorrectlyConverted(response, SOKNADSMOTTAKER)
-        assertThat(response.valgt).isTrue
-    }
-
-    @Test
     internal fun `getNavEnhet skal returnere null hvis oppholdsadresse ikke er valgt`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -11,11 +10,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.getEnhetsnavnFromNavEnhetsnavn
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.getKommunenavnFromNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -53,32 +49,40 @@ class NavEnhetService(
         }
     }
 
-    fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
-        val kommunenummer = soknadsmottaker.kommunenummer
-        return NavEnhetFrontend(
-            enhetsnr = soknadsmottaker.enhetsnummer,
-            enhetsnavn = getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
-            kommunenavn = getKommunenavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
-            kommuneNr = kommunenummer,
-            isMottakDeaktivert = !kanMottaSoknader(kommunenummer),
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
-            orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
-            valgt = true,
-        )
-    }
-
     private fun finnNavEnhetFraGT(
         ident: String,
         personalia: JsonPersonalia,
     ): NavEnhetFrontend? {
         // TODO Ekstra logging
         log.info("Finner Nav-enhet fra GT")
+        personalia.validerKommunenummerVedFolkeregistrertValgt()
+
         val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
+        // gt er 4 sifret kommunenummer eller 6 sifret bydelsnummer
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
         // TODO Ekstra logging
         logUtDiverseInfo(kommunenummer, geografiskTilknytning, navEnhet)
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
+    }
+
+    private fun JsonPersonalia.validerKommunenummerVedFolkeregistrertValgt() {
+        runCatching {
+            if (oppholdsadresse.adresseValg != JsonAdresseValg.FOLKEREGISTRERT) return
+
+            val kommunenummerOppholdsadresse = getKommunenummer(oppholdsadresse)
+            val kommunenummerFolkeregistrert = getKommunenummer(folkeregistrertAdresse)
+
+            if (kommunenummerOppholdsadresse != kommunenummerFolkeregistrert) {
+                log.error(
+                    "Kommunenummer fra Oppholdsadresse og folkeregistrert adresse er ikke like når adressevalg" +
+                        "er folkeregistrert.",
+                )
+            }
+        }
+            .onFailure {
+                log.error("Feil ved sammenlikning av kommunenummer", it)
+            }
     }
 
     private fun finnNavEnhetFraAdresse(
