@@ -79,8 +79,11 @@ class NavEnhetService(
         // TODO ..som folkeregistrert adresse. Det er ikke alltid tilfelle, men vi kan hente fra folkeregistrert.
 //        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
 
-        // TODO Man kommer ikke inn i denne uten at valgt adresse er folkeregistrert. Henter derfor fra den.
-        val kommunenummer = getKommunenummer(personalia.folkeregistrertAdresse) ?: return null
+        // TODO Man kommer ikke inn i denne uten at valgt adresse er folkeregistrert. Henter derfor fra den først.
+        val kommunenummer =
+            getKommunenummer(personalia.folkeregistrertAdresse)
+                ?: getKommunenummer(personalia.oppholdsadresse)
+                ?: return null
 
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
