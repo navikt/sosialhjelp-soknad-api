@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrDefault
 
@@ -29,7 +30,7 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
         opprettetDato: LocalDateTime,
     ): InnsendtSoknadmetadata {
         return innsendtSoknadMetadataRepository.findById(soknadId).getOrDefault(InnsendtSoknadmetadata(soknadId, personId, sendtInnDato, opprettetDato)).also {
-            if (it.sendtInnDato != null) {
+            if (it.sendt_inn_dato != null) {
                 error("Kan ikke oppdatere sendt inn dato")
             }
         }.let { innsendtSoknadMetadataRepository.save(it) }
@@ -40,6 +41,6 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
     }
 
     fun deleteAlleEldreEnn(eldreEnn: LocalDateTime) {
-        innsendtSoknadMetadataRepository.deleteSentInnDatoBefore(eldreEnn)
+//        innsendtSoknadMetadataRepository.deleteSentInnDatoBefore(eldreEnn)
     }
 }
