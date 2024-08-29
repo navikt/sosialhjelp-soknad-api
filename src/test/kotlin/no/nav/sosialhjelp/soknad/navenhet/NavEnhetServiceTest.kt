@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -129,13 +130,6 @@ class NavEnhetServiceTest {
     }
 
     @Test
-    internal fun `getValgtNavEnhet skal returnere NavEnhet riktig konvertert`() {
-        val response = navEnhetService.getValgtNavEnhet(SOKNADSMOTTAKER)
-        assertThatEnhetIsCorrectlyConverted(response, SOKNADSMOTTAKER)
-        assertThat(response.valgt).isTrue
-    }
-
-    @Test
     internal fun `getNavEnhet skal returnere null hvis oppholdsadresse ikke er valgt`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!
@@ -158,6 +152,7 @@ class NavEnhetServiceTest {
             .withMottaker(SOKNADSMOTTAKER)
             .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+            .withFolkeregistrertAdresse(OPPHOLDSADRESSE)
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_KOMMUNENR
         every { norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR) } returns NAV_ENHET
@@ -186,6 +181,7 @@ class NavEnhetServiceTest {
             .withMottaker(SOKNADSMOTTAKER)
             .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+            .withFolkeregistrertAdresse(OPPHOLDSADRESSE)
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_BYDELSNR
         every { norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR) } returns NAV_ENHET
@@ -231,6 +227,26 @@ class NavEnhetServiceTest {
         assertThat(response?.kommunenavn).isEqualTo(KOMMUNENAVN)
     }
 
+    @Test
+    fun `Hvis oppholdsadresse er lik folkeregistrert skal kommunenummer fra oppholdsadresse returneres`() {
+        JsonPersonalia().withOppholdsadresse(OPPHOLDSADRESSE).withFolkeregistrertAdresse(OPPHOLDSADRESSE)
+            .also { personalia ->
+                val kommunenummer = navEnhetService.validerKommunenummerVedFolkeregistrertValgt(personalia)
+                assertThat(kommunenummer).isEqualTo((personalia.oppholdsadresse as JsonGateAdresse).kommunenummer)
+            }
+    }
+
+    @Test
+    fun `Hvis oppholdsadresse ikke er lik folkeregistrert skal kommunenummer fra folkeregistrert returneres`() {
+        val folkeregistrert = (OPPHOLDSADRESSE as JsonGateAdresse).withKommunenummer("2844")
+
+        JsonPersonalia().withOppholdsadresse(OPPHOLDSADRESSE).withFolkeregistrertAdresse(folkeregistrert)
+            .also { personalia ->
+                val kommunenummer = navEnhetService.validerKommunenummerVedFolkeregistrertValgt(personalia)
+                assertThat(kommunenummer).isEqualTo(folkeregistrert.kommunenummer)
+            }
+    }
+
     private fun assertThatEnhetIsCorrectlyConverted(
         navEnhetFrontend: NavEnhetFrontend?,
         soknadsmottaker: JsonSoknadsmottaker,
@@ -262,7 +278,7 @@ class NavEnhetServiceTest {
         private const val BEHANDLINGSID = "123"
         private const val OPPHOLDSADRESSE_KOMMUNENR = "0123"
         private const val OPPHOLDSADRESSE_BYDELSNR = "012301"
-        private val OPPHOLDSADRESSE: JsonAdresse =
+        private val OPPHOLDSADRESSE: JsonAdresse get() =
             JsonGateAdresse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(JsonAdresse.Type.GATEADRESSE)
