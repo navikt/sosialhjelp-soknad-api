@@ -152,6 +152,7 @@ class NavEnhetServiceTest {
             .withMottaker(SOKNADSMOTTAKER)
             .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+            .withFolkeregistrertAdresse(OPPHOLDSADRESSE)
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_KOMMUNENR
         every { norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR) } returns NAV_ENHET
@@ -180,6 +181,7 @@ class NavEnhetServiceTest {
             .withMottaker(SOKNADSMOTTAKER)
             .data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+            .withFolkeregistrertAdresse(OPPHOLDSADRESSE)
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_BYDELSNR
         every { norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR) } returns NAV_ENHET
