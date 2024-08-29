@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -222,6 +223,26 @@ class NavEnhetServiceTest {
         assertThat(response).isNotNull
         assertThat(response?.kommuneNr).isEqualTo(KOMMUNENR)
         assertThat(response?.kommunenavn).isEqualTo(KOMMUNENAVN)
+    }
+
+    @Test
+    fun `Hvis oppholdsadresse er lik folkeregistrert skal kommunenummer fra oppholdsadresse returneres`() {
+        JsonPersonalia().withOppholdsadresse(OPPHOLDSADRESSE).withFolkeregistrertAdresse(OPPHOLDSADRESSE)
+            .also { personalia ->
+                val kommunenummer = navEnhetService.validerKommunenummerVedFolkeregistrertValgt(personalia)
+                assertThat(kommunenummer).isEqualTo((personalia.oppholdsadresse as JsonGateAdresse).kommunenummer)
+            }
+    }
+
+    @Test
+    fun `Hvis oppholdsadresse ikke er lik folkeregistrert skal kommunenummer fra folkeregistrert returneres`() {
+        val folkeregistrert = (OPPHOLDSADRESSE as JsonGateAdresse).withKommunenummer("2844")
+
+        JsonPersonalia().withOppholdsadresse(OPPHOLDSADRESSE).withFolkeregistrertAdresse(folkeregistrert)
+            .also { personalia ->
+                val kommunenummer = navEnhetService.validerKommunenummerVedFolkeregistrertValgt(personalia)
+                assertThat(kommunenummer).isEqualTo(folkeregistrert.kommunenummer)
+            }
     }
 
     private fun assertThatEnhetIsCorrectlyConverted(

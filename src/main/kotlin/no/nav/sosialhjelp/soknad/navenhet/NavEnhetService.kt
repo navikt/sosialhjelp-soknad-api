@@ -37,7 +37,8 @@ class NavEnhetService(
         val personalia = soknad.data.personalia
         return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
             try {
-                finnNavEnhetFraGT(eier, personalia)
+                val kommunenummer = validerKommunenummerVedFolkeregistrertValgt(personalia)
+                finnNavEnhetFraGT(eier, kommunenummer)
             } catch (e: Exception) {
                 log.warn(
                     "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
@@ -49,72 +50,49 @@ class NavEnhetService(
         }
     }
 
+    internal fun validerKommunenummerVedFolkeregistrertValgt(personalia: JsonPersonalia): String? {
+        return runCatching {
+            val fraFolkeregistrert = getKommunenummer(personalia.folkeregistrertAdresse)
+            val fraOpphold = getKommunenummer(personalia.oppholdsadresse)
+
+            if (fraFolkeregistrert == fraOpphold) {
+                fraOpphold
+            } else {
+                log.error(
+                    "Ved adressevalg Folkeregistrert, er kommunenummer for" +
+                        "Oppholdsadrese: $fraOpphold og Folkeregistrert: $fraFolkeregistrert",
+                )
+                fraFolkeregistrert
+            }
+        }
+            .onFailure { log.error("Feil ved sammenlikning av kommunenummer", it) }
+            .getOrNull()
+    }
+
     private fun finnNavEnhetFraGT(
         ident: String,
-        personalia: JsonPersonalia,
+        kommunenummer: String?,
     ): NavEnhetFrontend? {
-        // TODO Ekstra logging
         log.info("Finner Nav-enhet fra GT")
-        personalia.validerKommunenummerVedFolkeregistrertValgt()
 
-        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
         // gt er 4 sifret kommunenummer eller 6 sifret bydelsnummer
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
-        // TODO Ekstra logging
-        logUtDiverseInfo(kommunenummer, geografiskTilknytning, navEnhet)
+
         return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
-    }
-
-    private fun JsonPersonalia.validerKommunenummerVedFolkeregistrertValgt() {
-        runCatching {
-            if (oppholdsadresse.adresseValg != JsonAdresseValg.FOLKEREGISTRERT) return
-
-            val kommunenummerOppholdsadresse = getKommunenummer(oppholdsadresse)
-            val kommunenummerFolkeregistrert = getKommunenummer(folkeregistrertAdresse)
-
-            if (kommunenummerOppholdsadresse != kommunenummerFolkeregistrert) {
-                log.error(
-                    "Kommunenummer fra Oppholdsadresse og folkeregistrert adresse er ikke like når adressevalg" +
-                        "er folkeregistrert.",
-                )
-            }
-        }
-            .onFailure {
-                log.error("Feil ved sammenlikning av kommunenummer", it)
-            }
     }
 
     private fun finnNavEnhetFraAdresse(
         personalia: JsonPersonalia,
         valg: JsonAdresseValg?,
     ): NavEnhetFrontend? {
-        // TODO Ekstra logging
         log.info("Finner Nav-enhet fra adresse")
+
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
         val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
-        // TODO Ekstra logging
-        logUtDiverseInfo(adresseForslag.kommunenummer, geografiskTilknytning, navEnhet)
-        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, adresseForslag.kommunenummer)
-    }
 
-    // TODO ekstra logging
-    private fun logUtDiverseInfo(
-        kommunenummer: String?,
-        geografiskTilknytning: String?,
-        navEnhet: NavEnhet?,
-    ) {
-        if (kommunenummer == "4601" || kommunenummer == "3907") {
-            log.info(
-                "Finn Nav-enhet fra GT. Kommunenummer: $kommunenummer, " +
-                    "Geografisk tilknytning: $geografiskTilknytning, " +
-                    "NavEnhet - ${navEnhet?.navn}" +
-                    "Enhetsnummer: ${navEnhet?.enhetNr}" +
-                    "Sosialorg: ${navEnhet?.sosialOrgNr}" +
-                    "Kommunenavn: ${navEnhet?.kommunenavn}",
-            )
-        }
+        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, adresseForslag.kommunenummer)
     }
 
     private fun mapToNavEnhetFrontend(
