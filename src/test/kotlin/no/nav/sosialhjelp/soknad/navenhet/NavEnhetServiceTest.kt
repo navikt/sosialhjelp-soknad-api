@@ -278,7 +278,7 @@ class NavEnhetServiceTest {
         private const val BEHANDLINGSID = "123"
         private const val OPPHOLDSADRESSE_KOMMUNENR = "0123"
         private const val OPPHOLDSADRESSE_BYDELSNR = "012301"
-        private val OPPHOLDSADRESSE: JsonAdresse =
+        private val OPPHOLDSADRESSE: JsonAdresse get() =
             JsonGateAdresse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(JsonAdresse.Type.GATEADRESSE)

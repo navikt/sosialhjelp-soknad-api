@@ -39,9 +39,10 @@ class NavEnhetService(
             try {
                 val kommunenummer = validerKommunenummerVedFolkeregistrertValgt(personalia)
                 finnNavEnhetFraGT(eier, kommunenummer)
-            } catch (e: Exception) {
+            } catch (exception: Exception) {
                 log.warn(
                     "Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse",
+                    exception,
                 )
                 finnNavEnhetFraAdresse(personalia, valg)
             }
