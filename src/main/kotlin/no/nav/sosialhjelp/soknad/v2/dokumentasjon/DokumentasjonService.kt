@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.toSha512
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
@@ -14,24 +14,24 @@ import java.util.UUID
 interface DokumentasjonService {
     fun opprettDokumentasjon(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
     )
 
     fun fjernForventetVedlegg(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
     )
 
     fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon>
 
     fun hasDokumenterForType(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ): Boolean
 
     fun updateDokumentasjonStatus(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
         status: DokumentasjonStatus,
     )
 }
@@ -44,7 +44,7 @@ interface DokumentService {
 
     fun saveDokument(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         source: ByteArray,
         orginaltFilnavn: String,
     ): Dokument
@@ -66,17 +66,17 @@ class DokumentasjonServiceImpl(
 ) : DokumentasjonService, DokumentService {
     override fun opprettDokumentasjon(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
     ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == okonomiType }
-            ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = okonomiType))
+        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
+            ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
 
     override fun fjernForventetVedlegg(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
     ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == okonomiType }
+        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
             ?.let { dokumentasjonRepository.deleteById(it.id) }
     }
 
@@ -86,17 +86,17 @@ class DokumentasjonServiceImpl(
 
     override fun hasDokumenterForType(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ): Boolean {
         return findDokumentasjonForSoknad(soknadId).any { it.type == type }
     }
 
     override fun updateDokumentasjonStatus(
         soknadId: UUID,
-        okonomiType: OkonomiType,
+        opplysningType: OpplysningType,
         status: DokumentasjonStatus,
     ) {
-        dokumentasjonRepository.findBySoknadIdAndType(soknadId, okonomiType)?.run {
+        dokumentasjonRepository.findBySoknadIdAndType(soknadId, opplysningType)?.run {
             if (this.status != status) {
                 copy(status = status).also { dokumentasjonRepository.save(it) }
             }
@@ -122,7 +122,7 @@ class DokumentasjonServiceImpl(
 
     override fun saveDokument(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         source: ByteArray,
         orginaltFilnavn: String,
     ): Dokument {

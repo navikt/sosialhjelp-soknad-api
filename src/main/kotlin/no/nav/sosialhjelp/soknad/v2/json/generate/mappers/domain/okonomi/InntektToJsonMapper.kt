@@ -83,7 +83,7 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling()
         // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
-        // TODO For de fleste okonomitypene vil det enkleste være mapping pr. OkonomiType
+        // TODO For de fleste opplysningstypene vil det enkleste være mapping pr. OpplysningType
         .withKilde(JsonKilde.BRUKER)
         .withType(type.name)
         .withTittel(toTittel())
@@ -97,7 +97,6 @@ private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     when (this) {
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
-        is Belop -> addUtbetaling(jsonUtbetaling)
         else -> error("Ugyldig detalj-type for Inntekt")
     }
     return jsonUtbetaling

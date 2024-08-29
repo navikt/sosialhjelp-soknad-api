@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -17,7 +17,7 @@ data class Formue(
 
 enum class FormueType(
     override val dokumentasjonForventet: Boolean,
-) : OkonomiType {
+) : OpplysningType {
     FORMUE_BRUKSKONTO(dokumentasjonForventet = true),
     FORMUE_BSU(dokumentasjonForventet = true),
     FORMUE_LIVSFORSIKRING(dokumentasjonForventet = true),

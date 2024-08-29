@@ -157,7 +157,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         soknadId: UUID?,
-    ): WebTestClient.ResponseSpec {
+    ): ResponseSpec {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")

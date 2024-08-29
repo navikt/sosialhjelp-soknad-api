@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
@@ -28,10 +28,10 @@ class SendSoknadHandler(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
-        val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
+    fun doSendAndReturnDigisosId(soknadId: UUID): Pair<UUID, NavEnhet> {
+        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
-        val mottaker = soknadValidator.validateAndReturnMottaker(soknad.id)
+        val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
 
         val digisosId: UUID =
             runCatching {
@@ -44,19 +44,19 @@ class SendSoknadHandler(
                     vedleggJson = json.toVedleggJson(),
                     dokumenter = getFilOpplastingList(json),
                     kommunenr = json.soknad.mottaker.kommunenummer,
-                    navEksternRefId = soknad.id.toString(),
+                    navEksternRefId = soknadId.toString(),
                     token = SubjectHandlerUtils.getToken(),
                 ).let { UUID.fromString(it) }
             }
                 .onFailure {
                     logger.error("Feil ved sending av soknad til FIKS", it)
-                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknad.id.toString())
+                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
                 }
                 .getOrThrow()
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
-        return digisosId
+        return Pair(digisosId, mottaker)
     }
 
     private fun JsonInternalSoknad.toVedleggJson(): String {

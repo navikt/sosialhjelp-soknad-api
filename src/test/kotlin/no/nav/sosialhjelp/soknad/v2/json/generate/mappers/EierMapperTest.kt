@@ -103,7 +103,7 @@ class EierMapperTest {
             )
         EierToJsonMapper.doMapping(eier, json)
         with(json.soknad.data.personalia.kontonummer) {
-            assertThat(kilde).isNull()
+            assertThat(kilde).isEqualTo(JsonKilde.SYSTEM)
             assertThat(harIkkeKonto == null).isTrue()
             assertThat(verdi).isNull()
         }

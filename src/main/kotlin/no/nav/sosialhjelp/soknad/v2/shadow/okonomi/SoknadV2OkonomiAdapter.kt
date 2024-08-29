@@ -9,8 +9,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.V2OkonomiAdapter
@@ -50,14 +50,14 @@ class SoknadV2OkonomiAdapter(
 }
 
 private fun VedleggFrontend.resolveOkonomiInput(): AbstractOkonomiInput {
-    val okonomiType: OkonomiType =
-        type.okonomiType
-            ?: throw IllegalArgumentException("VedleggType ${type.name} har ingen mapping til OkonomiType")
+    val opplysningType: OpplysningType =
+        type.opplysningType
+            ?: throw IllegalArgumentException("VedleggType ${type.name} har ingen mapping til OpplysningType")
 
-    return when (okonomiType) {
+    return when (opplysningType) {
         InntektType.JOBB -> toLonnsInput()
         UtgiftType.UTGIFTER_BOLIGLAN -> toBoliglanInput()
-        else -> toGenericOkonomiInput(okonomiType)
+        else -> toGenericOkonomiInput(opplysningType)
     }
 }
 
@@ -73,9 +73,9 @@ private fun VedleggFrontend.toBoliglanInput() =
         detaljer = rader?.map { AvdragRenterDto(it.avdrag?.toDouble(), it.renter?.toDouble()) } ?: emptyList(),
     )
 
-private fun VedleggFrontend.toGenericOkonomiInput(okonomiType: OkonomiType) =
+private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType) =
     GenericOkonomiInput(
-        okonomiType = okonomiType,
+        opplysningType = opplysningType,
         dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
             rader?.map {

@@ -41,7 +41,7 @@ class OkonomiskeOpplysningerController(
     ): ForventetDokumentasjonDto {
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
-            type = input.getOkonomiType(),
+            type = input.getOpplysningType(),
             dokumentasjonLevert = input.dokumentasjonLevert,
             detaljer = input.mapToOkonomiDetalj(),
         )
@@ -54,7 +54,7 @@ data class ForventetDokumentasjonDto(
 )
 
 data class DokumentasjonDto(
-    val type: OkonomiType,
+    val type: OpplysningType,
     val gruppe: String,
     val detaljer: List<OkonomiDetaljDto>?,
     val dokumentasjonStatus: DokumentasjonStatus,
@@ -101,7 +101,7 @@ sealed interface AbstractOkonomiInput {
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    val okonomiType: OkonomiType,
+    val opplysningType: OpplysningType,
     override val dokumentasjonLevert: Boolean,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
@@ -144,9 +144,9 @@ data class AvdragRenterDto(
     val renter: Double?,
 ) : OkonomiDetaljDto
 
-private fun AbstractOkonomiInput.getOkonomiType(): OkonomiType =
+private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
     when (this) {
-        is GenericOkonomiInput -> okonomiType
+        is GenericOkonomiInput -> opplysningType
         is LonnsInput -> InntektType.JOBB
         is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }

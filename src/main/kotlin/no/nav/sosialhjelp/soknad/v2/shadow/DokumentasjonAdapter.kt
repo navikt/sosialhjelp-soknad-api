@@ -38,12 +38,12 @@ class SoknadV2DokumentasjonAdapter(
         sha512: String,
     ) {
         runWithNestedTransaction {
-            val okonomiType = (
-                VedleggType[vedleggTypeString].okonomiType
-                    ?: error("VedleggType $vedleggTypeString har ingen OkonomiType-mapping")
+            val opplysningType = (
+                VedleggType[vedleggTypeString].opplysningType
+                    ?: error("VedleggType $vedleggTypeString har ingen OpplysningType-mapping")
             )
 
-            dokumentasjonRepository.findBySoknadIdAndType(UUID.fromString(behandlingsId), okonomiType)
+            dokumentasjonRepository.findBySoknadIdAndType(UUID.fromString(behandlingsId), opplysningType)
                 ?.run {
                     val dokument =
                         Dokument(
@@ -54,7 +54,7 @@ class SoknadV2DokumentasjonAdapter(
                     copy(status = DokumentasjonStatus.LASTET_OPP, dokumenter = dokumenter.plus(dokument))
                 }
                 ?.also { dokumentasjonRepository.save(it) }
-                ?: error("Finnes ingen Dokumentasjon for soknad $behandlingsId og okonomi-type ${okonomiType.name}")
+                ?: error("Finnes ingen Dokumentasjon for soknad $behandlingsId og okonomi-type ${opplysningType.name}")
         }
             .onFailure { logger.warn("NyModell: Feil ved oppdatering av Dokument-metadata", it) }
     }

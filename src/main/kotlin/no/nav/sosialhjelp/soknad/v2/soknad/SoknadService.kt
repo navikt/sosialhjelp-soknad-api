@@ -65,11 +65,8 @@ class SoknadServiceImpl(
 
     override fun deleteSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)
-            ?.let {
-                mellomlagringService.deleteAll(soknadId)
-                soknadRepository.delete(it)
-            }
-            ?: logger.warn("Soknad V2 finnes ikke.")
+            ?.let { soknadRepository.delete(it) }
+            ?: logger.warn("NyModell: Kan ikke slette soknad. Finnes ikke.")
     }
 
     override fun setInnsendingstidspunkt(

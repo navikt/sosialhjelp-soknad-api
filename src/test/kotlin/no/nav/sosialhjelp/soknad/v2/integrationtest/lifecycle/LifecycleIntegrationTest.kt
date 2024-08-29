@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
 import no.nav.sosialhjelp.soknad.v2.OpprettetSoknadDto
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
@@ -37,7 +38,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .also { soknadId ->
                 assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(
-                    soknadRepository.findByIdOrNull(soknadId)!!.tidspunkt.opprettet.isAfter(LocalDateTime.now().minusMinutes(1)),
+                    soknadRepository.findByIdOrNull(soknadId)!!.tidspunkt.opprettet
+                        .isAfter(LocalDateTime.now().minusMinutes(1)),
                 ).isTrue()
                 assertThat(eierRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNotNull
@@ -52,10 +54,6 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
-        assertThat(eierRepository.findByIdOrNull(soknadId)).isNull()
-        assertThat(familieRepository.findByIdOrNull(soknadId)).isNull()
-        assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNull()
-
         verify(exactly = 1) { mellomlagringService.deleteAll(any()) }
     }
 
@@ -82,16 +80,30 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 assertThat(dto.tidspunkt).isAfter(LocalDateTime.now().minusSeconds(10))
             }
 
-        // TODO Litt usikker på hva vi egentlig bør / trenger å asserte her?
-        assertCapturedValues(soknadId)
+        assertCapturedValues()
+        // TODO I fremtiden skal ikke dette nødvendigvis skje samtidig med innsending
+        soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNull() }
     }
 
-    // TODO Exception må kastes når dette kjører alene - men må kjøre i transaksjon i skyggeprod.. fiks
+    // TODO Er dette riktig antakelse?
     @Test
-    fun `Exception underveis i oppstarten skal rulle tilbake alt`() {
+    fun `Exception i fetcher med ContinueOnError = true skal ikke stoppe opprettelse av ny soknad`() {
         every { mobiltelefonService.hent(any()) } throws IllegalArgumentException("Feil ved henting av telefonnummer")
 
-        val response = doPostFullResponse(createUri)
+        createNewSoknad().also { soknadId ->
+            soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNotNull }
+        }
+    }
+
+    @Test
+    fun `Exception i fetcher med ContinueOnError = false skal stoppe innhenting og ingenting skal lagres`() {
+        every { personService.hentPerson(any()) } throws IllegalArgumentException("Feil ved henting av person")
+
+        doPostFullResponse(uri = createUri)
+            .expectStatus().is5xxServerError
+            .expectBody(Feilmelding::class.java)
+
+        soknadRepository.findAll().let { assertThat(it).isEmpty() }
     }
 
     private fun createNewSoknad(): UUID {
@@ -111,15 +123,15 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
     }
 
-    private fun assertCapturedValues(soknadId: UUID) {
+    private fun assertCapturedValues() {
         with(CapturedValues) {
-            assertSoknadJson(soknadId)
-            assertTilleggsinformasjon(soknadId)
+            assertSoknadJson()
+            assertTilleggsinformasjon()
             assertDokumenterIsPdf()
         }
     }
 
-    private fun CapturedValues.assertSoknadJson(soknadId: UUID) {
+    private fun CapturedValues.assertSoknadJson() {
         objectMapper.readValue(soknadJsonSlot.captured, JsonSoknad::class.java)
             .also { jsonSoknad ->
                 assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(userId)
@@ -133,10 +145,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         }
     }
 
-    private fun CapturedValues.assertTilleggsinformasjon(soknadId: UUID) {
-        kontaktRepository.findByIdOrNull(soknadId)!!.mottaker.enhetsnummer!!.let {
-            assertThat(tilleggsinformasjonSlot.captured).contains(it)
-        }
+    private fun CapturedValues.assertTilleggsinformasjon() {
+        assertThat(tilleggsinformasjonSlot.captured).contains(createNavEnhet().enhetsnummer)
     }
 
     companion object {

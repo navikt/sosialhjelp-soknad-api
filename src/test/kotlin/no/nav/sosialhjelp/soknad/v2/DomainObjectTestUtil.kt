@@ -43,7 +43,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
@@ -416,7 +416,7 @@ fun opprettDokumentasjon(
     id: UUID = UUID.randomUUID(),
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
-    type: OkonomiType = UtgiftType.UTGIFTER_STROM,
+    type: OpplysningType = UtgiftType.UTGIFTER_STROM,
     dokumenter: Set<Dokument> = opprettDokumenter(),
 ): Dokumentasjon {
     return Dokumentasjon(id, soknadId, type, status, dokumenter)

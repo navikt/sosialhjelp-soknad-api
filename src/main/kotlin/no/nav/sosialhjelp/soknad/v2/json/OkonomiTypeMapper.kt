@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
 // TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
-object OkonomiTypeMapper {
+object OpplysningTypeMapper {
     fun getJsonVerdier(utgiftType: UtgiftType): JsonVerdi {
         return when (utgiftType) {
             // JsonOpplysningUtgift

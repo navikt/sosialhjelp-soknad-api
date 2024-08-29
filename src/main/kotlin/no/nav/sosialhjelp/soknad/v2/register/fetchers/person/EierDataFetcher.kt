@@ -1,32 +1,25 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers.person
+package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
 class EierDataFetcher(
-    private val kontonummerService: KontonummerService,
     private val eierService: EierRegisterService,
 ) : PersonRegisterDataFetcher {
     private val logger by logger()
 
-    // oppretter et helt nytt eier-objekt istedetfor å hente eventuelt eksisterende
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("NyModell: Henter ut kontonummer fra Kontoregister")
-        val kontonummer = kontonummerService.getKontonummer(getUserIdFromToken())
-
         logger.info("NyModell: Register: Henter ut person-info fra søker")
         person.deriveStatsborgerskap()
             .let {
@@ -40,12 +33,14 @@ class EierDataFetcher(
                             mellomnavn = person.mellomnavn ?: "",
                             etternavn = person.etternavn,
                         ),
-                    kontonummer = Kontonummer(fraRegister = kontonummer),
+                    kontonummer = eierService.getKontonummer(soknadId) ?: Kontonummer(),
                 )
             }
             .also { eier -> eierService.updateFromRegister(eier) }
             .also { logger.info("NyModell: Lagret personalia og kontonummer for søker") }
     }
+
+    override fun continueOnError() = false
 
     private data class Statsborgerskap(
         val landkode: String? = null,

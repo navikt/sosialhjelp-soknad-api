@@ -1,9 +1,9 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers.person
+package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import no.nav.sosialhjelp.soknad.v2.familie.service.SivilstandService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.AbstractPersonDataFetcherTest
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.AbstractPersonDataFetcherTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail

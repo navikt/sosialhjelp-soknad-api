@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
@@ -18,7 +18,7 @@ data class Utgift(
 // TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
 enum class UtgiftType(
     override val dokumentasjonForventet: Boolean,
-) : OkonomiType {
+) : OpplysningType {
     // * * * JsonOkonomiopplysningUtgift * * *
     // boutgifter
     UTGIFTER_ANNET_BO(dokumentasjonForventet = true),

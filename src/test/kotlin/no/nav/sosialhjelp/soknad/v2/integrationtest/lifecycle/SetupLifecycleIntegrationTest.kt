@@ -76,6 +76,8 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     protected fun setup() {
         setupMocks()
+        // @Transactional fungerer ikke helt som ønsket når man manipulerer data og gjør http-kall i samme test
+        soknadRepository.deleteAll()
     }
 
     protected fun setupMocks() {

@@ -2,12 +2,9 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
-import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -28,46 +25,40 @@ interface SoknadLifecycleService {
 @Transactional
 class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val soknadService: SoknadService,
-    private val adresseService: AdresseService,
+    private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
-    private val registerDataService: RegisterDataService,
 ) : SoknadLifecycleService {
     override fun startSoknad(): UUID {
         prometheusMetricsService.reportStartSoknad()
+        // TODO Metadata
 
-        return soknadService.createSoknad(
-            eierId = SubjectHandlerUtils.getUserIdFromToken(),
-            soknadId = UUID.randomUUID(),
-            // TODO Spesifisert til UTC i filformatet
-            opprettetDato = LocalDateTime.now(),
-        )
-            .also { soknadId ->
-                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
-                registerDataService.runAllRegisterDataFetchers(soknadId)
+        return createDeleteSoknadHandler.createSoknad()
+            .also {
+                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString())
+                logger.info("Ny søknad opprettet")
             }
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
-        val digisosId =
-            runCatching {
-                sendSoknadHandler.doSendAndReturnDigisosId(
-                    soknad = soknadService.getSoknad(soknadId),
-                )
-            }
+        // TODO Metadata
+        logger.info("Starter innsending av søknad.")
+
+        val (digisosId, navEnhet) =
+            runCatching { sendSoknadHandler.doSendAndReturnDigisosId(soknadId) }
                 .onFailure {
                     prometheusMetricsService.reportFeilet()
-                    logger.error("Feil ved sending av søknad", it)
+                    logger.error("Feil ved sending av søknad.", it)
                     throw it
                 }
                 .getOrThrow()
 
         prometheusMetricsService.reportSendt()
         prometheusMetricsService.reportSoknadMottaker(
-            MetricsUtils.navKontorTilMetricNavn(
-                adresseService.findMottaker(soknadId)?.enhetsnavn,
-            ),
+            MetricsUtils.navKontorTilMetricNavn(navEnhet.enhetsnavn),
         )
+
+        // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
+        createDeleteSoknadHandler.deleteSoknad(soknadId)
 
         return Pair(digisosId, LocalDateTime.now())
     }
@@ -76,7 +67,11 @@ class SoknadLifecycleServiceImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        soknadService.deleteSoknad(soknadId)
+        // TODO Metadata
+
+        logger.info("Søknad avbrutt. Sletter data.")
+
+        createDeleteSoknadHandler.cancelSoknad(soknadId)
         prometheusMetricsService.reportAvbruttSoknad(referer)
     }
 
