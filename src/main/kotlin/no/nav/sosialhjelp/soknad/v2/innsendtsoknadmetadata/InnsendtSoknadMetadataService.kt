@@ -21,4 +21,25 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
         return (findInnsendtSoknadMetadata(soknadId) ?: InnsendtSoknadmetadata(soknadId, personId, sendtInnDato, opprettetDato))
             .let { innsendtSoknadMetadataRepository.save(it) }
     }
+
+    fun updateInnsendtSoknadMetadata(
+        soknadId: UUID,
+        personId: String,
+        sendtInnDato: LocalDateTime,
+        opprettetDato: LocalDateTime,
+    ): InnsendtSoknadmetadata {
+        return innsendtSoknadMetadataRepository.findById(soknadId).getOrDefault(InnsendtSoknadmetadata(soknadId, personId, sendtInnDato, opprettetDato)).also {
+            if (it.sendtInnDato != null) {
+                error("Kan ikke oppdatere sendt inn dato")
+            }
+        }.let { innsendtSoknadMetadataRepository.save(it) }
+    }
+
+    fun deleteInnsendtSoknadMetadata(soknadId: UUID) {
+        innsendtSoknadMetadataRepository.deleteById(soknadId)
+    }
+
+    fun deleteAlleEldreEnn(eldreEnn: LocalDateTime) {
+        innsendtSoknadMetadataRepository.deleteSentInnDatoBefore(eldreEnn)
+    }
 }
