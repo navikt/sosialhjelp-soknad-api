@@ -15,7 +15,7 @@ import java.util.UUID
 interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadmetadata>, ListCrudRepository<InnsendtSoknadmetadata, UUID>
 {
    @Query("Delete from innsendt_soknadmetadata where sendt_inn_dato < :timestamp")
-    fun slettEldreEnn(timestamp: LocalDateTime): List<InnsendtSoknadmetadata>
+    fun slettEldreEnn(timestamp: LocalDateTime)
 }
 
 @Table
