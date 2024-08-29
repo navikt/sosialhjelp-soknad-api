@@ -35,16 +35,6 @@ abstract class AbstractIntegrationTest {
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
-    protected fun doGetFullResponse(
-        uri: String,
-    ): WebTestClient.ResponseSpec {
-        return webTestClient.get()
-            .uri(uri)
-            .header("Authorization", "Bearer ${token.serialize()}")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-    }
-
     protected fun <T> doGet(
         uri: String,
         responseBodyClass: Class<T>,
@@ -129,23 +119,6 @@ abstract class AbstractIntegrationTest {
             .contentType(MediaType.MULTIPART_FORM_DATA)
 //            .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(responseBodyClass)
-            .returnResult()
-            .responseBody!!
-    }
-
-    protected fun <T> doPost(
-        uri: String,
-        responseBodyClass: Class<T>,
-        soknadId: UUID? = null,
-    ): T {
-        return webTestClient.post()
-            .uri(uri)
-            .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
-            .contentType(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
             .expectBody(responseBodyClass)
