@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers
+package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken

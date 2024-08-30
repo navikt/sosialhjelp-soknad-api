@@ -58,7 +58,7 @@ private fun JsonInternalSoknad.initializeObjects() {
     soknad.data ?: soknad.withData(JsonData())
     with(soknad.data) {
         arbeid ?: withArbeid(JsonArbeid())
-        utdanning ?: withUtdanning(JsonUtdanning())
+        utdanning ?: withUtdanning(JsonUtdanning().withKilde(JsonKilde.BRUKER))
         bosituasjon ?: withBosituasjon(JsonBosituasjon())
     }
 }

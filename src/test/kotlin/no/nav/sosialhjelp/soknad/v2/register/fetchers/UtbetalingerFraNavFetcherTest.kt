@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers
+package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -52,7 +52,7 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     @Test
-    fun `Returnerer null setter integrasjon-status = false`() {
+    fun `Returnerer null setter integrasjon-status feilet = true`() {
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns null
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)

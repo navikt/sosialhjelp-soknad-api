@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOkonomiTypeConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -57,14 +57,14 @@ class DokumentController(
     @PostMapping("/{soknadId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun saveDokument(
         @PathVariable("soknadId") soknadId: UUID,
-        @PathVariable("type") okonomiTypeString: String,
+        @PathVariable("type") opplysningTypeString: String,
         @RequestParam("file") dokument: MultipartFile,
     ): DokumentDto {
-        val okonomiType = StringToOkonomiTypeConverter.convert(okonomiTypeString)
+        val opplysningType = StringToOpplysningTypeConverter.convert(opplysningTypeString)
 
         return dokumentService.saveDokument(
             soknadId = soknadId,
-            type = okonomiType,
+            type = opplysningType,
             source = dokument.bytes,
             orginaltFilnavn = dokument.originalFilename ?: error("Opplastet dokument mangler filnavn."),
         )

@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -20,7 +21,7 @@ import org.springframework.data.convert.WritingConverter
     JsonSubTypes.Type(value = InntektType::class, name = "InntektType"),
     JsonSubTypes.Type(value = UtgiftType::class, name = "UtgiftType"),
 )
-interface OkonomiType {
+interface OpplysningType {
     // denne må hete `name` for pga enum.name
     val name: String
     val dokumentasjonForventet: Boolean
@@ -30,21 +31,27 @@ interface OkonomiType {
 }
 
 @WritingConverter
-object OkonomiTypeToStringConverter : Converter<OkonomiType, String> {
-    override fun convert(source: OkonomiType): String = source.name
+object OpplysningTypeToStringConverter : Converter<OpplysningType, String> {
+    override fun convert(source: OpplysningType): String = source.name
 }
 
 @ReadingConverter
-object StringToOkonomiTypeConverter : Converter<String, OkonomiType> {
-    override fun convert(source: String): OkonomiType = StringToOkonomiTypeMapper.map(source)
+object StringToOpplysningTypeConverter : Converter<String, OpplysningType> {
+    override fun convert(source: String): OpplysningType = StringToOpplysningTypeMapper.map(source)
 }
 
 // polymorphic deserialisering av enums støttes ikke ut av boksen
-private object StringToOkonomiTypeMapper {
-    fun map(typeString: String): OkonomiType {
-        return InntektType.entries.find { it.name == typeString }
-            ?: UtgiftType.entries.find { it.name == typeString }
-            ?: FormueType.entries.find { it.name == typeString }
-            ?: error("Kunne ikke mappe OkonomiType")
+private object StringToOpplysningTypeMapper {
+    private val opplysningTypes: List<OpplysningType> =
+        mutableListOf<OpplysningType>().apply {
+            addAll(InntektType.entries)
+            addAll(UtgiftType.entries)
+            addAll(FormueType.entries)
+            addAll(AnnenDokumentasjonType.entries)
+        }
+
+    fun map(typeString: String): OpplysningType {
+        return opplysningTypes.find { it.name == typeString }
+            ?: error("Kunne ikke mappe til OpplysningType: $typeString")
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers.person
+package no.nav.sosialhjelp.soknad.v2.register.fetchers.person
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.handlers.PersonRegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataFetcher
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -36,6 +36,8 @@ class AdresseFetcher(
         )
             .also { logger.info("NyModell: Lagret adresser fra PDL") }
     }
+
+    override fun continueOnError() = false
 }
 
 fun Bostedsadresse.toV2Adresse(hentAdresseService: HentAdresseService): Adresse? {

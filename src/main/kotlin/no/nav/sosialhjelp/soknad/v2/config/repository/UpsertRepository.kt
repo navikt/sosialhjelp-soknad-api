@@ -33,5 +33,5 @@ class UpsertRepositoryImpl<T : DomainRoot>(
         }
     }
 
-    override fun <S : T> saveAll(entities: Iterable<S>): List<S> = entities.map { save(it) }
+    override fun <S : T> saveAll(entities: Iterable<S>): List<S> = template.saveAll(entities).toList()
 }

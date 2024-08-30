@@ -200,7 +200,11 @@ class SoknadV2ControllerAdapter(
                     ektefelle?.let {
                         EktefelleInput(
                             ektefelle.personnummer,
-                            Navn(ektefelle.navn?.fornavn ?: "", ektefelle.navn?.mellomnavn, ektefelle.navn?.etternavn ?: ""),
+                            Navn(
+                                ektefelle.navn?.fornavn ?: "",
+                                ektefelle.navn?.mellomnavn ?: "",
+                                ektefelle.navn?.etternavn ?: "",
+                            ),
                             ektefelle.fodselsdato,
                             familieFrontend.borSammenMed,
                         )

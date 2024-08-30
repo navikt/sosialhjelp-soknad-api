@@ -84,7 +84,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiType = FormueType.FORMUE_BRUKSKONTO,
+                    opplysningType = FormueType.FORMUE_BRUKSKONTO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -107,10 +107,10 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere OkonomiType som ikke finnes skal gi feil`() {
+    fun `Oppdatere OpplysningType som ikke finnes skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                okonomiType = FormueType.FORMUE_BRUKSKONTO,
+                opplysningType = FormueType.FORMUE_BRUKSKONTO,
                 dokumentasjonLevert = true,
                 detaljer =
                     listOf(
@@ -139,7 +139,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+                    opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -193,7 +193,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiType = UtgiftType.UTGIFTER_ANNET_BO,
+                    opplysningType = UtgiftType.UTGIFTER_ANNET_BO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -243,7 +243,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiType = UtgiftType.UTGIFTER_ANNET_BARN,
+                    opplysningType = UtgiftType.UTGIFTER_ANNET_BARN,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(

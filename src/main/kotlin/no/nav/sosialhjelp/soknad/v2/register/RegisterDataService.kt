@@ -6,25 +6,34 @@ import java.util.UUID
 
 interface RegisterDataFetcher {
     fun fetchAndSave(soknadId: UUID)
+
+    // Implementeres og settes til false av fetchere som skal stoppe hele prosessen
+    fun continueOnError(): Boolean = true
 }
 
 @Service
 class RegisterDataService(
-    private val fetchers: List<RegisterDataFetcher>,
+    private val allFetchers: List<RegisterDataFetcher>,
 ) {
     private val logger by logger()
 
+    // TODO Pakker inn logikken for skyggeprod slik at ingen Exception kastes
+    fun runAllFetchersForShadowProd(soknadId: UUID) {
+        runCatching { doRunListedFetchers(soknadId, allFetchers) }
+            .onFailure { logger.warn("NyModell: Feil i henting av Registerdata for skyggeprod", it) }
+    }
+
     fun runAllRegisterDataFetchers(soknadId: UUID) {
         logger.info("NyModell: Henter Register-data")
-        doRunListedFetchers(soknadId = soknadId, listedFetchers = fetchers)
+        doRunListedFetchers(soknadId = soknadId, listedFetchers = allFetchers)
     }
 
     fun runSpecificFetchers(
         soknadId: UUID,
-        listedHandlers: List<RegisterDataFetcher>,
+        listedFetchers: List<RegisterDataFetcher>,
     ) {
-        logger.info("NyModell: Henter Register-data: ${listedHandlers.joinToString(separator = ", ")}")
-        doRunListedFetchers(soknadId = soknadId, listedFetchers = listedHandlers)
+        logger.info("NyModell: Henter Register-data: ${listedFetchers.joinToString(separator = ", ")}")
+        doRunListedFetchers(soknadId = soknadId, listedFetchers = listedFetchers)
     }
 
     private fun doRunListedFetchers(
@@ -33,7 +42,10 @@ class RegisterDataService(
     ) {
         listedFetchers.forEach { fetcher ->
             runCatching { fetcher.fetchAndSave(soknadId) }
-                .onFailure { logger.error("Feil i innhenting av Register-data: $fetcher", it) }
+                .onFailure {
+                    logger.error("NyModell: Registerdata-fetcher feilet: $fetcher", it)
+                    if (!fetcher.continueOnError()) throw it
+                }
         }
     }
 }

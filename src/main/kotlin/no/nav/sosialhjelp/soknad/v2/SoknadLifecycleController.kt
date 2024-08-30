@@ -2,10 +2,9 @@ package no.nav.sosialhjelp.soknad.v2
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -23,28 +22,26 @@ import java.util.UUID
  * som direkte opererer/muterer data.
  */
 @RestController
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleService,
     private val nedetidService: NedetidService,
-    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
-    @PostMapping("/opprettSoknad")
-    fun createSoknad(response: HttpServletResponse): Map<String, String> {
+    @PostMapping("/create")
+    fun createSoknad(response: HttpServletResponse): OpprettetSoknadDto {
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
                 "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
             )
         }
-
         return soknadLifecycleService.startSoknad()
-            .let { id ->
-                response.addCookie(xsrfCookie(id.toString()))
-                response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
+            .let { soknadId ->
+                response.addCookie(xsrfCookie(soknadId.toString()))
+                response.addCookie(xsrfCookieMedBehandlingsid(soknadId.toString()))
 
-                mapOf("soknadId" to id.toString())
+                OpprettetSoknadDto(soknadId)
             }
     }
 
@@ -56,12 +53,12 @@ class SoknadLifecycleController(
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
 
-        val (id, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
+        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
-        return SoknadSendtDto(id, innsendingstidspunkt)
+        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
-    @DeleteMapping("/{soknadId}")
+    @DeleteMapping("/{soknadId}/delete")
     fun deleteSoknad(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
@@ -88,7 +85,11 @@ class SoknadLifecycleController(
     }
 }
 
-data class SoknadSendtDto(
+data class OpprettetSoknadDto(
     val soknadId: UUID,
+)
+
+data class SoknadSendtDto(
+    val digisosId: UUID,
     val tidspunkt: LocalDateTime,
 )

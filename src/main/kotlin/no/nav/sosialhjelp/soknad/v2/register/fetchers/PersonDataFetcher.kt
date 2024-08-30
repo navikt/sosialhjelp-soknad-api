@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers
+package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
@@ -15,6 +15,8 @@ interface PersonRegisterDataFetcher {
         soknadId: UUID,
         person: Person,
     )
+
+    fun continueOnError(): Boolean = true
 }
 
 @Component
@@ -29,8 +31,19 @@ class PersonDataFetcher(
         logger.info("NyModell: Register: Henter søker i PDL")
 
         personService.hentPerson(getUserIdFromToken())?.let { person ->
-            personRegisterDataFetchers.forEach { it.fetchAndSave(soknadId, person) }
+            personRegisterDataFetchers.forEach { personDataFetcher ->
+                runCatching {
+                    personDataFetcher.fetchAndSave(soknadId, person)
+                }
+                    .onFailure {
+                        logger.error("NyModell: Feil i PersonData-fetcher: $personDataFetcher")
+                        if (!personDataFetcher.continueOnError()) throw it
+                    }
+            }
         }
-            ?: logger.error("Fant ikke søker i PDL")
+            ?: error("Fant ikke søker i PDL")
     }
+
+    // En Exception i denne logikken skal avbryte alt
+    override fun continueOnError(): Boolean = false
 }

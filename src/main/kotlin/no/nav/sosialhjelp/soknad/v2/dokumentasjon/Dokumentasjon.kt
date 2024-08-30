@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
@@ -15,7 +15,7 @@ interface DokumentasjonRepository : UpsertRepository<Dokumentasjon>, ListCrudRep
 
     fun findBySoknadIdAndType(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ): Dokumentasjon?
 }
 
@@ -51,7 +51,7 @@ private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon {
 data class Dokumentasjon(
     @Id val id: UUID = UUID.randomUUID(),
     val soknadId: UUID,
-    val type: OkonomiType,
+    val type: OpplysningType,
     val status: DokumentasjonStatus = DokumentasjonStatus.FORVENTET,
     val dokumenter: Set<Dokument> = emptySet(),
 ) : DomainRoot {
@@ -71,7 +71,7 @@ enum class DokumentasjonStatus {
 }
 
 // TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
-enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean) : OkonomiType {
+enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean) : OpplysningType {
     SKATTEMELDING(dokumentasjonForventet = true),
     ;
 

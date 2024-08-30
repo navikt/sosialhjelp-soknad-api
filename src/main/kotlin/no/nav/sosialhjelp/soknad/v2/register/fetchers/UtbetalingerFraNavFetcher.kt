@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers
+package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
@@ -26,27 +26,31 @@ class UtbetalingerFraNavFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_NAVYTELSE)
+        // TODO 1. Hvis vi allerede har utbetalinger - men kallet feiler - skal det gamle beholdes, eller fjernes?
+        // TODO 2. Hvis vi har utbetalinger - men ny innhenting returnerer tom liste - skal det da være tomt?
+        okonomiService.removeElementFromOkonomi(soknadId, type = InntektType.UTBETALING_NAVYTELSE)
 
-        val utbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())
-
-        utbetalinger?.let { navUtbetalinger ->
-            logger.info("NyModell: Hentet ${navUtbetalinger.size} utbetalinger fra NAV")
-            integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
-
-            if (navUtbetalinger.isEmpty()) return
-
-            val inntekt =
-                Inntekt(
-                    type = InntektType.UTBETALING_NAVYTELSE,
-                    inntektDetaljer =
-                        OkonomiDetaljer(
-                            navUtbetalinger.map { it.toUtbetalingMedKomponent() },
-                        ),
-                )
-            okonomiService.addElementToOkonomi(soknadId, inntekt)
-        }
+        navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())
+            ?.also {
+                saveUtbetalingerFraNav(soknadId, it)
+                integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
+            }
             ?: integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = true)
+    }
+
+    private fun saveUtbetalingerFraNav(
+        soknadId: UUID,
+        utbetalinger: List<NavUtbetaling>,
+    ) {
+        logger.info("NyModell: Hentet ${utbetalinger.size} utbetalinger fra NAV")
+
+        if (utbetalinger.isEmpty()) return
+
+        Inntekt(
+            type = InntektType.UTBETALING_NAVYTELSE,
+            inntektDetaljer = OkonomiDetaljer(utbetalinger.map { it.toUtbetalingMedKomponent() }),
+        )
+            .also { okonomiService.addElementToOkonomi(soknadId = soknadId, element = it) }
     }
 }
 

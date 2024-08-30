@@ -30,7 +30,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         webTestClient
             .delete()
-            .uri("/soknad/$lagretSoknadId")
+            .uri("/soknad/$lagretSoknadId/delete")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "BEARER ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(lagretSoknadId.toString(), id = token.jwtClaimsSet.subject))
@@ -45,7 +45,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val randomUUID = UUID.randomUUID()
         webTestClient
             .delete()
-            .uri("/soknad/$randomUUID")
+            .uri("/soknad/$randomUUID/delete")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "BEARER ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(randomUUID.toString(), id = token.jwtClaimsSet.subject))

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.UUID
 
@@ -31,17 +32,7 @@ abstract class AbstractIntegrationTest {
 
     @BeforeEach
     fun before() {
-        token = mockOAuth2Server.issueToken("selvbetjening", "54352345353", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
-    }
-
-    protected fun doGetFullResponse(
-        uri: String,
-    ): WebTestClient.ResponseSpec {
-        return webTestClient.get()
-            .uri(uri)
-            .header("Authorization", "Bearer ${token.serialize()}")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
     }
 
     protected fun <T> doGet(
@@ -56,6 +47,44 @@ abstract class AbstractIntegrationTest {
             .expectStatus().isOk
             .expectBody(responseBodyClass)
             .returnResult().responseBody!!
+    }
+
+    protected fun doGetFullResponse(
+        uri: String,
+    ): ResponseSpec {
+        return webTestClient.get()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+    }
+
+    protected fun <T> doPost(
+        uri: String,
+        responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
+    ): T {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(responseBodyClass)
+            .returnResult()
+            .responseBody!!
+    }
+
+    protected fun doPostFullResponse(
+        uri: String,
+    ): ResponseSpec {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
     }
 
     protected fun <T> doPut(
@@ -77,7 +106,7 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun <T> doPost(
+    protected fun <T> doPostWithBody(
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
@@ -101,7 +130,7 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         soknadId: UUID?,
-    ): WebTestClient.ResponseSpec {
+    ): ResponseSpec {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -132,15 +161,18 @@ abstract class AbstractIntegrationTest {
 
     protected fun doDelete(
         uri: String,
-        soknadId: UUID?,
-    ) {
-        webTestClient
-            .delete()
+        soknadId: UUID? = null,
+    ): ResponseSpec {
+        return webTestClient.delete()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isNoContent
+    }
+
+    companion object {
+        val userId = "05058548523"
     }
 }

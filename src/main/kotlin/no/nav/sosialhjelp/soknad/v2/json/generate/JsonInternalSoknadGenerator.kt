@@ -12,6 +12,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.UUID
 
+interface DomainToJsonMapper {
+    fun mapToJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    )
+}
+
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,

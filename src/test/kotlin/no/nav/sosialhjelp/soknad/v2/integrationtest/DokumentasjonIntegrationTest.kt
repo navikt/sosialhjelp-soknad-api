@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
@@ -64,7 +64,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Dokument som ikke finnes skal gi feil og at den ble slettes hos mellomlagrind`() {
+    fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
         every { mellomlagringClient.deleteDokument(any(), any()) } just runs
 
         doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
@@ -105,7 +105,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             .also { dokumentasjonRepository.save(it) }
 
         val dokumentDto =
-            doPost(
+            doPostWithBody(
                 uri = saveUrl(soknad.id, InntektType.UTBETALING_UTBYTTE),
                 requestBody = createFileUpload(),
                 responseBodyClass = DokumentDto::class.java,
@@ -212,7 +212,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
         private fun saveUrl(
             soknadId: UUID,
-            type: OkonomiType,
+            type: OpplysningType,
         ) = "/dokument/$soknadId/$type"
 
         private fun deleteUrl(

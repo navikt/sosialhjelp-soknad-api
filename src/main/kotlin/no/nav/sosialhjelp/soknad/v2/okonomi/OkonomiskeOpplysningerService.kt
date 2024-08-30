@@ -15,7 +15,7 @@ import java.util.UUID
 interface OkonomiskeOpplysningerService {
     fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     )
@@ -30,7 +30,7 @@ class OkonomiskeOpplysningerServiceImpl(
 ) : OkonomiskeOpplysningerService {
     override fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     ) {
@@ -53,7 +53,7 @@ class OkonomiskeOpplysningerServiceImpl(
     // Typer som ikke er opprettet før i søknaden
     private fun addSpecialCaseElement(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ) {
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
             okonomiService.addElementToOkonomi(soknadId = soknadId, type = type)
@@ -61,7 +61,7 @@ class OkonomiskeOpplysningerServiceImpl(
     }
 
     private fun createElement(
-        type: OkonomiType,
+        type: OpplysningType,
         detaljer: List<OkonomiDetalj>,
     ): OkonomiElement {
         return when (type) {
@@ -74,7 +74,7 @@ class OkonomiskeOpplysningerServiceImpl(
 
     private fun getOkonomiskeDetaljerForType(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ): List<OkonomiDetalj> {
         // kan finnes dokumentasjon som ikke er knyttet til okonomiske
         if (!typesWithOkonomiElement.contains(type.javaClass)) return emptyList()
@@ -89,7 +89,7 @@ class OkonomiskeOpplysningerServiceImpl(
 
     private fun updateDokumentasjonStatus(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         levertTidligere: Boolean,
     ) {
         // TODO hvis 'levertTidligere' er false - er det ikke sikkert man skal røre noe mer

@@ -35,7 +35,7 @@ class OkonomiService(
 
     fun findDetaljerOrNull(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ): List<OkonomiDetalj>? {
         return when (type) {
             is InntektType -> getInntekter(soknadId).find { it.type == type }?.inntektDetaljer?.detaljer
@@ -77,7 +77,7 @@ class OkonomiService(
 
     fun addElementToOkonomi(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
         beskrivelse: String? = null,
     ) {
         findOrCreateOkonomi(soknadId).run {
@@ -85,7 +85,7 @@ class OkonomiService(
                 is FormueType -> addAndSaveElement(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
                 is UtgiftType -> addAndSaveElement(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
                 is InntektType -> addAndSaveElement(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
-                else -> error("Ukjent OkonomiType for oppretting")
+                else -> error("Ukjent OpplysningType for oppretting")
             }
         }
         if (type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, type)
@@ -100,7 +100,7 @@ class OkonomiService(
                 is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
                 is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
                 is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
-                else -> error("Ukjent OkonomiType for oppretting")
+                else -> error("Ukjent OpplysningType for oppretting")
             }
         }
         if (element.type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
@@ -167,14 +167,14 @@ class OkonomiService(
 
     fun removeElementFromOkonomi(
         soknadId: UUID,
-        type: OkonomiType,
+        type: OpplysningType,
     ) {
         findOrCreateOkonomi(soknadId).run {
             when (type) {
                 is FormueType -> removeElementByTypeAndSave(formuer, type) { copy(formuer = it) }
                 is UtgiftType -> removeElementByTypeAndSave(utgifter, type) { copy(utgifter = it) }
                 is InntektType -> removeElementByTypeAndSave(inntekter, type) { copy(inntekter = it) }
-                else -> error("Ukjent OkonomiType for removal")
+                else -> error("Ukjent OpplysningType for removal")
             }
         }
         if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetVedlegg(soknadId, type)
@@ -205,7 +205,7 @@ class OkonomiService(
      */
     private fun <E : OkonomiElement> removeElementByTypeAndSave(
         sourceSet: Set<E>,
-        type: OkonomiType,
+        type: OpplysningType,
         updateOkonomiFunction: (Set<E>) -> Okonomi,
     ): Set<E> {
         return sourceSet.find { it.type == type }
@@ -216,7 +216,7 @@ class OkonomiService(
 
     private fun <E : OkonomiElement> typeExistsAndEqualBeskrivelse(
         set: Set<E>,
-        type: OkonomiType,
+        type: OpplysningType,
         beskrivelse: String?,
     ): Boolean {
         set.find { it.type == type }?.let {

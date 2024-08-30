@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.register.handlers
+package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -106,7 +106,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
-        okonomiService.getInntekter(soknad.id)!!.let { inntekter ->
+        okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }
@@ -123,7 +123,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
 
         arbeidsforholdFetcher.fetchAndSave(soknad.id)
 
-        okonomiService.getInntekter(soknad.id)!!.let { inntekter ->
+        okonomiService.getInntekter(soknad.id).let { inntekter ->
             assertThat(inntekter).anyMatch { it.type == InntektType.JOBB }
             assertThat(inntekter).anyMatch { it.type == InntektType.SLUTTOPPGJOER }
         }

@@ -15,6 +15,8 @@ import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
+import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -41,7 +43,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
@@ -87,9 +89,9 @@ fun createFamilie(
 
 fun opprettEktefelle(): Ektefelle {
     return Ektefelle(
-        navn = Navn("Kone", null, "Konesen"),
+        navn = Navn("Kone", "", "Konesen"),
         fodselsdato = "432341",
-        personId = "1234512345",
+        personId = SetupLifecycleIntegrationTest.ektefelleId,
         folkeregistrertMedEktefelle = true,
         borSammen = true,
         kildeErSystem = true,
@@ -98,7 +100,7 @@ fun opprettEktefelle(): Ektefelle {
 
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
-    eierPersonId: String = "54352345353",
+    eierPersonId: String = AbstractIntegrationTest.userId,
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
@@ -173,7 +175,7 @@ fun opprettNavn(
 
 fun createBarn(
     familieKey: UUID = UUID.randomUUID(),
-    personId: String = "34243452342",
+    personId: String = SetupLifecycleIntegrationTest.barnPersonId,
     navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
     fodselsdato: String = "342434",
     borSammen: Boolean = true,
@@ -414,7 +416,7 @@ fun opprettDokumentasjon(
     id: UUID = UUID.randomUUID(),
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
-    type: OkonomiType = UtgiftType.UTGIFTER_STROM,
+    type: OpplysningType = UtgiftType.UTGIFTER_STROM,
     dokumenter: Set<Dokument> = opprettDokumenter(),
 ): Dokumentasjon {
     return Dokumentasjon(id, soknadId, type, status, dokumenter)

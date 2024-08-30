@@ -1,17 +1,17 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
 import com.fasterxml.jackson.annotation.JsonValue
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 
-// TODO Legger til midlertidig mapping "tilbake til" okonomiType. Når skyggeprod er ferdig, kan hele denne fjernes
+// TODO Legger til midlertidig mapping "tilbake til" opplysningType. Når skyggeprod er ferdig, kan hele denne fjernes
 // TODO Fordrer at vi bruker samme type både på "okonomi-poster" og vedlegg i ny modell
 
 enum class VedleggType(
     @JsonValue val stringName: String,
-    @JsonValue val okonomiType: OkonomiType?,
+    @JsonValue val opplysningType: OpplysningType?,
 ) {
     AnnetAnnet("annet|annet", UtgiftType.UTGIFTER_ANDRE_UTGIFTER),
     BarnebidragBetaler("barnebidrag|betaler", UtgiftType.BARNEBIDRAG_BETALER),

@@ -75,7 +75,7 @@ class EierToJsonMapper(
             }
         }
 
-        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer {
+        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? {
             return when {
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
@@ -83,7 +83,8 @@ class EierToJsonMapper(
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
                 fraRegister != null ->
                     JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
-                else -> JsonKontonummer()
+                // Kontonummer kreves i modellen og kilde kreves selv uten(!!) noe informasjon
+                else -> JsonKontonummer().withKilde(JsonKilde.SYSTEM)
             }
         }
     }

@@ -25,10 +25,10 @@ class SoknadJsonTypeEnumTest {
     val listOfFormue: MutableList<Formue> = mutableListOf()
 
     @Test
-    fun `VedleggTyper skal mappes til OkonomiTyper`() {
+    fun `VedleggTyper skal mappes til OpplysningTyper`() {
         VedleggType.entries.forEach { type ->
 
-            type.okonomiType?.let {
+            type.opplysningType?.let {
                 when (it) {
                     is InntektType -> createInntekt(it)
                     is FormueType -> createFormue(it)
@@ -39,23 +39,23 @@ class SoknadJsonTypeEnumTest {
         val a = 4
     }
 
-    private fun createInntekt(okonomiType: InntektType) {
+    private fun createInntekt(opplysningType: InntektType) {
         Inntekt(
-            type = okonomiType,
+            type = opplysningType,
         )
             .also { listOfInntekter.add(it) }
     }
 
-    private fun createFormue(okonomiType: FormueType) {
+    private fun createFormue(opplysningType: FormueType) {
         Formue(
-            type = okonomiType,
+            type = opplysningType,
         )
             .also { listOfFormue.addLast(it) }
     }
 
-    private fun createUtgift(okonomiType: UtgiftType) {
+    private fun createUtgift(opplysningType: UtgiftType) {
         Utgift(
-            type = okonomiType,
+            type = opplysningType,
         )
             .also { listOfUtgift.addLast(it) }
     }

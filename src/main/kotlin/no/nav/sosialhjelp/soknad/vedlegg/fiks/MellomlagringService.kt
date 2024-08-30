@@ -23,6 +23,8 @@ class MellomlagringService(
     private val virusScanner: VirusScanner,
     private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
+    fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
+
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val navEksternId = getNavEksternId(behandlingsId)
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)

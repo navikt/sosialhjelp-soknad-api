@@ -36,7 +36,7 @@ internal class DokumentListeServiceTest {
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
 
-        every { mellomlagringService.getAllVedlegg(any()).size } returns 1
+        every { mellomlagringService.getAllVedlegg(any(String::class)).size } returns 1
 
         val filOpplastings = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
 

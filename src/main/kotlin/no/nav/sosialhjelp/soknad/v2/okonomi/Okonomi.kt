@@ -71,6 +71,6 @@ enum class BostotteStatus {
 
 // Inntekt, Utgift, Formue
 interface OkonomiElement {
-    val type: OkonomiType
+    val type: OpplysningType
     val beskrivelse: String?
 }
