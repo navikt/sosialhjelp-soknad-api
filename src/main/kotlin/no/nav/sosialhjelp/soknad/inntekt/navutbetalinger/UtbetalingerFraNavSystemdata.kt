@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
@@ -21,6 +22,9 @@ class UtbetalingerFraNavSystemdata(
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
+        if (jsonInternalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
+            return
+        }
 
         val jsonData = jsonInternalSoknad.soknad.data
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
@@ -49,8 +53,8 @@ class UtbetalingerFraNavSystemdata(
         return utbetalinger.map { mapToJsonOkonomiOpplysningUtbetaling(it) }
     }
 
-    private fun mapToJsonOkonomiOpplysningUtbetaling(navUtbetaling: NavUtbetaling): JsonOkonomiOpplysningUtbetaling {
-        return JsonOkonomiOpplysningUtbetaling()
+    private fun mapToJsonOkonomiOpplysningUtbetaling(navUtbetaling: NavUtbetaling): JsonOkonomiOpplysningUtbetaling =
+        JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
             .withType(SoknadJsonTyper.UTBETALING_NAVYTELSE)
             .withTittel(navUtbetaling.tittel)
@@ -65,10 +69,9 @@ class UtbetalingerFraNavSystemdata(
             .withUtbetalingsdato(navUtbetaling.utbetalingsdato?.toString())
             .withKomponenter(tilUtbetalingskomponentListe(navUtbetaling.komponenter))
             .withOverstyrtAvBruker(false)
-    }
 
-    private fun tilUtbetalingskomponentListe(komponenter: List<NavKomponent>?): List<JsonOkonomiOpplysningUtbetalingKomponent> {
-        return komponenter?.map {
+    private fun tilUtbetalingskomponentListe(komponenter: List<NavKomponent>?): List<JsonOkonomiOpplysningUtbetalingKomponent> =
+        komponenter?.map {
             JsonOkonomiOpplysningUtbetalingKomponent()
                 .withBelop(it.belop)
                 .withType(it.type)
@@ -76,7 +79,6 @@ class UtbetalingerFraNavSystemdata(
                 .withSatsType(it.satsType)
                 .withSatsAntall(it.satsAntall)
         } ?: ArrayList()
-    }
 
     companion object {
         private val log by logger()

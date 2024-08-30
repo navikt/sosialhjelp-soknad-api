@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import org.springframework.http.HttpHeaders
@@ -25,21 +25,17 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@ProtectedWithClaims(
-    issuer = Constants.SELVBETJENING,
-    claimMap = [Constants.CLAIM_ACR_LEVEL_4, Constants.CLAIM_ACR_LOA_HIGH],
-    combineWithOr = true,
-)
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OpplastetVedleggRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val mellomlagringService: MellomlagringService,
 ) {
-    @GetMapping("/{behandlingsId}/{vedleggId}/fil")
-    @Operation(summary = "Henter et gitt vedlegg")
+    @GetMapping("/{behandlingsId}/{dokumentId}/fil")
+    @Operation(summary = "Hent innhold i dokument")
     @ApiResponse(
         responseCode = "200",
-        description = "Filen ble funnet og returneres",
+        description = "Dokumentets innhold sendes til klienten",
         content = [
             Content(
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
@@ -47,52 +43,58 @@ class OpplastetVedleggRessurs(
             ),
         ],
     )
-    @ApiResponse(responseCode = "404", description = "Filen ble ikke funnet", content = [Content(schema = Schema(hidden = true))])
-    fun getVedleggFil(
+    fun getDokument(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @PathVariable("vedleggId") vedleggId: String,
+        @PathVariable("dokumentId") dokumentId: String,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
+        log.info("Forsøker å hente dokument $dokumentId fra mellomlagring hos KS")
 
-        mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
-            val mimeType = detectMimeType(it.data)
-            log.info("Fant vedlegg $vedleggId hos KS")
-            return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
+        val dokument = mellomlagringService.getVedlegg(behandlingsId, dokumentId)
+
+        if (dokument == null) {
+            log.error("Fant ikke dokument $dokumentId hos KS")
+            throw IkkeFunnetException("Fant ikke vedlegg $dokumentId")
         }
-        // hvis vedleggId ikke finnes i KS mellomlagring
-        log.error("Fant ikke vedlegg $vedleggId hos KS")
-        return ResponseEntity.notFound().build()
+
+        val contentType = MediaType.parseMediaType(detectMimeType(dokument.data))
+        val contentDisposition = "attachment; filename=\"${dokument.filnavn}\""
+        log.info("Fant dokument $dokumentId hos KS")
+
+        return ResponseEntity
+            .ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+            .contentType(contentType)
+            .body(dokument.data)
     }
 
-    @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun saveVedlegg(
+    @PostMapping("/{behandlingsId}/{dokumentasjonType}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun uploadDokument(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @PathVariable("type") vedleggstype: String,
+        @PathVariable("dokumentasjonType") dokumentasjonType: String,
         @RequestParam("file") fil: MultipartFile,
-    ): FilFrontend {
+    ): DokumentUpload {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
+        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
         val orginalData = VedleggUtils.getByteArray(fil)
 
         return mellomlagringService
-            .uploadVedlegg(behandlingsId, vedleggstype, orginalData, orginaltFilnavn)
-            .let { FilFrontend(it.filnavn, it.filId) }
+            .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
+            .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
     }
 
-    @DeleteMapping("/{behandlingsId}/{vedleggId}")
-    fun deleteVedlegg(
+    @DeleteMapping("/{behandlingsId}/{dokumentId}")
+    fun deleteDokument(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @PathVariable("vedleggId") vedleggId: String,
+        @PathVariable("dokumentId") dokumentId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
-        mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
+        log.info("Sletter dokument $dokumentId fra KS mellomlagring")
+        mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, dokumentId)
     }
 
     companion object {

@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
 
+data class StartSoknadResponseDto(
+    val soknadId: String,
+    val useKortSoknad: Boolean,
+)
+
 /**
  * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
  * som direkte opererer/muterer data.
@@ -29,19 +34,24 @@ class SoknadLifecycleController(
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/create")
-    fun createSoknad(response: HttpServletResponse): OpprettetSoknadDto {
+    fun createSoknad(
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = true) token: String,
+        response: HttpServletResponse,
+    ): StartSoknadResponseDto {
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
                 "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
             )
         }
-        return soknadLifecycleService.startSoknad()
-            .let { soknadId ->
-                response.addCookie(xsrfCookie(soknadId.toString()))
-                response.addCookie(xsrfCookieMedBehandlingsid(soknadId.toString()))
 
-                OpprettetSoknadDto(soknadId)
+        return soknadLifecycleService
+            .startSoknad(token)
+            .let { (id, useKortSoknad) ->
+                response.addCookie(xsrfCookie(id.toString()))
+                response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
+
+                StartSoknadResponseDto(id.toString(), useKortSoknad)
             }
     }
 
@@ -52,7 +62,6 @@ class SoknadLifecycleController(
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
-
         val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
         return SoknadSendtDto(digisosId, innsendingstidspunkt)
@@ -84,10 +93,6 @@ class SoknadLifecycleController(
         }
     }
 }
-
-data class OpprettetSoknadDto(
-    val soknadId: UUID,
-)
 
 data class SoknadSendtDto(
     val digisosId: UUID,

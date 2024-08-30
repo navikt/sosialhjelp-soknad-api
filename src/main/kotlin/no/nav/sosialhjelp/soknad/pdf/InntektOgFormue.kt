@@ -18,6 +18,7 @@ object InntektOgFormue {
         okonomi: JsonOkonomi?,
         soknad: JsonSoknad,
         utvidetSoknad: Boolean,
+        isKortSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("inntektbolk.tittel"))
         pdf.addBlankLine()
@@ -31,7 +32,8 @@ object InntektOgFormue {
         // Skatt
         pdf.skrivTekstBold(pdfUtils.getTekst("utbetalinger.inntekt.skattbar.tittel"))
         val skattetatenSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
-        val harSkattetatenSamtykke = if (skattetatenSamtykke.isEmpty()) false else skattetatenSamtykke[0].verdi
+
+        val harSkattetatenSamtykke = skattetatenSamtykke.firstOrNull()?.verdi ?: false
         if (!harSkattetatenSamtykke) {
             if (utvidetSoknad) {
                 pdfUtils.skrivInfotekst(pdf, "utbetalinger.inntekt.skattbar.samtykke_sporsmal")
@@ -107,6 +109,13 @@ object InntektOgFormue {
             }
         }
 
+        // Kort søknad har kun skatteetaten-spørsmål, så vi kan avslutte her
+        if (isKortSoknad) {
+            if (urisOnPage.isNotEmpty()) {
+                pdfUtils.addLinks(pdf, urisOnPage)
+            }
+            return
+        }
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))
         if (utvidetSoknad) {

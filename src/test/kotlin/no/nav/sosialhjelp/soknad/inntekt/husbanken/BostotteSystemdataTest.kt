@@ -59,11 +59,16 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalinger).hasSize(1)
         val utbetaling = utbetalinger[0]
         assertThatUtbetalingErKorrekt(mottaker, netto, utbetaling, utbetalingsDato)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -89,11 +94,16 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalinger).hasSize(1)
         val utbetaling1 = utbetalinger[0]
         assertThatUtbetalingErKorrekt(mottaker, netto2, utbetaling1, utbetalingsDato)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -117,7 +127,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
         val sak = saker[0]
         assertThat(sak.kilde).isEqualTo(JsonKildeSystem.SYSTEM)
@@ -125,7 +137,10 @@ internal class BostotteSystemdataTest {
         assertThat(sak.dato).isEqualTo(LocalDate.of(sakDto.ar, sakDto.mnd, 1).toString())
         assertThat(sak.status).isEqualToIgnoringCase(sakDto.status.toString())
         assertThat(sak.beskrivelse).isNull()
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -158,7 +173,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).hasSize(2)
         val sak1 = saker[0]
         val sak2 = saker[1]
@@ -169,7 +186,10 @@ internal class BostotteSystemdataTest {
         assertThat(sak2.status).isEqualToIgnoringCase(sakDto2.status.toString())
         assertThat(sak2.beskrivelse).isEqualTo(sakDto2.vedtak?.beskrivelse)
         assertThat(sak2.vedtaksstatus.value()).isEqualTo(sakDto2.vedtak?.type)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -183,16 +203,23 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).isEmpty()
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isTrue
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isTrue
     }
 
     @Test
     fun updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        val opplysninger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
+        val opplysninger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger
         opplysninger.bostotte.saker.add(
             JsonBostotteSak()
                 .withType(SoknadJsonTyper.UTBETALING_HUSBANKEN)
@@ -208,7 +235,10 @@ internal class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
         val saker = opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isTrue
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isTrue
     }
 
     @Test
@@ -219,9 +249,14 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).isEmpty()
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -245,13 +280,17 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
-        val saker1 = soknadUnderArbeid1.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker1 =
+            soknadUnderArbeid1.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker1).hasSize(1)
 
         // Kjøring:
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
-        val saker2 = soknadUnderArbeid1.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker2 =
+            soknadUnderArbeid1.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker2).isEmpty()
     }
 
@@ -285,7 +324,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
         val sak1 = saker[0]
         assertThat(sak1.status).isEqualToIgnoringCase(sakDto1.status.toString())
@@ -317,7 +358,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalinger).hasSize(1)
         val utbetaling = utbetalinger[0]
         assertThat(utbetaling.netto).isEqualTo(utbetalingDto1.belop.toLong().toDouble())
@@ -353,7 +396,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
         val sak1 = saker[0]
         assertThat(sak1.status).isEqualToIgnoringCase(sakDto1.status.toString())
@@ -386,7 +431,9 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
-        val saker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bostotte.saker
+        val saker =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
         val sak1 = saker[0]
         assertThat(sak1.status).isEqualToIgnoringCase(sakDto2.status.toString())
@@ -401,11 +448,15 @@ internal class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
         val utbetalinger =
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad
                 .data.okonomi.opplysninger.utbetaling
                 .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger).isEmpty()
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
+        assertThat(
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.driftsinformasjon.stotteFraHusbankenFeilet,
+        ).isFalse
     }
 
     @Test
@@ -427,14 +478,17 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
-        val utbetalinger1 = soknadUnderArbeid1.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
+        val utbetalinger1 =
+            soknadUnderArbeid1.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
         assertThat(utbetalinger1).hasSize(1)
 
         // Kjøring:
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
         val utbetalinger2 =
-            soknadUnderArbeid1.jsonInternalSoknad!!.soknad
+            soknadUnderArbeid1.jsonInternalSoknad!!
+                .soknad
                 .data.okonomi.opplysninger.utbetaling
                 .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger2).isEmpty()
@@ -465,7 +519,8 @@ internal class BostotteSystemdataTest {
         }
         bekreftelser
             .add(
-                JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
                     .withVerdi(harSamtykke)
                     .withTittel("beskrivelse"),
@@ -489,16 +544,15 @@ internal class BostotteSystemdataTest {
     companion object {
         private const val EIER = "12345678910"
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "BEHANDLINGSID",
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

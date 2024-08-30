@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.featuretoggle
 
+import io.getunleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import org.springframework.http.MediaType
@@ -14,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController
     combineWithOr = true,
 )
 @RequestMapping("/feature-toggle", produces = [MediaType.APPLICATION_JSON_VALUE])
-class FeatureToggleRessurs {
+class FeatureToggleRessurs(
+    private val unleash: Unleash,
+) {
     @GetMapping
-    fun featureToggles(): Map<String, Boolean> {
-        val featureToggles: MutableMap<String, Boolean> = HashMap()
-        // add toggles for frontend
-        return featureToggles
-    }
+    fun featureToggles(): Map<String, Boolean> = unleash.more().evaluateAllToggles().associate { it.name to it.isEnabled }
 }

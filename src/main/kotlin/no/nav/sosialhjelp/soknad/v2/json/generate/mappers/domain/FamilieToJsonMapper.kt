@@ -28,7 +28,9 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class FamilieToJsonMapper(private val familieRepository: FamilieRepository) : DomainToJsonMapper {
+class FamilieToJsonMapper(
+    private val familieRepository: FamilieRepository,
+) : DomainToJsonMapper {
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
@@ -88,13 +90,11 @@ private fun Familie.toJsonForsorgerplikt() =
             JsonHarForsorgerplikt()
                 .withKilde(JsonKilde.SYSTEM)
                 .withVerdi(harForsorgerplikt),
-        )
-        .withBarnebidrag(
+        ).withBarnebidrag(
             JsonBarnebidrag()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(barnebidrag?.toJson()),
-        )
-        .withAnsvar(ansvar.values.toJson())
+        ).withAnsvar(ansvar.values.toJson())
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
@@ -107,13 +107,11 @@ private fun Barn.toJson() =
                 .withNavn(navn?.toJson())
                 .withPersonIdentifikator(personId)
                 .withHarDiskresjonskode(false),
-        )
-        .withErFolkeregistrertSammen(
+        ).withErFolkeregistrertSammen(
             JsonErFolkeregistrertSammen()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen),
-        )
-        .withHarDeltBosted(
+        ).withHarDeltBosted(
             JsonHarDeltBosted()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(deltBosted ?: false),

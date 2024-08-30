@@ -17,9 +17,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
 
-    private fun getPath(soknadId: UUID): String {
-        return "/soknad/$soknadId/arbeid"
-    }
+    private fun getPath(soknadId: UUID): String = "/soknad/$soknadId/arbeid"
 
     @Test
     fun `Hente arbeid skal returnere korrekte data`() {

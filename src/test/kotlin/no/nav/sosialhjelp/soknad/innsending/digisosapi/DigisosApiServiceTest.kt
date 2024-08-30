@@ -100,7 +100,7 @@ internal class DigisosApiServiceTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = eier,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -113,6 +113,7 @@ internal class DigisosApiServiceTest {
                 fnr = "12345678910",
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
+                kortSoknad = false,
             )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()

@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -93,9 +94,9 @@ internal class SoknadRessursTest {
         val response: HttpServletResponse = mockk()
         val cookieSlot = slot<Cookie>()
         every { response.addCookie(capture(cookieSlot)) } just runs
-        every { soknadServiceOld.startSoknad() } returns "null"
+        every { soknadServiceOld.startSoknad(any(), null) } returns StartSoknadResponse(brukerBehandlingId = "null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", null, response)
 
         assertThat(cookieSlot.captured.name).isEqualTo(SoknadRessurs.XSRF_TOKEN + "-null")
     }
@@ -105,11 +106,11 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
-        every { soknadServiceOld.startSoknad() } returns "null"
+        every { soknadServiceOld.startSoknad(any(), null) } returns StartSoknadResponse("null", false)
 
-        ressurs.opprettSoknad(response)
+        ressurs.opprettSoknad("", null, response)
 
-        verify(exactly = 1) { soknadServiceOld.startSoknad() }
+        verify(exactly = 1) { soknadServiceOld.startSoknad("", null) }
     }
 
     @Test
@@ -168,7 +169,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -192,7 +193,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        val internalSoknad = createEmptyJsonInternalSoknad(EIER)
+        val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
@@ -254,9 +255,9 @@ internal class SoknadRessursTest {
 
         private fun createSoknadUnderArbeid(
             eier: String,
-            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
-        ): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
+        ): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = eier,
@@ -265,6 +266,5 @@ internal class SoknadRessursTest {
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }

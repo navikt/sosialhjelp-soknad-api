@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
@@ -36,7 +36,6 @@ class AvbrytAutomatiskScheduler(
             vellykket = 0
             if (batchEnabled) {
                 logger.info("Starter avbryting av gamle søknader")
-
                 try {
                     avbrytSoknader()
                 } catch (e: RuntimeException) {
@@ -50,32 +49,62 @@ class AvbrytAutomatiskScheduler(
         }
     }
 
+    // TODO Når denne har kjørt (og ryddet opp) forste gang, trenger den ikke batche opp
     private fun avbrytSoknader() {
-        var soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+        var metadataList = batchSoknadMetadataRepository.hentSoknaderEldreEnn14Dager()
 
-        while (soknadMetadata != null) {
-            soknadMetadata.status = AVBRUTT_AUTOMATISK
-            soknadMetadata.sistEndretDato = LocalDateTime.now()
-            soknadMetadataRepository.oppdater(soknadMetadata)
+        while (metadataList.isNotEmpty()) {
+            logger.info("Oppdaterer ${metadataList.size} soknader som er eldre enn 14 dager")
 
-            val behandlingsId = soknadMetadata.behandlingsId
+            metadataList.forEach { metadata ->
+                metadata.status = SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+                metadata.sistEndretDato = LocalDateTime.now()
+                soknadMetadataRepository.oppdater(metadata)
 
-            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
-                    mellomlagringService.deleteAllVedlegg(behandlingsId)
-                }
-                batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
+                slettSoknadUnderArbeid(metadata.behandlingsId)
+                vellykket++
             }
 
-            batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
-            vellykket++
-
-            if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
-                return
-            }
-            soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+            metadataList = batchSoknadMetadataRepository.hentSoknaderEldreEnn14Dager()
         }
+    }
+
+//    private fun avbrytSoknader() {
+//        var soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+//
+//        while (soknadMetadata != null) {
+//            soknadMetadata.status = AVBRUTT_AUTOMATISK
+//            soknadMetadata.sistEndretDato = LocalDateTime.now()
+//            soknadMetadataRepository.oppdater(soknadMetadata)
+//
+//            val behandlingsId = soknadMetadata.behandlingsId
+//
+//            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
+//                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
+//                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+//                }
+//                batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
+//            }
+//
+//            batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
+//            vellykket++
+//
+//            if (harGaattForLangTid()) {
+//                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
+//                return
+//            }
+//            soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+//        }
+//    }
+
+    private fun slettSoknadUnderArbeid(behandlingsId: String) {
+        batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
+            if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
+                mellomlagringService.deleteAllVedlegg(behandlingsId)
+            }
+            batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
+        }
+            ?: logger.warn("Fant ikke SoknadUnderArbeid for Metadata ved sletting")
     }
 
     private fun harGaattForLangTid(): Boolean {

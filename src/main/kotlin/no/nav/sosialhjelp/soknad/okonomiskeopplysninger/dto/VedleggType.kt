@@ -46,11 +46,11 @@ enum class VedleggType(
     SkattemeldingSkattemelding("skattemelding|skattemelding", null),
     SluttoppgjorArbeid("sluttoppgjor|arbeid", InntektType.SLUTTOPPGJOER),
     StudentVedtak("student|vedtak", InntektType.STUDIELAN_INNTEKT),
+    KortBehov("kort|behov", null),
+    KortSituasjonsendring("kort|situasjonsendring", null),
     ;
 
-    override fun toString(): String {
-        return stringName
-    }
+    override fun toString(): String = stringName
 
     companion object {
         private val map = entries.associateBy(VedleggType::stringName)

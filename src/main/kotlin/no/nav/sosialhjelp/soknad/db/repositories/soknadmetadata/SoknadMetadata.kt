@@ -20,6 +20,7 @@ data class SoknadMetadata(
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false,
+    val kortSoknad: Boolean,
 )
 
 @XmlRootElement
@@ -60,9 +61,7 @@ enum class Vedleggstatus {
     VedleggAlleredeSendt,
     ;
 
-    fun er(status: Vedleggstatus): Boolean {
-        return this == status
-    }
+    fun er(status: Vedleggstatus): Boolean = this == status
 }
 
 val JAXB =

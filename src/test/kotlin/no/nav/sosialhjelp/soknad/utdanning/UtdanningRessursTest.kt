@@ -117,7 +117,9 @@ internal class UtdanningRessursTest {
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val utdanning = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
+        val utdanning =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.utdanning
         assertThat(utdanning.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utdanning.erStudent).isTrue
         assertThat(utdanning.studentgrad).isNull()
@@ -136,7 +138,9 @@ internal class UtdanningRessursTest {
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val utdanning = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
+        val utdanning =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.utdanning
         assertThat(utdanning.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utdanning.erStudent).isTrue
         assertThat(utdanning.studentgrad).isEqualTo(Studentgrad.HELTID)
@@ -155,7 +159,9 @@ internal class UtdanningRessursTest {
         utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val utdanning = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
+        val utdanning =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.utdanning
         assertThat(utdanning.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utdanning.erStudent).isFalse
         assertThat(utdanning.studentgrad).isNull()
@@ -191,12 +197,13 @@ internal class UtdanningRessursTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.utdanning
             .withKilde(JsonKilde.BRUKER)
             .withErStudent(erStudent)
             .withStudentgrad(studentgrad)

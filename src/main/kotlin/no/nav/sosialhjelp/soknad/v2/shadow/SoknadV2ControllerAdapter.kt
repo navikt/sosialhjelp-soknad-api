@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
+import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
 import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
@@ -38,6 +39,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarBoutgifterInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarIkkeBarneutgifterInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarIkkeBoutgifterInput
 import no.nav.sosialhjelp.soknad.v2.shadow.adapters.V2AdresseControllerAdapter
+import no.nav.sosialhjelp.soknad.v2.situasjonsendring.SituasjonsendringController
+import no.nav.sosialhjelp.soknad.v2.situasjonsendring.SituasjonsendringDto
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
 import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
@@ -63,6 +66,7 @@ class SoknadV2ControllerAdapter(
     private val transactionTemplate: TransactionTemplate,
     private val boutgiftController: BoutgiftController,
     private val barneutgiftController: BarneutgiftController,
+    private val situasjonsendringController: SituasjonsendringController,
 ) : V2ControllerAdapter {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -315,6 +319,15 @@ class SoknadV2ControllerAdapter(
             )
         }
             .onFailure { logger.warn("NyModell: Oppdatering av Barneutgifter feilet") }
+    }
+
+    override fun updateSituasjonsendring(
+        soknadId: String,
+        situasjonsendring: SituasjonsendringFrontend,
+    ) {
+        runWithNestedTransaction {
+            situasjonsendringController.updateSituasjonsendring(UUID.fromString(soknadId), SituasjonsendringDto(situasjonsendring.hvaErEndret, situasjonsendring.endring))
+        }.onFailure { logger.warn("Ny modell: Oppdatering av situasjonsendring feilet.", it) }
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {

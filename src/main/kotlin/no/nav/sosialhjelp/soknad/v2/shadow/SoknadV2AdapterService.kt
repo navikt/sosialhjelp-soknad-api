@@ -20,6 +20,7 @@ class SoknadV2AdapterService(
         behandlingsId: String,
         opprettetDato: LocalDateTime,
         eierId: String,
+        kortSoknad: Boolean,
     ) {
         logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
@@ -28,6 +29,7 @@ class SoknadV2AdapterService(
                 soknadId = UUID.fromString(behandlingsId),
                 opprettetDato = opprettetDato,
                 eierId = eierId,
+                kortSoknad = kortSoknad,
             )
         }
             .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
@@ -59,9 +61,9 @@ class SoknadV2AdapterService(
     override fun slettSoknad(behandlingsId: String) {
         logger.info("NyModell: Sletter SoknadV2")
 
-        kotlin.runCatching {
-            soknadService.deleteSoknad(UUID.fromString(behandlingsId))
-        }
-            .onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
+        kotlin
+            .runCatching {
+                soknadService.deleteSoknad(UUID.fromString(behandlingsId))
+            }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 }

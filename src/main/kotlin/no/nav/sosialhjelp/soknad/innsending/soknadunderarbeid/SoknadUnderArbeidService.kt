@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
-import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DuplikatFilException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
@@ -38,14 +38,11 @@ class SoknadUnderArbeidService(
     ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
-        val jsonVedlegg =
+        val filenameConflict =
             JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-                .firstOrNull {
-                    it.filer.any { jsonFile -> jsonFile.filnavn == filnavn }
-                }
-        if (jsonVedlegg != null) {
-            throw DuplikatFilException("Fil finnes allerede.")
-        }
+                .any { it.filer.any { jsonFile -> jsonFile.filnavn == filnavn } }
+
+        if (filenameConflict) throw DokumentUploadDuplicateFilename()
     }
 
     fun fjernVedleggFraInternalSoknad(
@@ -56,12 +53,8 @@ class SoknadUnderArbeidService(
 
         val jsonVedlegg: JsonVedlegg =
             JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-                .firstOrNull {
-                    it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
-                }
-                ?: throw IkkeFunnetException(
-                    "Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?",
-                )
+                .firstOrNull { it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn } }
+                ?: throw IkkeFunnetException("dokumentet ${aktueltVedlegg.filnavn} ikke funnet")
 
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
@@ -135,9 +128,11 @@ class SoknadUnderArbeidService(
                     "Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
                 )
             }
+
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MED_MANGLER -> {
                 throw SendingTilKommuneUtilgjengeligException("Kommune mangler eller har feil konfigurasjon")
             }
+
             SKAL_SENDE_SOKNADER_VIA_FDA -> true
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD -> {
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException(

@@ -136,11 +136,16 @@ internal class FormueRessursTest {
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val sparing = bekreftelser[0]
-        val formuer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val formuer =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         val beskrivelse =
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing
         assertThat(sparing.verdi).isFalse
         assertThat(formuer).isEmpty()
         assertThat(beskrivelse).isBlank
@@ -168,9 +173,13 @@ internal class FormueRessursTest {
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val sparing = bekreftelser[0]
-        val formuer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val formuer =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         assertThat(sparing.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(sparing.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_SPARING)
         assertThat(sparing.verdi).isTrue
@@ -204,9 +213,13 @@ internal class FormueRessursTest {
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val sparing = bekreftelser[0]
-        val formuer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue
+        val formuer =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.formue
         assertThat(sparing.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(sparing.type).isEqualTo(SoknadJsonTyper.BEKREFTELSE_SPARING)
         assertThat(sparing.verdi).isTrue
@@ -233,10 +246,13 @@ internal class FormueRessursTest {
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.bekreftelse
         val sparing = bekreftelser[0]
         val beskrivelse =
-            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet.sparing
         assertThat(sparing.verdi).isFalse
         assertThat(beskrivelse).isBlank
     }
@@ -274,21 +290,22 @@ internal class FormueRessursTest {
                     .withTittel("tittel")
             }
 
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.formue = formuer
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.oversikt.formue = formuer
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.okonomi.opplysninger.beskrivelseAvAnnet =
             JsonOkonomibeskrivelserAvAnnet().withSparing(beskrivelseAvAnnet)
         return soknadUnderArbeid
     }
 
-    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+        SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
         )
-    }
 }

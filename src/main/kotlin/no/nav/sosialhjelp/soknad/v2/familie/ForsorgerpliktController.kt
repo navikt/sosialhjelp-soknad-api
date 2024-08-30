@@ -33,7 +33,7 @@ class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
             .updateForsorger(
                 soknadId = soknadId,
                 barnebidrag = forsorgerInput.barnebidrag,
-                updated = forsorgerInput.ansvar.map { it.toDomain() },
+                updated = forsorgerInput.ansvar.associate { (it.uuid ?: UUID.randomUUID()) to it.toBarn() },
             )
             .toForsorgerDto()
     }
@@ -67,8 +67,20 @@ data class BarnDto(
 )
 
 private fun Forsorger.toForsorgerDto(): ForsorgerDto =
-    ForsorgerDto(harForsorgerplikt, barnebidrag = barnebidrag, ansvar = ansvar.values.map(Barn::toDto))
+    ForsorgerDto(harForsorgerplikt, barnebidrag = barnebidrag, ansvar = ansvar.mapToBarnDtoList())
 
-fun BarnInput.toDomain() = Barn(uuid ?: UUID.randomUUID(), personId, deltBosted = deltBosted)
+private fun Map<UUID, Barn>.mapToBarnDtoList(): List<BarnDto> {
+    return entries.map { (key, barn) ->
+        BarnDto(
+            uuid = key,
+            barn.navn,
+            barn.fodselsdato,
+            barn.borSammen,
+            barn.folkeregistrertSammen,
+            barn.deltBosted,
+            barn.samvarsgrad,
+        )
+    }
+}
 
-fun Barn.toDto() = BarnDto(familieKey, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)
+fun BarnInput.toBarn() = Barn(personId, deltBosted = deltBosted)

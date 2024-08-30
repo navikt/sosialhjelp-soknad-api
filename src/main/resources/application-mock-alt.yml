@@ -2,10 +2,6 @@ server:
   port: ${PORT:8181}
 
 spring:
-  data:
-    redis:
-      password: ${REDIS_PASSWORD:pw}
-      host: ${REDIS_HOST:localhost}
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -13,12 +9,14 @@ spring:
     clean-on-validation-error: true
   docker:
     compose:
-      file: compose/docker-compose-local.yml
-      enabled: true
+      file: "compose/docker-compose-local.yml"
+      lifecycle-management: start-only
+#      enabled: true
       # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
       profiles:
-        active: full
-      # Dersom database skal nullstilles hver gang applikasjonen starter:
+        active: "full"
+      # Dersom database skal nullstilles hver gang applikasjonen restarter:
+      #lifecycle-management: start-and-stop
       #stop:
       #  command=down
   datasource:

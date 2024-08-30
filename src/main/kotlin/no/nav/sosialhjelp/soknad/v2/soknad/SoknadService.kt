@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +16,7 @@ interface SoknadService {
         soknadId: UUID,
         // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
         opprettetDato: LocalDateTime,
+        kortSoknad: Boolean,
     ): UUID
 
     fun deleteSoknad(soknadId: UUID)
@@ -27,6 +27,13 @@ interface SoknadService {
     )
 
     fun getSoknad(soknadId: UUID): Soknad
+
+    fun hasSoknadNewerThan(
+        eierId: String,
+        tidspunkt: LocalDateTime,
+    ): Boolean
+
+    fun erKortSoknad(soknadId: UUID): Boolean
 }
 
 interface BegrunnelseService {
@@ -42,7 +49,6 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-    private val mellomlagringService: MellomlagringService,
 ) : SoknadService, BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
@@ -53,15 +59,15 @@ class SoknadServiceImpl(
         eierId: String,
         soknadId: UUID,
         opprettetDato: LocalDateTime,
-    ): UUID {
-        return Soknad(
+        kortSoknad: Boolean,
+    ): UUID =
+        Soknad(
             id = soknadId,
             tidspunkt = Tidspunkt(opprettet = opprettetDato),
             eierPersonId = eierId,
-        )
-            .let { soknadRepository.save(it) }
+            kortSoknad = kortSoknad,
+        ).let { soknadRepository.save(it) }
             .id
-    }
 
     override fun deleteSoknad(soknadId: UUID) {
         soknadRepository.findByIdOrNull(soknadId)
@@ -82,17 +88,23 @@ class SoknadServiceImpl(
         soknadRepository.findByIdOrNull(soknadId)
             ?: error("Soknad finnes ikke")
 
+    override fun hasSoknadNewerThan(
+        eierId: String,
+        tidspunkt: LocalDateTime,
+    ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
+
+    override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
+
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 
     override fun updateBegrunnelse(
         soknadId: UUID,
         begrunnelse: Begrunnelse,
-    ): Begrunnelse {
-        return findOrError(soknadId)
+    ): Begrunnelse =
+        findOrError(soknadId)
             .copy(begrunnelse = begrunnelse)
             .let { soknadRepository.save(it) }
             .begrunnelse
-    }
 
     companion object {
         private val logger by logger()

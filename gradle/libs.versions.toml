@@ -1,46 +1,48 @@
 [versions]
-kotlin = "1.9.23"
-spring-boot = "3.2.4"
-coroutines = "1.8.0"
-filformat = "1.2023.07.11-15.37-bb76af3d1843"
+kotlin = "2.0.0"
+spring-boot = "3.3.2"
+coroutines = "1.8.1"
+filformat = "1.2024.07.05-15.40-e5d4649f35ad"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
 fiks_svar_ut = "4.0.0"
-fiks_kryptering = "2.0.3"
-springdoc = "2.5.0"
-flyway_plugin = "10.11.0"
-flyway = "10.11.0"
-ojdbc_10 = "19.22.0.0"
+fiks_kryptering = "2.0.5"
+springdoc = "2.6.0"
+flyway_plugin = "10.17.0"
+flyway = "10.17.0"
+ojdbc_10 = "19.23.0.0"
 hsqldb = "2.7.2"
-lettuce = "6.3.2.RELEASE"
+lettuce = "6.4.0.RELEASE"
 token_validation = "4.0.3"
 java_jwt = "4.4.0"
 prometheus = "0.16.0"
-micrometer = "1.12.4"
-jackson = "2.17.0"
-logback = "1.5.3"
-logstash = "7.4"
+micrometer = "1.13.2"
+jackson = "2.17.2"
+logback = "1.5.6"
+logstash = "8.0"
 pdfbox = "3.0.2"
-jakarta_servlet = "6.0.0"
-unleash_client = "9.2.0"
+jakarta_servlet = "6.1.0"
+unleash_client = "9.2.4"
 tika = "2.9.2"
 tika_parsers = "2.9.2"
-commons_text = "1.11.0"
+commons_text = "1.12.0"
 ktlint = "1.2.1"
-mockk = "1.13.10"
+mockk = "1.13.12"
 versions = "0.51.0"
 vault_jdbc = "1.3.10"
 resilience4j = "2.2.0"
 spotless = "6.25.0"
 
 [libraries]
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
-spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
-spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
-spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
+spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
+spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
 
 resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
@@ -84,14 +86,13 @@ pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }
 pdfbox-io = { module = "org.apache.pdfbox:pdfbox-io", version.ref = "pdfbox" }
 
-spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 token-validation-spring-test = { module = "no.nav.security:token-validation-spring-test", version.ref = "token_validation" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-jvm = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
 [bundles]
 spring-boot = [
+    "spring-boot-docker-compose",
     "spring-boot-starter-actuator",
     "spring-boot-starter-aop",
     "spring-boot-starter-cache",
@@ -114,7 +115,6 @@ coroutines = [
     "kotlinx-coroutines-reactor",
     "kotlinx-coroutines-core",
     "kotlinx-coroutines-test",
-
 ]
 
 springdoc = [
@@ -131,7 +131,7 @@ pdfbox = [
 sosialhjelp-common = [
     "sosialhjelp-common-selftest",
     "sosialhjelp-common-api",
-#    "sosialhjelp-common-kotlin-utils",
+    #    "sosialhjelp-common-kotlin-utils",
 ]
 
 

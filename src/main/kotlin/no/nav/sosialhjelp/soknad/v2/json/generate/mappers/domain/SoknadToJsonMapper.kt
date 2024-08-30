@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -65,10 +66,10 @@ class SoknadToJsonMapper(
             return JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
         }
 
-        private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse {
-            return JsonBegrunnelse()
+        private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
+            JsonBegrunnelse()
                 .withHvaSokesOm(hvaSokesOm)
                 .withHvorforSoke(hvorforSoke)
-        }
+                .withKilde(JsonKildeBruker.BRUKER)
     }
 }

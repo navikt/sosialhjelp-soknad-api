@@ -19,7 +19,7 @@ interface ForsorgerService {
     fun updateForsorger(
         soknadId: UUID,
         barnebidrag: Barnebidrag?,
-        updated: List<Barn>,
+        updated: Map<UUID, Barn>,
     ): Forsorger
 }
 
@@ -43,7 +43,7 @@ class FamilieServiceImpl(
     override fun updateForsorger(
         soknadId: UUID,
         barnebidrag: Barnebidrag?,
-        updated: List<Barn>,
+        updated: Map<UUID, Barn>,
     ): Forsorger {
         val forsorger =
             findOrCreate(soknadId)
@@ -97,19 +97,15 @@ class FamilieServiceImpl(
 
     private fun mapAnsvar(
         existing: Map<UUID, Barn>,
-        updated: List<Barn>,
+        updated: Map<UUID, Barn>,
     ): Map<UUID, Barn> {
+        // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
         return existing
             .map { (uuid, existing) ->
-                // TODO: Fjern personId-lookupen her når denne ikke blir kalt fra gammel ForsorgerpliktRessurs
-                val updatedBarn =
-                    updated.find { it.familieKey == uuid }
-                        ?: updated.find { it.personId == existing.personId }
-
-                when (updatedBarn != null) {
-                    true -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted)
-                    false -> uuid to existing
-                }
+                updated.entries
+                    .find { (key, updatedBarn) -> key == uuid || updatedBarn.personId == existing.personId }
+                    ?.let { (_, updatedBarn) -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted) }
+                    ?: (uuid to existing)
             }
             .toMap()
     }

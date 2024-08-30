@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadLifecycleService {
-    fun startSoknad(): UUID
+    fun startSoknad(token: String): Pair<UUID, Boolean>
 
     fun cancelSoknad(
         soknadId: UUID,
@@ -28,13 +28,13 @@ class SoknadLifecycleServiceImpl(
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
 ) : SoknadLifecycleService {
-    override fun startSoknad(): UUID {
-        prometheusMetricsService.reportStartSoknad()
+    override fun startSoknad(token: String): Pair<UUID, Boolean> {
         // TODO Metadata
 
-        return createDeleteSoknadHandler.createSoknad()
-            .also {
-                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString())
+        return createDeleteSoknadHandler.createSoknad(token)
+            .also { (soknadId, isKortSoknad) ->
+                prometheusMetricsService.reportStartSoknad(isKortSoknad)
+                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
                 logger.info("Ny søknad opprettet")
             }
     }
@@ -43,8 +43,8 @@ class SoknadLifecycleServiceImpl(
         // TODO Metadata
         logger.info("Starter innsending av søknad.")
 
-        val (digisosId, navEnhet) =
-            runCatching { sendSoknadHandler.doSendAndReturnDigisosId(soknadId) }
+        val sendtInfo =
+            runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
                 .onFailure {
                     prometheusMetricsService.reportFeilet()
                     logger.error("Feil ved sending av søknad.", it)
@@ -52,15 +52,15 @@ class SoknadLifecycleServiceImpl(
                 }
                 .getOrThrow()
 
-        prometheusMetricsService.reportSendt()
+        prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad)
         prometheusMetricsService.reportSoknadMottaker(
-            MetricsUtils.navKontorTilMetricNavn(navEnhet.enhetsnavn),
+            MetricsUtils.navKontorTilMetricNavn(sendtInfo.navEnhet.enhetsnavn),
         )
 
         // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
         createDeleteSoknadHandler.deleteSoknad(soknadId)
 
-        return Pair(digisosId, LocalDateTime.now())
+        return Pair(sendtInfo.digisosId, sendtInfo.innsendingTidspunkt)
     }
 
     override fun cancelSoknad(

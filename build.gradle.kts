@@ -51,6 +51,7 @@ val githubUser: String by project
 val githubPassword: String by project
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")
@@ -78,7 +79,7 @@ dependencies {
 
     developmentOnly(libs.spring.boot.docker.compose)
 
-    implementation("org.skyscreamer:jsonassert:1.5.1")
+    implementation("org.skyscreamer:jsonassert:1.5.3")
 
     // Coroutines
     implementation(libs.bundles.coroutines)
@@ -100,8 +101,8 @@ dependencies {
     // flyway / db
     implementation(libs.flyway.core)
     implementation(libs.vault.jdbc)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.8.1")
-    runtimeOnly("org.postgresql:postgresql:42.7.1")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.17.0")
+    runtimeOnly("org.postgresql:postgresql:42.7.3")
 
     // redis
     implementation(libs.lettuce.core)
@@ -139,8 +140,8 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.19.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    testImplementation("org.testcontainers:postgresql:1.20.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.0")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)

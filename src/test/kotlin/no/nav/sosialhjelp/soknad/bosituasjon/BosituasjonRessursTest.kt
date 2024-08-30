@@ -84,7 +84,9 @@ internal class BosituasjonRessursTest {
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bosituasjon = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.bosituasjon
+        val bosituasjon =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.bosituasjon
         assertThat(bosituasjon.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(bosituasjon.botype).isEqualTo(Botype.ANNET)
         assertThat(bosituasjon.antallPersoner).isEqualTo(3)
@@ -103,7 +105,9 @@ internal class BosituasjonRessursTest {
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bosituasjon = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.bosituasjon
+        val bosituasjon =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.bosituasjon
         assertThat(bosituasjon.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(bosituasjon.botype).isNull()
         // todo: assertion git NPE selv om bosituasjon.antallPerson er null?
@@ -140,13 +144,14 @@ internal class BosituasjonRessursTest {
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
 
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.bosituasjon
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.data.bosituasjon
             .withKilde(JsonKildeBruker.BRUKER)
             .withBotype(botype)
             .withAntallPersoner(antallPersoner)

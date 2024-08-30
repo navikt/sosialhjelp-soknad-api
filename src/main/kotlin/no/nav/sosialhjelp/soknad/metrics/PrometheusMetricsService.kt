@@ -25,14 +25,17 @@ class PrometheusMetricsService(
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
+    private val innsendtVedleggMetric = Counter.builder("vedlegg_sendt_med_soknad_counter")
+
     fun reportInnsendingTid(antallSekunder: Long) {
         soknadInnsendingTidTimer
             .register(meterRegistry)
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
-    fun reportStartSoknad() {
+    fun reportStartSoknad(kort: Boolean) {
         startSoknadCounter
+            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }
@@ -44,8 +47,9 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendt() {
+    fun reportSendt(kort: Boolean) {
         sendtSoknadDigisosApiCounter
+            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }
@@ -62,6 +66,16 @@ class PrometheusMetricsService(
             .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
+    }
+
+    fun reportAntallVedleggSendtInn(
+        fiksDigisosId: String,
+        antallVedlegg: Int,
+    ) {
+        innsendtVedleggMetric
+            .tag("fiksDigisosId", fiksDigisosId)
+            .register(meterRegistry)
+            .increment(antallVedlegg.toDouble())
     }
 
     companion object {

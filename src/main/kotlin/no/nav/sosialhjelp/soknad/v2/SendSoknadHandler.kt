@@ -14,9 +14,11 @@ import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Component
@@ -25,10 +27,11 @@ class SendSoknadHandler(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
     private val soknadValidator: SoknadValidator,
+    private val soknadService: SoknadService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    fun doSendAndReturnDigisosId(soknadId: UUID): Pair<UUID, NavEnhet> {
+    fun doSendAndReturnInfo(soknadId: UUID): SoknadSendtInfo {
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
@@ -56,7 +59,15 @@ class SendSoknadHandler(
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
-        return Pair(digisosId, mottaker)
+        val innsendingTidspunkt = LocalDateTime.now().also { soknadService.setInnsendingstidspunkt(soknadId, it) }
+
+        return SoknadSendtInfo(
+            // TODO Dette er vel ikke soknadId
+            digisosId = digisosId,
+            navEnhet = mottaker,
+            isKortSoknad = soknadService.erKortSoknad(soknadId),
+            innsendingTidspunkt = innsendingTidspunkt,
+        )
     }
 
     private fun JsonInternalSoknad.toVedleggJson(): String {
@@ -117,3 +128,10 @@ class SendSoknadHandler(
         private val logger by logger()
     }
 }
+
+data class SoknadSendtInfo(
+    val digisosId: UUID,
+    val navEnhet: NavEnhet,
+    val isKortSoknad: Boolean,
+    val innsendingTidspunkt: LocalDateTime,
+)

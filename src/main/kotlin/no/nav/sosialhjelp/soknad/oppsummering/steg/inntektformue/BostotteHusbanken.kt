@@ -24,12 +24,11 @@ class BostotteHusbanken {
     fun getAvsnitt(
         opplysninger: JsonOkonomiopplysninger,
         driftsinformasjon: JsonDriftsinformasjon,
-    ): Avsnitt {
-        return Avsnitt(
+    ): Avsnitt =
+        Avsnitt(
             tittel = "inntekt.bostotte.husbanken.tittel",
             sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon),
         )
-    }
 
     private fun bostotteSporsmal(
         opplysninger: JsonOkonomiopplysninger,
@@ -90,8 +89,8 @@ class BostotteHusbanken {
         return sporsmal
     }
 
-    private fun bekreftelseTidspunktSporsmal(bostotteBekreftelse: JsonOkonomibekreftelse): Sporsmal {
-        return Sporsmal(
+    private fun bekreftelseTidspunktSporsmal(bostotteBekreftelse: JsonOkonomibekreftelse): Sporsmal =
+        Sporsmal(
             tittel = "inntekt.bostotte.har_gitt_samtykke",
             erUtfylt = true,
             felt =
@@ -102,10 +101,9 @@ class BostotteHusbanken {
                     ),
                 ),
         )
-    }
 
-    private fun sporsmalMedIngenUtbetalingerEllerSakerSvar(): Sporsmal {
-        return Sporsmal(
+    private fun sporsmalMedIngenUtbetalingerEllerSakerSvar(): Sporsmal =
+        Sporsmal(
             tittel = "",
             erUtfylt = true,
             felt =
@@ -116,7 +114,6 @@ class BostotteHusbanken {
                     ),
                 ),
         )
-    }
 
     private fun utbetalingerSporsmal(opplysninger: JsonOkonomiopplysninger): Sporsmal {
         val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
@@ -145,7 +142,7 @@ class BostotteHusbanken {
                                 SvarType.TEKST,
                             )
                         map["inntekt.bostotte.utbetaling.utbetalingsdato"] = createSvar(it.utbetalingsdato, SvarType.DATO)
-                        map["inntekt.bostotte.utbetaling.belop"] = createSvar(it.netto.toString(), SvarType.TEKST)
+                        map["inntekt.bostotte.utbetaling.belop"] = createSvar(it.netto?.toString(), SvarType.TEKST)
                         Felt(
                             type = Type.SYSTEMDATA_MAP,
                             labelSvarMap = map,
@@ -191,9 +188,7 @@ class BostotteHusbanken {
         )
     }
 
-    private fun harHusbankenUtbetalinger(opplysninger: JsonOkonomiopplysninger): Boolean {
-        return opplysninger.utbetaling.any { UTBETALING_HUSBANKEN == it.type }
-    }
+    private fun harHusbankenUtbetalinger(opplysninger: JsonOkonomiopplysninger): Boolean = opplysninger.utbetaling.any { UTBETALING_HUSBANKEN == it.type }
 
     private fun bostotteSakStatus(sak: JsonBostotteSak): String {
         var status = if (sak.vedtaksstatus != null) sak.vedtaksstatus.value() else sak.status

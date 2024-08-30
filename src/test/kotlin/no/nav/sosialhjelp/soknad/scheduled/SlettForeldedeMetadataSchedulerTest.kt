@@ -76,19 +76,19 @@ internal class SlettForeldedeMetadataSchedulerTest {
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int,
-    ): SoknadMetadata {
-        return SoknadMetadata(
+    ): SoknadMetadata =
+        SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),
             behandlingsId = behandlingsId,
             fnr = EIER,
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             skjema = "",
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
             status = status,
-            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            kortSoknad = false,
         )
-    }
 
     companion object {
         private const val EIER = "11111111111"

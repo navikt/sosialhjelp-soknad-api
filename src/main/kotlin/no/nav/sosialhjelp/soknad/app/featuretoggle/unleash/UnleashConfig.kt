@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.featuretoggle.unleash
 
 import io.getunleash.DefaultUnleash
+import io.getunleash.FakeUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
 import org.springframework.beans.factory.annotation.Value
@@ -16,10 +17,12 @@ class UnleashConfig(
     @Value("\${unleash_server_api_token}") private val apiToken: String,
 ) {
     @Bean
+    @Profile("!mock-alt")
     fun unleashClient(): Unleash {
         val byInstanceIdStrategy = ByInstanceIdStrategy(environment)
         val config =
-            UnleashConfig.builder()
+            UnleashConfig
+                .builder()
                 .appName("sosialhjelp-soknad-api")
                 .environment(environment)
                 .unleashAPI("$baseurl/api")
@@ -33,7 +36,6 @@ class UnleashConfig(
     }
 
     @Bean
-    fun unleashToggleFetcher(): MutableList<String> {
-        return unleashClient().more().featureToggleNames
-    }
+    @Profile("mock-alt")
+    fun unleashClientMock(): Unleash = FakeUnleash().also { it.enable("sosialhjelp.soknad.kategorier", "sosialhjelp.soknad.kort_soknad") }
 }

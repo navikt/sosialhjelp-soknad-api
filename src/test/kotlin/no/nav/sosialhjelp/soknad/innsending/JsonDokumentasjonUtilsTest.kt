@@ -16,7 +16,7 @@ internal class JsonDokumentasjonUtilsTest {
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isNull()
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNull()
 
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true)
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon)
 
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isEqualTo(HendelseType.SOKNAD)
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNotNull
@@ -30,42 +30,10 @@ internal class JsonDokumentasjonUtilsTest {
     @Test
     fun addHendelseTypeAndHendelseReferanse_shouldAddUniqueReferanse() {
         val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true)
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon)
 
         assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse)
             .isNotEqualTo(jsonVedleggSpesifikasjon.vedlegg[1].hendelseReferanse)
-    }
-
-    @Test
-    fun addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldOnlyAddHendelseTypeBrukerForAnnetAnnet() {
-        val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isNull()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNull()
-
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false)
-
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isNull()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isNull()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[1].hendelseType).isNull()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[1].hendelseReferanse).isNull()
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[2].hendelseType).isEqualTo(HendelseType.BRUKER)
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[2].hendelseReferanse).isNull()
-    }
-
-    @Test
-    fun addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldNotEditHendelseReferanse() {
-        val hendelseReferanse = "1234"
-        val jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon()
-        jsonVedleggSpesifikasjon.vedlegg[0].hendelseType = HendelseType.SOKNAD
-        jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse = hendelseReferanse
-        jsonVedleggSpesifikasjon.vedlegg[1].hendelseType = HendelseType.BRUKER
-
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false)
-
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseType).isEqualTo(HendelseType.SOKNAD)
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[0].hendelseReferanse).isEqualTo(hendelseReferanse)
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[1].hendelseType).isEqualTo(HendelseType.BRUKER)
-        assertThat(jsonVedleggSpesifikasjon.vedlegg[1].hendelseReferanse).isNull()
     }
 
     private fun createJsonVedleggSpesifikasjon(): JsonVedleggSpesifikasjon {

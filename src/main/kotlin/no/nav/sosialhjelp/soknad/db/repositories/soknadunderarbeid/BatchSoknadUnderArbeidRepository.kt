@@ -5,7 +5,7 @@ interface BatchSoknadUnderArbeidRepository {
 
     fun hentSoknadUnderArbeid(soknadUnderArbeidId: Long): SoknadUnderArbeid?
 
-    fun hentGamleSoknadUnderArbeidForBatch(): List<Long>
+    fun hentGamleSoknaderUnderArbeidForBatch(): List<Long>
 
     fun slettSoknad(soknadUnderArbeidId: Long?)
 }

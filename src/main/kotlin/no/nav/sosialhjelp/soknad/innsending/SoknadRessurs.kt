@@ -4,17 +4,20 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -74,13 +78,21 @@ class SoknadRessurs(
         val notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.jsonInternalSoknad
 
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        soknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+            ?.soknad
+            ?.data
             ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
 
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
@@ -128,26 +140,43 @@ class SoknadRessurs(
         soknadUnderArbeid: SoknadUnderArbeid,
         samtykke: String,
     ): JsonOkonomibekreftelse? {
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
+        val bekreftelser =
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.okonomi
+                ?.opplysninger
+                ?.bekreftelse
         return bekreftelser
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
+        @RequestParam(value = "soknadstype", required = false) soknadstype: String?,
         response: HttpServletResponse,
-    ): Map<String, String> {
+    ): StartSoknadResponse {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-
-        return soknadServiceOld.startSoknad()
-            .let {
-                response.addCookie(xsrfCookie(it))
-                response.addCookie(xsrfCookieMedBehandlingsid(it))
-
-                mapOf("brukerBehandlingId" to it)
+        // Tillater å overstyre søknadstype i test-miljøene
+        val type =
+            if (MiljoUtils.isNonProduction()) {
+                when (soknadstype) {
+                    "kort" -> JsonData.Soknadstype.KORT
+                    "standard" -> JsonData.Soknadstype.STANDARD
+                    else -> null
+                }
+            } else {
+                null
+            }
+        return soknadServiceOld
+            .startSoknad(token, type)
+            .also {
+                response.addCookie(xsrfCookie(it.brukerBehandlingId))
+                response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))
             }
     }
 
@@ -158,6 +187,14 @@ class SoknadRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         soknadServiceOld.avbrytSoknad(behandlingsId, referer)
+    }
+
+    @GetMapping("/{behandlingsId}/isKort")
+    fun isKortSoknad(
+        @PathVariable behandlingsId: String,
+    ): Boolean {
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
+        return soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
     }
 
     companion object {

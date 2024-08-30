@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
@@ -27,6 +28,9 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
+
+    @Autowired
+    protected lateinit var jdbcTemplate: JdbcTemplate
 
     protected lateinit var token: SignedJWT
 
@@ -145,7 +149,7 @@ abstract class AbstractIntegrationTest {
         requestBody: Any,
         httpStatus: HttpStatus,
         soknadId: UUID? = null,
-    ): Feilmelding {
+    ): SoknadApiError {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -154,7 +158,7 @@ abstract class AbstractIntegrationTest {
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
             .expectStatus().isEqualTo(httpStatus)
-            .expectBody(Feilmelding::class.java)
+            .expectBody(SoknadApiError::class.java)
             .returnResult()
             .responseBody!!
     }

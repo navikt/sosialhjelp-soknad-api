@@ -47,7 +47,9 @@ internal class ArbeidsforholdSystemdataTest {
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.forhold
+        val jsonArbeidsforholdList =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.arbeid.forhold
         val jsonArbeidsforhold = jsonArbeidsforholdList[0]
         val jsonarbeidsforhold2 = jsonArbeidsforholdList[1]
         assertThat(jsonArbeidsforhold.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -60,7 +62,8 @@ internal class ArbeidsforholdSystemdataTest {
     fun skalLeggeTilInntektForLonnslipp() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
         val arbeidsforholdList = listOf(ARBEIDSFORHOLD_LONNSLIPP)
 
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
@@ -70,7 +73,9 @@ internal class ArbeidsforholdSystemdataTest {
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val inntekt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt[0]
+        val inntekt =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.inntekt[0]
         assertThat(inntekt.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(inntekt.type).isEqualTo(SoknadJsonTyper.JOBB)
         assertThat(inntekt.tittel).isEqualTo("tittel")
@@ -81,7 +86,8 @@ internal class ArbeidsforholdSystemdataTest {
     fun skalLeggeTilUtbetalingForSluttoppgjor() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
         val arbeidsforholdList = listOf(ARBEIDSFORHOLD_SLUTTOPPGJOR)
 
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
@@ -91,7 +97,9 @@ internal class ArbeidsforholdSystemdataTest {
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val utbetaling = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling[0]
+        val utbetaling =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling[0]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(utbetaling.type).isEqualTo(SoknadJsonTyper.SLUTTOPPGJOER)
         assertThat(utbetaling.tittel).isEqualTo("tittel")
@@ -107,17 +115,24 @@ internal class ArbeidsforholdSystemdataTest {
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.forhold
-        val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
-        val inntekter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt
+        val jsonArbeidsforholdList =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.arbeid.forhold
+        val utbetalinger =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.opplysninger.utbetaling
+        val inntekter =
+            soknadUnderArbeid.jsonInternalSoknad!!
+                .soknad.data.okonomi.oversikt.inntekt
         assertThat(jsonArbeidsforholdList).isEmpty()
         assertThat(utbetalinger).isEmpty()
         assertThat(inntekter).isEmpty()
     }
 
     private fun createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp(): JsonInternalSoknad {
-        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
-        jsonInternalSoknad.soknad.data.arbeid.forhold.add(JsonArbeidsforhold())
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false)
+        jsonInternalSoknad.soknad.data.arbeid.forhold
+            .add(JsonArbeidsforhold())
         jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling.add(
             JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.SLUTTOPPGJOER),
         )
@@ -183,16 +198,15 @@ internal class ArbeidsforholdSystemdataTest {
                 harFastStilling = false,
             )
 
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
+            SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-        }
     }
 }
