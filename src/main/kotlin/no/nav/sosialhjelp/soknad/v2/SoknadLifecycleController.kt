@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class StartSoknadResponseDto(
-    val soknadId: String,
-    val useKortSoknad: Boolean,
-)
-
 /**
  * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
  * som direkte opererer/muterer data.
@@ -93,6 +88,11 @@ class SoknadLifecycleController(
         }
     }
 }
+
+data class StartSoknadResponseDto(
+    val soknadId: String,
+    val useKortSoknad: Boolean,
+)
 
 data class SoknadSendtDto(
     val digisosId: UUID,

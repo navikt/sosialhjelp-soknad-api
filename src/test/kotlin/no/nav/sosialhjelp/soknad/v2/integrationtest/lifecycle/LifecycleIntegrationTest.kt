@@ -4,9 +4,9 @@ import io.mockk.every
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
-import no.nav.sosialhjelp.soknad.v2.OpprettetSoknadDto
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
+import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
@@ -101,7 +101,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = createUri)
             .expectStatus().is5xxServerError
-            .expectBody(Feilmelding::class.java)
+            .expectBody(SoknadApiError::class.java)
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
     }
@@ -109,8 +109,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     private fun createNewSoknad(): UUID {
         return doPost(
             uri = createUri,
-            responseBodyClass = OpprettetSoknadDto::class.java,
-        ).soknadId
+            responseBodyClass = StartSoknadResponseDto::class.java,
+        ).let { UUID.fromString(it.soknadId) }
     }
 
     private fun createNavEnhet(): NavEnhet {

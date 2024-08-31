@@ -24,6 +24,6 @@ abstract class AbstractOkonomiServiceTest {
 
     @BeforeEach
     fun setup() {
-        soknad = soknadRepository.save(Soknad(eierPersonId = "1234561212345"))
+        soknad = soknadRepository.save(Soknad(eierPersonId = "1234561212345", kortSoknad = false))
     }
 }

@@ -6,8 +6,8 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -69,7 +69,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
         doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
             .expectStatus().isNotFound
-            .expectBody(Feilmelding::class.java)
+            .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody!!
             .also {
                 assertThat(it.message).isEqualTo("Dokument eksisterer ikke på noe Dokumentasjon")
@@ -138,7 +138,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             soknadId = soknad.id,
         )
             .expectStatus().isNotFound
-            .expectBody(Feilmelding::class.java)
+            .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody!!
             .also {
                 assertThat(it.message).isEqualTo("Dokumentasjon for type UTGIFTER_BOLIGLAN finnes ikke")

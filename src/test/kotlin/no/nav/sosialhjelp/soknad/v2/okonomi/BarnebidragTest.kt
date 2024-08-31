@@ -16,7 +16,7 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
 
     @Test
     fun `Oppdatere forsorger skal oppdatere Inntekt og Utgift, samt forvente dokumentasjon`() {
-        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyList())
+        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
             assertThat(inntekter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_MOTTAR }
@@ -33,11 +33,11 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
 
     @Test
     fun `Endre verdi Barnebidrag skal fjerne relevant okonomi-post og vedlegg`() {
-        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyList())
+        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
         okonomiRepository.findByIdOrNull(soknad.id)!!
             .run { assertThat(inntekter).allMatch { it.type == BARNEBIDRAG_MOTTAR } }
 
-        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BETALER, emptyList())
+        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BETALER, emptyMap())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
             assertThat(inntekter).isEmpty()
@@ -53,11 +53,11 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
 
     @Test
     fun `Barnebidrag lik null skal fjerne alle okonomi-poster og dokumentasjonsforventninger`() {
-        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyList())
+        forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
         okonomiRepository.findByIdOrNull(soknad.id)!!
             .run { assertThat(inntekter).allMatch { it.type == BARNEBIDRAG_MOTTAR } }
 
-        forsorgerService.updateForsorger(soknad.id, null, emptyList())
+        forsorgerService.updateForsorger(soknad.id, null, emptyMap())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
             assertThat(inntekter).isEmpty()
