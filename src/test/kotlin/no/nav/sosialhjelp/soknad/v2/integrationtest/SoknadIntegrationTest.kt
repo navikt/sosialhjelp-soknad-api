@@ -51,18 +51,25 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Opprett søknad skal bli kort hvis bruker har sendt inn søknad de siste 120 dager`() {
         opprettSoknad(sendtInn = LocalDateTime.now().minusDays(40)).also { soknadRepository.save(it) }
+
         val (id, useKortSoknad) =
-            webTestClient
-                .post()
-                .uri("/soknad/opprettSoknad")
-                .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "BEARER ${token.serialize()}")
-                .exchange()
-                .expectStatus()
-                .isOk
-                .expectBody(StartSoknadResponseDto::class.java)
-                .returnResult()
-                .responseBody!!
+            doPost(
+                uri = "/soknad/create",
+                responseBodyClass = StartSoknadResponseDto::class.java,
+            )
+
+//        val (id, useKortSoknad) =
+//            webTestClient
+//                .post()
+//                .uri("/soknad/create")
+//                .accept(MediaType.APPLICATION_JSON)
+//                .header("Authorization", "BEARER ${token.serialize()}")
+//                .exchange()
+//                .expectStatus()
+//                .isOk
+//                .expectBody(StartSoknadResponseDto::class.java)
+//                .returnResult()
+//                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
@@ -92,7 +99,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -118,7 +125,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -158,7 +165,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -208,7 +215,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             .returnResult()
             .responseBody!!
             .also {
-                assertThat(it.message).isEqualTo("Ingen søknad med denne behandlingsId funnet")
+                assertThat(it.message).isEqualTo("NyModell: Soknad finnes ikke")
             }
     }
 }

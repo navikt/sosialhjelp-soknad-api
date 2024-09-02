@@ -85,14 +85,14 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             .apply { setUser(userId) }
             .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
 
-        every { personService.hentPerson(userId) } returns createPersonAnswer()
-        every { personService.hentBarnForPerson(userId) } returns createBarnAnswer()
-        every { kontonummerService.getKontonummer(userId) } returns "12145534122"
-        every { arbeidsforholdService.hentArbeidsforhold(userId) } returns createArbeidsforholdAnswer()
-        every { skattbarInntektService.hentUtbetalinger(userId) } returns createSkattbarInntektAnswer()
-        every { organisasjonService.hentOrgNavn(orgnr) } returns arbeidsgiverNavn
-        every { mobiltelefonService.hent(userId) } returns "44553366"
-        every { navUtbetalingerService.getUtbetalingerSiste40Dager(userId) } returns createNavUtbetaling()
+        every { personService.hentPerson(any()) } returns createPersonAnswer()
+        every { personService.hentBarnForPerson(any()) } returns createBarnAnswer()
+        every { kontonummerService.getKontonummer(any()) } returns "12145534122"
+        every { arbeidsforholdService.hentArbeidsforhold(any()) } returns createArbeidsforholdAnswer()
+        every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
+        every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
+        every { mobiltelefonService.hent(any()) } returns "44553366"
+        every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
         every { mellomlagringService.deleteAll(any()) } just runs
         every {
             digisosApiV2Client.krypterOgLastOppFiler(

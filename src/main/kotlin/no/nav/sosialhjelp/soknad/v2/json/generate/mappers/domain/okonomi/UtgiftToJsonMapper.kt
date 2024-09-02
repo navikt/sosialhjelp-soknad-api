@@ -17,6 +17,7 @@ class UtgiftToJsonMapper(
     private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
+        opplysninger.withUtgift(mutableListOf())
         utgifter.forEach { it.mapToJsonObject() }
     }
 

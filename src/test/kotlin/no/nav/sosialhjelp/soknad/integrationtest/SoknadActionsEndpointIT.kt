@@ -1,13 +1,14 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
-import com.ninjasquad.springmockk.MockkBean
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.util.UUID
+import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
@@ -39,10 +40,7 @@ class SoknadActionsEndpointIT {
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @Autowired
-    private lateinit var soknadRepository: SoknadRepository
-
-    @MockkBean(relaxed = true)
-    private lateinit var digisosApiV2Client: DigisosApiV2Client
+    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @AfterEach
     fun tearDown() {
@@ -51,8 +49,7 @@ class SoknadActionsEndpointIT {
 
     @Test
     internal fun sendSoknad_skalGiForbiddenMedAnnenBruker() {
-        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
-        soknadRepository.save(opprettSoknad(id = UUID.fromString(behandlingsId)))
+        val behandlingsId = opprettSoknad()
 
         webClient
             .post()
@@ -66,8 +63,7 @@ class SoknadActionsEndpointIT {
 
     @Test
     internal fun sendSoknad_skalGi401UtenToken() {
-        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
-        soknadRepository.save(opprettSoknad(id = UUID.fromString(behandlingsId)))
+        val behandlingsId = opprettSoknad()
 
         webClient
             .post()
@@ -76,5 +72,23 @@ class SoknadActionsEndpointIT {
             .exchange()
             .expectStatus()
             .isUnauthorized
+    }
+
+    private fun opprettSoknad(): String {
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "BEHANDLINGSID",
+            eier = BRUKER,
+            jsonInternalSoknad =
+                SoknadServiceOld.createEmptyJsonInternalSoknad(
+                    BRUKER,
+                    false,
+                ),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now(),
+        )
+            .also { soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid = it, eier = BRUKER) }
+            .behandlingsId
     }
 }

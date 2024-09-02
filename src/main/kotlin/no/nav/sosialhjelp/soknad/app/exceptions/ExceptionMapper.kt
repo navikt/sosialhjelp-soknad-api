@@ -167,7 +167,13 @@ class ExceptionMapper(
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     fun handleNotFoundExceptions(e: RuntimeException): ResponseEntity<SoknadApiError> {
         log.warn("Fant ikke:", e)
-        return buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound))
+        return buildError(
+            HttpStatus.NOT_FOUND,
+            SoknadApiError(
+                error = SoknadApiErrorType.NotFound,
+                e = SosialhjelpSoknadApiException(message = e.message, cause = e),
+            ),
+        )
     }
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
