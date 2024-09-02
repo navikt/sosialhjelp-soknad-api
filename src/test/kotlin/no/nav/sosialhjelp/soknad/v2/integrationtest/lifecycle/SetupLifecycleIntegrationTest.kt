@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -72,6 +73,9 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
+
+    @MockkBean(relaxed = true)
+    protected lateinit var prometheusMetricsService: PrometheusMetricsService
 
     @BeforeEach
     protected fun setup() {
