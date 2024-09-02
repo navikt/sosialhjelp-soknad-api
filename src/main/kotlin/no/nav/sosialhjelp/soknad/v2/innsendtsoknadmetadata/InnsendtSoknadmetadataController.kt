@@ -19,39 +19,4 @@ class InnsendtSoknadmetadataController(private val innsendtSoknadMetadataService
             ?: ResponseEntity.notFound().build()
     }
 
-    @PostMapping("/innsendt-soknad-metadata")
-    fun upsertInnsendtSoknadMetadata(@RequestBody innsendtSoknadmetadata: InnsendtSoknadmetadata): ResponseEntity<InnsendtSoknadmetadata> {
-        return ResponseEntity.ok(
-            innsendtSoknadMetadataService.upsertInnsendtSoknadMetadata(
-                innsendtSoknadmetadata.soknadId,
-                innsendtSoknadmetadata.personId,
-                innsendtSoknadmetadata.sendt_inn_dato,
-                innsendtSoknadmetadata.opprettet_dato
-            )
-        )
-    }
-
-    @PutMapping("/innsendt-soknad-metadata")
-    fun updateInnsendtSoknadMetadata(@RequestBody innsendtSoknadmetadata: InnsendtSoknadmetadata): ResponseEntity<InnsendtSoknadmetadata> {
-        return ResponseEntity.ok(
-            innsendtSoknadMetadataService.upsertInnsendtSoknadMetadata(
-                innsendtSoknadmetadata.soknadId,
-                innsendtSoknadmetadata.personId,
-                innsendtSoknadmetadata.sendt_inn_dato,
-                innsendtSoknadmetadata.opprettet_dato
-            )
-        )
-    }
-
-//    @DeleteMapping("/innsendt-soknad-metadata/{soknadId}")
-//    fun deleteInnsendtSoknadMetadata(@PathVariable soknadId: UUID): ResponseEntity<Void> {
-//        innsendtSoknadMetadataService.deleteInnsendtSoknadMetadata(soknadId)
-//        return ResponseEntity.noContent().build()
-//    }
-
-//    @DeleteMapping("/innsendt-soknad-metadata")
-//    fun deleteInnsendtSoknadMetadataEldreEnn(@RequestParam eldreEnn: LocalDateTime): ResponseEntity<Void> {
-//        innsendtSoknadMetadataService.deleteAlleEldreEnn(eldreEnn)
-//        return ResponseEntity.noContent().build()
-//    }
 }
