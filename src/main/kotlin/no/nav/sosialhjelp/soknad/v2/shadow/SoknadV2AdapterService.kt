@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -13,6 +14,7 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
+    private val innsendtSoknadMetadataService: InnsendtSoknadMetadataService,
 ) : V2AdapterService {
     private val logger by logger()
 
@@ -66,5 +68,21 @@ class SoknadV2AdapterService(
             .runCatching {
                 soknadService.slettSoknad(UUID.fromString(behandlingsId))
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
+    }
+
+    override fun createInnsendtSoknadMetadata(behandlingsId: String, eierId: String, sendtInnDato: LocalDateTime?, opprettetDato: LocalDateTime) {
+        logger.info("NyModell: Oppretter innsendt soknad metadata for soknadId: $behandlingsId")
+
+        kotlin
+            .runCatching {
+                innsendtSoknadMetadataService.upsertInnsendtSoknadMetadata(
+                    soknadId = UUID.fromString(behandlingsId),
+                    personId = eierId,
+                    sendtInnDato = sendtInnDato,
+                    opprettetDato = opprettetDato,
+                )
+            }.onFailure { logger.warn("NyModell: Kunne ikke opprette innsendt soknad metadata", it) }
+
+
     }
 }

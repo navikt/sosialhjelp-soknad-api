@@ -25,7 +25,7 @@ interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadmeta
 data class InnsendtSoknadmetadata(
     @Id override val soknadId: UUID,
     val personId: String,
-    val sendt_inn_dato: LocalDateTime,
+    val sendt_inn_dato: LocalDateTime?,
     val opprettet_dato: LocalDateTime,
 //    val soknadType: SoknadType,
     // TODO Legg til søknadstype i ny modell

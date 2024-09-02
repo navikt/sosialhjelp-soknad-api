@@ -49,7 +49,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
@@ -102,6 +101,9 @@ class SoknadServiceOld(
             eierId,
             kortSoknad,
         )
+
+        // Ny modell
+        v2AdapterService.createInnsendtSoknadMetadata(behandlingsId, eierId, null, soknadUnderArbeid.opprettetDato)
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)

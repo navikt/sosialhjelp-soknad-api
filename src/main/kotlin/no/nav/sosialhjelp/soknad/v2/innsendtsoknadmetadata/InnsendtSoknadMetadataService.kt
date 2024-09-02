@@ -15,7 +15,7 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
     fun upsertInnsendtSoknadMetadata(
         soknadId: UUID,
         personId: String,
-        sendtInnDato: LocalDateTime,
+        sendtInnDato: LocalDateTime?,
         opprettetDato: LocalDateTime,
     ): InnsendtSoknadmetadata {
         return (findInnsendtSoknadMetadata(soknadId) ?: InnsendtSoknadmetadata(soknadId, personId, sendtInnDato, opprettetDato))
