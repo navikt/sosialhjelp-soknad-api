@@ -7,8 +7,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
-import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

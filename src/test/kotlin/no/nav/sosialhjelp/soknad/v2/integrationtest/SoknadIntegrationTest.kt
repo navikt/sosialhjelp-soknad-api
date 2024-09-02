@@ -107,7 +107,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
@@ -133,7 +133,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
@@ -173,7 +173,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isFalse()
