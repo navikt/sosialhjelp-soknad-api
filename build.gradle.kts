@@ -196,3 +196,7 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
         candidate.version.isNonStable() && !currentVersion.isNonStable()
     }
 }
+
+tasks.withType<Test> {
+    jvmArgs("-Xmx2g")
+}

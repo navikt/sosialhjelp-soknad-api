@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -34,7 +33,6 @@ import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 internal class MellomLagringServiceUtenMocketRepositoryTest {
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
