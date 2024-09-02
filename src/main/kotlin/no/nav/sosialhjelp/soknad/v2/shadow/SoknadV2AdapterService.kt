@@ -70,7 +70,12 @@ class SoknadV2AdapterService(
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    override fun createInnsendtSoknadMetadata(behandlingsId: String, eierId: String, sendtInnDato: LocalDateTime?, opprettetDato: LocalDateTime) {
+    override fun createInnsendtSoknadMetadata(
+        behandlingsId: String,
+        eierId: String,
+        sendtInnDato: LocalDateTime?,
+        opprettetDato: LocalDateTime,
+    ) {
         logger.info("NyModell: Oppretter innsendt soknad metadata for soknadId: $behandlingsId")
 
         kotlin
@@ -82,7 +87,5 @@ class SoknadV2AdapterService(
                     opprettetDato = opprettetDato,
                 )
             }.onFailure { logger.warn("NyModell: Kunne ikke opprette innsendt soknad metadata", it) }
-
-
     }
 }

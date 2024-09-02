@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.UUID
 
-
 /**
  * Formålet med testklassen:
  * 1. Sjekke at domenemodell samsvarer med database-tabeller
@@ -67,8 +66,8 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity =
-            createFamilie(soknad.id)
-                .copy(sivilstatus = null),
+                createFamilie(soknad.id)
+                    .copy(sivilstatus = null),
         )
     }
 
@@ -90,12 +89,13 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
 
     @Test
     fun `Skal slette søknadmetadata hvor sendt_inn_dato er eldre enn timestamp`() {
-        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.save(
-            opprettInnsendtSoknadMetadata(
-                soknadId = soknad.id,
-                sendt_inn_dato = LocalDateTime.now().minusDays(5)
+        val innsendtSoknadMetadata =
+            innsendtSoknadMetadataRepository.save(
+                opprettInnsendtSoknadMetadata(
+                    soknadId = soknad.id,
+                    sendt_inn_dato = LocalDateTime.now().minusDays(5),
+                ),
             )
-        )
         assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
         val antallSlettet = innsendtSoknadMetadataRepository.slettEldreEnn(LocalDateTime.now().minusDays(1))
         assertThat(antallSlettet).isEqualTo(1)
@@ -104,17 +104,16 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
 
     @Test
     fun `Skal ikke slette søknadmetadata hvor sendt_inn_dato er nyere enn timestamp`() {
-        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.save(
-            opprettInnsendtSoknadMetadata(
-                soknadId = soknad.id,
-                sendt_inn_dato = LocalDateTime.now().minusDays(1)
+        val innsendtSoknadMetadata =
+            innsendtSoknadMetadataRepository.save(
+                opprettInnsendtSoknadMetadata(
+                    soknadId = soknad.id,
+                    sendt_inn_dato = LocalDateTime.now().minusDays(1),
+                ),
             )
-        )
         assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
         val antallSlettet = innsendtSoknadMetadataRepository.slettEldreEnn(LocalDateTime.now().minusDays(5))
         assertThat(antallSlettet).isEqualTo(0)
         assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
     }
-
-
 }

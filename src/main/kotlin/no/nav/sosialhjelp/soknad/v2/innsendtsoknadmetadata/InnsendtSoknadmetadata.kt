@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
-
 @Repository
 interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadmetadata>, ListCrudRepository<InnsendtSoknadmetadata, UUID> {
     @Transactional
@@ -30,4 +29,3 @@ data class InnsendtSoknadmetadata(
 //    val soknadType: SoknadType,
     // TODO Legg til søknadstype i ny modell
 ) : DomainRoot
-

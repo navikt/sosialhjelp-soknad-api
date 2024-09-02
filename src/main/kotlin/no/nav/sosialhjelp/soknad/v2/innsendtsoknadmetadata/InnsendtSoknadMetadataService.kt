@@ -7,7 +7,6 @@ import java.util.UUID
 
 @Component
 class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository: InnsendtSoknadMetadataRepository) {
-
     fun findInnsendtSoknadMetadata(soknadId: UUID): InnsendtSoknadmetadata? {
         return innsendtSoknadMetadataRepository.findByIdOrNull(soknadId)
     }
