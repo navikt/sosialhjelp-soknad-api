@@ -101,7 +101,20 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         assertThat(antallSlettet).isEqualTo(1)
         assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isFalse
     }
-    //også en test hvor søknad ikke skal slettes
+
+    @Test
+    fun `Skal ikke slette søknadmetadata hvor sendt_inn_dato er nyere enn timestamp`() {
+        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.save(
+            opprettInnsendtSoknadMetadata(
+                soknadId = soknad.id,
+                sendt_inn_dato = LocalDateTime.now().minusDays(1)
+            )
+        )
+        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
+        val antallSlettet = innsendtSoknadMetadataRepository.slettEldreEnn(LocalDateTime.now().minusDays(5))
+        assertThat(antallSlettet).isEqualTo(0)
+        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
+    }
 
 
 }
