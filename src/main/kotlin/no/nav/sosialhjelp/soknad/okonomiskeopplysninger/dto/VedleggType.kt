@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 
 enum class VedleggType(
     @JsonValue val stringName: String,
-    @JsonValue val opplysningType: OpplysningType?,
+    val opplysningType: OpplysningType?,
 ) {
     AnnetAnnet("annet|annet", UtgiftType.UTGIFTER_ANDRE_UTGIFTER),
     BarnebidragBetaler("barnebidrag|betaler", UtgiftType.BARNEBIDRAG_BETALER),
