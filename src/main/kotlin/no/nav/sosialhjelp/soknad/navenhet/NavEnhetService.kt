@@ -125,7 +125,9 @@ class NavEnhetService(
         )
     }
 
-    private fun getKommunenummer(oppholdsadresse: JsonAdresse): String? {
+    private fun getKommunenummer(oppholdsadresse: JsonAdresse?): String? {
+        if (oppholdsadresse == null) return null
+
         if (
             MiljoUtils.isNonProduction() &&
             unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) &&
