@@ -57,6 +57,7 @@ class SoknadV2AdapterService(
                         soknadId = UUID.fromString(soknadId),
                         innsendingsTidspunkt = it.toLocalDateTime(),
                     )
+                    innsendtSoknadMetadataService.setInnsenindgstidspunkt(UUID.fromString(soknadId), it.toLocalDateTime())
                 }
             }.onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }

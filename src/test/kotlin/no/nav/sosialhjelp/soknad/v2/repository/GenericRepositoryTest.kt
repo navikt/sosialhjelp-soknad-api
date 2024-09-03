@@ -116,4 +116,16 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         assertThat(antallSlettet).isEqualTo(0)
         assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
     }
+
+    @Test
+    fun `Skal oppdatere eksisterende søknadsmetadata med ny sendt_inn_dato`() {
+        val innsendtSoknadMetadata =
+            innsendtSoknadMetadataRepository.save(opprettInnsendtSoknadMetadata(soknad.id))
+        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
+        val nyDato = LocalDateTime.now().minusDays(1)
+        val updatedInnsendtSoknadMetadata =
+            innsendtSoknadMetadataRepository.save(innsendtSoknadMetadata.copy(sendt_inn_dato = nyDato))
+        assertThat(updatedInnsendtSoknadMetadata.sendt_inn_dato).isEqualTo(nyDato)
+        assertThat(updatedInnsendtSoknadMetadata.opprettet_dato).isEqualTo(innsendtSoknadMetadata.opprettet_dato)
+    }
 }

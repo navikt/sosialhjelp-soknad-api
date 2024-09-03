@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata
 
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -24,4 +25,14 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
     fun deleteAlleEldreEnn(eldreEnn: LocalDateTime) {
         innsendtSoknadMetadataRepository.slettEldreEnn(eldreEnn)
     }
+
+    fun setInnsenindgstidspunkt(soknadId: UUID, sendtInnDato: LocalDateTime?) {
+        return (findInnsendtSoknadMetadata(soknadId) ?: throw IkkeFunnetException("InnsendtSoknadMetadata for søknad: $soknadId finnes ikke"))
+            .let {
+                it.copy(sendt_inn_dato = sendtInnDato)
+                    .also { innsendtSoknadMetadataRepository.save(it) }
+            }
+    }
+
 }
+
