@@ -26,13 +26,14 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
         innsendtSoknadMetadataRepository.slettEldreEnn(eldreEnn)
     }
 
-    fun setInnsenindgstidspunkt(soknadId: UUID, sendtInnDato: LocalDateTime?) {
+    fun setInnsenindgstidspunkt(
+        soknadId: UUID,
+        sendtInnDato: LocalDateTime?,
+    ) {
         return (findInnsendtSoknadMetadata(soknadId) ?: throw IkkeFunnetException("InnsendtSoknadMetadata for søknad: $soknadId finnes ikke"))
             .let {
                 it.copy(sendt_inn_dato = sendtInnDato)
                     .also { innsendtSoknadMetadataRepository.save(it) }
             }
     }
-
 }
-

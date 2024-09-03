@@ -10,7 +10,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
 class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
-
     @Test
     fun `Hente telefonnummer skal returnere lagret data`() {
         val soknad = soknadRepository.save(opprettSoknad())

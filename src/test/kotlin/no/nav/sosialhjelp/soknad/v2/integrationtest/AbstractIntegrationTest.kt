@@ -111,6 +111,4 @@ abstract class AbstractIntegrationTest {
             .exchange()
             .expectStatus().isNoContent
     }
-
-
 }

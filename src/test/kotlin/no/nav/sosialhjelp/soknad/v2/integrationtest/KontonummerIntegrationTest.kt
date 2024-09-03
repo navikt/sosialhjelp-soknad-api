@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
@@ -9,12 +8,10 @@ import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
-
     @Test
     fun `Hente kontonummer skal returnere lagrede data`() {
         val soknad = soknadRepository.save(opprettSoknad())

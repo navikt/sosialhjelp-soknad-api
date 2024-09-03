@@ -233,20 +233,19 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findById(UUID.fromString(id))
         assertThat(innsendtSoknadMetadata).isPresent()
-
     }
 
+    //    Settes til disabled da mye rundt livssyklus og integrasjonstest løses i branch som Amund holder på med. Denne kan tas tak i igjen når
+//    den branchen er ferdig
     @Disabled
     @Test
-//    Settes til disabled da mye rundt livssyklus og integrasjonstest løses i branch som Amund holder på med. Denne kan tas tak i igjen når
-//    den branchen er ferdig
     fun `skal oppdatere innsendtSoknadMetadata med innsendt_dato ved innsending av soknad`() {
         val soknadId = opprettSoknadMedEierOgKontaktForInnsending()
         val soknad = soknadRepository.findById(soknadId).get()
 
         webTestClient
             .post()
-            .uri("/soknad/${soknadId}/send")
+            .uri("/soknad/$soknadId/send")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "BEARER ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
@@ -257,8 +256,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findById(soknadId)
         assertThat(innsendtSoknadMetadata).isPresent()
         assertThat(innsendtSoknadMetadata.get().sendt_inn_dato).isEqualTo(soknad.tidspunkt.sendtInn)
-
-
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {
