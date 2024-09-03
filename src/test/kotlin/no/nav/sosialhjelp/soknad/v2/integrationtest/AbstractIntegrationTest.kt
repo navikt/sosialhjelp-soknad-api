@@ -4,7 +4,9 @@ import com.nimbusds.jwt.SignedJWT
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +27,12 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
+
+    @Autowired
+    protected lateinit var eierRepository: EierRepository
+
+    @Autowired
+    protected lateinit var kontaktRepository: KontaktRepository
 
     @Autowired
     protected lateinit var innsendtSoknadMetadataRepository: InnsendtSoknadMetadataRepository
@@ -103,4 +111,6 @@ abstract class AbstractIntegrationTest {
             .exchange()
             .expectStatus().isNoContent
     }
+
+
 }

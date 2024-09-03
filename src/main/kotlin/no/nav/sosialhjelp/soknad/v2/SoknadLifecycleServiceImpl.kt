@@ -83,6 +83,7 @@ class SoknadLifecycleServiceImpl(
                 throw e
             }
 
+        innsendtSoknadMetadataService.setInnsenindgstidspunkt(soknadId, soknad.tidspunkt.sendtInn)
         prometheusMetricsService.reportSendt(soknad.kortSoknad)
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(

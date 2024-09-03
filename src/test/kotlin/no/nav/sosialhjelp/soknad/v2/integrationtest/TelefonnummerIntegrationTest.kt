@@ -1,19 +1,15 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.TelefonnummerInput
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 
 class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var kontaktRepository: KontaktRepository
 
     @Test
     fun `Hente telefonnummer skal returnere lagret data`() {

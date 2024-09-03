@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var kontaktRepository: KontaktRepository
 
     @Test
     fun `Skal returnere alle adresser for soknad`() {

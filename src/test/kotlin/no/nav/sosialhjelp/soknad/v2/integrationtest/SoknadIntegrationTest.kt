@@ -18,10 +18,13 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
+import no.nav.sosialhjelp.soknad.v2.opprettEier
+import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import java.time.Instant
@@ -213,7 +216,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Skal opprette innsendtSoknadMetadata ved start av soknad`(){
+    fun `Skal opprette innsendtSoknadMetadata ved start av soknad`() {
         every { digisosApiV2Client.getSoknader(any()) } returns listOf()
         val (id, useKortSoknad) =
             webTestClient
@@ -233,8 +236,49 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     }
 
+    @Disabled
     @Test
-    fun `skal oppdatere innsendtSoknadMetadata med innsendt_dato ved innsending av soknad`(){
+//    Settes til disabled da mye rundt livssyklus og integrasjonstest løses i branch som Amund holder på med. Denne kan tas tak i igjen når
+//    den branchen er ferdig
+    fun `skal oppdatere innsendtSoknadMetadata med innsendt_dato ved innsending av soknad`() {
+        val soknadId = opprettSoknadMedEierOgKontaktForInnsending()
+        val soknad = soknadRepository.findById(soknadId).get()
 
+        webTestClient
+            .post()
+            .uri("/soknad/${soknadId}/send")
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "BEARER ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
+            .exchange()
+            .expectStatus()
+            .isOk
+
+        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findById(soknadId)
+        assertThat(innsendtSoknadMetadata).isPresent()
+        assertThat(innsendtSoknadMetadata.get().sendt_inn_dato).isEqualTo(soknad.tidspunkt.sendtInn)
+
+
+    }
+
+    private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {
+        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
+        val (id, useKortSoknad) =
+            webTestClient
+                .post()
+                .uri("/soknad/opprettSoknad")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "BEARER ${token.serialize()}")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(StartSoknadResponseDto::class.java)
+                .returnResult()
+                .responseBody
+
+        opprettEier(UUID.fromString(id)).also { eierRepository.save(it) }
+        opprettKontakt(UUID.fromString(id)).also { kontaktRepository.save(it) }
+
+        return UUID.fromString(id)
     }
 }

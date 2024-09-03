@@ -278,7 +278,7 @@ fun opprettBosituasjon(
 fun opprettInnsendtSoknadMetadata(
     soknadId: UUID,
     personId: String = "12345678901",
-    sendt_inn_dato: LocalDateTime = LocalDateTime.now(),
+    sendt_inn_dato: LocalDateTime? = null,
     opprettet_dato: LocalDateTime = LocalDateTime.now().minusMinutes(5),
 ): InnsendtSoknadmetadata =
     InnsendtSoknadmetadata(

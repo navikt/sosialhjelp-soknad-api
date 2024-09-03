@@ -14,8 +14,6 @@ import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var eierRepository: EierRepository
 
     @Test
     fun `Hente kontonummer skal returnere lagrede data`() {
