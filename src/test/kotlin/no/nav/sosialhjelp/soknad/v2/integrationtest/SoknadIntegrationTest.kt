@@ -211,4 +211,30 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 assertThat(it.message).isEqualTo("Ingen søknad med denne behandlingsId funnet")
             }
     }
+
+    @Test
+    fun `Skal opprette innsendtSoknadMetadata ved start av soknad`(){
+        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
+        val (id, useKortSoknad) =
+            webTestClient
+                .post()
+                .uri("/soknad/opprettSoknad")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "BEARER ${token.serialize()}")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(StartSoknadResponseDto::class.java)
+                .returnResult()
+                .responseBody
+
+        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findById(UUID.fromString(id))
+        assertThat(innsendtSoknadMetadata).isPresent()
+
+    }
+
+    @Test
+    fun `skal oppdatere innsendtSoknadMetadata med innsendt_dato ved innsending av soknad`(){
+
+    }
 }

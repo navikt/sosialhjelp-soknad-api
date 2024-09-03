@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
 import org.springframework.stereotype.Service
@@ -20,6 +21,7 @@ class SoknadLifecycleServiceImpl(
     private val adresseService: AdresseService,
     private val unleash: Unleash,
     private val digisosApiService: DigisosApiService,
+    private val innsendtSoknadMetadataService: InnsendtSoknadMetadataService,
 ) : SoknadLifecycleService {
     override fun startSoknad(token: String): Pair<UUID, Boolean> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
@@ -38,6 +40,8 @@ class SoknadLifecycleServiceImpl(
                     kortSoknad = kortSoknad,
                 )
             }
+
+        innsendtSoknadMetadataService.upsertInnsendtSoknadMetadata(soknadId, fnr, null, LocalDateTime.now())
 
         MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
 
