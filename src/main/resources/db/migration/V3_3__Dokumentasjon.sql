@@ -12,8 +12,9 @@ create table dokumentasjon
 create table dokument
 (
     dokumentasjon uuid not null,
+    dokument_id uuid unique,
     filnavn varchar(255),
-    sha512 varchar(60),
+    sha512 varchar(255),
     constraint fk_dokument_dokumentasjon
         foreign key(dokumentasjon)
             references dokumentasjon(id) on delete cascade
