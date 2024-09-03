@@ -69,7 +69,7 @@ fun createFamilie(
     soknadId = soknadId,
     harForsorgerplikt = harForsorgerPlikt,
     barnebidrag = barnebidrag,
-    ansvar = ansvar.associateBy { it.familieKey },
+    ansvar = ansvar.associateBy { UUID.randomUUID() },
     sivilstatus = sivilstatus,
     ektefelle = ektefelle,
 )
@@ -152,7 +152,6 @@ fun opprettNavn(
     )
 
 fun createBarn(
-    familieKey: UUID = UUID.randomUUID(),
     personId: String = "34243452342",
     navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
     fodselsdato: String = "342434",
@@ -160,7 +159,7 @@ fun createBarn(
     folkeregistrertSammen: Boolean = true,
     deltBosted: Boolean = false,
     samvarsgrad: Int = 100,
-) = Barn(familieKey, personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)
+) = Barn(personId, navn, fodselsdato, borSammen, folkeregistrertSammen, deltBosted, samvarsgrad)
 
 fun opprettMidlertidigAdresse(
     adresselinjer: List<String> =

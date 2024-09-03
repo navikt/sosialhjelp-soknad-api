@@ -70,7 +70,6 @@ class FamilieFetcher(
 
 private fun Barn.toV2Barn(): no.nav.sosialhjelp.soknad.v2.familie.Barn {
     return no.nav.sosialhjelp.soknad.v2.familie.Barn(
-        familieKey = UUID.randomUUID(),
         personId = fnr,
         navn =
             Navn(

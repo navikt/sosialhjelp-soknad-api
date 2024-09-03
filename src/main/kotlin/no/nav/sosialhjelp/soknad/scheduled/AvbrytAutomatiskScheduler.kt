@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -22,34 +25,50 @@ class AvbrytAutomatiskScheduler(
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
-    // TODO Denne fungerer ikke lenger (oppdaterer 0 rader) - teorien er at måten timestamp settes  ikke..
-    //  ...fungerer likt for postgres - koden er skrevet mht. oracle
-    // Siden denne koden ikke skal leve så mye lenger, så gjøres dette nå i SlettSoknadUnderArbeidScheduler#oppdaterStatusForMetadata
-//    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
-//    fun avbrytGamleSoknader() {
-//        if (schedulerDisabled) {
-//            logger.warn("Scheduler is disabled")
-//            return
-//        }
-//        if (leaderElection.isLeader()) {
-//            batchStartTime = LocalDateTime.now()
-//            vellykket = 0
-//            if (batchEnabled) {
-//                logger.info("Starter avbryting av gamle søknader")
-//
-//                try {
-//                    avbrytSoknader()
-//                } catch (e: RuntimeException) {
-//                    logger.error("Batchjobb feilet", e)
-//                } finally {
-//                    logger.info("Jobb fullført: $vellykket vellykket")
-//                }
-//            } else {
-//                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
-//            }
-//        }
-//    }
-//
+    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
+    fun avbrytGamleSoknader() {
+        if (schedulerDisabled) {
+            logger.warn("Scheduler is disabled")
+            return
+        }
+        if (leaderElection.isLeader()) {
+            batchStartTime = LocalDateTime.now()
+            vellykket = 0
+            if (batchEnabled) {
+                logger.info("Starter avbryting av gamle søknader")
+                try {
+                    avbrytSoknader()
+                } catch (e: RuntimeException) {
+                    logger.error("Batchjobb feilet", e)
+                } finally {
+                    logger.info("Jobb fullført: $vellykket vellykket")
+                }
+            } else {
+                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
+            }
+        }
+    }
+
+    // TODO Når denne har kjørt (og ryddet opp) forste gang, trenger den ikke batche opp
+    private fun avbrytSoknader() {
+        var metadataList = batchSoknadMetadataRepository.hentSoknaderEldreEnn14Dager()
+
+        while (metadataList.isNotEmpty()) {
+            logger.info("Oppdaterer ${metadataList.size} soknader som er eldre enn 14 dager")
+
+            metadataList.forEach { metadata ->
+                metadata.status = SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+                metadata.sistEndretDato = LocalDateTime.now()
+                soknadMetadataRepository.oppdater(metadata)
+
+                slettSoknadUnderArbeid(metadata.behandlingsId)
+                vellykket++
+            }
+
+            metadataList = batchSoknadMetadataRepository.hentSoknaderEldreEnn14Dager()
+        }
+    }
+
 //    private fun avbrytSoknader() {
 //        var soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
 //
@@ -77,18 +96,28 @@ class AvbrytAutomatiskScheduler(
 //            soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
 //        }
 //    }
-//
-//    private fun harGaattForLangTid(): Boolean {
-//        return batchStartTime
-//            ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
-//            ?: true.also { logger.warn("AvbrytAutomatiskScheduler finner ikke batchStartTime - avbryter batchjobben") }
-//    }
-//
-//    companion object {
-//        private val logger = LoggerFactory.getLogger(AvbrytAutomatiskScheduler::class.java)
-//
-//        private const val KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *"
-//        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10
-//        private const val DAGER_GAMMELT = 7 * 2
-//    }
+
+    private fun slettSoknadUnderArbeid(behandlingsId: String) {
+        batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
+            if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
+                mellomlagringService.deleteAllVedlegg(behandlingsId)
+            }
+            batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
+        }
+            ?: logger.warn("Fant ikke SoknadUnderArbeid for Metadata ved sletting")
+    }
+
+    private fun harGaattForLangTid(): Boolean {
+        return batchStartTime
+            ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
+            ?: true.also { logger.warn("AvbrytAutomatiskScheduler finner ikke batchStartTime - avbryter batchjobben") }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(AvbrytAutomatiskScheduler::class.java)
+
+        private const val KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *"
+        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10
+        private const val DAGER_GAMMELT = 7 * 2
+    }
 }

@@ -12,20 +12,16 @@ private data class Kategori(
 private typealias Kategorier = List<Kategori>
 
 object BegrunnelseUtils {
-    fun jsonToHvoSokesOm(json: String): String? =
-        runCatching { ObjectMapper().readValue(json, jacksonTypeRef<Kategorier>()) }
-            .map {
-                if (it.isNotEmpty()) {
-                    // Nødhjelp skal komme øverst i søknaden
-                    it.sortedByDescending { cat -> cat.text == "Nødhjelp" }.joinToString("\n", prefix = "Bruker har valgt følgende kategorier:\n") { kategori ->
-                        when {
-                            kategori.text == "Annet" -> "Annet:\n\t${kategori.hvaSokesOm ?: ""}"
-                            kategori.subCategories.isNotEmpty() -> kategori.subCategories.joinToString("\n\t", prefix = "${kategori.text}:\n\t")
-                            else -> kategori.text
-                        }
-                    }
-                } else {
-                    null
-                }
-            }.getOrNull()
+    fun jsonToHvoSokesOm(json: String): String? {
+        val kategorier = runCatching { ObjectMapper().readValue(json, jacksonTypeRef<Kategorier>()) }.getOrNull()?.takeIf { it.isNotEmpty() } ?: return null
+        val nodhjelp = kategorier.find { it.text == "Nødhjelp" }?.takeIf { it.subCategories.isNotEmpty() }
+        val annet = kategorier.find { it.text == "Annet" }?.takeIf { it.hvaSokesOm?.isNotBlank() == true }
+        val resten = kategorier.filter { it.text != "Annet" && it.text != "Nødhjelp" }.takeIf { it.isNotEmpty() }
+
+        return """
+            ${nodhjelp?.let { "Jeg er i en nødsituasjon og ${nodhjelp.subCategories.joinToString(", ").lowercase()}" } ?: ""}
+            ${resten?.let { "Jeg søker om penger til:\n${resten.joinToString(", ") { it.text }}}" } ?: ""}
+            ${annet?.let { "Annet:\n${it.hvaSokesOm ?: ""}" } ?: ""}
+            """.trimIndent()
+    }
 }
