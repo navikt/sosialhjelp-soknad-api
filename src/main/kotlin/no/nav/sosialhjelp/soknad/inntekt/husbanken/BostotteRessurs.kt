@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -40,10 +39,6 @@ class BostotteRessurs(
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService,
 ) {
-    companion object {
-        private val log by logger()
-    }
-
     @GetMapping
     fun hentBostotte(
         @PathVariable("behandlingsId") behandlingsId: String,
@@ -55,9 +50,6 @@ class BostotteRessurs(
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
         val bekreftelse = opplysninger.bekreftelse?.run { getBekreftelse(opplysninger) }
-
-        // TODO ekstra logging
-        log.info("HentBostotte - utbetalinger er: ${mapToUtbetalinger(soknad)}")
 
         return BostotteFrontend(
             bekreftelse = bekreftelse,

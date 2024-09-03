@@ -37,9 +37,6 @@ class BostotteSystemdata(
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val bostotte = innhentBostotteFraHusbanken(token)
 
-            // TODO Ekstra logging
-            log.info("UpdateSystemdataIn - Bostotte er: $bostotte")
-
             if (bostotte != null) {
                 okonomi.opplysninger.bekreftelse
                     .firstOrNull { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) }
@@ -92,9 +89,6 @@ class BostotteSystemdata(
     private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
         val bostotteDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
 
-        // TODO Ekstra logging
-        log.info("Innhentet bostotte er: $bostotteDto")
-
         if (bostotteDto?.saker.isNullOrEmpty()) {
             log.info("BostotteDto.saker er null eller tom")
         }
@@ -115,7 +109,6 @@ class BostotteSystemdata(
     }
 
     private fun mapToJsonOkonomiOpplysningUtbetaling(utbetaling: Utbetaling): JsonOkonomiOpplysningUtbetaling {
-        log.info("MOTTAKER er: ${utbetaling.mottaker.name} : ${utbetaling.mottaker.value}")
         return JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
             .withType(UTBETALING_HUSBANKEN)
