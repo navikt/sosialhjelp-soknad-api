@@ -103,6 +103,7 @@ class BostotteSystemdata(
     }
 
     private fun mapToJsonOkonomiOpplysningUtbetaling(utbetaling: Utbetaling): JsonOkonomiOpplysningUtbetaling {
+        log.warn("MOTTAKER er: ${utbetaling.mottaker.name} : ${utbetaling.mottaker.value}")
         return JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
             .withType(UTBETALING_HUSBANKEN)
