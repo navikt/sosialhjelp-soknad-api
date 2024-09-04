@@ -110,7 +110,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         return doPost(
             uri = createUri,
             responseBodyClass = StartSoknadResponseDto::class.java,
-        ).let { UUID.fromString(it.soknadId) }
+        )
+            .soknadId
     }
 
     private fun createNavEnhet(): NavEnhet {

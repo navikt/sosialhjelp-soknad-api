@@ -42,11 +42,11 @@ class SoknadLifecycleController(
 
         return soknadLifecycleService
             .startSoknad(token)
-            .let { (id, useKortSoknad) ->
-                response.addCookie(xsrfCookie(id.toString()))
-                response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
+            .let { (soknadId, useKortSoknad) ->
+                response.addCookie(xsrfCookie(soknadId))
+                response.addCookie(xsrfCookieMedBehandlingsid(soknadId))
 
-                StartSoknadResponseDto(id.toString(), useKortSoknad)
+                StartSoknadResponseDto(soknadId, useKortSoknad)
             }
     }
 
@@ -73,15 +73,15 @@ class SoknadLifecycleController(
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
 
-        private fun xsrfCookie(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))
+        private fun xsrfCookie(soknadId: UUID): Cookie {
+            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(soknadId.toString()))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie
         }
 
-        private fun xsrfCookieMedBehandlingsid(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie("$XSRF_TOKEN-$behandlingId", XsrfGenerator.generateXsrfToken(behandlingId))
+        private fun xsrfCookieMedBehandlingsid(soknadId: UUID): Cookie {
+            val xsrfCookie = Cookie("$XSRF_TOKEN-$soknadId", XsrfGenerator.generateXsrfToken(soknadId.toString()))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie
@@ -90,7 +90,7 @@ class SoknadLifecycleController(
 }
 
 data class StartSoknadResponseDto(
-    val soknadId: String,
+    val soknadId: UUID,
     val useKortSoknad: Boolean,
 )
 
