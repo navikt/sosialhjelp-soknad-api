@@ -15,6 +15,8 @@ interface IntegrasjonstatusRepository : UpsertRepository<Integrasjonstatus>, Lis
 
 @Service
 class IntegrasjonStatusService(private val repository: IntegrasjonstatusRepository) {
+    fun hasHusbankenFailed(soknadId: UUID): Boolean? = repository.findByIdOrNull(soknadId)?.feilStotteHusbanken
+
     fun setUtbetalingerFraNavStatus(
         soknadId: UUID,
         feilet: Boolean,

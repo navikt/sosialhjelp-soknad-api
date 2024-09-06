@@ -12,12 +12,12 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
 
-interface OkonomiDelegateMapper {
+interface OkonomiElementsToJsonMapper {
     fun doMapping()
 }
 
 @Component
-class OkonomiMappingHandler(
+class OkonomiToJsonHandler(
     private val okonomiRepository: OkonomiRepository,
 ) : DomainToJsonMapper {
     override fun mapToJson(
@@ -31,7 +31,7 @@ class OkonomiMappingHandler(
         }
     }
 
-    private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiDelegateMapper> {
+    private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> {
         return listOf(
             FormueToJsonMapper(formuer, json),
             InntektToJsonMapper(inntekter, json),

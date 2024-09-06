@@ -18,7 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,
     jsonOkonomi: JsonOkonomi,
-) : OkonomiDelegateMapper {
+) : OkonomiElementsToJsonMapper {
     private val oversikt = jsonOkonomi.oversikt
     private val opplysninger = jsonOkonomi.opplysninger
 

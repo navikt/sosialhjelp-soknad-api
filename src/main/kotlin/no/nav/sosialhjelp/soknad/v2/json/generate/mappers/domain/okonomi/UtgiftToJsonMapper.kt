@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 class UtgiftToJsonMapper(
     private val utgifter: Set<Utgift>,
     jsonOkonomi: JsonOkonomi,
-) : OkonomiDelegateMapper {
+) : OkonomiElementsToJsonMapper {
     private val oversikt = jsonOkonomi.oversikt
     private val opplysninger = jsonOkonomi.opplysninger
 
