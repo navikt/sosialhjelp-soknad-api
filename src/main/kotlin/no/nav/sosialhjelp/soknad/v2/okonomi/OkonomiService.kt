@@ -60,6 +60,15 @@ class OkonomiService(
             .also { okonomiRepository.save(it) }
     }
 
+    fun deleteBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+    ) {
+        okonomiRepository.findByIdOrNull(soknadId)
+            ?.run { copy(bekreftelser = bekreftelser.filter { it.type != type }.toSet()) }
+            ?.let { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
+    }
+
     fun addBostotteSaker(
         soknadId: UUID,
         sak: BostotteSak,

@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 class FormueToJsonMapper(
     private val formuer: Set<Formue>,
     jsonOkonomi: JsonOkonomi,
-) : OkonomiDelegateMapper {
+) : OkonomiElementsToJsonMapper {
     private val oversikt = jsonOkonomi.oversikt
     private val opplysninger = jsonOkonomi.opplysninger
 
