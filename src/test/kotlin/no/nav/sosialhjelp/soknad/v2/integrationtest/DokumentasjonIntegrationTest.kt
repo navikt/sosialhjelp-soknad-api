@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
 import java.util.UUID
 
@@ -136,6 +137,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             uri = saveUrl(soknad.id, UtgiftType.UTGIFTER_BOLIGLAN),
             requestBody = createFileUpload(),
             soknadId = soknad.id,
+            contentType = MediaType.MULTIPART_FORM_DATA,
         )
             .expectStatus().isNotFound
             .expectBody(SoknadApiError::class.java)
