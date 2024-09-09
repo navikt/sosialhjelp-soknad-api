@@ -85,11 +85,18 @@ class DigisosApiService(
         v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
 
         log.info("Starter innsending av søknad")
+        // TODO Opprettes, lagres på metadata og brukes til statistikk - er ikke en del av forsendelsen?
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
+        // TODO Oppdaterer metadata i lokal database
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
+        // TODO lagDokumentForSaksbehandlerPdf(internalSoknad), lagDokumentForJuridiskPdf(internalSoknad), lagDokumentForBrukerkvitteringPdf()
+        // TODO Logger også ut hvor mange mellomlagrede vedlegg som finnes
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
+        // TODO Json-streng av JsonSoknad-objektet
         val soknadJson = getSoknadJson(soknadUnderArbeid)
+        // TODO Sjekker at JsonSoknad, JsonMottaker og JsonMottaker.enhetsnummer finnes - kun et wrapper-objekt for enhetsnummer
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
+        // TODO JsonVedleggSpesifikasjon
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
 
         if (MiljoUtils.isNonProduction()) {

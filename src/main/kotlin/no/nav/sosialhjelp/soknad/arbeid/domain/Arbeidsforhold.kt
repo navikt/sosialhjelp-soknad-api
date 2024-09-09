@@ -1,21 +1,12 @@
 package no.nav.sosialhjelp.soknad.arbeid.domain
 
+import java.time.LocalDate
+
 data class Arbeidsforhold(
     val orgnr: String?,
     val arbeidsgivernavn: String,
-    val fom: String?,
-    val tom: String?,
+    val fom: LocalDate?,
+    val tom: LocalDate?,
     val fastStillingsprosent: Long? = 0L,
     val harFastStilling: Boolean?,
 )
-
-fun Arbeidsforhold.toV2Arbeidsforhold(): no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold {
-    return no.nav.sosialhjelp.soknad.v2.livssituasjon.Arbeidsforhold(
-        orgnummer = this.orgnr,
-        arbeidsgivernavn = this.arbeidsgivernavn,
-        start = this.fom,
-        slutt = this.tom,
-        fastStillingsprosent = this.fastStillingsprosent?.toInt(),
-        harFastStilling = this.harFastStilling,
-    )
-}

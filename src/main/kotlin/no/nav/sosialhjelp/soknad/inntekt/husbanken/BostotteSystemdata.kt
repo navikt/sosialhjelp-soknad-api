@@ -36,6 +36,7 @@ class BostotteSystemdata(
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val bostotte = innhentBostotteFraHusbanken(token)
+
             if (bostotte != null) {
                 okonomi.opplysninger.bekreftelse
                     .firstOrNull { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) }
@@ -67,6 +68,10 @@ class BostotteSystemdata(
         okonomiopplysninger.utbetaling.removeIf {
             it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM
         }
+
+        // TODO Ekstra logging
+        log.info("Fjern gamle husbanken-data. SkalFortsattHaBrukerUtbetaling: $skalFortsattHaBrukerUtbetaling")
+
         if (skalFortsattHaBrukerUtbetaling) {
             val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
             addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, tittel)
@@ -83,6 +88,7 @@ class BostotteSystemdata(
 
     private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
         val bostotteDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
+
         if (bostotteDto?.saker.isNullOrEmpty()) {
             log.info("BostotteDto.saker er null eller tom")
         }

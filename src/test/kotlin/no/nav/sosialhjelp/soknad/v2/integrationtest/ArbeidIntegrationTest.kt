@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidDto
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.ArbeidInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -36,8 +37,8 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
                 with(it.arbeidsforhold[index]) {
                     assertThat(arbeidsforholdDto.arbeidsgivernavn).isEqualTo(arbeidsgivernavn)
                     assertThat(arbeidsforholdDto.orgnummer).isEqualTo(orgnummer)
-                    assertThat(arbeidsforholdDto.start).isEqualTo(start)
-                    assertThat(arbeidsforholdDto.slutt).isEqualTo(slutt)
+                    assertThat(arbeidsforholdDto.start).isEqualTo(start?.toIsoString())
+                    assertThat(arbeidsforholdDto.slutt).isEqualTo(slutt?.toIsoString())
                     assertThat(arbeidsforholdDto.harFastStilling).isEqualTo(harFastStilling)
                     assertThat(arbeidsforholdDto.fastStillingsprosent).isEqualTo(fastStillingsprosent)
                 }

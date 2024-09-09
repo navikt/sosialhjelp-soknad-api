@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 data class ArbeidsforholdDto(
     val ansettelsesperiode: AnsettelsesperiodeDto?,
@@ -57,8 +56,8 @@ fun ArbeidsforholdDto.toDomain(organisasjonService: OrganisasjonService): Arbeid
             } else {
                 "Privatperson"
             },
-        fom = ansettelsesperiode?.periode?.fom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        tom = ansettelsesperiode?.periode?.tom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
+        fom = ansettelsesperiode?.periode?.fom,
+        tom = ansettelsesperiode?.periode?.tom,
         fastStillingsprosent = arbeidsavtaler?.sumOf { it.stillingsprosent }?.toLong(),
         harFastStilling = arbeidsavtaler?.isNotEmpty(),
     )

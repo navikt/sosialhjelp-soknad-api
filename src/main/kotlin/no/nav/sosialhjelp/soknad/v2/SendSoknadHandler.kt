@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
@@ -12,11 +13,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
-import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Component
@@ -24,44 +26,53 @@ class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
-    private val adresseService: AdresseService,
+    private val soknadValidator: SoknadValidator,
+    private val soknadService: SoknadService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    fun doSendAndReturnDigisosId(soknad: Soknad): UUID {
-        val json = jsonGenerator.createJsonInternalSoknad(soknad.id)
+    fun doSendAndReturnInfo(soknadId: UUID): SoknadSendtInfo {
+        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
-        val mottaker = adresseService.findMottaker(soknad.id)
-
-        mottaker?.let {
-            log.info(
-                "Starter kryptering av filer." +
-                    "Skal sendes til kommune ${it.kommunenummer}) med " +
-                    "enhetsnummer ${it.enhetsnummer} og navenhetsnavn ${it.enhetsnavn}",
-            )
-        }
+        val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
 
         val digisosId: UUID =
-            try {
-                // TODO Verdt å kikke litt på digisosApiV2Clienten
+            runCatching {
                 digisosApiV2Client.krypterOgLastOppFiler(
                     soknadJson = objectMapper.writeValueAsString(json.soknad),
                     tilleggsinformasjonJson =
                         objectMapper.writeValueAsString(
-                            JsonTilleggsinformasjon(mottaker?.enhetsnummer),
+                            JsonTilleggsinformasjon(mottaker.enhetsnummer),
                         ),
-                    vedleggJson = objectMapper.writeValueAsString(json.vedlegg),
+                    vedleggJson = json.toVedleggJson(),
                     dokumenter = getFilOpplastingList(json),
                     kommunenr = json.soknad.mottaker.kommunenummer,
-                    navEksternRefId = soknad.id.toString(),
+                    navEksternRefId = soknadId.toString(),
                     token = SubjectHandlerUtils.getToken(),
                 ).let { UUID.fromString(it) }
-            } catch (e: Exception) {
-                throw FeilVedSendingTilFiksException("Feil ved sending til fiks", e, soknad.id.toString())
             }
+                .onFailure {
+                    logger.error("Feil ved sending av soknad til FIKS", it)
+                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
+                }
+                .getOrThrow()
+
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
-        return digisosId
+        val innsendingTidspunkt = LocalDateTime.now().also { soknadService.setInnsendingstidspunkt(soknadId, it) }
+
+        return SoknadSendtInfo(
+            // TODO Dette er vel ikke soknadId
+            digisosId = digisosId,
+            navEnhet = mottaker,
+            isKortSoknad = soknadService.erKortSoknad(soknadId),
+            innsendingTidspunkt = innsendingTidspunkt,
+        )
+    }
+
+    private fun JsonInternalSoknad.toVedleggJson(): String {
+        return objectMapper.writeValueAsString(vedlegg)
+            .also { JsonSosialhjelpValidator.ensureValidVedlegg(it) }
     }
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
@@ -74,7 +85,7 @@ class SendSoknadHandler(
             lagDokumentForJuridiskPdf(json),
             lagDokumentForBrukerkvitteringPdf(),
         ).also {
-            log.info("Antall vedlegg: ${it.size}.")
+            logger.info("Antall vedlegg: ${it.size}.")
             // TODO Antall mellomlastede vedlegg (filer!!) bør kunne utledes fra våre egne data
 //            log.info("Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}")
         }
@@ -114,6 +125,13 @@ class SendSoknadHandler(
     }
 
     companion object {
-        private val log by logger()
+        private val logger by logger()
     }
 }
+
+data class SoknadSendtInfo(
+    val digisosId: UUID,
+    val navEnhet: NavEnhet,
+    val isKortSoknad: Boolean,
+    val innsendingTidspunkt: LocalDateTime,
+)

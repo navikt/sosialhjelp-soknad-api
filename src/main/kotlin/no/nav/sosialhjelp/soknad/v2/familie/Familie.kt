@@ -15,14 +15,15 @@ interface FamilieRepository : UpsertRepository<Familie>, ListCrudRepository<Fami
 
 @Table
 data class Familie(
-    @Id
-    override val soknadId: UUID,
+    @Id val soknadId: UUID,
     val harForsorgerplikt: Boolean? = null, // fra JsonForsorgerplikt
     val barnebidrag: Barnebidrag? = null, // fra JsonForsorgerplikt
     val ansvar: Map<UUID, Barn> = emptyMap(), // jsonForsorgerplikt
     val sivilstatus: Sivilstatus? = null,
     val ektefelle: Ektefelle? = null, // jsonSivilstatus
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
 
 data class Barn(
     // JsonAnsvar
@@ -46,9 +47,7 @@ data class Ektefelle(
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
     val kildeErSystem: Boolean = true,
-) {
-    companion object
-}
+)
 
 enum class Barnebidrag {
     BETALER,

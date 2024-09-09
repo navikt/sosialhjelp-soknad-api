@@ -20,15 +20,16 @@ interface EierRepository : UpsertRepository<Eier>, ListCrudRepository<Eier, UUID
 
 @Table
 data class Eier(
-    @Id
-    override val soknadId: UUID,
+    @Id val soknadId: UUID,
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,
     @Embedded.Empty
     val navn: Navn,
     @Embedded.Empty
     val kontonummer: Kontonummer = Kontonummer(),
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
 
 data class Kontonummer(
     val harIkkeKonto: Boolean? = null,

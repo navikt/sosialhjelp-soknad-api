@@ -18,11 +18,12 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 internal class ArbeidsforholdSystemdataTest {
     private val arbeidsforholdService: ArbeidsforholdService = mockk()
@@ -164,8 +165,8 @@ internal class ArbeidsforholdSystemdataTest {
         jsonArbeidsforhold: JsonArbeidsforhold,
     ) {
         assertThat(jsonArbeidsforhold.arbeidsgivernavn).isEqualTo(arbeidsforhold.arbeidsgivernavn)
-        assertThat(jsonArbeidsforhold.fom).isEqualTo(arbeidsforhold.fom)
-        assertThat(jsonArbeidsforhold.tom).isEqualTo(arbeidsforhold.tom)
+        assertThat(jsonArbeidsforhold.fom).isEqualTo(arbeidsforhold.fom?.toIsoString())
+        assertThat(jsonArbeidsforhold.tom).isEqualTo(arbeidsforhold.tom?.toIsoString())
         assertThat(jsonArbeidsforhold.stillingsprosent.toLong()).isEqualTo(arbeidsforhold.fastStillingsprosent)
         if (arbeidsforhold.harFastStilling == true) {
             assertThat(jsonArbeidsforhold.stillingstype).isEqualTo(Stillingstype.FAST)
@@ -176,13 +177,13 @@ internal class ArbeidsforholdSystemdataTest {
 
     companion object {
         private const val EIER = "12345678901"
-        private val tom_lonnslipp = LocalDateTime.now().plusDays(40).format(DateTimeFormatter.ISO_DATE)
-        private val tom_sluttoppgjor = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ISO_DATE)
+        private val tom_lonnslipp = LocalDate.now().plusDays(40)
+        private val tom_sluttoppgjor = LocalDate.now().plusDays(10)
         private val ARBEIDSFORHOLD_LONNSLIPP =
             Arbeidsforhold(
                 orgnr = null,
                 arbeidsgivernavn = "Good Corp.",
-                fom = "1337-01-01",
+                fom = LocalDate.of(1337, 1, 1),
                 tom = tom_lonnslipp,
                 fastStillingsprosent = 50L,
                 harFastStilling = true,
@@ -191,7 +192,7 @@ internal class ArbeidsforholdSystemdataTest {
             Arbeidsforhold(
                 orgnr = null,
                 arbeidsgivernavn = "Evil Corp.",
-                fom = "1337-02-02",
+                fom = LocalDate.of(1337, 2, 2),
                 tom = tom_sluttoppgjor,
                 fastStillingsprosent = 30L,
                 harFastStilling = false,

@@ -15,14 +15,15 @@ interface KontaktRepository : UpsertRepository<Kontakt>, ListCrudRepository<Kont
 
 @Table
 data class Kontakt(
-    @Id
-    override val soknadId: UUID,
+    @Id val soknadId: UUID,
     @Embedded.Empty
     val telefonnummer: Telefonnummer = Telefonnummer(),
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
     val mottaker: NavEnhet = NavEnhet(),
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
 
 data class Telefonnummer(
     @Column("telefon_register")

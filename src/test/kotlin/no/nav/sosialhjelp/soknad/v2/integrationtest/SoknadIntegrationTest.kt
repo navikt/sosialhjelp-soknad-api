@@ -48,13 +48,16 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
     }
 
+    // TODO Flytte en del/alle disse til Lifecycle-test? Eventuelt egen for kort soknad
+
     @Test
-    fun `Opprett søknad skal bli kort hvis bruker har sendt inn søknad de siste 120 dager`() {
+    fun `Opprett soknad skal bli kort hvis bruker har sendt inn soknad de siste 120 dager`() {
         opprettSoknad(sendtInn = LocalDateTime.now().minusDays(40)).also { soknadRepository.save(it) }
+
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -62,17 +65,17 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
-        val soknad = soknadRepository.findById(UUID.fromString(id))
+        val soknad = soknadRepository.findById(id)
         assertThat(soknad).isPresent()
         assertThat(soknad.get().kortSoknad).isTrue()
     }
 
     @Test
-    fun `Opprett søknad skal bli kort hvis bruker har sendt inn papirsøknad de siste 120 dager`() {
+    fun `Opprett soknad skal bli kort hvis bruker har sendt inn papirsoknad de siste 120 dager`() {
         val digisosSak =
             DigisosSak(
                 "abc",
@@ -92,7 +95,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -100,17 +103,17 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
-        val soknad = soknadRepository.findById(UUID.fromString(id))
+        val soknad = soknadRepository.findById(id)
         assertThat(soknad).isPresent()
         assertThat(soknad.get().kortSoknad).isTrue()
     }
 
     @Test
-    fun `Opprett søknad skal bli kort hvis bruker nylig har fått utbetaling`() {
+    fun `Opprett soknad skal bli kort hvis bruker nylig har fatt utbetaling`() {
         val (digisosSak, digisosSoker) = digisosSakOgSoker(listOf(JsonUtbetaling().withStatus(JsonUtbetaling.Status.UTBETALT).withUtbetalingsdato(OffsetDateTime.now().minusDays(30).toString())))
         every { digisosApiV2Client.getSoknader(any()) } returns listOf(digisosSak)
         every { digisosApiV2Client.getInnsynsfil("abc", "123", any()) } returns digisosSoker
@@ -118,7 +121,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -126,11 +129,11 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isTrue()
-        val soknad = soknadRepository.findById(UUID.fromString(id))
+        val soknad = soknadRepository.findById(id)
         assertThat(soknad).isPresent()
         assertThat(soknad.get().kortSoknad).isTrue()
     }
@@ -153,12 +156,12 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Opprett søknad skal ikke bli kort hvis bruker ikke har sendt inn søknad de siste 120 dager og ikke har nylige utbetalinger`() {
+    fun `Opprett soknad skal ikke bli kort hvis bruker ikke har sendt inn soknad de siste 120 dager og ikke har nylige utbetalinger`() {
         every { digisosApiV2Client.getSoknader(any()) } returns listOf()
         val (id, useKortSoknad) =
             webTestClient
                 .post()
-                .uri("/soknad/opprettSoknad")
+                .uri("/soknad/create")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "BEARER ${token.serialize()}")
                 .exchange()
@@ -166,11 +169,11 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
                 .isOk
                 .expectBody(StartSoknadResponseDto::class.java)
                 .returnResult()
-                .responseBody
+                .responseBody!!
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isFalse()
-        val soknad = soknadRepository.findById(UUID.fromString(id))
+        val soknad = soknadRepository.findById(id)
         assertThat(soknad).isPresent()
         assertThat(soknad.get().kortSoknad).isFalse()
     }
@@ -181,7 +184,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         webTestClient
             .delete()
-            .uri("/soknad/$lagretSoknadId")
+            .uri("/soknad/$lagretSoknadId/delete")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "BEARER ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(lagretSoknadId.toString(), id = token.jwtClaimsSet.subject))
@@ -197,7 +200,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         val randomUUID = UUID.randomUUID()
         webTestClient
             .delete()
-            .uri("/soknad/$randomUUID")
+            .uri("/soknad/$randomUUID/delete")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "BEARER ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(randomUUID.toString(), id = token.jwtClaimsSet.subject))
@@ -208,7 +211,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             .returnResult()
             .responseBody!!
             .also {
-                assertThat(it.message).isEqualTo("Ingen søknad med denne behandlingsId funnet")
+                assertThat(it.message).isEqualTo("NyModell: Soknad finnes ikke")
             }
     }
 }

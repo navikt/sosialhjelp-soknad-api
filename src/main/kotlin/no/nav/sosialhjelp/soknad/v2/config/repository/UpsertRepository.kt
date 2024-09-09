@@ -3,8 +3,12 @@ package no.nav.sosialhjelp.soknad.v2.config.repository
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
 
+/**
+ * Rot-objektet for et aggregat.
+ * dbId vil være den unike id'en i databasen uavhengig av semantisk forhold 1-1 eller 1-n
+ */
 interface DomainRoot {
-    val soknadId: UUID
+    fun getDbId(): UUID
 }
 
 /**
@@ -23,11 +27,11 @@ class UpsertRepositoryImpl<T : DomainRoot>(
     override fun <S : T> save(s: S): S {
         return template.run {
             when {
-                existsById(s.soknadId, s.javaClass) -> update(s)
+                existsById(s.getDbId(), s.javaClass) -> update(s)
                 else -> insert(s)
             }
         }
     }
 
-    override fun <S : T> saveAll(entities: Iterable<S>): List<S> = entities.map { save(it) }
+    override fun <S : T> saveAll(entities: Iterable<S>): List<S> = template.saveAll(entities).toList()
 }

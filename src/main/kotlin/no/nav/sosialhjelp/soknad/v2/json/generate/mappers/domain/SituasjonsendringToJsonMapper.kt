@@ -15,7 +15,7 @@ import java.util.UUID
 class SituasjonsendringToJsonMapper(
     private val situasjonsendringRepository: SituasjonsendringRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {

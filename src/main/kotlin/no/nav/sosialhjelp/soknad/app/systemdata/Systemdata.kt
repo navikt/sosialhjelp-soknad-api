@@ -24,7 +24,7 @@ class SystemdataUpdater(
 
         logger.info("NyModell: Starter innhenting av Register-data")
         soknadUnderArbeid.behandlingsId.let {
-            registerDataService.runAllRegisterDataFetchers(soknadId = UUID.fromString(it))
+            registerDataService.runAllFetchersForShadowProd(soknadId = UUID.fromString(it))
         }
     }
 }

@@ -50,6 +50,7 @@ class BostotteRessurs(
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
         val bekreftelse = opplysninger.bekreftelse?.run { getBekreftelse(opplysninger) }
+
         return BostotteFrontend(
             bekreftelse = bekreftelse,
             samtykke = bekreftelse?.run { hentSamtykkeFraSoknad(opplysninger) },

@@ -12,6 +12,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.UUID
 
+interface DomainToJsonMapper {
+    fun mapToJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    )
+}
+
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
@@ -24,7 +31,7 @@ class JsonInternalSoknadGenerator(
             .withVedlegg(JsonVedleggSpesifikasjon())
             .withMottaker(JsonSoknadsmottaker())
             .withMidlertidigAdresse(JsonAdresse())
-            .apply { mappers.forEach { it.mapToSoknad(soknadId, this) } }
+            .apply { mappers.forEach { it.mapToJson(soknadId, this) } }
             .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
@@ -34,7 +41,7 @@ class JsonInternalSoknadGenerator(
     ): JsonInternalSoknad {
         return copyJsonInternalSoknad(original)
             .apply {
-                mappers.forEach { it.mapToSoknad(UUID.fromString(soknadId), this) }
+                mappers.forEach { it.mapToJson(UUID.fromString(soknadId), this) }
             }
             .also {
                 kotlin.runCatching {

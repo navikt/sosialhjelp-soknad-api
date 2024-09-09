@@ -13,6 +13,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
 
+// TODO KontaktService? (NavEnhet er jo ikke en adresse per se...)
 interface AdresseService {
     fun findAdresser(soknadId: UUID): Adresser
 

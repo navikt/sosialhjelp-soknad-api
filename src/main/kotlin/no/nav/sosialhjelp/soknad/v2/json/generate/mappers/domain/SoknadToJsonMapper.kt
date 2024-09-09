@@ -4,6 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
@@ -22,7 +24,7 @@ import java.util.UUID
 class SoknadToJsonMapper(
     private val soknadRepository: SoknadRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
@@ -40,6 +42,8 @@ class SoknadToJsonMapper(
             with(json) {
                 initializeObjects()
 
+                soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
+
                 soknad.innsendingstidspunkt =
                     domainSoknad.tidspunkt.sendtInn
                         ?.let { OffsetDateTime.of(it, ZoneOffset.UTC).toString() }
@@ -52,8 +56,14 @@ class SoknadToJsonMapper(
 
         private fun JsonInternalSoknad.initializeObjects() {
             soknad.data ?: soknad.withData(JsonData())
+            soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
+
             // required i json-modellen (validering)
             soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
+        }
+
+        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator {
+            return JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
         }
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =

@@ -16,7 +16,9 @@ interface SituasjonsendringRepository :
 @Table
 data class Situasjonsendring(
     @Id
-    override val soknadId: UUID,
+    val soknadId: UUID,
     val hvaErEndret: String?,
     val endring: Boolean?,
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}

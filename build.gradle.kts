@@ -117,6 +117,7 @@ dependencies {
 
     // jackson
     implementation(libs.jackson.module.kotlin)
+    implementation(libs.jackson.module.datatype)
 
     // Logging
     implementation(libs.logback.classic)
@@ -194,4 +195,8 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     rejectVersionIf {
         candidate.version.isNonStable() && !currentVersion.isNonStable()
     }
+}
+
+tasks.withType<Test> {
+    jvmArgs("-Xmx2g")
 }
