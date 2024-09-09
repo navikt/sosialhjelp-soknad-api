@@ -146,6 +146,8 @@ private fun Inntekt.toTittel(): String {
         InntektType.UTBETALING_UTBYTTE -> "Utbytte fra aksjer, obligasjoner eller fond"
         InntektType.UTBETALING_SALG -> "Solgt eiendom og/eller eiendel"
         InntektType.SLUTTOPPGJOER -> "Sluttoppgjør/feriepenger etter skatt"
+        // TODO Utbetaling husbanken har hatt en Utbetaling når BOSTOTTE har vært true...
+        // TODO ...men allikevel ikke hvis SAMTYKKE også er true.
         InntektType.UTBETALING_HUSBANKEN -> "Statlig bostøtte"
         // TODO UTBETALING_SKATTEETATEN bevarer tittel innhentingen
         InntektType.UTBETALING_SKATTEETATEN -> beskrivelse ?: ""

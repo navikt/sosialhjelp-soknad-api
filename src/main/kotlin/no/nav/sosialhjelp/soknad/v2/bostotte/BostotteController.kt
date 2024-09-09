@@ -35,7 +35,7 @@ class BostotteController(
     }
 
     @PutMapping
-    fun updateBostotte(
+    fun updateHasBostotte(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: BostotteInput,
     ): BostotteDto {
@@ -43,14 +43,18 @@ class BostotteController(
         return getBostotte(soknadId)
     }
 
+    // TODO Samtykke er ikke relevant uten hasBostotte - kan dette gjøres annerledes?
     @PostMapping
-    fun updateSamtykke(
+    fun updateHasSamtykke(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody hasSamtykke: Boolean,
+        @RequestBody input: SamtykkeInput,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): BostotteDto {
-        bostotteService.updateSamtykke(soknadId, hasSamtykke, token)
-        return getBostotte(soknadId)
+        return token?.let { userToken ->
+            bostotteService.updateSamtykke(soknadId, input.hasSamtykke, userToken)
+            getBostotte(soknadId)
+        }
+            ?: error("Mangler token for Husbanken Samtykke")
     }
 }
 

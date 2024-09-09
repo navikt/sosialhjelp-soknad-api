@@ -69,9 +69,6 @@ class BostotteSystemdata(
             it.type.equals(UTBETALING_HUSBANKEN, ignoreCase = true) && it.kilde == JsonKilde.SYSTEM
         }
 
-        // TODO Ekstra logging
-        log.info("Fjern gamle husbanken-data. SkalFortsattHaBrukerUtbetaling: $skalFortsattHaBrukerUtbetaling")
-
         if (skalFortsattHaBrukerUtbetaling) {
             val tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[SoknadJsonTyper.BOSTOTTE])
             addUtbetalingIfNotPresentInOpplysninger(okonomiopplysninger.utbetaling, UTBETALING_HUSBANKEN, tittel)

@@ -60,7 +60,7 @@ class BostotteInfoUseCaseTest : AbstractIntegrationTest() {
     private fun `Finnes bostottesaker scenario`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = true)
-        okonomiService.addBostotteSaker(soknad.id, createBostotteSak("Beskrivelse av sak"))
+        okonomiService.addBostotteSak(soknad.id, createBostotteSak("Beskrivelse av sak"))
 
         assertSkalVise(false)
     }

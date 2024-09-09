@@ -110,6 +110,26 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
+    protected fun <T> doPost(
+        uri: String,
+        requestBody: Any,
+        responseBodyClass: Class<T>,
+        soknadId: UUID? = null,
+    ): T {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
+            .contentType(MediaType.APPLICATION_JSON)
+//            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(requestBody))
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(responseBodyClass)
+            .returnResult()
+            .responseBody!!
+    }
+
     protected fun <T> doPostWithBody(
         uri: String,
         requestBody: Any,
