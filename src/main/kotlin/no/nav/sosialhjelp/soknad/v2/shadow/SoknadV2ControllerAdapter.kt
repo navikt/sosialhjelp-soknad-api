@@ -12,6 +12,9 @@ import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
 import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
+import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
+import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
+import no.nav.sosialhjelp.soknad.v2.bostotte.SamtykkeInput
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
@@ -67,6 +70,7 @@ class SoknadV2ControllerAdapter(
     private val boutgiftController: BoutgiftController,
     private val barneutgiftController: BarneutgiftController,
     private val situasjonsendringController: SituasjonsendringController,
+    private val bostotteController: BostotteController,
 ) : V2ControllerAdapter {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -288,7 +292,7 @@ class SoknadV2ControllerAdapter(
                 input = input,
             )
         }
-            .onFailure { logger.warn("NyModell: Oppdatering av Boutgifter feilet") }
+            .onFailure { logger.warn("NyModell: Oppdatering av Boutgifter feilet", it) }
     }
 
     override fun updateBarneutgifter(
@@ -318,7 +322,7 @@ class SoknadV2ControllerAdapter(
                 input = input,
             )
         }
-            .onFailure { logger.warn("NyModell: Oppdatering av Barneutgifter feilet") }
+            .onFailure { logger.warn("NyModell: Oppdatering av Barneutgifter feilet", it) }
     }
 
     override fun updateSituasjonsendring(
@@ -328,6 +332,31 @@ class SoknadV2ControllerAdapter(
         runWithNestedTransaction {
             situasjonsendringController.updateSituasjonsendring(UUID.fromString(soknadId), SituasjonsendringDto(situasjonsendring.hvaErEndret, situasjonsendring.endring))
         }.onFailure { logger.warn("Ny modell: Oppdatering av situasjonsendring feilet.", it) }
+    }
+
+    override fun updateBostotte(
+        soknadId: String,
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean?,
+        userToken: String?,
+    ) {
+        runWithNestedTransaction {
+            hasBostotte?.also { bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte)) }
+
+            hasSamtykke?.also {
+                val hasSavedBostotte =
+                    hasBostotte
+                        ?: bostotteController.getBostotte(UUID.fromString(soknadId)).hasBostotte
+
+                if (hasSavedBostotte != null && hasSavedBostotte) {
+                    bostotteController.updateHasSamtykke(
+                        soknadId = UUID.fromString(soknadId),
+                        input = SamtykkeInput(hasSamtykke),
+                        token = userToken,
+                    )
+                }
+            }
+        }.onFailure { logger.warn("NyModell: Oppdatering av Bostotte feilet", it) }
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
