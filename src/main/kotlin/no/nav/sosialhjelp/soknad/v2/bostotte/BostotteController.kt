@@ -43,7 +43,7 @@ class BostotteController(
         return getBostotte(soknadId)
     }
 
-    // TODO Samtykke er ikke relevant uten hasBostotte - kan dette gjøres annerledes?
+    // TODO Samtykke er ikke relevant uten hasBostotte - kan dette gjøres annerledes? Samle i ett endepunkt f.eks.
     @PostMapping
     fun updateHasSamtykke(
         @PathVariable("soknadId") soknadId: UUID,

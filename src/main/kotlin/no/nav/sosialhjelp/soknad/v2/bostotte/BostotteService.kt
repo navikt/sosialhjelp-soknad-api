@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE_SAMTYKKE
@@ -63,6 +64,14 @@ class BostotteServiceImpl(
         userToken: String,
     ) {
         getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
+            .also { (bostotte, _) ->
+                if (bostotte == null || !bostotte.verdi) {
+                    throw UpdateBostotteException(
+                        message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
+                        soknadId = soknadId,
+                    )
+                }
+            }
             .let { (bostotte, samtykke) -> samtykkeNeedsUpdate(bostotte?.verdi, samtykke?.verdi, hasSamtykke) }
             .also { needsUpdate ->
                 if (needsUpdate) {
@@ -114,3 +123,12 @@ data class BostotteInfo(
     val utbetalinger: List<Inntekt>,
     val fetchHusbankenFeilet: Boolean?,
 )
+
+data class UpdateBostotteException(
+    override val message: String?,
+    val soknadId: UUID,
+) : SosialhjelpSoknadApiException(
+        message = message,
+        cause = null,
+        id = soknadId.toString(),
+    )

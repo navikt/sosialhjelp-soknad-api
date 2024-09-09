@@ -154,12 +154,13 @@ abstract class AbstractIntegrationTest {
         uri: String,
         requestBody: Any,
         soknadId: UUID?,
+        contentType: MediaType = MediaType.APPLICATION_JSON,
     ): ResponseSpec {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
-            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .contentType(contentType)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
     }
