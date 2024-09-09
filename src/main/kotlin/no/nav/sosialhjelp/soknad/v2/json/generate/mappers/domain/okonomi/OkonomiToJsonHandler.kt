@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -31,41 +32,50 @@ class OkonomiToJsonHandler(
         val jsonOkonomi = jsonInternalSoknad.initializeObjects()
 
         okonomiRepository.findByIdOrNull(soknadId)?.let { okonomi ->
-            okonomi.setupMappers(jsonOkonomi).forEach { mapper -> mapper.doMapping() }
-            okonomi.handleBostotteSpecialCase(jsonOkonomi)
+            doMapping(okonomi, jsonOkonomi)
         }
     }
 
-    private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> {
-        return listOf(
-            FormueToJsonMapper(formuer, json),
-            InntektToJsonMapper(inntekter, json),
-            UtgiftToJsonMapper(utgifter, json),
-        )
-            .let { list ->
-                if (bekreftelser.isNotEmpty()) {
-                    list.plus(BekreftelseToJsonMapper(bekreftelser, json))
-                } else {
-                    list
-                }
-            }
-            .let { list ->
-                if (bostotteSaker.isNotEmpty()) {
-                    list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
-                } else {
-                    list
-                }
-            }
-    }
-
-    // Det skal være innslag av Utbetaling Husbanken hvis bostotte == true && samtykke == false
-    private fun Okonomi.handleBostotteSpecialCase(json: JsonOkonomi) {
-        val bostotte = bekreftelser.find { it.type == BekreftelseType.BOSTOTTE } ?: return
-        if (bostotte.verdi) {
-            bekreftelser
-                .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
-                ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.dato) }
+    companion object Mapper {
+        fun doMapping(
+            okonomi: Okonomi,
+            json: JsonOkonomi,
+        ) {
+            okonomi.setupMappers(json).forEach { mapper -> mapper.doMapping() }
+            okonomi.handleBostotteSpecialCase(json)
         }
+    }
+}
+
+private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> {
+    return listOf(
+        FormueToJsonMapper(formuer, json),
+        InntektToJsonMapper(inntekter, json),
+        UtgiftToJsonMapper(utgifter, json),
+    )
+        .let { list ->
+            if (bekreftelser.isNotEmpty()) {
+                list.plus(BekreftelseToJsonMapper(bekreftelser, json))
+            } else {
+                list
+            }
+        }
+        .let { list ->
+            if (bostotteSaker.isNotEmpty()) {
+                list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
+            } else {
+                list
+            }
+        }
+}
+
+// Det skal være innslag av Utbetaling Husbanken hvis bostotte == true && samtykke == false
+private fun Okonomi.handleBostotteSpecialCase(json: JsonOkonomi) {
+    val bostotte = bekreftelser.find { it.type == BekreftelseType.BOSTOTTE } ?: return
+    if (bostotte.verdi) {
+        bekreftelser
+            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
+            ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.dato) }
     }
 }
 
@@ -73,8 +83,8 @@ private fun JsonOkonomi.addUtbetalingHusbankenKildeBruker(dato: LocalDate) {
     opplysninger.utbetaling.add(
         JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.BRUKER)
-            .withType(BekreftelseType.BOSTOTTE.toTittel())
-            .withType(BekreftelseType.BOSTOTTE.name)
+            .withTittel(BekreftelseType.BOSTOTTE.toTittel())
+            .withType(InntektType.UTBETALING_HUSBANKEN.name)
             .withUtbetalingsdato(dato.toString())
             // TODO Hva betyr egentlig denne ?
             .withOverstyrtAvBruker(false),
