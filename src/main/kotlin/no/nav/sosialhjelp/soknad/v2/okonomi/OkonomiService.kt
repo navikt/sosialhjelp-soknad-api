@@ -69,7 +69,7 @@ class OkonomiService(
             ?.let { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
     }
 
-    fun addBostotteSaker(
+    fun addBostotteSak(
         soknadId: UUID,
         sak: BostotteSak,
     ) {

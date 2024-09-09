@@ -23,7 +23,7 @@ interface BostotteService {
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
-        userToken: String?,
+        userToken: String,
     )
 }
 
@@ -53,34 +53,56 @@ class BostotteServiceImpl(
         okonomiService.updateBekreftelse(soknadId, BOSTOTTE, hasBostotte)
         if (!hasBostotte) {
             okonomiService.deleteBekreftelse(soknadId, BOSTOTTE_SAMTYKKE)
+            updateBostotte(soknadId, false, "")
         }
     }
 
     override fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
-        userToken: String?,
+        userToken: String,
     ) {
-        okonomiService.getBekreftelser(soknadId)
-            .find { it.type == BOSTOTTE }
-            ?.also { bostotteBekreftelse ->
-                if (bostotteBekreftelse.verdi) {
+        getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
+            .let { (bostotte, samtykke) -> samtykkeNeedsUpdate(bostotte?.verdi, samtykke?.verdi, hasSamtykke) }
+            .also { needsUpdate ->
+                if (needsUpdate) {
                     okonomiService.updateBekreftelse(soknadId, BOSTOTTE_SAMTYKKE, hasSamtykke)
-                    if (hasSamtykke) {
-                        userToken?.let { husbankenFetcher.fetchAndSave(soknadId, userToken) }
-                    }
+                    updateBostotte(soknadId, hasSamtykke, userToken)
                 }
             }
+    }
+
+    private fun samtykkeNeedsUpdate(
+        hasBostotte: Boolean?,
+        savedHasSamtykke: Boolean?,
+        hasSamtykke: Boolean,
+    ): Boolean {
+        return hasBostotte?.let { if (it) hasSamtykke != savedHasSamtykke else false } ?: false
+    }
+
+    private fun updateBostotte(
+        soknadId: UUID,
+        hasSamtykke: Boolean,
+        userToken: String,
+    ) {
+        if (hasSamtykke) {
+            husbankenFetcher.fetchAndSave(soknadId, userToken)
+        } else {
+            okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+            okonomiService.removeBostotteSaker(soknadId)
+        }
     }
 }
 
 private fun getBekreftelseAndSamtykke(bekreftelser: Set<Bekreftelse>): Pair<Bekreftelse?, Bekreftelse?> {
     val bostotte = bekreftelser.find { it.type == BOSTOTTE }
     val samtykke =
-        if (bostotte != null && bostotte.verdi) {
-            bekreftelser.find { it.type == BOSTOTTE_SAMTYKKE }
-        } else {
-            null
+        bostotte?.let {
+            if (bostotte.verdi) {
+                bekreftelser.find { it.type == BOSTOTTE_SAMTYKKE }
+            } else {
+                null
+            }
         }
     return Pair(bostotte, samtykke)
 }
