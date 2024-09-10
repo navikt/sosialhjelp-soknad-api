@@ -20,18 +20,17 @@ class ShadowProductionManager(
         original: JsonInternalSoknad?,
     ) {
         original?.let {
-            kotlin
-                .runCatching {
-                    jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
-                        if (it.soknad.data.familie != null) {
-                            // sortere ansvar før sammenlikning
-                            sortAnsvar(it, copy)
-                        }
-                        JsonContentComparator().doCompareAndLogErrors(it, copy)
+            runCatching {
+                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
+                    if (it.soknad.data.familie != null) {
+                        // sortere ansvar før sammenlikning
+                        sortAnsvar(it, copy)
                     }
-                }.onFailure {
-                    logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                    JsonContentComparator().doCompareAndLogErrors(it, copy)
                 }
+            }.onFailure {
+                logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+            }
         } ?: logger.warn("NyModell : Sammenlikning : Original er null")
     }
 

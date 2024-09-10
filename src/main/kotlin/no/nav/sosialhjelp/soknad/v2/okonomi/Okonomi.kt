@@ -10,6 +10,8 @@ import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
@@ -32,7 +34,7 @@ data class Okonomi(
 @Table
 data class Bekreftelse(
     val type: BekreftelseType,
-    val dato: LocalDate = LocalDate.now(),
+    val tidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     val verdi: Boolean,
 )
 

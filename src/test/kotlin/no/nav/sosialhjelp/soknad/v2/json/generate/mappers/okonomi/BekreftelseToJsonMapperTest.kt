@@ -7,9 +7,10 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
+    private val timestampRegex = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z\$"
+
     @Test
     fun `Liste med Bekreftelser skal opprette tilsvarende antall innslag i Json-strukturen`() {
         val bekreftelser =
@@ -24,13 +25,13 @@ class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
 
             bekreftelse.find { it.type == BekreftelseType.BEKREFTELSE_SPARING.name }!!.let {
                 assertThat(it.verdi).isEqualTo(true)
-                assertThat(it.bekreftelsesDato).isEqualTo(LocalDate.now().toString())
+                assertThat(it.bekreftelsesDato).matches(timestampRegex)
                 assertThat(it.tittel).isEqualTo(BekreftelseType.BEKREFTELSE_SPARING.toTittel())
                 assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
             }
             bekreftelse.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE.name }!!.let {
                 assertThat(it.verdi).isEqualTo(false)
-                assertThat(it.bekreftelsesDato).isEqualTo(LocalDate.now().toString())
+                assertThat(it.bekreftelsesDato).matches(timestampRegex)
                 assertThat(it.tittel).isEqualTo(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())
                 assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
             }
