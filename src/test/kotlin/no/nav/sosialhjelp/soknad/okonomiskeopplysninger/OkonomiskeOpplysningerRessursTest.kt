@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -162,12 +161,20 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId) }
+        okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
+            .also { dtos ->
+                dtos.okonomiskeOpplysninger!!.forEach { dto ->
+                    if (dto.type == VedleggType.SkattemeldingSkattemelding) {
+                        assertThat(dto.filer).hasSize(1)
+                    } else {
+                        assertThat(dto.filer).isEmpty()
+                    }
+                }
+            }
     }
 
     @Test
-    fun `hentOkonomiskeOpplysninger JsonVedlegg med VedleggKreves og filer - kaster IllegalStateException`() {
+    fun `hentOkonomiskeOpplysninger JsonVedlegg med VedleggKreves og filer - fjerner filer som ikke finnes hos mellomlager`() {
         val soknadMedVedlegg =
             soknadUnderArbeid.copy(
                 jsonInternalSoknad =
@@ -203,8 +210,12 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId) }
+        okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
+            .also { dtos ->
+                dtos.okonomiskeOpplysninger!!.forEach { dto ->
+                    assertThat(dto.filer).isEmpty()
+                }
+            }
     }
 
     @Test
