@@ -1,0 +1,10 @@
+apiVersion: aiven.io/v1alpha1
+kind: Redis
+metadata:
+  labels:
+    team: teamdigisos
+  name: sosialhjelp-soknad-api-redis
+  namespace: teamdigisos
+spec:
+  plan: startup-4
+  project: nav-dev
