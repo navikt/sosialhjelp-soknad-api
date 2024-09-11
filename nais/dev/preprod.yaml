@@ -1,0 +1,138 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: teamdigisos
+  labels:
+    team: teamdigisos
+spec:
+  image: {{image}}
+  port: 8080
+  liveness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /sosialhjelp/soknad-api/internal/prometheus
+  replicas:
+    min: 2
+    max: 4
+  azure:
+    application:
+      enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:inntekt"
+        - name: "ks:fiks"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_16
+        name: sosialhjelp-soknad-api-db-preprod
+        tier: db-custom-1-3840
+        diskSize: 10
+        databases:
+          - name: sosialhjelp-soknad-db-preprod
+            envVarPrefix: POSTGRES
+        cascadingDelete: false
+  tokenx:
+    enabled: true
+  accessPolicy:
+    outbound:
+      external:
+        - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
+    inbound:
+      rules:
+        - application: mine-saker-api
+          namespace: min-side
+        - application: dittnav-api
+          namespace: min-side
+        - application: tms-utkast
+          namespace: min-side
+        - application: tms-mikrofrontend-selector
+          namespace: min-side
+  leaderElection: true
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 512Mi
+  envFrom:
+    - configmap: loginservice-idporten
+    - secret: redis-password-soknad-api
+    - secret: fiks-integrasjon-secret
+    - secret: testbruker-skatteetaten
+    - secret: sosialhjelp-soknad-api-unleash-api-token
+
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: "dev,log-kibana"
+    - name: AAREG_AUDIENCE
+      value: "dev-fss:arbeidsforhold:aareg-services-nais"
+    - name: AAREG_URL
+      value: "https://aareg-services.dev.intern.nav.no/api"
+    - name: CLAMAV_URL
+      value: "http://clamav.nais-system.svc.nais.local/scan"
+    - name: EREG_URL
+      value: "https://ereg-services.dev.intern.nav.no"
+    - name: DIGISOS_API_BASEURL
+      value: "https://api.fiks.test.ks.no/"
+    - name: KODEVERK_URL
+      value: "https://kodeverk-api.nav.no"
+    - name: KRR_AUDIENCE
+      value: "dev-gcp:team-rocket:digdir-krr-proxy"
+    - name: KRR_SCOPE
+      value: "dev-gcp.team-rocket.digdir-krr-proxy"
+    - name: KRR_URL
+      value: "https://digdir-krr-proxy.intern.dev.nav.no"
+    - name: LOGINSERVICE_URL
+      value: "https://login.ekstern.dev.nav.no/oauth2/login"
+    - name: NORG_URL
+      value: "https://norg2.dev.intern.nav.no/norg2/api/v1"
+    - name: UTBETALDATA_AUDIENCE
+      value: "dev-fss:okonomi:sokos-utbetaldata"
+    - name: UTBETALDATA_API_BASEURL
+      value: "https://sokos-utbetaldata.dev.intern.nav.no"
+    - name: KONTOREGISTER_API_AUDIENCE
+      value: "dev-gcp:okonomi:sokos-kontoregister-person"
+    - name: KONTOREGISTER_API_BASEURL
+      value: "https://sokos-kontoregister-person.intern.dev.nav.no/"
+    - name: PDL_API_URL
+      value: "https://pdl-api.dev.intern.nav.no/graphql"
+    - name: PDL_API_AUDIENCE
+      value: "dev-fss:pdl:pdl-api"
+    - name: PDL_API_SCOPE
+      value: "dev-fss.pdl.pdl-api"
+    - name: UNLEASH_ENV
+      value: "dev-fss"
+    - name: SCHEDULER_DISABLE
+      value: "false"
+    - name: SOKNAD_BOSTOTTE_URL
+      value: "https://api.demo.husbanken.no/bostotte/minbostotte"
+    - name: SKATTEETATEN_API_BASEURL
+      value: "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+    - name: NEDETID_START
+      value: "09.02.2023 12:00:00"
+    - name: NEDETID_SLUTT
+      value: "09.02.2023 14:00:00"
+    - name: ENVIRONMENT_NAME
+      value: "q0"
+    - name: REDIS_HOST
+      value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
+    - name: UNLEASH_INSTANCE_ID
+      value: "dev-fss"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "https://test.maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"
+    - name: GOTENBERG_URL
+      value: "https://konvertering-til-pdf.intern.dev.nav.no/"
