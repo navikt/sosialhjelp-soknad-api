@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Sett cluster basert på config-file
         id: set-cluster-name
-        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v2
+        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v3
         with:
           resource-name: ${{ inputs.config-file-name }}
 
