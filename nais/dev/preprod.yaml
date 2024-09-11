@@ -5,12 +5,6 @@ metadata:
   namespace: teamdigisos
   labels:
     team: teamdigisos
-  annotations:
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-path: "/sosialhjelp/login-api/soknad-api"
-    nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
-    nginx.ingress.kubernetes.io/proxy-body-size: "150M"
-    nais.io/run-as-user: "1001"
 spec:
   image: {{image}}
   port: 8080
@@ -30,7 +24,6 @@ spec:
   replicas:
     min: 2
     max: 4
-  webproxy: true
   azure:
     application:
       enabled: true
@@ -40,108 +33,110 @@ spec:
       consumes:
         - name: "skatteetaten:inntekt"
         - name: "ks:fiks"
-  vault:
-    enabled: true
+  redis:
+    - instance: sosialhjelp-soknad-api-redis
+      access: readwrite
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_16
+        name: sosialhjelp-soknad-api-db-preprod
+        tier: db-custom-1-3840
+        diskSize: 10
+        databases:
+          - name: sosialhjelp-soknad-db-preprod
+            envVarPrefix: POSTGRES
+        cascadingDelete: false
   tokenx:
     enabled: true
   accessPolicy:
     outbound:
       external:
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
+        - host: "test.idporten.no"
     inbound:
       rules:
         - application: mine-saker-api
           namespace: min-side
-          cluster: prod-gcp
         - application: dittnav-api
           namespace: min-side
-          cluster: prod-gcp
-        - application: sosialhjelp-innsyn-api
-          namespace: teamdigisos
-          cluster: prod-fss
         - application: tms-utkast
           namespace: min-side
-          cluster: prod-gcp
         - application: tms-mikrofrontend-selector
           namespace: min-side
-          cluster: prod-gcp
-  ingresses:
-    - "https://sosialhjelp-soknad-api.prod-fss-pub.nais.io/sosialhjelp/soknad-api"
-    - "https://sosialhjelp-soknad-api.intern.nav.no/sosialhjelp/soknad-api"
   leaderElection: true
   resources:
     limits:
-      memory: 4Gi
-    requests:
-      cpu: 100m
       memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 512Mi
   envFrom:
     - configmap: loginservice-idporten
     - secret: redis-password-soknad-api
     - secret: fiks-integrasjon-secret
+    - secret: testbruker-skatteetaten
     - secret: sosialhjelp-soknad-api-unleash-api-token
+
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: "prod,log-kibana,leader-election"
+      value: "preprod,log-kibana"
     - name: AAREG_AUDIENCE
-      value: "prod-fss:arbeidsforhold:aareg-services-nais"
+      value: "dev-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
-      value: "https://aareg-services.intern.nav.no/api"
+      value: "https://aareg-services.dev.intern.nav.no/api"
     - name: CLAMAV_URL
       value: "http://clamav.nais-system.svc.nais.local/scan"
     - name: EREG_URL
-      value: "https://ereg-services.intern.nav.no"
+      value: "https://ereg-services.dev.intern.nav.no"
     - name: DIGISOS_API_BASEURL
-      value: "https://api.fiks.ks.no/"
+      value: "https://api.fiks.test.ks.no/"
     - name: KODEVERK_URL
       value: "https://kodeverk-api.nav.no"
     - name: KRR_AUDIENCE
-      value: "prod-gcp:team-rocket:digdir-krr-proxy"
+      value: "dev-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
-      value: "prod-gcp.team-rocket.digdir-krr-proxy"
+      value: "dev-gcp.team-rocket.digdir-krr-proxy"
     - name: KRR_URL
-      value: "https://digdir-krr-proxy.intern.nav.no"
+      value: "https://digdir-krr-proxy.intern.dev.nav.no"
     - name: LOGINSERVICE_URL
-      value: "https://login.nav.no/oauth2/login"
+      value: "https://login.ekstern.dev.nav.no/oauth2/login"
     - name: NORG_URL
-      value: "https://norg2.intern.nav.no/norg2/api/v1"
+      value: "https://norg2.dev.intern.nav.no/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE
-      value: "prod-fss:okonomi:sokos-utbetaldata"
+      value: "dev-fss:okonomi:sokos-utbetaldata"
     - name: UTBETALDATA_API_BASEURL
-      value: "https://sokos-utbetaldata.intern.nav.no"
+      value: "https://sokos-utbetaldata.dev.intern.nav.no"
     - name: KONTOREGISTER_API_AUDIENCE
-      value: "prod-gcp:okonomi:sokos-kontoregister-person"
+      value: "dev-gcp:okonomi:sokos-kontoregister-person"
     - name: KONTOREGISTER_API_BASEURL
-      value: "https://sokos-kontoregister-person.intern.nav.no/"
+      value: "https://sokos-kontoregister-person.intern.dev.nav.no/"
     - name: PDL_API_URL
-      value: "https://pdl-api.intern.nav.no/graphql"
+      value: "https://pdl-api.dev.intern.nav.no/graphql"
     - name: PDL_API_AUDIENCE
-      value: "prod-fss:pdl:pdl-api"
+      value: "dev-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
-      value: "prod-fss.pdl.pdl-api"
+      value: "dev-fss.pdl.pdl-api"
     - name: UNLEASH_ENV
-      value: "prod"
+      value: "dev-fss"
     - name: SCHEDULER_DISABLE
       value: "false"
     - name: SOKNAD_BOSTOTTE_URL
-      value: "https://api.husbanken.no/bostotte/minbostotte"
+      value: "https://api.demo.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
-      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+      value: "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/"
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
       value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
-      value: "p"
+      value: "q0"
     - name: REDIS_HOST
       value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
     - name: UNLEASH_INSTANCE_ID
-      value: "prod-fss"
+      value: "dev-fss"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "https://test.maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"
     - name: GOTENBERG_URL
-      value: "http://sosialhjelp-konvertering-til-pdf/"
-    - name: VAULT_MOUNT_PATH
-      value: postgresql/prod-fss/
-    - name: SOKNADSOSIALHJELP_DB_NAVN
-      value: sosialhjelp-soknad-db-prod-fss15
-    - name: POSTGRES_DATASOURCE_URL
-      value: jdbc:postgresql://A01DBVL035.adeo.no:5432/
+      value: "https://konvertering-til-pdf.intern.dev.nav.no/"
