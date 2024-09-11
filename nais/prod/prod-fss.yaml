@@ -86,7 +86,7 @@ spec:
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: "log-kibana,leader-election"
+      value: "prod,log-kibana,leader-election"
     - name: AAREG_AUDIENCE
       value: "prod-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
