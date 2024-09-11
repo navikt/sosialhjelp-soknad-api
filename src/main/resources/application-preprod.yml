@@ -17,7 +17,9 @@ spring:
     clean-disabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${POSTGRES_DATASOURCE_URL}${SOKNADSOSIALHJELP_DB_NAVN}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
