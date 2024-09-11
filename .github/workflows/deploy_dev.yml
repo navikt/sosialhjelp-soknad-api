@@ -11,6 +11,7 @@ on:
         options:
           - 'mock'
           - 'dev-fss'
+          - 'preprod'
 
 jobs:
   set-cluster:
