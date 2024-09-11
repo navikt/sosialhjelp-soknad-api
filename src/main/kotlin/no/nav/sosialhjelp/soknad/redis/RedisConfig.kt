@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.redis
 
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -15,23 +16,26 @@ class RedisConfig(
     @Value("\${redis_host}") private val host: String,
     @Value("\${redis_port}") private val port: Int,
     @Value("\${redis_password}") private val password: String,
+    @Value("\${redis_username}") private val username: String,
 ) {
+    private val log by logger()
+
     @Bean
     fun redisClient(): RedisClient {
         val redisURI =
-            RedisURI.builder()
+            RedisURI
+                .builder()
                 .withHost(host)
                 .withPort(port)
-                .withPassword(password.toCharArray())
+                .withAuthentication(username, password.toCharArray())
                 .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .withSsl(true)
                 .build()
         return RedisClient.create(redisURI)
     }
 
     @Bean
-    fun redisStore(redisClient: RedisClient): RedisStore {
-        return RedisStore(redisClient)
-    }
+    fun redisStore(redisClient: RedisClient): RedisStore = RedisStore(redisClient)
 
     @Bean
     fun redisService(redisStore: RedisStore): RedisService {
