@@ -8,8 +8,10 @@ server:
 spring:
   data:
     redis:
-      password: ${REDIS_PASSWORD:pw}
-      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD_CACHE:pw}
+      host: ${REDIS_HOST_CACHE}
+      username: ${REDIS_USERNAME_CACHE}
+      port: ${REDIS_PORT_CACHE}
   main:
     banner-mode: off
   flyway:
@@ -17,10 +19,9 @@ spring:
     clean-disabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${POSTGRES_DATASOURCE_URL}${SOKNADSOSIALHJELP_DB_NAVN}
-    hikari:
-      pool-name: YamlHikariPool
-      leak-detection-threshold: 30000
+    url: ${POSTGRES_JDBC_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
@@ -32,8 +33,6 @@ postgres:
   user:
     role: ${SOKNADSOSIALHJELP_DB_NAVN}-admin
 
-
-vault-mount-path: ${VAULT_MOUNT_PATH}
 
 digisos:
   cache:
@@ -50,16 +49,6 @@ management:
 springdoc:
   api-docs:
     enabled: ${SWAGGER_ENABLED:false}
-  group-configs:
-    - group: 'old'
-      display-name: "Old api"
-      packages-to-exclude:
-        - 'no.nav.sosialhjelp.soknad.v2'
-    - group: 'new'
-      display-name: "New api"
-      packages-to-scan:
-        - 'no.nav.sosialhjelp.soknad.v2'
-
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
@@ -71,7 +60,6 @@ unleash_env: ${UNLEASH_ENV}
 unleash_server_api_url: ${UNLEASH_SERVER_API_URL}
 unleash_server_api_token: ${UNLEASH_SERVER_API_TOKEN}
 kodeverk_url: ${KODEVERK_URL}
-kodeverk_scope: ${KODEVERK_SCOPE}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
 norg_url: ${NORG_URL}
@@ -113,15 +101,16 @@ no.nav.security.jwt.issuer:
     discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
     validation:
       optional-claims: aud,nbf
-    proxyurl: http://webproxy-nais.nav.no:8088
+    proxyurl: ""
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
     accepted_audience: ${TOKEN_X_CLIENT_ID}
 
 # redis
-redis_host: ${REDIS_HOST}
-redis_port: 6379
-redis_password: ${REDIS_PASSWORD}
+redis_host: ${REDIS_HOST_CACHE}
+redis_port: ${REDIS_PORT_CACHE}
+redis_username: ${REDIS_USERNAME_CACHE}
+redis_password: ${REDIS_PASSWORD_CACHE}
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-fss}
