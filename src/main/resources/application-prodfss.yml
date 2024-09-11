@@ -114,7 +114,7 @@ no.nav.security.jwt.issuer:
     discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
     validation:
       optional-claims: aud,nbf
-    proxyurl: http://webproxy-nais.nav.no:8088
+      proxyurl: http://webproxy-nais.nav.no:8088
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
     accepted_audience: ${TOKEN_X_CLIENT_ID}
@@ -123,6 +123,7 @@ no.nav.security.jwt.issuer:
 redis_host: ${REDIS_HOST}
 redis_port: 6379
 redis_password: ${REDIS_PASSWORD}
+redis_username: ''
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-fss}
