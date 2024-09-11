@@ -8,8 +8,10 @@ server:
 spring:
   data:
     redis:
-      password: ${REDIS_PASSWORD:pw}
-      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD_CACHE:pw}
+      host: ${REDIS_HOST_CACHE}
+      username: ${REDIS_USERNAME_CACHE}
+      port: ${REDIS_PORT_CACHE}
   main:
     banner-mode: off
   flyway:
@@ -17,7 +19,9 @@ spring:
     clean-disabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${POSTGRES_DATASOURCE_URL}${SOKNADSOSIALHJELP_DB_NAVN}
+    url: ${POSTGRES_JDBC_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   servlet:
     multipart:
       max-file-size: 10MB
@@ -29,8 +33,6 @@ postgres:
   user:
     role: ${SOKNADSOSIALHJELP_DB_NAVN}-admin
 
-
-vault-mount-path: ${VAULT_MOUNT_PATH}
 
 digisos:
   cache:
@@ -99,15 +101,16 @@ no.nav.security.jwt.issuer:
     discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
     validation:
       optional-claims: aud,nbf
-    proxyurl: http://webproxy-nais.nav.no:8088
+    proxyurl: ""
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
     accepted_audience: ${TOKEN_X_CLIENT_ID}
 
 # redis
-redis_host: ${REDIS_HOST}
-redis_port: 6379
-redis_password: ${REDIS_PASSWORD}
+redis_host: ${REDIS_HOST_CACHE}
+redis_port: ${REDIS_PORT_CACHE}
+redis_username: ${REDIS_USERNAME_CACHE}
+redis_password: ${REDIS_PASSWORD_CACHE}
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-fss}
