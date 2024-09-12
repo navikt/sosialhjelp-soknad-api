@@ -214,9 +214,11 @@ class SoknadUnderArbeidRepositoryJdbc(
             var isAnyTimestampsChanged = false
 
             json.soknad.apply {
-                if (!isTimestampCorrect(innsendingstidspunkt)) {
-                    withInnsendingstidspunkt(fixTimestamp(innsendingstidspunkt))
-                    isAnyTimestampsChanged = true
+                if (innsendingstidspunkt != null) {
+                    if (!isTimestampCorrect(innsendingstidspunkt)) {
+                        withInnsendingstidspunkt(fixTimestamp(innsendingstidspunkt))
+                        isAnyTimestampsChanged = true
+                    }
                 }
             }
 
