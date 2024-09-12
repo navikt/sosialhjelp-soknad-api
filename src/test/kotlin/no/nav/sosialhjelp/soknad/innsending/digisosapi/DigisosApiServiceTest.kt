@@ -20,8 +20,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.TimestampFixer
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -144,7 +144,7 @@ internal class DigisosApiServiceTest {
     fun `Verifiser at broken timestamps fikses`() {
         val json = createJsonInternalSoknadWithInvalidTimestamps()
 
-        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+        TimestampFixer.fixBrokenTimestamps(json)
             .also { isAnyTimestampsChanged ->
                 assertThat(isAnyTimestampsChanged).isTrue()
                 assertThat(json.soknad.innsendingstidspunkt).matches(REGEX)
@@ -174,7 +174,7 @@ internal class DigisosApiServiceTest {
                     ),
             )
 
-        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+        TimestampFixer.fixBrokenTimestamps(json)
             .also { anyTimestampFixed ->
                 assertThat(anyTimestampFixed).isTrue()
                 assertThat(json.soknad.innsendingstidspunkt).isEqualTo(validTimestamp)
@@ -193,7 +193,7 @@ internal class DigisosApiServiceTest {
                 JsonSoknad().withInnsendingstidspunkt("2023-10-10T10:10:10.041Z"),
             )
 
-        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+        TimestampFixer.fixBrokenTimestamps(json)
             .also { anyTimestampChanged ->
                 assertThat(anyTimestampChanged).isFalse()
                 assertThat(json.soknad.innsendingstidspunkt).matches(REGEX)
