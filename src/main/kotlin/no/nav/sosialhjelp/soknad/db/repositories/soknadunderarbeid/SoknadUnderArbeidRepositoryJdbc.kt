@@ -196,10 +196,11 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): String {
         return try {
+            // TODO Får tilfeller hvor timestamp ikke har fått millisekunder
+            fixBrokenTimestamps(jsonInternalSoknad)
+
             writer.writeValueAsString(jsonInternalSoknad)
                 .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(it) }
-
-//            internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
             log.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e)
             throw RuntimeException(e)
@@ -208,5 +209,37 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     companion object {
         private val log by logger()
+
+        fun fixBrokenTimestamps(json: JsonInternalSoknad): Boolean {
+            var isAnyTimestampsChanged = false
+
+            json.soknad.apply {
+                if (!isTimestampCorrect(innsendingstidspunkt)) {
+                    withInnsendingstidspunkt(fixTimestamp(innsendingstidspunkt))
+                    isAnyTimestampsChanged = true
+                }
+            }
+
+            json.soknad.data?.okonomi?.opplysninger?.bekreftelse?.forEach { bekreftelse ->
+                bekreftelse.apply {
+                    if (!isTimestampCorrect(bekreftelsesDato)) {
+                        withBekreftelsesDato(fixTimestamp(bekreftelsesDato))
+                        isAnyTimestampsChanged = true
+                    }
+                }
+            }
+            return isAnyTimestampsChanged
+        }
+
+        private fun isTimestampCorrect(timestamp: String): Boolean {
+            val regExString = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z$"
+            return timestamp.matches(Regex(regExString))
+        }
+
+        private fun fixTimestamp(timestamp: String): String {
+            val indexOfZ = timestamp.indexOf('Z')
+            return "${timestamp.substring(0, indexOfZ)}.001Z"
+                .also { if (!isTimestampCorrect(it)) error("Kunne ikke fikse timestamp $it") }
+        }
     }
 }

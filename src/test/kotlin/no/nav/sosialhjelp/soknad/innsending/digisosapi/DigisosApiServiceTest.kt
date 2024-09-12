@@ -8,13 +8,19 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -132,5 +138,95 @@ internal class DigisosApiServiceTest {
         verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
 
         unmockkObject(MiljoUtils)
+    }
+
+    @Test
+    fun `Verifiser at broken timestamps fikses`() {
+        val json = createJsonInternalSoknadWithInvalidTimestamps()
+
+        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+            .also { isAnyTimestampsChanged ->
+                assertThat(isAnyTimestampsChanged).isTrue()
+                assertThat(json.soknad.innsendingstidspunkt).matches(REGEX)
+                json.soknad.data.okonomi.opplysninger.bekreftelse
+                    .forEach { assertThat(it.bekreftelsesDato).matches(REGEX) }
+            }
+    }
+
+    @Test
+    fun `Skal ikke fikse godkjente timestamps`() {
+        val validTimestamp = "2023-10-10T10:10:10.999Z"
+
+        val json =
+            JsonInternalSoknad().withSoknad(
+                JsonSoknad()
+                    .withInnsendingstidspunkt(validTimestamp)
+                    .withData(
+                        JsonData().withOkonomi(
+                            JsonOkonomi().withOpplysninger(
+                                JsonOkonomiopplysninger().withBekreftelse(
+                                    listOf(
+                                        JsonOkonomibekreftelse().withBekreftelsesDato("2024-09-09T09:09:09Z"),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+            )
+
+        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+            .also { anyTimestampFixed ->
+                assertThat(anyTimestampFixed).isTrue()
+                assertThat(json.soknad.innsendingstidspunkt).isEqualTo(validTimestamp)
+                assertThat(json.soknad.innsendingstidspunkt).matches(REGEX)
+
+                json.soknad.data.okonomi.opplysninger.bekreftelse.forEach {
+                    assertThat(it.bekreftelsesDato).matches(REGEX)
+                }
+            }
+    }
+
+    @Test
+    fun `Fikse tidspunkt aksepterer null-objekter eller ingen bekreftelser`() {
+        val json =
+            JsonInternalSoknad().withSoknad(
+                JsonSoknad().withInnsendingstidspunkt("2023-10-10T10:10:10.041Z"),
+            )
+
+        SoknadUnderArbeidRepositoryJdbc.fixBrokenTimestamps(json)
+            .also { anyTimestampChanged ->
+                assertThat(anyTimestampChanged).isFalse()
+                assertThat(json.soknad.innsendingstidspunkt).matches(REGEX)
+                assertThat(json.soknad.data).isNull()
+            }
+    }
+
+    companion object {
+        private const val REGEX =
+            "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]" +
+                ":[0-9][0-9].[0-9][0-9]*Z$"
+    }
+
+    private fun createJsonInternalSoknadWithInvalidTimestamps(): JsonInternalSoknad {
+        return createEmptyJsonInternalSoknad(eier, false)
+            .withSoknad(
+                JsonSoknad()
+                    .withInnsendingstidspunkt("2024-09-05T21:34:37Z")
+                    .withData(
+                        JsonData()
+                            .withOkonomi(
+                                JsonOkonomi()
+                                    .withOpplysninger(
+                                        JsonOkonomiopplysninger()
+                                            .withBekreftelse(
+                                                listOf(
+                                                    JsonOkonomibekreftelse().withBekreftelsesDato("2024-09-05T21:34:37Z"),
+                                                    JsonOkonomibekreftelse().withBekreftelsesDato("2024-09-05T21:34:37Z"),
+                                                ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
     }
 }
