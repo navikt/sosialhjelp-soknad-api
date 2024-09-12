@@ -217,17 +217,15 @@ object TimestampFixer {
         var isAnyTimestampsChanged = false
 
         json.soknad?.apply {
-            if (innsendingstidspunkt != null) {
-                if (!isTimestampCorrect(innsendingstidspunkt)) {
-                    withInnsendingstidspunkt(fixTimestamp(innsendingstidspunkt))
-                    isAnyTimestampsChanged = true
-                }
+            if (innsendingstidspunkt != null && !isTimestampCorrect(innsendingstidspunkt)) {
+                withInnsendingstidspunkt(fixTimestamp(innsendingstidspunkt))
+                isAnyTimestampsChanged = true
             }
         }
 
         json.soknad?.data?.okonomi?.opplysninger?.bekreftelse?.forEach { bekreftelse ->
             bekreftelse.apply {
-                if (!isTimestampCorrect(bekreftelsesDato)) {
+                if (bekreftelsesDato != null && !isTimestampCorrect(bekreftelsesDato)) {
                     withBekreftelsesDato(fixTimestamp(bekreftelsesDato))
                     isAnyTimestampsChanged = true
                 }
