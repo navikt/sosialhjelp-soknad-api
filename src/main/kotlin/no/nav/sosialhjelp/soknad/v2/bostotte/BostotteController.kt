@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
@@ -62,7 +63,7 @@ private fun BostotteInfo.toBostotteDto() =
     BostotteDto(
         hasBostotte = bostotte?.verdi,
         hasSamtykke = samtykke?.verdi,
-        samtykkeTidspunkt = samtykke?.dato,
+        samtykkeTidspunkt = samtykke?.tidspunkt,
         utbetalinger = utbetalinger.flatMap { inntekt -> inntekt.inntektDetaljer.detaljer.map { it.toUtbetalingBostotteDto() } },
         saker = saker.map { it.toBostotteSakDto() },
         fetchHusbankenFeilet = fetchHusbankenFeilet,
@@ -83,7 +84,7 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
 data class BostotteDto(
     val hasBostotte: Boolean?,
     val hasSamtykke: Boolean?,
-    val samtykkeTidspunkt: LocalDate?,
+    val samtykkeTidspunkt: LocalDateTime?,
     val utbetalinger: List<UtbetalingBostotteDto>,
     val saker: List<BostotteSakDto>,
     val fetchHusbankenFeilet: Boolean?,

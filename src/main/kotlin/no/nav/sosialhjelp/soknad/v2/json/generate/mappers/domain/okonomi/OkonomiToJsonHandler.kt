@@ -8,13 +8,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.generate.toUTCTimestampStringWithMillis
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 interface OkonomiElementsToJsonMapper {
@@ -75,17 +76,17 @@ private fun Okonomi.handleBostotteSpecialCase(json: JsonOkonomi) {
     if (bostotte.verdi) {
         bekreftelser
             .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
-            ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.dato) }
+            ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.tidspunkt) }
     }
 }
 
-private fun JsonOkonomi.addUtbetalingHusbankenKildeBruker(dato: LocalDate) {
+private fun JsonOkonomi.addUtbetalingHusbankenKildeBruker(tidspunkt: LocalDateTime) {
     opplysninger.utbetaling.add(
         JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.BRUKER)
             .withTittel(BekreftelseType.BOSTOTTE.toTittel())
             .withType(InntektType.UTBETALING_HUSBANKEN.name)
-            .withUtbetalingsdato(dato.toString())
+            .withUtbetalingsdato(tidspunkt.toUTCTimestampStringWithMillis())
             // TODO Hva betyr egentlig denne ?
             .withOverstyrtAvBruker(false),
     )
