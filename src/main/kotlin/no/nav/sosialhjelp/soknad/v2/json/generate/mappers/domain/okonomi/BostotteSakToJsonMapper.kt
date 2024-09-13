@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 class BostotteSakToJsonMapper(
     private val saker: List<BostotteSak>,
     jsonOkonomi: JsonOkonomi,
-) : OkonomiDelegateMapper {
+) : OkonomiElementsToJsonMapper {
     private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {

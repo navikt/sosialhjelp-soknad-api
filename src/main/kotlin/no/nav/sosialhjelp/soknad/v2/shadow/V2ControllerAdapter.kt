@@ -74,4 +74,11 @@ interface V2ControllerAdapter {
         soknadId: String,
         situasjonsendring: SituasjonsendringFrontend,
     )
+
+    fun updateBostotte(
+        soknadId: String,
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean?,
+        userToken: String? = null,
+    )
 }

@@ -59,9 +59,7 @@ class BostotteHusbankenFetcher(
         bostotte.saker
             .filter { it.dato.isAfter(LocalDate.now().minusDays(daysToSubtract(bostotte))) }
             .map { it.toBostotteSak() }
-            .forEach {
-                okonomiService.addBostotteSaker(soknadId, it)
-            }
+            .forEach { okonomiService.addBostotteSak(soknadId, it) }
     }
 
     private fun saveToUtbetalinger(
