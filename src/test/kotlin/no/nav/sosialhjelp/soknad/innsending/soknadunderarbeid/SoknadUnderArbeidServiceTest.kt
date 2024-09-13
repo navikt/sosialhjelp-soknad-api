@@ -16,11 +16,9 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import java.time.Clock
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 
 internal class SoknadUnderArbeidServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -103,21 +101,6 @@ internal class SoknadUnderArbeidServiceTest {
         )
             .let { SoknadUnderArbeidService.nowWithForcedMillis(it) }
             .also { assertThat(it.matches(Regex(tidspunktRegEx))).isTrue() }
-    }
-
-    @Test
-    fun `Tidspunkt som treffer hele tall skal legge til desimaler`() {
-        val regEx = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z\$"
-
-        val offsetTimestamp = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS)
-        val localDateTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-
-        val zonedDateTime = localDateTimestamp.atZone(Clock.systemDefaultZone().zone)
-        val offsetFromLocalViaZoned = zonedDateTime.withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime()
-
-        val offsetFromLocal = localDateTimestamp.atOffset(ZoneOffset.UTC)
-
-        val a = 4
     }
 
     companion object {
