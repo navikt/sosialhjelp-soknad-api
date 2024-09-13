@@ -34,7 +34,7 @@ class SoknadV2OkonomiAdapter(
                 input = vedleggFrontend.resolveOkonomiInput(),
             )
         }
-            .onFailure { logger.warn("NyModell: Feil i oppdatering av Okonomiske Opplysninger") }
+            .onFailure { logger.warn("NyModell: Feil i oppdatering av Okonomiske Opplysninger", it) }
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
