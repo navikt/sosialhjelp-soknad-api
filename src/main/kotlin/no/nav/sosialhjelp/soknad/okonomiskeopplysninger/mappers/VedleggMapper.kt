@@ -32,7 +32,14 @@ object VedleggMapper {
         jsonOkonomi: JsonOkonomi,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): VedleggFrontend {
-        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
+        syncLocalFilesWithMellomlagrede(vedlegg, mellomlagredeVedlegg)
+        val filer =
+            if (vedlegg.filer.isEmpty()) {
+                emptyList()
+            } else {
+                mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
+            }
+
         val vedleggType = getVedleggType(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
@@ -42,6 +49,34 @@ object VedleggMapper {
             vedleggStatus = vedlegg.status?.let { VedleggStatus.valueOf(it) } ?: VedleggStatus.VedleggKreves,
             filer = filer,
         )
+    }
+
+    // En grisete midlertidig løsning for å sikre synk mellom våre referanser og filer på mellomlager
+    private fun syncLocalFilesWithMellomlagrede(
+        vedlegg: JsonVedlegg,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
+    ) {
+        if (vedlegg.filer.isNotEmpty() && vedlegg.status != Vedleggstatus.LastetOpp.toString()) {
+            log.warn("JsonVedlegg med status=${vedlegg.status} (!= LastetOpp) - men har filer? Fjerner filer")
+
+            vedlegg.filer = emptyList()
+            return
+        }
+
+        vedlegg.filer =
+            vedlegg.filer
+                .filter { fil ->
+                    if (mellomlagredeVedlegg.find { it.filnavn == fil.filnavn } != null) {
+                        true
+                    } else {
+                        log.error("Vedlegg har status ${vedlegg.status}, men fil finnes ikke på mellomlager. Fjerner")
+                        false
+                    }
+                }
+
+        if (vedlegg.filer.isEmpty() && vedlegg.status == VedleggStatus.LastetOpp.toString()) {
+            vedlegg.status = VedleggStatus.VedleggKreves.toString()
+        }
     }
 
     private fun getRader(
@@ -201,13 +236,13 @@ object VedleggMapper {
     ): List<DokumentUpload> =
         jsonVedlegg.filer
             .map { fil: JsonFiler ->
-                if (jsonVedlegg.status != Vedleggstatus.LastetOpp.toString()) {
-                    log.info("JsonVedlegg med status=${jsonVedlegg.status} (!= LastetOpp) - men har filer? Burde undersøkes")
-                }
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
                     ?.let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
-                    ?: throw IllegalStateException("Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} tilleggsinfo=${jsonVedlegg.tilleggsinfo} status=${jsonVedlegg.status}")
+                    ?: throw IllegalStateException(
+                        "Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} " +
+                            "tilleggsinfo=${jsonVedlegg.tilleggsinfo} status=${jsonVedlegg.status}",
+                    )
             }
 
     private fun getVedleggType(vedlegg: JsonVedlegg): VedleggType = VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]

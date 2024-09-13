@@ -26,7 +26,10 @@ object JsonVedleggUtils {
     fun vedleggByFrontendType(
         soknad: SoknadUnderArbeid,
         type: VedleggType,
-    ): List<JsonVedlegg> = getVedleggFromInternalSoknad(soknad).filter { isSameVedleggType(it, type) }
+    ): JsonVedlegg {
+        return getVedleggFromInternalSoknad(soknad).firstOrNull { isSameVedleggType(it, type) }
+            ?: throw IllegalStateException("Vedlegget finnes ikke")
+    }
 
     fun isVedleggskravAnnet(vedlegg: VedleggMetadata) = ANNET == vedlegg.skjema && ANNET == vedlegg.tillegg
 
