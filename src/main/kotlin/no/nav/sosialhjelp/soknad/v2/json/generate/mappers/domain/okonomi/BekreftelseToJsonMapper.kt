@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sosialhjelp.soknad.v2.json.generate.toUTCTimestampStringWithMillis
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 
@@ -23,7 +24,7 @@ private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {
         .withType(type.name)
         .withVerdi(verdi)
         .withTittel(type.toTittel())
-        .withBekreftelsesDato(dato.toString())
+        .withBekreftelsesDato(tidspunkt.toUTCTimestampStringWithMillis())
 }
 
 internal fun BekreftelseType.toTittel(): String {

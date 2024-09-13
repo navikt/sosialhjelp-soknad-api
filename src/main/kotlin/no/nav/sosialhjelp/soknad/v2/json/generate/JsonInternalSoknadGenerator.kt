@@ -10,6 +10,10 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 interface DomainToJsonMapper {
@@ -44,7 +48,7 @@ class JsonInternalSoknadGenerator(
                 mappers.forEach { it.mapToJson(UUID.fromString(soknadId), this) }
             }
             .also {
-                kotlin.runCatching {
+                runCatching {
                     JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
                 }
                     .onFailure {
@@ -62,4 +66,14 @@ class JsonInternalSoknadGenerator(
 
         private fun toObject(json: String) = objectMapper.readValue(json, JsonInternalSoknad::class.java)
     }
+}
+
+// I Json-strukturen skal tidspunkt være UTC med 3 desimaler
+fun LocalDateTime.toUTCTimestampStringWithMillis(): String {
+    return this
+        .atZone(Clock.systemDefaultZone().zone)
+        .withZoneSameInstant(ZoneOffset.UTC)
+        .toOffsetDateTime()
+        .truncatedTo(ChronoUnit.MILLIS)
+        .toString()
 }
