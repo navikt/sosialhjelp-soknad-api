@@ -12,12 +12,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -131,7 +131,17 @@ internal class DigisosApiServiceTest {
             )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every {
+            digisosApiV2Client.krypterOgLastOppFiler(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns "digisosid"
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
@@ -179,7 +189,17 @@ internal class DigisosApiServiceTest {
             )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every {
+            digisosApiV2Client.krypterOgLastOppFiler(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns "digisosid"
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
@@ -227,7 +247,17 @@ internal class DigisosApiServiceTest {
             )
 
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every {
+            digisosApiV2Client.krypterOgLastOppFiler(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns "digisosid"
         every {
             soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
                 any(),
@@ -243,18 +273,18 @@ internal class DigisosApiServiceTest {
 
         unmockkObject(MiljoUtils)
     }
-}
 
-private fun createVedlegg(status: VedleggStatus): List<JsonVedlegg> {
-    return listOf(
-        JsonVedlegg().withStatus(status.toString())
-            .withFiler(
-                listOf(
-                    JsonFiler().withFilnavn("fil1.pdf").withSha512("sha512"),
-                    JsonFiler().withFilnavn("fil2.pdf").withSha512("sha512"),
+    private fun createVedlegg(status: VedleggStatus): List<JsonVedlegg> {
+        return listOf(
+            JsonVedlegg().withStatus(status.toString())
+                .withFiler(
+                    listOf(
+                        JsonFiler().withFilnavn("fil1.pdf").withSha512("sha512"),
+                        JsonFiler().withFilnavn("fil2.pdf").withSha512("sha512"),
+                    ),
                 ),
-            ),
-    )
+        )
+    }
 
     @Test
     fun `Verifiser at broken timestamps fikses`() {
