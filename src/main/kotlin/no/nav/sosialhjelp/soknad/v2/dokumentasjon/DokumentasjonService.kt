@@ -156,7 +156,12 @@ class DokumentasjonServiceImpl(
             .map { dokumentasjon -> dokumentasjon.copy(dokumenter = emptySet(), status = dokumentasjon.updateStatus()) }
             .let { list -> dokumentasjonRepository.saveAll(list) }
 
-        mellomlagringClient.deleteDokumenter(soknadId)
+        mellomlagringClient.getMellomlagredeVedlegg(soknadId.toString())
+            ?.also { dto ->
+                if (dto.mellomlagringMetadataList?.isNotEmpty() == true) {
+                    mellomlagringClient.deleteDokumenter(soknadId)
+                }
+            }
     }
 
     private fun Dokumentasjon.updateStatus(): DokumentasjonStatus {
