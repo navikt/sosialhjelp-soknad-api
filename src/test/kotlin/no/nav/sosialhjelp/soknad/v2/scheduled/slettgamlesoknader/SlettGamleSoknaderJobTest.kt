@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.scheduled.SlettGamleSoknaderJob
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,6 +28,8 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     fun setup() {
         soknadRepository.deleteAll()
         every { mellomlagringClient.deleteDokumenter(any()) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
+            MellomlagringDto("", emptyList())
     }
 
     @Test
