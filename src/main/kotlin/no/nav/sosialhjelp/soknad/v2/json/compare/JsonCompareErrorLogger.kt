@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.ARRAY_SIZE
+import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.EXPECTED_DIFF
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIELD_FAILURE
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
+import org.skyscreamer.jsonassert.FieldComparisonFailure
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 
@@ -42,7 +44,10 @@ class JsonCompareErrorLogger(
     private fun getFieldFailures(): List<ErrorRow> {
         return result.fieldFailures
             .map {
-                ErrorRow(FIELD_FAILURE, it.field)
+                when (ExpectedDiffHandler.isExpectedDiff(it.field)) {
+                    true -> ErrorRow(EXPECTED_DIFF, ErrorStringHandler.createErrorString(it))
+                    false -> ErrorRow(FIELD_FAILURE, ErrorStringHandler.createErrorString(it))
+                }
             }
     }
 
@@ -72,9 +77,35 @@ enum class LoggerComparisonErrorTypes(private val logString: String) {
     FIELD_FAILURE("** FieldFailure **"),
     MISSING_FIELD("** MissingField **"),
     ARRAY_SIZE("** ArraySize **"),
+    EXPECTED_DIFF("** ExpectedDiff **"),
     ;
 
     override fun toString(): String {
         return logString
     }
+}
+
+object ExpectedDiffHandler {
+    fun isExpectedDiff(field: String) = expectedRegExDiffs.any { it.matches(field) }
+
+    private val expectedRegExDiffs =
+        listOf(
+            Regex("soknad.data.okonomi.opplysninger.utgift\\[\\d+].type"),
+            Regex("soknad.data.okonomi.opplysninger.utgift\\[\\d+].tittel"),
+        )
+}
+
+object ErrorStringHandler {
+    fun createErrorString(failure: FieldComparisonFailure): String {
+        return if (!writeComparisonFields.any { it.matches(failure.field) }) {
+            failure.field
+        } else {
+            "${failure.field} -> actual=( ${failure.actual} ) : expected=( ${failure.expected} ) "
+        }
+    }
+
+    private val writeComparisonFields =
+        listOf(
+            Regex("soknad.innsendingstidspunkt"),
+        )
 }
