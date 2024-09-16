@@ -1,17 +1,18 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.createFamilie
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
-import no.nav.sosialhjelp.soknad.v2.opprettInnsendtSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
+import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 import java.util.UUID
 
 /**
@@ -22,7 +23,7 @@ import java.util.UUID
  */
 class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Soknad`() {
+    fun `Verifisere CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
         UUID.randomUUID().let {
             val original = soknadRepository.save(opprettSoknad(it))
@@ -32,7 +33,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Livssituasjon`() {
+    fun `Verifisere CRUD-operasjoner for Livssituasjon`() {
         livssituasjonRepository.verifyCRUDOperations(
             originalEntity = opprettLivssituasjon(soknad.id),
             updatedEntity = opprettLivssituasjon(soknad.id).copy(bosituasjon = Bosituasjon(antallHusstand = 999)),
@@ -40,7 +41,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Eier`() {
+    fun `Verifisere CRUD-operasjoner for Eier`() {
         eierRepository.verifyCRUDOperations(
             originalEntity = opprettEier(soknad.id),
             updatedEntity = opprettEier(soknad.id).copy(statsborgerskap = "SPANSK"),
@@ -54,7 +55,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Kontakt`() {
+    fun `Verifisere CRUD-operasjoner for Kontakt`() {
         kontaktRepository.verifyCRUDOperations(
             originalEntity = opprettKontakt(soknad.id),
             updatedEntity = opprettKontakt(soknad.id).copy(telefonnummer = Telefonnummer(fraBruker = "99221199")),
@@ -62,7 +63,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Familie`() {
+    fun `Verifisere CRUD-operasjoner for Familie`() {
         familieRepository.verifyCRUDOperations(
             originalEntity = createFamilie(soknad.id),
             updatedEntity =
@@ -72,7 +73,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere relevante CRUD-operasjoner for Integrasjonstatus`() {
+    fun `Verifisere CRUD-operasjoner for Integrasjonstatus`() {
         integrasjonstatusRepository.verifyCRUDOperations(
             originalEntity = opprettIntegrasjonstatus(soknad.id),
             updatedEntity = opprettIntegrasjonstatus(soknad.id).copy(feilUtbetalingerNav = true),
@@ -80,52 +81,19 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     }
 
     @Test
-    fun `Verifisere at Innsendt_SoknadMetadata ikke er slettet ved sletting av Soknad`() {
-        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.save(opprettInnsendtSoknadMetadata(soknad.id))
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
-        soknadRepository.deleteById(soknad.id)
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
+    fun `Verifisere CRUD-operasjoner for Okonomi`() {
+        okonomiRepository.verifyCRUDOperations(
+            originalEntity = opprettOkonomi(soknad.id),
+            updatedEntity = opprettOkonomi(soknad.id).copy(utgifter = emptySet()),
+        )
     }
 
     @Test
-    fun `Skal slette søknadmetadata hvor sendt_inn_dato er eldre enn timestamp`() {
-        val innsendtSoknadMetadata =
-            innsendtSoknadMetadataRepository.save(
-                opprettInnsendtSoknadMetadata(
-                    soknadId = soknad.id,
-                    sendt_inn_dato = LocalDateTime.now().minusDays(5),
-                ),
-            )
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
-        val antallSlettet = innsendtSoknadMetadataRepository.slettEldreEnn(LocalDateTime.now().minusDays(1))
-        assertThat(antallSlettet).isEqualTo(1)
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isFalse
-    }
-
-    @Test
-    fun `Skal ikke slette søknadmetadata hvor sendt_inn_dato er nyere enn timestamp`() {
-        val innsendtSoknadMetadata =
-            innsendtSoknadMetadataRepository.save(
-                opprettInnsendtSoknadMetadata(
-                    soknadId = soknad.id,
-                    sendt_inn_dato = LocalDateTime.now().minusDays(1),
-                ),
-            )
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
-        val antallSlettet = innsendtSoknadMetadataRepository.slettEldreEnn(LocalDateTime.now().minusDays(5))
-        assertThat(antallSlettet).isEqualTo(0)
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
-    }
-
-    @Test
-    fun `Skal oppdatere eksisterende søknadsmetadata med ny sendt_inn_dato`() {
-        val innsendtSoknadMetadata =
-            innsendtSoknadMetadataRepository.save(opprettInnsendtSoknadMetadata(soknad.id))
-        assertThat(innsendtSoknadMetadataRepository.existsById(innsendtSoknadMetadata.soknadId)).isTrue
-        val nyDato = LocalDateTime.now().minusDays(1)
-        val updatedInnsendtSoknadMetadata =
-            innsendtSoknadMetadataRepository.save(innsendtSoknadMetadata.copy(sendt_inn_dato = nyDato))
-        assertThat(updatedInnsendtSoknadMetadata.sendt_inn_dato).isEqualTo(nyDato)
-        assertThat(updatedInnsendtSoknadMetadata.opprettet_dato).isEqualTo(innsendtSoknadMetadata.opprettet_dato)
+    fun `Verifisere CRUD-operasjoner for Dokumentasjon`() {
+        val dbId = UUID.randomUUID()
+        dokumentasjonRepository.verifyCRUDOperations(
+            originalEntity = opprettDokumentasjon(dbId, soknad.id),
+            updatedEntity = opprettDokumentasjon(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
+        )
     }
 }

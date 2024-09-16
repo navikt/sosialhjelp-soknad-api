@@ -27,7 +27,7 @@ import java.util.UUID
 object VedleggUtils {
     private val log by logger()
 
-    fun behandleFilOgReturnerFildata(
+    fun validerFilOgReturnerNyttFilnavn(
         filnavn: String,
         bytes: ByteArray,
     ): Pair<String, ByteArray> {
@@ -47,6 +47,8 @@ object VedleggUtils {
         sha512.update(bytes)
         return Hex.toHexString(sha512.digest())
     }
+
+    fun ByteArray.toSha512(): String = getSha512FromByteArray(this)
 
     fun lagFilnavn(
         opplastetNavn: String,

@@ -39,7 +39,7 @@ data class Soknad(
     @Column("is_kort_soknad")
     val kortSoknad: Boolean,
 ) : DomainRoot {
-    override val soknadId: UUID get() = id
+    override fun getDbId() = id
 }
 
 data class Tidspunkt(

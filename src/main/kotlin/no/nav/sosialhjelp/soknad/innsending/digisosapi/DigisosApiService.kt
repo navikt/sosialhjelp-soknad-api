@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVed
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -24,8 +25,11 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -46,6 +50,7 @@ class DigisosApiService(
     private val clock: Clock,
     private val shadowProductionManager: ShadowProductionManager,
     private val v2AdapterService: V2AdapterService,
+    private val mellomlagringService: MellomlagringService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -85,12 +90,25 @@ class DigisosApiService(
         v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
 
         log.info("Starter innsending av søknad")
+        // Opprettes, lagres på metadata og brukes til statistikk - er ikke en del av forsendelsen?
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
+        // Oppdaterer metadata i lokal database
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
+        // lagDokumentForSaksbehandlerPdf(internalSoknad), lagDokumentForJuridiskPdf(internalSoknad), lagDokumentForBrukerkvitteringPdf()
+        // Logger også ut hvor mange mellomlagrede vedlegg som finnes
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
+        // Json-streng av JsonSoknad-objektet
         val soknadJson = getSoknadJson(soknadUnderArbeid)
+        // Sjekker at JsonSoknad, JsonMottaker og JsonMottaker.enhetsnummer finnes - kun et wrapper-objekt for enhetsnummer
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
-        val vedleggJson = getVedleggJson(soknadUnderArbeid)
+
+        // Siste kontroll på at vi ikke sender referanser til filer som ikke finnes i fiks
+        syncVedleggMedMellomlagredeFiler(
+            mellomlagretFiks = mellomlagringService.getAllVedlegg(behandlingsId),
+            json = jsonInternalSoknad,
+        )
+        // JsonVedleggSpesifikasjon - brukes av FSL som oppslagsinfo mot mellomlagring
+        val vedleggJson = getVedleggJson(jsonInternalSoknad)
 
         if (MiljoUtils.isNonProduction()) {
             behandlingsId = createPrefixedBehandlingsId(behandlingsId)
@@ -244,11 +262,48 @@ class DigisosApiService(
         }
     }
 
-    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+    private fun syncVedleggMedMellomlagredeFiler(
+        mellomlagretFiks: List<MellomlagretVedleggMetadata>,
+        json: JsonInternalSoknad,
+    ) {
+        log.info("Synkroniserer vedlegg.filer med mellomlager hos FIKS")
+
+        val vedleggSpesifikasjon = json.vedlegg
+        vedleggSpesifikasjon.vedlegg.forEach { vedlegg ->
+            vedlegg.evaluateStatus()
+            if (vedlegg.status == Vedleggstatus.LastetOpp.toString()) vedlegg.checkFiles(mellomlagretFiks)
+        }
+    }
+
+    private fun JsonVedlegg.evaluateStatus() {
+        if (filer.isNotEmpty() && status != VedleggStatus.LastetOpp.toString()) {
+            log.warn("Vedlegg har status $status, men har filer. Fjerner filer.")
+            filer = emptyList()
+        }
+    }
+
+    private fun JsonVedlegg.checkFiles(mellomlagretFiks: List<MellomlagretVedleggMetadata>) {
+        if (status != Vedleggstatus.LastetOpp.toString()) return
+        // sjekker at fil finnes hos Mellomlager
+        filer =
+            filer.mapNotNull { fil ->
+                mellomlagretFiks.find { it.filnavn == fil.filnavn }
+                    .let {
+                        if (it != null) {
+                            fil
+                        } else {
+                            log.error("Ved sending av søknad finnes ikke fil hos mellomlager. Fjerner")
+                            null
+                        }
+                    }
+            }
+        // endre status til kreves hvis den tidligere var LastetOpp, men ingen registrerte filer
+        if (filer.isEmpty()) status = Vedleggstatus.VedleggKreves.toString()
+    }
+
+    private fun getVedleggJson(json: JsonInternalSoknad): String =
         try {
-            val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.vedlegg)
-            ensureValidVedlegg(vedleggJson)
-            vedleggJson
+            objectMapper.writeValueAsString(json.vedlegg).also { ensureValidVedlegg(it) }
         } catch (e: JsonProcessingException) {
             throw IllegalArgumentException("Klarer ikke serialisere vedleggJson", e)
         }

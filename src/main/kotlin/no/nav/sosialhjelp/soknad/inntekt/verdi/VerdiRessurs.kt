@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.V2FormueAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -38,6 +39,7 @@ class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
+    private val v2FormueAdapter: V2FormueAdapter,
 ) {
     @GetMapping
     fun hentVerdier(
@@ -87,6 +89,9 @@ class VerdiRessurs(
         setVerdier(okonomi.oversikt, verdierFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // NyModell
+        v2FormueAdapter.leggTilVerdi(behandlingsId, verdierFrontend)
     }
 
     private fun setVerdier(
@@ -136,12 +141,12 @@ class VerdiRessurs(
     }
 
     data class VerdierFrontend(
-        var bekreftelse: Boolean? = null,
-        var bolig: Boolean = false,
-        var campingvogn: Boolean = false,
-        var kjoretoy: Boolean = false,
-        var fritidseiendom: Boolean = false,
-        var annet: Boolean = false,
-        var beskrivelseAvAnnet: String? = null,
+        val bekreftelse: Boolean? = null,
+        val bolig: Boolean = false,
+        val campingvogn: Boolean = false,
+        val kjoretoy: Boolean = false,
+        val fritidseiendom: Boolean = false,
+        val annet: Boolean = false,
+        val beskrivelseAvAnnet: String? = null,
     )
 }

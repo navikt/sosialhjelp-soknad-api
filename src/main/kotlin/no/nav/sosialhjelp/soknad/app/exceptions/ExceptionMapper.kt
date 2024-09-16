@@ -7,6 +7,8 @@ import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnaut
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.NotValidInputException
+import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
@@ -42,12 +44,18 @@ class ExceptionMapper(
 
             is TjenesteUtilgjengeligException -> {
                 log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)
-                buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig, e))
+                buildError(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig, e),
+                )
             }
 
             is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
                 log.error(e.message, e)
-                buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingMidlertidigUtilgjengelig))
+                buildError(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    SoknadApiError(SoknadApiErrorType.InnsendingMidlertidigUtilgjengelig),
+                )
             }
 
             is SendingTilKommuneErIkkeAktivertException -> {
@@ -77,22 +85,41 @@ class ExceptionMapper(
 
             is DokumentUploadDuplicateFilename -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
-                buildError(HttpStatus.NOT_ACCEPTABLE, SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename))
+                buildError(
+                    HttpStatus.NOT_ACCEPTABLE,
+                    SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename),
+                )
             }
 
             is DokumentUploadUnsupportedMediaType -> {
                 log.warn("UgyldigOpplastingTypeException", e)
-                buildError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, SoknadApiError(SoknadApiErrorType.DokumentUploadUnsupportedMediaType, e))
+                buildError(
+                    HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                    SoknadApiError(SoknadApiErrorType.DokumentUploadUnsupportedMediaType, e),
+                )
             }
 
             is DokumentUploadFileEncrypted -> {
                 log.warn("DokumentUploadFileEncrypted", e)
-                buildError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, SoknadApiError(SoknadApiErrorType.DokumentUploadFileEncrypted, e))
+                buildError(
+                    HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                    SoknadApiError(SoknadApiErrorType.DokumentUploadFileEncrypted, e),
+                )
             }
 
             is FileConversionException -> {
                 log.warn("Filkonverteringsfeil: ${e.message}", e)
                 buildError(e.httpStatus, SoknadApiError(SoknadApiErrorType.DokumentKonverteringFeilet, e))
+            }
+
+            is OkonomiElementFinnesIkkeException -> {
+                log.error("Feil ved oppdatering av okonomi-element: ${e.message}")
+                buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
+            }
+
+            is UpdateBostotteException -> {
+                log.error("Feil ved oppdatering av Bostotte", e)
+                buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
 
             else -> {
@@ -146,7 +173,13 @@ class ExceptionMapper(
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     fun handleNotFoundExceptions(e: RuntimeException): ResponseEntity<SoknadApiError> {
         log.warn("Fant ikke:", e)
-        return buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound))
+        return buildError(
+            HttpStatus.NOT_FOUND,
+            SoknadApiError(
+                error = SoknadApiErrorType.NotFound,
+                e = SosialhjelpSoknadApiException(message = e.message, cause = e),
+            ),
+        )
     }
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])

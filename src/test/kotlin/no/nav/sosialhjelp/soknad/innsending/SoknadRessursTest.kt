@@ -35,7 +35,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -248,21 +247,6 @@ internal class SoknadRessursTest {
             .isThrownBy { ressurs.hentSamtykker(BEHANDLINGSID, "token") }
 
         verify { soknadUnderArbeidRepository wasNot called }
-    }
-
-    @Test
-    @Disabled("I seg selv ikke veldig god test, men heller ikke relevant")
-    fun opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every {
-            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(
-                BEHANDLINGSID,
-            )
-        } throws AuthorizationException("Not for you my friend")
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.opprettSoknad("", null, mockk()) }
-
-        verify { soknadServiceOld wasNot called }
     }
 
     companion object {

@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,6 +39,7 @@ class BostotteRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService,
+    private val v2ControllerAdapter: V2ControllerAdapter,
 ) {
     @GetMapping
     fun hentBostotte(
@@ -50,6 +52,7 @@ class BostotteRessurs(
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
         val bekreftelse = opplysninger.bekreftelse?.run { getBekreftelse(opplysninger) }
+
         return BostotteFrontend(
             bekreftelse = bekreftelse,
             samtykke = bekreftelse?.run { hentSamtykkeFraSoknad(opplysninger) },
@@ -95,6 +98,9 @@ class BostotteRessurs(
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // nyModell
+        v2ControllerAdapter.updateBostotte(behandlingsId, bostotteFrontend.bekreftelse, bostotteFrontend.samtykke)
     }
 
     @PostMapping("/samtykke")
@@ -126,6 +132,9 @@ class BostotteRessurs(
             bostotteSystemdata.updateSystemdataIn(soknad, token)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
+
+        // nyModell
+        v2ControllerAdapter.updateBostotte(behandlingsId, hasBostotte = null, samtykke, token)
     }
 
     private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean =

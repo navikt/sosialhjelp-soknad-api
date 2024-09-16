@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavSystemdata.Companion.tilIntegerMedAvrunding
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.assertj.core.api.Assertions.assertThat
@@ -161,7 +161,7 @@ internal class UtbetalingerFraNavSystemdataTest {
         private const val TREKK_2 = 0.0
         private const val ORGANISASJONSNR = "012345678"
         private const val PERSONNR = "01010011111"
-        private val NAV_KOMPONENT = Komponent(KOMPONENTTYPE, KOMPONENTBELOP, SATSTYPE, SATSBELOP, SATSANTALL)
+        private val NAV_KOMPONENT = NavKomponent(KOMPONENTTYPE, KOMPONENTBELOP, SATSTYPE, SATSBELOP, SATSANTALL)
         private val NAV_UTBETALING_1 =
             NavUtbetaling(
                 "type",

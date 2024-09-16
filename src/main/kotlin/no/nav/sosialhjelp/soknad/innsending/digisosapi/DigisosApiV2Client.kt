@@ -78,7 +78,9 @@ class DigisosApiV2Client(
     fun krypterOgLastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
+        // TODO Navngivning? Dette er JsonVedleggSpesifikasjon
         vedleggJson: String,
+        // TODO Navngivning? Dette er genererte pdf-dokumenter.
         dokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,

@@ -5,6 +5,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
@@ -12,7 +15,8 @@ import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadmetadata
+import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -30,11 +34,31 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
+import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.situasjonsendring.Situasjonsendring
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -76,9 +100,9 @@ fun createFamilie(
 
 fun opprettEktefelle(): Ektefelle =
     Ektefelle(
-        navn = Navn("Kone", null, "Konesen"),
+        navn = Navn("Kone", "", "Konesen"),
         fodselsdato = "432341",
-        personId = "1234512345",
+        personId = SetupLifecycleIntegrationTest.ektefelleId,
         folkeregistrertMedEktefelle = true,
         borSammen = true,
         kildeErSystem = true,
@@ -86,7 +110,7 @@ fun opprettEktefelle(): Ektefelle =
 
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
-    eierPersonId: String = "54352345353",
+    eierPersonId: String = AbstractIntegrationTest.userId,
     opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
@@ -111,8 +135,8 @@ fun opprettArbeidsforholdList(
 fun opprettArbeidsforhold(
     arbeidsgivernavn: String = "Arbeidsgiversen",
     orgnummer: String? = "1234567890",
-    start: String? = "01012010",
-    slutt: String? = "01012020",
+    start: LocalDate? = LocalDate.now().minusYears(4),
+    slutt: LocalDate? = null,
     fastStillingsprosent: Int? = 100,
     harFastStilling: Boolean? = true,
 ): Arbeidsforhold = Arbeidsforhold(arbeidsgivernavn, orgnummer, start, slutt, fastStillingsprosent, harFastStilling)
@@ -152,7 +176,7 @@ fun opprettNavn(
     )
 
 fun createBarn(
-    personId: String = "34243452342",
+    personId: String = SetupLifecycleIntegrationTest.barnPersonId,
     navn: Navn = Navn(fornavn = "Navn", etternavn = "Navnesen"),
     fodselsdato: String = "342434",
     borSammen: Boolean = true,
@@ -275,15 +299,139 @@ fun opprettBosituasjon(
     antallPersoner: Int = 3,
 ): Bosituasjon = Bosituasjon(botype, antallPersoner)
 
-fun opprettInnsendtSoknadMetadata(
-    soknadId: UUID,
-    personId: String = "12345678901",
-    sendt_inn_dato: LocalDateTime? = null,
-    opprettet_dato: LocalDateTime = LocalDateTime.now().minusMinutes(5),
-): InnsendtSoknadmetadata =
-    InnsendtSoknadmetadata(
+fun opprettOkonomi(soknadId: UUID): Okonomi {
+    return Okonomi(
         soknadId = soknadId,
-        personId = personId,
-        sendt_inn_dato = sendt_inn_dato,
-        opprettet_dato = opprettet_dato,
+        inntekter = createInntekter(),
+        utgifter = createUtgifter(),
+        formuer = createFormuer(),
+        bekreftelser = createBekreftelser(),
+        bostotteSaker = createBostotteSaker(),
+    )
+}
+
+fun createInntekter(): Set<Inntekt> {
+    return setOf(
+        Inntekt(
+            type = InntektType.JOBB,
+            inntektDetaljer =
+                OkonomiDetaljer(
+                    detaljer =
+                        listOf(
+                            BruttoNetto(brutto = 40.0, netto = 20.0),
+                            BruttoNetto(brutto = 60.0, netto = 30.0),
+                        ),
+                ),
+        ),
+        Inntekt(
+            type = InntektType.UTBETALING_NAVYTELSE,
+            inntektDetaljer =
+                OkonomiDetaljer(
+                    detaljer =
+                        listOf(
+                            UtbetalingMedKomponent(
+                                utbetaling = Utbetaling(brutto = 123.0, utbetalingsdato = LocalDate.now()),
+                                komponenter =
+                                    listOf(
+                                        Komponent(type = "Komponent 1", satsBelop = 400.0),
+                                    ),
+                            ),
+                        ),
+                ),
+        ),
+    )
+}
+
+fun createUtgifter(): Set<Utgift> {
+    return setOf(
+        Utgift(
+            type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            utgiftDetaljer =
+                OkonomiDetaljer(
+                    detaljer =
+                        listOf(
+                            Belop(belop = 400.0),
+                        ),
+                ),
+        ),
+    )
+}
+
+fun createFormuer(): Set<Formue> {
+    return setOf(
+        Formue(
+            type = FormueType.FORMUE_BRUKSKONTO,
+            formueDetaljer =
+                OkonomiDetaljer(
+                    detaljer =
+                        listOf(
+                            Belop(belop = 123.0),
+                        ),
+                ),
+        ),
+        Formue(
+            type = FormueType.VERDI_KJORETOY,
+            formueDetaljer =
+                OkonomiDetaljer(
+                    detaljer =
+                        listOf(
+                            Belop(belop = 500000.0),
+                        ),
+                ),
+        ),
+    )
+}
+
+fun createBekreftelser(): Set<Bekreftelse> {
+    return setOf(
+        Bekreftelse(
+            type = BekreftelseType.BEKREFTELSE_SPARING,
+            verdi = true,
+        ),
+    )
+}
+
+fun createBostotteSaker(): List<BostotteSak> {
+    return listOf(
+        BostotteSak(
+            LocalDate.now(),
+            BostotteStatus.UNDER_BEHANDLING,
+            "Beskrivelse av bostotte",
+            null,
+        ),
+        BostotteSak(
+            LocalDate.now(),
+            BostotteStatus.VEDTATT,
+            "Annen beskrivelse av Bostotte",
+            Vedtaksstatus.AVVIST,
+        ),
+    )
+}
+
+fun opprettDokumentasjon(
+    id: UUID = UUID.randomUUID(),
+    soknadId: UUID,
+    status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
+    type: OpplysningType = UtgiftType.UTGIFTER_STROM,
+    dokumenter: Set<Dokument> = opprettDokumenter(),
+): Dokumentasjon {
+    return Dokumentasjon(id, soknadId, type, status, dokumenter)
+}
+
+fun opprettDokumenter(): Set<Dokument> {
+    return setOf(
+        Dokument(
+            dokumentId = UUID.randomUUID(),
+            filnavn = "utskrift_brukskonto.pdf",
+            sha512 = UUID.randomUUID().toString(),
+        ),
+    )
+}
+
+fun createBostotteSak(beskrivelse: String? = null) =
+    BostotteSak(
+        dato = LocalDate.now(),
+        status = BostotteStatus.UNDER_BEHANDLING,
+        beskrivelse = beskrivelse,
+        vedtaksstatus = null,
     )

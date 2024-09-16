@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
@@ -29,6 +30,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.ma
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.shadow.V2OkonomiAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -51,6 +53,7 @@ class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
+    private val v2OkonomiAdapter: V2OkonomiAdapter,
 ) {
     @GetMapping
     fun hentOkonomiskeOpplysninger(
@@ -73,7 +76,7 @@ class OkonomiskeOpplysningerRessurs(
                 ?.soknad
                 ?.data
                 ?.okonomi ?: JsonOkonomi()
-        val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+        val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad) ?: emptyList()
         val mellomlagredeVedlegg =
             if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
@@ -96,17 +99,20 @@ class OkonomiskeOpplysningerRessurs(
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+
+        // sync lokale filer med mellomlagrede
+        val vedleggFrontendList =
+            jsonVedleggs.map {
+                mapMellomlagredeVedleggToVedleggFrontend(
+                    vedlegg = it,
+                    jsonOkonomi = jsonOkonomi,
+                    mellomlagredeVedlegg = mellomlagredeVedlegg,
+                )
+            }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger =
-                jsonVedleggs.map {
-                    mapMellomlagredeVedleggToVedleggFrontend(
-                        it,
-                        jsonOkonomi,
-                        mellomlagredeVedlegg,
-                    )
-                },
+            okonomiskeOpplysninger = vedleggFrontendList,
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi),
         )
@@ -146,9 +152,14 @@ class OkonomiskeOpplysningerRessurs(
             }
         }
 
-        setVedleggStatus(vedleggFrontend, soknad)
-
+        setVedleggStatus(
+            vedleggFrontend = vedleggFrontend,
+            vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type),
+        )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // ny modell
+        v2OkonomiAdapter.updateOkonomiskeOpplysninger(behandlingsId, vedleggFrontend)
     }
 
     private fun removeIkkePaakrevdeMellomlagredeVedlegg(
@@ -205,6 +216,27 @@ class OkonomiskeOpplysningerRessurs(
         jsonVedleggs: List<JsonVedlegg>,
     ): Boolean = jsonVedleggs.none { it.type == vedlegg.type && it.tilleggsinfo == vedlegg.tilleggsinfo }
 
+    private fun setVedleggStatus(
+        vedleggFrontend: VedleggFrontend,
+        vedlegg: JsonVedlegg,
+    ) {
+        vedlegg.status =
+            determineVedleggStatus(
+                alleredeLevert = vedleggFrontend.alleredeLevert ?: false,
+                vedleggStatus = vedleggFrontend.vedleggStatus,
+                hasFiles = vedlegg.filer.isNotEmpty(),
+            ).name
+    }
+
+    // Faren er at vedlegg får annen status - endrer status på et senere tidspunkt...
+    // ..og at vi sender dette til FSL med referanser til disse filene (som ikke finnes hos KS lenger)
+    private fun removeFilesIfStatusNotLastetOpp(vedlegg: JsonVedlegg) {
+        if (vedlegg.filer.isNotEmpty() && vedlegg.status != Vedleggstatus.LastetOpp.toString()) {
+            log.warn("Vedlegg ${vedlegg.status} ${vedlegg.tilleggsinfo} har filer. Fjerner disse. Dette bør ikke skje.")
+            vedlegg.filer = emptyList()
+        }
+    }
+
     /**
      * Utleder vedleggsstatus på en bakoverkompatibel måte.
      *
@@ -230,25 +262,11 @@ class OkonomiskeOpplysningerRessurs(
             else -> VedleggStatus.VedleggKreves
         }
 
-    private fun setVedleggStatus(
-        vedleggFrontend: VedleggFrontend,
-        soknad: SoknadUnderArbeid,
-    ) {
-        val vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type).firstOrNull()
-
-        requireNotNull(vedlegg) { "Vedlegget finnes ikke" }
-
-        vedlegg.status =
-            determineVedleggStatus(
-                alleredeLevert = vedleggFrontend.alleredeLevert ?: false,
-                vedleggStatus = vedleggFrontend.vedleggStatus,
-                hasFiles = vedlegg.filer.isNotEmpty(),
-            ).name
-    }
-
     data class VedleggFrontends(
         var okonomiskeOpplysninger: List<VedleggFrontend>?,
+        // TODO Hvorfor må frontend ha oversikt over slettede vedlegg? Høre med Tore
         var slettedeVedlegg: List<VedleggFrontend>?,
+        // TODO Hvorfor trenger frontend et eget flagg for dette? Høre med Tore
         @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
         var isOkonomiskeOpplysningerBekreftet: Boolean,
     )

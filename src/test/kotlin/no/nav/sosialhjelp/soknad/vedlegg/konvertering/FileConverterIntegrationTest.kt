@@ -17,12 +17,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.http.client.reactive.ClientHttpRequest
 import org.springframework.mock.web.MockMultipartFile
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.UUID
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class FileConverterIntegrationTest : AbstractIntegrationTest() {
     private val endpoint: String = "/vedlegg/konverter"
 

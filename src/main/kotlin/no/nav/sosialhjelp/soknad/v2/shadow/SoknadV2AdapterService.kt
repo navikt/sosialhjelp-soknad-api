@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.innsendtsoknadmetadata.InnsendtSoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.soknad.service.SoknadService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +13,6 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
-    private val innsendtSoknadMetadataService: InnsendtSoknadMetadataService,
 ) : V2AdapterService {
     private val logger by logger()
 
@@ -26,22 +24,21 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
-        kotlin
-            .runCatching {
-                soknadService.createSoknad(
-                    soknadId = UUID.fromString(behandlingsId),
-                    opprettetDato = opprettetDato,
-                    eierId = eierId,
-                    kortSoknad = kortSoknad,
-                )
-            }.onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+        kotlin.runCatching {
+            soknadService.createSoknad(
+                soknadId = UUID.fromString(behandlingsId),
+                opprettetDato = opprettetDato,
+                eierId = eierId,
+                kortSoknad = kortSoknad,
+            )
+        }
+            .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
 
-        kotlin
-            .runCatching {
-                soknadService
-                    .findOrError(UUID.fromString(behandlingsId))
-                    .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
-            }.onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
+        kotlin.runCatching {
+            soknadService.findOrError(UUID.fromString(behandlingsId))
+                .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
+        }
+            .onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
     }
 
     override fun setInnsendingstidspunkt(
@@ -50,16 +47,15 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
-        kotlin
-            .runCatching {
-                OffsetDateTime.parse(innsendingsTidspunkt).let {
-                    soknadService.setInnsendingstidspunkt(
-                        soknadId = UUID.fromString(soknadId),
-                        innsendingsTidspunkt = it.toLocalDateTime(),
-                    )
-                    innsendtSoknadMetadataService.setInnsenindgstidspunkt(UUID.fromString(soknadId), it.toLocalDateTime())
-                }
-            }.onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+        kotlin.runCatching {
+            OffsetDateTime.parse(innsendingsTidspunkt).let {
+                soknadService.setInnsendingstidspunkt(
+                    soknadId = UUID.fromString(soknadId),
+                    innsendingsTidspunkt = it.toLocalDateTime(),
+                )
+            }
+        }
+            .onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
@@ -67,26 +63,7 @@ class SoknadV2AdapterService(
 
         kotlin
             .runCatching {
-                soknadService.slettSoknad(UUID.fromString(behandlingsId))
+                soknadService.deleteSoknad(UUID.fromString(behandlingsId))
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
-    }
-
-    override fun createInnsendtSoknadMetadata(
-        behandlingsId: String,
-        eierId: String,
-        sendtInnDato: LocalDateTime?,
-        opprettetDato: LocalDateTime,
-    ) {
-        logger.info("NyModell: Oppretter innsendt soknad metadata for soknadId: $behandlingsId")
-
-        kotlin
-            .runCatching {
-                innsendtSoknadMetadataService.upsertInnsendtSoknadMetadata(
-                    soknadId = UUID.fromString(behandlingsId),
-                    personId = eierId,
-                    sendtInnDato = sendtInnDato,
-                    opprettetDato = opprettetDato,
-                )
-            }.onFailure { logger.warn("NyModell: Kunne ikke opprette innsendt soknad metadata", it) }
     }
 }

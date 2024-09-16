@@ -41,7 +41,13 @@ internal class BostotteRessursTest {
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val textService: TextService = mockk()
     private val bostotteRessurs =
-        BostotteRessurs(tilgangskontroll, soknadUnderArbeidRepository, bostotteSystemdata, textService)
+        BostotteRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            bostotteSystemdata,
+            textService,
+            mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

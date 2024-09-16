@@ -54,6 +54,8 @@ enum class SoknadMetadataInnsendingStatus {
 }
 
 enum class Vedleggstatus {
+    // TODO Forventet og VedleggKreves er det samme - beholder begge inntil ny datamodell
+    FORVENTET,
     VedleggKreves,
     LastetOpp,
     VedleggAlleredeSendt,

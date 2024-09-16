@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
+import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -26,7 +27,7 @@ import java.util.UUID
 class LivssituasjonToJsonMapper(
     private val livssituasjonRepository: LivssituasjonRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
@@ -57,7 +58,7 @@ private fun JsonInternalSoknad.initializeObjects() {
     soknad.data ?: soknad.withData(JsonData())
     with(soknad.data) {
         arbeid ?: withArbeid(JsonArbeid())
-        utdanning ?: withUtdanning(JsonUtdanning())
+        utdanning ?: withUtdanning(JsonUtdanning().withKilde(JsonKilde.BRUKER))
         bosituasjon ?: withBosituasjon(JsonBosituasjon())
     }
 }
@@ -75,7 +76,7 @@ private fun Arbeid.toJsonArbeid(): JsonArbeid {
 }
 
 private fun Utdanning.toJsonUtdanning(): JsonUtdanning? {
-    return erStudent?.let {
+    return erStudent.let {
         JsonUtdanning()
             .withKilde(JsonKilde.BRUKER)
             .withErStudent(it)
@@ -103,8 +104,8 @@ private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
         .withArbeidsgivernavn(arbeidsgivernavn)
         .withStillingstype(harFastStilling?.toJsonArbeidsforholdStillingtype())
         .withStillingsprosent(fastStillingsprosent)
-        .withFom(start)
-        .withTom(slutt)
+        .withFom(start?.toIsoString())
+        .withTom(slutt?.toIsoString())
         .withOverstyrtAvBruker(false)
 }
 

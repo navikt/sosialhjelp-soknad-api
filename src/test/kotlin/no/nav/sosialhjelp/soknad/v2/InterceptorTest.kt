@@ -27,7 +27,6 @@ class InterceptorTest : AbstractIntegrationTest() {
         val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
         val token = mockOAuth2Server.issueToken("selvbetjening", "abc", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
 
-        // TODO Oppdatere PUT i AbstractIntegrationTest med disse ekstra headerne
         val result =
             webTestClient.put()
                 .uri("/soknad/${soknad.id}/familie/sivilstatus")

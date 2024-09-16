@@ -46,7 +46,13 @@ internal class VerdiRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val verdiRessurs = VerdiRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val verdiRessurs =
+        VerdiRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            v2FormueAdapter = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

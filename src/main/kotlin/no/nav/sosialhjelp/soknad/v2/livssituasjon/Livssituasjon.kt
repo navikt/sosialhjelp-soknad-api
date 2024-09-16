@@ -9,6 +9,8 @@ import org.springframework.data.relational.core.mapping.MappedCollection
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Repository
@@ -17,15 +19,16 @@ interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRep
 // TODO Navn?
 @Table
 data class Livssituasjon(
-    @Id
-    override val soknadId: UUID,
+    @Id val soknadId: UUID,
     @Embedded.Empty
     val arbeid: Arbeid = Arbeid(),
     @Embedded.Nullable
     val utdanning: Utdanning? = null,
     @Embedded.Nullable
     val bosituasjon: Bosituasjon? = null,
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
 
 data class Bosituasjon(
     val botype: Botype? = null,
@@ -33,7 +36,7 @@ data class Bosituasjon(
 )
 
 data class Utdanning(
-    val erStudent: Boolean? = null,
+    val erStudent: Boolean = false,
     val studentgrad: Studentgrad? = null,
 )
 
@@ -47,11 +50,13 @@ data class Arbeid(
 data class Arbeidsforhold(
     val arbeidsgivernavn: String,
     val orgnummer: String?,
-    val start: String?,
-    val slutt: String?,
+    val start: LocalDate?,
+    val slutt: LocalDate?,
     val fastStillingsprosent: Int? = 0,
     val harFastStilling: Boolean?,
 )
+
+fun LocalDate.toIsoString(): String = this.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 enum class Studentgrad {
     HELTID,

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.soknad.service.BegrunnelseService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

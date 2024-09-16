@@ -12,12 +12,11 @@ jobs:
     name: 'Deploy to prod-fss'
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
-      packages: write
+      id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v2
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v3
     with:
       cluster-name: 'prod-fss'
       resource-folder: 'prod'
       resource-name: 'prod-fss'
-      build-always: true
     secrets: inherit

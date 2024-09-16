@@ -32,6 +32,6 @@ class SoknadAlleredeSendtException(message: String?) : SosialhjelpSoknadApiExcep
 
 class FeilVedSendingTilFiksException(
     message: String?,
-    e: Exception?,
+    t: Throwable?,
     id: String?,
-) : SosialhjelpSoknadApiException(message, e, id)
+) : SosialhjelpSoknadApiException(message, t, id)

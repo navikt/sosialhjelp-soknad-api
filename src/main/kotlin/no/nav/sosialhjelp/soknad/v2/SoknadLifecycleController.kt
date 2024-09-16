@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.v2
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
@@ -17,23 +17,18 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class StartSoknadResponseDto(
-    val soknadId: String,
-    val useKortSoknad: Boolean,
-)
-
 /**
  * En abstraksjon for å skille på logikk som håndterer omkringliggende ting ved en søknad og logikk
  * som direkte opererer/muterer data.
  */
 @RestController
-@Unprotected
+@ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleService,
     private val nedetidService: NedetidService,
 ) {
-    @PostMapping("/opprettSoknad")
+    @PostMapping("/create")
     fun createSoknad(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = true) token: String,
         response: HttpServletResponse,
@@ -47,11 +42,11 @@ class SoknadLifecycleController(
 
         return soknadLifecycleService
             .startSoknad(token)
-            .let { (id, useKortSoknad) ->
-                response.addCookie(xsrfCookie(id.toString()))
-                response.addCookie(xsrfCookieMedBehandlingsid(id.toString()))
+            .let { (soknadId, useKortSoknad) ->
+                response.addCookie(xsrfCookie(soknadId))
+                response.addCookie(xsrfCookieMedBehandlingsid(soknadId))
 
-                StartSoknadResponseDto(id.toString(), useKortSoknad)
+                StartSoknadResponseDto(soknadId, useKortSoknad)
             }
     }
 
@@ -62,16 +57,14 @@ class SoknadLifecycleController(
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
+        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
-        val (id, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
-
-        return SoknadSendtDto(id, innsendingstidspunkt)
+        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
-    @DeleteMapping("/{soknadId}")
+    @DeleteMapping("/{soknadId}/delete")
     fun deleteSoknad(
         @PathVariable("soknadId") soknadId: UUID,
-        // TODO Se Prometheus-metrics-todo
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
@@ -80,15 +73,15 @@ class SoknadLifecycleController(
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
 
-        private fun xsrfCookie(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))
+        private fun xsrfCookie(soknadId: UUID): Cookie {
+            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(soknadId.toString()))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie
         }
 
-        private fun xsrfCookieMedBehandlingsid(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie("$XSRF_TOKEN-$behandlingId", XsrfGenerator.generateXsrfToken(behandlingId))
+        private fun xsrfCookieMedBehandlingsid(soknadId: UUID): Cookie {
+            val xsrfCookie = Cookie("$XSRF_TOKEN-$soknadId", XsrfGenerator.generateXsrfToken(soknadId.toString()))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie
@@ -96,7 +89,12 @@ class SoknadLifecycleController(
     }
 }
 
-data class SoknadSendtDto(
+data class StartSoknadResponseDto(
     val soknadId: UUID,
+    val useKortSoknad: Boolean,
+)
+
+data class SoknadSendtDto(
+    val digisosId: UUID,
     val tidspunkt: LocalDateTime,
 )

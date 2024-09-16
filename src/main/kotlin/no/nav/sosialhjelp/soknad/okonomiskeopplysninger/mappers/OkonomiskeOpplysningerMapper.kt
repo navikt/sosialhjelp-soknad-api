@@ -123,6 +123,8 @@ object OkonomiskeOpplysningerMapper {
             .withKilde(JsonKilde.BRUKER)
             .withType(type)
             .withTittel(tittel)
+            // TODO Dette må gjøres pga. Studielån.INNTEKT og Barnebidrag.MOTTAR som kun er ett beløp.
+            // TODO ... Regnes disse virkelig som strukturert økonomisk informasjon? (JsonOkonomioversiktInntekt)
             .withBrutto(rad.brutto ?: rad.belop)
             .withNetto(rad.netto ?: rad.belop)
             .withOverstyrtAvBruker(false)

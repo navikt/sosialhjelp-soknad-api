@@ -29,9 +29,9 @@ jobs:
     name: 'Deploy to dev'
     needs: set-cluster
     permissions:
-      packages: write
+      id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v2
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v3
     with:
       cluster-name: ${{ needs.set-cluster.outputs.cluster-name }}
       resource-name: ${{ inputs.config-file-name }}

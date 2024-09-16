@@ -6,6 +6,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 // TODO Denne kjører med Prop.NESTED fordi den ikke må ødelegge for annen skriving
 @Transactional(propagation = Propagation.NESTED)
@@ -20,14 +21,27 @@ class EierRegisterService(private val eierRepository: EierRepository) {
                     navn = eier.navn,
                     statsborgerskap = eier.statsborgerskap,
                     nordiskBorger = eier.nordiskBorger,
-                    kontonummer =
-                        kontonummer.copy(
-                            fraRegister = eier.kontonummer.fraRegister,
-                        ),
                 )
             }
             ?.also { eierRepository.save(it) }
             // lagre hvis ikke finnes
             ?: eierRepository.save(eier)
+    }
+
+    fun getKontonummer(soknadId: UUID) = eierRepository.findByIdOrNull(soknadId)?.kontonummer
+
+    fun updateKontonummerFromRegister(
+        soknadId: UUID,
+        kontonummerRegister: String,
+    ) {
+        eierRepository.findByIdOrNull(soknadId)
+            ?.run {
+                if (kontonummer.harIkkeKonto != true) {
+                    copy(kontonummer = kontonummer.copy(fraRegister = kontonummerRegister))
+                } else {
+                    null
+                }
+            }
+            ?.let { eier -> eierRepository.save(eier) }
     }
 }

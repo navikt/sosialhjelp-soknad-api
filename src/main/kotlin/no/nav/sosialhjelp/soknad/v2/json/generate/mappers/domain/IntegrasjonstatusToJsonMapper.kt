@@ -13,7 +13,7 @@ import java.util.UUID
 class IntegrasjonstatusToJsonMapper(
     private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : DomainToJsonMapper {
-    override fun mapToSoknad(
+    override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
