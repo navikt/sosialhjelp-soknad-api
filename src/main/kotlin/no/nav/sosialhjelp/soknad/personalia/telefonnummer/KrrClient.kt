@@ -39,9 +39,10 @@ class KrrClient(
                 tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), krrAudience)
             }
 
-    fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
-        return try {
-            webClient.get()
+    fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? =
+        try {
+            webClient
+                .get()
                 .uri("/rest/v1/person")
                 .header(AUTHORIZATION, BEARER + tokenxToken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
@@ -62,10 +63,10 @@ class KrrClient(
             log.error("Krr - Noe uventet feilet", e)
             throw TjenesteUtilgjengeligException("Krr", e)
         }
-    }
 
     fun ping() {
-        webClient.get()
+        webClient
+            .get()
             .uri("/rest/ping")
             .accept(APPLICATION_JSON)
             .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
