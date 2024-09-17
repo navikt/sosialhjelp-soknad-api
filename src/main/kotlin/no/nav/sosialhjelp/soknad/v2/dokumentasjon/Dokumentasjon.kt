@@ -73,6 +73,8 @@ enum class DokumentasjonStatus {
 // TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
 enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean) : OpplysningType {
     SKATTEMELDING(dokumentasjonForventet = true),
+    SAMVARSAVTALE(dokumentasjonForventet = true),
+    OPPHOLDSTILLATELSE(dokumentasjonForventet = true),
     ;
 
     override val group: String get() = "Generell Dokumentasjon"

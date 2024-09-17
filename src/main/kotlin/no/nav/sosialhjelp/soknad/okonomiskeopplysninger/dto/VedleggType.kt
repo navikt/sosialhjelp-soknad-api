@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
 import com.fasterxml.jackson.annotation.JsonValue
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -40,10 +41,12 @@ enum class VedleggType(
     KontooversiktSparekonto("kontooversikt|sparekonto", FormueType.FORMUE_SPAREKONTO),
     LonnslippArbeid("lonnslipp|arbeid", InntektType.JOBB),
     NedbetalingsplanAvdragslan("nedbetalingsplan|avdraglaan", UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG),
-    OppholdstillatelOppholdstillatel("oppholdstillatel|oppholdstillatel", null), // TODO brukes?
+    OppholdstillatelOppholdstillatel("oppholdstillatel|oppholdstillatel", AnnenDokumentasjonType.OPPHOLDSTILLATELSE),
     SalgsoppgjorEiendom("salgsoppgjor|eiendom", InntektType.UTBETALING_SALG),
-    SamvarsavtaleBarn("samvarsavtale|barn", null), // TODO brukes?
-    SkattemeldingSkattemelding("skattemelding|skattemelding", null),
+
+    // TODO brukes?
+    SamvarsavtaleBarn("samvarsavtale|barn", AnnenDokumentasjonType.SAMVARSAVTALE),
+    SkattemeldingSkattemelding("skattemelding|skattemelding", AnnenDokumentasjonType.SKATTEMELDING),
     SluttoppgjorArbeid("sluttoppgjor|arbeid", InntektType.SLUTTOPPGJOER),
     StudentVedtak("student|vedtak", InntektType.STUDIELAN_INNTEKT),
     KortBehov("kort|behov", null),
