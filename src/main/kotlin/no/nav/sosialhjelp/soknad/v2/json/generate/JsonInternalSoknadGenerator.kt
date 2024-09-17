@@ -11,6 +11,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
@@ -74,6 +75,11 @@ object TimestampManager {
     private const val MILLISECOND = 1000000L
 
     fun convertToOffsettDateTimeUTCString(localDateTime: LocalDateTime) = localDateTime.toUTCTimestampStringWithMillis()
+
+    fun parseFromUTCString(utcString: String): LocalDateTime =
+        OffsetDateTime.parse(utcString)
+            .atZoneSameInstant(ZoneId.of(ZONE_STRING))
+            .toLocalDateTime()
 
     private fun validateTimestamp(timestampString: String) {
         if (!Regex(TIMESTAMP_REGEX).matches(timestampString)) error("Tidspunkt $timestampString matcher ikke formatet")
