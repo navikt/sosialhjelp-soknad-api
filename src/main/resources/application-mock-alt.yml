@@ -11,7 +11,7 @@ spring:
     compose:
       file: "compose/docker-compose-local.yml"
       lifecycle-management: start-only
-#      enabled: true
+      enabled: true
       # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
       profiles:
         active: "full"
