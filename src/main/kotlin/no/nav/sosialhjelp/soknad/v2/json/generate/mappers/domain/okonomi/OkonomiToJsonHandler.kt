@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.generate.toUTCTimestampStringWithMillis
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampManager
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
@@ -86,7 +86,7 @@ private fun JsonOkonomi.addUtbetalingHusbankenKildeBruker(tidspunkt: LocalDateTi
             .withKilde(JsonKilde.BRUKER)
             .withTittel(BekreftelseType.BOSTOTTE.toTittel())
             .withType(InntektType.UTBETALING_HUSBANKEN.name)
-            .withUtbetalingsdato(tidspunkt.toUTCTimestampStringWithMillis())
+            .withUtbetalingsdato(TimestampManager.convertToOffsettDateTimeUTCString(tidspunkt))
             // TODO Hva betyr egentlig denne ?
             .withOverstyrtAvBruker(false),
     )
