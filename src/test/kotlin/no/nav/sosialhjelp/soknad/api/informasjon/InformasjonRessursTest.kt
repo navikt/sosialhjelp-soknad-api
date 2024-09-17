@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.innsending.QualifiesForKort
+import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.junit.jupiter.api.AfterEach
@@ -22,7 +22,7 @@ internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
-    private val qualifiesForKort: QualifiesForKort = mockk()
+    private val kortSoknadService: KortSoknadService = mockk()
 
     companion object {
         val PERSON =
@@ -47,7 +47,7 @@ internal class InformasjonRessursTest {
             personService = personService,
             soknadMetadataRepository = soknadMetadataRepository,
             pabegynteSoknaderService = pabegynteSoknaderService,
-            qualifiesForKort = qualifiesForKort,
+            kortSoknadService = kortSoknadService,
             maxUploadSize = DataSize.ofTerabytes(10),
         )
 
@@ -57,7 +57,7 @@ internal class InformasjonRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { qualifiesForKort.qualifies(any(), any()) } returns false
+        every { kortSoknadService.qualifies(any(), any()) } returns false
         every { personService.hentPerson(any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false

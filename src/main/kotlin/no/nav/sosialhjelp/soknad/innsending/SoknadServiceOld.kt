@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import io.getunleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -61,34 +60,30 @@ class SoknadServiceOld(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
-    private val unleash: Unleash,
-    private val qualifiesForKort: QualifiesForKort,
 ) {
     @Transactional
     fun startSoknad(
         token: String?,
-        type: JsonData.Soknadstype?,
+        kort: Boolean?,
     ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKort.qualifies(eierId, token)
-
-        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
+        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kort == true) // TODO NyModell Metadata returnerer UUID
 
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
-        if (kortSoknad) {
+        if (kort == true) {
             log.info("Starter kort søknad")
         } else {
             log.info("Starter søknad")
         }
-        prometheusMetricsService.reportStartSoknad(kortSoknad)
+        prometheusMetricsService.reportStartSoknad()
 
         val soknadUnderArbeid =
             SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = behandlingsId,
                 eier = eierId,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId, kortSoknad),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eierId, kort),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -99,17 +94,15 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
-            kortSoknad,
+            kort == true,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return StartSoknadResponse(behandlingsId, kortSoknad)
+        return StartSoknadResponse(behandlingsId, kort == true)
     }
-
-    private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
 
     private fun opprettSoknadMetadata(
         fnr: String,
@@ -197,7 +190,7 @@ class SoknadServiceOld(
 
         fun createEmptyJsonInternalSoknad(
             eier: String,
-            kortSoknad: Boolean,
+            kortSoknad: Boolean?,
         ): JsonInternalSoknad =
             JsonInternalSoknad()
                 .withSoknad(
@@ -220,7 +213,7 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
-                                ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
+                                ).let { if (kortSoknad == true) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
@@ -232,8 +225,8 @@ class SoknadServiceOld(
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(
-                    if (kortSoknad) {
-                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov")))
+                    if (kortSoknad == true) {
+                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
                     } else {
                         JsonVedleggSpesifikasjon()
                     },
@@ -275,7 +268,10 @@ fun JsonData.withStandardSoknadFelter(): JsonData =
         )
 
 fun JsonData.withKortSoknadFelter(): JsonData =
-    withSoknadstype(JsonData.Soknadstype.KORT)
+    withFamilie(
+        JsonFamilie()
+            .withForsorgerplikt(JsonForsorgerplikt()),
+    ).withArbeid(JsonArbeid())
         .withBegrunnelse(
             JsonBegrunnelse()
                 .withKilde(JsonKildeBruker.BRUKER)
