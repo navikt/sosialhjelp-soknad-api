@@ -1,13 +1,20 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -38,6 +45,9 @@ class AdresseRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
+    private val unleash: Unleash,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
+    private val kortSoknadService: KortSoknadService,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -86,6 +96,7 @@ class AdresseRessurs(
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val token = SubjectHandlerUtils.getToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
@@ -110,20 +121,31 @@ class AdresseRessurs(
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         // TODO Ekstra logging
-        logger.info("Hender navEnhet - PUT personalia/adresser")
+        logger.info("Henter navEnhet - PUT personalia/adresser")
         val navEnhetFrontend =
-            navEnhetService.getNavEnhet(
-                eier,
-                jsonInternalSoknad.soknad,
-                adresserFrontend.valg,
-            )?.also {
-                setNavEnhetAsMottaker(soknad, it, eier)
-                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            navEnhetService
+                .getNavEnhet(
+                    eier,
+                    jsonInternalSoknad.soknad,
+                    adresserFrontend.valg,
+                )?.also {
+                    setNavEnhetAsMottaker(soknad, it, eier)
 
-                // TODO Ekstra logging
-                logger.info("NavEnhetFrontend: $it")
-                logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
-            }
+                    val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
+                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+                    if (changed) {
+                        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                        if (soknadMetadata != null) {
+                            soknadMetadata.kortSoknad = isKort
+                            soknadMetadataRepository.oppdater(soknadMetadata)
+                        }
+                    }
+
+                    // TODO Ekstra logging
+                    logger.info("NavEnhetFrontend: $it")
+                    logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
+                }
 
         // Ny modell
         soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
@@ -135,13 +157,49 @@ class AdresseRessurs(
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
+    /* Sett søknadstype kort om bruker har rett på det. Gjøres her fordi vi må vite hvilken kommune som skal behandle søknaden.
+       TODO: Flytt denne logikken til søknadsopprettelse ved full utrulling
+       Returnerer true hvis søknadstype ble endret
+     */
+    private fun JsonInternalSoknad.updateSoknadstype(
+        navEnhet: NavEnhetFrontend,
+        token: String?,
+    ): Pair<Boolean, Boolean> {
+        val kortSoknad = isKortSoknadEnabled(navEnhet.kommuneNr) && kortSoknadService.qualifies(token, navEnhet.kommuneNr ?: "")
+        val nySoknadstype = if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD
+        if (nySoknadstype != soknad.data.soknadstype) {
+            soknad.data.soknadstype = nySoknadstype
+            if (nySoknadstype == JsonData.Soknadstype.STANDARD) {
+                resetKortSoknadFields()
+            } else {
+                vedlegg.vedlegg.addAll(
+                    listOf(
+                        JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
+                        JsonVedlegg().withType("annet").withTilleggsinfo("annet").withStatus("LastetOpp"),
+                    ),
+                )
+                if (!unleash.isEnabled("sosialhjelp.soknad.kategorier")) {
+                    soknad.data.begrunnelse.hvaSokesOm = ""
+                }
+            }
+            return true to kortSoknad
+        }
+        return false to kortSoknad
+    }
+
+    private fun isKortSoknadEnabled(kommunenummer: String?): Boolean {
+        val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
+        return unleash.isEnabled("sosialhjelp.soknad.kort_soknad", context, false)
+    }
+
     fun setNavEnhetAsMottaker(
         soknad: SoknadUnderArbeid,
         navEnhetFrontend: NavEnhetFrontend,
         eier: String,
     ) {
         soknad.jsonInternalSoknad?.mottaker =
-            no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+            no.nav.sbl.soknadsosialhjelp.soknad.internal
+                .JsonSoknadsmottaker()
                 .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
                 .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
 
@@ -160,6 +218,14 @@ class AdresseRessurs(
             null
         } else {
             adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+        }
+    }
+
+    private fun JsonInternalSoknad.resetKortSoknadFields() {
+        soknad.data.situasjonendring = null
+        vedlegg.vedlegg.removeIf { (it.type == "kort" && it.tilleggsinfo == "behov") || (it.type == "kort" && it.tilleggsinfo == "situasjonsendring") }
+        if (!unleash.isEnabled("sosialhjelp.soknad.kategorier")) {
+            soknad.data.begrunnelse.hvaSokesOm = ""
         }
     }
 }

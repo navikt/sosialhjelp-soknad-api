@@ -45,7 +45,7 @@ internal class SoknadServiceImplOldTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
     private val unleash: Unleash = mockk()
-    private val qualifiesForKort: QualifiesForKort = mockk()
+    private val kortSoknadService: KortSoknadService = mockk()
 
     private val soknadServiceOld =
         SoknadServiceOld(
@@ -59,7 +59,7 @@ internal class SoknadServiceImplOldTest {
             Clock.systemDefaultZone(),
             v2AdapterService,
             unleash,
-            qualifiesForKort,
+            kortSoknadService,
         )
 
     @BeforeEach
@@ -70,10 +70,9 @@ internal class SoknadServiceImplOldTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { qualifiesForKort.qualifies(any(), any()) } returns false
+        every { kortSoknadService.qualifies(any(), any()) } returns false
         every { systemdataUpdater.update(any()) } just runs
         every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
-        every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
     }
 
     @AfterEach
@@ -110,7 +109,7 @@ internal class SoknadServiceImplOldTest {
     fun skalStarteKortSoknadHvisNyligSoknad() {
         val soknadMetadata: SoknadMetadata = mockk()
         val slot = slot<SoknadMetadata>()
-        every { qualifiesForKort.qualifies(any(), any()) } returns true
+        every { kortSoknadService.qualifies(any(), any()) } returns true
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
         every { soknadMetadataRepository.opprett(capture(slot)) } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(mockk())

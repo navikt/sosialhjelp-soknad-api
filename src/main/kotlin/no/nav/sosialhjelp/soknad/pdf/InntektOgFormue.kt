@@ -109,13 +109,6 @@ object InntektOgFormue {
             }
         }
 
-        // Kort søknad har kun skatteetaten-spørsmål, så vi kan avslutte her
-        if (isKortSoknad) {
-            if (urisOnPage.isNotEmpty()) {
-                pdfUtils.addLinks(pdf, urisOnPage)
-            }
-            return
-        }
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))
         if (utvidetSoknad) {
@@ -156,30 +149,33 @@ object InntektOgFormue {
 
         // Bostotte
         pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.overskrift"))
-        pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
 
-        val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
-        var motarBostotte = false
-        if (bostotteBekreftelser.isNotEmpty()) {
-            val bostotteBekreftelse = bostotteBekreftelser[0]
-            motarBostotte = bostotteBekreftelse.verdi
-            pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.verdi))
+        var mottarBostotte = false
+        if (!isKortSoknad) {
+            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
 
-            if (utvidetSoknad && !bostotteBekreftelse.verdi) {
-                pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.v2")
-                urisOnPage["støtte fra Husbanken"] = pdfUtils.getTekst("informasjon.husbanken.bostotte.url") ?: ""
+            val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
+            if (bostotteBekreftelser.isNotEmpty()) {
+                val bostotteBekreftelse = bostotteBekreftelser[0]
+                mottarBostotte = bostotteBekreftelse.verdi
+                pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.verdi))
+
+                if (utvidetSoknad && !bostotteBekreftelse.verdi) {
+                    pdfUtils.skrivInfotekst(pdf, "informasjon.husbanken.bostotte.v2")
+                    urisOnPage["støtte fra Husbanken"] = pdfUtils.getTekst("informasjon.husbanken.bostotte.url") ?: ""
+                }
+            } else {
+                pdfUtils.skrivIkkeUtfylt(pdf)
             }
-        } else {
-            pdfUtils.skrivIkkeUtfylt(pdf)
-        }
-        if (utvidetSoknad) {
+            if (utvidetSoknad) {
+                pdf.addBlankLine()
+                val bostotteSvaralternativer: MutableList<String> = ArrayList(2)
+                bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.true")
+                bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.false")
+                pdfUtils.skrivSvaralternativer(pdf, bostotteSvaralternativer)
+            }
             pdf.addBlankLine()
-            val bostotteSvaralternativer: MutableList<String> = ArrayList(2)
-            bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.true")
-            bostotteSvaralternativer.add("inntekt.bostotte.sporsmal.false")
-            pdfUtils.skrivSvaralternativer(pdf, bostotteSvaralternativer)
         }
-        pdf.addBlankLine()
 
         val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon != null && soknad.driftsinformasjon.stotteFraHusbankenFeilet
         val bostotteSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
@@ -212,7 +208,7 @@ object InntektOgFormue {
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke"))
                 pdf.addBlankLine()
             }
-            if (motarBostotte) {
+            if (mottarBostotte) {
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.mangler_samtykke"))
                 pdf.addBlankLine()
             }
@@ -271,6 +267,14 @@ object InntektOgFormue {
                 }
                 pdf.addBlankLine()
             }
+        }
+
+        // Kort søknad har kun skatteetaten-/bostøtte-/navytelser-spørsmål, så vi kan avslutte her
+        if (isKortSoknad) {
+            if (urisOnPage.isNotEmpty()) {
+                pdfUtils.addLinks(pdf, urisOnPage)
+            }
+            return
         }
 
         // Student

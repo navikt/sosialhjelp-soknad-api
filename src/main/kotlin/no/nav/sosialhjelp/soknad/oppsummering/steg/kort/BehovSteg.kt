@@ -1,6 +1,7 @@
-package no.nav.sosialhjelp.soknad.oppsummering.steg
+package no.nav.sosialhjelp.soknad.oppsummering.steg.kort
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -8,50 +9,43 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Steg
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.BostotteHusbanken
-import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SkattbarInntekt
 
-class SituasjonsendringSteg {
-    private val bostotteHusbanken = BostotteHusbanken()
-    private val skatt = SkattbarInntekt()
-
+class BehovSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
+        val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
+        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
+
         val situasjonsendring = jsonInternalSoknad.soknad.data.situasjonendring
-        val harFyltUtEndring = situasjonsendring?.harNoeEndretSeg != null
         val harFyltUtHvaErEndret = !situasjonsendring?.hvaHarEndretSeg.isNullOrBlank()
 
         return Steg(
-            stegNr = 3,
-            tittel = "situasjon.kort.tittel",
+            stegNr = 2,
+            tittel = "begrunnelsebolk.tittel",
             avsnitt =
                 listOf(
                     Avsnitt(
-                        "applikasjon.sidetittel.kortnavn",
+                        tittel = "begrunnelse.kort.behov.oppsummeringstittel",
                         sporsmal =
                             listOf(
-                                Sporsmal("situasjon.kort.endring.legend", situasjonsendring?.harNoeEndretSeg?.toFelt(), harFyltUtEndring),
+                                Sporsmal(
+                                    tittel = "begrunnelse.kategorier.label",
+                                    erUtfylt = harUtfyltHvaSokesOm,
+                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
+                                ),
                                 Sporsmal("situasjon.kort.hvaErEndret.label", situasjonsendring?.hvaHarEndretSeg?.toFelt(), harFyltUtHvaErEndret),
                             ),
                     ),
-                    skatt.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi, jsonInternalSoknad.soknad.driftsinformasjon),
-                    bostotteHusbanken.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi.opplysninger, jsonInternalSoknad.soknad.driftsinformasjon),
                 ),
         )
     }
 
-    private fun Boolean?.toFelt() =
-        this?.let {
-            listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar =
-                        createSvar(
-                            it.toLocaleTekst(),
-                            SvarType.LOCALE_TEKST,
-                        ),
-                ),
-            )
-        }
+    private fun hvaSokerOmFelt(hvaSokesOm: String): List<Felt> =
+        listOf(
+            Felt(
+                type = Type.TEKST,
+                svar = createSvar(hvaSokesOm, SvarType.TEKST),
+            ),
+        )
 
     private fun String?.toFelt() =
         this?.let {
@@ -66,6 +60,4 @@ class SituasjonsendringSteg {
                 ),
             )
         }
-
-    private fun Boolean.toLocaleTekst() = if (this) "avbryt.ja" else "avbryt.nei"
 }

@@ -13,28 +13,11 @@ object Situasjonsendring {
         pdf.addBlankLine()
 
         if (situasjonendring != null) {
-            pdf.skrivTekstBold(pdfUtils.getTekst("situasjonsendring.harNoeEndretSeg.sporsmal"))
-
+            pdf.skrivTekstBold(pdfUtils.getTekst("situasjonsendring.hvaHarEndretSeg.sporsmal"))
             if (utvidetSoknad) {
                 pdfUtils.skrivInfotekst(pdf, "situasjonsendring.hvaHarEndretSeg.infotekst")
             }
-            when (situasjonendring.harNoeEndretSeg) {
-                null -> {
-                    pdfUtils.skrivIkkeUtfylt(pdf)
-                }
-
-                true -> {
-                    pdf.skrivTekst(pdfUtils.getTekst("situasjonsendring.harNoeEndretSeg.ja"))
-                }
-
-                false -> {
-                    pdf.skrivTekst(pdfUtils.getTekst("situasjonsendring.harNoeEndretSeg.nei"))
-                }
-            }
-            pdf.addBlankLine()
-
-            pdf.skrivTekstBold(pdfUtils.getTekst("situasjonsendring.hvaHarEndretSeg.sporsmal"))
-            if (situasjonendring.hvaHarEndretSeg == null || situasjonendring.hvaHarEndretSeg.isEmpty()) {
+            if (situasjonendring.hvaHarEndretSeg.isNullOrBlank() == null) {
                 pdfUtils.skrivIkkeUtfylt(pdf)
             } else {
                 pdf.skrivTekst(situasjonendring.hvaHarEndretSeg)
