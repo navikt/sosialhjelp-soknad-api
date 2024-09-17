@@ -12,8 +12,10 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.InntektOgFormueSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
-import no.nav.sosialhjelp.soknad.oppsummering.steg.SituasjonsendringSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
+import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.ArbeidOgFamilieSteg
+import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.BehovSteg
+import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.SituasjonsendringSteg
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
@@ -33,6 +35,8 @@ class OppsummeringService(
     private val utgifterOgGjeldSteg = UtgifterOgGjeldSteg()
     private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
     private val situasjonsendringSteg = SituasjonsendringSteg()
+    private val arbeidOgFamilieSteg = ArbeidOgFamilieSteg()
+    private val behovSteg = BehovSteg()
 
     fun hentOppsummering(
         fnr: String,
@@ -64,7 +68,8 @@ class OppsummeringService(
             return Oppsummering(
                 listOf(
                     personopplysningerSteg.get(jsonInternalSoknad),
-                    begrunnelseSteg.get(jsonInternalSoknad),
+                    behovSteg.get(jsonInternalSoknad),
+                    arbeidOgFamilieSteg.get(jsonInternalSoknad),
                     situasjonsendringSteg.get(jsonInternalSoknad),
                 ),
             )

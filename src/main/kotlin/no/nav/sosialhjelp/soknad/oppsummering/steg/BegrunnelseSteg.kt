@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
@@ -13,10 +12,11 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
 class BegrunnelseSteg {
-    fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
+    fun get(
+        jsonInternalSoknad: JsonInternalSoknad,
+    ): Steg {
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-        val isKortSoknad = jsonInternalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT
-        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty()
+        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
         val harUtfyltHvorforSoke = begrunnelse.hvorforSoke != null && begrunnelse.hvorforSoke.isNotEmpty()
         return Steg(
             stegNr = 2,
@@ -30,17 +30,13 @@ class BegrunnelseSteg {
                                 Sporsmal(
                                     tittel = "begrunnelse.hva.sporsmal",
                                     erUtfylt = harUtfyltHvaSokesOm,
-                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvoSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
+                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
                                 ),
-                                if (!isKortSoknad) {
-                                    Sporsmal(
-                                        tittel = "begrunnelse.hvorfor.sporsmal",
-                                        erUtfylt = harUtfyltHvorforSoke,
-                                        felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(begrunnelse) else null,
-                                    )
-                                } else {
-                                    null
-                                },
+                                Sporsmal(
+                                    tittel = "begrunnelse.hvorfor.sporsmal",
+                                    erUtfylt = harUtfyltHvorforSoke,
+                                    felt = if (harUtfyltHvorforSoke) hvorforSokeFelt(begrunnelse) else null,
+                                ),
                             ),
                     ),
                 ),
