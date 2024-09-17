@@ -31,9 +31,10 @@ class SoknadLifecycleServiceImpl(
     override fun startSoknad(token: String): Pair<UUID, Boolean> {
         // TODO Metadata
 
-        return createDeleteSoknadHandler.createSoknad(token)
-            .also { (soknadId, isKortSoknad) ->
-                prometheusMetricsService.reportStartSoknad(isKortSoknad)
+        return createDeleteSoknadHandler
+            .createSoknad(token)
+            .also { (soknadId) ->
+                prometheusMetricsService.reportStartSoknad()
                 MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
                 logger.info("Ny søknad opprettet")
             }
@@ -48,9 +49,7 @@ class SoknadLifecycleServiceImpl(
                 .onFailure {
                     prometheusMetricsService.reportFeilet()
                     logger.error("Feil ved sending av søknad.", it)
-                    throw it
-                }
-                .getOrThrow()
+                }.getOrThrow()
 
         prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad)
         prometheusMetricsService.reportSoknadMottaker(

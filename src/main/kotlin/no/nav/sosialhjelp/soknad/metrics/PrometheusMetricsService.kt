@@ -33,9 +33,8 @@ class PrometheusMetricsService(
             .record(antallSekunder, TimeUnit.SECONDS)
     }
 
-    fun reportStartSoknad(kort: Boolean) {
+    fun reportStartSoknad() {
         startSoknadCounter
-            .tag("kortSoknad", kort.toString())
             .register(meterRegistry)
             .increment()
     }

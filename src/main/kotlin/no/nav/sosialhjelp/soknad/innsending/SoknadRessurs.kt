@@ -4,7 +4,6 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
@@ -165,8 +164,8 @@ class SoknadRessurs(
         val type =
             if (MiljoUtils.isNonProduction()) {
                 when (soknadstype) {
-                    "kort" -> JsonData.Soknadstype.KORT
-                    "standard" -> JsonData.Soknadstype.STANDARD
+                    "kort" -> true
+                    "standard" -> false
                     else -> null
                 }
             } else {
