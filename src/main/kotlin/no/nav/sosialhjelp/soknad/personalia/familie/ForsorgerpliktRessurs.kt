@@ -176,6 +176,7 @@ class ForsorgerpliktRessurs(
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(it)
             }
+        // TODO Ser tilsynelatende ikke ut som om denne noengang settes i frontend ? Isåfall når...?
         ansvar.samvarsgrad =
             ansvarFrontend?.samvarsgrad?.let {
                 JsonSamvarsgrad()

@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
@@ -121,11 +120,8 @@ private fun Barn.toJson() =
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(deltBosted ?: false),
         )
-        .withSamvarsgrad(
-            JsonSamvarsgrad()
-                .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(samvarsgrad),
-        )
+        // TODO Pr. nå settes det ikke noe samvarsgrad i frontend - riktig?
+        .withSamvarsgrad(null)
 
 // mellomnavn er required i json-modellen
 fun Navn.toJson() = JsonNavn().withFornavn(fornavn).withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn)
