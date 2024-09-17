@@ -74,7 +74,6 @@ class SituasjonsendringRessursTest {
                 ?.soknad
                 ?.data
                 ?.situasjonendring
-        assertThat(captured?.harNoeEndretSeg).isEqualTo(true)
         assertThat(captured?.hvaHarEndretSeg).isEqualTo("Det er noe nytt her")
     }
 

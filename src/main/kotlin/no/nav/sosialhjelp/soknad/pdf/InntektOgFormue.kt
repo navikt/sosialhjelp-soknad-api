@@ -109,13 +109,6 @@ object InntektOgFormue {
             }
         }
 
-        // Kort søknad har kun skatteetaten-spørsmål, så vi kan avslutte her
-        if (isKortSoknad) {
-            if (urisOnPage.isNotEmpty()) {
-                pdfUtils.addLinks(pdf, urisOnPage)
-            }
-            return
-        }
         // NAV ytelser
         pdf.skrivTekstBold(pdfUtils.getTekst("navytelser.sporsmal"))
         if (utvidetSoknad) {
@@ -159,10 +152,10 @@ object InntektOgFormue {
         pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
 
         val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
-        var motarBostotte = false
+        var mottarBostotte = false
         if (bostotteBekreftelser.isNotEmpty()) {
             val bostotteBekreftelse = bostotteBekreftelser[0]
-            motarBostotte = bostotteBekreftelse.verdi
+            mottarBostotte = bostotteBekreftelse.verdi
             pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.verdi))
 
             if (utvidetSoknad && !bostotteBekreftelse.verdi) {
@@ -212,7 +205,7 @@ object InntektOgFormue {
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.gi_samtykke"))
                 pdf.addBlankLine()
             }
-            if (motarBostotte) {
+            if (mottarBostotte) {
                 pdf.skrivTekst(pdfUtils.getTekst("inntekt.bostotte.mangler_samtykke"))
                 pdf.addBlankLine()
             }
@@ -271,6 +264,14 @@ object InntektOgFormue {
                 }
                 pdf.addBlankLine()
             }
+        }
+
+        // Kort søknad har kun skatteetaten-/bostøtte-/navytelser-spørsmål, så vi kan avslutte her
+        if (isKortSoknad) {
+            if (urisOnPage.isNotEmpty()) {
+                pdfUtils.addLinks(pdf, urisOnPage)
+            }
+            return
         }
 
         // Student

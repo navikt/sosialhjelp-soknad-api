@@ -55,25 +55,21 @@ class SituasjonsendringRessurs(
         @RequestBody situasjonsendring: SituasjonsendringFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        if (situasjonsendring.endring == null) {
-            return
-        }
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: error("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         if (jsonInternalSoknad.soknad.data.situasjonendring == null) {
-            jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring()
+            jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring().withHarNoeEndretSeg(false)
         }
 
         with(jsonInternalSoknad.soknad.data.situasjonendring) {
-            harNoeEndretSeg = situasjonsendring.endring
             hvaHarEndretSeg = situasjonsendring.hvaErEndret
             kilde = JsonKildeBruker.BRUKER
         }
 
-        if (situasjonsendring.endring) {
+        if (situasjonsendring.hvaErEndret != null) {
             jsonInternalSoknad.vedlegg.vedlegg.add(JsonVedlegg().withType("kort").withTilleggsinfo("situasjonsendring"))
         } else {
             jsonInternalSoknad.vedlegg.vedlegg.removeIf { it.type == "kort" && it.tilleggsinfo == "situasjonsendring" }
