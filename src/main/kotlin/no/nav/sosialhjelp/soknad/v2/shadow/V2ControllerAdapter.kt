@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDto
 import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
@@ -31,7 +31,7 @@ interface V2ControllerAdapter {
 
     fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerInputDTO,
+        kontoInputDto: KontonummerInputDto,
     )
 
     fun updateTelefonnummer(
