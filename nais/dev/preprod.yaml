@@ -50,9 +50,24 @@ spec:
     enabled: true
   accessPolicy:
     outbound:
+      rules:
+        - application: clamav
+          namespace: nais-system
+        - application: digdir-krr-proxy
+          namespace: team-rocket
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+        - application: sosialhjelp-konvertering-til-pdf
       external:
+        - host: "api.fiks.test.ks.no"
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
         - host: "test.idporten.no"
+        - host: "api.demo.husbanken.no"
+        - host: "pdl-api.dev-fss-pub.nais.io"
+        - host: "ereg-services.dev-fss-pub.nais.io"
+        - host: "aareg-services.dev-fss-pub.nais.io"
+        - host: "norg2.dev-fss-pub.nais.io"
+        - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
     inbound:
       rules:
         - application: mine-saker-api
@@ -82,11 +97,11 @@ spec:
     - name: AAREG_AUDIENCE
       value: "dev-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
-      value: "https://aareg-services.dev.intern.nav.no/api"
+      value: "https://aareg-services.dev-fss-pub.nais.io/api"
     - name: CLAMAV_URL
-      value: "http://clamav.nais-system.svc.nais.local/scan"
+      value: "http://clamav.nais.svc.nais.local/scan"
     - name: EREG_URL
-      value: "https://ereg-services.dev.intern.nav.no"
+      value: "https://ereg-services.dev-fss-pub.nais.io/"
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.test.ks.no/"
     - name: KODEVERK_URL
@@ -96,21 +111,21 @@ spec:
     - name: KRR_SCOPE
       value: "dev-gcp.team-rocket.digdir-krr-proxy"
     - name: KRR_URL
-      value: "https://digdir-krr-proxy.intern.dev.nav.no"
+      value: "http://digdir-krr-proxy.team-rocket"
     - name: LOGINSERVICE_URL
       value: "https://login.ekstern.dev.nav.no/oauth2/login"
     - name: NORG_URL
-      value: "https://norg2.dev.intern.nav.no/norg2/api/v1"
+      value: "https://norg2.dev-fss-pub.nais.io/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE
       value: "dev-fss:okonomi:sokos-utbetaldata"
     - name: UTBETALDATA_API_BASEURL
-      value: "https://sokos-utbetaldata.dev.intern.nav.no"
+      value: "https://sokos-utbetaldata.dev-fss-pub.nais.io"
     - name: KONTOREGISTER_API_AUDIENCE
       value: "dev-gcp:okonomi:sokos-kontoregister-person"
     - name: KONTOREGISTER_API_BASEURL
-      value: "https://sokos-kontoregister-person.intern.dev.nav.no/"
+      value: "http://sokos-kontoregister-person.okonomi/"
     - name: PDL_API_URL
-      value: "https://pdl-api.dev.intern.nav.no/graphql"
+      value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
     - name: PDL_API_AUDIENCE
       value: "dev-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
@@ -136,4 +151,4 @@ spec:
     - name: SWAGGER_ENABLED
       value: "true"
     - name: GOTENBERG_URL
-      value: "https://konvertering-til-pdf.intern.dev.nav.no/"
+      value: "http://sosialhjelp-konvertering-til-pdf/"
