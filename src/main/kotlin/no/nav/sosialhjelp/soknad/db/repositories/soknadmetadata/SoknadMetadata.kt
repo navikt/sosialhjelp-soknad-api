@@ -20,7 +20,7 @@ data class SoknadMetadata(
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false,
-    val kortSoknad: Boolean,
+    var kortSoknad: Boolean,
 )
 
 @XmlRootElement

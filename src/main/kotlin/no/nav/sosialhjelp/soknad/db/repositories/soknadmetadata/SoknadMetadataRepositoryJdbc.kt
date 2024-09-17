@@ -47,7 +47,7 @@ class SoknadMetadataRepositoryJdbc(
     @Transactional
     override fun oppdater(metadata: SoknadMetadata?) {
         jdbcTemplate.update(
-            "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
+            "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ?, is_kort_soknad = ? WHERE id = ?",
             metadata?.skjema,
             metadata?.fnr,
             metadata?.vedlegg?.let { mapper.writeValueAsString(it) },
@@ -58,6 +58,7 @@ class SoknadMetadataRepositoryJdbc(
             metadata?.status?.name,
             tidTilTimestamp(metadata?.sistEndretDato),
             tidTilTimestamp(metadata?.innsendtDato),
+            metadata?.kortSoknad,
             metadata?.id,
         )
     }
