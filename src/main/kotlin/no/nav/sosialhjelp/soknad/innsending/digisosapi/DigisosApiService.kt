@@ -191,11 +191,14 @@ class DigisosApiService(
     fun qualifiesForKortSoknadThroughSoknader(
         token: String?,
         hendelseSince: LocalDateTime,
+        kommunenummer: String,
     ): Boolean {
         val soknader = digisosApiV2Client.getSoknader(token)
         val hendelseTidspunkt =
             soknader.flatMap { soknad ->
-                soknad.digisosSoker
+                soknad
+                    .takeIf { it.kommunenummer == kommunenummer }
+                    ?.digisosSoker
                     ?.metadata
                     ?.let {
                         digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
@@ -287,7 +290,8 @@ class DigisosApiService(
         // sjekker at fil finnes hos Mellomlager
         filer =
             filer.mapNotNull { fil ->
-                mellomlagretFiks.find { it.filnavn == fil.filnavn }
+                mellomlagretFiks
+                    .find { it.filnavn == fil.filnavn }
                     .let {
                         if (it != null) {
                             fil
