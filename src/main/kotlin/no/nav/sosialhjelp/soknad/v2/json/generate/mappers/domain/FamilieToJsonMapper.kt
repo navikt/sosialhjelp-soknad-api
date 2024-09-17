@@ -14,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
@@ -90,11 +91,13 @@ private fun Familie.toJsonForsorgerplikt() =
             JsonHarForsorgerplikt()
                 .withKilde(JsonKilde.SYSTEM)
                 .withVerdi(harForsorgerplikt),
-        ).withBarnebidrag(
+        )
+        .withBarnebidrag(
             JsonBarnebidrag()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(barnebidrag?.toJson()),
-        ).withAnsvar(ansvar.values.toJson())
+        )
+        .withAnsvar(ansvar.values.toJson())
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
@@ -107,14 +110,21 @@ private fun Barn.toJson() =
                 .withNavn(navn?.toJson())
                 .withPersonIdentifikator(personId)
                 .withHarDiskresjonskode(false),
-        ).withErFolkeregistrertSammen(
+        )
+        .withErFolkeregistrertSammen(
             JsonErFolkeregistrertSammen()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen),
-        ).withHarDeltBosted(
+        )
+        .withHarDeltBosted(
             JsonHarDeltBosted()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(deltBosted ?: false),
+        )
+        .withSamvarsgrad(
+            JsonSamvarsgrad()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(samvarsgrad),
         )
 
 // mellomnavn er required i json-modellen

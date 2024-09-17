@@ -98,7 +98,7 @@ internal class KontonummerRessursTest {
 
     @Test
     fun ugyldigKontonummerValidererIkke() {
-        val invalidInput = KontonummerInputDTO(brukerutfyltVerdi = "invalid; should match ^\\d{11}$")
+        val invalidInput = KontonummerInputDto(brukerutfyltVerdi = "invalid; should match ^\\d{11}$")
         println(
             Validation
                 .buildDefaultValidatorFactory()
@@ -123,7 +123,7 @@ internal class KontonummerRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val kontonummerFrontend = KontonummerInputDTO(brukerutfyltVerdi = KONTONUMMER_BRUKER)
+        val kontonummerFrontend = KontonummerInputDto(brukerutfyltVerdi = KONTONUMMER_BRUKER)
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -144,7 +144,7 @@ internal class KontonummerRessursTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val kontonummerFrontend = KontonummerInputDTO(brukerutfyltVerdi = null, harIkkeKonto = false)
+        val kontonummerFrontend = KontonummerInputDto(brukerutfyltVerdi = null, harIkkeKonto = false)
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
@@ -171,7 +171,7 @@ internal class KontonummerRessursTest {
     fun putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
-        val kontonummerFrontend = KontonummerInputDTO()
+        val kontonummerFrontend = KontonummerInputDto()
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend) }
 

@@ -36,12 +36,12 @@ class EierRegisterService(private val eierRepository: EierRepository) {
     ) {
         eierRepository.findByIdOrNull(soknadId)
             ?.run {
-                if (kontonummer.harIkkeKonto != true) {
-                    copy(kontonummer = kontonummer.copy(fraRegister = kontonummerRegister))
-                } else {
+                if (kontonummer.harIkkeKonto == true) {
                     null
+                } else {
+                    copy(kontonummer = kontonummer.copy(fraRegister = kontonummerRegister))
                 }
             }
-            ?.let { eier -> eierRepository.save(eier) }
+            ?.also { eier -> eierRepository.save(eier) }
     }
 }
