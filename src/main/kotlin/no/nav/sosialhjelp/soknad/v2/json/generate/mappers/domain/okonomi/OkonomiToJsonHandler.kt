@@ -58,13 +58,13 @@ private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonM
             when {
                 bekreftelser.isEmpty() -> list
                 else -> list.plus(BekreftelseToJsonMapper(bekreftelser, json))
-            } 
+            }
         }
         .let { list ->
             when {
                 bostotteSaker.isEmpty() -> list
                 else -> list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
-            } 
+            }
         }
 }
 
