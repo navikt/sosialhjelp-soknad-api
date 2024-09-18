@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -45,7 +46,7 @@ class ShadowProductionManager(
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {
-                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = true)
+                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = MiljoUtils.isProduction())
                 }
         }
 
