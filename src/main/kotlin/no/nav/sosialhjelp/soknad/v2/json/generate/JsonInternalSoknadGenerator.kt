@@ -53,7 +53,7 @@ class JsonInternalSoknadGenerator(
                     JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
                 }
                     .onFailure {
-                        logger.warn("Feil i sammenlikning av json", it)
+                        logger.warn("NyModell: Feil i validering av json", it)
                     }
             }
     }

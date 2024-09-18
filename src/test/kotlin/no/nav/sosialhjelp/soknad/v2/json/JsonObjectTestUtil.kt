@@ -127,7 +127,7 @@ fun createJsonPersonalia(): JsonPersonalia {
     }
 }
 
-fun createJsonFamilie(): JsonFamilie? {
+fun createJsonFamilie(): JsonFamilie {
     return JsonFamilie().apply {
         this.forsorgerplikt = createJsonForsorgerplikt()
         this.sivilstatus = createJsonSivilstatus()

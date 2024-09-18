@@ -8,6 +8,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class ShadowProductionManager(
@@ -21,27 +22,15 @@ class ShadowProductionManager(
     ) {
         original?.let {
             runCatching {
-                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
-                    if (it.soknad.data.familie != null) {
-                        // sortere ansvar før sammenlikning
-                        sortAnsvar(it, copy)
-                    }
-                    JsonContentComparator().doCompareAndLogErrors(it, copy)
-                }
-            }.onFailure {
-                logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
-            }
-        } ?: logger.warn("NyModell : Sammenlikning : Original er null")
-    }
+                val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
-    private fun sortAnsvar(
-        original: JsonInternalSoknad,
-        copy: JsonInternalSoknad,
-    ) {
-        original.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
-        copy.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
+                JsonInternalSoknadListSorter(it, shadowJson).doSorting()
+                JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
+            }
+                .onFailure {
+                    logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                }
+        } ?: logger.error("NyModell : Sammenlikning : Original er null")
     }
 
     internal class JsonContentComparator {
