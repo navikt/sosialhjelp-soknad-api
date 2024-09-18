@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class TimestampConversionTest {
     @Test
@@ -31,5 +32,15 @@ class TimestampConversionTest {
 
         TimestampManager.convertToOffsettDateTimeUTCString(timestamp)
             .also { assertThat(it).contains("0${timestamp.hour - 1}:0${timestamp.minute}:0${timestamp.second}") }
+    }
+
+    @Test
+    fun `Konverter tilbake til LocalDateTime`() {
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+
+        val timestampString = TimestampManager.convertToOffsettDateTimeUTCString(now)
+        val parsedLocalDateTime = TimestampManager.parseFromUTCString(timestampString)
+
+        assertThat(now).isEqualTo(parsedLocalDateTime)
     }
 }

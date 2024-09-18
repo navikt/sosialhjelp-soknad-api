@@ -91,6 +91,7 @@ private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
         null
     } else {
         JsonBosituasjon()
+            .withKilde(JsonKildeBruker.BRUKER)
             .withBotype(botype?.toJsonBotype())
             .withAntallPersoner(antallHusstand)
     }
