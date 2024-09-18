@@ -24,29 +24,13 @@ class ShadowProductionManager(
             runCatching {
                 val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
-                // TODO Do sorting
-
-                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
-                    if (it.soknad.data.familie != null) {
-                        // sortere ansvar før sammenlikning
-                        sortAnsvar(it, copy)
-                    }
-                    JsonContentComparator().doCompareAndLogErrors(it, copy)
-                }
-            }.onFailure {
-                logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                JsonInternalSoknadListSorter(it, shadowJson).doSorting()
+                JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
             }
-        } ?: logger.warn("NyModell : Sammenlikning : Original er null")
-    }
-
-    private fun sortAnsvar(
-        original: JsonInternalSoknad,
-        copy: JsonInternalSoknad,
-    ) {
-        original.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
-        copy.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
+                .onFailure {
+                    logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                }
+        } ?: logger.error("NyModell : Sammenlikning : Original er null")
     }
 
     internal class JsonContentComparator {

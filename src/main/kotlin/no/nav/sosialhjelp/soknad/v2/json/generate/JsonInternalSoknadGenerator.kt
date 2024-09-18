@@ -40,9 +40,6 @@ class JsonInternalSoknadGenerator(
             .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
-    fun createShadowJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
-    }
-
     fun copyAndMerge(
         soknadId: String,
         original: JsonInternalSoknad,
