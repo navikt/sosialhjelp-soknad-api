@@ -52,8 +52,6 @@ class ShadowProductionManager(
         private fun compare(
             original: String,
             other: String,
-        ): JSONCompareResult =
-            JSONCompare
-                .compareJSON(original, other, JSONCompareMode.STRICT_ORDER)
+        ): JSONCompareResult = JSONCompare.compareJSON(original, other, JSONCompareMode.STRICT_ORDER)
     }
 }

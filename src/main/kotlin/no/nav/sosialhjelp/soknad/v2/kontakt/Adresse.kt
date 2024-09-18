@@ -21,7 +21,7 @@ import org.springframework.data.convert.WritingConverter
 abstract class Adresse
 
 data class VegAdresse(
-    val landkode: String = "NO",
+    val landkode: String = "NOR",
     val kommunenummer: String? = null,
     val adresselinjer: List<String> = emptyList(),
     val bolignummer: String? = null,
