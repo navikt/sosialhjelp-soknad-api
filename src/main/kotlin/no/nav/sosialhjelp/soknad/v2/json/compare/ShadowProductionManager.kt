@@ -8,6 +8,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class ShadowProductionManager(
@@ -21,6 +22,10 @@ class ShadowProductionManager(
     ) {
         original?.let {
             runCatching {
+                val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
+
+                // TODO Do sorting
+
                 jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
                     if (it.soknad.data.familie != null) {
                         // sortere ansvar før sammenlikning

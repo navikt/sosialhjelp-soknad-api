@@ -40,6 +40,9 @@ class JsonInternalSoknadGenerator(
             .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
+    fun createShadowJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
+    }
+
     fun copyAndMerge(
         soknadId: String,
         original: JsonInternalSoknad,
@@ -53,7 +56,7 @@ class JsonInternalSoknadGenerator(
                     JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
                 }
                     .onFailure {
-                        logger.warn("Feil i sammenlikning av json", it)
+                        logger.warn("NyModell: Feil i validering av json", it)
                     }
             }
     }
