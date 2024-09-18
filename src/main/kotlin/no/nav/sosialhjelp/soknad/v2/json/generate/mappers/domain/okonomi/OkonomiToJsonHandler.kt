@@ -55,18 +55,16 @@ private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonM
         UtgiftToJsonMapper(utgifter, json),
     )
         .let { list ->
-            if (bekreftelser.isNotEmpty()) {
-                list.plus(BekreftelseToJsonMapper(bekreftelser, json))
-            } else {
-                list
-            }
+            when {
+                bekreftelser.isEmpty() -> list
+                else -> list.plus(BekreftelseToJsonMapper(bekreftelser, json))
+            } 
         }
         .let { list ->
-            if (bostotteSaker.isNotEmpty()) {
-                list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
-            } else {
-                list
-            }
+            when {
+                bostotteSaker.isEmpty() -> list
+                else -> list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
+            } 
         }
 }
 
