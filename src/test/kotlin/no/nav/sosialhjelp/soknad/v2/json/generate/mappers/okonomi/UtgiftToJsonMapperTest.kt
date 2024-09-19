@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,7 +18,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.oversikt) {
-            assertThat(utgift).hasSize(1).allMatch { it.type == UtgiftType.UTGIFTER_SFO.name }
+            assertThat(utgift).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_SFO.verdi }
         }
     }
 
@@ -28,7 +29,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.opplysninger) {
-            assertThat(utgift).hasSize(1).allMatch { it.type == UtgiftType.UTGIFTER_STROM.name }
+            assertThat(utgift).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_STROM.verdi }
         }
     }
 
@@ -45,7 +46,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.oversikt) {
-            assertThat(utgift).hasSize(2).allMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER.name }
+            assertThat(utgift).hasSize(2).allMatch { it.type == SoknadJsonTypeEnum.BARNEBIDRAG.verdi }
         }
     }
 
@@ -57,7 +58,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
-            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BO.name }
+            assertThat(utgifter).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_ANNET_BO.verdi }
 
             assertThat(utgifter).anyMatch {
                 it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
@@ -76,7 +77,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
-            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BARN.name }
+            assertThat(utgifter).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_ANNET_BARN.verdi }
 
             assertThat(utgifter).anyMatch {
                 it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
@@ -95,7 +96,7 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         jsonOkonomi.opplysninger.utgift.also { utgifter ->
             assertThat(utgifter).hasSize(2)
-            assertThat(utgifter).allMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER.name }
+            assertThat(utgifter).allMatch { it.type == SoknadJsonTypeEnum.UTGIFTER_ANDRE_UTGIFTER.verdi }
 
             assertThat(utgifter).anyMatch {
                 it.belop == belopBeskrivelse1.first.toInt() && it.tittel.contains(belopBeskrivelse1.second)
@@ -127,6 +128,22 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         with(jsonOkonomi.oversikt) {
             assertThat(utgift).hasSize(nyUtgift.utgiftDetaljer.detaljer.size * 2)
+        }
+    }
+
+    @Test
+    fun `Midlertidig mapping til gammel type`() {
+        val nyUtgift = Utgift(type = UtgiftType.UTGIFTER_STROM)
+        val annenUtgift = Utgift(type = UtgiftType.BARNEBIDRAG_BETALER)
+
+        UtgiftToJsonMapper(utgifter = setOf(nyUtgift, annenUtgift), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi) {
+            assertThat(opplysninger.utgift).hasSize(1)
+            assertThat(opplysninger.utgift.first().type).isEqualTo(SoknadJsonTypeEnum.UTGIFTER_STROM.verdi)
+
+            assertThat(oversikt.utgift).hasSize(1)
+            assertThat(oversikt.utgift.first().type).isEqualTo(SoknadJsonTypeEnum.BARNEBIDRAG.verdi)
         }
     }
 

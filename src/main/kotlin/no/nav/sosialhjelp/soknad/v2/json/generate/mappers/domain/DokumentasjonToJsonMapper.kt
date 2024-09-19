@@ -8,6 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -19,7 +21,7 @@ class DokumentasjonToJsonMapper(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).let { list -> doMapping(list, jsonInternalSoknad) }
+        doMapping(dokumentasjonRepository.findAllBySoknadId(soknadId), jsonInternalSoknad)
     }
 
     internal companion object Mapper {
@@ -36,7 +38,7 @@ class DokumentasjonToJsonMapper(
 
 private fun Dokumentasjon.toJsonVedlegg() =
     JsonVedlegg()
-        .withType(type.name)
+        .withType(type.getVedleggTypeString())
         .withStatus(status.name)
         .withTilleggsinfo(mapToTilleggsinfo())
         .withFiler(dokumenter.map { it.toJsonFiler() })
@@ -45,12 +47,16 @@ private fun Dokumentasjon.toJsonVedlegg() =
         .withHendelseReferanse(UUID.randomUUID().toString())
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
-    // TODO må sammenstille svarene fra FSL'er og se hva de forventer / trenger på tilleggsinfo hvis vi benytter type..
-    // TODO ...til å knytte sammen OkonomiElementer og Dokumentasjon.
-    return ""
+    // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer
+    return type.getJsonVerdier().vedleggType?.getTilleggsinfoString()
+        ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }
 
 private fun Dokument.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)
+
+private fun OpplysningType.getVedleggTypeString(): String =
+    this.getJsonVerdier().vedleggType?.getTypeString()
+        ?: error("Manglende mapping for VedleggType: $this")

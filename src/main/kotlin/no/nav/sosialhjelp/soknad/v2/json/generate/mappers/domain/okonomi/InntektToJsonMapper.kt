@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
+import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
@@ -55,7 +56,7 @@ private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
     JsonOkonomioversiktInntekt()
         // TODO Typene må mappes til Kilde
         .withKilde(JsonKilde.BRUKER)
-        .withType(type.name)
+        .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
         .withOverstyrtAvBruker(false)
         .let { oversikt -> detalj?.addDetaljToOversiktForInntekt(oversikt) ?: oversikt }
@@ -85,10 +86,15 @@ private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): Js
         // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
         // TODO For de fleste opplysningstypene vil det enkleste være mapping pr. OpplysningType
         .withKilde(JsonKilde.BRUKER)
-        .withType(type.name)
+        .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
         .withOverstyrtAvBruker(false)
         .let { opplysning -> detalj?.addDetaljToOpplysningForInntekt(opplysning) ?: opplysning }
+}
+
+private fun InntektType.toSoknadJsonTypeString(): String {
+    return OpplysningTypeMapper.getJsonVerdier(this).navn?.verdi
+        ?: error("Fant ikke mapping for InntektType: $this")
 }
 
 private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
@@ -118,10 +124,6 @@ private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbeta
         .withPeriodeFom(periodeFom?.toString())
         .withPeriodeTom(periodeTom?.toString())
         .withMottaker(mottaker?.toJsonMottaker())
-}
-
-private fun Belop.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling) {
-    jsonUtbetaling.withBelop(belop.toInt())
 }
 
 private fun Mottaker.toJsonMottaker(): JsonOkonomiOpplysningUtbetaling.Mottaker? {

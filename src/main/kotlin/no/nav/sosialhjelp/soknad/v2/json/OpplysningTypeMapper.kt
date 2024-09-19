@@ -1,11 +1,23 @@
 package no.nav.sosialhjelp.soknad.v2.json
 
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
+
+fun OpplysningType.getJsonVerdier(): JsonVerdi {
+    return when (this) {
+        is InntektType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is UtgiftType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is FormueType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is AnnenDokumentasjonType -> OpplysningTypeMapper.getJsonVerdier(this)
+        else -> error("Ukjent OpplysningType: $this")
+    }
+}
 
 // TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
 object OpplysningTypeMapper {
@@ -78,9 +90,17 @@ object OpplysningTypeMapper {
             BekreftelseType.BEKREFTELSE_SPARING -> JsonVerdi(SoknadJsonTypeEnum.BEKREFTELSE_SPARING, null)
         }
     }
+
+    fun getJsonVerdier(annenDokumentasjonType: AnnenDokumentasjonType): JsonVerdi {
+        return when (annenDokumentasjonType) {
+            AnnenDokumentasjonType.SKATTEMELDING -> JsonVerdi(null, VedleggType.SkattemeldingSkattemelding)
+            AnnenDokumentasjonType.SAMVARSAVTALE -> JsonVerdi(null, VedleggType.SamvarsavtaleBarn)
+            AnnenDokumentasjonType.OPPHOLDSTILLATELSE -> JsonVerdi(null, VedleggType.OppholdstillatelOppholdstillatel)
+        }
+    }
 }
 
 data class JsonVerdi(
-    val navn: SoknadJsonTypeEnum,
+    val navn: SoknadJsonTypeEnum?,
     val vedleggType: VedleggType?,
 )
