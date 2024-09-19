@@ -103,7 +103,7 @@ private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     when (this) {
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
-        else -> error("Ugyldig detalj-type for Inntekt")
+        else -> error("Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
     }
     return jsonUtbetaling
 }
