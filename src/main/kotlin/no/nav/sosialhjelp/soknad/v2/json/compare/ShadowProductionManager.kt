@@ -26,6 +26,7 @@ class ShadowProductionManager(
                 val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
                 JsonInternalSoknadListSorter(it, shadowJson).doSorting()
+                JsonSoknadCollectionComparator(original = original, shadow = shadowJson).compareCollections()
                 JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
             }
                 .onFailure {
