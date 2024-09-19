@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,7 +19,9 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         with(jsonOkonomi.oversikt) {
             assertThat(formue).hasSize(2)
-            formuer.forEach { domain -> assertThat(formue.find { it.type == domain.type.name }).isNotNull }
+            assertThat(formue)
+                .anyMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
+                .anyMatch { it.type == SoknadJsonTypeEnum.VERDI_KJORETOY.verdi }
         }
     }
 
@@ -31,7 +34,7 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
         with(jsonOkonomi.oversikt) {
             assertThat(formue)
                 .hasSize(3)
-                .allMatch { it.type == formuer.first().type.name }
+                .allMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
                 .anyMatch { it.belop == 344 }
                 .anyMatch { it.belop == 244 }
                 .anyMatch { it.belop == 644 }
@@ -58,13 +61,30 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
         with(jsonOkonomi) {
             assertThat(oversikt.formue).hasSize(4).anyMatch { it.belop == 423 }.anyMatch { it.belop == 288 }
                 .anyMatch { it.belop == 523 }.anyMatch { it.belop == 121 }
-                .allMatch { it.type == FormueType.FORMUE_ANNET.name || it.type == FormueType.VERDI_ANNET.name }
+                .allMatch {
+                    it.type == SoknadJsonTypeEnum.FORMUE_ANNET.verdi || it.type == SoknadJsonTypeEnum.VERDI_ANNET.verdi
+                }
 
             assertThat(opplysninger.beskrivelseAvAnnet.sparing)
                 .isEqualTo(formuer.find { it.type == FormueType.FORMUE_ANNET }?.beskrivelse)
 
             assertThat(opplysninger.beskrivelseAvAnnet.verdi)
                 .isEqualTo(formuer.find { it.type == FormueType.VERDI_ANNET }?.beskrivelse)
+        }
+    }
+
+    @Test
+    fun `Midlertidig mapping til gammel type`() {
+        val nyFormue = Formue(type = FormueType.FORMUE_BRUKSKONTO)
+        val annenFormue = Formue(type = FormueType.VERDI_BOLIG)
+
+        FormueToJsonMapper(formuer = setOf(nyFormue, annenFormue), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi.oversikt) {
+            assertThat(formue).hasSize(2)
+            assertThat(formue)
+                .anyMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
+                .anyMatch { it.type == SoknadJsonTypeEnum.VERDI_BOLIG.verdi }
         }
     }
 }

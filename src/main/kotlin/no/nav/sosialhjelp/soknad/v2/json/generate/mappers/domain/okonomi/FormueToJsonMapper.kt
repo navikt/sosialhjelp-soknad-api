@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 
@@ -46,7 +47,7 @@ class FormueToJsonMapper(
 private fun Formue.toJsonFormue(belop: Int? = null) =
     JsonOkonomioversiktFormue()
         .withKilde(JsonKilde.BRUKER)
-        .withType(type.name)
+        .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
         .withBelop(belop)
         .withOverstyrtAvBruker(false)
@@ -65,4 +66,9 @@ private fun Formue.toTittel(): String {
         FormueType.VERDI_FRITIDSEIENDOM -> "Fritidseiendom"
         FormueType.VERDI_ANNET -> "Annet"
     }
+}
+
+private fun FormueType.toSoknadJsonTypeString(): String {
+    return OpplysningTypeMapper.getJsonVerdier(this).navn?.verdi
+        ?: error("Manglende mapping av FormueType for $this")
 }

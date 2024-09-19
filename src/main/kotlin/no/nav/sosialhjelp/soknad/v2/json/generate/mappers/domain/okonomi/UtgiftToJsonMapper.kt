@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
@@ -49,24 +50,29 @@ class UtgiftToJsonMapper(
         return listOf(
             JsonOkonomioversiktUtgift()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.name)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.toSoknadJsonTypeString())
                 .withTittel(toTittel())
                 .withBelop(detalj.avdrag?.toInt())
                 .withOverstyrtAvBruker(false),
             JsonOkonomioversiktUtgift()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.name)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.toSoknadJsonTypeString())
                 .withTittel(toTittel())
                 .withBelop(detalj.renter?.toInt())
                 .withOverstyrtAvBruker(false),
         )
     }
 
+    private fun UtgiftType.toSoknadJsonTypeString(): String {
+        return OpplysningTypeMapper.getJsonVerdier(this).navn?.verdi
+            ?: error("Fant ikke mapping for UtgiftType: $this")
+    }
+
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
         JsonOkonomioversiktUtgift()
             // TODO Sjekk om alle utgifter er kilde = BRUKER
             .withKilde(JsonKilde.BRUKER)
-            .withType(type.name)
+            .withType(type.toSoknadJsonTypeString())
             .withTittel(toTittel())
             .withBelop(belop?.belop?.toInt())
             .withOverstyrtAvBruker(false)
@@ -87,7 +93,7 @@ class UtgiftToJsonMapper(
     ) =
         JsonOkonomiOpplysningUtgift()
             .withKilde(JsonKilde.BRUKER)
-            .withType(type.name)
+            .withType(type.toSoknadJsonTypeString())
             .withTittel(toTittel(detaljBeskrivelse))
             .withBelop(belop?.belop?.toInt())
             .withOverstyrtAvBruker(false)

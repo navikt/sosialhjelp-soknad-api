@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.createInntekter
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
@@ -9,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -21,7 +23,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.oversikt) {
-            assertThat(inntekt).hasSize(2).allMatch { it.type == inntekter.first().type.name }
+            assertThat(inntekt).hasSize(2).allMatch { it.type == inntekter.first().type.getJsonVerdier().navn?.verdi }
         }
     }
 
@@ -39,7 +41,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(1)
-                .anyMatch { it.type == inntekter.first().type.name }
+                .anyMatch { it.type == inntekter.first().type.getJsonVerdier().navn?.verdi }
                 .anyMatch { it.komponenter.size == 2 }
         }
     }
@@ -63,7 +65,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.opplysninger) {
-            assertThat(utbetaling).hasSize(2).allMatch { it.type == InntektType.UTBETALING_SALG.name }
+            assertThat(utbetaling).hasSize(2).allMatch { it.type == SoknadJsonTypeEnum.UTBETALING_SALG.verdi }
         }
     }
 
@@ -74,8 +76,24 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.opplysninger) {
-            assertThat(utbetaling).hasSize(1).allMatch { it.type == InntektType.UTBETALING_ANNET.name }
+            assertThat(utbetaling).hasSize(1).allMatch { it.type == SoknadJsonTypeEnum.UTBETALING_ANNET.verdi }
             assertThat(beskrivelseAvAnnet.utbetaling).isEqualTo(inntekter.first().beskrivelse)
+        }
+    }
+
+    @Test
+    fun `Midlertidig mapping til gammel type`() {
+        val nyUtgift = Inntekt(type = InntektType.UTBETALING_HUSBANKEN)
+        val annenUtgift = Inntekt(type = InntektType.JOBB)
+
+        InntektToJsonMapper(inntekter = setOf(nyUtgift, annenUtgift), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi) {
+            assertThat(opplysninger.utbetaling).hasSize(1)
+            assertThat(opplysninger.utbetaling.first().type).isEqualTo(SoknadJsonTypeEnum.UTBETALING_HUSBANKEN.verdi)
+
+            assertThat(oversikt.inntekt).hasSize(1)
+            assertThat(oversikt.inntekt.first().type).isEqualTo(SoknadJsonTypeEnum.JOBB.verdi)
         }
     }
 }
