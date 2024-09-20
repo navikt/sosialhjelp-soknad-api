@@ -38,7 +38,13 @@ class JsonSoknadCollectionComparator(
                     vedlegg.type == it.type &&
                         vedlegg.tilleggsinfo == it.tilleggsinfo &&
                         vedlegg.status == it.status
-                } ?: logger.warn("Fant ikke vedlegg i original-json: $vedlegg - orginal: ${original.vedlegg}")
+                }
+                    ?.also {
+                        if (vedlegg.filer.size != it.filer.size) {
+                            logger.warn("Antall filer er ikke like: Original: ${it.filer} - shadow: ${vedlegg.filer}")
+                        }
+                    }
+                    ?: logger.warn("Fant ikke vedlegg i original-json: $vedlegg - orginal: ${original.vedlegg}")
             }
         }
     }
