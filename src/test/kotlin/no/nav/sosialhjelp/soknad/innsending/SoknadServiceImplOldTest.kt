@@ -23,7 +23,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -46,7 +45,7 @@ internal class SoknadServiceImplOldTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
     private val unleash: Unleash = mockk()
-    private val digisosApiService: DigisosApiService = mockk()
+    private val qualifiesForKort: QualifiesForKort = mockk()
 
     private val soknadServiceOld =
         SoknadServiceOld(
@@ -60,7 +59,7 @@ internal class SoknadServiceImplOldTest {
             Clock.systemDefaultZone(),
             v2AdapterService,
             unleash,
-            digisosApiService,
+            qualifiesForKort,
         )
 
     @BeforeEach
@@ -71,8 +70,7 @@ internal class SoknadServiceImplOldTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any()) } returns false
-        every { digisosApiService.qualifiesForKortSoknadThroughUtbetalinger("", any(), any()) } returns false
+        every { qualifiesForKort.qualifies(any(), any()) } returns false
         every { systemdataUpdater.update(any()) } just runs
         every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
@@ -112,6 +110,7 @@ internal class SoknadServiceImplOldTest {
     fun skalStarteKortSoknadHvisNyligSoknad() {
         val soknadMetadata: SoknadMetadata = mockk()
         val slot = slot<SoknadMetadata>()
+        every { qualifiesForKort.qualifies(any(), any()) } returns true
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
         every { soknadMetadataRepository.opprett(capture(slot)) } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(mockk())

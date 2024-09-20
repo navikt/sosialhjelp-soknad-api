@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.innsending.QualifiesForKort
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.junit.jupiter.api.AfterEach
@@ -21,6 +22,7 @@ internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
+    private val qualifiesForKort: QualifiesForKort = mockk()
 
     companion object {
         val PERSON =
@@ -35,6 +37,8 @@ internal class InformasjonRessursTest {
                 bostedsadresse = null,
                 oppholdsadresse = null,
             )
+
+        val TOKEN = "This is where the HTTP token goes, used for the calls to qualifiesForKort."
     }
 
     private val ressurs =
@@ -43,6 +47,7 @@ internal class InformasjonRessursTest {
             personService = personService,
             soknadMetadataRepository = soknadMetadataRepository,
             pabegynteSoknaderService = pabegynteSoknaderService,
+            qualifiesForKort = qualifiesForKort,
             maxUploadSize = DataSize.ofTerabytes(10),
         )
 
@@ -52,6 +57,7 @@ internal class InformasjonRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { qualifiesForKort.qualifies(any(), any()) } returns false
         every { personService.hentPerson(any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false
@@ -70,31 +76,31 @@ internal class InformasjonRessursTest {
     @Test
     fun `viser adressebeskyttelse`() {
         every { personService.harAdressebeskyttelse(any()) } returns false
-        assertEquals(false, ressurs.getSessionInfo().userBlocked)
+        assertEquals(false, ressurs.getSessionInfo(TOKEN).userBlocked)
         every { personService.harAdressebeskyttelse(any()) } returns true
-        assertEquals(true, ressurs.getSessionInfo().userBlocked)
+        assertEquals(true, ressurs.getSessionInfo(TOKEN).userBlocked)
     }
 
     @Test
     fun `gjengir fornavn riktig`() {
-        assertEquals(PERSON.fornavn, ressurs.getSessionInfo().fornavn)
+        assertEquals(PERSON.fornavn, ressurs.getSessionInfo(TOKEN).fornavn)
     }
 
     @Test
     fun `gjengir antall dager før sletting`() {
-        assertEquals(14, ressurs.getSessionInfo().daysBeforeDeletion)
+        assertEquals(14, ressurs.getSessionInfo(TOKEN).daysBeforeDeletion)
     }
 
     @Test
     fun `gjengir åpne søknader når tom liste`() {
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
-        assertEquals(0, ressurs.getSessionInfo().open.size)
+        assertEquals(0, ressurs.getSessionInfo(TOKEN).open.size)
     }
 
     @Test
     fun `gjengir åpne søknader`() {
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns listOf(mockk(), mockk())
-        assertEquals(2, ressurs.getSessionInfo().open.size)
+        assertEquals(2, ressurs.getSessionInfo(TOKEN).open.size)
     }
 
     @Test
@@ -103,7 +109,7 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns emptyList()
 
-        assertEquals(0, ressurs.getSessionInfo().numRecentlySent)
+        assertEquals(0, ressurs.getSessionInfo(TOKEN).numRecentlySent)
     }
 
     @Test
@@ -112,6 +118,6 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns listOf(mockk(), mockk())
 
-        assertEquals(2, ressurs.getSessionInfo().numRecentlySent)
+        assertEquals(2, ressurs.getSessionInfo(TOKEN).numRecentlySent)
     }
 }
