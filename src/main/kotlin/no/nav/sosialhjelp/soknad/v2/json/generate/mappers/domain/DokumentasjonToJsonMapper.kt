@@ -4,9 +4,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTillegginfoString
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
@@ -39,12 +41,21 @@ class DokumentasjonToJsonMapper(
 private fun Dokumentasjon.toJsonVedlegg() =
     JsonVedlegg()
         .withType(type.getVedleggTypeString())
-        .withStatus(status.name)
+        .withStatus(status.toVedleggStatusString())
         .withTilleggsinfo(mapToTilleggsinfo())
         .withFiler(dokumenter.map { it.toJsonFiler() })
         .withHendelseType(JsonVedlegg.HendelseType.BRUKER)
         // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
         .withHendelseReferanse(UUID.randomUUID().toString())
+
+// TODO Midlertidig mapping til VedleggStatus
+private fun DokumentasjonStatus.toVedleggStatusString(): String {
+    return when (this) {
+        DokumentasjonStatus.LASTET_OPP -> Vedleggstatus.LastetOpp.name
+        DokumentasjonStatus.FORVENTET -> Vedleggstatus.VedleggKreves.name
+        DokumentasjonStatus.LEVERT_TIDLIGERE -> Vedleggstatus.VedleggAlleredeSendt.name
+    }
+}
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
     // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer

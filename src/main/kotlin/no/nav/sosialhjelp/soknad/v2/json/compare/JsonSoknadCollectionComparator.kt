@@ -35,8 +35,9 @@ class JsonSoknadCollectionComparator(
 
             shadow.vedlegg.forEach { vedlegg ->
                 original.vedlegg.find {
-                    vedlegg.type == it.type && vedlegg.tilleggsinfo == it.tilleggsinfo && vedlegg.status == it.status &&
-                        vedlegg.filer.size == it.filer.size
+                    vedlegg.type == it.type &&
+                        vedlegg.tilleggsinfo == it.tilleggsinfo &&
+                        vedlegg.status == it.status
                 } ?: logger.warn("Fant ikke vedlegg i original-json: $vedlegg - orginal: ${original.vedlegg}")
             }
         }
