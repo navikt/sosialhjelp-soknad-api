@@ -8,8 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
-import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.json.getVedleggTillegginfoString
+import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -48,7 +48,7 @@ private fun Dokumentasjon.toJsonVedlegg() =
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
     // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer
-    return type.getJsonVerdier().vedleggType?.getTilleggsinfoString()
+    return type.getVedleggTillegginfoString()
         ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }
 
@@ -56,7 +56,3 @@ private fun Dokument.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)
-
-private fun OpplysningType.getVedleggTypeString(): String =
-    this.getJsonVerdier().vedleggType?.getTypeString()
-        ?: error("Manglende mapping for VedleggType: $this")

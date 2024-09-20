@@ -73,10 +73,9 @@ private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
 
 private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUtbetaling> {
     return inntektDetaljer.detaljer.let { detaljer ->
-        if (detaljer.isEmpty()) {
-            listOf(toJsonOpplysingUtbetaling())
-        } else {
-            detaljer.map { this.copy().toJsonOpplysingUtbetaling(it) }
+        when (detaljer.isEmpty()) {
+            true -> listOf(toJsonOpplysingUtbetaling())
+            false -> detaljer.map { this.copy().toJsonOpplysingUtbetaling(it) }
         }
     }
 }
@@ -101,9 +100,10 @@ private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
 ): JsonOkonomiOpplysningUtbetaling {
     when (this) {
+        is Belop -> jsonUtbetaling.withBelop(this.belop.toInt())
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
-        else -> error("Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
+        else -> error("Type: ${jsonUtbetaling.type} - Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
     }
     return jsonUtbetaling
 }

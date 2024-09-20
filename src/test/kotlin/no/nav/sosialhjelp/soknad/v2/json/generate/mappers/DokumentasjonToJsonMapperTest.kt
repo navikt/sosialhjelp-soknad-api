@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
+import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
@@ -28,7 +28,7 @@ class DokumentasjonToJsonMapperTest {
 
             dokList.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.let { dokumentasjon ->
                 assertThat(jsonVedleggSpek.vedlegg).anyMatch {
-                    it.type == dokumentasjon.type.getJsonVerdier().vedleggType?.getTypeString() &&
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
                         it.status == dokumentasjon.status.name &&
                         dokumentasjon.dokumenter.size == it.filer.size
                 }
@@ -36,7 +36,7 @@ class DokumentasjonToJsonMapperTest {
 
             dokList.find { it.type == UtgiftType.UTGIFTER_STROM }!!.let { dokumentasjon ->
                 assertThat(jsonVedleggSpek.vedlegg).anyMatch {
-                    it.type == dokumentasjon.type.getJsonVerdier().vedleggType?.getTypeString() &&
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
                         it.status == dokumentasjon.status.name &&
                         dokumentasjon.dokumenter.size == it.filer.size
                 }
@@ -44,7 +44,7 @@ class DokumentasjonToJsonMapperTest {
 
             dokList.find { it.type == InntektType.STUDIELAN_INNTEKT }!!.let { dokumentasjon ->
                 assertThat(jsonVedleggSpek.vedlegg).anyMatch {
-                    it.type == dokumentasjon.type.getJsonVerdier().vedleggType?.getTypeString() &&
+                    it.type == dokumentasjon.type.getVedleggTypeString() &&
                         it.status == dokumentasjon.status.name &&
                         dokumentasjon.dokumenter.size == it.filer.size
                 }
