@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
@@ -12,6 +13,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTillegginfoString
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -44,12 +47,12 @@ private fun Dokumentasjon.toJsonVedlegg() =
         .withStatus(status.toVedleggStatusString())
         .withTilleggsinfo(mapToTilleggsinfo())
         .withFiler(dokumenter.map { it.toJsonFiler() })
-        .withHendelseType(JsonVedlegg.HendelseType.BRUKER)
+        .withHendelseType(type.toHendelseType())
         // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
         .withHendelseReferanse(UUID.randomUUID().toString())
 
 // TODO Midlertidig mapping til VedleggStatus
-private fun DokumentasjonStatus.toVedleggStatusString(): String {
+internal fun DokumentasjonStatus.toVedleggStatusString(): String {
     return when (this) {
         DokumentasjonStatus.LASTET_OPP -> Vedleggstatus.LastetOpp.name
         DokumentasjonStatus.FORVENTET -> Vedleggstatus.VedleggKreves.name
@@ -67,3 +70,17 @@ private fun Dokument.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)
+
+// TODO Spør FSL'ene om dette faktisk er noe de forholder seg til
+private fun OpplysningType.toHendelseType(): JsonVedlegg.HendelseType {
+    return when {
+        listOfHendelseTypeSoknadTypes.contains(this) -> JsonVedlegg.HendelseType.SOKNAD
+        else -> JsonVedlegg.HendelseType.BRUKER
+    }
+}
+
+private val listOfHendelseTypeSoknadTypes =
+    listOf(
+        AnnenDokumentasjonType.SKATTEMELDING,
+        InntektType.JOBB,
+    )

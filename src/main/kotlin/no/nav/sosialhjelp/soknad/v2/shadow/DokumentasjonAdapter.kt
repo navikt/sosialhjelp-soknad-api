@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import org.springframework.stereotype.Component
@@ -28,6 +29,7 @@ interface DokumentasjonAdapter {
 @Component
 class SoknadV2DokumentasjonAdapter(
     private val dokumentasjonRepository: DokumentasjonRepository,
+    private val dokumentService: DokumentService,
     private val transactionTemplate: TransactionTemplate,
 ) : DokumentasjonAdapter {
     override fun saveDokumentMetadata(
@@ -64,18 +66,41 @@ class SoknadV2DokumentasjonAdapter(
         dokumentId: String,
     ) {
         runWithNestedTransaction {
+            val dokumentasjonList = dokumentasjonRepository.findAllBySoknadId(UUID.fromString(behandlingsId))
             val dokumentasjon =
-                dokumentasjonRepository.findAllBySoknadId(soknadId = UUID.fromString(behandlingsId))
-                    .find { dokumentasjon ->
-                        dokumentasjon.dokumenter.map { it.dokumentId }.contains(UUID.fromString(dokumentId))
+                dokumentasjonList.find {
+                    it.dokumenter.any { dok -> dok.dokumentId == UUID.fromString(dokumentId) }
+                }
+
+            if (dokumentasjon == null) error("Fant ikke dokumentasjon med dokument")
+
+            val updatedList = dokumentasjon.dokumenter.filter { it.dokumentId.toString() == dokumentId }
+            val updatedDokumentasjon =
+                dokumentasjon
+                    .copy(dokumenter = updatedList.toSet())
+                    .run {
+                        if (dokumenter.isEmpty()) {
+                            this
+                        } else {
+                            copy(status = DokumentasjonStatus.FORVENTET)
+                        }
                     }
-                    ?.run {
-                        val dokument = dokumenter.find { it.dokumentId == UUID.fromString(dokumentId) }
-                        copy(dokumenter = dokumenter.minus(dokument!!))
-                    }
-                    ?.run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
-                    ?.also { dokumentasjonRepository.save(it) }
-                    ?: error("NyModell: Fant ikke Dokument")
+
+            if (updatedDokumentasjon != dokumentasjon) dokumentasjonRepository.save(updatedDokumentasjon)
+
+            val a = 4
+//            dokumentasjonRepository.findAllBySoknadId(soknadId = UUID.fromString(behandlingsId))
+//                .find { dokumentasjon ->
+//                    dokumentasjon.dokumenter.any { it.dokumentId == UUID.fromString(dokumentId) }
+//                }
+//                ?.run {
+//                    val dokument = dokumenter.find { it.dokumentId == UUID.fromString(dokumentId) }
+//                    copy(dokumenter = dokumenter.minus(dokument!!))
+//                }
+//                ?.run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
+//                ?.also {
+//                    dokumentasjonRepository.save(it) }
+//                ?: error("NyModell: Fant ikke Dokument")
         }
             .onFailure { logger.warn("NyModell: Feil ved sletting av Dokument", it) }
     }

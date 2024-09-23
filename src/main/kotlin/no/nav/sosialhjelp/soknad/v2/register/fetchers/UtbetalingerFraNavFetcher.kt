@@ -5,9 +5,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -21,6 +23,7 @@ import java.util.UUID
 class UtbetalingerFraNavFetcher(
     private val navUtbetalingerService: NavUtbetalingerService,
     private val okonomiService: OkonomiService,
+    private val orgService: OrganisasjonService,
     private val integrasjonStatusService: IntegrasjonStatusService,
 ) : RegisterDataFetcher {
     private val logger by logger()
@@ -48,14 +51,18 @@ class UtbetalingerFraNavFetcher(
 
         Inntekt(
             type = InntektType.UTBETALING_NAVYTELSE,
-            inntektDetaljer = OkonomiDetaljer(utbetalinger.map { it.toUtbetalingMedKomponent() }),
+            inntektDetaljer =
+                OkonomiDetaljer(
+                    utbetalinger.map { it.toUtbetalingMedKomponent(orgService.hentOrgNavn(it.orgnummer)) },
+                ),
         )
             .also { okonomiService.addElementToOkonomi(soknadId = soknadId, element = it) }
     }
 }
 
-private fun NavUtbetaling.toUtbetalingMedKomponent() =
+private fun NavUtbetaling.toUtbetalingMedKomponent(orgNavn: String?) =
     UtbetalingMedKomponent(
+        tittel = tittel,
         utbetaling =
             Utbetaling(
                 brutto = brutto,
@@ -65,6 +72,7 @@ private fun NavUtbetaling.toUtbetalingMedKomponent() =
                 utbetalingsdato = utbetalingsdato,
                 periodeFom = periodeFom,
                 periodeTom = periodeTom,
+                organisasjon = Organisasjon(navn = orgNavn, orgnummer = orgnummer),
             ),
         komponenter = komponenter.map { it.toKomponent() },
     )

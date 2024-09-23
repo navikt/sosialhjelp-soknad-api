@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
@@ -41,25 +40,23 @@ class LivssituasjonToJsonMapper(
             livssituasjon: Livssituasjon,
             json: JsonInternalSoknad,
         ) {
-            // noen felter forventes i validering
-            json.initializeObjects()
-
             with(json.soknad.data) {
-                livssituasjon.arbeid.let { this.arbeid = it.toJsonArbeid() }
-                livssituasjon.utdanning?.let { this.utdanning = it.toJsonUtdanning() }
-                livssituasjon.bosituasjon?.let { this.bosituasjon = it.toJsonBosituasjon() }
+                livssituasjon.arbeid.let {
+                    this.arbeid ?: this.withArbeid(JsonArbeid())
+                    this.arbeid = it.toJsonArbeid()
+                }
+                // Indikerer at bruker har fått spørsmålet - uavhengig om vedkommende har svart
+                this.utdanning ?: this.withUtdanning(JsonUtdanning().withKilde(JsonKilde.BRUKER))
+                livssituasjon.utdanning?.let {
+                    this.utdanning = it.toJsonUtdanning()
+                }
+                // Indikerer at bruker har fått spørsmålet - uavhengig om vedkommende har svart
+                this.bosituasjon ?: this.withBosituasjon(JsonBosituasjon().withKilde(JsonKildeBruker.BRUKER))
+                livssituasjon.bosituasjon?.let {
+                    this.bosituasjon = it.toJsonBosituasjon()
+                }
             }
         }
-    }
-}
-
-// Disse er `required` i filformatet å må eksistere (hvis det skal validere)
-private fun JsonInternalSoknad.initializeObjects() {
-    soknad.data ?: soknad.withData(JsonData())
-    with(soknad.data) {
-        arbeid ?: withArbeid(JsonArbeid())
-        utdanning ?: withUtdanning(JsonUtdanning().withKilde(JsonKilde.BRUKER))
-        bosituasjon ?: withBosituasjon(JsonBosituasjon())
     }
 }
 

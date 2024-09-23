@@ -44,9 +44,9 @@ class JsonCompareErrorLogger(
 
     private fun getFieldFailures(): List<ErrorRow> {
         return result.fieldFailures
+            .filter { KeyFilter.isNotFiltered(it.field) }
             .mapNotNull {
                 when {
-                    KeyFilter.isFiltered(it.field) -> null
                     ExpectedDiffHandler.isExpectedDiff(it.field) -> ErrorRow(EXPECTED_DIFF, ErrorStringHandler.createErrorString(it))
                     else -> ErrorRow(FIELD_FAILURE, ErrorStringHandler.createErrorString(it))
                 }
@@ -55,6 +55,7 @@ class JsonCompareErrorLogger(
 
     private fun getFieldsMissing(): List<ErrorRow> {
         return result.fieldMissing
+//            .filter { !KeyFilter.isFiltered(it.field) }
             .map { "${it.field} {expected: ${it.expected}, actual: ${it.actual}}" }
             .map { ErrorRow(MISSING_FIELD, it) }
     }
@@ -98,9 +99,9 @@ object ExpectedDiffHandler {
 }
 
 object KeyFilter {
-    fun isFiltered(field: String): Boolean = keys.any { field.contains(it) }
+    fun isNotFiltered(field: String): Boolean = filteredKeys.none { field.contains(it) }
 
-    private val keys =
+    private val filteredKeys =
         listOf(
             "soknad.data.okonomi.opplysninger.utgift",
             "soknad.data.okonomi.opplysninger.utbetaling",

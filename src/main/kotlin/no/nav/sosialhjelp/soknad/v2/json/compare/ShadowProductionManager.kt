@@ -26,7 +26,10 @@ class ShadowProductionManager(
                 val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
                 JsonInternalSoknadListSorter(it, shadowJson).doSorting()
-                JsonSoknadCollectionComparator(original = original, shadow = shadowJson).compareCollections()
+                // TODO Midlertidig nøyaktig logging av lister for sammenlikning
+                if (MiljoUtils.isNonProduction()) {
+                    JsonSoknadComparator(original = original, shadow = shadowJson).compareCollections()
+                }
                 JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
             }
                 .onFailure {

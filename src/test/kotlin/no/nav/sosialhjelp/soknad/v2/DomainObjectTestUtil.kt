@@ -335,6 +335,7 @@ fun createInntekter(): Set<Inntekt> {
                                     listOf(
                                         Komponent(type = "Komponent 1", satsBelop = 400.0),
                                     ),
+                                tittel = "Barnetrygd",
                             ),
                         ),
                 ),

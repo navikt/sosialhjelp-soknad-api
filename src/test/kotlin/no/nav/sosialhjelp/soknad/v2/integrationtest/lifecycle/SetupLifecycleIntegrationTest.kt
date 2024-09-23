@@ -122,7 +122,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     }
 
     companion object {
-        val orgnr = "12345678"
+        val orgnr = "123456789"
         val arbeidsgiverNavn = "Arbeidsgiveren"
         val barnPersonId = "01011012345"
         val barnFoedselsDato = LocalDate.now().minusYears(10)
