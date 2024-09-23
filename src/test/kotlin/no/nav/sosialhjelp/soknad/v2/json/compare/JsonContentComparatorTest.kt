@@ -5,14 +5,18 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockkObject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.copyJsonClass
 import no.nav.sosialhjelp.soknad.v2.json.createGateAdresse
 import no.nav.sosialhjelp.soknad.v2.json.createJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.json.createJsonPersonalia
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.FieldComparisonFailure
 import org.slf4j.LoggerFactory
@@ -35,9 +39,17 @@ class JsonContentComparatorTest {
         logInMemoryAppender.context = LoggerFactory.getILoggerFactory() as LoggerContext
         (logger as Logger).addAppender(logInMemoryAppender)
         logInMemoryAppender.start()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns false
+        every { MiljoUtils.isProduction() } returns true
     }
 
-    @Disabled("Comparator gjør at dette kan finnes i loggen")
+    @AfterEach
+    fun tearDown() {
+        clearAllMocks()
+    }
+
     @Test
     fun `PersonId skal ikke finnes i log etter sammenlikning`() {
         val nyPersonId = "99887712345"
@@ -66,7 +78,6 @@ class JsonContentComparatorTest {
             }
     }
 
-    @Disabled("Comparator gjør at dette kan finnes i loggen")
     @Test
     fun `Adresseinformasjon skal ikke finnes i logg etter sammenlikning`() {
         val originalAdresse = createGateAdresse()
@@ -123,7 +134,6 @@ class JsonContentComparatorTest {
         ExpectedDiffHandler.isExpectedDiff(type2).also { assertThat(it).isTrue() }
     }
 
-    @Disabled("Comparator gjør at dette kan finnes i loggen")
     @Test
     fun `Felt som skal skrives ut med verdie (for sammenlikning)`() {
         val now = OffsetDateTime.now(ZoneOffset.UTC).minusSeconds(3).truncatedTo(ChronoUnit.MILLIS)
