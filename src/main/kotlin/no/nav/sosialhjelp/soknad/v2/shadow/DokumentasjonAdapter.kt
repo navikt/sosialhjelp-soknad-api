@@ -87,20 +87,6 @@ class SoknadV2DokumentasjonAdapter(
                     }
 
             if (updatedDokumentasjon != dokumentasjon) dokumentasjonRepository.save(updatedDokumentasjon)
-
-            val a = 4
-//            dokumentasjonRepository.findAllBySoknadId(soknadId = UUID.fromString(behandlingsId))
-//                .find { dokumentasjon ->
-//                    dokumentasjon.dokumenter.any { it.dokumentId == UUID.fromString(dokumentId) }
-//                }
-//                ?.run {
-//                    val dokument = dokumenter.find { it.dokumentId == UUID.fromString(dokumentId) }
-//                    copy(dokumenter = dokumenter.minus(dokument!!))
-//                }
-//                ?.run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
-//                ?.also {
-//                    dokumentasjonRepository.save(it) }
-//                ?: error("NyModell: Fant ikke Dokument")
         }
             .onFailure { logger.warn("NyModell: Feil ved sletting av Dokument", it) }
     }
