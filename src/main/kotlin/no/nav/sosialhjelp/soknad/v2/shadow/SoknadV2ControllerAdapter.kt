@@ -143,7 +143,7 @@ class SoknadV2ControllerAdapter(
                 when {
                     harIkkeKonto == true -> HarIkkeKontoInput(harIkkeKonto)
                     brukerutfyltVerdi != null -> KontonummerBrukerInput(brukerutfyltVerdi)
-                    else -> return
+                    else -> KontonummerBrukerInput(null)
                 }
             }
         runWithNestedTransaction {
@@ -162,7 +162,10 @@ class SoknadV2ControllerAdapter(
         logger.info("NyModell: Oppdaterer Telefonnummer.")
 
         runWithNestedTransaction {
-            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput())
+            telefonnummerController.updateTelefonnummer(
+                UUID.fromString(soknadId),
+                TelefonnummerInput(telefonnummerBruker),
+            )
         }
             .onFailure { logger.warn("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
