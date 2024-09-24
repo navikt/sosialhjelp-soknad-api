@@ -42,6 +42,7 @@ enum class UtgiftType(
 
     // boutgift
     UTGIFTER_HUSLEIE(dokumentasjonForventet = true),
+    UTGIFTER_HUSLEIE_KOMMUNAL(dokumentasjonForventet = true),
 
     // boutgifter
     // felles håndtering av renter og avdrag fordi de knyttes sammen

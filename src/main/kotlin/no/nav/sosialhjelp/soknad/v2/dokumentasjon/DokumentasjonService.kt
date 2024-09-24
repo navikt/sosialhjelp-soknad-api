@@ -17,7 +17,7 @@ interface DokumentasjonService {
         opplysningType: OpplysningType,
     )
 
-    fun fjernForventetVedlegg(
+    fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
     )
@@ -72,7 +72,7 @@ class DokumentasjonServiceImpl(
             ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
 
-    override fun fjernForventetVedlegg(
+    override fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
     ) {
