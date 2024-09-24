@@ -23,6 +23,7 @@ class JsonSoknadComparator(
         original.compareUtdanning(shadow)
         original.compareSoknadstype(shadow)
         original.comparePostadresse(shadow)
+        original.comparePersonalia(shadow)
         JsonOkonomiCollectionComparator(original, shadow).compareCollections()
     }
 
@@ -160,6 +161,18 @@ class JsonSoknadComparator(
         if (soknadType != shadow) {
             logger.warn(
                 "Soknadstype er ikke like: \nOriginal: \n$soknadType" +
+                    " \nShadow: \n$shadow",
+            )
+        }
+    }
+
+    private fun JsonInternalSoknad.comparePersonalia(shadowJson: JsonInternalSoknad) {
+        val personalia = soknad?.data?.personalia.asJson()
+        val shadow = shadowJson.soknad?.data?.personalia.asJson()
+
+        if (personalia != shadow) {
+            logger.warn(
+                "Personalia er ikke like: \nOriginal: \n$personalia" +
                     " \nShadow: \n$shadow",
             )
         }

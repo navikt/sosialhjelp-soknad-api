@@ -72,5 +72,5 @@ data class HarIkkeKontoInput(
 ) : KontoInput
 
 data class KontonummerBrukerInput(
-    val kontonummer: String,
+    val kontonummer: String?,
 ) : KontoInput
