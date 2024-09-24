@@ -119,15 +119,13 @@ class SoknadV2ControllerAdapter(
 
         runWithNestedTransaction {
             with(bosituasjonFrontend) {
-                if (botype != null || antallPersoner != null) {
-                    bosituasjonController.updateBosituasjon(
-                        UUID.fromString(soknadId),
-                        BosituasjonDto(
-                            botype = botype?.let { Botype.valueOf(it.name) },
-                            antallPersoner = antallPersoner,
-                        ),
-                    )
-                }
+                bosituasjonController.updateBosituasjon(
+                    UUID.fromString(soknadId),
+                    BosituasjonDto(
+                        botype = botype?.let { Botype.valueOf(it.name) },
+                        antallPersoner = antallPersoner,
+                    ),
+                )
             }
         }
             .onFailure { logger.warn("Ny modell: Oppdatere Bosituasjon feilet", it) }

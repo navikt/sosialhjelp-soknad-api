@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonDto
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -10,11 +12,13 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 
 class BosituasjonIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var livssituasjonRepository: LivssituasjonRepository
+
+    @Autowired
+    private lateinit var dokumentasjonRepository: DokumentasjonRepository
 
     @Test
     fun `Hente Bosituasjon skal returnere korrekte data`() {
@@ -55,18 +59,6 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Dto med tom input skal returnere 400 Bad Request`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
-        doPutExpectError(
-            "/soknad/${soknad.id}/bosituasjon",
-            BosituasjonDto(),
-            HttpStatus.BAD_REQUEST,
-            soknad.id,
-        )
-    }
-
-    @Test
     fun `Dto med en null-verdi skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
@@ -82,5 +74,37 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.bosituasjon!!.antallHusstand).isEqualTo(3)
         }
             ?: fail("Kunne ikke finne brukerdata")
+    }
+
+    @Test
+    fun `Botype LEIER skal opprette Dokumentasjon`() {
+        val soknad = soknadRepository.save(opprettSoknad())
+
+        doPut(
+            "/soknad/${soknad.id}/bosituasjon",
+            BosituasjonDto(botype = Botype.LEIER),
+            BosituasjonDto::class.java,
+            soknad.id,
+        )
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).let {
+            assertThat(it).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE }
+        }
+    }
+
+    @Test
+    fun `Botype KOMMUNAL skal opprette Dokumentasjon`() {
+        val soknad = soknadRepository.save(opprettSoknad())
+
+        doPut(
+            "/soknad/${soknad.id}/bosituasjon",
+            BosituasjonDto(botype = Botype.KOMMUNAL),
+            BosituasjonDto::class.java,
+            soknad.id,
+        )
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).let {
+            assertThat(it).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL }
+        }
     }
 }

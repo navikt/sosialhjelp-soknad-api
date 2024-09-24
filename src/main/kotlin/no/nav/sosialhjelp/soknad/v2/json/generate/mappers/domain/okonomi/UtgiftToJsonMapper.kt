@@ -112,9 +112,9 @@ private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
         UtgiftType.BARNEBIDRAG_BETALER -> "Betaler Barnebidrag"
         UtgiftType.UTGIFTER_SFO -> "SFO"
         UtgiftType.UTGIFTER_BARNEHAGE -> "Barnehage"
-        UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
         UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> "Avdrag på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> "Renter på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN -> "Renter og avdrag på boliglån"
+        UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL -> "Husleie"
     }
 }
