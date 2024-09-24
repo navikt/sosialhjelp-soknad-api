@@ -31,9 +31,7 @@ class JsonSoknadComparator(
         val original = this.vedlegg
         val shadow = shadowJson.vedlegg
 
-        if (original == shadow) {
-            logger.info("Compare vedlegg: Original og shadow er like: ${original.asJson()}")
-        } else if (original == null || shadow == null) {
+        if (original == null || shadow == null) {
             logger.warn(
                 "Original: \n${original.asJson()} " +
                     "- \n\nShadow: ${shadow.asJson()}",
@@ -100,9 +98,7 @@ class JsonSoknadComparator(
         val original = soknad?.data?.familie?.forsorgerplikt
         val shadow = shadowJson.soknad?.data?.familie?.forsorgerplikt
 
-        if (original == shadow) {
-            logger.info("Compare Ansvar: Original og shadow er like: $original")
-        } else if (original == null || shadow == null) {
+        if (original == null || shadow == null) {
             logger.warn("Original: $original - Shadow: $shadow")
         } else {
             if (original.ansvar.size != shadow.ansvar.size) {
