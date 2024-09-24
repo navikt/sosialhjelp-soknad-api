@@ -9,7 +9,7 @@ interface ArbeidService {
 
     fun updateKommentarTilArbeid(
         soknadId: UUID,
-        kommentarTilArbeidsforhold: String,
+        kommentarTilArbeidsforhold: String?,
     ): Arbeid
 }
 
@@ -67,10 +67,10 @@ class LivssituasjonServiceImpl(
 
     override fun updateKommentarTilArbeid(
         soknadId: UUID,
-        kommentarTilArbeidsforhold: String,
+        kommentarTilArbeidsforhold: String?,
     ): Arbeid {
         return findOrCreate(soknadId)
-            .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
+            .run { copy(arbeid = arbeid.copy(kommentar = kommentarTilArbeidsforhold)) }
             .let { repository.save(it) }
             .arbeid
     }

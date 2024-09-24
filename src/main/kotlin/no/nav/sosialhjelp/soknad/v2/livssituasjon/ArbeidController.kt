@@ -49,7 +49,7 @@ data class ArbeidDto(
 )
 
 data class ArbeidInput(
-    val kommentarTilArbeidsforhold: String,
+    val kommentarTilArbeidsforhold: String?,
 )
 
 data class ArbeidsforholdDto(
