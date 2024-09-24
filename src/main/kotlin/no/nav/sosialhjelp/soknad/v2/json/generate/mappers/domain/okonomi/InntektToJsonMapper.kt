@@ -4,13 +4,16 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
+import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -39,6 +42,10 @@ class InntektToJsonMapper(
             -> oversikt.inntekt.addAll(toJsonOversiktInntekter())
             else -> opplysninger.utbetaling.addAll(toJsonOpplysningUtbetalinger())
         }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 
@@ -73,10 +80,9 @@ private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
 
 private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUtbetaling> {
     return inntektDetaljer.detaljer.let { detaljer ->
-        if (detaljer.isEmpty()) {
-            listOf(toJsonOpplysingUtbetaling())
-        } else {
-            detaljer.map { this.copy().toJsonOpplysingUtbetaling(it) }
+        when (detaljer.isEmpty()) {
+            true -> listOf(toJsonOpplysingUtbetaling())
+            false -> detaljer.map { this.copy().toJsonOpplysingUtbetaling(it) }
         }
     }
 }
@@ -85,7 +91,7 @@ private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): Js
     return JsonOkonomiOpplysningUtbetaling()
         // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
         // TODO For de fleste opplysningstypene vil det enkleste være mapping pr. OpplysningType
-        .withKilde(JsonKilde.BRUKER)
+        .withKilde(InntektTypeToKildeMapper.getKilde(type))
         .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
         .withOverstyrtAvBruker(false)
@@ -101,15 +107,18 @@ private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
 ): JsonOkonomiOpplysningUtbetaling {
     when (this) {
+        is Belop -> jsonUtbetaling.withBelop(this.belop.toInt())
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
-        else -> error("Ugyldig detalj-type for Inntekt")
+        else -> error("Type: ${jsonUtbetaling.type} - Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
     }
     return jsonUtbetaling
 }
 
 private fun UtbetalingMedKomponent.addUtbetalingMedKomponent(jsonUtbetaling: JsonOkonomiOpplysningUtbetaling) {
     utbetaling.addUtbetaling(jsonUtbetaling)
+    //  Utbetaling med Komponent gjelder kun utbetaling fra NAV - der skal Belop være samme som netto
+    jsonUtbetaling.withBelop(utbetaling.netto?.toInt()).withTittel(tittel)
     komponenter.map { it.toJsonKomponent() }.let { jsonUtbetaling.withKomponenter(it) }
 }
 
@@ -124,7 +133,10 @@ private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbeta
         .withPeriodeFom(periodeFom?.toString())
         .withPeriodeTom(periodeTom?.toString())
         .withMottaker(mottaker?.toJsonMottaker())
+        .withOrganisasjon(organisasjon?.toJsonOrganisasjon())
 }
+
+private fun Organisasjon.toJsonOrganisasjon() = JsonOrganisasjon().withNavn(navn).withOrganisasjonsnummer(orgnummer)
 
 private fun Mottaker.toJsonMottaker(): JsonOkonomiOpplysningUtbetaling.Mottaker? {
     return JsonOkonomiOpplysningUtbetaling.Mottaker.entries.find { it.name == name }
@@ -156,4 +168,20 @@ private fun Inntekt.toTittel(): String {
         // TODO UTBETALING_NAVYTELSE bevarer tittel innhentingen
         InntektType.UTBETALING_NAVYTELSE -> beskrivelse ?: ""
     }
+}
+
+private object InntektTypeToKildeMapper {
+    fun getKilde(inntektType: InntektType): JsonKilde =
+        if (typerFraRegister.any { it == inntektType }) {
+            JsonKilde.SYSTEM
+        } else {
+            JsonKilde.BRUKER
+        }
+
+    private val typerFraRegister =
+        listOf(
+            InntektType.UTBETALING_HUSBANKEN,
+            InntektType.UTBETALING_NAVYTELSE,
+            InntektType.UTBETALING_SKATTEETATEN,
+        )
 }

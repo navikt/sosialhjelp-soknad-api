@@ -48,9 +48,9 @@ class SoknadToJsonMapper(
                         TimestampManager.convertToOffsettDateTimeUTCString(it)
                     }
 
-                domainSoknad.begrunnelse.let {
-                    soknad.data.begrunnelse = it.toJsonBegrunnelse()
-                }
+                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
+
+                soknad.data.soknadstype = domainSoknad.toJsonSoknadType()
             }
         }
 
@@ -71,5 +71,12 @@ class SoknadToJsonMapper(
                 .withHvaSokesOm(hvaSokesOm)
                 .withHvorforSoke(hvorforSoke)
                 .withKilde(JsonKildeBruker.BRUKER)
+    }
+}
+
+private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype {
+    return when (this.kortSoknad) {
+        true -> JsonData.Soknadstype.KORT
+        false -> JsonData.Soknadstype.STANDARD
     }
 }

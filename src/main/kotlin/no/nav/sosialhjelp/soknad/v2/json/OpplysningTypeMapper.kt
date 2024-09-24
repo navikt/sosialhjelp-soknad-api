@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
-fun OpplysningType.getJsonVerdier(): JsonVerdi {
+private fun OpplysningType.getJsonVerdier(): JsonVerdi {
     return when (this) {
         is InntektType -> OpplysningTypeMapper.getJsonVerdier(this)
         is UtgiftType -> OpplysningTypeMapper.getJsonVerdier(this)
@@ -18,6 +18,12 @@ fun OpplysningType.getJsonVerdier(): JsonVerdi {
         else -> error("Ukjent OpplysningType: $this")
     }
 }
+
+fun OpplysningType.getVedleggTypeString(): String? = getJsonVerdier().vedleggType?.getTypeString()
+
+fun OpplysningType.getVedleggTillegginfoString(): String? = getJsonVerdier().vedleggType?.getTilleggsinfoString()
+
+fun OpplysningType.getSoknadJsonTypeString(): String? = getJsonVerdier().navn?.verdi
 
 // TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
 object OpplysningTypeMapper {

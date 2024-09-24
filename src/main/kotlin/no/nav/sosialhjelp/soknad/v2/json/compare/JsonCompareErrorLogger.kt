@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.ARRAY_SIZE
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.EXPECTED_DIFF
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIELD_FAILURE
@@ -43,16 +44,18 @@ class JsonCompareErrorLogger(
 
     private fun getFieldFailures(): List<ErrorRow> {
         return result.fieldFailures
-            .map {
-                when (ExpectedDiffHandler.isExpectedDiff(it.field)) {
-                    true -> ErrorRow(EXPECTED_DIFF, ErrorStringHandler.createErrorString(it))
-                    false -> ErrorRow(FIELD_FAILURE, ErrorStringHandler.createErrorString(it))
+            .filter { KeyFilter.isNotFiltered(it.field) }
+            .mapNotNull {
+                when {
+                    ExpectedDiffHandler.isExpectedDiff(it.field) -> ErrorRow(EXPECTED_DIFF, ErrorStringHandler.createErrorString(it))
+                    else -> ErrorRow(FIELD_FAILURE, ErrorStringHandler.createErrorString(it))
                 }
             }
     }
 
     private fun getFieldsMissing(): List<ErrorRow> {
         return result.fieldMissing
+//            .filter { !KeyFilter.isFiltered(it.field) }
             .map { "${it.field} {expected: ${it.expected}, actual: ${it.actual}}" }
             .map { ErrorRow(MISSING_FIELD, it) }
     }
@@ -95,13 +98,36 @@ object ExpectedDiffHandler {
         )
 }
 
+object KeyFilter {
+    fun isNotFiltered(field: String): Boolean = filteredKeys.none { field.contains(it) }
+
+    private val filteredKeys =
+        listOf(
+            "soknad.data.okonomi.opplysninger.utgift",
+            "soknad.data.okonomi.opplysninger.utbetaling",
+            "soknad.data.okonomi.opplysninger.utgift",
+            "soknad.data.okonomi.oversikt.formue",
+            "soknad.data.okonomi.oversikt.utgift",
+            "soknad.data.okonomi.oversikt.inntekt",
+            "vedlegg.vedlegg",
+            "soknad.data.okonomi.opplysninger.bostotte.saker",
+            "soknad.data.arbeid.forhold",
+        )
+}
+
 object ErrorStringHandler {
     fun createErrorString(failure: FieldComparisonFailure): String {
+        if (MiljoUtils.isNonProduction()) return createErrorStringWithExpectedAndActual(failure)
+
         return if (!writeComparisonFields.any { it.matches(failure.field) }) {
             failure.field
         } else {
             "${failure.field} -> actual=( ${failure.actual} ) : expected=( ${failure.expected} ) "
         }
+    }
+
+    private fun createErrorStringWithExpectedAndActual(failure: FieldComparisonFailure): String {
+        return "${failure.field} -> actual=( ${failure.actual} ) : expected=( ${failure.expected} ) "
     }
 
     private val writeComparisonFields =

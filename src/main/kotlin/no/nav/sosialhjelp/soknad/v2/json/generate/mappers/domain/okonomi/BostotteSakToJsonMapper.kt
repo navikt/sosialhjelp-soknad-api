@@ -15,6 +15,7 @@ class BostotteSakToJsonMapper(
     private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
+        // At denne settes til tross for ingen saker, indikerer at bruker har fått spørsmål om bostotte
         val jsonBostotte = opplysninger.bostotte ?: opplysninger.withBostotte(JsonBostotte()).bostotte
         jsonBostotte.saker.addAll(saker.map { it.toJsonBostotteSak() })
     }

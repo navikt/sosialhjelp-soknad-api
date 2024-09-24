@@ -72,6 +72,7 @@ data class Organisasjon(
 
 data class UtbetalingMedKomponent(
     val utbetaling: Utbetaling = Utbetaling(),
+    val tittel: String,
     val komponenter: List<Komponent> = emptyList(),
 ) : OkonomiDetalj
 

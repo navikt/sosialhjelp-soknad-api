@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -54,17 +55,12 @@ private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonM
         FormueToJsonMapper(formuer, json),
         InntektToJsonMapper(inntekter, json),
         UtgiftToJsonMapper(utgifter, json),
+        BostotteSakToJsonMapper(bostotteSaker, json),
     )
         .let { list ->
             when {
                 bekreftelser.isEmpty() -> list
                 else -> list.plus(BekreftelseToJsonMapper(bekreftelser, json))
-            }
-        }
-        .let { list ->
-            when {
-                bostotteSaker.isEmpty() -> list
-                else -> list.plus(BostotteSakToJsonMapper(bostotteSaker, json))
             }
         }
 }
@@ -114,4 +110,5 @@ fun JsonOkonomiopplysninger.initJsonBeskrivelser(): JsonOkonomibeskrivelserAvAnn
         boutgifter = ""
     }
         .also { withBeskrivelseAvAnnet(it) }
+        .withKilde(JsonKildeBruker.BRUKER)
 }
