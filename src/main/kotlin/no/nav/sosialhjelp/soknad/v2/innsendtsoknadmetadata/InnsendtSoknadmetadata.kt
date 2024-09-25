@@ -22,10 +22,13 @@ interface InnsendtSoknadMetadataRepository : UpsertRepository<InnsendtSoknadmeta
 
 @Table
 data class InnsendtSoknadmetadata(
-    @Id override val soknadId: UUID,
+    @Id val soknadId: UUID,
+    val soknadtype: String,
     val personId: String,
     val sendt_inn_dato: LocalDateTime?,
     val opprettet_dato: LocalDateTime,
-//    val soknadType: SoknadType,
-    // TODO Legg til søknadstype i ny modell
-) : DomainRoot
+) : DomainRoot {
+    override fun getDbId(): UUID {
+        TODO("Not yet implemented")
+    }
+}
