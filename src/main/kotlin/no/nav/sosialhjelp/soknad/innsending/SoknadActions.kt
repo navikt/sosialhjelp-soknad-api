@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
-import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -42,6 +41,7 @@ class SoknadActions(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val digisosApiService: DigisosApiService,
     private val nedetidService: NedetidService,
+    private val soknadStatisticsService: SoknadStatisticsService,
 ) {
     @PostMapping("/send")
     fun sendSoknad(
@@ -82,7 +82,7 @@ class SoknadActions(
             SKAL_SENDE_SOKNADER_VIA_FDA -> {
                 log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
-                SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
+                soknadStatisticsService.createSoknadSentDto(soknadUnderArbeid.behandlingsId, digisosId)
             }
         }
     }

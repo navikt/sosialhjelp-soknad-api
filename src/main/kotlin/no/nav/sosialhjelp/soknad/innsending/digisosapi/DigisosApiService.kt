@@ -206,6 +206,13 @@ class DigisosApiService(
         return hendelseTidspunkt.any { it.toLocalDateTime() >= hendelseSince }
     }
 
+    fun getTimestampSistSendtSoknad(token: String): Long? {
+        return digisosApiV2Client.getSoknader(token)
+            .filter { it.originalSoknadNAV != null }
+            .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
+            .firstNotNullOfOrNull { it.originalSoknadNAV?.timestampSendt }
+    }
+
     private fun String.toLocalDateTime() =
         ZonedDateTime
             .parse(this, DateTimeFormatter.ISO_DATE_TIME)
