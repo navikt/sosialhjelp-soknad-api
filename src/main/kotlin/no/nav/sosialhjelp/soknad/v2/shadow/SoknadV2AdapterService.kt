@@ -1,7 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampManager
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -13,6 +16,7 @@ import java.util.UUID
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
+    private val dokumentasjonService: DokumentasjonService,
 ) : V2AdapterService {
     private val logger by logger()
 
@@ -31,6 +35,8 @@ class SoknadV2AdapterService(
                 eierId = eierId,
                 kortSoknad = kortSoknad,
             )
+
+            opprettForventetDokumentasjon(behandlingsId)
         }
             .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
 
@@ -66,5 +72,18 @@ class SoknadV2AdapterService(
             .runCatching {
                 soknadService.deleteSoknad(UUID.fromString(behandlingsId))
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
+    }
+
+    private fun opprettForventetDokumentasjon(behandlingsId: String) {
+        // oppretter utgift annet annet (og den oppretter forventet dokumentasjon)
+        dokumentasjonService.opprettDokumentasjon(
+            soknadId = UUID.fromString(behandlingsId),
+            opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+        )
+        // oppretter dokumentasjon skattemelding
+        dokumentasjonService.opprettDokumentasjon(
+            soknadId = UUID.fromString(behandlingsId),
+            opplysningType = AnnenDokumentasjonType.SKATTEMELDING,
+        )
     }
 }

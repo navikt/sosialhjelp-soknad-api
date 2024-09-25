@@ -136,6 +136,12 @@ class MellomlagringService(
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
         soknadUnderArbeidService.fjernVedleggFraInternalSoknad(behandlingsId, aktueltVedlegg)
 
+        // nyModell
+        dokumentasjonAdapter.deleteDokumentMetadata(
+            behandlingsId = behandlingsId,
+            dokumentId = aktueltVedlegg.filId,
+        )
+
         // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
         // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)

@@ -54,7 +54,10 @@ class KontaktToJsonMapper(
             with(json.soknad.data.personalia) {
                 telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
                 folkeregistrertAdresse = kontakt.adresser.folkeregistrert?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
-                adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
+                adresseValg?.also {
+                    this.oppholdsadresse = oppholdsadresse.mapOppholdsadresse(it)
+                    this.postadresse = oppholdsadresse.mapToPostadresse(it)
+                }
             }
 
             json.mottaker = kontakt.mottaker.toJsonSoknadsmottakerInternal()
@@ -66,21 +69,21 @@ class KontaktToJsonMapper(
             soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
         }
 
-        private fun JsonPersonalia.mapOppholdsadresse(
-            oppholdsadresse: Adresse,
+        private fun Adresse.mapOppholdsadresse(
             adresseValg: AdresseValg,
-        ) {
-            this.oppholdsadresse =
-                oppholdsadresse.toJsonAdresse()
-                    .apply {
-                        this.kilde =
-                            if (adresseValg == AdresseValg.SOKNAD) {
-                                JsonKilde.BRUKER
-                            } else {
-                                JsonKilde.SYSTEM
-                            }
-                        this.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
-                    }
+        ): JsonAdresse {
+            return this.toJsonAdresse()
+                .withKilde(if (adresseValg == AdresseValg.SOKNAD) JsonKilde.BRUKER else JsonKilde.SYSTEM)
+                .withAdresseValg(JsonAdresseValg.fromValue(adresseValg.name.lowercase()))
+        }
+
+        // TODO Tilsvarer logikk for AdresseRessurs#midlertidigLostningForPostadresse
+        private fun Adresse.mapToPostadresse(valg: AdresseValg): JsonAdresse? {
+            return if (this is MatrikkelAdresse) {
+                null
+            } else {
+                this.mapOppholdsadresse(valg).withAdresseValg(null)
+            }
         }
 
         private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? {

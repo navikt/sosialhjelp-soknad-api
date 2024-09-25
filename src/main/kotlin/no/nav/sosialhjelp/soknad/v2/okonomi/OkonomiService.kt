@@ -186,7 +186,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for removal")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetVedlegg(soknadId, type)
+        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
     /**

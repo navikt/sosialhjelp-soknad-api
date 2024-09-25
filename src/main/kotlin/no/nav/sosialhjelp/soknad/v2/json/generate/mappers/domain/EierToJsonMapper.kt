@@ -80,7 +80,8 @@ class EierToJsonMapper(
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
                 fraBruker != null ->
-                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker)
+                    JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(fraBruker).withHarIkkeKonto(false)
+                // Merkelig nok skal HarIkkeKonto ikke være false når det er systemverdi
                 fraRegister != null ->
                     JsonKontonummer().withKilde(JsonKilde.SYSTEM).withVerdi(fraRegister)
                 // Kontonummer kreves i modellen og kilde kreves selv uten(!!) noe informasjon

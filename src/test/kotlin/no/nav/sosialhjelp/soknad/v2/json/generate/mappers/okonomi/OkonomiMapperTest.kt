@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.OkonomiToJsonHandler
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.toTittel
-import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
+import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
@@ -46,7 +46,7 @@ class OkonomiMapperTest {
 
             opplysninger.utbetaling.first()
                 .let {
-                    assertThat(it.type).isEqualTo(InntektType.UTBETALING_HUSBANKEN.getJsonVerdier().navn?.verdi)
+                    assertThat(it.type).isEqualTo(InntektType.UTBETALING_HUSBANKEN.getSoknadJsonTypeString())
                     assertThat(it.tittel).isEqualTo(BekreftelseType.BOSTOTTE.toTittel())
                     assertThat(it.utbetalingsdato).isNotNull()
                     assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)

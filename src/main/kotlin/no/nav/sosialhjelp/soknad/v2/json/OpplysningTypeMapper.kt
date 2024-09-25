@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
-fun OpplysningType.getJsonVerdier(): JsonVerdi {
+private fun OpplysningType.getJsonVerdier(): JsonVerdi {
     return when (this) {
         is InntektType -> OpplysningTypeMapper.getJsonVerdier(this)
         is UtgiftType -> OpplysningTypeMapper.getJsonVerdier(this)
@@ -18,6 +18,12 @@ fun OpplysningType.getJsonVerdier(): JsonVerdi {
         else -> error("Ukjent OpplysningType: $this")
     }
 }
+
+fun OpplysningType.getVedleggTypeString(): String? = getJsonVerdier().vedleggType?.getTypeString()
+
+fun OpplysningType.getVedleggTillegginfoString(): String? = getJsonVerdier().vedleggType?.getTilleggsinfoString()
+
+fun OpplysningType.getSoknadJsonTypeString(): String? = getJsonVerdier().navn?.verdi
 
 // TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
 object OpplysningTypeMapper {
@@ -36,10 +42,11 @@ object OpplysningTypeMapper {
             UtgiftType.BARNEBIDRAG_BETALER -> JsonVerdi(SoknadJsonTypeEnum.BARNEBIDRAG, VedleggType.BarnebidragBetaler)
             UtgiftType.UTGIFTER_SFO -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_SFO, VedleggType.FakturaSfo)
             UtgiftType.UTGIFTER_BARNEHAGE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BARNEHAGE, VedleggType.FakturaBarnehage)
-            UtgiftType.UTGIFTER_HUSLEIE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.FakturaHusleie)
             UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
             UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_RENTER, null)
             UtgiftType.UTGIFTER_BOLIGLAN -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
+            UtgiftType.UTGIFTER_HUSLEIE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.HusleiekontraktHusleiekontrakt)
+            UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.HusleiekontraktKommunal)
         }
     }
 

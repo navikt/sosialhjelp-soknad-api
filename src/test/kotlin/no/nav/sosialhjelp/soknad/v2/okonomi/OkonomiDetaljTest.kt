@@ -69,6 +69,7 @@ class OkonomiDetaljTest {
                 listOf(
                     UtbetalingMedKomponent(
                         utbetaling = Utbetaling(brutto = 50.0, netto = 40.0, utbetalingsdato = LocalDate.now()),
+                        tittel = "Barnetrygd",
                         komponenter =
                             listOf(
                                 Komponent(type = "Komponent 1", satsBelop = 40.0),
@@ -76,6 +77,7 @@ class OkonomiDetaljTest {
                             ),
                     ),
                     UtbetalingMedKomponent(
+                        tittel = "Barnetrygd",
                         utbetaling = Utbetaling(brutto = 70.0, netto = 30.0, periodeTom = LocalDate.now()),
                     ),
                 ),

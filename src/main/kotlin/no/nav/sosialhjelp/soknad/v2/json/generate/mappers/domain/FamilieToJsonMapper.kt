@@ -73,6 +73,7 @@ private fun Familie.toJsonSivilstatus() =
         .withEktefelle(ektefelle?.toJson())
         .withBorSammenMed(ektefelle?.borSammen)
         .withFolkeregistrertMedEktefelle(ektefelle?.folkeregistrertMedEktefelle)
+        .withEktefelleHarDiskresjonskode(false)
 
 private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else JsonKilde.BRUKER
 

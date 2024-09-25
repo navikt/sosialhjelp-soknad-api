@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.v2.createInntekter
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
+import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
+import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -23,7 +26,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         InntektToJsonMapper(inntekter, jsonOkonomi).doMapping()
 
         with(jsonOkonomi.oversikt) {
-            assertThat(inntekt).hasSize(2).allMatch { it.type == inntekter.first().type.getJsonVerdier().navn?.verdi }
+            assertThat(inntekt).hasSize(2).allMatch { it.type == inntekter.first().type.getSoknadJsonTypeString() }
         }
     }
 
@@ -41,7 +44,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         with(jsonOkonomi.opplysninger) {
             assertThat(utbetaling).hasSize(1)
-                .anyMatch { it.type == inntekter.first().type.getJsonVerdier().navn?.verdi }
+                .anyMatch { it.type == inntekter.first().type.getSoknadJsonTypeString() }
                 .anyMatch { it.komponenter.size == 2 }
         }
     }
@@ -96,6 +99,73 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
             assertThat(oversikt.inntekt.first().type).isEqualTo(SoknadJsonTypeEnum.JOBB.verdi)
         }
     }
+
+    @Test
+    fun `Inntekt med belop skal mappes til opplysning`() {
+        val inntekt =
+            Inntekt(
+                type = InntektType.UTBETALING_UTBYTTE,
+                inntektDetaljer =
+                    OkonomiDetaljer(
+                        detaljer = listOf(Belop(belop = 2452.0), Belop(belop = 1422.0)),
+                    ),
+            )
+
+        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+
+        with(jsonOkonomi.opplysninger) {
+            assertThat(utbetaling).hasSize(2)
+                .allMatch {
+                    it.type == InntektType.UTBETALING_UTBYTTE.getSoknadJsonTypeString() &&
+                        it.belop != null
+                }
+        }
+    }
+
+    @Test
+    fun `Utbetaling fra NAV skal ha kilde = system`() {
+        val brutto = 1000.0
+        val netto = 500.0
+
+        val inntekt =
+            Inntekt(
+                type = InntektType.UTBETALING_NAVYTELSE,
+                inntektDetaljer =
+                    OkonomiDetaljer(
+                        detaljer =
+                            listOf(
+                                UtbetalingMedKomponent(
+                                    tittel = "Barnetrygd",
+                                    utbetaling =
+                                        Utbetaling(
+                                            brutto = brutto,
+                                            netto = netto,
+                                            utbetalingsdato = LocalDate.now(),
+                                            organisasjon = Organisasjon(navn = "NAV Gokkivold", orgnummer = "123456789"),
+                                        ),
+                                    komponenter =
+                                        listOf(
+                                            Komponent(
+                                                type = "Ytelseskomponenttype",
+                                                belop = 0.0,
+                                                satsType = "satstype",
+                                                satsAntall = 2.0,
+                                                satsBelop = 0.0,
+                                            ),
+                                        ),
+                                ),
+                            ),
+                    ),
+            )
+
+        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+
+        assertThat(jsonOkonomi.opplysninger.utbetaling)
+            .hasSize(1)
+            .anyMatch { it.kilde == JsonKilde.SYSTEM }
+            .anyMatch { it.tittel == "Barnetrygd" }
+            .anyMatch { it.netto == netto && it.belop == netto.toInt() }
+    }
 }
 
 private fun createFullNavYtelseInntekt(): UtbetalingMedKomponent {
@@ -112,6 +182,7 @@ private fun createFullNavYtelseInntekt(): UtbetalingMedKomponent {
                 periodeTom = null,
                 mottaker = Mottaker.HUSSTAND,
             ),
+        tittel = "Barnetrygd",
         komponenter =
             listOf(
                 Komponent(

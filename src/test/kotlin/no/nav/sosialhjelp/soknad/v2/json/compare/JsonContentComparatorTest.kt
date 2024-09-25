@@ -5,12 +5,17 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockkObject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.copyJsonClass
 import no.nav.sosialhjelp.soknad.v2.json.createGateAdresse
 import no.nav.sosialhjelp.soknad.v2.json.createJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.json.createJsonPersonalia
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.FieldComparisonFailure
@@ -34,6 +39,15 @@ class JsonContentComparatorTest {
         logInMemoryAppender.context = LoggerFactory.getILoggerFactory() as LoggerContext
         (logger as Logger).addAppender(logInMemoryAppender)
         logInMemoryAppender.start()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns false
+        every { MiljoUtils.isProduction() } returns true
+    }
+
+    @AfterEach
+    fun tearDown() {
+        clearAllMocks()
     }
 
     @Test

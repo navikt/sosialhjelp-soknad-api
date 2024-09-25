@@ -80,12 +80,13 @@ class SoknadV2ControllerAdapter(
     ) {
         logger.info("NyModell: Oppdaterer Arbeid.")
 
-        arbeidFrontend.kommentarTilArbeidsforhold?.let {
-            runWithNestedTransaction {
-                arbeidController.updateKommentarArbeidsforhold(UUID.fromString(soknadId), ArbeidInput(it))
-            }
-                .onFailure { logger.warn("Ny Modell: Oppdatere arbeid feilet", it) }
+        runWithNestedTransaction {
+            arbeidController.updateKommentarArbeidsforhold(
+                soknadId = UUID.fromString(soknadId),
+                input = ArbeidInput(arbeidFrontend.kommentarTilArbeidsforhold),
+            )
         }
+            .onFailure { logger.warn("Ny Modell: Oppdatere arbeid feilet", it) }
     }
 
     override fun updateBegrunnelse(
@@ -118,15 +119,13 @@ class SoknadV2ControllerAdapter(
 
         runWithNestedTransaction {
             with(bosituasjonFrontend) {
-                if (botype != null || antallPersoner != null) {
-                    bosituasjonController.updateBosituasjon(
-                        UUID.fromString(soknadId),
-                        BosituasjonDto(
-                            botype = botype?.let { Botype.valueOf(it.name) },
-                            antallPersoner = antallPersoner,
-                        ),
-                    )
-                }
+                bosituasjonController.updateBosituasjon(
+                    UUID.fromString(soknadId),
+                    BosituasjonDto(
+                        botype = botype?.let { Botype.valueOf(it.name) },
+                        antallPersoner = antallPersoner,
+                    ),
+                )
             }
         }
             .onFailure { logger.warn("Ny modell: Oppdatere Bosituasjon feilet", it) }
@@ -143,7 +142,7 @@ class SoknadV2ControllerAdapter(
                 when {
                     harIkkeKonto == true -> HarIkkeKontoInput(harIkkeKonto)
                     brukerutfyltVerdi != null -> KontonummerBrukerInput(brukerutfyltVerdi)
-                    else -> return
+                    else -> KontonummerBrukerInput(null)
                 }
             }
         runWithNestedTransaction {
@@ -162,7 +161,10 @@ class SoknadV2ControllerAdapter(
         logger.info("NyModell: Oppdaterer Telefonnummer.")
 
         runWithNestedTransaction {
-            telefonnummerController.updateTelefonnummer(UUID.fromString(soknadId), TelefonnummerInput())
+            telefonnummerController.updateTelefonnummer(
+                UUID.fromString(soknadId),
+                TelefonnummerInput(telefonnummerBruker),
+            )
         }
             .onFailure { logger.warn("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }

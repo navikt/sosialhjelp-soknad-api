@@ -17,7 +17,7 @@ interface DokumentasjonService {
         opplysningType: OpplysningType,
     )
 
-    fun fjernForventetVedlegg(
+    fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
     )
@@ -72,7 +72,7 @@ class DokumentasjonServiceImpl(
             ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
 
-    override fun fjernForventetVedlegg(
+    override fun fjernForventetDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
     ) {
@@ -147,7 +147,10 @@ class DokumentasjonServiceImpl(
             .also {
                 logger.info("Sletter Dokument($dokumentId) fra Dokumentasjon(type: ${it.type.name}")
                 runCatching { mellomlagringClient.deleteDokument(soknadId, dokumentId) }
-                    .onFailure { throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", it) }
+                    .onFailure {
+                            e ->
+                        throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", e)
+                    }
             }
     }
 
