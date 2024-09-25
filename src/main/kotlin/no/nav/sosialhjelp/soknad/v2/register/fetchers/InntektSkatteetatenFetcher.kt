@@ -15,9 +15,11 @@ import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component
 import java.util.UUID
 
+// TODO Dette gjøres on demand - så trenger det egentlig være en RegisterDataFetcher?
 @Component
 class InntektSkatteetatenFetcher(
     private val okonomiService: OkonomiService,
+    // TODO Unødvendig mellomledd?
     private val skattbarInntektService: SkattbarInntektService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val organisasjonService: OrganisasjonService,
