@@ -36,7 +36,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.SKJEMANUMMER
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
@@ -63,7 +62,7 @@ class SoknadServiceOld(
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
     private val unleash: Unleash,
-    private val digisosApiService: DigisosApiService,
+    private val qualifiesForKort: QualifiesForKort,
 ) {
     @Transactional
     fun startSoknad(
@@ -72,7 +71,7 @@ class SoknadServiceOld(
     ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKortSoknad(eierId, token)
+        val kortSoknad = (type == null || type == JsonData.Soknadstype.KORT) && isKortSoknadEnabled() && qualifiesForKort.qualifies(eierId, token)
 
         val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kortSoknad) // TODO NyModell Metadata returnerer UUID
 
@@ -110,19 +109,7 @@ class SoknadServiceOld(
         return StartSoknadResponse(behandlingsId, kortSoknad)
     }
 
-    private fun qualifiesForKortSoknad(
-        fnr: String,
-        token: String?,
-    ): Boolean = hasRecentSoknadFromMetadata(fnr) || hasRecentSoknadFromFiks(token) || hasRecentOrUpcomingUtbetalinger(token)
-
     private fun isKortSoknadEnabled(): Boolean = unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false)
-
-    private fun hasRecentSoknadFromMetadata(fnr: String): Boolean =
-        soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr, LocalDateTime.now(clock).minusDays(120)).any()
-
-    private fun hasRecentSoknadFromFiks(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughSoknader(token, LocalDateTime.now().minusDays(120))
-
-    private fun hasRecentOrUpcomingUtbetalinger(token: String?): Boolean = digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(token, LocalDateTime.now().minusDays(120), LocalDateTime.now().plusDays(14))
 
     private fun opprettSoknadMetadata(
         fnr: String,
