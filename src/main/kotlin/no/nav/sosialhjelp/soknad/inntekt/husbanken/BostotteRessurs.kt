@@ -137,10 +137,10 @@ class BostotteRessurs(
         v2ControllerAdapter.updateBostotte(behandlingsId, hasBostotte = null, samtykke, token)
     }
 
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean =
+    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
         opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .any { it.verdi }
+            .find { it.type == BOSTOTTE_SAMTYKKE }
+            ?.verdi
 
     private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? =
         opplysninger.bekreftelse
