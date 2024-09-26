@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -207,10 +208,12 @@ class DigisosApiService(
     }
 
     private fun String.toLocalDateTime() =
-        ZonedDateTime
-            .parse(this, DateTimeFormatter.ISO_DATE_TIME)
-            .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
-            .toLocalDateTime()
+        runCatching {
+            ZonedDateTime
+                .parse(this, DateTimeFormatter.ISO_DATE_TIME)
+                .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
+                .toLocalDateTime()
+        }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
@@ -287,7 +290,8 @@ class DigisosApiService(
         // sjekker at fil finnes hos Mellomlager
         filer =
             filer.mapNotNull { fil ->
-                mellomlagretFiks.find { it.filnavn == fil.filnavn }
+                mellomlagretFiks
+                    .find { it.filnavn == fil.filnavn }
                     .let {
                         if (it != null) {
                             fil
