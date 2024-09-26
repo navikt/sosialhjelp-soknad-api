@@ -31,15 +31,6 @@ class KortSoknadServiceTest {
     }
 
     @Test
-    fun `should qualify if there is a recent soknad from metadata`() {
-        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(mockk())
-
-        val result = kortSoknadService.qualifies("token", "12345678901")
-
-        assertTrue(result)
-    }
-
-    @Test
     fun `should qualify if there is a recent soknad from fiks`() {
         every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any(), any()) } returns true
 

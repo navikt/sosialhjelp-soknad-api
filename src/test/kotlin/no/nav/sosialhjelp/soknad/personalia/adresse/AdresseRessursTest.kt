@@ -27,8 +27,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
@@ -53,8 +53,8 @@ internal class AdresseRessursTest {
     private val navEnhetService: NavEnhetService = mockk()
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
     private val unleash: Unleash = mockk()
-    private val digisosApiService: DigisosApiService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val kortSoknadService: KortSoknadService = mockk()
 
     private val adresseRessurs =
         AdresseRessurs(
@@ -65,7 +65,7 @@ internal class AdresseRessursTest {
             soknadV2ControllerAdapter,
             unleash,
             soknadMetadataRepository,
-            digisosApiService,
+            kortSoknadService,
         )
 
     @BeforeEach
@@ -297,7 +297,7 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", "321", null, null, null, null)
-        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any(), any()) } returns true
+        every { kortSoknadService.qualifies(any(), any()) } returns true
         every { soknadMetadataRepository.hent(any()) } returns
             SoknadMetadata(
                 behandlingsId = BEHANDLINGSID,
@@ -312,6 +312,7 @@ internal class AdresseRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         val jsonSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(jsonSlot), any()) } just runs
+        every { unleash.isEnabled("sosialhjelp.soknad.kategorier") } returns true
         val adresserFrontendInput = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
 
         adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)

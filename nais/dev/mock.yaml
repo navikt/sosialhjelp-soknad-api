@@ -12,6 +12,7 @@ spec:
     sqlInstances:
       - type: POSTGRES_15
         name: soknad-mock-db-instance
+        tier: db-f1-micro
         databases:
           - name: soknad-mock-db
             envVarPrefix: DB
