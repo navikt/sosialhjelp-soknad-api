@@ -116,7 +116,10 @@ class BostotteRessurs(
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = hentSamtykkeFraSoknad(opplysninger)
+        val lagretSamtykke =
+            opplysninger.bekreftelse
+                .filter { it.type == BOSTOTTE_SAMTYKKE }
+                .any { it.verdi }
         var skalLagre = samtykke
         if (lagretSamtykke != samtykke) {
             skalLagre = true
@@ -137,10 +140,10 @@ class BostotteRessurs(
         v2ControllerAdapter.updateBostotte(behandlingsId, hasBostotte = null, samtykke, token)
     }
 
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean =
+    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
         opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .any { it.verdi }
+            .find { it.type == BOSTOTTE_SAMTYKKE }
+            ?.verdi
 
     private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? =
         opplysninger.bekreftelse

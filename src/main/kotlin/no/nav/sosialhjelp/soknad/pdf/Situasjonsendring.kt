@@ -22,6 +22,8 @@ object Situasjonsendring {
             } else {
                 pdf.skrivTekst(situasjonendring.hvaHarEndretSeg)
             }
+        } else {
+            pdfUtils.skrivIkkeUtfylt(pdf)
         }
         pdf.addBlankLine()
     }
