@@ -62,7 +62,7 @@ class DigisosApiService(
                 ?.begrunnelse
                 ?.hvaSokesOm
                 ?.let { hvaSokesOm ->
-                    BegrunnelseUtils.jsonToHvoSokesOm(hvaSokesOm)
+                    BegrunnelseUtils.jsonToHvaSokesOm(hvaSokesOm)
                 }
         if (humanifiedText != null) {
             soknad
@@ -192,11 +192,14 @@ class DigisosApiService(
     fun qualifiesForKortSoknadThroughSoknader(
         token: String?,
         hendelseSince: LocalDateTime,
+        kommunenummer: String,
     ): Boolean {
         val soknader = digisosApiV2Client.getSoknader(token)
         val hendelseTidspunkt =
             soknader.flatMap { soknad ->
-                soknad.digisosSoker
+                soknad
+                    .takeIf { it.kommunenummer == kommunenummer }
+                    ?.digisosSoker
                     ?.metadata
                     ?.let {
                         digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)

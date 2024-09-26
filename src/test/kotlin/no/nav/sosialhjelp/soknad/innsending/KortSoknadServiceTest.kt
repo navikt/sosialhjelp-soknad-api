@@ -1,7 +1,8 @@
+package no.nav.sosialhjelp.soknad.innsending
+
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.innsending.QualifiesForKort
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -11,38 +12,29 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 
-class QualifiesForKortTest {
+class KortSoknadServiceTest {
     private lateinit var digisosApiService: DigisosApiService
     private lateinit var soknadMetadataRepository: SoknadMetadataRepository
     private lateinit var clock: Clock
-    private lateinit var qualifiesForKort: QualifiesForKort
+    private lateinit var kortSoknadService: KortSoknadService
 
     @BeforeEach
     fun setUp() {
         digisosApiService = mockk()
         soknadMetadataRepository = mockk()
         clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
-        qualifiesForKort = QualifiesForKort(digisosApiService, soknadMetadataRepository, clock)
+        kortSoknadService = KortSoknadService(digisosApiService)
 
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
-        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any()) } returns false
+        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any(), any()) } returns false
         every { digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(any(), any(), any()) } returns false
     }
 
     @Test
-    fun `should qualify if there is a recent soknad from metadata`() {
-        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(mockk())
-
-        val result = qualifiesForKort.qualifies("12345678901", "token")
-
-        assertTrue(result)
-    }
-
-    @Test
     fun `should qualify if there is a recent soknad from fiks`() {
-        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any()) } returns true
+        every { digisosApiService.qualifiesForKortSoknadThroughSoknader(any(), any(), any()) } returns true
 
-        val result = qualifiesForKort.qualifies("12345678901", "token")
+        val result = kortSoknadService.qualifies("12345678901", "token")
 
         assertTrue(result)
     }
@@ -51,14 +43,14 @@ class QualifiesForKortTest {
     fun `should qualify if there are recent or upcoming utbetalinger`() {
         every { digisosApiService.qualifiesForKortSoknadThroughUtbetalinger(any(), any(), any()) } returns true
 
-        val result = qualifiesForKort.qualifies("12345678901", "token")
+        val result = kortSoknadService.qualifies("12345678901", "token")
 
         assertTrue(result)
     }
 
     @Test
     fun `should not qualify if there are no recent soknader or utbetalinger`() {
-        val result = qualifiesForKort.qualifies("12345678901", "token")
+        val result = kortSoknadService.qualifies("12345678901", "token")
 
         assertFalse(result)
     }

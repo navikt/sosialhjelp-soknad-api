@@ -24,15 +24,17 @@ class BostotteHusbanken {
     fun getAvsnitt(
         opplysninger: JsonOkonomiopplysninger,
         driftsinformasjon: JsonDriftsinformasjon,
+        autoConfirmation: Boolean = false,
     ): Avsnitt =
         Avsnitt(
             tittel = "inntekt.bostotte.husbanken.tittel",
-            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon),
+            sporsmal = bostotteSporsmal(opplysninger, driftsinformasjon, autoConfirmation),
         )
 
     private fun bostotteSporsmal(
         opplysninger: JsonOkonomiopplysninger,
         driftsinformasjon: JsonDriftsinformasjon,
+        autoConfirmation: Boolean,
     ): List<Sporsmal> {
         val harUtfyltBostotteSporsmal = harBekreftelse(opplysninger, SoknadJsonTyper.BOSTOTTE)
         val harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, SoknadJsonTyper.BOSTOTTE)
@@ -44,7 +46,7 @@ class BostotteHusbanken {
                 tittel = "inntekt.bostotte.sporsmal.sporsmal",
                 erUtfylt = harUtfyltBostotteSporsmal,
                 felt =
-                    if (harUtfyltBostotteSporsmal) {
+                    if (harUtfyltBostotteSporsmal && !autoConfirmation) {
                         booleanVerdiFelt(
                             harSvartJaBostotte,
                             "inntekt.bostotte.sporsmal.true",
