@@ -48,7 +48,6 @@ internal class SoknadActionsTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val digisosApiService: DigisosApiService = mockk()
     private val nedetidService: NedetidService = mockk()
-    private val soknadStatisticsService: SoknadStatisticsService = mockk()
 
     private lateinit var eier: String
 
@@ -59,7 +58,6 @@ internal class SoknadActionsTest {
             soknadUnderArbeidRepository,
             digisosApiService,
             nedetidService,
-            soknadStatisticsService,
         )
 
     private val token = "token"

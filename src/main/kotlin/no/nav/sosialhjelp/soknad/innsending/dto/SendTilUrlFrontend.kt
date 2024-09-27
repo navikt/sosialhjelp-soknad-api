@@ -7,7 +7,6 @@ data class SendTilUrlFrontend(
     val id: String,
     val forrigeSoknadSendt: LocalDateTime?,
     val antallDokumenter: Int,
-    val kortSoknad: Boolean,
 )
 
 enum class SoknadMottakerFrontend {

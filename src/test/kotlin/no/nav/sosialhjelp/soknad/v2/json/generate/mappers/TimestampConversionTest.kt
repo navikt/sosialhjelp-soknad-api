@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 class TimestampConversionTest {
@@ -48,7 +50,7 @@ class TimestampConversionTest {
     @Test
     fun `Konverter instant til LocalDateTime`() {
         val longNow = Instant.now().toEpochMilli()
-        val localDateTimeNow = LocalDateTime.now()
+        val localDateTimeNow = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Europe/Oslo")).toLocalDateTime()
 
         TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(longNow))
             .also {
