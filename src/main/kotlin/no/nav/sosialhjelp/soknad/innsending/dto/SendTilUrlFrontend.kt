@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.innsending.dto
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class SendTilUrlFrontend(
     val sendtTil: SoknadMottakerFrontend,
     val id: String,
-    val forrigeSoknadSendt: LocalDate?,
+    val forrigeSoknadSendt: LocalDateTime?,
     val antallDokumenter: Int,
-    val prosentFyltUt: Double,
     val kortSoknad: Boolean,
 )
 

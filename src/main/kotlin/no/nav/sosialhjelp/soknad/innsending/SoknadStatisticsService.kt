@@ -6,10 +6,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import org.springframework.stereotype.Service
 import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+import java.time.LocalDateTime
 
 @Service
 class SoknadStatisticsService(
@@ -29,16 +29,15 @@ class SoknadStatisticsService(
             id = digisosId,
             sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
             antallDokumenter = jsonInternalSoknad.vedlegg.vedlegg.flatMap { it.filer }.size,
-            prosentFyltUt = SoknadCompletionResolver(jsonInternalSoknad).percentageOfCompletion(),
             kortSoknad = jsonInternalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT,
             forrigeSoknadSendt = hentForrigeSoknadSendt(behandlingsId),
         )
     }
 
-    private fun hentForrigeSoknadSendt(behandlingsId: String): LocalDate? {
+    private fun hentForrigeSoknadSendt(behandlingsId: String): LocalDateTime? {
         return digisosApiService.getTimestampSistSendtSoknad(behandlingsId)
             ?.let {
-                Instant.ofEpochMilli(it).atZone(ZoneId.of("Europe/Oslo")).toLocalDate()
+                TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(it))
             }
     }
 }

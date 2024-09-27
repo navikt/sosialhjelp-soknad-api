@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampManager
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 
@@ -25,7 +25,7 @@ private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {
         .withType(type.toSoknadJsonTypeString())
         .withVerdi(verdi)
         .withTittel(type.toTittel())
-        .withBekreftelsesDato(TimestampManager.convertToOffsettDateTimeUTCString(tidspunkt))
+        .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(tidspunkt))
 }
 
 internal fun BekreftelseType.toTittel(): String {

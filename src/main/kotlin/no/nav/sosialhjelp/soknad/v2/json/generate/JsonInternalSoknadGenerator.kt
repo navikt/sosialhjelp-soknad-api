@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -69,7 +70,7 @@ class JsonInternalSoknadGenerator(
     }
 }
 
-object TimestampManager {
+object TimestampConverter {
     private const val ZONE_STRING = "Europe/Oslo"
     private const val TIMESTAMP_REGEX = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z$"
     private const val MILLISECOND = 1000000L
@@ -80,6 +81,9 @@ object TimestampManager {
         OffsetDateTime.parse(utcString)
             .atZoneSameInstant(ZoneId.of(ZONE_STRING))
             .toLocalDateTime()
+
+    fun convertInstantToLocalDateTime(instant: Instant): LocalDateTime =
+        LocalDateTime.ofInstant(instant, ZoneId.of(ZONE_STRING))
 
     private fun validateTimestamp(timestampString: String) {
         if (!Regex(TIMESTAMP_REGEX).matches(timestampString)) error("Tidspunkt $timestampString matcher ikke formatet")

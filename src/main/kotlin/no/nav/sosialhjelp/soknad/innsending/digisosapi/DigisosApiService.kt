@@ -206,6 +206,7 @@ class DigisosApiService(
         return hendelseTidspunkt.any { it.toLocalDateTime() >= hendelseSince }
     }
 
+    // Instant.now().toEpochMilli()
     fun getTimestampSistSendtSoknad(token: String): Long? {
         return digisosApiV2Client.getSoknader(token)
             .filter { it.originalSoknadNAV != null }

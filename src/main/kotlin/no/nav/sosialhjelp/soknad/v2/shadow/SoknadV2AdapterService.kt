@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampManager
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
@@ -54,7 +54,7 @@ class SoknadV2AdapterService(
         logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
         kotlin.runCatching {
-            TimestampManager.parseFromUTCString(innsendingsTidspunkt)
+            TimestampConverter.parseFromUTCString(innsendingsTidspunkt)
                 .also {
                     soknadService.setInnsendingstidspunkt(
                         soknadId = UUID.fromString(soknadId),
