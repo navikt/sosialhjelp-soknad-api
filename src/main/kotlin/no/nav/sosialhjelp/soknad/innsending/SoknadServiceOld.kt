@@ -197,6 +197,7 @@ class SoknadServiceOld(
                     JsonSoknad()
                         .withData(
                             JsonData()
+                                .withSoknadstype(if (kortSoknad == true) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD)
                                 .withPersonalia(
                                     JsonPersonalia()
                                         .withPersonIdentifikator(
