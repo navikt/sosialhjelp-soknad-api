@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -131,16 +132,17 @@ class AdresseRessurs(
                 )?.also {
                     setNavEnhetAsMottaker(soknad, it, eier)
 
-                    val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
-                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-                    if (changed) {
-                        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-                        if (soknadMetadata != null) {
-                            soknadMetadata.kortSoknad = isKort
-                            soknadMetadataRepository.oppdater(soknadMetadata)
+                    if (!MiljoUtils.isMockAltProfil()) {
+                        val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
+                        if (changed) {
+                            val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                            if (soknadMetadata != null) {
+                                soknadMetadata.kortSoknad = isKort
+                                soknadMetadataRepository.oppdater(soknadMetadata)
+                            }
                         }
                     }
+                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
                     // TODO Ekstra logging
                     logger.info("NavEnhetFrontend: $it")
