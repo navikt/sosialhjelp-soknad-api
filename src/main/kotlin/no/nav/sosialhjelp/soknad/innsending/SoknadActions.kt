@@ -90,7 +90,7 @@ class SoknadActions(
                     id = digisosId,
                     sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
                     antallDokumenter = getAntallDokumenter(soknadUnderArbeid.jsonInternalSoknad),
-                    forrigeSoknadSendt = hentForrigeSoknadSendt(behandlingsId),
+                    forrigeSoknadSendt = hentForrigeSoknadSendt(token),
                 )
             }
         }
@@ -107,8 +107,8 @@ class SoknadActions(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    private fun hentForrigeSoknadSendt(behandlingsId: String): LocalDateTime? {
-        return digisosApiService.getTimestampSistSendtSoknad(behandlingsId)
+    private fun hentForrigeSoknadSendt(token: String?): LocalDateTime? {
+        return digisosApiService.getTimestampSistSendtSoknad(token)
             ?.let {
                 TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(it))
             }
