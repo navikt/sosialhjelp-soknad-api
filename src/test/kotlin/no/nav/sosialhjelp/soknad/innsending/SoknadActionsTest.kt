@@ -38,6 +38,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Instant
 import java.time.LocalDateTime
 
 internal class SoknadActionsTest {
@@ -183,6 +184,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
+        every { digisosApiService.getTimestampSistSendtSoknad(behandlingsId) } returns Instant.now().toEpochMilli()
 
         actions.sendSoknad(behandlingsId, token)
 
