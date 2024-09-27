@@ -170,8 +170,10 @@ class AdresseRessurs(
         if (nySoknadstype != soknad.data.soknadstype) {
             soknad.data.soknadstype = nySoknadstype
             if (nySoknadstype == JsonData.Soknadstype.STANDARD) {
+                logger.info("Søknadstype endret fra kort til standard for søknad til ${navEnhet.enhetsnavn}")
                 resetKortSoknadFields()
             } else {
+                logger.info("Søknadstype endret fra standard til kort for søknad til ${navEnhet.enhetsnavn}")
                 vedlegg.vedlegg.addAll(
                     listOf(
                         JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
