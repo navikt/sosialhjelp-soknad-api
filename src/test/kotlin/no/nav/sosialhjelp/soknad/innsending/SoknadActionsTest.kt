@@ -184,7 +184,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
-        every { digisosApiService.getTimestampSistSendtSoknad(behandlingsId) } returns Instant.now().toEpochMilli()
+        every { digisosApiService.getTimestampSistSendtSoknad(any()) } returns Instant.now().toEpochMilli()
 
         actions.sendSoknad(behandlingsId, token)
 
