@@ -9,13 +9,16 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.util.unit.DataSize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -32,6 +35,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
+    private val kortSoknadService: KortSoknadService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
     @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
@@ -45,9 +49,7 @@ class InformasjonRessurs(
     @GetMapping("/adressesok")
     fun adresseSok(
         @RequestParam("sokestreng") sokestreng: String?,
-    ): List<AdresseForslag> {
-        return adresseSokService.sokEtterAdresser(sokestreng)
-    }
+    ): List<AdresseForslag> = adresseSokService.sokEtterAdresser(sokestreng)
 
     @PostMapping("/actions/logg")
     fun loggFraKlient(
@@ -59,23 +61,27 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSessionInfo(): SessionResponse {
+    fun getSessionInfo(
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
+    ): SessionResponse {
         val eier = getUser()
         log.debug("Henter søknadsinfo for bruker")
 
         val userBlocked = personService.harAdressebeskyttelse(eier)
         val person = if (userBlocked) null else personService.hentPerson(eier)
-
+        val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
+        val qualifiesForKortSoknad = kommunenummer?.let { kortSoknadService.qualifies(token, it) } ?: null
         // Egentlig bør vel hentPerson kaste en exception dersom en bruker ikke finnes
         // for en gitt ID. I første omgang nøyer vi oss med å logge en feilmelding
         // men hentPerson bør nok bli noe mer deterministisk.
         if (person === null) log.error("Fant ikke person for bruker")
 
         val numRecentlySent =
-            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(
-                eier,
-                LocalDateTime.now().minusDays(FJORTEN_DAGER),
-            ).size
+            soknadMetadataRepository
+                .hentInnsendteSoknaderForBrukerEtterTidspunkt(
+                    eier,
+                    LocalDateTime.now().minusDays(FJORTEN_DAGER),
+                ).size
 
         return SessionResponse(
             userBlocked = personService.harAdressebeskyttelse(eier),
@@ -84,6 +90,7 @@ class InformasjonRessurs(
             open = pabegynteSoknaderService.hentPabegynteSoknaderForBruker(eier),
             numRecentlySent = numRecentlySent,
             maxUploadSizeBytes = maxUploadSize.toBytes(),
+            qualifiesForKortSoknad = qualifiesForKortSoknad,
         )
     }
 
@@ -101,5 +108,7 @@ class InformasjonRessurs(
         val numRecentlySent: Int,
         @Schema(description = "Max file upload size, in bytes")
         val maxUploadSizeBytes: Long,
+        @Schema(description = "User qualifies for kort søknad")
+        val qualifiesForKortSoknad: Boolean?,
     )
 }
