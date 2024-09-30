@@ -211,7 +211,7 @@ class DigisosApiService(
     }
 
     // Instant.now().toEpochMilli()
-    fun getTimestampSistSendtSoknad(token: String?): Long? {
+    fun getTimestampSistSendtSoknad(token: String): Long? {
         return digisosApiV2Client.getSoknader(token)
             .filter { it.originalSoknadNAV != null }
             .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
