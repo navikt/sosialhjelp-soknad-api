@@ -63,6 +63,7 @@ data class Utbetaling(
     val periodeTom: LocalDate? = null,
     val mottaker: Mottaker? = null,
     val organisasjon: Organisasjon? = null,
+    val tittel: String? = null,
 ) : OkonomiDetalj
 
 data class Organisasjon(

@@ -41,6 +41,7 @@ internal class SkattbarInntektRessursTest {
             soknadUnderArbeidRepository,
             skatteetatenSystemdata,
             textService,
+            v2ControllerAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach
