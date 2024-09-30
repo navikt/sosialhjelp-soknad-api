@@ -34,6 +34,8 @@ class InntektSkattetatenController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody samtykke: Boolean,
     ): SkattbarInntektDto {
+        skattService.updateSamtykkeSkatt(soknadId, samtykke)
+        return getSkattbarInntekt(soknadId)
     }
 }
 
@@ -53,25 +55,25 @@ private fun Inntekt.toInntektFraOrganisasjonDtos(): List<InntektFraOrganisasjonD
 }
 
 private fun List<Utbetaling>.toInntektFraOrganisasjonDto(): InntektFraOrganisasjonDto {
-    this
+    return this
         .groupBy { it.organisasjon }
         .map { (org, utbetalinger) ->
             OrganisasjonDto(
                 organisasjonsnavn = org?.navn,
                 orgnr = org?.orgnummer,
-                fom = utbetalinger.first().periodeFom.toString(),
-                tom = utbetalinger.first().periodeTom.toString(),
+                fom = utbetalinger.first().periodeFom?.toString(),
+                tom = utbetalinger.first().periodeTom?.toString(),
                 utbetalinger = utbetalinger.map { it.toUtbetalingDto() },
             )
         }
-        .let { InntektFraOrganisasjonDto(it) }
+        .let { dtos -> InntektFraOrganisasjonDto(dtos) }
 }
 
 private fun Utbetaling.toUtbetalingDto(): UtbetalingFraSkatteetatenDto {
     return UtbetalingFraSkatteetatenDto(
         brutto = brutto,
         forskuddstrekk = skattetrekk,
-        tittel = this.tittel,
+        tittel = tittel,
     )
 }
 
@@ -79,13 +81,13 @@ private fun Bekreftelse.toSamtykkeDto() = SamtykkeDto(verdi, samtykkeTidspunkt =
 
 // TODO Trenger vi / må vi ha denne data-strukturen? Tore
 data class SkattbarInntektDto(
-    val inntektSkatteetaten: List<InntektFraOrganisasjonDto> = emptyList(),
+    val inntektSkatteetaten: List<InntektFraOrganisasjonDto>,
     val inntektFraSkatteetatenFeilet: Boolean? = null,
     val samtykke: SamtykkeDto? = null,
 )
 
 data class InntektFraOrganisasjonDto(
-    val organisasjoner: List<OrganisasjonDto>?,
+    val organisasjoner: List<OrganisasjonDto>,
 )
 
 data class SamtykkeDto(
@@ -94,11 +96,11 @@ data class SamtykkeDto(
 )
 
 data class OrganisasjonDto(
-    val utbetalinger: List<UtbetalingFraSkatteetatenDto>?,
+    val utbetalinger: List<UtbetalingFraSkatteetatenDto>,
     val organisasjonsnavn: String?,
     val orgnr: String?,
-    val fom: String,
-    val tom: String,
+    val fom: String?,
+    val tom: String?,
 )
 
 data class UtbetalingFraSkatteetatenDto(

@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling as V2Utbetaling
 
 // TODO Dette gjøres on demand - så trenger det egentlig være en RegisterDataFetcher?
 @Component
@@ -25,6 +26,7 @@ class InntektSkatteetatenFetcher(
     private val organisasjonService: OrganisasjonService,
 ) : RegisterDataFetcher {
     override fun fetchAndSave(soknadId: UUID) {
+        // dobbeltsjekke at samtykke er satt
         okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
             ?.let { if (it.verdi) getAndSaveSkattbarInntekt(soknadId) else null }
@@ -61,11 +63,12 @@ class InntektSkatteetatenFetcher(
     }
 
     private fun Utbetaling.toUtbetaling() =
-        no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling(
+        V2Utbetaling(
             brutto = brutto,
             skattetrekk = skattetrekk,
             periodeFom = periodeFom,
             periodeTom = periodeTom,
+            tittel = tittel,
             organisasjon =
                 Organisasjon(
                     navn = organisasjonService.hentOrgNavn(orgnummer),

@@ -35,6 +35,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.StudentgradInput
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.UtdanningController
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkattetatenController
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BarneutgiftController
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BoutgiftController
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarBarneutgifterInput
@@ -71,6 +72,7 @@ class SoknadV2ControllerAdapter(
     private val barneutgiftController: BarneutgiftController,
     private val situasjonsendringController: SituasjonsendringController,
     private val bostotteController: BostotteController,
+    private val inntektSkattetatenController: InntektSkattetatenController,
 ) : V2ControllerAdapter {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -359,6 +361,18 @@ class SoknadV2ControllerAdapter(
                 }
             }
         }.onFailure { logger.warn("NyModell: Oppdatering av Bostotte feilet", it) }
+    }
+
+    override fun updateSamtykkeSkatteetaten(
+        behandlingsId: String,
+        samtykke: Boolean,
+    ) {
+        runWithNestedTransaction {
+            inntektSkattetatenController.updateSamtykke(
+                soknadId = UUID.fromString(behandlingsId),
+                samtykke = samtykke,
+            )
+        }.onFailure { logger.warn("NyModell: Oppdatering av samtykke Skatteetaten feilet", it) }
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {

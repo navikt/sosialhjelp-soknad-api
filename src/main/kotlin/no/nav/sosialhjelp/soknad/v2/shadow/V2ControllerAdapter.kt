@@ -81,4 +81,9 @@ interface V2ControllerAdapter {
         hasSamtykke: Boolean?,
         userToken: String? = null,
     )
+
+    fun updateSamtykkeSkatteetaten(
+        behandlingsId: String,
+        samtykke: Boolean,
+    )
 }
