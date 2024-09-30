@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.getForskuddstrekk
@@ -13,6 +14,7 @@ class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient,
 ) {
     fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
+        logger.info("Henter skattbar inntekt fra Skatteetaten")
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()
@@ -60,5 +62,9 @@ class SkattbarInntektService(
                     it,
                 )[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
             }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
