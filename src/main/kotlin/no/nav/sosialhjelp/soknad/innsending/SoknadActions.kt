@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -20,6 +21,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.Instant
+import java.time.LocalDateTime
 
 @RestController
 @ProtectedWithClaims(
@@ -82,7 +86,12 @@ class SoknadActions(
             SKAL_SENDE_SOKNADER_VIA_FDA -> {
                 log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
-                SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
+                SendTilUrlFrontend(
+                    id = digisosId,
+                    sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
+                    antallDokumenter = getAntallDokumenter(soknadUnderArbeid.jsonInternalSoknad),
+                    forrigeSoknadSendt = hentForrigeSoknadSendt(token),
+                )
             }
         }
     }
@@ -96,6 +105,17 @@ class SoknadActions(
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+    }
+
+    private fun hentForrigeSoknadSendt(token: String?): LocalDateTime? {
+        return digisosApiService.getTimestampSistSendtSoknad(token)
+            ?.let {
+                TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(it))
+            }
+    }
+
+    private fun getAntallDokumenter(jsonInternalSoknad: JsonInternalSoknad?): Int {
+        return jsonInternalSoknad?.vedlegg?.vedlegg?.flatMap { it.filer }?.size ?: 0
     }
 
     companion object {
