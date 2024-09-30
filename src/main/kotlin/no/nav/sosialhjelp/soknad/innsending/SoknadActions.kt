@@ -85,12 +85,13 @@ class SoknadActions(
                 )
             SKAL_SENDE_SOKNADER_VIA_FDA -> {
                 log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
+                val forrigeSoknadSendt = hentForrigeSoknadSendt(token)
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
                 SendTilUrlFrontend(
                     id = digisosId,
                     sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
                     antallDokumenter = getAntallDokumenter(soknadUnderArbeid.jsonInternalSoknad),
-                    forrigeSoknadSendt = hentForrigeSoknadSendt(token),
+                    forrigeSoknadSendt = forrigeSoknadSendt,
                 )
             }
         }
@@ -108,10 +109,15 @@ class SoknadActions(
     }
 
     private fun hentForrigeSoknadSendt(token: String?): LocalDateTime? {
-        return digisosApiService.getTimestampSistSendtSoknad(token)
-            ?.let {
-                TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(it))
-            }
+        runCatching {
+            return digisosApiService.getTimestampSistSendtSoknad(token)
+                ?.let {
+                    TimestampConverter.convertInstantToLocalDateTime(Instant.ofEpochMilli(it))
+                }
+        }
+            .onFailure { log.error("Kunne ikke hente tidspunkt for forrige søknad sendt.", it) }
+
+        return null
     }
 
     private fun getAntallDokumenter(jsonInternalSoknad: JsonInternalSoknad?): Int {
