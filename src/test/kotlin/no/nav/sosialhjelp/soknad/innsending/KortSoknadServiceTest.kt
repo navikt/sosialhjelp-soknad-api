@@ -68,4 +68,16 @@ class KortSoknadServiceTest {
 
         assertThat(jsonInternalSoknad.soknad.data.begrunnelse.hvaSokesOm).isEqualTo("")
     }
+
+    @Test
+    fun `Hva sokes om er vanlig tekst`() {
+        val tekstStreng = "jeg soker noe"
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("12345678901", true)
+                .apply { soknad.data.begrunnelse.hvaSokesOm = tekstStreng }
+
+        jsonInternalSoknad.humanifyHvaSokesOm()
+
+        assertThat(jsonInternalSoknad.soknad.data.begrunnelse.hvaSokesOm).isEqualTo(tekstStreng)
+    }
 }
