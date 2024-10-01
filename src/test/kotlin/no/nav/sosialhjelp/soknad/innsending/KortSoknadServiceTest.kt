@@ -3,7 +3,10 @@ package no.nav.sosialhjelp.soknad.innsending
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.humanifyHvaSokesOm
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -53,5 +56,16 @@ class KortSoknadServiceTest {
         val result = kortSoknadService.qualifies("12345678901", "token")
 
         assertFalse(result)
+    }
+
+    @Test
+    fun `Humanify skal returnere tom streng hvis ingen kategorier`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("12345678901", true)
+                .apply { soknad.data.begrunnelse.hvaSokesOm = "[]" }
+
+        jsonInternalSoknad.humanifyHvaSokesOm()
+
+        assertThat(jsonInternalSoknad.soknad.data.begrunnelse.hvaSokesOm).isEqualTo("")
     }
 }

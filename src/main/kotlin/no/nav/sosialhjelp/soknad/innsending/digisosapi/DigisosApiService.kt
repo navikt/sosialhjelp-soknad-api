@@ -55,23 +55,6 @@ class DigisosApiService(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    private fun JsonInternalSoknad.humanifyHvaSokesOm() {
-        val humanifiedText =
-            soknad
-                ?.data
-                ?.begrunnelse
-                ?.hvaSokesOm
-                ?.let { hvaSokesOm ->
-                    BegrunnelseUtils.jsonToHvaSokesOm(hvaSokesOm)
-                }
-        if (humanifiedText != null) {
-            soknad
-                ?.data
-                ?.begrunnelse
-                ?.hvaSokesOm = humanifiedText
-        }
-    }
-
     fun sendSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         token: String?,
@@ -347,4 +330,19 @@ class DigisosApiService(
     companion object {
         private val log = LoggerFactory.getLogger(DigisosApiService::class.java)
     }
+}
+
+internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
+    val humanifiedText =
+        soknad
+            ?.data
+            ?.begrunnelse
+            ?.hvaSokesOm
+            ?.let { hvaSokesOm ->
+                BegrunnelseUtils.jsonToHvaSokesOm(hvaSokesOm)
+            }
+    soknad
+        ?.data
+        ?.begrunnelse
+        ?.hvaSokesOm = humanifiedText ?: ""
 }
