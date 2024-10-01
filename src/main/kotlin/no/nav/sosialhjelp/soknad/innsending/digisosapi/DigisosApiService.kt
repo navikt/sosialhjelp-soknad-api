@@ -333,16 +333,26 @@ class DigisosApiService(
 }
 
 internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
-    val humanifiedText =
+    val hvaSokesOm =
         soknad
             ?.data
             ?.begrunnelse
             ?.hvaSokesOm
-            ?.let { hvaSokesOm ->
-                BegrunnelseUtils.jsonToHvaSokesOm(hvaSokesOm)
-            }
+
+    val humanifiedText = hvaSokesOm?.let { BegrunnelseUtils.jsonToHvaSokesOm(it) }
+
+    val result =
+        when {
+            // Hvis ingen kategorier er valgt
+            hvaSokesOm == "[]" -> ""
+            // Hvis det er "vanlig" tekst i feltet
+            humanifiedText == null -> hvaSokesOm
+            // Hvis det er json-tekst
+            else -> humanifiedText
+        }
+
     soknad
         ?.data
         ?.begrunnelse
-        ?.hvaSokesOm = humanifiedText ?: ""
+        ?.hvaSokesOm = result
 }
