@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -64,6 +65,13 @@ class InformasjonRessurs(
     fun getSessionInfo(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SessionResponse {
+        SubjectHandlerUtils.getToken().let {
+            log.info(
+                "Token fra Header: $it - " +
+                    "Token fra SubjectHandlerUtils: ${SubjectHandlerUtils.getToken()}",
+            )
+        }
+
         val eier = getUser()
         log.debug("Henter søknadsinfo for bruker")
 
