@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.eier.service
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -11,7 +13,10 @@ import java.util.UUID
 // TODO Denne kjører med Prop.NESTED fordi den ikke må ødelegge for annen skriving
 @Transactional(propagation = Propagation.NESTED)
 @Service
-class EierRegisterService(private val eierRepository: EierRepository) {
+class EierRegisterService(
+    private val eierRepository: EierRepository,
+    private val dokumentasjonService: DokumentasjonService,
+) {
     fun updateFromRegister(eier: Eier) {
         // oppdatere eier hvis finnes
         eierRepository
@@ -26,6 +31,8 @@ class EierRegisterService(private val eierRepository: EierRepository) {
             ?.also { eierRepository.save(it) }
             // lagre hvis ikke finnes
             ?: eierRepository.save(eier)
+
+        resolveOppholdstillatelse(eier)
     }
 
     fun getKontonummer(soknadId: UUID) = eierRepository.findByIdOrNull(soknadId)?.kontonummer
@@ -43,5 +50,14 @@ class EierRegisterService(private val eierRepository: EierRepository) {
                 }
             }
             ?.also { eier -> eierRepository.save(eier) }
+    }
+
+    private fun resolveOppholdstillatelse(eier: Eier) {
+        if (eier.nordiskBorger == null || eier.nordiskBorger == false) {
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = eier.soknadId,
+                opplysningType = AnnenDokumentasjonType.OPPHOLDSTILLATELSE,
+            )
+        }
     }
 }

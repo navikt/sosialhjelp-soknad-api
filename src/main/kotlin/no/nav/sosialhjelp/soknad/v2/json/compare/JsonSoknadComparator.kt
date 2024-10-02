@@ -37,33 +37,38 @@ class JsonSoknadComparator(
                     "- \n\nShadow: ${shadow.asJson()}",
             )
         } else {
-            if (original.vedlegg.size != shadow.vedlegg.size) {
-                logger.warn(
-                    "Antall vedlegg er ikke likt: ${original.vedlegg.asJson()} " +
-                        "- ${shadow.vedlegg.asJson()}",
-                )
-            }
-
-            shadow.vedlegg.forEach { vedlegg ->
-                original.vedlegg.find {
-                    vedlegg.type == it.type &&
-                        vedlegg.tilleggsinfo == it.tilleggsinfo &&
-                        vedlegg.status == it.status &&
-                        vedlegg.hendelseType == it.hendelseType
-                }
-                    ?.also {
-                        if (vedlegg.filer.size != it.filer.size) {
+            original.vedlegg.forEach { orgVedlegg ->
+                shadow.vedlegg
+                    .find { orgVedlegg.type == it.type && orgVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    ?.let {
+                        if (orgVedlegg.filer.size != it.filer.size) {
                             logger.warn(
-                                "Antall filer er ikke like: Original: \n${original.vedlegg.asJson()} - " +
-                                    "\nshadow: \n${shadow.vedlegg.asJson()}",
+                                "Antall filer er ikke likt: " +
+                                    "${orgVedlegg.asJson()} - \n\nshadow: ${it.asJson()}",
                             )
                         }
                     }
                     ?: logger.warn(
-                        "Fant ikke vedlegg i original-json: ${vedlegg.asJson()} - " +
-                            "\norginal: ${original.vedlegg.asJson()}",
+                        "Fant ikke vedlegg i shadow-json: ${orgVedlegg.asJson()} " +
+                            "- \n\nshadow: ${shadow.vedlegg.asJson()}",
                     )
             }
+
+            shadow.vedlegg.forEach { shadowVedlegg ->
+                original.vedlegg
+                    .find { shadowVedlegg.type == it.type && shadowVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    ?: logger.warn(
+                        "Fant ikke vedlegg i original-json: ${shadowVedlegg.asJson()} " +
+                            "- \n\norginal: ${original.vedlegg.asJson()}",
+                    )
+            }
+
+//            if (original.vedlegg.size != shadow.vedlegg.size) {
+//                logger.warn(
+//                    "Antall vedlegg er ikke likt: ${original.vedlegg.asJson()} " +
+//                        "- ${shadow.vedlegg.asJson()}",
+//                )
+//            }
         }
     }
 
