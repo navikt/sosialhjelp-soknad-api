@@ -210,7 +210,7 @@ class OkonomiService(
 
     /**
      * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
-     * Sjekker om elementet finnes, lager en kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
+     * Sjekker om elementet finnes, lager en     kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
      */
     private fun <E : OkonomiElement> removeElementByTypeAndSave(
         sourceSet: Set<E>,

@@ -100,7 +100,7 @@ class BostotteRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // nyModell
-        v2ControllerAdapter.updateBostotte(behandlingsId, bostotteFrontend.bekreftelse, bostotteFrontend.samtykke)
+        v2ControllerAdapter.updateBostotteBekreftelse(behandlingsId, bostotteFrontend.bekreftelse)
     }
 
     @PostMapping("/samtykke")
@@ -137,7 +137,11 @@ class BostotteRessurs(
         }
 
         // nyModell
-        v2ControllerAdapter.updateBostotte(behandlingsId, hasBostotte = null, samtykke, token)
+        v2ControllerAdapter.updateBostotteSamtykke(
+            soknadId = behandlingsId,
+            hasSamtykke = samtykke,
+            userToken = SubjectHandlerUtils.getToken(),
+        )
     }
 
     private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
