@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sosialhjelp.soknad.v2.createBostotteSaker
+import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.BostotteSakToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -17,7 +18,8 @@ class BostotteSakToJsonMapperTest : AbstractOkonomiMapperTest() {
 
         with(jsonOkonomi.opplysninger) {
             assertThat(bostotte).isNotNull
-            assertThat(bostotte.saker).hasSize(2).allMatch { it.type == InntektType.UTBETALING_HUSBANKEN.name }
+            assertThat(bostotte.saker).hasSize(2)
+                .allMatch { it.type == InntektType.UTBETALING_HUSBANKEN.toJsonInntektType() }
 
             bostotte.saker.find { it.status == BostotteStatus.VEDTATT.name }!!
                 .let { jsonSak ->
@@ -33,4 +35,8 @@ class BostotteSakToJsonMapperTest : AbstractOkonomiMapperTest() {
                 }
         }
     }
+}
+
+private fun InntektType.toJsonInntektType(): String {
+    return OpplysningTypeMapper.getJsonVerdier(this).navn?.verdi ?: error("Finner ikke InntektType")
 }

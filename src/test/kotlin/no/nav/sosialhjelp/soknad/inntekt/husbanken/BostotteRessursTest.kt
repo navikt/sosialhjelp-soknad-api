@@ -268,6 +268,8 @@ internal class BostotteRessursTest {
     @Test
     fun bostotte_skalIkkeForandreSamtykke() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
+
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
