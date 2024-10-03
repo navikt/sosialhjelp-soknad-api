@@ -45,7 +45,7 @@ class OkonomiToJsonHandler(
             json: JsonOkonomi,
         ) {
             okonomi.setupMappers(json).forEach { mapper -> mapper.doMapping() }
-            okonomi.handleBostotteSpecialCase(json)
+//            okonomi.handleBostotteSpecialCase(json)
         }
     }
 }
@@ -65,15 +65,16 @@ private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonM
         }
 }
 
+// TODO Løses via vanlig business-logikk i BostotteService
 // Det skal være innslag av Utbetaling Husbanken hvis bostotte == true && samtykke == false
-private fun Okonomi.handleBostotteSpecialCase(json: JsonOkonomi) {
-    val bostotte = bekreftelser.find { it.type == BekreftelseType.BOSTOTTE } ?: return
-    if (bostotte.verdi) {
-        bekreftelser
-            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
-            ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.tidspunkt) }
-    }
-}
+// private fun Okonomi.handleBostotteSpecialCase(json: JsonOkonomi) {
+//    val bostotte = bekreftelser.find { it.type == BekreftelseType.BOSTOTTE } ?: return
+//    if (bostotte.verdi) {
+//        bekreftelser
+//            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
+//            ?.also { hasSamtykke -> if (!hasSamtykke) json.addUtbetalingHusbankenKildeBruker(bostotte.tidspunkt) }
+//    }
+// }
 
 private fun JsonOkonomi.addUtbetalingHusbankenKildeBruker(tidspunkt: LocalDateTime) {
     opplysninger.utbetaling.add(

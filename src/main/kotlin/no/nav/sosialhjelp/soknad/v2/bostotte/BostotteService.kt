@@ -25,7 +25,7 @@ interface BostotteService {
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
-        userToken: String,
+        userToken: String?,
     )
 }
 
@@ -60,7 +60,7 @@ class BostotteServiceImpl(
     override fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
-        userToken: String,
+        userToken: String?,
     ) {
         validateHasBostotte(soknadId)
 
