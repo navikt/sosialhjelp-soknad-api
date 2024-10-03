@@ -227,7 +227,7 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
 
         if (original.size != shadow.size) {
             logger.warn(
-                "Ikke likt antall utbetalinger i opplysninger. Original: \n${original.asJson()} " +
+                "Ikke likt antall bekreftelser i opplysninger. Original: \n${original.asJson()} " +
                     "** Shadow: \n${shadow.asJson()}",
             )
         } else {
