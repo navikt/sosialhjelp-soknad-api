@@ -338,29 +338,29 @@ class SoknadV2ControllerAdapter(
         }.onFailure { logger.warn("Ny modell: Oppdatering av situasjonsendring feilet.", it) }
     }
 
-    override fun updateBostotte(
+    override fun updateBostotteBekreftelse(
         soknadId: String,
         hasBostotte: Boolean?,
-        hasSamtykke: Boolean?,
+    ) {
+        hasBostotte?.also {
+            runWithNestedTransaction {
+                bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+            }.onFailure { logger.warn("NyModell: Oppdatering av Bostotte feilet", it) }
+        }
+    }
+
+    override fun updateBostotteSamtykke(
+        soknadId: String,
+        hasSamtykke: Boolean,
         userToken: String?,
     ) {
         runWithNestedTransaction {
-            hasBostotte?.also { bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte)) }
-
-            hasSamtykke?.also {
-                val hasSavedBostotte =
-                    hasBostotte
-                        ?: bostotteController.getBostotte(UUID.fromString(soknadId)).hasBostotte
-
-                if (hasSavedBostotte != null && hasSavedBostotte) {
-                    bostotteController.updateHasSamtykke(
-                        soknadId = UUID.fromString(soknadId),
-                        input = SamtykkeInput(hasSamtykke),
-                        token = userToken,
-                    )
-                }
-            }
-        }.onFailure { logger.warn("NyModell: Oppdatering av Bostotte feilet", it) }
+            bostotteController.updateHasSamtykke(
+                soknadId = UUID.fromString(soknadId),
+                input = SamtykkeInput(hasSamtykke),
+                token = userToken,
+            )
+        }.onFailure { logger.warn("NyModell: Oppdatering av samtykke Bostotte feilet", it) }
     }
 
     override fun updateSamtykkeSkatteetaten(

@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
@@ -24,20 +25,21 @@ class BostotteHusbankenFetcher(
     private val husbankenClient: HusbankenClient,
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
+    private val dokumentasjonService: DokumentasjonService,
 ) {
     fun fetchAndSave(
         soknadId: UUID,
         token: String,
     ) {
-        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
-        okonomiService.removeBostotteSaker(soknadId)
+        if (hasBostotteAndSamtykke(soknadId)) {
+            okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+            okonomiService.removeBostotteSaker(soknadId)
 
-        okonomiService.getBekreftelser(soknadId)
-            .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }
-            ?.let { if (it.verdi) getBostotte(soknadId, token) }
+            getBostotteSaker(soknadId, token)
+        }
     }
 
-    private fun getBostotte(
+    private fun getBostotteSaker(
         soknadId: UUID,
         token: String,
     ) {
@@ -49,7 +51,7 @@ class BostotteHusbankenFetcher(
                 saveToSaker(soknadId, it)
                 saveToUtbetalinger(soknadId, it)
             }
-            ?: integrasjonStatusService.setStotteHusbankenStatus(soknadId, feilet = true)
+            ?: handleHusbankenFetchFailed(soknadId)
     }
 
     private fun saveToSaker(
@@ -82,6 +84,23 @@ class BostotteHusbankenFetcher(
                     ),
             )
         }
+    }
+
+    private fun handleHusbankenFetchFailed(soknadId: UUID) {
+        integrasjonStatusService.setStotteHusbankenStatus(soknadId, feilet = true)
+        okonomiService.addElementToOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+        dokumentasjonService.opprettDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
+    }
+
+    private fun hasBostotteAndSamtykke(soknadId: UUID): Boolean {
+        val bostotte =
+            okonomiService.getBekreftelser(soknadId)
+                .find { it.type == BekreftelseType.BOSTOTTE }?.verdi == true
+        val samtykke =
+            okonomiService.getBekreftelser(soknadId)
+                .find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi == true
+
+        return bostotte && samtykke
     }
 
     // Dette er fordi søker kan ha fått avslag for en måned grunnet for høy inntekt,

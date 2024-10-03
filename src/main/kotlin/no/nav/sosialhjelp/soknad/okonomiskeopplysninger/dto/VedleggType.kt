@@ -32,7 +32,7 @@ enum class VedleggType(
     FakturaTannbehandling("faktura|tannbehandling", UtgiftType.UTGIFTER_BARN_TANNREGULERING),
     HusbankenVedtak("husbanken|vedtak", InntektType.UTBETALING_HUSBANKEN),
     HusleiekontraktHusleiekontrakt("husleiekontrakt|husleiekontrakt", UtgiftType.UTGIFTER_HUSLEIE),
-    HusleiekontraktKommunal("husleiekontrakt|kommunal", UtgiftType.UTGIFTER_HUSLEIE),
+    HusleiekontraktKommunal("husleiekontrakt|kommunal", UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL),
     KontooversiktAksjer("kontooversikt|aksjer", FormueType.FORMUE_VERDIPAPIRER),
     KontooversiktAnnet("kontooversikt|annet", FormueType.FORMUE_ANNET),
     KontooversiktBrukskonto("kontooversikt|brukskonto", FormueType.FORMUE_BRUKSKONTO),

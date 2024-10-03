@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE_SAMTYKKE
@@ -33,6 +34,7 @@ class BostotteServiceImpl(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val husbankenFetcher: BostotteHusbankenFetcher,
+    private val dokumentasjonService: DokumentasjonService,
 ) : BostotteService {
     override fun getBostotteInfo(soknadId: UUID): BostotteInfo {
         return getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
@@ -52,10 +54,7 @@ class BostotteServiceImpl(
         hasBostotte: Boolean,
     ) {
         okonomiService.updateBekreftelse(soknadId, BOSTOTTE, hasBostotte)
-        if (!hasBostotte) {
-            okonomiService.deleteBekreftelse(soknadId, BOSTOTTE_SAMTYKKE)
-            updateBostotte(soknadId, false, "")
-        }
+        syncInntektOgDokumentasjonsKrav(soknadId)
     }
 
     override fun updateSamtykke(
@@ -63,42 +62,55 @@ class BostotteServiceImpl(
         hasSamtykke: Boolean,
         userToken: String,
     ) {
+        validateHasBostotte(soknadId)
+
         getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
-            .also { (bostotte, _) ->
-                if (bostotte == null || !bostotte.verdi) {
-                    throw UpdateBostotteException(
-                        message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
-                        soknadId = soknadId,
-                    )
-                }
-            }
-            .let { (bostotte, samtykke) -> samtykkeNeedsUpdate(bostotte?.verdi, samtykke?.verdi, hasSamtykke) }
+            .let { (_, samtykke) -> samtykke?.verdi != hasSamtykke }
             .also { needsUpdate ->
                 if (needsUpdate) {
                     okonomiService.updateBekreftelse(soknadId, BOSTOTTE_SAMTYKKE, hasSamtykke)
-                    updateBostotte(soknadId, hasSamtykke, userToken)
+                    syncInntektOgDokumentasjonsKrav(soknadId)
+                    if (hasSamtykke) husbankenFetcher.fetchAndSave(soknadId, userToken)
                 }
             }
     }
 
-    private fun samtykkeNeedsUpdate(
-        hasBostotte: Boolean?,
-        savedHasSamtykke: Boolean?,
-        hasSamtykke: Boolean,
-    ): Boolean {
-        return hasBostotte?.let { if (it) hasSamtykke != savedHasSamtykke else false } ?: false
+    private fun syncInntektOgDokumentasjonsKrav(soknadId: UUID) {
+        val (bostotte, samtykke) = getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
+
+        when {
+            bostotte?.verdi != true -> cleanBostotte(soknadId)
+            samtykke?.verdi == true -> {
+                dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
+                okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+            }
+            // utledet -> bostotte er true, og samtykke null eller false
+            else -> {
+                // fjern eventuelt tidligere lagrede inntekter og opprett ny tom
+                okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+                okonomiService.addElementToOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+
+                okonomiService.removeBostotteSaker(soknadId)
+                dokumentasjonService.opprettDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
+            }
+        }
     }
 
-    private fun updateBostotte(
-        soknadId: UUID,
-        hasSamtykke: Boolean,
-        userToken: String,
-    ) {
-        if (hasSamtykke) {
-            husbankenFetcher.fetchAndSave(soknadId, userToken)
+    private fun cleanBostotte(soknadId: UUID) {
+        okonomiService.deleteBekreftelse(soknadId, BOSTOTTE_SAMTYKKE)
+        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+        okonomiService.removeBostotteSaker(soknadId)
+        dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
+    }
+
+    private fun validateHasBostotte(soknadId: UUID) {
+        if (okonomiService.getBekreftelser(soknadId).find { it.type == BOSTOTTE }?.verdi == true) {
+            return
         } else {
-            okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
-            okonomiService.removeBostotteSaker(soknadId)
+            throw UpdateBostotteException(
+                message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
+                soknadId = soknadId,
+            )
         }
     }
 }

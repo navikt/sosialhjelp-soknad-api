@@ -4,6 +4,8 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
@@ -24,11 +26,14 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     @Autowired
     private lateinit var samtykkeService: SamtykkeService
 
+    @Autowired
+    private lateinit var okonomiService: OkonomiService
+
     @Test
     fun `Hente bostotte-saker skal lagres i db`() {
         createAnswerForHusbankenClient()
 
-        setSamtykke(true)
+        setBostotteOgSamtykke(true)
         fetcher.fetchAndSave(soknad.id, "token")
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
@@ -46,15 +51,15 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
         createAnswerForHusbankenClient()
 
         fetcher.fetchAndSave(soknad.id, "token")
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
 
-        setSamtykke(false)
+        setBostotteOgSamtykke(false)
         fetcher.fetchAndSave(soknad.id, "token")
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
 
-        setSamtykke(true)
+        setBostotteOgSamtykke(true)
         fetcher.fetchAndSave(soknad.id, "token")
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).hasSize(2)
@@ -64,7 +69,7 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Tomme lister lagrer ikke data`() {
         every { husbankenClient.hentBostotte(any(), any(), any()) } returns BostotteDto(emptyList(), emptyList())
 
-        setSamtykke(true)
+        setBostotteOgSamtykke(true)
         fetcher.fetchAndSave(soknad.id, "token")
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
@@ -75,13 +80,14 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Client returnerer null setter integrasjonstatus feilet til true`() {
         every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
 
-        setSamtykke(true)
+        setBostotteOgSamtykke(true)
         fetcher.fetchAndSave(soknad.id, "token")
 
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isTrue()
     }
 
-    private fun setSamtykke(gitt: Boolean) {
+    private fun setBostotteOgSamtykke(gitt: Boolean) {
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, true)
         samtykkeService.updateSamtykkeBostotte(soknad.id, gitt)
     }
 
