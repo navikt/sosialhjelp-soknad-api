@@ -62,7 +62,7 @@ class BostotteServiceImpl(
         hasSamtykke: Boolean,
         userToken: String?,
     ) {
-        validateHasBostotte(soknadId)
+        validateHasBostotte(soknadId, hasSamtykke)
 
         getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
             .let { (_, samtykke) -> samtykke?.verdi != hasSamtykke }
@@ -103,14 +103,19 @@ class BostotteServiceImpl(
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
     }
 
-    private fun validateHasBostotte(soknadId: UUID) {
-        if (okonomiService.getBekreftelser(soknadId).find { it.type == BOSTOTTE }?.verdi == true) {
-            return
-        } else {
-            throw UpdateBostotteException(
-                message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
-                soknadId = soknadId,
-            )
+    private fun validateHasBostotte(
+        soknadId: UUID,
+        hasSamtykke: Boolean,
+    ) {
+        if (hasSamtykke) {
+            if (okonomiService.getBekreftelser(soknadId).find { it.type == BOSTOTTE }?.verdi == true) {
+                return
+            } else {
+                throw UpdateBostotteException(
+                    message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
+                    soknadId = soknadId,
+                )
+            }
         }
     }
 }
