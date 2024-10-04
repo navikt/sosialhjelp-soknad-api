@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
@@ -24,6 +25,7 @@ class InntektSkatteetatenFetcher(
     private val skattbarInntektService: SkattbarInntektService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val organisasjonService: OrganisasjonService,
+    private val dokumentasjonService: DokumentasjonService,
 ) : RegisterDataFetcher {
     override fun fetchAndSave(soknadId: UUID) {
         // dobbeltsjekke at samtykke er satt
@@ -39,6 +41,8 @@ class InntektSkatteetatenFetcher(
 
             if (utbetalinger.isNotEmpty()) {
                 saveUtbetalinger(soknadId, utbetalinger)
+                okonomiService.removeElementFromOkonomi(soknadId, InntektType.JOBB)
+                dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.JOBB)
             }
         }
             ?: setIntegrasjonStatus(soknadId, feilet = true)

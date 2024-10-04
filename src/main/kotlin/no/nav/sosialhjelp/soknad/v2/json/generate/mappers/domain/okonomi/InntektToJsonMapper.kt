@@ -136,7 +136,15 @@ private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbeta
         .withOrganisasjon(organisasjon?.toJsonOrganisasjon())
 }
 
-private fun Organisasjon.toJsonOrganisasjon() = JsonOrganisasjon().withNavn(navn).withOrganisasjonsnummer(orgnummer)
+private fun Organisasjon.toJsonOrganisasjon(): JsonOrganisasjon? {
+    // TODO Hvordan skal vi håndtere orgnummer? ( Må fikses i mock hvis det skal validere)
+    orgnummer?.let {
+        if (it.matches(Regex("\\d{9}"))) {
+            return JsonOrganisasjon().withNavn(navn).withOrganisasjonsnummer(orgnummer)
+        }
+    }
+    return null
+}
 
 private fun Mottaker.toJsonMottaker(): JsonOkonomiOpplysningUtbetaling.Mottaker? {
     return JsonOkonomiOpplysningUtbetaling.Mottaker.entries.find { it.name == name }
@@ -164,7 +172,7 @@ private fun Inntekt.toTittel(): String {
         // TODO ...men allikevel ikke hvis SAMTYKKE også er true.
         InntektType.UTBETALING_HUSBANKEN -> "Statlig bostøtte"
         // TODO UTBETALING_SKATTEETATEN bevarer tittel innhentingen
-        InntektType.UTBETALING_SKATTEETATEN -> beskrivelse ?: ""
+        InntektType.UTBETALING_SKATTEETATEN -> if (!beskrivelse.isNullOrBlank()) beskrivelse else "Lønnsinntekt"
         // TODO UTBETALING_NAVYTELSE bevarer tittel innhentingen
         InntektType.UTBETALING_NAVYTELSE -> beskrivelse ?: ""
     }
