@@ -62,13 +62,6 @@ class JsonSoknadComparator(
                             "- \n\norginal: ${original.vedlegg.asJson()}",
                     )
             }
-
-//            if (original.vedlegg.size != shadow.vedlegg.size) {
-//                logger.warn(
-//                    "Antall vedlegg er ikke likt: ${original.vedlegg.asJson()} " +
-//                        "- ${shadow.vedlegg.asJson()}",
-//                )
-//            }
         }
     }
 
