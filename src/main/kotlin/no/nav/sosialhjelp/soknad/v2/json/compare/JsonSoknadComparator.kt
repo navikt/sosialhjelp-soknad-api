@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -63,13 +62,6 @@ class JsonSoknadComparator(
                             "- \n\norginal: ${original.vedlegg.asJson()}",
                     )
             }
-
-//            if (original.vedlegg.size != shadow.vedlegg.size) {
-//                logger.warn(
-//                    "Antall vedlegg er ikke likt: ${original.vedlegg.asJson()} " +
-//                        "- ${shadow.vedlegg.asJson()}",
-//                )
-//            }
         }
     }
 
@@ -278,14 +270,11 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { utgift ->
-                // TODO Hopper over denne for sammenlikning i loggen sin skyld
-                if (utgift.type != SoknadJsonTyper.UTGIFTER_ANNET_BO) {
-                    original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.belop == it.belop }
-                        ?: logger.warn(
-                            "Fant ikke utgift \n${utgift.asJson()} i" +
-                                " \norginal: \n${original.asJson()}",
-                        )
-                }
+                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.belop == it.belop }
+                    ?: logger.warn(
+                        "Fant ikke utgift \n${utgift.asJson()} i" +
+                            " \norginal: \n${original.asJson()}",
+                    )
             }
         }
     }
