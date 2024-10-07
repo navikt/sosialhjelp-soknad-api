@@ -149,6 +149,8 @@ class InntektService(
             inntektSkatteetatenFetcher.fetchAndSave(soknadId)
         } else {
             okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
+            // opprett inntekt og dokumentasjon for arbeidsinntekt
+            okonomiService.addElementToOkonomi(soknadId, InntektType.JOBB)
         }
     }
 

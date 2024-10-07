@@ -159,7 +159,8 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
         assertThat(okonomiService.getBekreftelser(soknad.id).toList())
             .hasSize(1).allMatch { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
 
-        okonomiService.getInntekter(soknad.id).let { assertThat(it).isEmpty() }
+        assertThat(okonomiService.getInntekter(soknad.id).toList())
+            .hasSize(1).allMatch { it.type == InntektType.JOBB }
     }
 
     @Test
