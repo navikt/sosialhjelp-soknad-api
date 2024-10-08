@@ -37,8 +37,6 @@ internal class InformasjonRessursTest {
                 bostedsadresse = null,
                 oppholdsadresse = null,
             )
-
-        val TOKEN = "This is where the HTTP token goes, used for the calls to qualifiesForKort."
     }
 
     private val ressurs =
@@ -76,31 +74,31 @@ internal class InformasjonRessursTest {
     @Test
     fun `viser adressebeskyttelse`() {
         every { personService.harAdressebeskyttelse(any()) } returns false
-        assertEquals(false, ressurs.getSessionInfo(TOKEN).userBlocked)
+        assertEquals(false, ressurs.getSessionInfo().userBlocked)
         every { personService.harAdressebeskyttelse(any()) } returns true
-        assertEquals(true, ressurs.getSessionInfo(TOKEN).userBlocked)
+        assertEquals(true, ressurs.getSessionInfo().userBlocked)
     }
 
     @Test
     fun `gjengir fornavn riktig`() {
-        assertEquals(PERSON.fornavn, ressurs.getSessionInfo(TOKEN).fornavn)
+        assertEquals(PERSON.fornavn, ressurs.getSessionInfo().fornavn)
     }
 
     @Test
     fun `gjengir antall dager før sletting`() {
-        assertEquals(14, ressurs.getSessionInfo(TOKEN).daysBeforeDeletion)
+        assertEquals(14, ressurs.getSessionInfo().daysBeforeDeletion)
     }
 
     @Test
     fun `gjengir åpne søknader når tom liste`() {
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
-        assertEquals(0, ressurs.getSessionInfo(TOKEN).open.size)
+        assertEquals(0, ressurs.getSessionInfo().open.size)
     }
 
     @Test
     fun `gjengir åpne søknader`() {
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns listOf(mockk(), mockk())
-        assertEquals(2, ressurs.getSessionInfo(TOKEN).open.size)
+        assertEquals(2, ressurs.getSessionInfo().open.size)
     }
 
     @Test
@@ -109,7 +107,7 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns emptyList()
 
-        assertEquals(0, ressurs.getSessionInfo(TOKEN).numRecentlySent)
+        assertEquals(0, ressurs.getSessionInfo().numRecentlySent)
     }
 
     @Test
@@ -118,6 +116,6 @@ internal class InformasjonRessursTest {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns listOf(mockk(), mockk())
 
-        assertEquals(2, ressurs.getSessionInfo(TOKEN).numRecentlySent)
+        assertEquals(2, ressurs.getSessionInfo().numRecentlySent)
     }
 }

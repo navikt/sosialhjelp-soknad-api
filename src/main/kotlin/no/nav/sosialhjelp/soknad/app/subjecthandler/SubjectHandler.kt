@@ -13,6 +13,8 @@ interface SubjectHandler {
     fun getUserIdFromToken(): String
 
     fun getToken(): String
+
+    fun getTokenOrNull(): String?
 }
 
 @Component
@@ -21,7 +23,8 @@ class SubjectHandlerImpl(
 ) : SubjectHandler {
     private val tokenValidationContext: TokenValidationContext
         get() {
-            return tokenValidationContextHolder.getTokenValidationContext()
+            return tokenValidationContextHolder
+                .getTokenValidationContext()
                 .also {
                     if (!it.hasValidToken()) {
                         log.error(
@@ -44,15 +47,14 @@ class SubjectHandlerImpl(
         return pid ?: sub ?: throw RuntimeException("Could not find any userId for token in pid or sub claim")
     }
 
-    override fun getToken(): String {
-        return tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
-            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
-            ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
-    }
+    override fun getToken(): String =
+        getTokenOrNull() ?: throw IllegalStateException("Finnes ingen tokens (TOKENX/SELVBETJENING")
 
-    override fun getConsumerId(): String {
-        return "srvsoknadsosialhje"
-    }
+    override fun getTokenOrNull(): String? =
+        tokenValidationContext.getJwtToken(TOKENX)?.encodedToken
+            ?: tokenValidationContext.getJwtToken(SELVBETJENING)?.encodedToken
+
+    override fun getConsumerId(): String = "srvsoknadsosialhje"
 
     companion object {
         private const val CLAIM_PID = "pid"
@@ -69,17 +71,13 @@ class StaticSubjectHandlerImpl : SubjectHandler {
     private var user = DEFAULT_USER
     private var token = DEFAULT_TOKEN
 
-    override fun getUserIdFromToken(): String {
-        return this.user
-    }
+    override fun getUserIdFromToken(): String = this.user
 
-    override fun getToken(): String {
-        return this.token
-    }
+    override fun getToken(): String = this.token
 
-    override fun getConsumerId(): String {
-        return "StaticConsumerId"
-    }
+    override fun getTokenOrNull(): String? = this.token
+
+    override fun getConsumerId(): String = "StaticConsumerId"
 
     fun setUser(user: String) {
         this.user = user
