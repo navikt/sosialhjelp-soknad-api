@@ -70,7 +70,12 @@ class InformasjonRessurs(
         val userBlocked = personService.harAdressebeskyttelse(eier)
         val person = if (userBlocked) null else personService.hentPerson(eier)
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
-        val qualifiesForKortSoknad = kommunenummer?.let { kortSoknadService.qualifies(token, it) } ?: null
+        val qualifiesForKortSoknad =
+            if (kommunenummer != null && token != null) {
+                kommunenummer.let { kortSoknadService.qualifies(token, it) }
+            } else {
+                null
+            }
         // Egentlig bør vel hentPerson kaste en exception dersom en bruker ikke finnes
         // for en gitt ID. I første omgang nøyer vi oss med å logge en feilmelding
         // men hentPerson bør nok bli noe mer deterministisk.

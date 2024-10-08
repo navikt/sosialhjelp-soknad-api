@@ -115,7 +115,7 @@ class DigisosApiV2Client(
         return digisosId
     }
 
-    fun getSoknader(token: String?): List<DigisosSak> {
+    fun getSoknader(token: String): List<DigisosSak> {
         val startTime = System.currentTimeMillis()
         return try {
             fiksWebClient

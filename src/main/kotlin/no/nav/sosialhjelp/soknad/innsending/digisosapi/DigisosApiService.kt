@@ -136,7 +136,7 @@ class DigisosApiService(
     }
 
     fun qualifiesForKortSoknadThroughUtbetalinger(
-        token: String?,
+        token: String,
         utbetaltSince: LocalDateTime,
         planlagtBefore: LocalDateTime,
     ): Boolean {
@@ -173,7 +173,7 @@ class DigisosApiService(
     }
 
     fun qualifiesForKortSoknadThroughSoknader(
-        token: String?,
+        token: String,
         hendelseSince: LocalDateTime,
         kommunenummer: String,
     ): Boolean {

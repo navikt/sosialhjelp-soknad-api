@@ -167,6 +167,10 @@ class AdresseRessurs(
         navEnhet: NavEnhetFrontend,
         token: String?,
     ): Pair<Boolean, Boolean> {
+        if (token == null) {
+            logger.warn("Token er null, kan ikke sjekke om bruker har rett på kort søknad")
+            return false to false
+        }
         val kortSoknad = isKortSoknadEnabled(navEnhet.kommuneNr) && kortSoknadService.qualifies(token, navEnhet.kommuneNr ?: "")
         val nySoknadstype = if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD
         if (nySoknadstype != soknad.data.soknadstype) {
