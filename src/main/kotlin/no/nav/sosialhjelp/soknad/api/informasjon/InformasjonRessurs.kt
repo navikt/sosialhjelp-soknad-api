@@ -72,7 +72,7 @@ class InformasjonRessurs(
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {
-                kommunenummer.let { kortSoknadService.qualifies(token, it) }
+                runCatching { kortSoknadService.qualifies(token, kommunenummer) }.onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }.getOrNull()
             } else {
                 null
             }
