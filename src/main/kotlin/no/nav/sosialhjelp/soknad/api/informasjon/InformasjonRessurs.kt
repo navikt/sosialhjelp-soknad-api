@@ -8,17 +8,16 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
 import org.springframework.util.unit.DataSize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -61,18 +60,17 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSessionInfo(
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
-    ): SessionResponse {
+    fun getSessionInfo(): SessionResponse {
         val eier = getUser()
         log.debug("Henter søknadsinfo for bruker")
 
+        val token = SubjectHandlerUtils.getTokenOrNull()
         val userBlocked = personService.harAdressebeskyttelse(eier)
         val person = if (userBlocked) null else personService.hentPerson(eier)
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {
-                kommunenummer.let { kortSoknadService.qualifies(token, it) }
+                runCatching { kortSoknadService.qualifies(token, kommunenummer) }.onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }.getOrNull()
             } else {
                 null
             }
