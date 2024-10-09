@@ -24,7 +24,7 @@ import org.springframework.data.convert.WritingConverter
 interface OpplysningType {
     // denne må hete `name` for pga enum.name
     val name: String
-    val dokumentasjonForventet: Boolean
+    val dokumentasjonForventet: Boolean?
 
     // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på? - Tore
     val group: String

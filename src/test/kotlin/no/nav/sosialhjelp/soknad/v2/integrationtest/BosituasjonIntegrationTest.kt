@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.BosituasjonDto
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -87,8 +87,8 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             soknad.id,
         )
 
-        dokumentasjonRepository.findAllBySoknadId(soknad.id).let {
-            assertThat(it).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE }
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).let { list ->
+            assertThat(list).anyMatch { it.type == AnnenDokumentasjonType.HUSLEIEKONTRAKT }
         }
     }
 
@@ -103,8 +103,8 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             soknad.id,
         )
 
-        dokumentasjonRepository.findAllBySoknadId(soknad.id).let {
-            assertThat(it).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL }
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).let { list ->
+            assertThat(list).anyMatch { it.type == AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL }
         }
     }
 }

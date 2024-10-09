@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -108,17 +108,12 @@ class LivssituasjonServiceImpl(
             ?: repository.save(Livssituasjon(soknadId))
 }
 
-private fun Botype?.hasDokumentasjon(): Boolean {
-    return listOf(
-        Botype.LEIER,
-        Botype.KOMMUNAL,
-    ).contains(this)
-}
+private fun Botype?.hasDokumentasjon() = this == Botype.LEIER || this == Botype.KOMMUNAL
 
-private fun Botype?.toUgiftType(): UtgiftType {
+private fun Botype?.toUgiftType(): AnnenDokumentasjonType {
     return when (this) {
-        Botype.LEIER -> UtgiftType.UTGIFTER_HUSLEIE
-        Botype.KOMMUNAL -> UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL
+        Botype.LEIER -> AnnenDokumentasjonType.HUSLEIEKONTRAKT
+        Botype.KOMMUNAL -> AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL
         else -> error("Botype $this har ingen tilsvarende UtgiftType")
     }
 }

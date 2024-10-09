@@ -97,7 +97,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for oppretting")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
 
     fun addElementToOkonomi(
@@ -112,7 +112,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for oppretting")
             }
         }
-        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
+        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
     }
 
     fun updateElement(
@@ -186,7 +186,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for removal")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
     /**

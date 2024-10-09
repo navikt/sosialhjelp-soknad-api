@@ -109,13 +109,13 @@ private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
         UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning):"
         UtgiftType.UTGIFTER_OPPVARMING -> "Oppvarming (siste regning)"
         UtgiftType.UTGIFTER_STROM -> "Strøm (siste regning)"
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt):${detaljBeskrivelse ?: ""}"
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): ${detaljBeskrivelse ?: ""}"
         UtgiftType.BARNEBIDRAG_BETALER -> "Betaler Barnebidrag"
         UtgiftType.UTGIFTER_SFO -> "SFO"
         UtgiftType.UTGIFTER_BARNEHAGE -> "Barnehage"
         UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> "Avdrag på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> "Renter på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN -> "Renter og avdrag på boliglån"
-        UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_HUSLEIE_KOMMUNAL -> "Husleie"
+        UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
     }
 }
