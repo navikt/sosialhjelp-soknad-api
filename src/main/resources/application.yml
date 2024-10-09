@@ -18,6 +18,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${POSTGRES_DATASOURCE_URL}${SOKNADSOSIALHJELP_DB_NAVN}
+    hikari:
+      pool-name: YamlHikariPool
+      leak-detection-threshold: 30000
   servlet:
     multipart:
       max-file-size: 10MB
