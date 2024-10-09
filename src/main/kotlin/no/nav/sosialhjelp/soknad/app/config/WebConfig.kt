@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import no.nav.sosialhjelp.soknad.app.soknadlock.ConflictAvoidanceDelayInterceptor
+import no.nav.sosialhjelp.soknad.tracing.TracingInterceptor
 import no.nav.sosialhjelp.soknad.v2.config.interceptor.SoknadAccessInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -12,9 +13,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig(
     private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
     private val soknadAccessInterceptor: SoknadAccessInterceptor,
+    private val tracingInterceptor: TracingInterceptor,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(conflictAvoidanceDelayInterceptor)
         registry.addInterceptor(soknadAccessInterceptor)
+        registry.addInterceptor(tracingInterceptor)
     }
 }
