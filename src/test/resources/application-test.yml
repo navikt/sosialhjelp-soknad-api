@@ -62,6 +62,7 @@ unleash_env: "local"
 unleash_server_api_url: "http://localhost:58888"
 unleash_server_api_token: "localtoken"
 kodeverk_url: https://kodeverk/
+kodeverk_scope: scope
 utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
 kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no
 soknad.bostotte.url: http://bostotte.url
