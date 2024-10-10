@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-@Profile("!no-interceptor")
+@Profile("!no-interceptor & !local)")
 class WebConfig(
     private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
     private val soknadAccessInterceptor: SoknadAccessInterceptor,
@@ -19,5 +19,17 @@ class WebConfig(
         registry.addInterceptor(conflictAvoidanceDelayInterceptor)
         registry.addInterceptor(soknadAccessInterceptor)
         registry.addInterceptor(tracingInterceptor)
+    }
+}
+
+@Configuration
+@Profile("local")
+class LocalWebConfig(
+    private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
+    private val soknadAccessInterceptor: SoknadAccessInterceptor,
+) : WebMvcConfigurer {
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(conflictAvoidanceDelayInterceptor)
+        registry.addInterceptor(soknadAccessInterceptor)
     }
 }

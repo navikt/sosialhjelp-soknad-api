@@ -9,11 +9,9 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
-interface TracingInterceptor : HandlerInterceptor
-
 @Component
 @Profile("!local")
-class DefaultTracingInterceptor : TracingInterceptor {
+class TracingInterceptor : HandlerInterceptor {
     private val log by logger()
 
     override fun preHandle(
@@ -33,14 +31,4 @@ class DefaultTracingInterceptor : TracingInterceptor {
 
         return true
     }
-}
-
-@Component
-@Profile("local")
-class LocalTracingInterceptor : HandlerInterceptor {
-    override fun preHandle(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        handler: Any,
-    ): Boolean = true
 }
