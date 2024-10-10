@@ -4,12 +4,16 @@ import io.opentelemetry.api.trace.Span
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.getBehandlingsId
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.servlet.HandlerMapping
+
+interface TracingInterceptor : HandlerInterceptor
 
 @Component
-class TracingInterceptor : HandlerInterceptor {
+@Profile("!local")
+class DefaultTracingInterceptor : TracingInterceptor {
     private val log by logger()
 
     override fun preHandle(
@@ -17,7 +21,7 @@ class TracingInterceptor : HandlerInterceptor {
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
-        val behandlingsId = getBehandlingsId(request)
+        val behandlingsId = request.getBehandlingsId()
 
         if (behandlingsId != null) {
             val currentSpan = Span.current()
@@ -29,9 +33,14 @@ class TracingInterceptor : HandlerInterceptor {
 
         return true
     }
+}
 
-    private fun getBehandlingsId(request: HttpServletRequest): String? {
-        val pathVariables = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
-        return pathVariables?.get("behandlingsId") as String?
-    }
+@Component
+@Profile("local")
+class LocalTracingInterceptor : HandlerInterceptor {
+    override fun preHandle(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+    ): Boolean = true
 }
