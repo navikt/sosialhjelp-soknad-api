@@ -28,7 +28,5 @@ data class InnsendtSoknadmetadata(
     val sendt_inn_dato: LocalDateTime?,
     val opprettet_dato: LocalDateTime,
 ) : DomainRoot {
-    override fun getDbId(): UUID {
-        TODO("Not yet implemented")
-    }
+    override fun getDbId() = soknadId
 }
