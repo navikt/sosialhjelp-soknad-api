@@ -41,7 +41,10 @@ class JsonSoknadComparator(
         } else {
             original.vedlegg.forEach { orgVedlegg ->
                 shadow.vedlegg
-                    .find { orgVedlegg.type == it.type && orgVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    .find {
+                        orgVedlegg.type == it.type && orgVedlegg.tilleggsinfo == it.tilleggsinfo &&
+                            orgVedlegg.status == it.status
+                    }
                     ?.let {
                         if (orgVedlegg.filer.size != it.filer.size) {
                             logger.warn(
@@ -58,7 +61,10 @@ class JsonSoknadComparator(
 
             shadow.vedlegg.forEach { shadowVedlegg ->
                 original.vedlegg
-                    .find { shadowVedlegg.type == it.type && shadowVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    .find {
+                        shadowVedlegg.type == it.type && shadowVedlegg.tilleggsinfo == it.tilleggsinfo &&
+                            shadowVedlegg.status == it.status
+                    }
                     ?: logger.warn(
                         "Fant ikke vedlegg i original-json: ${shadowVedlegg.asJson()} " +
                             "- \n\norginal: ${original.vedlegg.asJson()}",
@@ -248,8 +254,8 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
         } else {
             shadow.forEach { utbetaling ->
                 original.find {
-                    utbetaling.type == it.type && utbetaling.brutto == it.brutto && utbetaling.tittel == it.tittel
-                    utbetaling.utbetalingsdato == it.utbetalingsdato
+                    utbetaling.type == it.type && utbetaling.tittel == it.tittel &&
+                        utbetaling.utbetalingsdato == it.utbetalingsdato && utbetaling.kilde == it.kilde
                 }
                     ?.let { compareNumbers(utbetaling, it) }
                     ?: logger.warn(
@@ -272,7 +278,7 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { utgift ->
-                original.find { utgift.type == it.type && utgift.tittel == it.tittel }
+                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.kilde == it.kilde }
                     ?.let { if (!isValid(utgift.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke utgift \n${utgift.asJson()} i" +
@@ -316,7 +322,7 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { formue ->
-                original.find { formue.type == it.type && formue.tittel == it.tittel }
+                original.find { formue.type == it.type && formue.tittel == it.tittel && formue.kilde == it.kilde }
                     ?.let { if (!isValid(formue.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke formuer \n${formue.asJson()}" +
@@ -358,7 +364,7 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { utgift ->
-                original.find { utgift.type == it.type }
+                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.kilde == it.kilde }
                     ?.let { if (!isValid(utgift.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke utgift \n${utgift.asJson()}" +

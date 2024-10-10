@@ -74,15 +74,15 @@ class SoknadV2DokumentasjonAdapter(
 
             if (dokumentasjon == null) error("Fant ikke dokumentasjon med dokument")
 
-            val updatedList = dokumentasjon.dokumenter.filter { it.dokumentId.toString() == dokumentId }
+            val updatedList = dokumentasjon.dokumenter.filter { it.dokumentId.toString() != dokumentId }
             val updatedDokumentasjon =
                 dokumentasjon
                     .copy(dokumenter = updatedList.toSet())
                     .run {
                         if (dokumenter.isEmpty()) {
-                            this
-                        } else {
                             copy(status = DokumentasjonStatus.FORVENTET)
+                        } else {
+                            this
                         }
                     }
 

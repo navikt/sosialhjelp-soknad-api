@@ -45,7 +45,7 @@ class OkonomiToJsonHandler(
 private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonMapper> {
     return listOf(
         FormueToJsonMapper(formuer, json),
-        InntektToJsonMapper(inntekter, json),
+        InntektToJsonMapper(inntekter, json, bekreftelser),
         UtgiftToJsonMapper(utgifter, json),
         BostotteSakToJsonMapper(bostotteSaker, json),
     )

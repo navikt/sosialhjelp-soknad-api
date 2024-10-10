@@ -36,15 +36,17 @@ class OkonomiskeOpplysningerServiceImpl(
     ) {
         addSpecialCaseElement(soknadId, type)
 
-        createElement(type, detaljer).let {
-            try {
-                okonomiService.updateElement(soknadId = soknadId, element = it)
-            } catch (e: OkonomiElementFinnesIkkeException) {
-                throw OkonomiElementFinnesIkkeException(
-                    message = e.message,
-                    cause = e,
-                    soknadId = soknadId,
-                )
+        if (typesWithOkonomiElement.contains(type.javaClass)) {
+            createElement(type, detaljer).let {
+                try {
+                    okonomiService.updateElement(soknadId = soknadId, element = it)
+                } catch (e: OkonomiElementFinnesIkkeException) {
+                    throw OkonomiElementFinnesIkkeException(
+                        message = e.message,
+                        cause = e,
+                        soknadId = soknadId,
+                    )
+                }
             }
         }
         updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
