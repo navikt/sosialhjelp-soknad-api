@@ -8,6 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
+import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
@@ -22,18 +24,30 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,
     jsonOkonomi: JsonOkonomi,
+    private val bekreftelser: Set<Bekreftelse> = emptySet(),
 ) : OkonomiElementsToJsonMapper {
     private val oversikt = jsonOkonomi.oversikt
     private val opplysninger = jsonOkonomi.opplysninger
 
     override fun doMapping() {
         inntekter.forEach { it.mapToJsonObject() }
+        handleHusbankenSpecialCase()
 
         inntekter.find { it.type == InntektType.UTBETALING_ANNET }
             ?.let {
                 val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
                 jsonBeskrivelser.utbetaling = it.beskrivelse ?: ""
             }
+    }
+
+    // Hvis bostotte == true && bostotte_samtykke == null || false skal kilde være bruker
+    private fun handleHusbankenSpecialCase() {
+        if (bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }?.verdi == true) {
+            if (bekreftelser.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi != true) {
+                opplysninger.utbetaling.find { it.type == InntektType.UTBETALING_HUSBANKEN.toSoknadJsonTypeString() }
+                    ?.apply { kilde = JsonKilde.BRUKER }
+            }
+        }
     }
 
     private fun Inntekt.mapToJsonObject() {

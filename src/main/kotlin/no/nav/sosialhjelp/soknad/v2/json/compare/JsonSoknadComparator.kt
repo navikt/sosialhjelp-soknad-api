@@ -4,6 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
 // TODO Kan fjernes når all is good
@@ -39,7 +41,10 @@ class JsonSoknadComparator(
         } else {
             original.vedlegg.forEach { orgVedlegg ->
                 shadow.vedlegg
-                    .find { orgVedlegg.type == it.type && orgVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    .find {
+                        orgVedlegg.type == it.type && orgVedlegg.tilleggsinfo == it.tilleggsinfo &&
+                            orgVedlegg.status == it.status
+                    }
                     ?.let {
                         if (orgVedlegg.filer.size != it.filer.size) {
                             logger.warn(
@@ -56,7 +61,10 @@ class JsonSoknadComparator(
 
             shadow.vedlegg.forEach { shadowVedlegg ->
                 original.vedlegg
-                    .find { shadowVedlegg.type == it.type && shadowVedlegg.tilleggsinfo == it.tilleggsinfo }
+                    .find {
+                        shadowVedlegg.type == it.type && shadowVedlegg.tilleggsinfo == it.tilleggsinfo &&
+                            shadowVedlegg.status == it.status
+                    }
                     ?: logger.warn(
                         "Fant ikke vedlegg i original-json: ${shadowVedlegg.asJson()} " +
                             "- \n\norginal: ${original.vedlegg.asJson()}",
@@ -246,10 +254,10 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
         } else {
             shadow.forEach { utbetaling ->
                 original.find {
-                    utbetaling.type == it.type && utbetaling.brutto == it.brutto &&
-                        utbetaling.utbetalingsdato == it.utbetalingsdato && utbetaling.belop == it.belop &&
-                        utbetaling.netto == it.netto && utbetaling.tittel == it.tittel
+                    utbetaling.type == it.type && utbetaling.tittel == it.tittel &&
+                        utbetaling.utbetalingsdato == it.utbetalingsdato && utbetaling.kilde == it.kilde
                 }
+                    ?.let { compareNumbers(utbetaling, it) }
                     ?: logger.warn(
                         "Fant ikke utbetaling \n${utbetaling.asJson()} i" +
                             " \norginal: \n${original.asJson()}",
@@ -270,7 +278,8 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { utgift ->
-                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.belop == it.belop }
+                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.kilde == it.kilde }
+                    ?.let { if (!isValid(utgift.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke utgift \n${utgift.asJson()} i" +
                             " \norginal: \n${original.asJson()}",
@@ -313,7 +322,8 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { formue ->
-                original.find { formue.type == it.type && formue.tittel == it.tittel && formue.belop == it.belop }
+                original.find { formue.type == it.type && formue.tittel == it.tittel && formue.kilde == it.kilde }
+                    ?.let { if (!isValid(formue.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke formuer \n${formue.asJson()}" +
                             "\n i orginal: \n${original.asJson()}",
@@ -332,10 +342,11 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
                     " \n** Shadow: \n${shadow.asJson()}",
             )
         } else {
-            shadow.forEach { utbetaling ->
-                original.find { utbetaling.type == it.type }
+            shadow.forEach { inntekt ->
+                original.find { inntekt.type == it.type && inntekt.tittel == it.tittel && inntekt.kilde == it.kilde }
+                    ?.let { compareNumbers(inntekt, it) }
                     ?: logger.warn(
-                        "Fant ikke inntekt \n${utbetaling.asJson()} " +
+                        "Fant ikke inntekt \n${inntekt.asJson()} " +
                             "\ni orginal: \n${original.asJson()}",
                     )
             }
@@ -352,10 +363,11 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
                     "\n ** Shadow: \n${shadow.asJson()}",
             )
         } else {
-            shadow.forEach { utbetaling ->
-                original.find { utbetaling.type == it.type }
+            shadow.forEach { utgift ->
+                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.kilde == it.kilde }
+                    ?.let { if (!isValid(utgift.belop, it.belop)) null else 1 }
                     ?: logger.warn(
-                        "Fant ikke utgift \n${utbetaling.asJson()}" +
+                        "Fant ikke utgift \n${utgift.asJson()}" +
                             " \ni orginal: \n${original.asJson()}",
                     )
             }
@@ -366,3 +378,56 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
 private fun Any?.asJson() =
     JsonSosialhjelpObjectMapper.createObjectMapper().writeValueAsString(this)
         ?: "null"
+
+private fun compareNumbers(
+    shadow: JsonOkonomiOpplysningUtbetaling,
+    original: JsonOkonomiOpplysningUtbetaling,
+): Int? {
+    if (!isValid(shadow.brutto, original.brutto)) return null
+    if (!isValid(shadow.netto, original.netto)) return null
+    if (!isValid(shadow.belop, original.belop)) return null
+    if (!isValid(shadow.skattetrekk, original.skattetrekk)) return null
+    if (!isValid(shadow.andreTrekk, original.andreTrekk)) return null
+
+    return 1
+}
+
+private fun compareNumbers(
+    shadow: JsonOkonomioversiktInntekt,
+    original: JsonOkonomioversiktInntekt,
+): Int? {
+    if (!isValid(shadow.brutto, original.brutto)) return null
+    if (!isValid(shadow.netto, original.netto)) return null
+
+    return 1
+}
+
+private fun isValid(
+    shadow: Double?,
+    original: Double?,
+): Boolean {
+    if (shadow != original) {
+        if (shadow != null && original != null) {
+            return false
+        } else {
+            if (shadow == null && original != 0.0) return false
+            if (original == null && shadow != 0.0) return false
+        }
+    }
+    return true
+}
+
+private fun isValid(
+    shadow: Int?,
+    original: Int?,
+): Boolean {
+    if (shadow != original) {
+        if (shadow != null && original != null) {
+            return false
+        } else {
+            if (shadow == null && original != 0) return false
+            if (original == null && shadow != 0) return false
+        }
+    }
+    return true
+}

@@ -24,12 +24,12 @@ class WebConfig(
 
 @Configuration
 @Profile("local")
-class LocalWebConfig(
+class WebConfigLocal(
     private val conflictAvoidanceDelayInterceptor: ConflictAvoidanceDelayInterceptor,
     private val soknadAccessInterceptor: SoknadAccessInterceptor,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(conflictAvoidanceDelayInterceptor)
         registry.addInterceptor(soknadAccessInterceptor)
+        registry.addInterceptor(conflictAvoidanceDelayInterceptor)
     }
 }
