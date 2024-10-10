@@ -59,7 +59,7 @@ class ConflictAvoidanceDelayInterceptor(
             try {
                 soknadLockManager.releaseLock(it)
             } catch (e: Exception) {
-                log.warn("Failed to release lock for ${getBehandlingsId(request)}", e)
+                log.warn("Failed to release lock for ${request.getBehandlingsId()}", e)
             }
         }
     }
