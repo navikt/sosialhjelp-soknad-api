@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -10,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -135,71 +135,21 @@ class DigisosApiService(
         return digisosId
     }
 
-    fun qualifiesForKortSoknadThroughUtbetalinger(
+    fun getSoknaderForUser(token: String): List<DigisosSak> = digisosApiV2Client.getSoknader(token)
+
+    fun getInnsynsfilForSoknad(
+        fiksDigisosId: String,
+        dokumentId: String,
         token: String,
-        utbetaltSince: LocalDateTime,
-        planlagtBefore: LocalDateTime,
-    ): Boolean {
-        val soknader = digisosApiV2Client.getSoknader(token)
-        val innsynsfiler =
-            soknader.map { soknad ->
-                soknad.digisosSoker?.metadata?.let {
-                    digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
-                }
-            }
-        val utbetalte =
-            innsynsfiler.flatMap { innsynsfil ->
-                innsynsfil
-                    ?.hendelser
-                    ?.filterIsInstance<JsonUtbetaling>()
-                    ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
-                    ?.map { it.utbetalingsdato.toLocalDateTime() } ?: emptyList()
-            }
-
-        if (utbetalte.any { it >= utbetaltSince }) {
-            return true
-        }
-
-        val planlagte =
-            innsynsfiler.flatMap { innsynsfil ->
-                innsynsfil
-                    ?.hendelser
-                    ?.filterIsInstance<JsonUtbetaling>()
-                    ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                    ?.map { it.forfallsdato.toLocalDateTime() } ?: emptyList()
-            }
-
-        return planlagte.any { it < planlagtBefore }
-    }
-
-    fun qualifiesForKortSoknadThroughSoknader(
-        token: String,
-        hendelseSince: LocalDateTime,
-        kommunenummer: String,
-    ): Boolean {
-        val soknader = digisosApiV2Client.getSoknader(token)
-        val hendelseTidspunkt =
-            soknader.flatMap { soknad ->
-                soknad
-                    .takeIf { it.kommunenummer == kommunenummer }
-                    ?.digisosSoker
-                    ?.metadata
-                    ?.let {
-                        digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
-                    }?.hendelser
-                    ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
-                    ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
-            }
-        return hendelseTidspunkt.any { it.toLocalDateTime() >= hendelseSince }
-    }
+    ): JsonDigisosSoker = digisosApiV2Client.getInnsynsfil(fiksDigisosId, dokumentId, token)
 
     // Instant.now().toEpochMilli()
-    fun getTimestampSistSendtSoknad(token: String): Long? {
-        return digisosApiV2Client.getSoknader(token)
+    fun getTimestampSistSendtSoknad(token: String): Long? =
+        digisosApiV2Client
+            .getSoknader(token)
             .filter { it.originalSoknadNAV != null }
             .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
             .firstNotNullOfOrNull { it.originalSoknadNAV?.timestampSendt }
-    }
 
     private fun String.toLocalDateTime() =
         runCatching {
