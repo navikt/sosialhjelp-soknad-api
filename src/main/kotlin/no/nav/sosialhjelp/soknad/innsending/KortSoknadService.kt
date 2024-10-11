@@ -1,10 +1,16 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.situasjonsendring.SituasjonsendringService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDate
@@ -12,15 +18,32 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 @Component
 class KortSoknadService(
     private val digisosApiService: DigisosApiService,
     private val clock: Clock,
+    private val dokumentasjonService: DokumentasjonService,
+    private val soknadService: SoknadService,
+    private val unleash: Unleash,
+    private val situasjonsendringService: SituasjonsendringService,
 ) {
     private val log by logger()
 
-    fun qualifies(
+    fun transitionToKort(soknadId: UUID) {
+        dokumentasjonService.resetForventetDokumentasjon(soknadId)
+        soknadService.updateKortSoknad(soknadId, true)
+    }
+
+    fun transitionToStandard(soknadId: UUID) {
+        dokumentasjonService.resetForventetDokumentasjon(soknadId)
+        dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+        situasjonsendringService.deleteSituasjonsendring(soknadId)
+        soknadService.updateKortSoknad(soknadId, false)
+    }
+
+    fun isQualified(
         token: String,
         kommunenummer: String,
     ): Boolean =
@@ -37,6 +60,11 @@ class KortSoknadService(
             }.any { innsynsfil ->
                 innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
             }
+
+    fun isEnabled(kommunenummer: String?): Boolean {
+        val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
+        return unleash.isEnabled("sosialhjelp.soknad.kort_soknad", context, false)
+    }
 
     private fun JsonDigisosSoker.hasRecentSoknadFromFiks(): Boolean {
         val mottattSiste120Dager =

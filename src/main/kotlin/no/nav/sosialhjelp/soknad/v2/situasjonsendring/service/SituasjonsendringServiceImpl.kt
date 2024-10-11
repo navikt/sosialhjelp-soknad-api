@@ -22,4 +22,8 @@ class SituasjonsendringServiceImpl(
     }
 
     override fun getSituasjonsendring(soknadId: UUID): Situasjonsendring? = situasjonsendringRepository.findById(soknadId).getOrNull()
+
+    override fun deleteSituasjonsendring(soknadId: UUID) {
+        situasjonsendringRepository.deleteById(soknadId)
+    }
 }

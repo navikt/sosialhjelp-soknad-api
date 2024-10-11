@@ -10,42 +10,41 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface DokumentasjonRepository : UpsertRepository<Dokumentasjon>, ListCrudRepository<Dokumentasjon, UUID> {
+interface DokumentasjonRepository :
+    UpsertRepository<Dokumentasjon>,
+    ListCrudRepository<Dokumentasjon, UUID> {
     fun findAllBySoknadId(soknadId: UUID): List<Dokumentasjon>
 
     fun findBySoknadIdAndType(
         soknadId: UUID,
         type: OpplysningType,
     ): Dokumentasjon?
+
+    fun deleteAllBySoknadId(soknadId: UUID)
 }
 
 fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokumentasjon {
-    return findDokumentasjonForDokument(soknadId, dokumentId)
+): Dokumentasjon =
+    findDokumentasjonForDokument(soknadId, dokumentId)
         .removeDokument(dokumentId)
         .let { dokumentasjon -> save(dokumentasjon) }
-}
 
 private fun DokumentasjonRepository.findDokumentasjonForDokument(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokumentasjon {
-    return findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
+): Dokumentasjon =
+    findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
         ?: error("Dokument finnes ikke på noe Dokumentasjon")
-}
 
-private fun Dokumentasjon.hasDokument(dokumentId: UUID): Boolean {
-    return dokumenter.map { it.dokumentId }.contains(dokumentId)
-}
+private fun Dokumentasjon.hasDokument(dokumentId: UUID): Boolean = dokumenter.map { it.dokumentId }.contains(dokumentId)
 
-private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon {
-    return dokumenter
+private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon =
+    dokumenter
         .find { it.dokumentId == dokumentId }
         ?.let { dokument -> copy(dokumenter = dokumenter.minus(dokument)) }
         ?: error("Dokument finnes ikke på Dokumentasjon")
-}
 
 @Table
 data class Dokumentasjon(
@@ -71,12 +70,15 @@ enum class DokumentasjonStatus {
 }
 
 // TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
-enum class AnnenDokumentasjonType(override val dokumentasjonForventet: Boolean?) : OpplysningType {
+enum class AnnenDokumentasjonType(
+    override val dokumentasjonForventet: Boolean?,
+) : OpplysningType {
     SKATTEMELDING(dokumentasjonForventet = true),
     SAMVARSAVTALE(dokumentasjonForventet = true),
     OPPHOLDSTILLATELSE(dokumentasjonForventet = true),
     HUSLEIEKONTRAKT(dokumentasjonForventet = true),
     HUSLEIEKONTRAKT_KOMMUNAL(dokumentasjonForventet = true),
+    BEHOV(dokumentasjonForventet = true),
     ;
 
     override val group: String get() = "Generell Dokumentasjon"

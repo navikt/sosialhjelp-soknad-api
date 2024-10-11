@@ -34,6 +34,11 @@ interface SoknadService {
     ): Boolean
 
     fun erKortSoknad(soknadId: UUID): Boolean
+
+    fun updateKortSoknad(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    )
 }
 
 interface BegrunnelseService {
@@ -96,6 +101,15 @@ class SoknadServiceImpl(
     ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
+
+    override fun updateKortSoknad(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    ) {
+        val soknad = findOrError(soknadId)
+        val updatedSoknad = soknad.copy(kortSoknad = kortSoknad)
+        soknadRepository.save(updatedSoknad)
+    }
 
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 

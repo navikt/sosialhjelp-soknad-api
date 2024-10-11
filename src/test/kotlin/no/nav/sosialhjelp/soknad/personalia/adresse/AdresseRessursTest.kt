@@ -297,7 +297,7 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", "321", null, null, null, null)
-        every { kortSoknadService.qualifies(any(), any()) } returns true
+        every { kortSoknadService.isQualified(any(), any()) } returns true
         every { soknadMetadataRepository.hent(any()) } returns
             SoknadMetadata(
                 behandlingsId = BEHANDLINGSID,

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
 import io.getunleash.Unleash
-import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
@@ -175,7 +174,7 @@ class AdresseRessurs(
             logger.warn("Token er null, kan ikke sjekke om bruker har rett på kort søknad")
             return false to false
         }
-        val kortSoknad = isKortSoknadEnabled(navEnhet.kommuneNr) && kortSoknadService.qualifies(token, navEnhet.kommuneNr ?: "")
+        val kortSoknad = kortSoknadService.isEnabled(navEnhet.kommuneNr) && kortSoknadService.isQualified(token, navEnhet.kommuneNr ?: "")
         val nySoknadstype =
             if (kortSoknad) {
                 logger.info("Bruker kvalifiserer til kort søknad")
@@ -204,11 +203,6 @@ class AdresseRessurs(
             return true to kortSoknad
         }
         return false to kortSoknad
-    }
-
-    private fun isKortSoknadEnabled(kommunenummer: String?): Boolean {
-        val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
-        return unleash.isEnabled("sosialhjelp.soknad.kort_soknad", context, false)
     }
 
     fun setNavEnhetAsMottaker(
