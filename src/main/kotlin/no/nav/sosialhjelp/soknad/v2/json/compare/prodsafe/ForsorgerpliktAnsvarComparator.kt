@@ -5,19 +5,19 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorManager.Companion.compareStrings
 
 class ForsorgerpliktAnsvarComparator(
-    private val original: JsonForsorgerplikt,
-    private val shadow: JsonForsorgerplikt,
+    private val original: JsonForsorgerplikt?,
+    private val shadow: JsonForsorgerplikt?,
 ) : ProductionComparator {
     override fun compare() {
         if (original == shadow) return
 
-        original.ansvar.forEach { original ->
-            shadow.ansvar
-                .find { it.barn.personIdentifikator == original.barn.personIdentifikator }
+        original?.ansvar?.forEach { original ->
+            shadow?.ansvar
+                ?.find { it?.barn?.personIdentifikator == original?.barn?.personIdentifikator }
                 ?.let { ansvar ->
                     compareStrings(
-                        ansvar.samvarsgrad.verdi?.toString(),
-                        original.samvarsgrad.verdi?.toString(),
+                        ansvar.samvarsgrad?.verdi?.toString(),
+                        original.samvarsgrad?.verdi?.toString(),
                         "samvarsgrad",
                         true,
                     )

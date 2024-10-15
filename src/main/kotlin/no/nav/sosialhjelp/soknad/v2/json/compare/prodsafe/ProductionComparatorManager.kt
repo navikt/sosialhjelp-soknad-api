@@ -13,6 +13,11 @@ class ProductionComparatorManager(
             shadow.soknad.data.okonomi,
         ).compare()
 
+        ForsorgerpliktAnsvarComparator(
+            original.soknad?.data?.familie?.forsorgerplikt,
+            shadow.soknad?.data?.familie?.forsorgerplikt,
+        ).compare()
+
         SivilstatusComparator(
             original.soknad?.data?.familie?.sivilstatus,
             shadow.soknad?.data?.familie?.sivilstatus,
