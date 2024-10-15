@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.json.compare
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorManager
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
@@ -26,6 +27,11 @@ class ShadowProductionManager(
                 val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
                 JsonInternalSoknadListSorter(it, shadowJson).doSorting()
+
+                // TODO Midlertidig utvidet logging av kjente feil i shadow prod
+                ProductionComparatorManager(original = original, shadow = shadowJson)
+                    .compareSpecificFields()
+
                 // TODO Midlertidig nøyaktig logging av lister for sammenlikning
                 if (MiljoUtils.isNonProduction()) {
                     JsonSoknadComparator(original = original, shadow = shadowJson).compareCollections()
