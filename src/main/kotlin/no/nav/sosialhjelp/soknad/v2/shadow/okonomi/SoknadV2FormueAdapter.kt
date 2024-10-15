@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.formue.HarVerdierInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.VerdiController
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.VerdierInput
 import org.springframework.stereotype.Service
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
@@ -30,8 +31,10 @@ interface V2FormueAdapter {
 class SoknadV2FormueAdapter(
     private val formueController: FormueController,
     private val verdiController: VerdiController,
-    private val transactionTemplate: TransactionTemplate,
+    platformTransactionManager: PlatformTransactionManager,
 ) : V2FormueAdapter {
+    private val transactionTemplate = TransactionTemplate(platformTransactionManager)
+
     override fun leggTilFormue(
         behandlingsId: String,
         formueFrontend: FormueRessurs.FormueFrontend,

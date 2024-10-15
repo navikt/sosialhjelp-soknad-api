@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
@@ -29,9 +29,10 @@ interface DokumentasjonAdapter {
 @Component
 class SoknadV2DokumentasjonAdapter(
     private val dokumentasjonRepository: DokumentasjonRepository,
-    private val dokumentService: DokumentService,
-    private val transactionTemplate: TransactionTemplate,
+    platformTransactionManager: PlatformTransactionManager,
 ) : DokumentasjonAdapter {
+    private val transactionTemplate = TransactionTemplate(platformTransactionManager)
+
     override fun saveDokumentMetadata(
         behandlingsId: String,
         vedleggTypeString: String,

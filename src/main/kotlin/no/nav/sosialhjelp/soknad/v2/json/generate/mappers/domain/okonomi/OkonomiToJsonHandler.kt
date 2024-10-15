@@ -63,17 +63,15 @@ private fun JsonInternalSoknad.initializeObjects(): JsonOkonomi {
     return jsonOkonomi.apply {
         oversikt ?: withOversikt(JsonOkonomioversikt())
         opplysninger ?: withOpplysninger(JsonOkonomiopplysninger())
+        opplysninger.beskrivelseAvAnnet
+            ?: opplysninger
+                .withBeskrivelseAvAnnet(
+                    JsonOkonomibeskrivelserAvAnnet()
+                        .withKilde(JsonKildeBruker.BRUKER)
+                        .withVerdi("")
+                        .withSparing("")
+                        .withBoutgifter("")
+                        .withBarneutgifter(""),
+                )
     }
-}
-
-fun JsonOkonomiopplysninger.initJsonBeskrivelser(): JsonOkonomibeskrivelserAvAnnet {
-    return JsonOkonomibeskrivelserAvAnnet().apply {
-        sparing = ""
-        verdi = ""
-        utbetaling = ""
-        barneutgifter = ""
-        boutgifter = ""
-    }
-        .also { withBeskrivelseAvAnnet(it) }
-        .withKilde(JsonKildeBruker.BRUKER)
 }

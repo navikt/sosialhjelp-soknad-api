@@ -39,8 +39,8 @@ class ProductionComparatorManager(
             typeValues: Boolean = false,
         ): String {
             if (value1 != value2) {
-                return "Field: $fieldName:\n\n" +
-                    "Original: ${if (typeValues) value1 else "Ulik shadow"}\n\n" +
+                return "Field: $fieldName:\n" +
+                    "Original: ${if (typeValues) value1 else "Ulik shadow"}\n" +
                     "Shadow: ${if (typeValues) value2 else "Ulik original"}"
             }
             return ""

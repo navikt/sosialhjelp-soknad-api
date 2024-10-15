@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.UtbetalingController
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.V2OkonomiAdapter
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
@@ -27,8 +28,10 @@ import java.util.UUID
 class SoknadV2OkonomiAdapter(
     private val okonomiskeOpplysningerController: OkonomiskeOpplysningerController,
     private val utbetalingController: UtbetalingController,
-    private val transactionTemplate: TransactionTemplate,
+    transactionManager: PlatformTransactionManager,
 ) : V2OkonomiAdapter {
+    private val transactionTemplate = TransactionTemplate(transactionManager)
+
     override fun updateOkonomiskeOpplysninger(
         behandlingsId: String,
         vedleggFrontend: VedleggFrontend,
@@ -72,6 +75,7 @@ class SoknadV2OkonomiAdapter(
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
         return kotlin.runCatching {
             transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NESTED
+            transactionTemplate.isolationLevel
             transactionTemplate.execute { function.invoke() }
         }
     }
