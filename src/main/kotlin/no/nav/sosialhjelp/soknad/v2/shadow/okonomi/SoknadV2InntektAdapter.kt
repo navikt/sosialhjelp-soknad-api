@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanController
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanInput
 import no.nav.sosialhjelp.soknad.v2.shadow.runWithNestedTransaction
 import org.springframework.stereotype.Service
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
 
@@ -18,8 +19,10 @@ interface V2InntektAdapter {
 @Service
 class SoknadV2InntektAdapter(
     private val studielanController: StudielanController,
-    private val transactionTemplate: TransactionTemplate,
+    platformTransactionManager: PlatformTransactionManager,
 ) : V2InntektAdapter {
+    private val transactionTemplate = TransactionTemplate(platformTransactionManager)
+
     override fun leggTilStudielan(
         behandlingsId: String,
         inputDto: StudielanRessurs.StudielanInputDTO,

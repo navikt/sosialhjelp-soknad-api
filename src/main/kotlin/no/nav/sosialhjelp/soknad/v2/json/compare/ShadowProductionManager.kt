@@ -38,7 +38,7 @@ class ShadowProductionManager(
                 }
 
                 // TODO Sammenlikner json-strukturen
-                if (MiljoUtils.isProduction()) {
+                if (MiljoUtils.isNonProduction()) {
                     JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
                 }
             }

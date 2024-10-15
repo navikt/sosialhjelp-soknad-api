@@ -52,6 +52,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerController
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
@@ -67,14 +68,15 @@ class SoknadV2ControllerAdapter(
     private val sivilstandController: SivilstandController,
     private val forsorgerpliktController: ForsorgerpliktController,
     private val v2AdresseControllerAdapter: V2AdresseControllerAdapter,
-    private val transactionTemplate: TransactionTemplate,
     private val boutgiftController: BoutgiftController,
     private val barneutgiftController: BarneutgiftController,
     private val situasjonsendringController: SituasjonsendringController,
     private val bostotteController: BostotteController,
     private val inntektSkattetatenController: InntektSkattetatenController,
+    platformTransactionManager: PlatformTransactionManager,
 ) : V2ControllerAdapter {
     private val logger = LoggerFactory.getLogger(this::class.java)
+    private val transactionTemplate = TransactionTemplate(platformTransactionManager)
 
     override fun updateArbeid(
         soknadId: String,

@@ -34,12 +34,12 @@ class FormueToJsonMapper(
     }
 
     private fun addBeskrivelseSparing(beskrivelse: String?) {
-        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
         beskrivelse?.let { jsonBeskrivelser.sparing = it }
     }
 
     private fun addBeskrivelseVerdi(beskrivelse: String?) {
-        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+        val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
         beskrivelse?.let { jsonBeskrivelser.verdi = it }
     }
 }

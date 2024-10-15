@@ -35,7 +35,7 @@ class InntektToJsonMapper(
 
         inntekter.find { it.type == InntektType.UTBETALING_ANNET }
             ?.let {
-                val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet ?: opplysninger.initJsonBeskrivelser()
+                val jsonBeskrivelser = opplysninger.beskrivelseAvAnnet
                 jsonBeskrivelser.utbetaling = it.beskrivelse ?: ""
             }
     }
