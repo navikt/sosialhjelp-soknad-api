@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -17,6 +18,8 @@ class KortSoknadService(
     private val digisosApiService: DigisosApiService,
     private val clock: Clock,
 ) {
+    private val log by logger()
+
     fun qualifies(
         token: String,
         kommunenummer: String,
@@ -34,7 +37,10 @@ class KortSoknadService(
                     ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
                     ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
             }
-        return mottattTimestamps.any { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }
+        return mottattTimestamps.firstOrNull { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }?.let {
+            log.info("Bruker kvaliserer til kort søknad via søknad mottatt $it")
+            true
+        } ?: false
     }
 
     private fun hasRecentOrUpcomingUtbetalinger(
@@ -56,7 +62,9 @@ class KortSoknadService(
                     ?.map { it.utbetalingsdato.toLocalDateTime() } ?: emptyList()
             }
 
-        if (utbetalte.any { it >= fourMonthsAgo }) {
+        val utbetaltSiste4Maneder = utbetalte.firstOrNull { it >= fourMonthsAgo }
+        if (utbetaltSiste4Maneder != null) {
+            log.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste4Maneder")
             return true
         }
 
@@ -69,7 +77,10 @@ class KortSoknadService(
                     ?.map { it.forfallsdato.toLocalDateTime() } ?: emptyList()
             }
 
-        return planlagte.any { it < in14Days }
+        return planlagte.firstOrNull { it < in14Days }?.let {
+            log.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $it")
+            true
+        } ?: false
     }
 
     private fun getInnsynsfilerForKommune(
