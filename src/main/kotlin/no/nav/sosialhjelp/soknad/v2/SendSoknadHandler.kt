@@ -38,24 +38,25 @@ class SendSoknadHandler(
 
         val digisosId: UUID =
             runCatching {
-                digisosApiV2Client.krypterOgLastOppFiler(
-                    soknadJson = objectMapper.writeValueAsString(json.soknad),
-                    tilleggsinformasjonJson =
-                        objectMapper.writeValueAsString(
-                            JsonTilleggsinformasjon(mottaker.enhetsnummer),
-                        ),
-                    vedleggJson = json.toVedleggJson(),
-                    dokumenter = getFilOpplastingList(json),
-                    kommunenr = json.soknad.mottaker.kommunenummer,
-                    navEksternRefId = soknadId.toString(),
-                    token = SubjectHandlerUtils.getToken(),
-                ).let { UUID.fromString(it) }
-            }
-                .onFailure {
-                    logger.error("Feil ved sending av soknad til FIKS", it)
-                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
-                }
-                .getOrThrow()
+                digisosApiV2Client
+                    .krypterOgLastOppFiler(
+                        soknadJson = objectMapper.writeValueAsString(json.soknad),
+                        tilleggsinformasjonJson =
+                            objectMapper.writeValueAsString(
+                                JsonTilleggsinformasjon(mottaker.enhetsnummer),
+                            ),
+                        vedleggJson = json.toVedleggJson(),
+                        dokumenter = getFilOpplastingList(json),
+                        kommunenr = json.soknad.mottaker.kommunenummer,
+                        navEksternRefId = soknadId.toString(),
+                        token = SubjectHandlerUtils.getToken(),
+                    ).let { UUID.fromString(it) }
+            }.onFailure {
+                logger.error("Feil ved sending av soknad til FIKS", it)
+                throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
+            }.getOrThrow()
+
+        logger.info("Sendt ${json.soknad.data.soknadstype.value()} søknad til FIKS")
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
@@ -70,10 +71,10 @@ class SendSoknadHandler(
         )
     }
 
-    private fun JsonInternalSoknad.toVedleggJson(): String {
-        return objectMapper.writeValueAsString(vedlegg)
+    private fun JsonInternalSoknad.toVedleggJson(): String =
+        objectMapper
+            .writeValueAsString(vedlegg)
             .also { JsonSosialhjelpValidator.ensureValidVedlegg(it) }
-    }
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
         // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer..
@@ -112,8 +113,8 @@ class SendSoknadHandler(
     private fun opprettFilOpplastingFraByteArray(
         filnavn: String,
         bytes: ByteArray,
-    ): FilOpplasting {
-        return FilOpplasting(
+    ): FilOpplasting =
+        FilOpplasting(
             metadata =
                 FilMetadata(
                     filnavn = filnavn,
@@ -122,7 +123,6 @@ class SendSoknadHandler(
                 ),
             data = ByteArrayInputStream(bytes),
         )
-    }
 
     companion object {
         private val logger by logger()
