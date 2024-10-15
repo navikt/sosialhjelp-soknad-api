@@ -36,7 +36,11 @@ class ShadowProductionManager(
                 if (MiljoUtils.isNonProduction()) {
                     JsonSoknadComparator(original = original, shadow = shadowJson).compareCollections()
                 }
-                JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
+
+                // TODO Sammenlikner json-strukturen
+                if (MiljoUtils.isProduction()) {
+                    JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
+                }
             }
                 .onFailure {
                     logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
