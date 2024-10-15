@@ -16,30 +16,28 @@ class SivilstatusComparator(
         }
 
         val compareString =
-            "${compareStrings(original?.kilde?.name, shadow?.kilde?.name, "kilde", true)}" +
-                "${compareStrings(original?.status?.name, shadow?.status?.name, "status")}" +
-                "${
-                    compareStrings(
-                        original?.folkeregistrertMedEktefelle?.toString(),
-                        shadow?.folkeregistrertMedEktefelle?.toString(),
-                        "folkeregistrertMedEktefelle",
-                    )
-                }" +
-                "${
-                    compareStrings(
-                        original?.borSammenMed?.toString(),
-                        shadow?.borSammenMed?.toString(),
-                        "borSammenMed",
-                    )
-                }" +
-                "${compareEktefelle()}"
-
-        if (compareString.isNotEmpty() && compareString.isNotBlank()) {
-            logger.warn(
-                "NyModell: Felter i Sivilstatus er ikke like: \n" +
-                    "Comparison: $compareString\n\n",
+            listOf(
+                compareStrings(original?.kilde?.name, shadow?.kilde?.name, "kilde", true),
+                compareStrings(original?.status?.name, shadow?.status?.name, "status"),
+                compareStrings(
+                    original?.folkeregistrertMedEktefelle?.toString(),
+                    shadow?.folkeregistrertMedEktefelle?.toString(),
+                    "folkeregistrertMedEktefelle",
+                ),
+                compareStrings(
+                    original?.borSammenMed?.toString(),
+                    shadow?.borSammenMed?.toString(),
+                    "borSammenMed",
+                ),
+                compareEktefelle(),
             )
-        }
+                .filter { it != "" }
+                .joinToString("\n")
+
+        logger.warn(
+            "NyModell: Felter i Sivilstatus er ikke like: \n" +
+                "Comparison: $compareString\n\n",
+        )
     }
 
     private fun checkOriginalEmpty() {

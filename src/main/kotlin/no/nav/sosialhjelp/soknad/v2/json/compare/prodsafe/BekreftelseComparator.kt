@@ -6,8 +6,8 @@ import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorMa
 import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorManager.Companion.jsonMapper
 
 class BekreftelseComparator(
-    private val originals: List<JsonOkonomibekreftelse>,
-    private val shadows: List<JsonOkonomibekreftelse>,
+    private val originals: List<JsonOkonomibekreftelse>?,
+    private val shadows: List<JsonOkonomibekreftelse>?,
 ) : ProductionComparator {
     override fun compare() {
         compareSize()
@@ -15,7 +15,7 @@ class BekreftelseComparator(
     }
 
     private fun compareSize() {
-        if (originals.size != shadows.size) {
+        if (originals?.size != shadows?.size) {
             logger.warn(
                 "NyModell: Antall bekreftelser er ikke likt: \n\n" +
                     "Original: ${jsonMapper.writeValueAsString(originals)}\n\n" +
@@ -25,23 +25,20 @@ class BekreftelseComparator(
     }
 
     private fun compareContent() {
-        if (originals.size != shadows.size) return
+        if (originals === shadows) return
 
-        originals.forEach { original ->
-            shadows.find { it.type == original.type }
+        originals?.forEach { original ->
+            shadows?.find { it.type == original.type }
                 ?.let { shadow ->
-                    "${compareStrings(original.kilde.name, shadow?.kilde?.name, "kilde", true)}" +
-                        "${compareStrings(original?.type, shadow?.type, "type", true)}" +
-                        "${compareStrings(original?.tittel, shadow?.tittel, "tittel", true)}" +
-                        "${compareStrings(original?.verdi?.toString(), shadow?.verdi?.toString(), "verdi", true)}" +
-                        "${
-                            compareStrings(
-                                original?.bekreftelsesDato,
-                                shadow?.bekreftelsesDato,
-                                "bekreftetDato",
-                                true,
-                            )
-                        }"
+                    listOf(
+                        compareStrings(original.kilde.name, shadow.kilde?.name, "kilde", true),
+                        compareStrings(original.type, shadow.type, "type", true),
+                        compareStrings(original.tittel, shadow.tittel, "tittel", true),
+                        compareStrings(original.verdi?.toString(), shadow.verdi?.toString(), "verdi", true),
+                        compareStrings(original.bekreftelsesDato, shadow.bekreftelsesDato, "bekreftetDato", true),
+                    )
+                        .filter { it != "" }
+                        .joinToString("\n")
                 }
                 ?.also { compareString ->
                     if (compareString.isNotEmpty() && compareString.isNotBlank()) {
@@ -51,7 +48,6 @@ class BekreftelseComparator(
                         )
                     }
                 }
-
                 ?: logger.warn(
                     "NyModell: Bekreftelse ikke funnet i shadow: \n\n" +
                         "Original: ${jsonMapper.writeValueAsString(original)}\n\n" +
