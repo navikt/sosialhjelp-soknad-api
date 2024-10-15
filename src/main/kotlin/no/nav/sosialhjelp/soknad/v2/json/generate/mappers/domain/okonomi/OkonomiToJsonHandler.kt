@@ -60,18 +60,19 @@ private fun Okonomi.setupMappers(json: JsonOkonomi): List<OkonomiElementsToJsonM
 // JsonOpplysninger og JsonOversikt er required i JsonOkonomi selv uten data
 private fun JsonInternalSoknad.initializeObjects(): JsonOkonomi {
     val jsonOkonomi = soknad.data.okonomi ?: soknad.data.withOkonomi(JsonOkonomi()).okonomi
-    return jsonOkonomi.apply {
-        oversikt ?: withOversikt(JsonOkonomioversikt())
-        opplysninger ?: withOpplysninger(JsonOkonomiopplysninger())
-        opplysninger.beskrivelseAvAnnet
-            ?: opplysninger
-                .withBeskrivelseAvAnnet(
-                    JsonOkonomibeskrivelserAvAnnet()
-                        .withKilde(JsonKildeBruker.BRUKER)
-                        .withVerdi("")
-                        .withSparing("")
-                        .withBoutgifter("")
-                        .withBarneutgifter(""),
-                )
-    }
+    jsonOkonomi.oversikt ?: jsonOkonomi.withOversikt(JsonOkonomioversikt())
+    jsonOkonomi.opplysninger ?: jsonOkonomi.withOpplysninger(JsonOkonomiopplysninger())
+    jsonOkonomi.opplysninger.beskrivelseAvAnnet ?: jsonOkonomi.opplysninger.withBeskrivelseAvAnnet(initBeskrivelser())
+
+    return jsonOkonomi
+}
+
+fun initBeskrivelser(): JsonOkonomibeskrivelserAvAnnet {
+    return JsonOkonomibeskrivelserAvAnnet()
+        .withKilde(JsonKildeBruker.BRUKER)
+        .withVerdi("")
+        .withSparing("")
+        .withBoutgifter("")
+        .withBarneutgifter("")
+        .withUtbetaling("")
 }
