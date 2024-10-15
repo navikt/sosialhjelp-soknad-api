@@ -122,6 +122,7 @@ class AdresseRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         // TODO Ekstra logging
         logger.info("Henter navEnhet - PUT personalia/adresser")
+
         val navEnhetFrontend =
             navEnhetService
                 .getNavEnhet(

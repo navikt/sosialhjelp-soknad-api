@@ -19,7 +19,7 @@ class CreateDeleteSoknadHandler(
     private val dokumentasjonService: DokumentasjonService,
     private val mellomlagringService: MellomlagringService,
 ) {
-    fun createSoknad(token: String): Pair<UUID, Boolean> =
+    fun createSoknad(token: String): UUID =
         soknadService
             .createSoknad(
                 eierId = SubjectHandlerUtils.getUserIdFromToken(),
@@ -27,11 +27,9 @@ class CreateDeleteSoknadHandler(
                 // TODO Spesifisert til UTC i filformatet
                 opprettetDato = LocalDateTime.now(),
                 kortSoknad = false,
-            ).let { soknadId ->
+            ).also { soknadId ->
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
                 createObligatoriskDokumentasjon(soknadId)
-
-                Pair(soknadId, false)
             }
 
     fun cancelSoknad(soknadId: UUID) {

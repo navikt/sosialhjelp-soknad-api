@@ -42,11 +42,11 @@ class SoknadLifecycleController(
 
         return soknadLifecycleService
             .startSoknad(token)
-            .let { (soknadId, useKortSoknad) ->
+            .let { soknadId ->
                 response.addCookie(xsrfCookie(soknadId))
                 response.addCookie(xsrfCookieMedBehandlingsid(soknadId))
 
-                StartSoknadResponseDto(soknadId, useKortSoknad)
+                StartSoknadResponseDto(soknadId, false)
             }
     }
 

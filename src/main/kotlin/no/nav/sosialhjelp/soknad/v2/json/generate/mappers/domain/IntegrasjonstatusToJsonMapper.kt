@@ -25,6 +25,11 @@ class IntegrasjonstatusToJsonMapper(
         )
     }
 
+    override fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) = mapToJson(soknadId, jsonInternalSoknad)
+
     internal companion object Mapper {
         fun doMapping(
             integrasjonstatus: Integrasjonstatus,
@@ -33,11 +38,10 @@ class IntegrasjonstatusToJsonMapper(
             json.soknad.driftsinformasjon = integrasjonstatus.toJsonDriftsinformasjon()
         }
 
-        private fun Integrasjonstatus.toJsonDriftsinformasjon(): JsonDriftsinformasjon {
-            return JsonDriftsinformasjon()
+        private fun Integrasjonstatus.toJsonDriftsinformasjon(): JsonDriftsinformasjon =
+            JsonDriftsinformasjon()
                 .withUtbetalingerFraNavFeilet(feilUtbetalingerNav)
                 .withInntektFraSkatteetatenFeilet(feilInntektSkatteetaten)
                 .withStotteFraHusbankenFeilet(feilStotteHusbanken)
-        }
     }
 }

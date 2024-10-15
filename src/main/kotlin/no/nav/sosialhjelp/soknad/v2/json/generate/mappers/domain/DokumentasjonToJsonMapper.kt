@@ -28,6 +28,11 @@ class DokumentasjonToJsonMapper(
         doMapping(dokumentasjonRepository.findAllBySoknadId(soknadId), jsonInternalSoknad)
     }
 
+    override fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) = mapToJson(soknadId, jsonInternalSoknad)
+
     internal companion object Mapper {
         fun doMapping(
             dokumentasjonList: List<Dokumentasjon>,
@@ -51,13 +56,12 @@ private fun Dokumentasjon.toJsonVedlegg() =
         .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
 
 // TODO Midlertidig mapping til VedleggStatus
-internal fun DokumentasjonStatus.toVedleggStatusString(): String {
-    return when (this) {
+internal fun DokumentasjonStatus.toVedleggStatusString(): String =
+    when (this) {
         DokumentasjonStatus.LASTET_OPP -> Vedleggstatus.LastetOpp.name
         DokumentasjonStatus.FORVENTET -> Vedleggstatus.VedleggKreves.name
         DokumentasjonStatus.LEVERT_TIDLIGERE -> Vedleggstatus.VedleggAlleredeSendt.name
     }
-}
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
     // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer

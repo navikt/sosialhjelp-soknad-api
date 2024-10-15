@@ -35,6 +35,15 @@ class LivssituasjonToJsonMapper(
         }
     }
 
+    override fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
+        livssituasjonRepository.findByIdOrNull(soknadId)?.let {
+            doKortMapping(it, jsonInternalSoknad)
+        }
+    }
+
     internal companion object Mapper {
         fun doMapping(
             livssituasjon: Livssituasjon,
@@ -57,34 +66,43 @@ class LivssituasjonToJsonMapper(
                 }
             }
         }
+
+        fun doKortMapping(
+            livssituasjon: Livssituasjon,
+            json: JsonInternalSoknad,
+        ) {
+            with(json.soknad.data) {
+                livssituasjon.arbeid.let {
+                    this.arbeid ?: this.withArbeid(JsonArbeid())
+                    this.arbeid = it.toJsonArbeid()
+                }
+            }
+        }
     }
 }
 
-private fun Arbeid.toJsonArbeid(): JsonArbeid {
-    return JsonArbeid()
+private fun Arbeid.toJsonArbeid(): JsonArbeid =
+    JsonArbeid()
         .withKommentarTilArbeidsforhold(
             kommentar?.let {
                 JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)
             },
-        )
-        .withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
-}
+        ).withForhold(arbeidsforhold.map { it.toJsonArbeidsforhold() })
 
-private fun Utdanning.toJsonUtdanning(): JsonUtdanning? {
-    return erStudent.let {
+private fun Utdanning.toJsonUtdanning(): JsonUtdanning? =
+    erStudent.let {
         JsonUtdanning()
             .withKilde(JsonKilde.BRUKER)
             .withErStudent(it)
             .withStudentgrad(if (!it) null else studentgrad?.toJsonStudentgrad())
     }
-}
 
 private fun Studentgrad.toJsonStudentgrad() = JsonUtdanning.Studentgrad.fromValue(name.lowercase())
 
-private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
-    return if (botype == null && antallHusstand == null) {
+private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? =
+    if (botype == null && antallHusstand == null) {
         null
     } else {
         JsonBosituasjon()
@@ -92,12 +110,11 @@ private fun Bosituasjon.toJsonBosituasjon(): JsonBosituasjon? {
             .withBotype(botype?.toJsonBotype())
             .withAntallPersoner(antallHusstand)
     }
-}
 
 private fun Botype.toJsonBotype() = JsonBosituasjon.Botype.fromValue(name.lowercase())
 
-private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
-    return JsonArbeidsforhold()
+private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold =
+    JsonArbeidsforhold()
         .withKilde(JsonKilde.SYSTEM)
         .withArbeidsgivernavn(arbeidsgivernavn)
         .withStillingstype(harFastStilling?.toJsonArbeidsforholdStillingtype())
@@ -105,8 +122,5 @@ private fun Arbeidsforhold.toJsonArbeidsforhold(): JsonArbeidsforhold {
         .withFom(start?.toIsoString())
         .withTom(slutt?.toIsoString())
         .withOverstyrtAvBruker(false)
-}
 
-private fun Boolean.toJsonArbeidsforholdStillingtype(): JsonArbeidsforhold.Stillingstype {
-    return if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL
-}
+private fun Boolean.toJsonArbeidsforholdStillingtype(): JsonArbeidsforhold.Stillingstype = if (this) JsonArbeidsforhold.Stillingstype.FAST else JsonArbeidsforhold.Stillingstype.VARIABEL

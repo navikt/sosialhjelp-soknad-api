@@ -40,6 +40,11 @@ class FamilieToJsonMapper(
         }
     }
 
+    override fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) = mapToJson(soknadId, jsonInternalSoknad)
+
     internal companion object Mapper {
         fun doMapping(
             familie: Familie,
@@ -90,13 +95,11 @@ private fun Familie.toJsonForsorgerplikt() =
             JsonHarForsorgerplikt()
                 .withKilde(JsonKilde.SYSTEM)
                 .withVerdi(harForsorgerplikt),
-        )
-        .withBarnebidrag(
+        ).withBarnebidrag(
             JsonBarnebidrag()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(barnebidrag?.toJson()),
-        )
-        .withAnsvar(ansvar.values.toJson())
+        ).withAnsvar(ansvar.values.toJson())
 
 private fun Barnebidrag.toJson() = JsonBarnebidrag.Verdi.valueOf(name)
 
@@ -109,13 +112,11 @@ private fun Barn.toJson() =
                 .withNavn(navn?.toJson())
                 .withPersonIdentifikator(personId)
                 .withHarDiskresjonskode(false),
-        )
-        .withErFolkeregistrertSammen(
+        ).withErFolkeregistrertSammen(
             JsonErFolkeregistrertSammen()
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen),
-        )
-        .withHarDeltBosted(
+        ).withHarDeltBosted(
             JsonHarDeltBosted()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(deltBosted ?: false),

@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.humanifyHvaSokesOm
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -25,12 +26,13 @@ class KortSoknadServiceTest {
     private lateinit var digisosApiService: DigisosApiService
     private lateinit var clock: Clock
     private lateinit var kortSoknadService: KortSoknadService
+    private lateinit var soknadService: SoknadService
 
     @BeforeEach
     fun setUp() {
         digisosApiService = mockk()
         clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
-        kortSoknadService = KortSoknadService(digisosApiService, clock, mockk(), mockk(), mockk(), mockk())
+        kortSoknadService = KortSoknadService(digisosApiService, clock, soknadService, mockk(relaxed = true))
     }
 
     @Test

@@ -19,6 +19,13 @@ class SituasjonsendringToJsonMapper(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
+        // No-op
+    }
+
+    override fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) {
         situasjonsendringRepository.findByIdOrNull(soknadId)?.let {
             doMapping(it, jsonInternalSoknad)
         }

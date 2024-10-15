@@ -11,8 +11,10 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
+import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 // TODO KontaktService? (NavEnhet er jo ikke en adresse per se...)
@@ -41,6 +43,7 @@ interface TelefonService {
 class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
     private val kortSoknadService: KortSoknadService,
+    private val nyNavEnhetService: NavEnhetService,
 ) : AdresseService,
     TelefonService {
     private val logger by logger()
@@ -60,6 +63,7 @@ class KontaktServiceImpl(
         kontaktRepository.findByIdOrNull(soknadId)?.adresser
             ?: throw IkkeFunnetException("Fant ikke adresser for soknad")
 
+    @Transactional
     override fun updateBrukerAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg,
@@ -72,12 +76,20 @@ class KontaktServiceImpl(
         )
 
         val oldAdresse = findOrCreate(soknadId)
+        val adresse =
+            when (adresseValg) {
+                AdresseValg.FOLKEREGISTRERT -> oldAdresse.adresser.folkeregistrert
+                AdresseValg.MIDLERTIDIG -> oldAdresse.adresser.midlertidig
+                AdresseValg.SOKNAD -> brukerAdresse
+            }
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val mottaker = adresse?.let { nyNavEnhetService.getNavEnhet(eier, it, adresseValg) }
         return oldAdresse
-            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse)) }
+            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse), mottaker = mottaker ?: this.mottaker) }
             .let { kontaktRepository.save(it) }
             .also { adresse ->
-                // Ingen endring i kommunenummer, trenger ikke vurdere kort søknad
-                if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer) {
+                // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
+                if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer && oldAdresse.adresser.adressevalg != null) {
                     return@also
                 }
                 val token = SubjectHandlerUtils.getTokenOrNull()
