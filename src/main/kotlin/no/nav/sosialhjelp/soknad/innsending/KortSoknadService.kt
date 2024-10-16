@@ -74,7 +74,9 @@ class KortSoknadService(
                     .hendelser
                     ?.filterIsInstance<JsonUtbetaling>()
                     ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                    ?.map { it.forfallsdato.toLocalDateTime() } ?: emptyList()
+                    ?.map { it.forfallsdato.toLocalDateTime() }
+                    ?.filter { it >= LocalDateTime.now(clock) }
+                    ?: emptyList()
             }
 
         return planlagte.firstOrNull { it < in14Days }?.let {
