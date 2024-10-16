@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -20,6 +21,9 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import org.slf4j.LoggerFactory
@@ -46,6 +50,7 @@ class SoknadActions(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val digisosApiService: DigisosApiService,
     private val nedetidService: NedetidService,
+    private val navEnhetService: NavEnhetService,
 ) {
     @PostMapping("/send")
     fun sendSoknad(
@@ -64,11 +69,9 @@ class SoknadActions(
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
         val kommunenummer =
-            soknadUnderArbeid.jsonInternalSoknad
-                ?.soknad
-                ?.mottaker
-                ?.kommunenummer
-                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+                ?: utledOgLagreKommunenummer(soknadUnderArbeid)
+
         val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
@@ -96,6 +99,33 @@ class SoknadActions(
                 )
             }
         }
+    }
+
+    private fun utledOgLagreKommunenummer(soknadUnderArbeid: SoknadUnderArbeid): String {
+        val jsonSoknad =
+            soknadUnderArbeid.jsonInternalSoknad?.soknad
+                ?: throw IllegalStateException("Kan ikke sette kommunenummer - JsonSoknad er null")
+
+        val adresseValg =
+            jsonSoknad.data.personalia.oppholdsadresse?.adresseValg
+                ?: throw IllegalStateException("Kan ikke sette kommunenummer - Adressevalg er null")
+
+        val navEnhetFrontend =
+            navEnhetService.getNavEnhet(
+                eier = SubjectHandlerUtils.getUserIdFromToken(),
+                soknad = jsonSoknad,
+                valg = adresseValg,
+            ) ?: throw IllegalStateException("Kan ikke sette kommunenummer - NavEnhet er null")
+
+        setNavEnhetAsMottaker(soknadUnderArbeid, navEnhetFrontend)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, SubjectHandlerUtils.getUserIdFromToken())
+
+        return soknadUnderArbeidRepository.hentSoknad(
+            soknadUnderArbeid.behandlingsId,
+            SubjectHandlerUtils.getUserIdFromToken(),
+        )
+            .jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+            ?: throw IllegalStateException("Kan ikke sette kommunenummer - Kommunenummer er null")
     }
 
     private fun updateVedleggJsonWithHendelseTypeAndHendelseReferanse(
@@ -129,4 +159,21 @@ class SoknadActions(
     companion object {
         private val log = LoggerFactory.getLogger(SoknadActions::class.java)
     }
+}
+
+private fun setNavEnhetAsMottaker(
+    soknadUnderArbeid: SoknadUnderArbeid,
+    navEnhetFrontend: NavEnhetFrontend,
+) {
+    soknadUnderArbeid.jsonInternalSoknad?.mottaker =
+        no.nav.sbl.soknadsosialhjelp.soknad.internal
+            .JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+
+    soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker =
+        JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+            .withKommunenummer(navEnhetFrontend.kommuneNr)
 }

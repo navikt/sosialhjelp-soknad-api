@@ -7,8 +7,11 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -32,7 +35,10 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
@@ -49,6 +55,7 @@ internal class SoknadActionsTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val digisosApiService: DigisosApiService = mockk()
     private val nedetidService: NedetidService = mockk()
+    private val navEnhetService: NavEnhetService = mockk()
 
     private lateinit var eier: String
 
@@ -59,6 +66,7 @@ internal class SoknadActionsTest {
             soknadUnderArbeidRepository,
             digisosApiService,
             nedetidService,
+            navEnhetService,
         )
 
     private val token = "token"
@@ -233,6 +241,50 @@ internal class SoknadActionsTest {
         verify { soknadServiceOld wasNot called }
         verify { kommuneInfoService wasNot called }
         verify { digisosApiService wasNot called }
+    }
+
+    @Test
+    fun `Ved manglende kommunenummer skal det utledes pa nytt`() {
+        val kommunenummerSlot = slot<String>()
+
+        val soknadUnderArbeid =
+            createSoknadUnderArbeid(eier)
+                .apply {
+                    jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse = JsonAdresse()
+                    jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse.adresseValg = JsonAdresseValg.FOLKEREGISTRERT
+                }
+
+        every { soknadUnderArbeidRepository.hentSoknad("behandlingsid", eier) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhetFrontend()
+        every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
+        every { digisosApiService.getTimestampSistSendtSoknad(any()) } returns Instant.now().toEpochMilli()
+        every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
+
+        actions.sendSoknad("behandlingsid", token)
+
+        verify(exactly = 1) { digisosApiService.sendSoknad(soknadUnderArbeid, any(), capture(kommunenummerSlot)) }
+        assertThat(kommunenummerSlot.captured).isEqualTo("0301")
+
+        soknadUnderArbeid.jsonInternalSoknad
+            .also {
+                assertThat(it!!.mottaker.navEnhetsnavn).isEqualTo("NAV Oslo, Oslo")
+                assertThat(it.soknad.mottaker.kommunenummer).isEqualTo("0301")
+            }
+    }
+
+    private fun createNavEnhetFrontend(): NavEnhetFrontend {
+        return NavEnhetFrontend(
+            orgnr = "123456789",
+            enhetsnr = "030192",
+            enhetsnavn = "NAV Oslo",
+            kommunenavn = "Oslo",
+            kommuneNr = "0301",
+            behandlingsansvarlig = "Per",
+            valgt = true,
+            isMottakMidlertidigDeaktivert = false,
+            isMottakDeaktivert = false,
+        )
     }
 
     companion object {
