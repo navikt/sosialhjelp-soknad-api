@@ -50,11 +50,12 @@ class SosialhjelpPdfGenerator(
 
             leggTilPersonalia(pdf, pdfUtils, textHelpers, data.personalia, jsonInternalSoknad.midlertidigAdresse, utvidetSoknad)
             leggTilBegrunnelse(pdf, pdfUtils, data.begrunnelse, utvidetSoknad, isKortSoknad)
-            leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad)
-            leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad)
             if (isKortSoknad) {
                 leggTilSituasjonsendring(pdf, pdfUtils, utvidetSoknad, data.situasjonendring)
-            } else {
+            }
+            leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad)
+            leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad)
+            if (!isKortSoknad) {
                 leggTilArbeidOgUtdanning(pdf, pdfUtils, data.arbeid, data.utdanning, utvidetSoknad)
                 leggTilBosituasjon(pdf, pdfUtils, data.bosituasjon, utvidetSoknad)
                 leggTilUtgifterOgGjeld(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad)
