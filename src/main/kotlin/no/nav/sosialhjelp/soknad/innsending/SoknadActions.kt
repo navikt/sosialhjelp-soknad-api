@@ -66,6 +66,10 @@ class SoknadActions(
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
+        // TODO Manipulerer data for å sjekke at utlede kommunenummer funker
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = null
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
         val kommunenummer =
