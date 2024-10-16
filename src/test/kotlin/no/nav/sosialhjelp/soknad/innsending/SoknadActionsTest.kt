@@ -10,6 +10,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
@@ -21,8 +22,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligEx
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -82,6 +81,8 @@ internal class SoknadActionsTest {
         eier = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { nedetidService.isInnenforNedetid } returns false
+        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhetFrontend()
+        every { soknadUnderArbeidRepository.hentSoknad(any(String::class), any()) } returns createSoknadUnderArbeid(eier)
     }
 
     @AfterEach
@@ -100,42 +101,6 @@ internal class SoknadActionsTest {
 
         verify { soknadServiceOld wasNot called }
         verify { digisosApiService wasNot called }
-    }
-
-    @Test
-    fun sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
-        val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
-    }
-
-    @Test
-    fun sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
-        val behandlingsId = "ettersendelsePaaDigisosApiSoknad"
-        val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = createSoknadUnderArbeid(eier)
-        val soknadMetadata =
-            SoknadMetadata(
-                id = 0L,
-                behandlingsId = "behandlingsId",
-                fnr = eier,
-                status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
-            )
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
     }
 
     @Test
@@ -295,7 +260,15 @@ internal class SoknadActionsTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = eier,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
+                jsonInternalSoknad =
+                    createEmptyJsonInternalSoknad(eier, false).apply {
+                        soknad.data.personalia.oppholdsadresse =
+                            JsonAdresse()
+                                .withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)
+                        soknad.mottaker =
+                            JsonSoknadsmottaker()
+                                .withKommunenummer("0301")
+                    },
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
