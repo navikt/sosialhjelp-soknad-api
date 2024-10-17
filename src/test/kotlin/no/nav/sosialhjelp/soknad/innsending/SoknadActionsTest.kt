@@ -226,6 +226,10 @@ internal class SoknadActionsTest {
         every { digisosApiService.getTimestampSistSendtSoknad(any()) } returns Instant.now().toEpochMilli()
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
 
+        soknadUnderArbeid.jsonInternalSoknad!!.apply {
+            soknad.mottaker.kommunenummer = null
+        }
+
         actions.sendSoknad("behandlingsid", token)
 
         verify(exactly = 1) { digisosApiService.sendSoknad(soknadUnderArbeid, any(), capture(kommunenummerSlot)) }
