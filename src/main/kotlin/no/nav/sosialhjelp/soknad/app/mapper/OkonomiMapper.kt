@@ -8,6 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import java.time.LocalDateTime
 
 object OkonomiMapper {
     fun setBekreftelse(
@@ -15,18 +17,25 @@ object OkonomiMapper {
         type: String,
         verdi: Boolean?,
         tittel: String,
+        timestamp: LocalDateTime = LocalDateTime.now(),
     ) {
         opplysninger.bekreftelse = opplysninger.bekreftelse ?: ArrayList()
 
-        opplysninger.bekreftelse.firstOrNull { it.type == type }?.apply {
-            withKilde(JsonKilde.BRUKER).withVerdi(verdi)
-        } ?: opplysninger.bekreftelse.add(
-            JsonOkonomibekreftelse()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(type)
-                .withTittel(tittel)
-                .withVerdi(verdi),
-        )
+        opplysninger.bekreftelse.firstOrNull { it.type == type }
+            ?.apply {
+                this
+                    .withKilde(JsonKilde.BRUKER)
+                    .withVerdi(verdi)
+                    .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(timestamp))
+            }
+            ?: opplysninger.bekreftelse.add(
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withVerdi(verdi)
+                    .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(timestamp)),
+            )
     }
 
     private fun addFormueIfNotPresentInOversikt(

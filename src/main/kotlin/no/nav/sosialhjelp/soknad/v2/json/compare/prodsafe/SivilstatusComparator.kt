@@ -41,6 +41,11 @@ class SivilstatusComparator(
     }
 
     private fun checkOriginalEmpty() {
+        val isEmpty =
+            original?.folkeregistrertMedEktefelle?.toString().isNullOrBlank() &&
+                original?.borSammenMed?.toString().isNullOrBlank() && original?.ektefelle?.personIdentifikator.isNullOrBlank()
+        if (isEmpty) return
+
         val compareString =
             listOf(
                 isNullOrBlank(original?.kilde?.name, "kilde"),

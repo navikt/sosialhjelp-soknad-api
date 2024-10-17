@@ -51,7 +51,6 @@ class FamilieToJsonMapper(
                 if (familie.ektefelle != null && familie.sivilstatus != null) {
                     sivilstatus = familie.toJsonSivilstatus()
                 }
-
                 forsorgerplikt = familie.toJsonForsorgerplikt()
             }
         }
