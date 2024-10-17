@@ -120,7 +120,7 @@ class SoknadActions(
         setNavEnhetAsMottaker(soknadUnderArbeid, navEnhetFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, SubjectHandlerUtils.getUserIdFromToken())
 
-        return navEnhetFrontend.kommuneNr
+        return soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kan ikke sette kommunenummer - Kommunenummer er null")
     }
 
