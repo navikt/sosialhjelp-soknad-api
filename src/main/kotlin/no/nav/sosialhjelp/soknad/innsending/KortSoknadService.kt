@@ -23,77 +23,67 @@ class KortSoknadService(
     fun qualifies(
         token: String,
         kommunenummer: String,
-    ): Boolean = hasRecentSoknadFromFiks(token, kommunenummer) || hasRecentOrUpcomingUtbetalinger(token, kommunenummer)
-
-    private fun hasRecentSoknadFromFiks(
-        token: String,
-        kommunenummer: String,
-    ): Boolean {
-        val innsynsfiler =
-            getInnsynsfilerForKommune(token, kommunenummer)
-        val mottattTimestamps =
-            innsynsfiler.flatMap { innsynsfil ->
-                innsynsfil.hendelser
-                    ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
-                    ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
+    ): Boolean =
+        digisosApiService
+            .getSoknaderForUser(token)
+            // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
+            .asSequence()
+            .filter { it.kommunenummer == kommunenummer }
+            .sortedByDescending { it.sistEndret }
+            .mapNotNull { soknad ->
+                soknad.digisosSoker?.metadata?.let {
+                    digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
+                }
+            }.any { innsynsfil ->
+                innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
             }
-        return mottattTimestamps.firstOrNull { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }?.let {
-            log.info("Bruker kvaliserer til kort søknad via søknad mottatt $it")
-            true
-        } ?: false
+
+    private fun JsonDigisosSoker.hasRecentSoknadFromFiks(): Boolean {
+        val mottattSiste120Dager =
+            hendelser
+                ?.asSequence()
+                ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
+                ?.mapNotNull { it.hendelsestidspunkt }
+                ?.firstOrNull { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }
+        if (mottattSiste120Dager != null) {
+            log.info("Bruker kvaliserer til kort søknad via søknad mottatt $mottattSiste120Dager")
+            return true
+        }
+        return false
     }
 
-    private fun hasRecentOrUpcomingUtbetalinger(
-        token: String,
-        kommunenummer: String,
-    ): Boolean {
+    private fun JsonDigisosSoker.hasRecentOrUpcomingUtbetalinger(): Boolean {
         val fourMonthsAgo = LocalDateTime.now(clock).minusDays(120)
         val in14Days = LocalDateTime.now(clock).plusDays(14)
 
-        val innsynsfiler =
-            getInnsynsfilerForKommune(token, kommunenummer)
+        val utbetaltSiste120Dager =
+            hendelser
+                ?.asSequence()
+                ?.filterIsInstance<JsonUtbetaling>()
+                ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
+                ?.map { it.utbetalingsdato.toLocalDateTime() }
+                ?.firstOrNull { it >= fourMonthsAgo }
 
-        val utbetalte =
-            innsynsfiler.flatMap { innsynsfil ->
-                innsynsfil
-                    .hendelser
-                    ?.filterIsInstance<JsonUtbetaling>()
-                    ?.filter { it.status == JsonUtbetaling.Status.UTBETALT && it.utbetalingsdato != null }
-                    ?.map { it.utbetalingsdato.toLocalDateTime() } ?: emptyList()
-            }
-
-        val utbetaltSiste4Maneder = utbetalte.firstOrNull { it >= fourMonthsAgo }
-        if (utbetaltSiste4Maneder != null) {
-            log.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste4Maneder")
+        if (utbetaltSiste120Dager != null) {
+            log.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste120Dager")
             return true
         }
 
-        val planlagte =
-            innsynsfiler.flatMap { innsynsfil ->
-                innsynsfil
-                    .hendelser
-                    ?.filterIsInstance<JsonUtbetaling>()
-                    ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
-                    ?.map { it.forfallsdato.toLocalDateTime() }
-                    ?.filter { it >= LocalDateTime.now(clock) }
-                    ?: emptyList()
-            }
+        val planlagtInnen14Dager =
+            hendelser
+                ?.asSequence()
+                ?.filterIsInstance<JsonUtbetaling>()
+                ?.filter { it.status == JsonUtbetaling.Status.PLANLAGT_UTBETALING && it.forfallsdato != null }
+                ?.map { it.forfallsdato.toLocalDateTime() }
+                ?.filter { it >= LocalDateTime.now(clock) }
+                ?.firstOrNull { it < in14Days }
 
-        return planlagte.firstOrNull { it < in14Days }?.let {
-            log.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $it")
-            true
-        } ?: false
-    }
-
-    private fun getInnsynsfilerForKommune(
-        token: String,
-        kommunenummer: String,
-    ): List<JsonDigisosSoker> =
-        digisosApiService.getSoknaderForUser(token).filter { it.kommunenummer == kommunenummer }.mapNotNull { soknad ->
-            soknad.digisosSoker?.metadata?.let {
-                digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
-            }
+        if (planlagtInnen14Dager != null) {
+            log.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $planlagtInnen14Dager")
+            return true
         }
+        return false
+    }
 
     private fun String.toLocalDateTime() =
         runCatching {
