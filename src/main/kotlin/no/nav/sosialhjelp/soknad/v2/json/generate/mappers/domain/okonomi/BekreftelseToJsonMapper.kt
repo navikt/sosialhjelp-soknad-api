@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
@@ -16,6 +17,23 @@ class BekreftelseToJsonMapper(
 
     override fun doMapping() {
         opplysninger.bekreftelse.addAll(bekreftelser.map { it.toJsonBekreftelse() })
+        addBostotteSamtykkeFalseIfBostotteIsFalse(opplysninger)
+    }
+
+    // "Gammel modell" legger til samtykke uavhengig av om eksisterende bostotte er true eller false
+    private fun addBostotteSamtykkeFalseIfBostotteIsFalse(opplysninger: JsonOkonomiopplysninger) {
+        bekreftelser.find { it.type == BekreftelseType.BOSTOTTE }
+            ?.takeIf { !it.verdi }
+            ?.also { bostotte ->
+                opplysninger.bekreftelse.add(
+                    JsonOkonomibekreftelse()
+                        .withKilde(JsonKilde.BRUKER)
+                        .withType(BekreftelseType.BOSTOTTE_SAMTYKKE.toSoknadJsonTypeString())
+                        .withTittel(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())
+                        .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(bostotte.tidspunkt))
+                        .withVerdi(false),
+                )
+            }
     }
 }
 

@@ -32,7 +32,7 @@ class SituasjonsendringToJsonMapper(
             json.initializeObjects()
             json.soknad.data.situasjonendring =
                 JsonSituasjonendring()
-                    .withHarNoeEndretSeg(situasjonsendring.endring)
+                    .withHarNoeEndretSeg(situasjonsendring.endring ?: false)
                     .withHvaHarEndretSeg(situasjonsendring.hvaErEndret)
                     .withKilde(JsonKildeBruker.BRUKER)
         }

@@ -26,7 +26,7 @@ class BekreftelseComparator(
     }
 
     private fun compareContent() {
-        if (originals === shadows) return
+        if (originals == shadows) return
 
         originals?.forEach { original ->
             shadows?.find { it.type == original.type }
@@ -59,9 +59,14 @@ class BekreftelseComparator(
     }
 
     private fun compareBekreftelsesDato(
-        originalTimestamp: String,
-        shadowTimestamp: String,
+        originalTimestamp: String?,
+        shadowTimestamp: String?,
     ): String {
+        if (originalTimestamp == null || shadowTimestamp == null) {
+            return "En eller begge Bekreftelsesdato er null: \n" +
+                "Original: $originalTimestamp\n" +
+                "Shadow: $shadowTimestamp"
+        }
         val original = ZonedDateTime.parse(originalTimestamp).toLocalDateTime()
         val shadow = ZonedDateTime.parse(shadowTimestamp).toLocalDateTime()
 
