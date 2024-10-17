@@ -31,11 +31,6 @@ class EierToJsonMapper(
             ?: throw IllegalStateException("Fant ikke Eier")
     }
 
-    override fun mapToKortJson(
-        soknadId: UUID,
-        jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
-
     internal companion object Mapper {
         fun doMapping(
             eier: Eier,

@@ -40,11 +40,6 @@ class KontaktToJsonMapper(
         doMapping(kontakt, jsonInternalSoknad)
     }
 
-    override fun mapToKortJson(
-        soknadId: UUID,
-        jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
-
     internal companion object Mapper {
         fun doMapping(
             kontakt: Kontakt,

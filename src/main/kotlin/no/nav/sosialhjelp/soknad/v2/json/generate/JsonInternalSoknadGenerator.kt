@@ -28,7 +28,7 @@ interface DomainToJsonMapper {
     fun mapToKortJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
-    )
+    ) = mapToJson(soknadId, jsonInternalSoknad)
 }
 
 @Component

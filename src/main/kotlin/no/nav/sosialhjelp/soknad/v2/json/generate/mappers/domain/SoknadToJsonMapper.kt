@@ -33,11 +33,6 @@ class SoknadToJsonMapper(
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
-    override fun mapToKortJson(
-        soknadId: UUID,
-        jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
-
     internal companion object Mapper {
         fun doMapping(
             domainSoknad: Soknad,

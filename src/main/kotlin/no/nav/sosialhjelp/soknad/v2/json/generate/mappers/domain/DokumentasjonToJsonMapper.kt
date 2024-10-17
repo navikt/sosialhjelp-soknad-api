@@ -28,11 +28,6 @@ class DokumentasjonToJsonMapper(
         doMapping(dokumentasjonRepository.findAllBySoknadId(soknadId), jsonInternalSoknad)
     }
 
-    override fun mapToKortJson(
-        soknadId: UUID,
-        jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
-
     internal companion object Mapper {
         fun doMapping(
             dokumentasjonList: List<Dokumentasjon>,

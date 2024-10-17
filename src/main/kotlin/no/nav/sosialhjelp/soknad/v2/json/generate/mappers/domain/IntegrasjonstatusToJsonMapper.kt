@@ -25,11 +25,6 @@ class IntegrasjonstatusToJsonMapper(
         )
     }
 
-    override fun mapToKortJson(
-        soknadId: UUID,
-        jsonInternalSoknad: JsonInternalSoknad,
-    ) = mapToJson(soknadId, jsonInternalSoknad)
-
     internal companion object Mapper {
         fun doMapping(
             integrasjonstatus: Integrasjonstatus,
