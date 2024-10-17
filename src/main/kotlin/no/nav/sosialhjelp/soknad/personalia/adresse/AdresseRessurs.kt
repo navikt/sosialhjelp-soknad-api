@@ -131,18 +131,22 @@ class AdresseRessurs(
                     adresserFrontend.valg,
                 )?.also {
                     setNavEnhetAsMottaker(soknad, it, eier)
+                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
                     if (!MiljoUtils.isMockAltProfil()) {
-                        val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
-                        if (changed) {
-                            val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-                            if (soknadMetadata != null) {
-                                soknadMetadata.kortSoknad = isKort
-                                soknadMetadataRepository.oppdater(soknadMetadata)
-                            }
-                        }
+                        kotlin
+                            .runCatching {
+                                val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
+                                if (changed) {
+                                    val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                                    if (soknadMetadata != null) {
+                                        soknadMetadata.kortSoknad = isKort
+                                        soknadMetadataRepository.oppdater(soknadMetadata)
+                                    }
+                                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+                                }
+                            }.onFailure { error -> logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error) }
                     }
-                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
                     // TODO Ekstra logging
                     logger.info("NavEnhetFrontend: $it")
@@ -172,7 +176,14 @@ class AdresseRessurs(
             return false to false
         }
         val kortSoknad = isKortSoknadEnabled(navEnhet.kommuneNr) && kortSoknadService.qualifies(token, navEnhet.kommuneNr ?: "")
-        val nySoknadstype = if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD
+        val nySoknadstype =
+            if (kortSoknad) {
+                logger.info("Bruker kvalifiserer til kort søknad")
+                JsonData.Soknadstype.KORT
+            } else {
+                logger.info("Bruker kvalifiserer ikke til kort søknad")
+                JsonData.Soknadstype.STANDARD
+            }
         if (nySoknadstype != soknad.data.soknadstype) {
             soknad.data.soknadstype = nySoknadstype
             if (nySoknadstype == JsonData.Soknadstype.STANDARD) {
