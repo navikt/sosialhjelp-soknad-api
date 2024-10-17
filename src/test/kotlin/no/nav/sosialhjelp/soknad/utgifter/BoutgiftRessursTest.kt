@@ -29,7 +29,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -138,7 +138,7 @@ internal class BoutgiftRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.data.okonomi.opplysninger.utbetaling =
             listOf(JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN))
-        setBekreftelse(
+        OkonomiMapper.setBekreftelse(
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger,
             BOSTOTTE_SAMTYKKE,
@@ -157,7 +157,7 @@ internal class BoutgiftRessursTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
-        setBekreftelse(
+        OkonomiMapper.setBekreftelse(
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger,
             BOSTOTTE_SAMTYKKE,
