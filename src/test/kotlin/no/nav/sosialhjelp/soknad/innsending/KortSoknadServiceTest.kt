@@ -126,6 +126,21 @@ class KortSoknadServiceTest {
     }
 
     @Test
+    fun `should not qualify if there is an upcoming utbetaling before today`() {
+        val digisosSak = createDigisosSak()
+        val digisosSoker = createJsonDigisosSoker(listOf(createUpcomingUtbetaling("2022-10-01T00:00:00Z", "2022-06-01T00:00:00Z")))
+        every { digisosApiService.getSoknaderForUser(any()) } returns
+            listOf(
+                digisosSak,
+            )
+        every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
+
+        val result = kortSoknadService.qualifies("token", "0301")
+
+        assertFalse(result)
+    }
+
+    @Test
     fun `should not qualify if there are no recent soknader or utbetalinger`() {
         val result = kortSoknadService.qualifies("12345678901", "token")
 

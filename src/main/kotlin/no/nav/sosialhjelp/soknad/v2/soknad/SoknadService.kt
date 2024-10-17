@@ -49,7 +49,8 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService, BegrunnelseService {
+) : SoknadService,
+    BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -70,7 +71,8 @@ class SoknadServiceImpl(
             .id
 
     override fun deleteSoknad(soknadId: UUID) {
-        soknadRepository.findByIdOrNull(soknadId)
+        soknadRepository
+            .findByIdOrNull(soknadId)
             ?.let { soknadRepository.delete(it) }
             ?: logger.warn("NyModell: Kan ikke slette soknad. Finnes ikke.")
     }
