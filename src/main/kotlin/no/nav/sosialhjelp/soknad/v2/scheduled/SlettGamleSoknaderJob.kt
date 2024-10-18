@@ -21,7 +21,7 @@ class SlettGamleSoknaderJob(
     private val log by logger()
 
 //    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
-    @Scheduled(cron = "0 45 9 * * *")
+    @Scheduled(cron = "0 10 10 * * *")
     suspend fun slettGamleSoknader() =
         kotlin.runCatching {
             if (leaderElection.isLeader()) {
