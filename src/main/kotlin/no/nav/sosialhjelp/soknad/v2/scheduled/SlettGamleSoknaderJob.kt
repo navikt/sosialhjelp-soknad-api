@@ -8,10 +8,9 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
-const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
+// const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
 
 @Component
 class SlettGamleSoknaderJob(
@@ -21,7 +20,8 @@ class SlettGamleSoknaderJob(
 ) {
     private val log by logger()
 
-    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
+//    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
+    @Scheduled(cron = "0 10 10 * * *")
     suspend fun slettGamleSoknader() =
         kotlin.runCatching {
             if (leaderElection.isLeader()) {
@@ -43,7 +43,4 @@ class SlettGamleSoknaderJob(
         }.onFailure {
             log.error("Feil ved sletting av gamle søknader", it)
         }
-
-    private fun slettMellomlagredeVedlegg(soknadId: UUID) {
-    }
 }

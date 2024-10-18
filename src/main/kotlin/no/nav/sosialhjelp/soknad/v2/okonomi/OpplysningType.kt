@@ -51,6 +51,9 @@ private object StringToOpplysningTypeMapper {
         }
 
     fun map(typeString: String): OpplysningType {
+        // TODO Midlertidig manuell mapping pga eksisterende data med feil type
+        if (typeString == "UTGIFTER_HUSLEIE_KOMMUNAL") return UtgiftType.UTGIFTER_HUSLEIE
+
         return opplysningTypes.find { it.name == typeString }
             ?: error("Kunne ikke mappe til OpplysningType: $typeString")
     }
