@@ -89,7 +89,7 @@ internal class SoknadServiceImplOldTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
-        soknadServiceOld.startSoknad("", null)
+        soknadServiceOld.startSoknad("", false)
 
         val bekreftelser =
             soknadUnderArbeidSlot.captured.jsonInternalSoknad!!

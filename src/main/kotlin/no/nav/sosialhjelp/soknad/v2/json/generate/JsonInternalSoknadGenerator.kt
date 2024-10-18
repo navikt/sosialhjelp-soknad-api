@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.v2.json.generate
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -34,24 +34,27 @@ interface DomainToJsonMapper {
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
+    private val soknadService: SoknadService,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
 
-    fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad =
-        JsonInternalSoknad()
+    fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
+        val soknad = soknadService.getSoknad(soknadId)
+        return JsonInternalSoknad()
             .withSoknad(JsonSoknad())
             .withVedlegg(JsonVedleggSpesifikasjon())
             .withMottaker(JsonSoknadsmottaker())
             .withMidlertidigAdresse(JsonAdresse())
             .apply {
                 mappers.forEach {
-                    if (this.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
+                    if (soknad.kortSoknad) {
                         it.mapToKortJson(soknadId, this)
                     } else {
                         it.mapToJson(soknadId, this)
                     }
                 }
             }.also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
+    }
 
     fun copyAndMerge(
         soknadId: String,

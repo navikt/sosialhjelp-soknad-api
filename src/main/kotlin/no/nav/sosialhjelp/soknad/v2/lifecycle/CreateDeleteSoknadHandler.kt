@@ -19,17 +19,20 @@ class CreateDeleteSoknadHandler(
     private val dokumentasjonService: DokumentasjonService,
     private val mellomlagringService: MellomlagringService,
 ) {
-    fun createSoknad(token: String): UUID =
+    fun createSoknad(
+        token: String,
+        isKort: Boolean,
+    ): UUID =
         soknadService
             .createSoknad(
                 eierId = SubjectHandlerUtils.getUserIdFromToken(),
                 soknadId = UUID.randomUUID(),
                 // TODO Spesifisert til UTC i filformatet
                 opprettetDato = LocalDateTime.now(),
-                kortSoknad = false,
+                kortSoknad = isKort,
             ).also { soknadId ->
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
-                createObligatoriskDokumentasjon(soknadId)
+                createObligatoriskDokumentasjon(soknadId, isKort)
             }
 
     fun cancelSoknad(soknadId: UUID) {
@@ -41,8 +44,17 @@ class CreateDeleteSoknadHandler(
             }
     }
 
-    private fun createObligatoriskDokumentasjon(soknadId: UUID) {
-        obligatoriskeDokumentasjonsTyper
+    private fun createObligatoriskDokumentasjon(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    ) {
+        val obligatorisk =
+            if (kortSoknad) {
+                obligatoriskeDokumentasjonsTyperForKortSoknad
+            } else {
+                obligatoriskeDokumentasjonsTyper
+            }
+        obligatorisk
             .forEach {
                 dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = it)
             }
@@ -54,6 +66,12 @@ class CreateDeleteSoknadHandler(
         soknadService.deleteSoknad(soknadId)
     }
 }
+
+private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
+    listOf(
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+        AnnenDokumentasjonType.BEHOV,
+    )
 
 private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
     listOf(

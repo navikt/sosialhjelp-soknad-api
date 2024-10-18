@@ -39,6 +39,7 @@ class SituasjonsendringToJsonMapper(
             json.initializeObjects()
             json.soknad.data.situasjonendring =
                 JsonSituasjonendring()
+                    // TODO: Har blitt enig med FSLene om at denne kan være false, selv om den egentlig ikke er i bruk. Fjern fra filformatet på sikt?
                     .withHarNoeEndretSeg(situasjonsendring.endring ?: false)
                     .withHvaHarEndretSeg(situasjonsendring.hvaErEndret)
                     .withKilde(JsonKildeBruker.BRUKER)

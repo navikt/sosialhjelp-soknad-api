@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.UUID
@@ -31,8 +33,19 @@ class SoknadLifecycleController(
     @PostMapping("/create")
     fun createSoknad(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = true) token: String,
+        @RequestParam(value = "soknadstype", required = false) soknadstype: String?,
         response: HttpServletResponse,
     ): StartSoknadResponseDto {
+        val isKort =
+            if (MiljoUtils.isNonProduction()) {
+                when (soknadstype) {
+                    "kort" -> true
+                    "standard" -> false
+                    else -> false
+                }
+            } else {
+                false
+            }
         // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
@@ -41,7 +54,7 @@ class SoknadLifecycleController(
         }
 
         return soknadLifecycleService
-            .startSoknad(token)
+            .startSoknad(token, isKort)
             .let { soknadId ->
                 response.addCookie(xsrfCookie(soknadId))
                 response.addCookie(xsrfCookieMedBehandlingsid(soknadId))

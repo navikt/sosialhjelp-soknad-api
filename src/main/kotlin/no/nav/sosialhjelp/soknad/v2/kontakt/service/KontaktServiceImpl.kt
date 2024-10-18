@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
@@ -87,28 +88,31 @@ class KontaktServiceImpl(
         return oldAdresse
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse), mottaker = mottaker ?: this.mottaker) }
             .let { kontaktRepository.save(it) }
+            // Oppdater kort søknad
             .also { adresse ->
-                // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-                if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer && oldAdresse.adresser.adressevalg != null) {
-                    return@also
-                }
-                val token = SubjectHandlerUtils.getTokenOrNull()
-                if (token == null) {
-                    logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
-                    return@also
-                }
-                val kommunenummer = adresse.mottaker.kommunenummer
-                if (kommunenummer == null) {
-                    logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
-                    return@also
-                }
+                if (!MiljoUtils.isMockAltProfil()) {
+                    // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
+                    if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer && oldAdresse.adresser.adressevalg != null) {
+                        return@also
+                    }
+                    val token = SubjectHandlerUtils.getTokenOrNull()
+                    if (token == null) {
+                        logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
+                        return@also
+                    }
+                    val kommunenummer = adresse.mottaker.kommunenummer
+                    if (kommunenummer == null) {
+                        logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
+                        return@also
+                    }
 
-                val qualifiesForKortSoknad = kortSoknadService.isEnabled(kommunenummer) && kortSoknadService.isQualified(token, kommunenummer)
+                    val qualifiesForKortSoknad = kortSoknadService.isEnabled(kommunenummer) && kortSoknadService.isQualified(token, kommunenummer)
 
-                if (qualifiesForKortSoknad) {
-                    kortSoknadService.transitionToKort(soknadId)
-                } else {
-                    kortSoknadService.transitionToStandard(soknadId)
+                    if (qualifiesForKortSoknad) {
+                        kortSoknadService.transitionToKort(soknadId)
+                    } else {
+                        kortSoknadService.transitionToStandard(soknadId)
+                    }
                 }
             }.adresser
     }

@@ -161,18 +161,18 @@ class SoknadRessurs(
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         // Tillater å overstyre søknadstype i test-miljøene
-        val type =
+        val isKort =
             if (MiljoUtils.isNonProduction()) {
                 when (soknadstype) {
                     "kort" -> true
                     "standard" -> false
-                    else -> null
+                    else -> false
                 }
             } else {
-                null
+                false
             }
         return soknadServiceOld
-            .startSoknad(token, type)
+            .startSoknad(token, isKort)
             .also {
                 response.addCookie(xsrfCookie(it.brukerBehandlingId))
                 response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))

@@ -133,6 +133,7 @@ class AdresseRessurs(
                     setNavEnhetAsMottaker(soknad, it, eier)
                     soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
+                    // Man må skru av og på kort søknad på forsiden i mock/lokalt
                     if (!MiljoUtils.isMockAltProfil()) {
                         kotlin
                             .runCatching {
@@ -154,10 +155,9 @@ class AdresseRessurs(
                 }
 
         // Ny modell
-        soknadV2ControllerAdapter.updateAdresseOgNavEnhet(
+        soknadV2ControllerAdapter.updateAdresse(
             behandlingsId,
             adresserFrontend,
-            navEnhetFrontend,
         )
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()

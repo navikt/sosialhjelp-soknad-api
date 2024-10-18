@@ -28,23 +28,24 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
-        kotlin.runCatching {
-            soknadService.createSoknad(
-                soknadId = UUID.fromString(behandlingsId),
-                opprettetDato = opprettetDato,
-                eierId = eierId,
-                kortSoknad = kortSoknad,
-            )
+        kotlin
+            .runCatching {
+                soknadService.createSoknad(
+                    soknadId = UUID.fromString(behandlingsId),
+                    opprettetDato = opprettetDato,
+                    eierId = eierId,
+                    kortSoknad = kortSoknad,
+                )
 
-            opprettForventetDokumentasjon(behandlingsId)
-        }
-            .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+                opprettForventetDokumentasjon(behandlingsId, kortSoknad)
+            }.onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
 
-        kotlin.runCatching {
-            soknadService.findOrError(UUID.fromString(behandlingsId))
-                .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
-        }
-            .onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
+        kotlin
+            .runCatching {
+                soknadService
+                    .findOrError(UUID.fromString(behandlingsId))
+                    .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
+            }.onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
     }
 
     override fun setInnsendingstidspunkt(
@@ -53,16 +54,17 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
-        kotlin.runCatching {
-            TimestampConverter.parseFromUTCString(innsendingsTidspunkt)
-                .also {
-                    soknadService.setInnsendingstidspunkt(
-                        soknadId = UUID.fromString(soknadId),
-                        innsendingsTidspunkt = it,
-                    )
-                }
-        }
-            .onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+        kotlin
+            .runCatching {
+                TimestampConverter
+                    .parseFromUTCString(innsendingsTidspunkt)
+                    .also {
+                        soknadService.setInnsendingstidspunkt(
+                            soknadId = UUID.fromString(soknadId),
+                            innsendingsTidspunkt = it,
+                        )
+                    }
+            }.onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
@@ -74,16 +76,27 @@ class SoknadV2AdapterService(
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    private fun opprettForventetDokumentasjon(behandlingsId: String) {
+    private fun opprettForventetDokumentasjon(
+        behandlingsId: String,
+        kortSoknad: Boolean,
+    ) {
+        if (kortSoknad) {
+            // oppretter dokumentasjon kort|behov
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.BEHOV,
+            )
+        } else {
+            // oppretter dokumentasjon skattemelding
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.SKATTEMELDING,
+            )
+        }
         // oppretter utgift annet annet (og den oppretter forventet dokumentasjon)
         dokumentasjonService.opprettDokumentasjon(
             soknadId = UUID.fromString(behandlingsId),
             opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-        )
-        // oppretter dokumentasjon skattemelding
-        dokumentasjonService.opprettDokumentasjon(
-            soknadId = UUID.fromString(behandlingsId),
-            opplysningType = AnnenDokumentasjonType.SKATTEMELDING,
         )
     }
 }

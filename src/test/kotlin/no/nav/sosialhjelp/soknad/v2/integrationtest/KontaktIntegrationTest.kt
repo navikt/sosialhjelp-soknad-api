@@ -64,6 +64,10 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Skal oppdatere brukeradresse i soknad`() {
         val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
+        every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
+        val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
+        every { norgService.getEnhetForGt("1234") } returns navEnhet
 
         val adresserInput =
             AdresserInput(

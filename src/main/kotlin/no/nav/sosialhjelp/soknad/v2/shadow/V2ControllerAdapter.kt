@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
-import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
@@ -54,10 +53,9 @@ interface V2ControllerAdapter {
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
     )
 
-    fun updateAdresseOgNavEnhet(
+    fun updateAdresse(
         soknadId: String,
         adresser: AdresserFrontendInput,
-        navEnhet: NavEnhetFrontend?,
     )
 
     fun updateBoutgifter(

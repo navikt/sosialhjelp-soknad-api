@@ -7,6 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -22,15 +24,19 @@ class KortSoknadService(
     private val digisosApiService: DigisosApiService,
     private val clock: Clock,
     private val soknadService: SoknadService,
+    private val dokumentasjonService: DokumentasjonService,
     private val unleash: Unleash,
 ) {
     private val log by logger()
 
     fun transitionToKort(soknadId: UUID) {
+        dokumentasjonService.resetForventetDokumentasjon(soknadId)
+        dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
         soknadService.updateKortSoknad(soknadId, true)
     }
 
     fun transitionToStandard(soknadId: UUID) {
+        dokumentasjonService.resetForventetDokumentasjon(soknadId)
         soknadService.updateKortSoknad(soknadId, false)
     }
 
