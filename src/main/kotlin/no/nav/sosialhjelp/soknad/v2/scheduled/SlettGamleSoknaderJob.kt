@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
-const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
+// const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
 
 @Component
 class SlettGamleSoknaderJob(
@@ -21,7 +21,7 @@ class SlettGamleSoknaderJob(
     private val log by logger()
 
 //    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
-    @Scheduled(cron = "0 20 9 * * *")
+    @Scheduled(cron = "0 30 9 * * *")
     suspend fun slettGamleSoknader() =
         kotlin.runCatching {
             if (leaderElection.isLeader()) {
