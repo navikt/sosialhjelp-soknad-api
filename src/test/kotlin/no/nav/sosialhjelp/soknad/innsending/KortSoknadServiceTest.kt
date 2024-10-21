@@ -33,7 +33,7 @@ class KortSoknadServiceTest {
         digisosApiService = mockk()
         soknadService = mockk()
         clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
-        kortSoknadService = KortSoknadService(digisosApiService, clock, soknadService, mockk(), mockk(relaxed = true))
+        kortSoknadService = KortSoknadService(digisosApiService, clock, soknadService, mockk(), mockk(), mockk(relaxed = true))
     }
 
     @Test

@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,13 +32,16 @@ class KortSoknadService(
 ) {
     private val log by logger()
 
+    @Transactional
     fun transitionToKort(soknadId: UUID) {
+        log.info("Transitioning soknad $soknadId to kort")
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
         dokumentService.deleteAllDokumenter(soknadId)
         dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
         soknadService.updateKortSoknad(soknadId, true)
     }
 
+    @Transactional
     fun transitionToStandard(soknadId: UUID) {
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
         dokumentService.deleteAllDokumenter(soknadId)

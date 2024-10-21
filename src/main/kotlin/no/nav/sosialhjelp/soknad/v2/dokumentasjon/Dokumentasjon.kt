@@ -4,6 +4,8 @@ import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.annotation.Id
+import org.springframework.data.jdbc.repository.query.Modifying
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -20,6 +22,8 @@ interface DokumentasjonRepository :
         type: OpplysningType,
     ): Dokumentasjon?
 
+    @Modifying
+    @Query("DELETE FROM dokumentasjon WHERE soknad_id = :soknadId")
     fun deleteAllBySoknadId(soknadId: UUID)
 }
 

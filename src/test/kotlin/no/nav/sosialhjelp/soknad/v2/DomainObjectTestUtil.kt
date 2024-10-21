@@ -115,13 +115,14 @@ fun opprettSoknad(
     sistEndret: LocalDateTime? = null,
     sendtInn: LocalDateTime? = null,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
+    kort: Boolean = false,
 ): Soknad =
     Soknad(
         id = id,
         eierPersonId = eierPersonId,
         tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
         begrunnelse = begrunnelse,
-        kortSoknad = false,
+        kortSoknad = kort,
     )
 
 fun opprettArbeidsforholdList(
@@ -299,8 +300,8 @@ fun opprettBosituasjon(
     antallPersoner: Int = 3,
 ): Bosituasjon = Bosituasjon(botype, antallPersoner)
 
-fun opprettOkonomi(soknadId: UUID): Okonomi {
-    return Okonomi(
+fun opprettOkonomi(soknadId: UUID): Okonomi =
+    Okonomi(
         soknadId = soknadId,
         inntekter = createInntekter(),
         utgifter = createUtgifter(),
@@ -308,10 +309,9 @@ fun opprettOkonomi(soknadId: UUID): Okonomi {
         bekreftelser = createBekreftelser(),
         bostotteSaker = createBostotteSaker(),
     )
-}
 
-fun createInntekter(): Set<Inntekt> {
-    return setOf(
+fun createInntekter(): Set<Inntekt> =
+    setOf(
         Inntekt(
             type = InntektType.JOBB,
             inntektDetaljer =
@@ -341,10 +341,9 @@ fun createInntekter(): Set<Inntekt> {
                 ),
         ),
     )
-}
 
-fun createUtgifter(): Set<Utgift> {
-    return setOf(
+fun createUtgifter(): Set<Utgift> =
+    setOf(
         Utgift(
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             utgiftDetaljer =
@@ -356,10 +355,9 @@ fun createUtgifter(): Set<Utgift> {
                 ),
         ),
     )
-}
 
-fun createFormuer(): Set<Formue> {
-    return setOf(
+fun createFormuer(): Set<Formue> =
+    setOf(
         Formue(
             type = FormueType.FORMUE_BRUKSKONTO,
             formueDetaljer =
@@ -381,19 +379,17 @@ fun createFormuer(): Set<Formue> {
                 ),
         ),
     )
-}
 
-fun createBekreftelser(): Set<Bekreftelse> {
-    return setOf(
+fun createBekreftelser(): Set<Bekreftelse> =
+    setOf(
         Bekreftelse(
             type = BekreftelseType.BEKREFTELSE_SPARING,
             verdi = true,
         ),
     )
-}
 
-fun createBostotteSaker(): List<BostotteSak> {
-    return listOf(
+fun createBostotteSaker(): List<BostotteSak> =
+    listOf(
         BostotteSak(
             LocalDate.now(),
             BostotteStatus.UNDER_BEHANDLING,
@@ -407,7 +403,6 @@ fun createBostotteSaker(): List<BostotteSak> {
             Vedtaksstatus.AVVIST,
         ),
     )
-}
 
 fun opprettDokumentasjon(
     id: UUID = UUID.randomUUID(),
@@ -415,19 +410,16 @@ fun opprettDokumentasjon(
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
     dokumenter: Set<Dokument> = opprettDokumenter(),
-): Dokumentasjon {
-    return Dokumentasjon(id, soknadId, type, status, dokumenter)
-}
+): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
 
-fun opprettDokumenter(): Set<Dokument> {
-    return setOf(
+fun opprettDokumenter(): Set<Dokument> =
+    setOf(
         Dokument(
             dokumentId = UUID.randomUUID(),
             filnavn = "utskrift_brukskonto.pdf",
             sha512 = UUID.randomUUID().toString(),
         ),
     )
-}
 
 fun createBostotteSak(beskrivelse: String? = null) =
     BostotteSak(

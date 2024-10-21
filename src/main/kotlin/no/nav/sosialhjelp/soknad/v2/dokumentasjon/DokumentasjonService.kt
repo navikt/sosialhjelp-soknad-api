@@ -67,6 +67,8 @@ class DokumentasjonServiceImpl(
     private val mellomlagringClient: MellomlagringClient,
 ) : DokumentasjonService,
     DokumentService {
+    private val log by logger()
+
     override fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
