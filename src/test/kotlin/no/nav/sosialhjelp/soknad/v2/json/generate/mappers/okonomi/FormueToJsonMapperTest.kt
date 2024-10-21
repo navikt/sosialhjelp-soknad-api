@@ -59,8 +59,12 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
         FormueToJsonMapper(formuer, jsonOkonomi).doMapping()
 
         with(jsonOkonomi) {
-            assertThat(oversikt.formue).hasSize(4).anyMatch { it.belop == 423 }.anyMatch { it.belop == 288 }
-                .anyMatch { it.belop == 523 }.anyMatch { it.belop == 121 }
+            assertThat(oversikt.formue)
+                .hasSize(4)
+                .anyMatch { it.belop == 423 }
+                .anyMatch { it.belop == 288 }
+                .anyMatch { it.belop == 523 }
+                .anyMatch { it.belop == 121 }
                 .allMatch {
                     it.type == SoknadJsonTypeEnum.FORMUE_ANNET.verdi || it.type == SoknadJsonTypeEnum.VERDI_ANNET.verdi
                 }
@@ -89,8 +93,8 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
     }
 }
 
-private fun createOkonomiskeDetaljer(): OkonomiDetaljer<Belop> {
-    return OkonomiDetaljer(
+private fun createOkonomiskeDetaljer(): OkonomiDetaljer<Belop> =
+    OkonomiDetaljer(
         detaljer =
             listOf(
                 Belop(344.0),
@@ -98,4 +102,3 @@ private fun createOkonomiskeDetaljer(): OkonomiDetaljer<Belop> {
                 Belop(644.0),
             ),
     )
-}

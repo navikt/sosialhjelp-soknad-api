@@ -42,7 +42,7 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
-        every { adressesokService.getAdresseForslag(any()) } returns lagAdresseForslag()
+        every { adressesokService.getAdresseForslag(any<JsonGateAdresse>()) } returns lagAdresseForslag()
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personalia =
             soknadUnderArbeid.jsonInternalSoknad!!

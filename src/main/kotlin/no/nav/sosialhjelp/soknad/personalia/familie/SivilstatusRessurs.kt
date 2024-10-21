@@ -77,11 +77,12 @@ class SivilstatusRessurs(
         sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        kotlin.runCatching {
-            controllerAdapter.updateSivilstand(behandlingsId, sivilstatusFrontend)
-        }.onFailure {
-            log.error("Noe feilet under oppdatering av sivilstatus i ny datamodell", it)
-        }
+        kotlin
+            .runCatching {
+                controllerAdapter.updateSivilstand(behandlingsId, sivilstatusFrontend)
+            }.onFailure {
+                log.error("Noe feilet under oppdatering av sivilstatus i ny datamodell", it)
+            }
     }
 
     private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {
@@ -93,8 +94,8 @@ class SivilstatusRessurs(
         )
     }
 
-    private fun mapToJsonEktefelle(ektefelle: EktefelleFrontend?): JsonEktefelle? {
-        return if (ektefelle == null) {
+    private fun mapToJsonEktefelle(ektefelle: EktefelleFrontend?): JsonEktefelle? =
+        if (ektefelle == null) {
             null
         } else {
             JsonEktefelle()
@@ -102,7 +103,6 @@ class SivilstatusRessurs(
                 .withFodselsdato(ektefelle.fodselsdato)
                 .withPersonIdentifikator(getFnr(ektefelle.fodselsdato, ektefelle.personnummer))
         }
-    }
 
     private fun getFnr(
         fodselsdato: String?,
@@ -117,8 +117,8 @@ class SivilstatusRessurs(
         return targetFormat.format(date) + personnummer
     }
 
-    private fun mapToSivilstatusFrontend(jsonSivilstatus: JsonSivilstatus): SivilstatusFrontend {
-        return SivilstatusFrontend(
+    private fun mapToSivilstatusFrontend(jsonSivilstatus: JsonSivilstatus): SivilstatusFrontend =
+        SivilstatusFrontend(
             kildeErSystem = mapToSystemBoolean(jsonSivilstatus.kilde),
             sivilstatus = jsonSivilstatus.status,
             ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
@@ -126,13 +126,11 @@ class SivilstatusRessurs(
             borSammenMed = jsonSivilstatus.borSammenMed,
             erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle,
         )
-    }
 
-    private fun mapToSystemBoolean(kilde: JsonKilde): Boolean? {
-        return when (kilde) {
+    private fun mapToSystemBoolean(kilde: JsonKilde): Boolean? =
+        when (kilde) {
             JsonKilde.SYSTEM -> true
             JsonKilde.BRUKER -> false
             else -> null
         }
-    }
 }

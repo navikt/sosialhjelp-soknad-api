@@ -13,5 +13,5 @@ class MockUnleashConfig {
     fun unleashClient(): Unleash = FakeUnleash()
 
     @Bean
-    fun unleashToggleFetcher(): MutableList<String> = unleashClient().more().featureToggleNames
+    fun unleashToggleFetcher(): MutableList<String> = FakeUnleash().more().featureToggleNames
 }

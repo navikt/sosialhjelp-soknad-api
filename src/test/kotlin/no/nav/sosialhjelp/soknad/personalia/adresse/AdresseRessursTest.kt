@@ -72,8 +72,9 @@ internal class AdresseRessursTest {
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { MiljoUtils.isMockAltProfil() } returns false
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-        every { soknadV2ControllerAdapter.updateAdresseOgNavEnhet(any(), any(), any()) } just runs
+        every { soknadV2ControllerAdapter.updateAdresse(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
     }
 
@@ -292,12 +293,12 @@ internal class AdresseRessursTest {
 
     @Test
     fun `putAdresse skal oppdatere soknadstype hvis Oslo`() {
-        val unleashSlot = slot<UnleashContext>()
-        every { unleash.isEnabled(any(), capture(unleashSlot), any<Boolean>()) } returns true
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", "321", null, null, null, null)
-        every { kortSoknadService.qualifies(any(), any()) } returns true
+        every { kortSoknadService.isQualified(any(), any()) } returns true
+        val kommunenummerSlot = slot<String>()
+        every { kortSoknadService.isEnabled(capture(kommunenummerSlot)) } returns true
         every { soknadMetadataRepository.hent(any()) } returns
             SoknadMetadata(
                 behandlingsId = BEHANDLINGSID,
@@ -317,7 +318,7 @@ internal class AdresseRessursTest {
 
         adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
 
-        assertThat(unleashSlot.captured.properties["kommunenummer"]).isEqualTo("321")
+        assertThat(kommunenummerSlot.captured).isEqualTo("321")
         assertThat(
             jsonSlot.captured.jsonInternalSoknad
                 ?.soknad

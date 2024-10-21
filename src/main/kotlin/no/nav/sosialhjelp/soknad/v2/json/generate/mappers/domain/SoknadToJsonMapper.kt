@@ -62,9 +62,7 @@ class SoknadToJsonMapper(
             soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
         }
 
-        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator {
-            return JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
-        }
+        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator = JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
             JsonBegrunnelse()
@@ -74,9 +72,8 @@ class SoknadToJsonMapper(
     }
 }
 
-private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype {
-    return when (this.kortSoknad) {
+private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
+    when (this.kortSoknad) {
         true -> JsonData.Soknadstype.KORT
         false -> JsonData.Soknadstype.STANDARD
     }
-}

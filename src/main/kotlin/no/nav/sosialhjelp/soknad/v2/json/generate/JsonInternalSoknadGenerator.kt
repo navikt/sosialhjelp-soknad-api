@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -23,41 +24,52 @@ interface DomainToJsonMapper {
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     )
+
+    fun mapToKortJson(
+        soknadId: UUID,
+        jsonInternalSoknad: JsonInternalSoknad,
+    ) = mapToJson(soknadId, jsonInternalSoknad)
 }
 
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
+    private val soknadService: SoknadService,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
 
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
+        val soknad = soknadService.getSoknad(soknadId)
         return JsonInternalSoknad()
             .withSoknad(JsonSoknad())
             .withVedlegg(JsonVedleggSpesifikasjon())
             .withMottaker(JsonSoknadsmottaker())
             .withMidlertidigAdresse(JsonAdresse())
-            .apply { mappers.forEach { it.mapToJson(soknadId, this) } }
-            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
+            .apply {
+                mappers.forEach {
+                    if (soknad.kortSoknad) {
+                        it.mapToKortJson(soknadId, this)
+                    } else {
+                        it.mapToJson(soknadId, this)
+                    }
+                }
+            }.also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
     fun copyAndMerge(
         soknadId: String,
         original: JsonInternalSoknad,
-    ): JsonInternalSoknad {
-        return copyJsonInternalSoknad(original)
+    ): JsonInternalSoknad =
+        copyJsonInternalSoknad(original)
             .apply {
                 mappers.forEach { it.mapToJson(UUID.fromString(soknadId), this) }
-            }
-            .also {
+            }.also {
                 runCatching {
                     JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
+                }.onFailure {
+                    logger.warn("NyModell: Feil i validering av json", it)
                 }
-                    .onFailure {
-                        logger.warn("NyModell: Feil i validering av json", it)
-                    }
             }
-    }
 
     private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad) = toObject(toJson(jsonSoknad))
 
@@ -78,7 +90,8 @@ object TimestampConverter {
     fun convertToOffsettDateTimeUTCString(localDateTime: LocalDateTime) = localDateTime.toUTCTimestampStringWithMillis()
 
     fun parseFromUTCString(utcString: String): LocalDateTime =
-        OffsetDateTime.parse(utcString)
+        OffsetDateTime
+            .parse(utcString)
             .atZoneSameInstant(ZoneId.of(ZONE_STRING))
             .toLocalDateTime()
 
@@ -90,8 +103,8 @@ object TimestampConverter {
     }
 
     // I Json-strukturen skal tidspunkt være UTC med 3 desimaler
-    private fun LocalDateTime.toUTCTimestampStringWithMillis(): String {
-        return this
+    private fun LocalDateTime.toUTCTimestampStringWithMillis(): String =
+        this
             .let { if (it.nano < MILLISECOND) it.plusNanos(MILLISECOND) else it }
             .atZone(ZoneId.of(ZONE_STRING))
             .withZoneSameInstant(ZoneOffset.UTC)
@@ -99,5 +112,4 @@ object TimestampConverter {
             .truncatedTo(ChronoUnit.MILLIS)
             .toString()
             .also { validateTimestamp(it) }
-    }
 }

@@ -18,11 +18,15 @@ import org.springframework.data.convert.WritingConverter
     JsonSubTypes.Type(PostboksAdresse::class),
     JsonSubTypes.Type(UstrukturertAdresse::class),
 )
-abstract class Adresse
+sealed interface Adresse
+
+sealed interface AdresseMedKommunenummer : Adresse {
+    val kommunenummer: String?
+}
 
 data class VegAdresse(
     val landkode: String = "NOR",
-    val kommunenummer: String? = null,
+    override val kommunenummer: String? = null,
     val adresselinjer: List<String> = emptyList(),
     val bolignummer: String? = null,
     val postnummer: String? = null,
@@ -30,26 +34,26 @@ data class VegAdresse(
     val gatenavn: String? = null,
     val husnummer: String? = null,
     val husbokstav: String? = null,
-) : Adresse()
+) : AdresseMedKommunenummer
 
 data class MatrikkelAdresse(
-    val kommunenummer: String,
+    override val kommunenummer: String,
     val gaardsnummer: String,
     val bruksnummer: String,
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
     val undernummer: String? = null,
-) : Adresse()
+) : AdresseMedKommunenummer
 
 data class PostboksAdresse(
     val postboks: String,
     val postnummer: String,
     val poststed: String,
-) : Adresse()
+) : Adresse
 
 data class UstrukturertAdresse(
     val adresse: List<String>,
-) : Adresse()
+) : Adresse
 
 private val mapper = jacksonObjectMapper()
 
@@ -60,21 +64,6 @@ object AdresseToJsonConverter : Converter<Adresse, String> {
 
 @ReadingConverter
 object JsonToAdresseConverter : Converter<String, Adresse> {
-//    override fun convert(source: String): Adresse = JsonToAdresseMapper.map(source)
+    //    override fun convert(source: String): Adresse = JsonToAdresseMapper.map(source)
     override fun convert(source: String): Adresse = jacksonObjectMapper().readValue(source)
 }
-
-// private object JsonToAdresseMapper {
-//    val adresseTyper =
-//        setOf(
-//            VegAdresse::class.java,
-//            MatrikkelAdresse::class.java,
-//            PostboksAdresse::class.java,
-//            UstrukturertAdresse::class.java,
-//        )
-//
-//    fun map(json: String): Adresse {
-//        adresseTyper.forEach { kotlin.runCatching { return mapper.readValue(json, it) } }
-//        throw IllegalArgumentException("Kunne ikke mappe adresse")
-//    }
-// }

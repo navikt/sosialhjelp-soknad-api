@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
-import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
@@ -89,8 +88,7 @@ class SoknadV2ControllerAdapter(
                 soknadId = UUID.fromString(soknadId),
                 input = ArbeidInput(arbeidFrontend.kommentarTilArbeidsforhold),
             )
-        }
-            .onFailure { logger.warn("Ny Modell: Oppdatere arbeid feilet", it) }
+        }.onFailure { logger.warn("Ny Modell: Oppdatere arbeid feilet", it) }
     }
 
     override fun updateBegrunnelse(
@@ -111,8 +109,7 @@ class SoknadV2ControllerAdapter(
                     )
                 }
             }
-        }
-            .onFailure { logger.warn("Ny Modell: Oppdatere Begrunnelse feilet", it) }
+        }.onFailure { logger.warn("Ny Modell: Oppdatere Begrunnelse feilet", it) }
     }
 
     override fun updateBosituasjon(
@@ -131,8 +128,7 @@ class SoknadV2ControllerAdapter(
                     ),
                 )
             }
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatere Bosituasjon feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatere Bosituasjon feilet", it) }
     }
 
     override fun updateKontonummer(
@@ -154,8 +150,7 @@ class SoknadV2ControllerAdapter(
                 soknadId = UUID.fromString(soknadId),
                 input = kontoInput,
             )
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatere kontonummer feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatere kontonummer feilet", it) }
     }
 
     override fun updateTelefonnummer(
@@ -169,8 +164,7 @@ class SoknadV2ControllerAdapter(
                 UUID.fromString(soknadId),
                 TelefonnummerInput(telefonnummerBruker),
             )
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatere Telefonnummer feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatere Telefonnummer feilet", it) }
     }
 
     override fun updateUtdanning(
@@ -197,8 +191,7 @@ class SoknadV2ControllerAdapter(
                     input = utdanningInput,
                 )
             }
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatere Utdanning feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatere Utdanning feilet", it) }
     }
 
     override fun updateSivilstand(
@@ -227,8 +220,7 @@ class SoknadV2ControllerAdapter(
             }
         runWithNestedTransaction {
             sivilstandController.updateSivilstand(UUID.fromString(soknadId), sivilstandInput)
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatering av Sivilstand feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatering av Sivilstand feilet", it) }
     }
 
     override fun updateForsorger(
@@ -246,30 +238,19 @@ class SoknadV2ControllerAdapter(
             }
         runWithNestedTransaction {
             forsorgerpliktController.updateForsorgerplikt(UUID.fromString(soknadId), forsorgerInput)
-        }
-            .onFailure { logger.warn("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
+        }.onFailure { logger.warn("Ny modell: Oppdatering av forsorgerplikt feilet", it) }
     }
 
-    override fun updateAdresseOgNavEnhet(
+    override fun updateAdresse(
         soknadId: String,
         adresser: AdresserFrontendInput,
-        navEnhet: NavEnhetFrontend?,
     ) {
         adresser.valg?.let {
             runWithNestedTransaction {
                 v2AdresseControllerAdapter.updateAdresse(soknadId = UUID.fromString(soknadId), it, adresser.soknad)
-            }
-                .onFailure { logger.warn("Ny modell: Oppdatering av adresser feilet.", it) }
+            }.onFailure { logger.warn("Ny modell: Oppdatering av adresser feilet.", it) }
         }
             ?: logger.warn("Ny modell: Oppdatering av adresser feilet. Adressevalg er null.")
-
-        navEnhet?.let {
-            runWithNestedTransaction {
-                v2AdresseControllerAdapter.updateNavEnhet(soknadId = UUID.fromString(soknadId), it)
-            }
-                .onFailure { logger.warn("Ny modell: Oppdatering av NAV-enhet feilet.", it) }
-        }
-            ?: logger.warn("Ny modell: Oppdatering av NAV-enhet feilet. NAV-enhet er null.")
     }
 
     override fun updateBoutgifter(
@@ -297,8 +278,7 @@ class SoknadV2ControllerAdapter(
                 soknadId = UUID.fromString(behandlingsId),
                 input = input,
             )
-        }
-            .onFailure { logger.warn("NyModell: Oppdatering av Boutgifter feilet", it) }
+        }.onFailure { logger.warn("NyModell: Oppdatering av Boutgifter feilet", it) }
     }
 
     override fun updateBarneutgifter(
@@ -327,8 +307,7 @@ class SoknadV2ControllerAdapter(
                 soknadId = UUID.fromString(behandlingsId),
                 input = input,
             )
-        }
-            .onFailure { logger.warn("NyModell: Oppdatering av Barneutgifter feilet", it) }
+        }.onFailure { logger.warn("NyModell: Oppdatering av Barneutgifter feilet", it) }
     }
 
     override fun updateSituasjonsendring(
@@ -377,10 +356,9 @@ class SoknadV2ControllerAdapter(
         }.onFailure { logger.warn("NyModell: Oppdatering av samtykke Skatteetaten feilet", it) }
     }
 
-    private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
-        return kotlin.runCatching {
+    private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> =
+        kotlin.runCatching {
             transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NESTED
             transactionTemplate.execute { function.invoke() }
         }
-    }
 }

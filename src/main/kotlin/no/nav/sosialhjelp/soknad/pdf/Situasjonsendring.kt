@@ -17,7 +17,7 @@ object Situasjonsendring {
             if (utvidetSoknad) {
                 pdfUtils.skrivInfotekst(pdf, "situasjonsendring.hvaHarEndretSeg.infotekst")
             }
-            if (situasjonendring.hvaHarEndretSeg.isNullOrBlank() == null) {
+            if (situasjonendring.hvaHarEndretSeg.isNullOrBlank()) {
                 pdfUtils.skrivIkkeUtfylt(pdf)
             } else {
                 pdf.skrivTekst(situasjonendring.hvaHarEndretSeg)

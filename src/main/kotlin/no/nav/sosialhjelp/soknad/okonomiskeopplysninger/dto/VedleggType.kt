@@ -49,7 +49,9 @@ enum class VedleggType(
     SkattemeldingSkattemelding("skattemelding|skattemelding", AnnenDokumentasjonType.SKATTEMELDING),
     SluttoppgjorArbeid("sluttoppgjor|arbeid", InntektType.SLUTTOPPGJOER),
     StudentVedtak("student|vedtak", InntektType.STUDIELAN_INNTEKT),
-    KortBehov("kort|behov", null),
+    KortBehov("kort|behov", AnnenDokumentasjonType.BEHOV),
+
+    // Brukes ikke foreløpig
     KortSituasjonsendring("kort|situasjonsendring", null),
     ;
 

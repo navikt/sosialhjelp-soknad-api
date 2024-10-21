@@ -64,14 +64,14 @@ class SoknadServiceOld(
     @Transactional
     fun startSoknad(
         token: String?,
-        kort: Boolean?,
+        kort: Boolean,
     ): StartSoknadResponse {
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
-        val behandlingsId = opprettSoknadMetadata(eierId, kortSoknad = kort == true) // TODO NyModell Metadata returnerer UUID
+        val behandlingsId = opprettSoknadMetadata(eierId, kort) // TODO NyModell Metadata returnerer UUID
 
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
-        if (kort == true) {
+        if (kort) {
             log.info("Starter kort søknad")
         } else {
             log.info("Starter søknad")
@@ -94,14 +94,14 @@ class SoknadServiceOld(
             behandlingsId,
             soknadUnderArbeid.opprettetDato,
             eierId,
-            kort == true,
+            kort,
         )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        return StartSoknadResponse(behandlingsId, kort == true)
+        return StartSoknadResponse(behandlingsId, kort)
     }
 
     private fun opprettSoknadMetadata(
@@ -190,14 +190,14 @@ class SoknadServiceOld(
 
         fun createEmptyJsonInternalSoknad(
             eier: String,
-            kortSoknad: Boolean?,
+            kortSoknad: Boolean,
         ): JsonInternalSoknad =
             JsonInternalSoknad()
                 .withSoknad(
                     JsonSoknad()
                         .withData(
                             JsonData()
-                                .withSoknadstype(if (kortSoknad == true) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD)
+                                .withSoknadstype(if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD)
                                 .withPersonalia(
                                     JsonPersonalia()
                                         .withPersonIdentifikator(
@@ -214,7 +214,7 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
-                                ).let { if (kortSoknad == true) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
+                                ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
                                 .withNavEnhetsnavn("")
@@ -226,7 +226,7 @@ class SoknadServiceOld(
                                 .withStotteFraHusbankenFeilet(false),
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(
-                    if (kortSoknad == true) {
+                    if (kortSoknad) {
                         JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
                     } else {
                         JsonVedleggSpesifikasjon()

@@ -12,4 +12,6 @@ interface SituasjonsendringService {
     fun getSituasjonsendring(
         soknadId: UUID,
     ): Situasjonsendring?
+
+    fun deleteSituasjonsendring(soknadId: UUID)
 }

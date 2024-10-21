@@ -53,30 +53,27 @@ class EierToJsonMapper(
             soknad.data.personalia.kontonummer ?: soknad.data.personalia.withKontonummer(JsonKontonummer())
         }
 
-        private fun Navn.toJsonSokerNavn(): JsonSokernavn {
-            return JsonSokernavn()
+        private fun Navn.toJsonSokerNavn(): JsonSokernavn =
+            JsonSokernavn()
                 .withKilde(JsonSokernavn.Kilde.SYSTEM)
                 .withFornavn(fornavn)
                 .withMellomnavn(mellomnavn)
                 .withEtternavn(etternavn)
-        }
 
-        private fun Eier.toJsonNordiskBorger(): JsonNordiskBorger? {
-            return nordiskBorger?.let {
+        private fun Eier.toJsonNordiskBorger(): JsonNordiskBorger? =
+            nordiskBorger?.let {
                 JsonNordiskBorger()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(nordiskBorger)
             }
-        }
 
-        private fun Eier.toJsonStatsborgerskap(): JsonStatsborgerskap? {
-            return statsborgerskap?.let {
+        private fun Eier.toJsonStatsborgerskap(): JsonStatsborgerskap? =
+            statsborgerskap?.let {
                 JsonStatsborgerskap().withKilde(JsonKilde.SYSTEM).withVerdi(it)
             }
-        }
 
-        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? {
-            return when {
+        private fun Kontonummer.toJsonKontonummer(): JsonKontonummer? =
+            when {
                 harIkkeKonto == true ->
                     JsonKontonummer().withKilde(JsonKilde.BRUKER).withHarIkkeKonto(harIkkeKonto)
                 fraBruker != null ->
@@ -87,6 +84,5 @@ class EierToJsonMapper(
                 // Kontonummer kreves i modellen og kilde kreves selv uten(!!) noe informasjon
                 else -> JsonKontonummer().withKilde(JsonKilde.SYSTEM)
             }
-        }
     }
 }

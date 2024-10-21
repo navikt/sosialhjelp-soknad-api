@@ -19,19 +19,20 @@ class CreateDeleteSoknadHandler(
     private val dokumentasjonService: DokumentasjonService,
     private val mellomlagringService: MellomlagringService,
 ) {
-    fun createSoknad(token: String): Pair<UUID, Boolean> =
+    fun createSoknad(
+        token: String,
+        isKort: Boolean,
+    ): UUID =
         soknadService
             .createSoknad(
                 eierId = SubjectHandlerUtils.getUserIdFromToken(),
                 soknadId = UUID.randomUUID(),
                 // TODO Spesifisert til UTC i filformatet
                 opprettetDato = LocalDateTime.now(),
-                kortSoknad = false,
-            ).let { soknadId ->
+                kortSoknad = isKort,
+            ).also { soknadId ->
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
-                createObligatoriskDokumentasjon(soknadId)
-
-                Pair(soknadId, false)
+                createObligatoriskDokumentasjon(soknadId, isKort)
             }
 
     fun cancelSoknad(soknadId: UUID) {
@@ -43,8 +44,17 @@ class CreateDeleteSoknadHandler(
             }
     }
 
-    private fun createObligatoriskDokumentasjon(soknadId: UUID) {
-        obligatoriskeDokumentasjonsTyper
+    private fun createObligatoriskDokumentasjon(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    ) {
+        val obligatorisk =
+            if (kortSoknad) {
+                obligatoriskeDokumentasjonsTyperForKortSoknad
+            } else {
+                obligatoriskeDokumentasjonsTyper
+            }
+        obligatorisk
             .forEach {
                 dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = it)
             }
@@ -56,6 +66,12 @@ class CreateDeleteSoknadHandler(
         soknadService.deleteSoknad(soknadId)
     }
 }
+
+private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
+    listOf(
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+        AnnenDokumentasjonType.BEHOV,
+    )
 
 private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
     listOf(

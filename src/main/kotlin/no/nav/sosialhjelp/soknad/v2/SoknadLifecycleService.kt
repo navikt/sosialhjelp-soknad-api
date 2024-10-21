@@ -11,7 +11,10 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadLifecycleService {
-    fun startSoknad(token: String): Pair<UUID, Boolean>
+    fun startSoknad(
+        token: String,
+        isKort: Boolean,
+    ): UUID
 
     fun cancelSoknad(
         soknadId: UUID,
@@ -28,12 +31,15 @@ class SoknadLifecycleServiceImpl(
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
 ) : SoknadLifecycleService {
-    override fun startSoknad(token: String): Pair<UUID, Boolean> {
+    override fun startSoknad(
+        token: String,
+        isKort: Boolean,
+    ): UUID {
         // TODO Metadata
 
         return createDeleteSoknadHandler
-            .createSoknad(token)
-            .also { (soknadId) ->
+            .createSoknad(token, isKort)
+            .also { soknadId ->
                 prometheusMetricsService.reportStartSoknad()
                 MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
                 logger.info("Ny søknad opprettet")

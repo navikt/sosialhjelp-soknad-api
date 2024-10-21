@@ -22,6 +22,8 @@ interface DokumentasjonService {
         opplysningType: OpplysningType,
     )
 
+    fun resetForventetDokumentasjon(soknadId: UUID)
+
     fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon>
 
     fun hasDokumenterForType(
@@ -63,7 +65,10 @@ interface DokumentService {
 class DokumentasjonServiceImpl(
     private val dokumentasjonRepository: DokumentasjonRepository,
     private val mellomlagringClient: MellomlagringClient,
-) : DokumentasjonService, DokumentService {
+) : DokumentasjonService,
+    DokumentService {
+    private val log by logger()
+
     override fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
@@ -76,20 +81,22 @@ class DokumentasjonServiceImpl(
         soknadId: UUID,
         opplysningType: OpplysningType,
     ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
+        dokumentasjonRepository
+            .findAllBySoknadId(soknadId)
+            .find { it.type == opplysningType }
             ?.let { dokumentasjonRepository.deleteById(it.id) }
     }
 
-    override fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon> {
-        return dokumentasjonRepository.findAllBySoknadId(soknadId)
+    override fun resetForventetDokumentasjon(soknadId: UUID) {
+        dokumentasjonRepository.deleteAllBySoknadId(soknadId)
     }
+
+    override fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon> = dokumentasjonRepository.findAllBySoknadId(soknadId)
 
     override fun hasDokumenterForType(
         soknadId: UUID,
         type: OpplysningType,
-    ): Boolean {
-        return findDokumentasjonForSoknad(soknadId).any { it.type == type }
-    }
+    ): Boolean = findDokumentasjonForSoknad(soknadId).any { it.type == type }
 
     override fun updateDokumentasjonStatus(
         soknadId: UUID,
@@ -140,26 +147,27 @@ class DokumentasjonServiceImpl(
     override fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): Dokumentasjon {
-        return dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokumentId)
+    ): Dokumentasjon =
+        dokumentasjonRepository
+            .removeDokumentFromDokumentasjon(soknadId, dokumentId)
             .run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
             .also { dokumentasjonRepository.save(it) }
             .also {
                 logger.info("Sletter Dokument($dokumentId) fra Dokumentasjon(type: ${it.type.name}")
                 runCatching { mellomlagringClient.deleteDokument(soknadId, dokumentId) }
-                    .onFailure {
-                            e ->
+                    .onFailure { e ->
                         throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", e)
                     }
             }
-    }
 
     override fun deleteAllDokumenter(soknadId: UUID) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
+        dokumentasjonRepository
+            .findAllBySoknadId(soknadId)
             .map { dokumentasjon -> dokumentasjon.copy(dokumenter = emptySet(), status = dokumentasjon.updateStatus()) }
             .let { list -> dokumentasjonRepository.saveAll(list) }
 
-        mellomlagringClient.getMellomlagredeVedlegg(soknadId.toString())
+        mellomlagringClient
+            .getMellomlagredeVedlegg(soknadId.toString())
             ?.also { dto ->
                 if (dto.mellomlagringMetadataList?.isNotEmpty() == true) {
                     mellomlagringClient.deleteDokumenter(soknadId)
@@ -167,10 +175,9 @@ class DokumentasjonServiceImpl(
             }
     }
 
-    private fun Dokumentasjon.updateStatus(): DokumentasjonStatus {
-        return DokumentasjonStatus.LEVERT_TIDLIGERE.let { if (status == it) it else null }
+    private fun Dokumentasjon.updateStatus(): DokumentasjonStatus =
+        DokumentasjonStatus.LEVERT_TIDLIGERE.let { if (status == it) it else null }
             ?: if (dokumenter.isEmpty()) DokumentasjonStatus.FORVENTET else DokumentasjonStatus.LASTET_OPP
-    }
 
     private fun lastOppDokumentOgHentGenerertId(
         soknadId: UUID,
@@ -179,7 +186,9 @@ class DokumentasjonServiceImpl(
     ): UUID {
         mellomlagringClient.postDokument(soknadId, filnavn, data)
 
-        return mellomlagringClient.getDokumentMetadata(soknadId)?.mellomlagringMetadataList
+        return mellomlagringClient
+            .getDokumentMetadata(soknadId)
+            ?.mellomlagringMetadataList
             ?.find { dokumentInfo -> dokumentInfo.filnavn == filnavn }
             ?.let { dokumentInfo -> UUID.fromString(dokumentInfo.filId) }
             ?: error("Fant ikke Dokument hos Fiks etter opplasting")
@@ -189,8 +198,7 @@ class DokumentasjonServiceImpl(
         runCatching {
             copy(status = DokumentasjonStatus.LASTET_OPP, dokumenter = dokumenter.plus(dokument))
                 .also { dokumentasjonRepository.save(it) }
-        }
-            .onFailure { mellomlagringClient.deleteDokument(soknadId, dokument.dokumentId) }
+        }.onFailure { mellomlagringClient.deleteDokument(soknadId, dokument.dokumentId) }
     }
 
     companion object {
@@ -201,10 +209,9 @@ class DokumentasjonServiceImpl(
 private fun DokumentasjonRepository.findDokumentOrThrow(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokument {
-    return findAllBySoknadId(soknadId).flatMap { it.dokumenter }.find { it.dokumentId == dokumentId }
+): Dokument =
+    findAllBySoknadId(soknadId).flatMap { it.dokumenter }.find { it.dokumentId == dokumentId }
         ?: throw IkkeFunnetException("Dokument eksisterer ikke på noe Dokumentasjon")
-}
 
 // TODO Denne må inn igjen før dette tar over - skulle gjerne løst det på en annen måte
 private fun getNavEksternId(soknadId: UUID) =

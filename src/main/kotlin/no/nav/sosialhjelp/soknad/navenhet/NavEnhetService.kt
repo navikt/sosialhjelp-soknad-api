@@ -51,8 +51,8 @@ class NavEnhetService(
         }
     }
 
-    internal fun validerKommunenummerVedFolkeregistrertValgt(personalia: JsonPersonalia): String? {
-        return runCatching {
+    internal fun validerKommunenummerVedFolkeregistrertValgt(personalia: JsonPersonalia): String? =
+        runCatching {
             val fraFolkeregistrert = getKommunenummer(personalia.folkeregistrertAdresse)
             val fraOpphold = getKommunenummer(personalia.oppholdsadresse)
 
@@ -65,10 +65,8 @@ class NavEnhetService(
                 )
                 fraFolkeregistrert
             }
-        }
-            .onFailure { log.error("Feil ved sammenlikning av kommunenummer", it) }
+        }.onFailure { log.error("Feil ved sammenlikning av kommunenummer", it) }
             .getOrNull()
-    }
 
     private fun finnNavEnhetFraGT(
         ident: String,
@@ -149,14 +147,13 @@ class NavEnhetService(
         return isNyDigisosApiKommuneMedMottakAktivert
     }
 
-    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? {
-        return if (BydelFordelingService.BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
+    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? =
+        if (BydelFordelingService.BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
             bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
             // flere special cases her?
             adresseForslag.geografiskTilknytning
         }
-    }
 
     companion object {
         private val log by logger()
