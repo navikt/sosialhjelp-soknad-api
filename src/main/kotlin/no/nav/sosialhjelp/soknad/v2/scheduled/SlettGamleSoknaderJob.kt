@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
-// const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
-
 @Component
 class SlettGamleSoknaderJob(
     private val leaderElection: LeaderElection,
@@ -20,8 +18,7 @@ class SlettGamleSoknaderJob(
 ) {
     private val log by logger()
 
-//    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
-    @Scheduled(cron = "0 35 10 * * *")
+    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() =
         kotlin.runCatching {
             if (leaderElection.isLeader()) {
@@ -37,10 +34,14 @@ class SlettGamleSoknaderJob(
                         }
                     }
                 if (result == null) {
-                    log.warn("Kunne ikke slette gamle søknader, tok for lang tid")
+                    log.error("Kunne ikke slette gamle søknader, tok for lang tid")
                 }
             }
         }.onFailure {
             log.error("Feil ved sletting av gamle søknader", it)
         }
+
+    companion object {
+        private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
+    }
 }
