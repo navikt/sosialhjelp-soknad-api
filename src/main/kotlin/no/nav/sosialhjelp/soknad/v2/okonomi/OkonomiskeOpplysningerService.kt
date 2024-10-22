@@ -35,11 +35,10 @@ class OkonomiskeOpplysningerServiceImpl(
         detaljer: List<OkonomiDetalj>,
     ) {
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
-            if (detaljer.isEmpty())
-                {
-                    updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
-                    return
-                }
+            if (detaljer.isEmpty()) {
+                updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
+                return
+            }
             okonomiService.addElementToOkonomi(soknadId = soknadId, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
         }
 
