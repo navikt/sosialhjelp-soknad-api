@@ -34,32 +34,25 @@ class OkonomiskeOpplysningerServiceImpl(
         dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     ) {
-        addSpecialCaseElement(soknadId, type)
+        if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
+            if (detaljer.isEmpty())
+                {
+                    updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
+                    return
+                }
+            okonomiService.addElementToOkonomi(soknadId = soknadId, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+        }
 
         if (typesWithOkonomiElement.contains(type.javaClass)) {
             createElement(type, detaljer).let {
                 try {
                     okonomiService.updateElement(soknadId = soknadId, element = it)
                 } catch (e: OkonomiElementFinnesIkkeException) {
-                    throw OkonomiElementFinnesIkkeException(
-                        message = e.message,
-                        cause = e,
-                        soknadId = soknadId,
-                    )
+                    throw OkonomiElementFinnesIkkeException(message = e.message, cause = e, soknadId = soknadId)
                 }
             }
         }
         updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
-    }
-
-    // Typer som ikke er opprettet før i søknaden
-    private fun addSpecialCaseElement(
-        soknadId: UUID,
-        type: OpplysningType,
-    ) {
-        if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
-            okonomiService.addElementToOkonomi(soknadId = soknadId, type = type)
-        }
     }
 
     private fun createElement(

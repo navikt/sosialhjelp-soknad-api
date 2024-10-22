@@ -39,9 +39,9 @@ class ProductionComparatorManager(
             typeValues: Boolean = false,
         ): String {
             if (value1 != value2) {
-                return "Field: $fieldName:\n" +
-                    "Original: ${if (typeValues) value1 else "Ulik shadow"}\n" +
-                    "Shadow: ${if (typeValues) value2 else "Ulik original"}"
+                return "FIELD name -> '$fieldName': " +
+                    "{ ORG -> ${value1?.let { if (typeValues) value1 else "Ulik shadow"} ?: "null" } != " +
+                    "SHADOW -> ${value2?.let { if (typeValues) value2 else "Ulik original"} ?: "null" } } "
             }
             return ""
         }

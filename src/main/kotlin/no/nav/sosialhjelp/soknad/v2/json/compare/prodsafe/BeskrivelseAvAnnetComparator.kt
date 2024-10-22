@@ -10,8 +10,11 @@ class BeskrivelseAvAnnetComparator(
 ) : ProductionComparator {
     override fun compare() {
         if (original == shadow) return
-        if (original != null && shadow == null && original.areAllFieldsNullOrEmpty()) {
-            logger.warn("NyModell: Original er tom og shadow er null")
+        if (shadow == null && original != null && original.areAllFieldsNullOrEmpty()) {
+            return
+        }
+        if (original == null && shadow != null && shadow.areAllFieldsNullOrEmpty()) {
+            return
         }
 
         val compareString =
@@ -33,8 +36,7 @@ class BeskrivelseAvAnnetComparator(
     }
 
     private fun JsonOkonomibeskrivelserAvAnnet.areAllFieldsNullOrEmpty(): Boolean {
-        return listOf(verdi, sparing, boutgifter, utbetaling, barneutgifter)
-            .let { it.all { field -> field.isNullOrEmpty() } }
+        return listOf(verdi, sparing, boutgifter, utbetaling, barneutgifter).all { field -> field.isNullOrEmpty() }
     }
 
     companion object {
