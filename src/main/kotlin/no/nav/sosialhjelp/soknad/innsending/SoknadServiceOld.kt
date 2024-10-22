@@ -182,8 +182,11 @@ class SoknadServiceOld(
     }
 
     fun hentSoknadMetadata(behandlingsId: String): SoknadMetadata =
-        soknadMetadataRepository.hent(behandlingsId)
+        hentSoknadMetadataOrNull(behandlingsId)
             ?: throw IkkeFunnetException("Fant ikke metadata på behandlingsId $behandlingsId")
+
+    fun hentSoknadMetadataOrNull(behandlingsId: String): SoknadMetadata? =
+        soknadMetadataRepository.hent(behandlingsId)
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadServiceOld::class.java)
