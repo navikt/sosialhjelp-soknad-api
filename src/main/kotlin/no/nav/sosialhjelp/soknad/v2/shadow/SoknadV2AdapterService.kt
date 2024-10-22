@@ -1,18 +1,22 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
 @Transactional(propagation = Propagation.NESTED)
 class SoknadV2AdapterService(
     private val soknadService: SoknadService,
+    private val dokumentasjonService: DokumentasjonService,
 ) : V2AdapterService {
     private val logger by logger()
 
@@ -24,21 +28,24 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Oppretter ny soknad for $behandlingsId")
 
-        kotlin.runCatching {
-            soknadService.createSoknad(
-                soknadId = UUID.fromString(behandlingsId),
-                opprettetDato = opprettetDato,
-                eierId = eierId,
-                kortSoknad = kortSoknad,
-            )
-        }
-            .onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+        kotlin
+            .runCatching {
+                soknadService.createSoknad(
+                    soknadId = UUID.fromString(behandlingsId),
+                    opprettetDato = opprettetDato,
+                    eierId = eierId,
+                    kortSoknad = kortSoknad,
+                )
 
-        kotlin.runCatching {
-            soknadService.findOrError(UUID.fromString(behandlingsId))
-                .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
-        }
-            .onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
+                opprettForventetDokumentasjon(behandlingsId, kortSoknad)
+            }.onFailure { logger.warn("Ny modell: Feil ved oppretting av ny soknad i adapter", it) }
+
+        kotlin
+            .runCatching {
+                soknadService
+                    .findOrError(UUID.fromString(behandlingsId))
+                    .also { logger.info("NyModell: Opprettet soknad: ${it.tidspunkt.opprettet}") }
+            }.onFailure { logger.warn("NyModell: Fant ikke ny soknad i databasen", it) }
     }
 
     override fun setInnsendingstidspunkt(
@@ -47,15 +54,17 @@ class SoknadV2AdapterService(
     ) {
         logger.info("NyModell: Setter innsendingstidspunkt fra timestamp: $innsendingsTidspunkt")
 
-        kotlin.runCatching {
-            OffsetDateTime.parse(innsendingsTidspunkt).let {
-                soknadService.setInnsendingstidspunkt(
-                    soknadId = UUID.fromString(soknadId),
-                    innsendingsTidspunkt = it.toLocalDateTime(),
-                )
-            }
-        }
-            .onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
+        kotlin
+            .runCatching {
+                TimestampConverter
+                    .parseFromUTCString(innsendingsTidspunkt)
+                    .also {
+                        soknadService.setInnsendingstidspunkt(
+                            soknadId = UUID.fromString(soknadId),
+                            innsendingsTidspunkt = it,
+                        )
+                    }
+            }.onFailure { logger.warn("NyModell: Kunne ikke sette innsendingstidspunkt", it) }
     }
 
     override fun slettSoknad(behandlingsId: String) {
@@ -65,5 +74,29 @@ class SoknadV2AdapterService(
             .runCatching {
                 soknadService.deleteSoknad(UUID.fromString(behandlingsId))
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
+    }
+
+    private fun opprettForventetDokumentasjon(
+        behandlingsId: String,
+        kortSoknad: Boolean,
+    ) {
+        if (kortSoknad) {
+            // oppretter dokumentasjon kort|behov
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.BEHOV,
+            )
+        } else {
+            // oppretter dokumentasjon skattemelding
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.SKATTEMELDING,
+            )
+        }
+        // oppretter utgift annet annet (og den oppretter forventet dokumentasjon)
+        dokumentasjonService.opprettDokumentasjon(
+            soknadId = UUID.fromString(behandlingsId),
+            opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+        )
     }
 }

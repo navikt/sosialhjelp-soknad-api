@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.SoknadInputValidator
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.TelefonService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -36,17 +35,13 @@ class TelefonnummerController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) telefonnummerInput: TelefonnummerInput,
     ): TelefonnummerDto {
-        telefonnummerInput.telefonnummerBruker?.let {
-            SoknadInputValidator(TelefonnummerInput::class)
-                .validateIsNumber(soknadId, it)
-        }
-
-        return telefonService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker).let {
-            TelefonnummerDto(
-                telefonnummerRegister = it.fraRegister,
-                telefonnummerBruker = it.fraBruker,
-            )
-        }
+        return telefonService.updateTelefonnummer(soknadId, telefonnummerInput.telefonnummerBruker)
+            .let {
+                TelefonnummerDto(
+                    telefonnummerRegister = it.fraRegister,
+                    telefonnummerBruker = it.fraBruker,
+                )
+            }
     }
 }
 

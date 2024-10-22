@@ -100,7 +100,7 @@ class BostotteRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // nyModell
-        v2ControllerAdapter.updateBostotte(behandlingsId, bostotteFrontend.bekreftelse, bostotteFrontend.samtykke)
+        v2ControllerAdapter.updateBostotteBekreftelse(behandlingsId, bostotteFrontend.bekreftelse)
     }
 
     @PostMapping("/samtykke")
@@ -116,10 +116,9 @@ class BostotteRessurs(
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = hentSamtykkeFraSoknad(opplysninger)
-        var skalLagre = samtykke
-        if (lagretSamtykke != samtykke) {
-            skalLagre = true
+        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
+
+        if (samtykke != lagretSamtykke) {
             OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
             OkonomiMapper.setBekreftelse(
                 opplysninger,
@@ -127,20 +126,22 @@ class BostotteRessurs(
                 samtykke,
                 textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
             )
-        }
-        if (skalLagre) {
             bostotteSystemdata.updateSystemdataIn(soknad, token)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
 
         // nyModell
-        v2ControllerAdapter.updateBostotte(behandlingsId, hasBostotte = null, samtykke, token)
+        v2ControllerAdapter.updateBostotteSamtykke(
+            soknadId = behandlingsId,
+            hasSamtykke = samtykke,
+            userToken = token,
+        )
     }
 
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean =
+    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
         opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .any { it.verdi }
+            .find { it.type == BOSTOTTE_SAMTYKKE }
+            ?.verdi
 
     private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? =
         opplysninger.bekreftelse

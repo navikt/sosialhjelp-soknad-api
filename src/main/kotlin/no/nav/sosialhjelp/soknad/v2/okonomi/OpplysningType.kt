@@ -24,7 +24,7 @@ import org.springframework.data.convert.WritingConverter
 interface OpplysningType {
     // denne må hete `name` for pga enum.name
     val name: String
-    val dokumentasjonForventet: Boolean
+    val dokumentasjonForventet: Boolean?
 
     // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på? - Tore
     val group: String
@@ -51,6 +51,9 @@ private object StringToOpplysningTypeMapper {
         }
 
     fun map(typeString: String): OpplysningType {
+        // TODO Midlertidig manuell mapping pga eksisterende data med feil type
+        if (typeString == "UTGIFTER_HUSLEIE_KOMMUNAL") return UtgiftType.UTGIFTER_HUSLEIE
+
         return opplysningTypes.find { it.name == typeString }
             ?: error("Kunne ikke mappe til OpplysningType: $typeString")
     }

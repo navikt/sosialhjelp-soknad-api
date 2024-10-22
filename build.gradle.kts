@@ -115,6 +115,10 @@ dependencies {
     implementation(libs.simpleclient)
     implementation(libs.micrometer.registry.prometheus)
 
+    // Opentelemetry
+    implementation(platform(libs.opentelemetry.bom))
+    implementation(libs.opentelemetry.api)
+
     // jackson
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.module.datatype)

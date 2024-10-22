@@ -63,6 +63,7 @@ data class Utbetaling(
     val periodeTom: LocalDate? = null,
     val mottaker: Mottaker? = null,
     val organisasjon: Organisasjon? = null,
+    val tittel: String? = null,
 ) : OkonomiDetalj
 
 data class Organisasjon(
@@ -72,6 +73,7 @@ data class Organisasjon(
 
 data class UtbetalingMedKomponent(
     val utbetaling: Utbetaling = Utbetaling(),
+    val tittel: String,
     val komponenter: List<Komponent> = emptyList(),
 ) : OkonomiDetalj
 

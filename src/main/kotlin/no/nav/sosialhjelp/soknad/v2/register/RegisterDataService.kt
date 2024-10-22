@@ -43,7 +43,7 @@ class RegisterDataService(
         listedFetchers.forEach { fetcher ->
             runCatching { fetcher.fetchAndSave(soknadId) }
                 .onFailure {
-                    logger.error("NyModell: Registerdata-fetcher feilet: $fetcher", it)
+                    logger.warn("NyModell: Registerdata-fetcher feilet: $fetcher", it)
                     if (!fetcher.continueOnError()) throw it
                 }
         }

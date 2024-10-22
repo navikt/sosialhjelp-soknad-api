@@ -49,12 +49,21 @@ class KontaktToJsonMapper(
             val adresseValg = kontakt.adresser.adressevalg
 
             json.initializeObjects()
-            json.midlertidigAdresse = kontakt.adresser.midlertidig?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
+            json.midlertidigAdresse =
+                kontakt.adresser.midlertidig
+                    ?.toJsonAdresse()
+                    ?.withKilde(JsonKilde.SYSTEM)
 
             with(json.soknad.data.personalia) {
                 telefonnummer = kontakt.telefonnummer.toJsonTelefonnummer()
-                folkeregistrertAdresse = kontakt.adresser.folkeregistrert?.toJsonAdresse()?.withKilde(JsonKilde.SYSTEM)
-                adresseValg?.let { this.mapOppholdsadresse(oppholdsadresse, adresseValg) }
+                folkeregistrertAdresse =
+                    kontakt.adresser.folkeregistrert
+                        ?.toJsonAdresse()
+                        ?.withKilde(JsonKilde.SYSTEM)
+                adresseValg?.also {
+                    this.oppholdsadresse = oppholdsadresse.mapOppholdsadresse(it)
+                    this.postadresse = oppholdsadresse.mapToPostadresse(it)
+                }
             }
 
             json.mottaker = kontakt.mottaker.toJsonSoknadsmottakerInternal()
@@ -66,25 +75,24 @@ class KontaktToJsonMapper(
             soknad.data.personalia ?: soknad.data.withPersonalia(JsonPersonalia())
         }
 
-        private fun JsonPersonalia.mapOppholdsadresse(
-            oppholdsadresse: Adresse,
+        private fun Adresse.mapOppholdsadresse(
             adresseValg: AdresseValg,
-        ) {
-            this.oppholdsadresse =
-                oppholdsadresse.toJsonAdresse()
-                    .apply {
-                        this.kilde =
-                            if (adresseValg == AdresseValg.SOKNAD) {
-                                JsonKilde.BRUKER
-                            } else {
-                                JsonKilde.SYSTEM
-                            }
-                        this.adresseValg = JsonAdresseValg.fromValue(adresseValg.name.lowercase())
-                    }
-        }
+        ): JsonAdresse =
+            this
+                .toJsonAdresse()
+                .withKilde(if (adresseValg == AdresseValg.SOKNAD) JsonKilde.BRUKER else JsonKilde.SYSTEM)
+                .withAdresseValg(JsonAdresseValg.fromValue(adresseValg.name.lowercase()))
 
-        private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? {
-            return fraBruker?.let {
+        // TODO Tilsvarer logikk for AdresseRessurs#midlertidigLostningForPostadresse
+        private fun Adresse.mapToPostadresse(valg: AdresseValg): JsonAdresse? =
+            if (this is MatrikkelAdresse) {
+                null
+            } else {
+                this.mapOppholdsadresse(valg).withAdresseValg(null)
+            }
+
+        private fun Telefonnummer.toJsonTelefonnummer(): JsonTelefonnummer? =
+            fraBruker?.let {
                 JsonTelefonnummer()
                     .withKilde(JsonKilde.BRUKER)
                     .withVerdi(it)
@@ -94,16 +102,14 @@ class KontaktToJsonMapper(
                         .withKilde(JsonKilde.SYSTEM)
                         .withVerdi(it)
                 }
-        }
 
-        private fun Adresse.toJsonAdresse(): JsonAdresse {
-            return when (this) {
+        private fun Adresse.toJsonAdresse(): JsonAdresse =
+            when (this) {
                 is VegAdresse -> toJsonGateAdresse()
                 is MatrikkelAdresse -> toJsonMatrikkelAdresse()
                 is UstrukturertAdresse -> toJsonUstrukturertAdresse()
                 else -> throw IllegalStateException("Kan ikke mappe type ${this.javaClass} til adresse.")
             }
-        }
 
         private fun VegAdresse.toJsonGateAdresse() =
             JsonGateAdresse()
@@ -133,17 +139,16 @@ class KontaktToJsonMapper(
                 .withType(JsonAdresse.Type.USTRUKTURERT)
                 .withAdresse(adresse)
 
-        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? {
-            return JsonSoknadsmottaker()
+        private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? =
+            JsonSoknadsmottaker()
                 .withOrganisasjonsnummer(orgnummer)
                 .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
-        }
 
-        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? {
-            return no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
+        private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? =
+            no.nav.sbl.soknadsosialhjelp.soknad
+                .JsonSoknadsmottaker()
                 .withEnhetsnummer(enhetsnummer)
                 .withKommunenummer(kommunenummer)
                 .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
-        }
     }
 }

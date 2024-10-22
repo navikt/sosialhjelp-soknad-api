@@ -34,6 +34,11 @@ interface SoknadService {
     ): Boolean
 
     fun erKortSoknad(soknadId: UUID): Boolean
+
+    fun updateKortSoknad(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    )
 }
 
 interface BegrunnelseService {
@@ -49,7 +54,8 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService, BegrunnelseService {
+) : SoknadService,
+    BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -70,7 +76,8 @@ class SoknadServiceImpl(
             .id
 
     override fun deleteSoknad(soknadId: UUID) {
-        soknadRepository.findByIdOrNull(soknadId)
+        soknadRepository
+            .findByIdOrNull(soknadId)
             ?.let { soknadRepository.delete(it) }
             ?: logger.warn("NyModell: Kan ikke slette soknad. Finnes ikke.")
     }
@@ -94,6 +101,15 @@ class SoknadServiceImpl(
     ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
+
+    override fun updateKortSoknad(
+        soknadId: UUID,
+        kortSoknad: Boolean,
+    ) {
+        val soknad = findOrError(soknadId)
+        val updatedSoknad = soknad.copy(kortSoknad = kortSoknad)
+        soknadRepository.save(updatedSoknad)
+    }
 
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 

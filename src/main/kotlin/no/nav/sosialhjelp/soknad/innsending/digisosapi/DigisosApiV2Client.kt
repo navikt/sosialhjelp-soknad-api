@@ -115,14 +115,14 @@ class DigisosApiV2Client(
         return digisosId
     }
 
-    fun getSoknader(token: String?): List<DigisosSak> {
+    fun getSoknader(token: String): List<DigisosSak> {
         val startTime = System.currentTimeMillis()
         return try {
             fiksWebClient
                 .get()
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/soknader")
                 .accept(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, token)
+                .header(AUTHORIZATION, "Bearer $token")
                 .retrieve()
                 .bodyToMono<List<DigisosSak>>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
@@ -146,7 +146,7 @@ class DigisosApiV2Client(
                 .get()
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}", digisosId, dokumentLagerId)
                 .accept(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, token)
+                .header(AUTHORIZATION, "Bearer $token")
                 .retrieve()
                 .bodyToMono<JsonDigisosSoker>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

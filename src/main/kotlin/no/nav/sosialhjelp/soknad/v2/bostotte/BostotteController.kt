@@ -51,11 +51,8 @@ class BostotteController(
         @RequestBody input: SamtykkeInput,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): BostotteDto {
-        return token?.let { userToken ->
-            bostotteService.updateSamtykke(soknadId, input.hasSamtykke, userToken)
-            getBostotte(soknadId)
-        }
-            ?: error("Mangler token for Husbanken Samtykke")
+        bostotteService.updateSamtykke(soknadId, input.hasSamtykke, token)
+        return getBostotte(soknadId)
     }
 }
 

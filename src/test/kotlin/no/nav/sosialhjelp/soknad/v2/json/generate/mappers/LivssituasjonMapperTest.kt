@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
@@ -22,7 +23,7 @@ class LivssituasjonMapperTest {
 
     @BeforeEach
     fun setup() {
-        json = createJsonInternalSoknadWithInitializedSuperObjects()
+        json = createJsonInternalSoknadWithInitializedSuperObjects().apply { soknad.withData(JsonData()) }
     }
 
     @Test

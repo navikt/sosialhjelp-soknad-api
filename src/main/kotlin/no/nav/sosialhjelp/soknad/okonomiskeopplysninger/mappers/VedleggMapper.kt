@@ -127,12 +127,12 @@ object VedleggMapper {
         soknadType: String?,
     ): List<VedleggRadFrontend> {
         val radList =
-            if (jsonOkonomi.opplysninger.utgift.isEmpty()) {
+            if (jsonOkonomi.opplysninger.utgift?.isEmpty() == true) {
                 mutableListOf(VedleggRadFrontend())
             } else {
                 jsonOkonomi.opplysninger.utgift
-                    .filter { it.type == soknadType }
-                    .map { getRadFromOpplysningerUtgift(it, soknadType) }
+                    ?.filter { it.type == soknadType }
+                    ?.map { getRadFromOpplysningerUtgift(it, soknadType) } ?: emptyList()
             }
         return if (radList.isEmpty() && soknadType == UTGIFTER_ANDRE_UTGIFTER) {
             listOf(VedleggRadFrontend())

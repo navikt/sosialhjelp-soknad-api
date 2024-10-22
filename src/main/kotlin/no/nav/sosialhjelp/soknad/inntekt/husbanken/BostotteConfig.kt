@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
+import java.time.Duration
 
 @Configuration
 class BostotteConfig(
@@ -14,12 +15,10 @@ class BostotteConfig(
     proxiedHttpClient: HttpClient,
 ) {
     @Bean
-    fun husbankenClient(): HusbankenClient {
-        return HusbankenClient(husbankenWebClient)
-    }
+    fun husbankenClient(): HusbankenClient = HusbankenClient(husbankenWebClient)
 
     private val husbankenWebClient: WebClient =
-        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient.responseTimeout(Duration.ofSeconds(10L)))
             .baseUrl(bostotteBaseUrl)
             .build()
 }

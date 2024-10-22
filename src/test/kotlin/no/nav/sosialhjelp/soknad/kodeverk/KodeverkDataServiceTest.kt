@@ -1,9 +1,15 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
 import io.mockk.clearAllMocks
+import no.nav.security.mock.oauth2.http.objectMapper
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.auth.azure.AzureadClient
+import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.azure.AzureadTokenResponse
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDataService.Companion.Kommuner
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDataService.Companion.Landkoder
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDataService.Companion.Postnummer
+import no.nav.sosialhjelp.soknad.redis.NoRedisService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
@@ -17,21 +23,31 @@ import java.nio.charset.StandardCharsets
 
 class KodeverkDataServiceTest : KodeverkTestClass() {
     private val mockWebServer = MockWebServer()
-    val kodeverkClient = KodeverkClient(mockWebServer.url("/").toString(), WebClient.builder())
-    val kodeverkDataService = KodeverkDataService(kodeverkClient)
+    private val azureadClient = AzureadClient(mockWebServer.url("/").toString(), "client_id", "client_secret", WebClient.builder(), unproxiedHttpClient())
+    private val redisService = NoRedisService()
+    private val azureadService = AzureadService(azureadClient, redisService)
+    private val kodeverkClient = KodeverkClient(mockWebServer.url("/").toString(), "scope", azureadService, WebClient.builder())
+    private val kodeverkDataService = KodeverkDataService(kodeverkClient)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
     }
 
-    private fun prepareMockWebServerResponse(kodeverkNavn: String) =
+    private fun prepareMockWebServerResponse(kodeverkNavn: String) {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setBody(objectMapper.writeValueAsString(AzureadTokenResponse("token", "scope"))),
+        )
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(IOUtils.toString(ClassLoader.getSystemResourceAsStream("kodeverk/$kodeverkNavn.json"), StandardCharsets.UTF_8)),
         )
+    }
 
     @Test
     fun hentKommuner() {

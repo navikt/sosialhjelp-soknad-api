@@ -77,6 +77,7 @@ private fun JsonAdresse.assertAdresse(adresse: Adresse?) {
         is VegAdresse -> (this as JsonGateAdresse).assertAdresse(adresse)
         is MatrikkelAdresse -> (this as JsonMatrikkelAdresse).assertAdresse(adresse)
         is UstrukturertAdresse -> (this as JsonUstrukturertAdresse).assertAdresse(adresse)
+        else -> TODO()
     }
 }
 

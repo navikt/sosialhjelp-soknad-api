@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -9,7 +11,7 @@ interface ArbeidService {
 
     fun updateKommentarTilArbeid(
         soknadId: UUID,
-        kommentarTilArbeidsforhold: String,
+        kommentarTilArbeidsforhold: String?,
     ): Arbeid
 }
 
@@ -36,6 +38,7 @@ interface BosituasjonService {
 @Service
 class LivssituasjonServiceImpl(
     private val repository: LivssituasjonRepository,
+    private val dokumentasjonService: DokumentasjonService,
 ) : BosituasjonService, UtdanningService, ArbeidService {
     override fun findBosituasjon(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.bosituasjon
 
@@ -44,10 +47,35 @@ class LivssituasjonServiceImpl(
         botype: Botype?,
         antallHusstand: Int?,
     ): Bosituasjon {
-        return findOrCreate(soknadId)
+        val livssituasjon = findOrCreate(soknadId)
+
+        return livssituasjon
             .copy(bosituasjon = Bosituasjon(botype = botype, antallHusstand = antallHusstand))
-            .also { repository.save(it) }
+            .let { repository.save(it) }
+            .also {
+                handleDokumentasjonskrav(
+                    soknadId = soknadId,
+                    oldBotype = livssituasjon.bosituasjon?.botype,
+                    newBotype = botype,
+                )
+            }
             .bosituasjon!!
+    }
+
+    private fun handleDokumentasjonskrav(
+        soknadId: UUID,
+        oldBotype: Botype?,
+        newBotype: Botype?,
+    ) {
+        if (oldBotype != newBotype) {
+            if (oldBotype.hasDokumentasjon()) {
+                dokumentasjonService.fjernForventetDokumentasjon(soknadId, oldBotype.toUgiftType())
+            }
+
+            if (newBotype.hasDokumentasjon()) {
+                dokumentasjonService.opprettDokumentasjon(soknadId, newBotype.toUgiftType())
+            }
+        }
     }
 
     override fun findUtdanning(soknadId: UUID) = repository.findByIdOrNull(soknadId)?.utdanning
@@ -67,10 +95,10 @@ class LivssituasjonServiceImpl(
 
     override fun updateKommentarTilArbeid(
         soknadId: UUID,
-        kommentarTilArbeidsforhold: String,
+        kommentarTilArbeidsforhold: String?,
     ): Arbeid {
         return findOrCreate(soknadId)
-            .copy(arbeid = Arbeid(kommentar = kommentarTilArbeidsforhold))
+            .run { copy(arbeid = arbeid.copy(kommentar = kommentarTilArbeidsforhold)) }
             .let { repository.save(it) }
             .arbeid
     }
@@ -78,4 +106,14 @@ class LivssituasjonServiceImpl(
     private fun findOrCreate(soknadId: UUID) =
         repository.findByIdOrNull(soknadId)
             ?: repository.save(Livssituasjon(soknadId))
+}
+
+private fun Botype?.hasDokumentasjon() = this == Botype.LEIER || this == Botype.KOMMUNAL
+
+private fun Botype?.toUgiftType(): AnnenDokumentasjonType {
+    return when (this) {
+        Botype.LEIER -> AnnenDokumentasjonType.HUSLEIEKONTRAKT
+        Botype.KOMMUNAL -> AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL
+        else -> error("Botype $this har ingen tilsvarende UtgiftType")
+    }
 }

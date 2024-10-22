@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.adressesok.sok.SortBy
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
@@ -25,6 +26,12 @@ class AdressesokService(
     private val kodeverkService: KodeverkService,
 ) {
     fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
+        val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
+        val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
+        return vegadresse.toAdresseForslag()
+    }
+
+    fun getAdresseForslag(adresse: VegAdresse): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
         return vegadresse.toAdresseForslag()
@@ -55,6 +62,13 @@ class AdressesokService(
         return variables
     }
 
+    private fun toVariables(adresse: VegAdresse): Map<String, Any> {
+        val variables = HashMap<String, Any>()
+        variables[PAGING] = Paging(1, 30, emptyList())
+        variables[CRITERIA] = toCriteriaList(adresse)
+        return variables
+    }
+
     private fun toCriteriaList(adresse: JsonGateAdresse): List<Criteria> {
         val criteriaList = mutableListOf<Criteria>()
         if (StringUtils.isNotEmpty(adresse.gatenavn)) {
@@ -70,6 +84,26 @@ class AdressesokService(
             criteriaList.add(criteria(FieldName.VEGADRESSE_POSTNUMMER, SearchRule.EQUALS, adresse.postnummer))
         }
         if (StringUtils.isNotEmpty(adresse.poststed)) {
+            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTSTED, SearchRule.CONTAINS, adresse.poststed))
+        }
+        return criteriaList
+    }
+
+    private fun toCriteriaList(adresse: VegAdresse): List<Criteria> {
+        val criteriaList = mutableListOf<Criteria>()
+        if (!adresse.gatenavn.isNullOrBlank()) {
+            criteriaList.add(criteria(FieldName.VEGADRESSE_ADRESSENAVN, SearchRule.CONTAINS, adresse.gatenavn))
+        }
+        if (!adresse.husnummer.isNullOrBlank()) {
+            criteriaList.add(criteria(FieldName.VEGADRESSE_HUSNUMMER, SearchRule.EQUALS, adresse.husnummer))
+        }
+        if (!adresse.husbokstav.isNullOrBlank()) {
+            criteriaList.add(criteria(FieldName.VEGADRESSE_HUSBOKSTAV, SearchRule.EQUALS, adresse.husbokstav))
+        }
+        if (!adresse.postnummer.isNullOrBlank()) {
+            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTNUMMER, SearchRule.EQUALS, adresse.postnummer))
+        }
+        if (!adresse.poststed.isNullOrBlank()) {
             criteriaList.add(criteria(FieldName.VEGADRESSE_POSTSTED, SearchRule.CONTAINS, adresse.poststed))
         }
         return criteriaList
@@ -113,12 +147,11 @@ class AdressesokService(
         fieldName: FieldName,
         searchRule: SearchRule,
         value: String,
-    ): Criteria {
-        return when (searchRule) {
+    ): Criteria =
+        when (searchRule) {
             SearchRule.WILDCARD -> Criteria(fieldName, SearchRule.WILDCARD, value + WILDCARD_SUFFIX)
             else -> Criteria(fieldName, searchRule, value)
         }
-    }
 
     private fun resolveVegadresse(hits: List<AdressesokHitDto>): VegadresseDto {
         return if (hits.isEmpty()) {
@@ -146,13 +179,12 @@ class AdressesokService(
     private fun relevantFieldsAreEquals(
         dto1: VegadresseDto?,
         dto2: VegadresseDto?,
-    ): Boolean {
-        return if (dto1 == null || dto2 == null) {
+    ): Boolean =
+        if (dto1 == null || dto2 == null) {
             false
         } else {
             dto1.kommunenummer == dto2.kommunenummer && dto1.kommunenavn == dto2.kommunenavn && dto1.bydelsnummer == dto2.bydelsnummer
         }
-    }
 
     companion object {
         private const val PAGING = "paging"

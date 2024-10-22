@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +18,9 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     protected lateinit var dokRepository: DokumentasjonRepository
+
+    @Autowired
+    protected lateinit var integrasjonStatusService: IntegrasjonStatusService
 
     protected lateinit var soknad: Soknad
     protected lateinit var okonomi: Okonomi

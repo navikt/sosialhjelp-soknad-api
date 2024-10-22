@@ -25,14 +25,15 @@ class DatabaseConfig(
     fun dataSource(): HikariDataSource {
         val config = HikariConfig()
         config.jdbcUrl = dbUrl
+        config.poolName = "ManuelHikariPool"
+        config.leakDetectionThreshold = 30000
 
         return HikariCPVaultUtil.createHikariDataSourceWithVaultIntegration(config, vaultMountPath, role)
     }
 
     @Bean
-    fun setRole(): FlywayConfigurationCustomizer {
-        return FlywayConfigurationCustomizer { c: FluentConfiguration ->
+    fun setRole(): FlywayConfigurationCustomizer =
+        FlywayConfigurationCustomizer { c: FluentConfiguration ->
             c.initSql("SET ROLE \"$role\"")
         }
-    }
 }

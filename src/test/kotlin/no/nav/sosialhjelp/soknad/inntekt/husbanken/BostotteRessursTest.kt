@@ -268,7 +268,11 @@ internal class BostotteRessursTest {
     @Test
     fun bostotte_skalIkkeForandreSamtykke() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+
         val soknad = createJsonInternalSoknadWithSaker(false, listOf("tilfeldig", "salg", "lonn"))
+        soknad.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
+            ?.add(JsonOkonomibekreftelse().withType(SoknadJsonTyper.BOSTOTTE_SAMTYKKE).withVerdi(false))
+
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
@@ -282,7 +286,7 @@ internal class BostotteRessursTest {
         assertThat(
             soknad.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bekreftelse,
-        ).isEmpty()
+        ).hasSize(1)
     }
 
     @Test

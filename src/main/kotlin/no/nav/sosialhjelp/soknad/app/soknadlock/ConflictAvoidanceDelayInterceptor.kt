@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.app.soknadlock
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import no.nav.sosialhjelp.soknad.app.getBehandlingsId
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.servlet.HandlerMapping
 import kotlin.reflect.cast
 
 /**
@@ -40,10 +40,9 @@ class ConflictAvoidanceDelayInterceptor(
         // dersom soknadLockManager er disabled, er hele interceptoren inaktiv.
         if (!soknadLockManager.enabled) return true
 
-        val behandlingsId = getBehandlingsId(request)
+        val behandlingsId = request.getBehandlingsId() ?: return true
 
         // Om URLen ikke inneholder behandlingsId returnerer vi umiddelbart.
-        if (behandlingsId == null) return true
 
         soknadLockManager.getLock(behandlingsId)?.let { request.setAttribute(LOCK_ATTRIBUTE_NAME, it) }
 
@@ -60,14 +59,9 @@ class ConflictAvoidanceDelayInterceptor(
             try {
                 soknadLockManager.releaseLock(it)
             } catch (e: Exception) {
-                log.warn("Failed to release lock for ${getBehandlingsId(request)}", e)
+                log.warn("Failed to release lock for ${request.getBehandlingsId()}", e)
             }
         }
-    }
-
-    private fun getBehandlingsId(request: HttpServletRequest): String? {
-        val pathVariables = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
-        return pathVariables?.get("behandlingsId") as String?
     }
 
     private fun getRequestLock(request: HttpServletRequest): SoknadLockManager.TimestampedLock? {

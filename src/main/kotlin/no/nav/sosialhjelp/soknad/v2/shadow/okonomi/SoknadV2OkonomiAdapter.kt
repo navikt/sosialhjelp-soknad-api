@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.shadow.okonomi
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
@@ -11,10 +12,14 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarIkkeUtbetalingerInput
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarUtbetalingerInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.UtbetalingController
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.V2OkonomiAdapter
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
@@ -22,8 +27,11 @@ import java.util.UUID
 @Component
 class SoknadV2OkonomiAdapter(
     private val okonomiskeOpplysningerController: OkonomiskeOpplysningerController,
-    private val transactionTemplate: TransactionTemplate,
+    private val utbetalingController: UtbetalingController,
+    transactionManager: PlatformTransactionManager,
 ) : V2OkonomiAdapter {
+    private val transactionTemplate = TransactionTemplate(transactionManager)
+
     override fun updateOkonomiskeOpplysninger(
         behandlingsId: String,
         vedleggFrontend: VedleggFrontend,
@@ -37,9 +45,37 @@ class SoknadV2OkonomiAdapter(
             .onFailure { logger.warn("NyModell: Feil i oppdatering av Okonomiske Opplysninger", it) }
     }
 
+    override fun updateUtbetalinger(
+        behandlingsId: String,
+        utbetalingerFrontend: UtbetalingRessurs.UtbetalingerFrontend,
+    ) {
+        runWithNestedTransaction {
+            with(utbetalingerFrontend) {
+                val input =
+                    if (!utbytte && !salg && !forsikring && !annet) {
+                        HarIkkeUtbetalingerInput()
+                    } else {
+                        HarUtbetalingerInput(
+                            hasUtbytte = utbytte,
+                            hasSalg = salg,
+                            hasForsikring = forsikring,
+                            hasAnnet = annet,
+                            beskrivelseUtbetaling = beskrivelseAvAnnet,
+                        )
+                    }
+
+                utbetalingController.updateUtbetalinger(
+                    soknadId = UUID.fromString(behandlingsId),
+                    input = input,
+                )
+            }
+        }.onFailure { logger.warn("NyModell: Oppdatering av Utbetalinger feilet", it) }
+    }
+
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
         return kotlin.runCatching {
             transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NESTED
+            transactionTemplate.isolationLevel
             transactionTemplate.execute { function.invoke() }
         }
     }

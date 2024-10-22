@@ -70,7 +70,7 @@ class EierMapperTest {
 
         with(json.soknad.data.personalia) {
             assertThat(this.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
-            assertThat(this.kontonummer.harIkkeKonto == null).isTrue()
+            assertThat(this.kontonummer.harIkkeKonto).isFalse()
             assertThat(this.kontonummer.verdi).isEqualTo(eier.kontonummer.fraBruker)
         }
     }

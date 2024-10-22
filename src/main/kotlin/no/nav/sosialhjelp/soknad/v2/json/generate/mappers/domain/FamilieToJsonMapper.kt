@@ -51,7 +51,6 @@ class FamilieToJsonMapper(
                 if (familie.ektefelle != null && familie.sivilstatus != null) {
                     sivilstatus = familie.toJsonSivilstatus()
                 }
-
                 forsorgerplikt = familie.toJsonForsorgerplikt()
             }
         }
@@ -73,6 +72,7 @@ private fun Familie.toJsonSivilstatus() =
         .withEktefelle(ektefelle?.toJson())
         .withBorSammenMed(ektefelle?.borSammen)
         .withFolkeregistrertMedEktefelle(ektefelle?.folkeregistrertMedEktefelle)
+        .withEktefelleHarDiskresjonskode(false)
 
 private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else JsonKilde.BRUKER
 
@@ -116,6 +116,8 @@ private fun Barn.toJson() =
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(deltBosted ?: false),
         )
+        // TODO Pr. nå settes det ikke noe samvarsgrad i frontend - riktig?
+        .withSamvarsgrad(null)
 
 // mellomnavn er required i json-modellen
 fun Navn.toJson() = JsonNavn().withFornavn(fornavn).withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn)

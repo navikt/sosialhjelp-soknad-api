@@ -1,16 +1,33 @@
 package no.nav.sosialhjelp.soknad.v2.json
 
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
+private fun OpplysningType.getJsonVerdier(): JsonVerdi =
+    when (this) {
+        is InntektType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is UtgiftType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is FormueType -> OpplysningTypeMapper.getJsonVerdier(this)
+        is AnnenDokumentasjonType -> OpplysningTypeMapper.getJsonVerdier(this)
+        else -> error("Ukjent OpplysningType: $this")
+    }
+
+fun OpplysningType.getVedleggTypeString(): String? = getJsonVerdier().vedleggType?.getTypeString()
+
+fun OpplysningType.getVedleggTillegginfoString(): String? = getJsonVerdier().vedleggType?.getTilleggsinfoString()
+
+fun OpplysningType.getSoknadJsonTypeString(): String? = getJsonVerdier().navn?.verdi
+
 // TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
 object OpplysningTypeMapper {
-    fun getJsonVerdier(utgiftType: UtgiftType): JsonVerdi {
-        return when (utgiftType) {
+    fun getJsonVerdier(utgiftType: UtgiftType): JsonVerdi =
+        when (utgiftType) {
             // JsonOpplysningUtgift
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_ANNET, VedleggType.AnnetAnnet)
             UtgiftType.UTGIFTER_ANNET_BO -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_ANNET_BO, VedleggType.DokumentasjonAnnetBoutgift)
@@ -24,15 +41,14 @@ object OpplysningTypeMapper {
             UtgiftType.BARNEBIDRAG_BETALER -> JsonVerdi(SoknadJsonTypeEnum.BARNEBIDRAG, VedleggType.BarnebidragBetaler)
             UtgiftType.UTGIFTER_SFO -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_SFO, VedleggType.FakturaSfo)
             UtgiftType.UTGIFTER_BARNEHAGE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BARNEHAGE, VedleggType.FakturaBarnehage)
-            UtgiftType.UTGIFTER_HUSLEIE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.FakturaHusleie)
             UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
             UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_RENTER, null)
             UtgiftType.UTGIFTER_BOLIGLAN -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_BOLIGLAN_AVDRAG, VedleggType.NedbetalingsplanAvdragslan)
+            UtgiftType.UTGIFTER_HUSLEIE -> JsonVerdi(SoknadJsonTypeEnum.UTGIFTER_HUSLEIE, VedleggType.FakturaHusleie)
         }
-    }
 
-    fun getJsonVerdier(inntektType: InntektType): JsonVerdi {
-        return when (inntektType) {
+    fun getJsonVerdier(inntektType: InntektType): JsonVerdi =
+        when (inntektType) {
             // JsonOversiktInntekt
             InntektType.BARNEBIDRAG_MOTTAR -> JsonVerdi(SoknadJsonTypeEnum.BARNEBIDRAG, VedleggType.BarnebidragMottar)
             InntektType.JOBB -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
@@ -47,10 +63,9 @@ object OpplysningTypeMapper {
             InntektType.UTBETALING_SKATTEETATEN -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_SKATTEETATEN, null)
             InntektType.UTBETALING_NAVYTELSE -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_NAVYTELSE, null)
         }
-    }
 
-    fun getJsonVerdier(formueType: FormueType): JsonVerdi {
-        return when (formueType) {
+    fun getJsonVerdier(formueType: FormueType): JsonVerdi =
+        when (formueType) {
             FormueType.FORMUE_BRUKSKONTO -> JsonVerdi(SoknadJsonTypeEnum.FORMUE_BRUKSKONTO, VedleggType.KontooversiktBrukskonto)
             FormueType.FORMUE_BSU -> JsonVerdi(SoknadJsonTypeEnum.FORMUE_BSU, VedleggType.KontooversiktBsu)
             FormueType.FORMUE_LIVSFORSIKRING -> JsonVerdi(SoknadJsonTypeEnum.FORMUE_LIVSFORSIKRING, VedleggType.KontooversiktLivsforsikring)
@@ -63,10 +78,9 @@ object OpplysningTypeMapper {
             FormueType.VERDI_FRITIDSEIENDOM -> JsonVerdi(SoknadJsonTypeEnum.VERDI_FRITIDSEIENDOM, null)
             FormueType.VERDI_ANNET -> JsonVerdi(SoknadJsonTypeEnum.VERDI_ANNET, null)
         }
-    }
 
-    fun getJsonVerdier(bekreftelseType: BekreftelseType): JsonVerdi {
-        return when (bekreftelseType) {
+    fun getJsonVerdier(bekreftelseType: BekreftelseType): JsonVerdi =
+        when (bekreftelseType) {
             BekreftelseType.BEKREFTELSE_UTBETALING -> JsonVerdi(SoknadJsonTypeEnum.BEKREFTELSE_UTBETALING, null)
             BekreftelseType.BEKREFTELSE_BOUTGIFTER -> JsonVerdi(SoknadJsonTypeEnum.BEKREFTELSE_BOUTGIFTER, null)
             BekreftelseType.BEKREFTELSE_BARNEUTGIFTER -> JsonVerdi(SoknadJsonTypeEnum.BEKREFTELSE_BARNEUTGIFTER, null)
@@ -77,10 +91,19 @@ object OpplysningTypeMapper {
             BekreftelseType.BOSTOTTE -> JsonVerdi(SoknadJsonTypeEnum.BOSTOTTE, null)
             BekreftelseType.BEKREFTELSE_SPARING -> JsonVerdi(SoknadJsonTypeEnum.BEKREFTELSE_SPARING, null)
         }
-    }
+
+    fun getJsonVerdier(annenDokumentasjonType: AnnenDokumentasjonType): JsonVerdi =
+        when (annenDokumentasjonType) {
+            AnnenDokumentasjonType.SKATTEMELDING -> JsonVerdi(null, VedleggType.SkattemeldingSkattemelding)
+            AnnenDokumentasjonType.SAMVARSAVTALE -> JsonVerdi(null, VedleggType.SamvarsavtaleBarn)
+            AnnenDokumentasjonType.OPPHOLDSTILLATELSE -> JsonVerdi(null, VedleggType.OppholdstillatelOppholdstillatel)
+            AnnenDokumentasjonType.HUSLEIEKONTRAKT -> JsonVerdi(null, VedleggType.HusleiekontraktHusleiekontrakt)
+            AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL -> JsonVerdi(null, VedleggType.HusleiekontraktKommunal)
+            AnnenDokumentasjonType.BEHOV -> JsonVerdi(null, VedleggType.KortBehov)
+        }
 }
 
 data class JsonVerdi(
-    val navn: SoknadJsonTypeEnum,
+    val navn: SoknadJsonTypeEnum?,
     val vedleggType: VedleggType?,
 )

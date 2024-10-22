@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
@@ -14,15 +15,20 @@ import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling as V2Utbetaling
 
+// TODO Dette gjøres on demand - så trenger det egentlig være en RegisterDataFetcher?
 @Component
 class InntektSkatteetatenFetcher(
     private val okonomiService: OkonomiService,
+    // TODO Unødvendig mellomledd?
     private val skattbarInntektService: SkattbarInntektService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val organisasjonService: OrganisasjonService,
+    private val dokumentasjonService: DokumentasjonService,
 ) : RegisterDataFetcher {
     override fun fetchAndSave(soknadId: UUID) {
+        // dobbeltsjekke at samtykke er satt
         okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }
             ?.let { if (it.verdi) getAndSaveSkattbarInntekt(soknadId) else null }
@@ -35,6 +41,8 @@ class InntektSkatteetatenFetcher(
 
             if (utbetalinger.isNotEmpty()) {
                 saveUtbetalinger(soknadId, utbetalinger)
+                okonomiService.removeElementFromOkonomi(soknadId, InntektType.JOBB)
+                dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.JOBB)
             }
         }
             ?: setIntegrasjonStatus(soknadId, feilet = true)
@@ -59,11 +67,12 @@ class InntektSkatteetatenFetcher(
     }
 
     private fun Utbetaling.toUtbetaling() =
-        no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling(
+        V2Utbetaling(
             brutto = brutto,
             skattetrekk = skattetrekk,
             periodeFom = periodeFom,
             periodeTom = periodeTom,
+            tittel = tittel,
             organisasjon =
                 Organisasjon(
                     navn = organisasjonService.hentOrgNavn(orgnummer),

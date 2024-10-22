@@ -44,6 +44,8 @@ class IntegrasjonStatusService(private val repository: IntegrasjonstatusReposito
             .let { repository.save(it) }
     }
 
+    fun getInntektSkatteetatenStatus(soknadId: UUID): Boolean? = repository.findByIdOrNull(soknadId)?.feilInntektSkatteetaten
+
     private fun findOrCreate(soknadId: UUID): Integrasjonstatus {
         return repository.findByIdOrNull(soknadId) ?: repository.save(Integrasjonstatus(soknadId))
     }

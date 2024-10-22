@@ -7,23 +7,13 @@ spring:
     baseline-on-migrate: true
     clean-disabled: false
     clean-on-validation-error: true
-  docker:
-    compose:
-      file: "compose/docker-compose-local.yml"
-      lifecycle-management: start-only
-#      enabled: true
-      # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
-      profiles:
-        active: "full"
-      # Dersom database skal nullstilles hver gang applikasjonen restarter:
-      #lifecycle-management: start-and-stop
-      #stop:
-      #  command=down
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  cache:
+    type: simple
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
@@ -35,6 +25,7 @@ aareg_url: ${AAREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api
 krr_url: ${KRR_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url}
 kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
+kodeverk_scope: ${KODEVERK_SCOPE:scope}
 unleash_env: ${UNLEASH_ENV:mock}
 unleash_server_api_url: ${UNLEASH_SERVER_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/internal/unleash}
 unleash_server_api_token: ${UNLEASH_SERVER_API_TOKEN:token}

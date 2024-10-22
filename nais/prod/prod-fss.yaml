@@ -30,6 +30,10 @@ spec:
   replicas:
     min: 2
     max: 4
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   webproxy: true
   azure:
     application:
@@ -95,6 +99,8 @@ spec:
       value: "https://api.fiks.ks.no/"
     - name: KODEVERK_URL
       value: "https://kodeverk-api.nav.no"
+    - name: KODEVERK_SCOPE
+      value: "prod-gcp.team-rocket.kodeverk-api"
     - name: KRR_AUDIENCE
       value: "prod-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
@@ -125,8 +131,10 @@ spec:
       value: "false"
     - name: SOKNAD_BOSTOTTE_URL
       value: "https://api.husbanken.no/bostotte/minbostotte"
+#    - name: SKATTEETATEN_API_BASEURL
+#      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
     - name: SKATTEETATEN_API_BASEURL
-      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+      value: "https://inntekt.api.skatteetaten.no/v1/digisos/"
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT

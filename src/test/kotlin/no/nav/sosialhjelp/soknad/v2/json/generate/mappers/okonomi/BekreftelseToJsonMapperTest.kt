@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.Bekreft
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.toTittel
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -23,13 +24,13 @@ class BekreftelseToJsonMapperTest : AbstractOkonomiMapperTest() {
         with(jsonOkonomi.opplysninger) {
             assertThat(bekreftelse).hasSize(2)
 
-            bekreftelse.find { it.type == BekreftelseType.BEKREFTELSE_SPARING.name }!!.let {
+            bekreftelse.find { it.type == SoknadJsonTypeEnum.BEKREFTELSE_SPARING.verdi }!!.let {
                 assertThat(it.verdi).isEqualTo(true)
                 assertThat(it.bekreftelsesDato).matches(timestampRegex)
                 assertThat(it.tittel).isEqualTo(BekreftelseType.BEKREFTELSE_SPARING.toTittel())
                 assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
             }
-            bekreftelse.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE.name }!!.let {
+            bekreftelse.find { it.type == SoknadJsonTypeEnum.BOSTOTTE_SAMTYKKE.verdi }!!.let {
                 assertThat(it.verdi).isEqualTo(false)
                 assertThat(it.bekreftelsesDato).matches(timestampRegex)
                 assertThat(it.tittel).isEqualTo(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())

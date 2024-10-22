@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
+import io.getunleash.Unleash
+import io.getunleash.UnleashContext
 import io.mockk.called
 import io.mockk.every
 import io.mockk.just
@@ -9,6 +11,7 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
@@ -19,9 +22,12 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -46,6 +52,9 @@ internal class AdresseRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val navEnhetService: NavEnhetService = mockk()
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
+    private val unleash: Unleash = mockk()
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val kortSoknadService: KortSoknadService = mockk()
 
     private val adresseRessurs =
         AdresseRessurs(
@@ -54,14 +63,19 @@ internal class AdresseRessursTest {
             soknadUnderArbeidRepository,
             navEnhetService,
             soknadV2ControllerAdapter,
+            unleash,
+            soknadMetadataRepository,
+            kortSoknadService,
         )
 
     @BeforeEach
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { MiljoUtils.isMockAltProfil() } returns false
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-        every { soknadV2ControllerAdapter.updateAdresseOgNavEnhet(any(), any(), any()) } just runs
+        every { soknadV2ControllerAdapter.updateAdresse(any(), any()) } just runs
+        every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
     }
 
     @AfterEach
@@ -277,6 +291,43 @@ internal class AdresseRessursTest {
         verify { soknadUnderArbeidRepository wasNot called }
     }
 
+    @Test
+    fun `putAdresse skal oppdatere soknadstype hvis Oslo`() {
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
+        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", "321", null, null, null, null)
+        every { kortSoknadService.isQualified(any(), any()) } returns true
+        val kommunenummerSlot = slot<String>()
+        every { kortSoknadService.isEnabled(capture(kommunenummerSlot)) } returns true
+        every { soknadMetadataRepository.hent(any()) } returns
+            SoknadMetadata(
+                behandlingsId = BEHANDLINGSID,
+                kortSoknad = false,
+                fnr = "",
+                id = 1L,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now(),
+            )
+        val soknadMetadataSlot = slot<SoknadMetadata>()
+        every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
+        val jsonSlot = slot<SoknadUnderArbeid>()
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(jsonSlot), any()) } just runs
+        every { unleash.isEnabled("sosialhjelp.soknad.kategorier") } returns true
+        val adresserFrontendInput = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
+
+        adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
+
+        assertThat(kommunenummerSlot.captured).isEqualTo("321")
+        assertThat(
+            jsonSlot.captured.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.soknadstype,
+        ).isEqualTo(Soknadstype.KORT)
+        assertThat(soknadMetadataSlot.captured.kortSoknad).isTrue()
+    }
+
     private fun assertThatAdresserAreCorrectlyConverted(
         adresserFrontend: AdresserFrontend,
         folkeregAdresse: JsonAdresse?,
@@ -303,16 +354,19 @@ internal class AdresseRessursTest {
                     adresseFrontend.gateadresse!!,
                     jsonAdresse,
                 )
+
             JsonAdresse.Type.MATRIKKELADRESSE ->
                 assertThatMatrikkeladresseIsCorrectlyConverted(
                     adresseFrontend.matrikkeladresse!!,
                     jsonAdresse,
                 )
+
             JsonAdresse.Type.USTRUKTURERT ->
                 assertThatUstrukturertAdresseIsCorrectlyConverted(
                     adresseFrontend.ustrukturert!!,
                     jsonAdresse,
                 )
+
             else -> {
                 assertThat(jsonAdresse).isNull()
                 assertThat(adresseFrontend.gateadresse).isNull()

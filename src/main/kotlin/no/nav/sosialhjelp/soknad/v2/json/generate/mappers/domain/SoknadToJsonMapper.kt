@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.generate.toUTCTimestampStringWithMillis
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
@@ -43,11 +43,14 @@ class SoknadToJsonMapper(
 
                 soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
 
-                soknad.innsendingstidspunkt = domainSoknad.tidspunkt.sendtInn?.toUTCTimestampStringWithMillis()
+                soknad.innsendingstidspunkt =
+                    domainSoknad.tidspunkt.sendtInn?.let {
+                        TimestampConverter.convertToOffsettDateTimeUTCString(it)
+                    }
 
-                domainSoknad.begrunnelse.let {
-                    soknad.data.begrunnelse = it.toJsonBegrunnelse()
-                }
+                soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
+
+                soknad.data.soknadstype = domainSoknad.toJsonSoknadType()
             }
         }
 
@@ -59,9 +62,7 @@ class SoknadToJsonMapper(
             soknad.data.begrunnelse ?: soknad.data.withBegrunnelse(JsonBegrunnelse())
         }
 
-        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator {
-            return JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
-        }
+        private fun Soknad.toJsonPersonIdentifikator(): JsonPersonIdentifikator = JsonPersonIdentifikator().withKilde(JsonPersonIdentifikator.Kilde.SYSTEM).withVerdi(eierPersonId)
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
             JsonBegrunnelse()
@@ -70,3 +71,9 @@ class SoknadToJsonMapper(
                 .withKilde(JsonKildeBruker.BRUKER)
     }
 }
+
+private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
+    when (this.kortSoknad) {
+        true -> JsonData.Soknadstype.KORT
+        false -> JsonData.Soknadstype.STANDARD
+    }

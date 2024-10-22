@@ -14,6 +14,8 @@ object SubjectHandlerUtils {
 
     fun getToken(): String = subjectHandlerService.getToken()
 
+    fun getTokenOrNull(): String? = subjectHandlerService.getTokenOrNull()
+
     fun setNewSubjectHandlerImpl(subjectHandlerImpl: SubjectHandler) {
         if (!MiljoUtils.isNonProduction()) {
             log.error("Forsøker å sette en annen SubjectHandlerImpl i prod!")

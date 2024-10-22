@@ -2,12 +2,15 @@ package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorManager
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class ShadowProductionManager(
@@ -21,27 +24,28 @@ class ShadowProductionManager(
     ) {
         original?.let {
             runCatching {
-                jsonGenerator.copyAndMerge(soknadId, it).let { copy ->
-                    if (it.soknad.data.familie != null) {
-                        // sortere ansvar før sammenlikning
-                        sortAnsvar(it, copy)
-                    }
-                    JsonContentComparator().doCompareAndLogErrors(it, copy)
-                }
-            }.onFailure {
-                logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
-            }
-        } ?: logger.warn("NyModell : Sammenlikning : Original er null")
-    }
+                val shadowJson = jsonGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
 
-    private fun sortAnsvar(
-        original: JsonInternalSoknad,
-        copy: JsonInternalSoknad,
-    ) {
-        original.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
-        copy.soknad.data.familie.forsorgerplikt.ansvar
-            .sortBy { it.barn.fodselsdato }
+                JsonInternalSoknadListSorter(it, shadowJson).doSorting()
+
+                // TODO Midlertidig utvidet logging av kjente feil i shadow prod
+                ProductionComparatorManager(original = original, shadow = shadowJson)
+                    .compareSpecificFields()
+
+                // TODO Midlertidig nøyaktig logging av lister for sammenlikning
+                if (MiljoUtils.isNonProduction()) {
+                    JsonSoknadComparator(original = original, shadow = shadowJson).compareCollections()
+                }
+
+                // TODO Sammenlikner json-strukturen
+                if (MiljoUtils.isNonProduction()) {
+                    JsonContentComparator().doCompareAndLogErrors(it, shadowJson)
+                }
+            }
+                .onFailure {
+                    logger.warn("NyModell : Sammenlikning : Exception i sammenlikning av Json", it)
+                }
+        } ?: logger.error("NyModell : Sammenlikning : Original er null")
     }
 
     internal class JsonContentComparator {
@@ -56,15 +60,13 @@ class ShadowProductionManager(
 
             compare(mapper.writeValueAsString(original), mapper.writeValueAsString(other))
                 .also {
-                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = true)
+                    JsonCompareErrorLogger(result = it).logAllErrors(asOneString = MiljoUtils.isProduction())
                 }
         }
 
         private fun compare(
             original: String,
             other: String,
-        ): JSONCompareResult =
-            JSONCompare
-                .compareJSON(original, other, JSONCompareMode.STRICT_ORDER)
+        ): JSONCompareResult = JSONCompare.compareJSON(original, other, JSONCompareMode.STRICT_ORDER)
     }
 }

@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
@@ -24,7 +25,8 @@ class UtgiftToJsonMapper(
     private fun Utgift.mapToJsonObject() {
         when (type) {
             UtgiftType.BARNEBIDRAG_BETALER, UtgiftType.UTGIFTER_SFO, UtgiftType.UTGIFTER_BARNEHAGE,
-            UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN,
+            UtgiftType.UTGIFTER_HUSLEIE, UtgiftType.UTGIFTER_BOLIGLAN, UtgiftType.UTGIFTER_BOLIGLAN_RENTER,
+            UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG,
             -> oversikt.utgift.addAll(toJsonOversiktUtgifter())
             else -> opplysninger.utgift.addAll(toJsonOpplysningUtgifter())
         }
@@ -49,24 +51,29 @@ class UtgiftToJsonMapper(
         return listOf(
             JsonOkonomioversiktUtgift()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.name)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG.toSoknadJsonTypeString())
                 .withTittel(toTittel())
                 .withBelop(detalj.avdrag?.toInt())
                 .withOverstyrtAvBruker(false),
             JsonOkonomioversiktUtgift()
                 .withKilde(JsonKilde.BRUKER)
-                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.name)
+                .withType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER.toSoknadJsonTypeString())
                 .withTittel(toTittel())
                 .withBelop(detalj.renter?.toInt())
                 .withOverstyrtAvBruker(false),
         )
     }
 
+    private fun UtgiftType.toSoknadJsonTypeString(): String {
+        return OpplysningTypeMapper.getJsonVerdier(this).navn?.verdi
+            ?: error("Fant ikke mapping for UtgiftType: $this")
+    }
+
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
         JsonOkonomioversiktUtgift()
             // TODO Sjekk om alle utgifter er kilde = BRUKER
             .withKilde(JsonKilde.BRUKER)
-            .withType(type.name)
+            .withType(type.toSoknadJsonTypeString())
             .withTittel(toTittel())
             .withBelop(belop?.belop?.toInt())
             .withOverstyrtAvBruker(false)
@@ -87,7 +94,7 @@ class UtgiftToJsonMapper(
     ) =
         JsonOkonomiOpplysningUtgift()
             .withKilde(JsonKilde.BRUKER)
-            .withType(type.name)
+            .withType(type.toSoknadJsonTypeString())
             .withTittel(toTittel(detaljBeskrivelse))
             .withBelop(belop?.belop?.toInt())
             .withOverstyrtAvBruker(false)
@@ -95,20 +102,20 @@ class UtgiftToJsonMapper(
 
 private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
     return when (type) {
-        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): $detaljBeskrivelse"
-        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt): $detaljBeskrivelse"
+        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt):${detaljBeskrivelse ?: ""}"
+        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt):${detaljBeskrivelse ?: ""}"
         UtgiftType.UTGIFTER_BARN_TANNREGULERING -> "Tannregulering for barn (siste regning)"
         UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT -> "Kommunal avgift (siste regning)"
         UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning):"
         UtgiftType.UTGIFTER_OPPVARMING -> "Oppvarming (siste regning)"
         UtgiftType.UTGIFTER_STROM -> "Strøm (siste regning)"
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): $detaljBeskrivelse"
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): ${detaljBeskrivelse ?: ""}"
         UtgiftType.BARNEBIDRAG_BETALER -> "Betaler Barnebidrag"
         UtgiftType.UTGIFTER_SFO -> "SFO"
         UtgiftType.UTGIFTER_BARNEHAGE -> "Barnehage"
-        UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
         UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG -> "Avdrag på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN_RENTER -> "Renter på boliglån"
         UtgiftType.UTGIFTER_BOLIGLAN -> "Renter og avdrag på boliglån"
+        UtgiftType.UTGIFTER_HUSLEIE -> "Husleie"
     }
 }

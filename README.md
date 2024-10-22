@@ -28,9 +28,9 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 
 ### Kjøring lokalt mot mock-alt
 
-Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.
-
-Krever at sosialhjelp-mock-alt-api også kjører lokalt.
+Start `Application.kt` med profilene `mock-alt,local,no-redis,log-console`.
+Krever at Docker Engine kjører. 'Local' starter opp nødvendige "bakgrunnsapper" i Docker.
+(Uten 'local' må bakgrunnsapper startes manuelt.)
 
 **OBS!** Pga. hvordan MiljoUtils er implementert må profilene også defineres i miljøvariabelen SPRING_PROFILES_ACTIVE.
 

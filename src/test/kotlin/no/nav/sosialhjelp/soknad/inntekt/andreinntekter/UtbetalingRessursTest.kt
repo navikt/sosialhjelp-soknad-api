@@ -45,7 +45,13 @@ internal class UtbetalingRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val utbetalingRessurs = UtbetalingRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val utbetalingRessurs =
+        UtbetalingRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

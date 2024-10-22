@@ -42,23 +42,23 @@ class KontonummerRessurs(
                 },
             )
         }
-        return mapDAOtoDTO(loadKontonummer(behandlingsId))
+        return mapJsonToDto(loadKontonummer(behandlingsId))
     }
 
     @PutMapping
     fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody @Valid
-        kontoDTO: KontonummerInputDTO,
+        kontoDto: KontonummerInputDto,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val kontoDAO = mapInputDTOtoDAO(kontoDTO, kontonummerService.getKontonummer(eier()))
-        storeKontonummer(behandlingsId, kontoDAO)
+        val kontoJson = mapInputToJson(kontoDto, kontonummerService.getKontonummer(eier()))
+        storeKontonummer(behandlingsId, kontoJson)
 
         // NyModell
-        controllerAdapter.updateKontonummer(behandlingsId, kontoDTO)
+        controllerAdapter.updateKontonummer(behandlingsId, kontoDto)
 
-        return mapDAOtoDTO(kontoDAO)
+        return mapJsonToDto(kontoJson)
     }
 
     @Schema(description = "Kontonummer for bruker - obs: PUT med (systemverdi !== null) vil nullstille brukerutfyltVerdi")
@@ -88,18 +88,18 @@ class KontonummerRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
-    private fun mapInputDTOtoDAO(
-        inputDTO: KontonummerInputDTO,
+    private fun mapInputToJson(
+        inputDto: KontonummerInputDto,
         kontoFraSystem: String?,
     ): JsonKontonummer {
-        val definedByUser = inputDTO.brukerutfyltVerdi != null || inputDTO.harIkkeKonto == true
+        val definedByUser = inputDto.brukerutfyltVerdi != null || inputDto.harIkkeKonto == true
 
         return when (definedByUser) {
             true ->
                 JsonKontonummer()
                     .withKilde(JsonKilde.BRUKER)
-                    .withVerdi(inputDTO.brukerutfyltVerdi)
-                    .withHarIkkeKonto(inputDTO.harIkkeKonto ?: false)
+                    .withVerdi(inputDto.brukerutfyltVerdi)
+                    .withHarIkkeKonto(inputDto.harIkkeKonto ?: false)
 
             false ->
                 JsonKontonummer()
@@ -114,7 +114,7 @@ class KontonummerRessurs(
      *  DAO har ikke plass til både brukerutfyltVerdi og systemverdi,
      *  så dersom brukeren velger den ene, blir den andre slettet. ¯\_(ツ)_/¯
      */
-    private fun mapDAOtoDTO(kontonummer: JsonKontonummer) =
+    private fun mapJsonToDto(kontonummer: JsonKontonummer) =
         KontonummerFrontend(
             systemverdi = kontonummerService.getKontonummer(eier()),
             brukerutfyltVerdi = kontonummer.verdi.takeIf { kontonummer.kilde == JsonKilde.BRUKER },
@@ -122,7 +122,7 @@ class KontonummerRessurs(
         )
 }
 
-data class KontonummerInputDTO(
+data class KontonummerInputDto(
     @Schema(nullable = true, description = "Kontonummer fra bruker")
     @field:Pattern(regexp = "^\\d{11}$", message = "Kontonummer må være 11 siffer")
     val brukerutfyltVerdi: String? = null,

@@ -3,11 +3,10 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
-import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDTO
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDto
 import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
@@ -31,7 +30,7 @@ interface V2ControllerAdapter {
 
     fun updateKontonummer(
         soknadId: String,
-        kontoInputDto: KontonummerInputDTO,
+        kontoInputDto: KontonummerInputDto,
     )
 
     fun updateTelefonnummer(
@@ -54,10 +53,9 @@ interface V2ControllerAdapter {
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
     )
 
-    fun updateAdresseOgNavEnhet(
+    fun updateAdresse(
         soknadId: String,
         adresser: AdresserFrontendInput,
-        navEnhet: NavEnhetFrontend?,
     )
 
     fun updateBoutgifter(
@@ -75,10 +73,19 @@ interface V2ControllerAdapter {
         situasjonsendring: SituasjonsendringFrontend,
     )
 
-    fun updateBostotte(
+    fun updateBostotteBekreftelse(
         soknadId: String,
         hasBostotte: Boolean?,
-        hasSamtykke: Boolean?,
-        userToken: String? = null,
+    )
+
+    fun updateBostotteSamtykke(
+        soknadId: String,
+        hasSamtykke: Boolean,
+        userToken: String?,
+    )
+
+    fun updateSamtykkeSkatteetaten(
+        behandlingsId: String,
+        samtykke: Boolean,
     )
 }

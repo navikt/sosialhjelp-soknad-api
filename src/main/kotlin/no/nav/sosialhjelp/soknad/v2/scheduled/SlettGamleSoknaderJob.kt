@@ -8,10 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
-
-const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
 
 @Component
 class SlettGamleSoknaderJob(
@@ -37,13 +34,14 @@ class SlettGamleSoknaderJob(
                         }
                     }
                 if (result == null) {
-                    log.warn("Kunne ikke slette gamle søknader, tok for lang tid")
+                    log.error("Kunne ikke slette gamle søknader, tok for lang tid")
                 }
             }
         }.onFailure {
             log.error("Feil ved sletting av gamle søknader", it)
         }
 
-    private fun slettMellomlagredeVedlegg(soknadId: UUID) {
+    companion object {
+        private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
     }
 }

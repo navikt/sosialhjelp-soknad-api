@@ -97,7 +97,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for oppretting")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
 
     fun addElementToOkonomi(
@@ -112,7 +112,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for oppretting")
             }
         }
-        if (element.type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
+        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
     }
 
     fun updateElement(
@@ -186,7 +186,7 @@ class OkonomiService(
                 else -> error("Ukjent OpplysningType for removal")
             }
         }
-        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetVedlegg(soknadId, type)
+        if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
     /**
@@ -210,7 +210,7 @@ class OkonomiService(
 
     /**
      * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
-     * Sjekker om elementet finnes, lager en kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
+     * Sjekker om elementet finnes, lager en     kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
      */
     private fun <E : OkonomiElement> removeElementByTypeAndSave(
         sourceSet: Set<E>,

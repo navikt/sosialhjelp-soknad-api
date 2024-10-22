@@ -4,10 +4,16 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.json.getVedleggTillegginfoString
+import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -19,7 +25,7 @@ class DokumentasjonToJsonMapper(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).let { list -> doMapping(list, jsonInternalSoknad) }
+        doMapping(dokumentasjonRepository.findAllBySoknadId(soknadId), jsonInternalSoknad)
     }
 
     internal companion object Mapper {
@@ -36,21 +42,32 @@ class DokumentasjonToJsonMapper(
 
 private fun Dokumentasjon.toJsonVedlegg() =
     JsonVedlegg()
-        .withType(type.name)
-        .withStatus(status.name)
+        .withType(type.getVedleggTypeString())
+        .withStatus(status.toVedleggStatusString())
         .withTilleggsinfo(mapToTilleggsinfo())
         .withFiler(dokumenter.map { it.toJsonFiler() })
-        .withHendelseType(JsonVedlegg.HendelseType.BRUKER)
+        .withHendelseType(if (type.isUtgiftTypeAnnet()) JsonVedlegg.HendelseType.BRUKER else JsonVedlegg.HendelseType.SOKNAD)
         // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
-        .withHendelseReferanse(UUID.randomUUID().toString())
+        .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
+
+// TODO Midlertidig mapping til VedleggStatus
+internal fun DokumentasjonStatus.toVedleggStatusString(): String =
+    when (this) {
+        DokumentasjonStatus.LASTET_OPP -> Vedleggstatus.LastetOpp.name
+        DokumentasjonStatus.FORVENTET -> Vedleggstatus.VedleggKreves.name
+        DokumentasjonStatus.LEVERT_TIDLIGERE -> Vedleggstatus.VedleggAlleredeSendt.name
+    }
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
-    // TODO må sammenstille svarene fra FSL'er og se hva de forventer / trenger på tilleggsinfo hvis vi benytter type..
-    // TODO ...til å knytte sammen OkonomiElementer og Dokumentasjon.
-    return ""
+    // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer
+    return type.getVedleggTillegginfoString()
+        ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }
 
 private fun Dokument.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)
+
+// TODO Spør FSL'ene om dette faktisk er noe de forholder seg til
+private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER
