@@ -61,10 +61,10 @@ private fun Utdanning.toUtdanningDto() =
 )
 interface UtdanningInput
 
-data class IkkeStudentInput(
-    val verdi: Int = 1,
-) : UtdanningInput
+class IkkeStudentInput : UtdanningInput {
+    val erStudent: Boolean = false
+}
 
 data class StudentgradInput(
-    val studentgrad: Studentgrad,
+    val studentgrad: Studentgrad?,
 ) : UtdanningInput

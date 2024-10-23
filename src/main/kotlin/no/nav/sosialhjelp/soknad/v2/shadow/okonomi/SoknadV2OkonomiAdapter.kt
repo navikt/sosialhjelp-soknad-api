@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.shadow.okonomi
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BelopDto
@@ -75,7 +76,6 @@ class SoknadV2OkonomiAdapter(
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {
         return kotlin.runCatching {
             transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_NESTED
-            transactionTemplate.isolationLevel
             transactionTemplate.execute { function.invoke() }
         }
     }
@@ -114,7 +114,14 @@ private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType
         opplysningType = opplysningType,
         dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
-            rader?.map {
-                BelopDto(beskrivelse = it.beskrivelse, belop = it.belop?.toDouble() ?: 0.0)
-            } ?: emptyList(),
+            if (rader.isNullOrEmpty() || rader.size == 1 || rader[0].allFieldsNull()) {
+                emptyList()
+            } else {
+                rader.map {
+                    BelopDto(beskrivelse = it.beskrivelse, belop = it.belop?.toDouble() ?: 0.0)
+                }
+            },
     )
+
+private fun VedleggRadFrontend.allFieldsNull(): Boolean =
+    listOf(beskrivelse, belop, brutto, netto, avdrag, renter).all { it == null }

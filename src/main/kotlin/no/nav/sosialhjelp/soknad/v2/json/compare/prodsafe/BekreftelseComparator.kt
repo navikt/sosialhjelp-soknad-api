@@ -18,9 +18,9 @@ class BekreftelseComparator(
     private fun compareSize() {
         if (originals?.size != shadows?.size) {
             logger.warn(
-                "NyModell: Antall bekreftelser er ikke likt: \n\n" +
-                    "Original: ${jsonMapper.writeValueAsString(originals)}\n\n" +
-                    "Shadow: ${jsonMapper.writeValueAsString(shadows)}",
+                "*** NyModell: Antall bekreftelser er ikke like *** " +
+                    "ORG -> ${jsonMapper.writeValueAsString(originals)}, " +
+                    "SHADOW -> ${jsonMapper.writeValueAsString(shadows)}",
             )
         }
     }
@@ -29,10 +29,11 @@ class BekreftelseComparator(
         if (originals == shadows) return
 
         originals?.forEach { original ->
+
             shadows?.find { it.type == original.type }
                 ?.let { shadow ->
                     listOf(
-                        "Field: ${original.type} : ${shadow.type}",
+                        "{ ORG type -> ${original.type},  SHADOW type -> ${shadow.type} }, ",
                         compareStrings(original.kilde.name, shadow.kilde?.name, "kilde", true),
                         compareStrings(original.type, shadow.type, "type", true),
                         compareStrings(original.tittel, shadow.tittel, "tittel", true),
@@ -40,20 +41,20 @@ class BekreftelseComparator(
                         compareBekreftelsesDato(original.bekreftelsesDato, shadow.bekreftelsesDato),
                     )
                         .filter { it != "" }
-                        .joinToString("\n")
+                        .joinToString("; ")
                 }
                 ?.also { compareString ->
                     if (compareString.isNotEmpty() && compareString.isNotBlank()) {
                         logger.warn(
-                            "NyModell: Felter i Bekreftelse er ikke like: \n" +
-                                "Comparison: $compareString\n\n",
+                            "*** NyModell: Felter i Bekreftelse er ikke like *** " +
+                                "COMPARISON : $compareString ",
                         )
                     }
                 }
                 ?: logger.warn(
-                    "NyModell: Bekreftelse ikke funnet i shadow: \n\n" +
-                        "Original: ${jsonMapper.writeValueAsString(original)}\n\n" +
-                        "Shadow: ${jsonMapper.writeValueAsString(shadows)}",
+                    "NyModell: Bekreftelse ikke funnet i shadow : " +
+                        "ORG -> ${jsonMapper.writeValueAsString(original)}, " +
+                        "SHADOW -> ${jsonMapper.writeValueAsString(shadows)} ",
                 )
         }
     }
@@ -63,9 +64,9 @@ class BekreftelseComparator(
         shadowTimestamp: String?,
     ): String {
         if (originalTimestamp == null || shadowTimestamp == null) {
-            return "En eller begge Bekreftelsesdato er null: \n" +
-                "Original: $originalTimestamp\n" +
-                "Shadow: $shadowTimestamp"
+            return "En eller begge Bekreftelsesdato er null : " +
+                "{ ORG -> $originalTimestamp, " +
+                "SHADOW -> $shadowTimestamp } "
         }
         val original = ZonedDateTime.parse(originalTimestamp).toLocalDateTime()
         val shadow = ZonedDateTime.parse(shadowTimestamp).toLocalDateTime()
@@ -73,9 +74,9 @@ class BekreftelseComparator(
         if (shadow.isBefore(original.plusSeconds(5)) && shadow.isAfter(original.minusSeconds(5))) {
             return ""
         }
-        return "Bekreftelsedata er ikke lik: \n" +
-            "Original: $originalTimestamp\n" +
-            "Shadow: $shadowTimestamp"
+        return "Bekreftelsedata er ikke lik : " +
+            "{ ORG -> $originalTimestamp, " +
+            "SHADOW -> $shadowTimestamp } "
     }
 
     companion object {

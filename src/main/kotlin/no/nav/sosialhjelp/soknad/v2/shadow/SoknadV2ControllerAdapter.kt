@@ -177,8 +177,10 @@ class SoknadV2ControllerAdapter(
             utdanningFrontend.run {
                 when {
                     erStudent == false -> IkkeStudentInput()
-                    erStudent == true && studengradErHeltid != null -> {
-                        StudentgradInput(if (studengradErHeltid as Boolean) Studentgrad.HELTID else Studentgrad.DELTID)
+                    erStudent == true -> {
+                        StudentgradInput(
+                            studentgrad = studengradErHeltid?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID },
+                        )
                     }
                     else -> return
                 }

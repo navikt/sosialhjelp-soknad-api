@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe
 
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.compare.prodsafe.ProductionComparatorManager.Companion.compareStrings
 
 class SivilstatusComparator(
@@ -34,10 +35,12 @@ class SivilstatusComparator(
                 .filter { it != "" }
                 .joinToString("\n")
 
-        logger.warn(
-            "NyModell: Felter i Sivilstatus er ikke like: \n" +
-                "Comparison: $compareString\n\n",
-        )
+        if (compareString.isNotEmpty() && compareString.isNotBlank()) {
+            logger.warn(
+                "NyModell: Felter i Sivilstatus er ikke like: \n" +
+                    "Comparison: $compareString\n\n",
+            )
+        }
     }
 
     private fun checkOriginalEmpty() {
@@ -75,11 +78,26 @@ class SivilstatusComparator(
     }
 
     private fun compareEktefelle(): String {
-        return if (original?.ektefelle != shadow?.ektefelle) {
-            "Ektefelle er ikke likt"
-        } else {
-            ""
-        }
+        val orgEktefelle = original?.ektefelle
+        val shadowEktefelle = shadow?.ektefelle
+
+        // TODO Teit midlertidig if fordi mock-alt-api randomizer fødselsdato
+        return listOf(
+            compareStrings(orgEktefelle?.personIdentifikator, shadowEktefelle?.personIdentifikator, "personIdentifikator"),
+            compareStrings(
+                value1 = if (MiljoUtils.isProduction()) orgEktefelle?.fodselsdato else "",
+                value2 = if (MiljoUtils.isProduction()) shadowEktefelle?.fodselsdato else "",
+                fieldName = "fodselsdato",
+            ),
+            compareStrings(
+                value1 = orgEktefelle?.navn?.etternavn,
+                value2 = shadowEktefelle?.navn?.etternavn,
+                fieldName = "kilde",
+                typeValues = true,
+            ),
+        )
+            .filter { it != "" }
+            .joinToString("\n")
     }
 
     companion object {
