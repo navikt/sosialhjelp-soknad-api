@@ -86,8 +86,17 @@ class VerdiRessurs(
             verdierFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("inntekt.eierandeler"),
         )
-        setVerdier(okonomi.oversikt, verdierFrontend)
-        setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
+
+        when (verdierFrontend.bekreftelse) {
+            true -> {
+                setVerdier(okonomi.oversikt, verdierFrontend)
+                setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
+            }
+            else -> {
+                setAllVerdierToFalse(okonomi.oversikt)
+                setBeskrivelseAvAnnetBlank(okonomi.opplysninger)
+            }
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // NyModell
@@ -127,6 +136,39 @@ class VerdiRessurs(
             )
         }
         opplysninger.beskrivelseAvAnnet.verdi = verdierFrontend.beskrivelseAvAnnet ?: ""
+    }
+
+    private fun setAllVerdierToFalse(
+        oversikt: JsonOkonomioversikt,
+    ) {
+        val verdier = oversikt.formue
+        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_BOLIG])
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_BOLIG, tittel, false)
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_CAMPINGVOGN])
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_CAMPINGVOGN, tittel, false)
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_KJORETOY])
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_KJORETOY, tittel, false)
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_FRITIDSEIENDOM])
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_FRITIDSEIENDOM, tittel, false)
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[VERDI_ANNET])
+        addFormueIfCheckedElseDeleteInOversikt(verdier, VERDI_ANNET, tittel, false)
+    }
+
+    private fun setBeskrivelseAvAnnetBlank(
+        opplysninger: JsonOkonomiopplysninger,
+    ) {
+        if (opplysninger.beskrivelseAvAnnet == null) {
+            opplysninger.withBeskrivelseAvAnnet(
+                JsonOkonomibeskrivelserAvAnnet()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi("")
+                    .withSparing("")
+                    .withUtbetaling("")
+                    .withBoutgifter("")
+                    .withBarneutgifter(""),
+            )
+        }
+        opplysninger.beskrivelseAvAnnet.verdi = ""
     }
 
     private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
