@@ -41,9 +41,10 @@ class BekreftelseComparator(
                         compareBekreftelsesDato(original.bekreftelsesDato, shadow.bekreftelsesDato),
                     )
                         .filter { it != "" }
-                        .joinToString("; ")
+                        .let { if (it.size > 1) it else emptyList() }
                 }
-                ?.also { compareString ->
+                ?.also { compareList ->
+                    val compareString = compareList.joinToString(separator = "; ")
                     if (compareString.isNotEmpty() && compareString.isNotBlank()) {
                         logger.warn(
                             "*** NyModell: Felter i Bekreftelse er ikke like *** " +
