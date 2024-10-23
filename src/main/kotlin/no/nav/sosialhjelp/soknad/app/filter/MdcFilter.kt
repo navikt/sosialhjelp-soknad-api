@@ -25,6 +25,7 @@ class MdcFilter : OncePerRequestFilter() {
     ) {
         val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
+
         val behandlingsId = request.getBehandlingsId()
 
         putToMDC(MDC_CALL_ID, callId)
