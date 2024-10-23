@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.json.compare
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.ARRAY_SIZE
-import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.EXPECTED_DIFF
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.FIELD_FAILURE
 import no.nav.sosialhjelp.soknad.v2.json.compare.LoggerComparisonErrorTypes.MISSING_FIELD
 import org.skyscreamer.jsonassert.FieldComparisonFailure
@@ -47,7 +46,7 @@ class JsonCompareErrorLogger(
             .filter { KeyFilter.isNotFiltered(it.field) }
             .mapNotNull {
                 when {
-                    ExpectedDiffHandler.isExpectedDiff(it.field) -> ErrorRow(EXPECTED_DIFF, ErrorStringHandler.createErrorString(it))
+                    ExpectedDiffHandler.isExpectedDiff(it.field) -> null
                     else -> ErrorRow(FIELD_FAILURE, ErrorStringHandler.createErrorString(it))
                 }
             }
@@ -95,6 +94,7 @@ object ExpectedDiffHandler {
         listOf(
             Regex("soknad.data.okonomi.opplysninger.utgift\\[\\d+].type"),
             Regex("soknad.data.okonomi.opplysninger.utgift\\[\\d+].tittel"),
+            Regex("soknad.data.okonomi.opplysninger.bekreftelse\\[\\d+].bekreftelsesDato"),
         )
 }
 

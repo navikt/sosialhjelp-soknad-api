@@ -84,13 +84,18 @@ class BarneutgiftRessurs(
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
+
         setBekreftelse(
             okonomi.opplysninger,
             BEKREFTELSE_BARNEUTGIFTER,
             barneutgifterFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("utgifter.barn"),
         )
-        setBarneutgifter(okonomi, barneutgifterFrontend)
+
+        when (barneutgifterFrontend.bekreftelse) {
+            true -> setBarneutgifter(okonomi, barneutgifterFrontend)
+            else -> setAllBarneutgifterToFalse(okonomi)
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // NyModell
@@ -139,6 +144,50 @@ class BarneutgiftRessurs(
             UTGIFTER_ANNET_BARN,
             tittel,
             barneutgifterFrontend.annet,
+        )
+    }
+
+    private fun setAllBarneutgifterToFalse(
+        okonomi: JsonOkonomi,
+    ) {
+        val opplysningerBarneutgifter = okonomi.opplysninger.utgift
+        val oversiktBarneutgifter = okonomi.oversikt.utgift
+        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARNEHAGE])
+        addutgiftIfCheckedElseDeleteInOversikt(
+            oversiktBarneutgifter,
+            UTGIFTER_BARNEHAGE,
+            tittel,
+            false,
+        )
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_SFO])
+        addutgiftIfCheckedElseDeleteInOversikt(
+            oversiktBarneutgifter,
+            UTGIFTER_SFO,
+            tittel,
+            false,
+        )
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_FRITIDSAKTIVITETER])
+        addutgiftIfCheckedElseDeleteInOpplysninger(
+            opplysningerBarneutgifter,
+            UTGIFTER_BARN_FRITIDSAKTIVITETER,
+            tittel,
+            false,
+        )
+        tittel =
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_BARN_TANNREGULERING])
+        addutgiftIfCheckedElseDeleteInOpplysninger(
+            opplysningerBarneutgifter,
+            UTGIFTER_BARN_TANNREGULERING,
+            tittel,
+            false,
+        )
+        tittel =
+            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTGIFTER_ANNET_BARN])
+        addutgiftIfCheckedElseDeleteInOpplysninger(
+            opplysningerBarneutgifter,
+            UTGIFTER_ANNET_BARN,
+            tittel,
+            false,
         )
     }
 

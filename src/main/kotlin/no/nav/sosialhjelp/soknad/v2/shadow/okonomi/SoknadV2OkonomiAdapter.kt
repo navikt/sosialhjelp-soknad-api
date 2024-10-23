@@ -52,23 +52,25 @@ class SoknadV2OkonomiAdapter(
     ) {
         runWithNestedTransaction {
             with(utbetalingerFrontend) {
-                val input =
-                    if (!utbytte && !salg && !forsikring && !annet) {
-                        HarIkkeUtbetalingerInput()
-                    } else {
-                        HarUtbetalingerInput(
-                            hasUtbytte = utbytte,
-                            hasSalg = salg,
-                            hasForsikring = forsikring,
-                            hasAnnet = annet,
-                            beskrivelseUtbetaling = beskrivelseAvAnnet,
-                        )
-                    }
+                bekreftelse?.also { harBekreftelse ->
+                    val input =
+                        if (harBekreftelse) {
+                            HarUtbetalingerInput(
+                                hasUtbytte = utbytte,
+                                hasSalg = salg,
+                                hasForsikring = forsikring,
+                                hasAnnet = annet,
+                                beskrivelseUtbetaling = beskrivelseAvAnnet,
+                            )
+                        } else {
+                            HarIkkeUtbetalingerInput()
+                        }
 
-                utbetalingController.updateUtbetalinger(
-                    soknadId = UUID.fromString(behandlingsId),
-                    input = input,
-                )
+                    utbetalingController.updateUtbetalinger(
+                        soknadId = UUID.fromString(behandlingsId),
+                        input = input,
+                    )
+                }
             }
         }.onFailure { logger.warn("NyModell: Oppdatering av Utbetalinger feilet", it) }
     }

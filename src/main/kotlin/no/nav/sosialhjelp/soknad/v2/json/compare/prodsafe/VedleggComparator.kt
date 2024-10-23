@@ -43,14 +43,10 @@ class VedleggComparator(
     }
 
     private fun isVedleggExistsAndValid(original: JsonVedlegg): Boolean {
-        shadows.find { it.type == original.type }
+        shadows.find { it.type == original.type && it.tilleggsinfo == original.tilleggsinfo }
             ?.also { shadowVedlegg ->
                 if (shadowVedlegg.type != original.type) {
                     logger.warn("NyModell: Vedlegg.Type er ikke lik: ${original.type} - ${shadowVedlegg.type}")
-                    return false
-                }
-                if (shadowVedlegg.tilleggsinfo != original.tilleggsinfo) {
-                    logger.warn("NyModell: Vedlegg.Tilleggsinfo er ikke lik: ${original.tilleggsinfo} - ${shadowVedlegg.tilleggsinfo}")
                     return false
                 }
                 if (shadowVedlegg.filer.size != original.filer.size) {
