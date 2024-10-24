@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -81,14 +82,21 @@ class MellomlagringService(
 
         val filOpplasting = opprettFilOpplasting(filnavn, data)
         val navEksternId = getNavEksternId(behandlingsId)
-        mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
-
-        val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-
         val filId =
-            mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
-                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+            mellomlagringClient
+                .postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
+                .mellomlagringMetadataList
+                ?.let { it[0].filId }
+                ?: throw FiksException("MellomlarginDto er null", null)
+
+        log.info("Fil med filId $filId er lastet opp")
+
+//        val mellomlagredeVedlegg =
+//            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
+//        val filId =
+//            mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
+//                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         // nyModell
         dokumentasjonAdapter.saveDokumentMetadata(
