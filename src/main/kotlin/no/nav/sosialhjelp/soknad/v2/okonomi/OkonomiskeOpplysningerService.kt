@@ -3,11 +3,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -43,27 +40,45 @@ class OkonomiskeOpplysningerServiceImpl(
         }
 
         if (typesWithOkonomiElement.contains(type.javaClass)) {
-            createElement(type, detaljer).let {
-                try {
-                    okonomiService.updateElement(soknadId = soknadId, element = it)
-                } catch (e: OkonomiElementFinnesIkkeException) {
-                    throw OkonomiElementFinnesIkkeException(message = e.message, cause = e, soknadId = soknadId)
-                }
-            }
+            addDetaljerToElement(soknadId, type, detaljer)
+                .let { okonomiService.updateElement(soknadId = soknadId, element = it) }
         }
         updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
     }
 
-    private fun createElement(
+//    private fun findElement(
+//        type: OpplysningType,
+//        detaljer: List<OkonomiDetalj>,
+//    ): OkonomiElement {
+//        return when (type) {
+//            is InntektType -> Inntekt(type, inntektDetaljer = OkonomiDetaljer(detaljer))
+//            is UtgiftType -> Utgift(type, utgiftDetaljer = OkonomiDetaljer(detaljer))
+//            is FormueType -> Formue(type, formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
+//            else -> error("Ukjent Okonomi-type")
+//        }
+//    }
+
+    private fun addDetaljerToElement(
+        soknadId: UUID,
         type: OpplysningType,
         detaljer: List<OkonomiDetalj>,
     ): OkonomiElement {
         return when (type) {
-            is InntektType -> Inntekt(type, inntektDetaljer = OkonomiDetaljer(detaljer))
-            is UtgiftType -> Utgift(type, utgiftDetaljer = OkonomiDetaljer(detaljer))
-            is FormueType -> Formue(type, formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
+            is InntektType ->
+                okonomiService.getInntekter(soknadId).find { it.type == type }
+                    ?.copy(inntektDetaljer = OkonomiDetaljer(detaljer))
+            is UtgiftType ->
+                okonomiService.getUtgifter(soknadId).find { it.type == type }
+                    ?.copy(utgiftDetaljer = OkonomiDetaljer(detaljer))
+            is FormueType ->
+                okonomiService.getFormuer(soknadId).find { it.type == type }
+                    ?.copy(formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
             else -> error("Ukjent Okonomi-type")
         }
+            ?: throw OkonomiElementFinnesIkkeException(
+                message = "Okonomi-element finnes ikke: $type",
+                soknadId = soknadId,
+            )
     }
 
     private fun getOkonomiskeDetaljerForType(

@@ -116,7 +116,7 @@ private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType
         opplysningType = opplysningType,
         dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
-            if (rader.isNullOrEmpty() || rader.size == 1 || rader[0].allFieldsNull()) {
+            if (rader.isNullOrEmpty() || (rader.size == 1 && rader[0].allFieldsNull())) {
                 emptyList()
             } else {
                 rader.map {
