@@ -38,7 +38,7 @@ interface MellomlagringClient {
     fun postVedlegg(
         navEksternId: String,
         filOpplasting: FilOpplasting,
-    )
+    ): MellomlagringDto
 
     fun postDokument(
         soknadId: UUID,
@@ -114,12 +114,12 @@ class MellomlagringClientImpl(
     override fun postVedlegg(
         navEksternId: String,
         filOpplasting: FilOpplasting,
-    ) {
+    ): MellomlagringDto {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-            lastOpp(
+            return lastOpp(
                 filForOpplasting =
                     FilForOpplasting(
                         filnavn = filOpplasting.metadata.filnavn,
@@ -128,7 +128,7 @@ class MellomlagringClientImpl(
                     ),
                 navEksternId = navEksternId,
             )
-            waitForFutures(krypteringFutureList)
+                .also { waitForFutures(krypteringFutureList) }
         } finally {
             krypteringFutureList
                 .filter { !it.isDone && !it.isCancelled }
@@ -147,13 +147,13 @@ class MellomlagringClientImpl(
     private fun lastOpp(
         filForOpplasting: FilForOpplasting<Any>,
         navEksternId: String,
-    ) {
+    ): MellomlagringDto {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
         body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
 
         val startTime = System.currentTimeMillis()
-        webClient.post()
+        return webClient.post()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .body(BodyInserters.fromMultipartData(body))
@@ -169,6 +169,10 @@ class MellomlagringClientImpl(
                 )
             }
             .block()
+            ?.let {
+                digisosObjectMapper.readValue<MellomlagringDto>(it)
+            }
+            ?: throw FiksException("MellomlagringDto er null?", null)
     }
 
     /**
