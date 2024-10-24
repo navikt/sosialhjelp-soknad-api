@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 
@@ -278,7 +279,11 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
             )
         } else {
             shadow.forEach { utgift ->
-                original.find { utgift.type == it.type && utgift.tittel == it.tittel && utgift.kilde == it.kilde }
+                original.find {
+                    utgift.type == it.type &&
+                        utgift.tittelWithoutWhitespaces() == it.tittelWithoutWhitespaces() &&
+                        utgift.kilde == it.kilde
+                }
                     ?.let { if (!isValid(utgift.belop, it.belop)) null else 1 }
                     ?: logger.warn(
                         "Fant ikke utgift \n${utgift.asJson()} i" +
@@ -374,6 +379,9 @@ private class JsonOkonomiCollectionComparator(originalJson: JsonInternalSoknad, 
         }
     }
 }
+
+private fun JsonOkonomiOpplysningUtgift.tittelWithoutWhitespaces() =
+    tittel?.replace("\\s".toRegex(), "") ?: null
 
 private fun Any?.asJson() =
     JsonSosialhjelpObjectMapper.createObjectMapper().writeValueAsString(this)

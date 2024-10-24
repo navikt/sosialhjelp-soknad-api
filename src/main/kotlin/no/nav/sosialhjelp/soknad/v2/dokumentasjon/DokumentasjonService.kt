@@ -96,7 +96,7 @@ class DokumentasjonServiceImpl(
     override fun hasDokumenterForType(
         soknadId: UUID,
         type: OpplysningType,
-    ): Boolean = findDokumentasjonForSoknad(soknadId).any { it.type == type }
+    ): Boolean = findDokumentasjonForSoknad(soknadId).find { it.type == type }?.dokumenter?.isNotEmpty() ?: false
 
     override fun updateDokumentasjonStatus(
         soknadId: UUID,
