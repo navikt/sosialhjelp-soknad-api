@@ -39,6 +39,8 @@ interface SoknadService {
         soknadId: UUID,
         kortSoknad: Boolean,
     )
+
+    fun getSoknadOrNull(soknadId: UUID): Soknad?
 }
 
 interface BegrunnelseService {
@@ -92,8 +94,11 @@ class SoknadServiceImpl(
     }
 
     override fun getSoknad(soknadId: UUID) =
-        soknadRepository.findByIdOrNull(soknadId)
+        getSoknadOrNull(soknadId)
             ?: error("Soknad finnes ikke")
+
+    override fun getSoknadOrNull(soknadId: UUID) =
+        soknadRepository.findByIdOrNull(soknadId)
 
     override fun hasSoknadNewerThan(
         eierId: String,

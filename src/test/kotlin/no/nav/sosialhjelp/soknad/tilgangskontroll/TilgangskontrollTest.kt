@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
@@ -28,10 +29,11 @@ import java.time.LocalDateTime
 internal class TilgangskontrollTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val soknadService: SoknadService = mockk(relaxed = true)
     private val personService: PersonService = mockk()
     private val environment: Environment = mockk()
 
-    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService, environment)
+    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, soknadService, personService, environment)
 
     @BeforeEach
     fun setUp() {
@@ -93,9 +95,10 @@ internal class TilgangskontrollTest {
     fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis soknad ikke er innsendt men soknadUnderArbeid ikke finnes`() {
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
+        every { soknadService.getSoknadOrNull(any()) } returns null
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("54e7c9b2-0b25-4e2c-aa7c-bf8898a6b388") }
     }
 
     @Test

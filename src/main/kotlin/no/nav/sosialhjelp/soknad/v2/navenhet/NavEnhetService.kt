@@ -10,9 +10,10 @@ import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
-import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseMedKommunenummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Component
 
 @Component("nyNavEnhetService")
@@ -33,7 +34,7 @@ class NavEnhetService(
         if (valg == AdresseValg.FOLKEREGISTRERT) {
             val kommunenummer =
                 getKommunenummer(adresse)
-            return if (adresse is AdresseMedKommunenummer) {
+            return if (adresse is VegAdresse || adresse is MatrikkelAdresse) {
                 finnNavEnhetFraGT(eier, kommunenummer)
             } else {
                 finnNavEnhetFraAdresse(adresse)
@@ -49,7 +50,10 @@ class NavEnhetService(
                 log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i prod")
                 "3002"
             }
-            adresse is AdresseMedKommunenummer -> {
+            adresse is VegAdresse -> {
+                adresse.kommunenummer
+            }
+            adresse is MatrikkelAdresse -> {
                 adresse.kommunenummer
             }
             else -> {

@@ -13,7 +13,6 @@ import java.util.UUID
 
 interface SoknadLifecycleService {
     fun startSoknad(
-        token: String,
         isKort: Boolean,
     ): UUID
 
@@ -34,13 +33,12 @@ class SoknadLifecycleServiceImpl(
     private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
     override fun startSoknad(
-        token: String,
         isKort: Boolean,
     ): UUID {
         // TODO Metadata
 
         return createDeleteSoknadHandler
-            .createSoknad(token, isKort)
+            .createSoknad(isKort)
             .also { soknadId ->
                 prometheusMetricsService.reportStartSoknad()
                 MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())

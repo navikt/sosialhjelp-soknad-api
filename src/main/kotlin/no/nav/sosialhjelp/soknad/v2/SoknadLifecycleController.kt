@@ -32,7 +32,6 @@ class SoknadLifecycleController(
 ) {
     @PostMapping("/create")
     fun createSoknad(
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = true) token: String,
         @RequestParam(value = "soknadstype", required = false) soknadstype: String?,
         response: HttpServletResponse,
     ): StartSoknadResponseDto {
@@ -54,7 +53,7 @@ class SoknadLifecycleController(
         }
 
         return soknadLifecycleService
-            .startSoknad(token, isKort)
+            .startSoknad(isKort)
             .let { soknadId ->
                 response.addCookie(xsrfCookie(soknadId))
                 response.addCookie(xsrfCookieMedBehandlingsid(soknadId))
