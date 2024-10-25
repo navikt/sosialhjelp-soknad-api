@@ -39,6 +39,17 @@ object VedleggUtils {
         return Pair(filnavnMedUuid, bytes)
     }
 
+    fun validateAndReturnNewFilename(
+        filnavn: String,
+        bytes: ByteArray,
+    ): String {
+        // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
+        val uuidRandom = UUID.randomUUID()
+
+        val fileType = validerFil(bytes, filnavn)
+        return lagFilnavn(filnavn, fileType, uuidRandom)
+    }
+
     fun getSha512FromByteArray(bytes: ByteArray?): String {
         if (bytes == null) {
             return ""
