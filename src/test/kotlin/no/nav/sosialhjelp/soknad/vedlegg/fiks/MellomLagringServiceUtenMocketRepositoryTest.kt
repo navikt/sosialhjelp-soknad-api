@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.slot
 import io.mockk.unmockkObject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
@@ -14,6 +15,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRowMapper
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
@@ -39,6 +42,9 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Autowired
     private lateinit var mellomlagringService: MellomlagringService
+
+    @Autowired
+    private lateinit var soknadUnderArbeidService: SoknadUnderArbeidService
 
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
@@ -70,15 +76,25 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-        every { mellomlagringClient.postVedlegg(any(), any()) } returns createMellomlagringDto(BEHANDLINGSID)
+        val filOpplastingCapturingSlot = slot<FilOpplasting>()
+        every { mellomlagringClient.postVedlegg(any(), capture(filOpplastingCapturingSlot)) } returns createMellomlagringDto(BEHANDLINGSID)
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
 
-        mellomlagringService.uploadVedlegg(
+        val filId =
+            mellomlagringService.uploadVedlegg(
+                BEHANDLINGSID,
+                VEDLEGGSTYPE.stringName,
+                PDF_FILE.readBytes(),
+                ORIGINALT_FILNAVN,
+            )
+
+        soknadUnderArbeidService.addVedleggToSoknad(
+            VedleggUtils.getSha512FromByteArray(PDF_FILE.readBytes()),
             BEHANDLINGSID,
             VEDLEGGSTYPE.stringName,
-            PDF_FILE.readBytes(),
             ORIGINALT_FILNAVN,
+            filId,
         )
 
         val soknadUnderArbeidFraDb =
@@ -90,9 +106,9 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
         assertThat(soknadUnderArbeidFraDb?.behandlingsId).isEqualTo(BEHANDLINGSID)
         assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.size).isEqualTo(1)
-        assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.get(0)?.filnavn).isEqualTo(
-            FILNAVN,
-        )
+        val captured = filOpplastingCapturingSlot.captured
+        assertThat(soknadUnderArbeidFraDb?.jsonInternalSoknad?.vedlegg?.vedlegg?.get(0)?.filer?.get(0)?.filnavn)
+            .isEqualTo(FILNAVN)
     }
 
     @Test

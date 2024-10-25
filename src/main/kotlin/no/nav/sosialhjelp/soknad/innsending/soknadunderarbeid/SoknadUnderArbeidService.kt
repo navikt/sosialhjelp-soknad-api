@@ -91,15 +91,6 @@ class SoknadUnderArbeidService(
                     .withSha512(sha512),
             )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
-
-        // nyModell
-        dokumentasjonAdapter.saveDokumentMetadata(
-            behandlingsId = behandlingsId,
-            vedleggTypeString = vedleggstype,
-            dokumentId = filId,
-            filnavn = filnavn,
-            sha512 = sha512,
-        )
     }
 
     fun settInnsendingstidspunktPaSoknad(

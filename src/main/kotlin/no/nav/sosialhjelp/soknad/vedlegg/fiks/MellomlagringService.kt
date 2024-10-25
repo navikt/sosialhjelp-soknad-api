@@ -3,12 +3,10 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
@@ -20,7 +18,6 @@ class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner,
-    private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
     fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
 
@@ -78,52 +75,6 @@ class MellomlagringService(
             ?: throw FiksException("MellomlarginDto er null", null)
 
         // ****
-
-//        virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
-
-//        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, orginalData)
-        // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
-//        soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
-
-//        val sha512 = VedleggUtils.getSha512FromByteArray(data)
-//        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
-//            sha512,
-//            behandlingsId,
-//            vedleggstype,
-//            filnavn,
-//        )
-//
-//        val filOpplasting = opprettFilOpplasting(filnavn, data)
-//        val navEksternId = getNavEksternId(behandlingsId)
-//        val filId =
-//            mellomlagringClient
-//                .postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
-//                .mellomlagringMetadataList
-//                ?.let { it[0].filId }
-//                ?: throw FiksException("MellomlarginDto er null", null)
-//
-//        log.info("Fil med filId $filId er lastet opp")
-
-//        val mellomlagredeVedlegg =
-//            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-
-//        val filId =
-//            mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
-//                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
-
-        // nyModell
-//        dokumentasjonAdapter.saveDokumentMetadata(
-//            behandlingsId = behandlingsId,
-//            vedleggTypeString = vedleggstype,
-//            dokumentId = filId,
-//            filnavn = filnavn,
-//            sha512 = sha512,
-//        )
-//
-//        return MellomlagretVedleggMetadata(
-//            filnavn = filOpplasting.metadata.filnavn,
-//            filId = filId,
-//        ).also { log.info("Fil med filId $filId er lastet opp") }
     }
 
     private fun opprettFilOpplasting(
@@ -143,29 +94,22 @@ class MellomlagringService(
 
     fun deleteVedleggAndUpdateVedleggstatus(
         behandlingsId: String,
-        vedleggId: String,
-    ) {
+        documentId: String,
+    ): MellomlagringDokumentInfo? {
         val navEksternId = getNavEksternId(behandlingsId)
 
         val mellomlagredeVedlegg =
             mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
-            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
-            return
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $documentId")
+            return null
         }
 
-        val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
-        soknadUnderArbeidService.fjernVedleggFraInternalSoknad(behandlingsId, aktueltVedlegg)
-
-        // nyModell
-        dokumentasjonAdapter.deleteDokumentMetadata(
-            behandlingsId = behandlingsId,
-            dokumentId = aktueltVedlegg.filId,
-        )
-
-        // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
-        // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS
-        mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+        return mellomlagredeVedlegg.firstOrNull { it.filId == documentId }
+            ?.also {
+                mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = documentId)
+            }
     }
 
     fun deleteVedlegg(
@@ -194,16 +138,6 @@ class MellomlagringService(
     // TODO Kan formålet gjøres annerledes (miljøvariable etc.) for å unngå miljøspesifikk logikk i koden
     private fun getNavEksternId(behandlingsId: String) =
         if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-
-    fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        val kanSoknadSendesMedDigisosApi =
-            try {
-                soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid.behandlingsId)
-            } catch (e: Exception) {
-                false
-            }
-        return kanSoknadSendesMedDigisosApi
-    }
 
     companion object {
         private val log by logger()

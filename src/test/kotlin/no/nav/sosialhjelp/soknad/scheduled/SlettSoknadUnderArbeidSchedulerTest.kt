@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 internal class SlettSoknadUnderArbeidSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
-    private val mellomlagringService: MellomlagringService = mockk()
+    private val opplastetVedleggService: OpplastetVedleggService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
     private val scheduler =
@@ -29,7 +29,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             schedulerDisabled = false,
             leaderElection,
             batchSoknadUnderArbeidRepository,
-            mellomlagringService,
+            opplastetVedleggService,
             soknadMetadataRepository,
         )
 
@@ -70,14 +70,14 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
-        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
-        every { mellomlagringService.deleteAllVedlegg(any()) } just runs
+        every { opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
+        every { opplastetVedleggService.deleteAllVedlegg(any()) } just runs
         every { soknadMetadataRepository.hent(any()) } returns SoknadMetadata(1L, "behandlingsid", "125125125125", kortSoknad = false, opprettetDato = LocalDateTime.now(), sistEndretDato = LocalDateTime.now())
         every { soknadMetadataRepository.oppdater(any()) } just runs
 
         scheduler.slettGamleSoknadUnderArbeid()
 
         verify(exactly = 2) { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
-        verify(exactly = 2) { mellomlagringService.deleteAllVedlegg(any()) }
+        verify(exactly = 2) { opplastetVedleggService.deleteAllVedlegg(any()) }
     }
 }

@@ -25,7 +25,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -39,7 +39,7 @@ internal class SoknadServiceImplOldTest {
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val mellomlagringService: MellomlagringService = mockk()
+    private val opplastetVedleggService: OpplastetVedleggService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val soknadServiceOld =
@@ -49,7 +49,7 @@ internal class SoknadServiceImplOldTest {
             systemdataUpdater,
             bostotteSystemdata,
             skatteetatenSystemdata,
-            mellomlagringService,
+            opplastetVedleggService,
             prometheusMetricsService,
             mockk(relaxed = true),
             Clock.systemDefaultZone(),
@@ -64,7 +64,7 @@ internal class SoknadServiceImplOldTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { systemdataUpdater.update(any()) } just runs
-        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
+        every { opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
     }
 
     @AfterEach
