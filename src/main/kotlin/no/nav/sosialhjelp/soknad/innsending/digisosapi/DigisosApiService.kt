@@ -21,6 +21,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -34,11 +35,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class DigisosApiService(
@@ -52,6 +49,7 @@ class DigisosApiService(
     private val shadowProductionManager: ShadowProductionManager,
     private val v2AdapterService: V2AdapterService,
     private val mellomlagringService: MellomlagringService,
+    private val kommuneInfoClient: KommuneInfoClient,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -121,7 +119,7 @@ class DigisosApiService(
 
         genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT)
+        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT, jsonInternalSoknad.soknad.mottaker.kommunenummer)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
@@ -150,14 +148,6 @@ class DigisosApiService(
             .filter { it.originalSoknadNAV != null }
             .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
             .firstNotNullOfOrNull { it.originalSoknadNAV?.timestampSendt }
-
-    private fun String.toLocalDateTime() =
-        runCatching {
-            ZonedDateTime
-                .parse(this, DateTimeFormatter.ISO_DATE_TIME)
-                .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
-                .toLocalDateTime()
-        }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,

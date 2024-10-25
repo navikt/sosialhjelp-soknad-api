@@ -46,9 +46,13 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendt(kort: Boolean) {
+    fun reportSendt(
+        kort: Boolean,
+        kommunenummer: String?,
+    ) {
         sendtSoknadDigisosApiCounter
             .tag("kortSoknad", kort.toString())
+            .tag("kommunenummer", kommunenummer.toString())
             .register(meterRegistry)
             .increment()
     }
