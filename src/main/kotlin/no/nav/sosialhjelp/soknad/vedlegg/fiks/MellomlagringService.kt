@@ -9,11 +9,9 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
 import java.util.UUID
 
@@ -59,37 +57,52 @@ class MellomlagringService(
             }
     }
 
-    @Transactional
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
-        orginalData: ByteArray,
-        orginaltFilnavn: String,
-    ): MellomlagretVedleggMetadata {
-        virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
+        data: ByteArray,
+        filnavn: String,
+    ): String {
+        // ****
 
-        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, orginalData)
+        virusScanner.scan(filnavn, data, behandlingsId, detectMimeType(data))
+
+        return mellomlagringClient
+            .postVedlegg(
+                navEksternId = getNavEksternId(behandlingsId),
+                filOpplasting = opprettFilOpplasting(filnavn, data),
+            )
+            .mellomlagringMetadataList
+            ?.let { it[0].filId }
+            ?.also { filId -> log.info("Fil med filId $filId er lastet opp") }
+            ?: throw FiksException("MellomlarginDto er null", null)
+
+        // ****
+
+//        virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
+
+//        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, orginalData)
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
-        soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
+//        soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
-        val sha512 = VedleggUtils.getSha512FromByteArray(data)
-        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
-            sha512,
-            behandlingsId,
-            vedleggstype,
-            filnavn,
-        )
-
-        val filOpplasting = opprettFilOpplasting(filnavn, data)
-        val navEksternId = getNavEksternId(behandlingsId)
-        val filId =
-            mellomlagringClient
-                .postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
-                .mellomlagringMetadataList
-                ?.let { it[0].filId }
-                ?: throw FiksException("MellomlarginDto er null", null)
-
-        log.info("Fil med filId $filId er lastet opp")
+//        val sha512 = VedleggUtils.getSha512FromByteArray(data)
+//        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+//            sha512,
+//            behandlingsId,
+//            vedleggstype,
+//            filnavn,
+//        )
+//
+//        val filOpplasting = opprettFilOpplasting(filnavn, data)
+//        val navEksternId = getNavEksternId(behandlingsId)
+//        val filId =
+//            mellomlagringClient
+//                .postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
+//                .mellomlagringMetadataList
+//                ?.let { it[0].filId }
+//                ?: throw FiksException("MellomlarginDto er null", null)
+//
+//        log.info("Fil med filId $filId er lastet opp")
 
 //        val mellomlagredeVedlegg =
 //            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
@@ -99,18 +112,18 @@ class MellomlagringService(
 //                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         // nyModell
-        dokumentasjonAdapter.saveDokumentMetadata(
-            behandlingsId = behandlingsId,
-            vedleggTypeString = vedleggstype,
-            dokumentId = filId,
-            filnavn = filnavn,
-            sha512 = sha512,
-        )
-
-        return MellomlagretVedleggMetadata(
-            filnavn = filOpplasting.metadata.filnavn,
-            filId = filId,
-        ).also { log.info("Fil med filId $filId er lastet opp") }
+//        dokumentasjonAdapter.saveDokumentMetadata(
+//            behandlingsId = behandlingsId,
+//            vedleggTypeString = vedleggstype,
+//            dokumentId = filId,
+//            filnavn = filnavn,
+//            sha512 = sha512,
+//        )
+//
+//        return MellomlagretVedleggMetadata(
+//            filnavn = filOpplasting.metadata.filnavn,
+//            filId = filId,
+//        ).also { log.info("Fil med filId $filId er lastet opp") }
     }
 
     private fun opprettFilOpplasting(

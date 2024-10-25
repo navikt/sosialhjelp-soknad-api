@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -30,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile
 class OpplastetVedleggRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val mellomlagringService: MellomlagringService,
+    private val virusScanner: VirusScanner,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     @GetMapping("/{behandlingsId}/{dokumentId}/fil")
     @Operation(summary = "Hent innhold i dokument")
@@ -78,12 +82,42 @@ class OpplastetVedleggRessurs(
     ): DokumentUpload {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
-        val orginalData = VedleggUtils.getByteArray(fil)
+        // ****
 
-        return mellomlagringService
-            .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
-            .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
+        val data = VedleggUtils.getByteArray(fil)
+
+        val nyttFilnavn =
+            fil.originalFilename?.let {
+                virusScanner.scan(it, data, behandlingsId, detectMimeType(data))
+                VedleggUtils.validateAndReturnNewFilename(it, data)
+            }
+                ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
+
+        val filId = mellomlagringService.uploadVedlegg(behandlingsId, dokumentasjonType, data, nyttFilnavn)
+
+        runCatching {
+            soknadUnderArbeidService.addVedleggToSoknad(
+                sha512 = VedleggUtils.getSha512FromByteArray(data),
+                behandlingsId = behandlingsId,
+                vedleggstype = dokumentasjonType,
+                filnavn = nyttFilnavn,
+                filId = filId,
+            )
+        }.onFailure {
+            log.error("Kunne ikke legge til vedlegg i søknad under arbeid", it)
+            mellomlagringService.deleteVedlegg(behandlingsId, filId)
+        }
+
+        return DokumentUpload(nyttFilnavn, filId)
+
+        // ****
+
+//        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
+//        val orginalData = VedleggUtils.getByteArray(fil)
+
+//        return mellomlagringService
+//            .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
+//            .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
     }
 
     @DeleteMapping("/{behandlingsId}/{dokumentId}")

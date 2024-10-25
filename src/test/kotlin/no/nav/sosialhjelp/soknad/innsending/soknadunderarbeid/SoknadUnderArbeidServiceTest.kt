@@ -23,7 +23,12 @@ import java.time.ZoneOffset
 internal class SoknadUnderArbeidServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
-    private val soknadUnderArbeidService = SoknadUnderArbeidService(soknadUnderArbeidRepository, kommuneInfoService)
+    private val soknadUnderArbeidService =
+        SoknadUnderArbeidService(
+            soknadUnderArbeidRepository,
+            kommuneInfoService,
+            dokumentasjonAdapter = mockk(relaxed = true),
+        )
 
     @Test
     fun settInnsendingstidspunktPaSoknadSkalHandtereEttersendelse() {

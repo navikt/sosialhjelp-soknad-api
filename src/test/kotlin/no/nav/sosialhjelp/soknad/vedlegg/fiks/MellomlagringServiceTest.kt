@@ -33,6 +33,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.util.UUID
 
 internal class MellomlagringServiceTest {
     private val mellomlagringClient: MellomlagringClient = mockk()
@@ -44,6 +45,7 @@ internal class MellomlagringServiceTest {
         SoknadUnderArbeidService(
             soknadUnderArbeidRepository,
             kommuneInfoService,
+            dokumentasjonAdapter = mockk(relaxed = true),
         )
 
     private val mellomlagringService =
@@ -190,11 +192,12 @@ internal class MellomlagringServiceTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+        soknadUnderArbeidService.addVedleggToSoknad(
             getSha512FromByteArray(PDF_FILE.readBytes()),
             behandlingsId,
             "hei|på deg",
             PDF_FILE.name,
+            UUID.randomUUID().toString(),
         )
 
         val soknadUnderArbeid = slot.captured

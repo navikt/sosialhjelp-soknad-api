@@ -18,10 +18,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
+import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
@@ -31,6 +33,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class SoknadUnderArbeidService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kommuneInfoService: KommuneInfoService,
+    private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
     fun sjekkDuplikate(
         behandlingsId: String,
@@ -65,11 +68,13 @@ class SoknadUnderArbeidService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
-    fun oppdaterSoknadUnderArbeid(
+    @Transactional
+    fun addVedleggToSoknad(
         sha512: String,
         behandlingsId: String,
         vedleggstype: String,
         filnavn: String,
+        filId: String,
     ) {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
@@ -86,6 +91,15 @@ class SoknadUnderArbeidService(
                     .withSha512(sha512),
             )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
+
+        // nyModell
+        dokumentasjonAdapter.saveDokumentMetadata(
+            behandlingsId = behandlingsId,
+            vedleggTypeString = vedleggstype,
+            dokumentId = filId,
+            filnavn = filnavn,
+            sha512 = sha512,
+        )
     }
 
     fun settInnsendingstidspunktPaSoknad(
