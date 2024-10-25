@@ -40,14 +40,13 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
@@ -56,7 +55,7 @@ class SoknadServiceOld(
     private val systemdataUpdater: SystemdataUpdater,
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
-    private val mellomlagringService: MellomlagringService,
+    private val opplastetVedleggService: OpplastetVedleggService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
@@ -141,8 +140,8 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository
             .hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
-                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+                if (opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
+                    opplastetVedleggService.deleteAllVedlegg(behandlingsId)
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)

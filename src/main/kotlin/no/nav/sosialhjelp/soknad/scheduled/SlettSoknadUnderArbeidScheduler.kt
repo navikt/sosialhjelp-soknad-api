@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -16,7 +16,7 @@ class SlettSoknadUnderArbeidScheduler(
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val leaderElection: LeaderElection,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val opplastetVedleggService: OpplastetVedleggService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     private var batchStartTime: LocalDateTime? = null
@@ -55,8 +55,8 @@ class SlettSoknadUnderArbeidScheduler(
                 return
             }
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
-                    mellomlagringService.deleteAllVedlegg(it.behandlingsId)
+                if (opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
+                    opplastetVedleggService.deleteAllVedlegg(it.behandlingsId)
                 }
 
                 // oppdatere status på metadata - hente søknader under arbeid spør metadata-tabellen
@@ -86,7 +86,8 @@ class SlettSoknadUnderArbeidScheduler(
 
     companion object {
         private val logger = LoggerFactory.getLogger(SlettSoknadUnderArbeidScheduler::class.java)
-        private const val KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 4 * * *"
+
+//        private const val KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 4 * * *"
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10
     }
 }
