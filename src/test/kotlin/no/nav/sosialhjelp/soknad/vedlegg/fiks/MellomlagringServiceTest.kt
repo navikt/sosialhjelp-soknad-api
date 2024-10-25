@@ -156,12 +156,11 @@ internal class MellomlagringServiceTest {
         val behandlingsId = "123"
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 
-        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
-        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns
-            MellomlagringDto(
-                eksternId,
-                emptyList(),
-            )
+        MellomlagringDto(eksternId, emptyList())
+            .also {
+                every { mellomlagringClient.postVedlegg(eksternId, any()) } returns it
+                every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns it
+            }
 
         assertThatThrownBy {
             mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", EXCEL_FILE_OLD.readBytes(), EXCEL_FILE.name)
