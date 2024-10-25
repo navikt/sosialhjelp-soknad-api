@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -49,7 +48,6 @@ class DigisosApiService(
     private val shadowProductionManager: ShadowProductionManager,
     private val v2AdapterService: V2AdapterService,
     private val mellomlagringService: MellomlagringService,
-    private val kommuneInfoClient: KommuneInfoClient,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
