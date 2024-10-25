@@ -70,7 +70,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-        every { mellomlagringClient.postVedlegg(any(), any()) } just runs
+        every { mellomlagringClient.postVedlegg(any(), any()) } returns createMellomlagringDto(BEHANDLINGSID)
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
 
@@ -167,4 +167,19 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS)
         private val SIST_ENDRET_DATO = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     }
+}
+
+private fun createMellomlagringDto(behandlingsId: String): MellomlagringDto {
+    return MellomlagringDto(
+        navEksternRefId = behandlingsId,
+        mellomlagringMetadataList =
+            listOf(
+                MellomlagringDokumentInfo(
+                    filnavn = "filnavn",
+                    filId = UUID.randomUUID().toString(),
+                    storrelse = 123L,
+                    mimetype = "mime",
+                ),
+            ),
+    )
 }
