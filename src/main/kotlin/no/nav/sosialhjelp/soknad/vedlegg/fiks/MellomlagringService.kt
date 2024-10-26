@@ -6,9 +6,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
-import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
@@ -16,8 +14,6 @@ import java.util.UUID
 @Component
 class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val virusScanner: VirusScanner,
 ) {
     fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
 
@@ -60,10 +56,6 @@ class MellomlagringService(
         data: ByteArray,
         filnavn: String,
     ): String {
-        // ****
-
-        virusScanner.scan(filnavn, data, behandlingsId, detectMimeType(data))
-
         return mellomlagringClient
             .postVedlegg(
                 navEksternId = getNavEksternId(behandlingsId),
@@ -73,8 +65,6 @@ class MellomlagringService(
             ?.let { it[0].filId }
             ?.also { filId -> log.info("Fil med filId $filId er lastet opp") }
             ?: throw FiksException("MellomlarginDto er null", null)
-
-        // ****
     }
 
     private fun opprettFilOpplasting(
