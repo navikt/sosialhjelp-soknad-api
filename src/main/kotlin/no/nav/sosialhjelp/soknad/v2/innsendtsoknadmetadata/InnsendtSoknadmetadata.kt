@@ -25,7 +25,7 @@ data class InnsendtSoknadmetadata(
     @Id val soknadId: UUID,
     val soknadtype: String,
     val personId: String,
-    val sendt_inn_dato: LocalDateTime?,
+    val sendt_inn_dato: String,
     val opprettet_dato: LocalDateTime,
 ) : DomainRoot {
     override fun getDbId() = soknadId

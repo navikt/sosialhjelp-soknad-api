@@ -12,14 +12,30 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
         return innsendtSoknadMetadataRepository.findByIdOrNull(soknadId)
     }
 
+    private fun InnsendtSoknadmetadata(
+        soknadId: UUID,
+        soknadtype: String,
+        personId: String,
+        toString: String,
+    ): InnsendtSoknadmetadata {
+        return InnsendtSoknadmetadata(soknadId, soknadtype, personId, toString, LocalDateTime.now())
+    }
+
     fun upsertInnsendtSoknadMetadata(
         soknadId: UUID,
         personId: String,
         sendtInnDato: LocalDateTime?,
-        opprettetDato: LocalDateTime,
+        opprettetDato: LocalDateTime?,
     ): InnsendtSoknadmetadata {
-        return (findInnsendtSoknadMetadata(soknadId) ?: InnsendtSoknadmetadata(soknadId, personId, sendtInnDato, opprettetDato))
-            .let { innsendtSoknadMetadataRepository.save(it) }
+        return (
+            findInnsendtSoknadMetadata(soknadId) ?: InnsendtSoknadmetadata(
+                soknadId,
+                personId,
+                sendtInnDato.toString(),
+                opprettetDato.toString(),
+            )
+//                .also { innsendtSoknadMetadataRepository.save(it) }
+        ).let { innsendtSoknadMetadataRepository.save(it) }
     }
 
     fun deleteAlleEldreEnn(eldreEnn: LocalDateTime) {
@@ -32,7 +48,7 @@ class InnsendtSoknadMetadataService(private val innsendtSoknadMetadataRepository
     ) {
         return (findInnsendtSoknadMetadata(soknadId) ?: throw IkkeFunnetException("InnsendtSoknadMetadata for søknad: $soknadId finnes ikke"))
             .let {
-                it.copy(sendt_inn_dato = sendtInnDato)
+                it.copy(sendt_inn_dato = sendtInnDato.toString())
                     .also { innsendtSoknadMetadataRepository.save(it) }
             }
     }
