@@ -72,7 +72,7 @@ class AvbrytAutomatiskScheduler(
     private fun slettSoknadUnderArbeid(behandlingsId: String) {
         batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
             if (opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
-                opplastetVedleggService.deleteAllVedlegg(behandlingsId)
+                opplastetVedleggService.deleteAllFromMellomlagring(behandlingsId)
             }
             batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
         }

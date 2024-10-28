@@ -24,39 +24,23 @@ class OpplastetVedleggService(
     ): Pair<String, String> {
         virusScanner.scan(orginaltFilnavn, data, behandlingsId, detectMimeType(data))
 
-        val nyttFilnavn = VedleggUtils.validateAndReturnNewFilename(orginaltFilnavn, data)
+        return VedleggUtils.validateAndReturnNewFilename(orginaltFilnavn, data)
+            .let { nyttFilnavn ->
 
-        val documentId =
-            mellomlagringService.uploadVedlegg(
-                behandlingsId = behandlingsId,
-                vedleggstype = dokumentasjonType,
-                data = data,
-                filnavn = nyttFilnavn,
-            )
+                val documentId = mellomlagringService.uploadVedlegg(behandlingsId, dokumentasjonType, data, nyttFilnavn)
 
-        runCatching {
-            soknadUnderArbeidService.addVedleggToSoknad(
-                sha512 = VedleggUtils.getSha512FromByteArray(data),
-                behandlingsId = behandlingsId,
-                vedleggstype = dokumentasjonType,
-                filnavn = nyttFilnavn,
-                filId = documentId,
-            )
-        }.onFailure {
-            logger.error("Kunne ikke legge til vedlegg i søknad under arbeid", it)
-            mellomlagringService.deleteVedlegg(behandlingsId, documentId)
-        }
+                addVedleggToSoknad(data.sha512(), behandlingsId, dokumentasjonType, nyttFilnavn, documentId)
 
-        // nyModell
-        dokumentasjonAdapter.saveDokumentMetadata(
-            behandlingsId = behandlingsId,
-            vedleggTypeString = dokumentasjonType,
-            dokumentId = documentId,
-            filnavn = nyttFilnavn,
-            sha512 = VedleggUtils.getSha512FromByteArray(data),
-        )
-
-        return Pair(nyttFilnavn, documentId)
+                // nyModell
+                dokumentasjonAdapter.saveDokumentMetadata(
+                    behandlingsId,
+                    dokumentasjonType,
+                    documentId,
+                    nyttFilnavn,
+                    data.sha512(),
+                )
+                Pair(nyttFilnavn, documentId)
+            }
     }
 
     fun deleteDocument(
@@ -73,7 +57,7 @@ class OpplastetVedleggService(
         )
     }
 
-    fun deleteAllVedlegg(behandlingsId: String) {
+    fun deleteAllFromMellomlagring(behandlingsId: String) {
         logger.info("Sletter alle dokumenter hos FIKS for behandlingsId: $behandlingsId")
         mellomlagringService.deleteAllVedlegg(behandlingsId)
     }
@@ -88,7 +72,29 @@ class OpplastetVedleggService(
         return kanSoknadSendesMedDigisosApi
     }
 
+    private fun addVedleggToSoknad(
+        sha512: String,
+        behandlingsId: String,
+        dokumentasjonType: String,
+        nyttFilnavn: String,
+        documentId: String,
+    ) {
+        runCatching {
+            soknadUnderArbeidService.addVedleggToSoknad(
+                sha512 = sha512,
+                behandlingsId = behandlingsId,
+                vedleggstype = dokumentasjonType,
+                filnavn = nyttFilnavn,
+            )
+        }.onFailure {
+            logger.error("Kunne ikke legge til vedlegg i søknad under arbeid", it)
+            mellomlagringService.deleteVedlegg(behandlingsId, documentId)
+        }
+    }
+
     companion object {
         private val logger by logger()
     }
 }
+
+private fun ByteArray.sha512() = VedleggUtils.getSha512FromByteArray(this)

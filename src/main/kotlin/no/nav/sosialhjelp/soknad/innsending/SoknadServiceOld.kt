@@ -137,7 +137,7 @@ class SoknadServiceOld(
                 .hentSoknadNullable(behandlingsId, eier)
                 ?.let { soknadUnderArbeid ->
                     if (opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
-                        opplastetVedleggService.deleteAllVedlegg(behandlingsId)
+                        opplastetVedleggService.deleteAllFromMellomlagring(behandlingsId)
                     }
                     soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                     settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)

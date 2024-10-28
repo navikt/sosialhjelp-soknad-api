@@ -4,6 +4,8 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
@@ -17,8 +19,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
@@ -42,12 +42,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadRessurs(
     private val soknadServiceOld: SoknadServiceOld,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
     private val nedetidService: NedetidService,
-    private val prometheusMetricsService: PrometheusMetricsService,
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
     fun hentXsrfCookie(
@@ -80,19 +78,19 @@ class SoknadRessurs(
         soknadUnderArbeid.jsonInternalSoknad
             ?.soknad
             ?.data
-            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+            ?.let { sortOkonomi(it.okonomi) }
         notUpdatedSoknadUnderArbeid.jsonInternalSoknad
             ?.soknad
             ?.data
-            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+            ?.let { sortOkonomi(it.okonomi) }
         soknadUnderArbeid.jsonInternalSoknad
             ?.soknad
             ?.data
-            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
+            ?.let { sortArbeid(it.arbeid) }
         notUpdatedSoknadUnderArbeid.jsonInternalSoknad
             ?.soknad
             ?.data
-            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
+            ?.let { sortArbeid(it.arbeid) }
 
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
             false
@@ -220,4 +218,19 @@ class SoknadRessurs(
             return xsrfCookie
         }
     }
+}
+
+private fun sortArbeid(arbeid: JsonArbeid) {
+    if (arbeid.forhold != null) {
+        arbeid.forhold.sortBy { it.arbeidsgivernavn }
+    }
+}
+
+private fun sortOkonomi(okonomi: JsonOkonomi) {
+    okonomi.opplysninger.bekreftelse.sortBy { it.type }
+    okonomi.opplysninger.utbetaling.sortBy { it.type }
+    okonomi.opplysninger.utgift.sortBy { it.type }
+    okonomi.oversikt.inntekt.sortBy { it.type }
+    okonomi.oversikt.utgift.sortBy { it.type }
+    okonomi.oversikt.formue.sortBy { it.type }
 }

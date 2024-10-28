@@ -71,13 +71,13 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
         every { opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
-        every { opplastetVedleggService.deleteAllVedlegg(any()) } just runs
+        every { opplastetVedleggService.deleteAllFromMellomlagring(any()) } just runs
         every { soknadMetadataRepository.hent(any()) } returns SoknadMetadata(1L, "behandlingsid", "125125125125", kortSoknad = false, opprettetDato = LocalDateTime.now(), sistEndretDato = LocalDateTime.now())
         every { soknadMetadataRepository.oppdater(any()) } just runs
 
         scheduler.slettGamleSoknadUnderArbeid()
 
         verify(exactly = 2) { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
-        verify(exactly = 2) { opplastetVedleggService.deleteAllVedlegg(any()) }
+        verify(exactly = 2) { opplastetVedleggService.deleteAllFromMellomlagring(any()) }
     }
 }

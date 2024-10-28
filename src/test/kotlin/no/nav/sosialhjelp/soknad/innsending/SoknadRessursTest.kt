@@ -28,8 +28,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -40,22 +38,18 @@ import java.time.LocalDateTime
 
 internal class SoknadRessursTest {
     private val soknadServiceOld: SoknadServiceOld = mockk()
-    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val systemdata: SystemdataUpdater = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val nedetidService: NedetidService = mockk()
-    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val ressurs =
         SoknadRessurs(
             soknadServiceOld,
-            soknadUnderArbeidService,
             soknadUnderArbeidRepository,
             systemdata,
             tilgangskontroll,
             nedetidService,
-            prometheusMetricsService,
         )
 
     @BeforeEach

@@ -56,7 +56,7 @@ class SlettSoknadUnderArbeidScheduler(
             }
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
                 if (opplastetVedleggService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
-                    opplastetVedleggService.deleteAllVedlegg(it.behandlingsId)
+                    opplastetVedleggService.deleteAllFromMellomlagring(it.behandlingsId)
                 }
 
                 // oppdatere status på metadata - hente søknader under arbeid spør metadata-tabellen
