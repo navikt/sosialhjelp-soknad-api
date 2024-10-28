@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.kontakt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.NavEnhetEnrichment
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,7 +24,11 @@ class AdresseController(
     ): AdresserDto =
         createAdresseDto(
             adresser = adresseService.findAdresser(soknadId),
-            mottaker = adresseService.findMottaker(soknadId),
+            mottaker =
+                adresseService.findMottaker(soknadId)?.let { navEnhet ->
+                    val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
+                    navEnhet.toNavEnhetDto(enrichment)
+                },
         )
 
     @PutMapping
@@ -36,10 +41,14 @@ class AdresseController(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
                 brukerAdresse = adresserInput.brukerAdresse,
-            ).let {
+            ).let { adresse ->
                 createAdresseDto(
-                    adresser = it,
-                    mottaker = adresseService.findMottaker(soknadId),
+                    adresser = adresse,
+                    mottaker =
+                        adresseService.findMottaker(soknadId)?.let { navEnhet ->
+                            val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
+                            navEnhet.toNavEnhetDto(enrichment)
+                        },
                 )
             }
 }
@@ -63,24 +72,29 @@ data class NavEnhetDto(
     val enhetsnummer: String? = null,
     val kommunenummer: String? = null,
     val kommunenavn: String? = null,
+    val isMottakMidlertidigDeaktivert: Boolean? = null,
+    val isMottakDeaktivert: Boolean? = null,
 )
 
 fun createAdresseDto(
     adresser: Adresser,
-    mottaker: NavEnhet?,
+    mottaker: NavEnhetDto?,
 ): AdresserDto =
     AdresserDto(
         adresseValg = adresser.adressevalg,
         brukerAdresse = adresser.fraBruker,
         midlertidigAdresse = adresser.midlertidig,
         folkeregistrertAdresse = adresser.folkeregistrert,
-        navenhet = mottaker?.toNavEnhetDto(),
+        navenhet = mottaker,
     )
 
-fun NavEnhet.toNavEnhetDto(): NavEnhetDto =
+fun NavEnhet.toNavEnhetDto(enrichment: NavEnhetEnrichment?): NavEnhetDto =
     NavEnhetDto(
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
         kommunenummer = kommunenummer,
+        kommunenavn = enrichment?.kommunenavn,
+        isMottakDeaktivert = enrichment?.isDigisosKommune == false,
+        isMottakMidlertidigDeaktivert = enrichment?.isDigisosKommune == false,
     )

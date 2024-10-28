@@ -11,7 +11,9 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface KontaktRepository : UpsertRepository<Kontakt>, ListCrudRepository<Kontakt, UUID>
+interface KontaktRepository :
+    UpsertRepository<Kontakt>,
+    ListCrudRepository<Kontakt, UUID>
 
 @Table
 data class Kontakt(
@@ -41,18 +43,15 @@ data class Adresser(
     val fraBruker: Adresse? = null,
     val adressevalg: AdresseValg? = null,
 ) {
-    fun getOppholdsadresse(): Adresse {
-        return when (adressevalg) {
+    fun getOppholdsadresse(): Adresse =
+        when (adressevalg) {
             AdresseValg.FOLKEREGISTRERT -> folkeregistrert ?: valgtAdresseNullError(AdresseValg.FOLKEREGISTRERT)
             AdresseValg.MIDLERTIDIG -> midlertidig ?: valgtAdresseNullError(AdresseValg.MIDLERTIDIG)
             AdresseValg.SOKNAD -> fraBruker ?: valgtAdresseNullError(AdresseValg.SOKNAD)
             else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
-    }
 
-    private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing {
-        throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
-    }
+    private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing = throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
 }
 
 enum class AdresseValg {
