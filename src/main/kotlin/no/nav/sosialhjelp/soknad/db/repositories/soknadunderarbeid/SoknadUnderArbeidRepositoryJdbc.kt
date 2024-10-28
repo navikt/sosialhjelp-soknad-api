@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetExcep
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
@@ -29,6 +30,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
+    @Transactional
     override fun opprettSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,

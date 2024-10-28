@@ -61,7 +61,6 @@ class SoknadServiceOld(
     private val clock: Clock,
     private val v2AdapterService: V2AdapterService,
 ) {
-    @Transactional
     fun startSoknad(
         token: String?,
         kort: Boolean,
