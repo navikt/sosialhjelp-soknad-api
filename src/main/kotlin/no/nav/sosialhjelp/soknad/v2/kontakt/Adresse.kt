@@ -4,29 +4,34 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(VegAdresse::class),
-    JsonSubTypes.Type(MatrikkelAdresse::class),
-    JsonSubTypes.Type(PostboksAdresse::class),
-    JsonSubTypes.Type(UstrukturertAdresse::class),
+    JsonSubTypes.Type(value = VegAdresse::class, name = "VegAdresse"),
+    JsonSubTypes.Type(value = MatrikkelAdresse::class, name = "MatrikkelAdresse"),
+    JsonSubTypes.Type(value = PostboksAdresse::class, name = "PostboksAdresse"),
+    JsonSubTypes.Type(value = UstrukturertAdresse::class, name = "UstrukturertAdresse"),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "VegAdresse", schema = VegAdresse::class),
+        DiscriminatorMapping(value = "MatrikkelAdresse", schema = MatrikkelAdresse::class),
+        DiscriminatorMapping(value = "PostboksAdresse", schema = PostboksAdresse::class),
+        DiscriminatorMapping(value = "UstrukturertAdresse", schema = UstrukturertAdresse::class),
+    ],
+    subTypes = [VegAdresse::class, MatrikkelAdresse::class, PostboksAdresse::class, UstrukturertAdresse::class],
 )
 sealed interface Adresse
 
-sealed interface AdresseMedKommunenummer : Adresse {
-    val kommunenummer: String?
-}
-
 data class VegAdresse(
     val landkode: String = "NOR",
-    override val kommunenummer: String? = null,
+    val kommunenummer: String? = null,
     val adresselinjer: List<String> = emptyList(),
     val bolignummer: String? = null,
     val postnummer: String? = null,
@@ -34,16 +39,16 @@ data class VegAdresse(
     val gatenavn: String? = null,
     val husnummer: String? = null,
     val husbokstav: String? = null,
-) : AdresseMedKommunenummer
+) : Adresse
 
 data class MatrikkelAdresse(
-    override val kommunenummer: String,
+    val kommunenummer: String,
     val gaardsnummer: String,
     val bruksnummer: String,
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
     val undernummer: String? = null,
-) : AdresseMedKommunenummer
+) : Adresse
 
 data class PostboksAdresse(
     val postboks: String,

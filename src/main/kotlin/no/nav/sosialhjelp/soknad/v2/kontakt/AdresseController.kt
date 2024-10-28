@@ -20,31 +20,28 @@ class AdresseController(
     @GetMapping
     fun getAdresser(
         @PathVariable("soknadId") soknadId: UUID,
-    ): AdresserDto {
-        return createAdresseDto(
+    ): AdresserDto =
+        createAdresseDto(
             adresser = adresseService.findAdresser(soknadId),
             mottaker = adresseService.findMottaker(soknadId),
         )
-    }
 
     @PutMapping
     fun updateAdresser(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput,
-    ): AdresserDto {
-        return adresseService
+    ): AdresserDto =
+        adresseService
             .updateBrukerAdresse(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
                 brukerAdresse = adresserInput.brukerAdresse,
-            )
-            .let {
+            ).let {
                 createAdresseDto(
                     adresser = it,
                     mottaker = adresseService.findMottaker(soknadId),
                 )
             }
-    }
 }
 
 data class AdresserInput(
@@ -71,21 +68,19 @@ data class NavEnhetDto(
 fun createAdresseDto(
     adresser: Adresser,
     mottaker: NavEnhet?,
-): AdresserDto {
-    return AdresserDto(
+): AdresserDto =
+    AdresserDto(
         adresseValg = adresser.adressevalg,
         brukerAdresse = adresser.fraBruker,
         midlertidigAdresse = adresser.midlertidig,
         folkeregistrertAdresse = adresser.folkeregistrert,
         navenhet = mottaker?.toNavEnhetDto(),
     )
-}
 
-fun NavEnhet.toNavEnhetDto(): NavEnhetDto {
-    return NavEnhetDto(
+fun NavEnhet.toNavEnhetDto(): NavEnhetDto =
+    NavEnhetDto(
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
         kommunenummer = kommunenummer,
     )
-}

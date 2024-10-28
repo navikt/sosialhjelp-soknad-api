@@ -77,7 +77,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `Skal returnere alle adresser for soknad`() {
         val soknad = soknadRepository.save(opprettSoknad())
         val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
-
         doGet(
             uri = "/soknad/${soknad.id}/adresser",
             responseBodyClass = AdresserDto::class.java,

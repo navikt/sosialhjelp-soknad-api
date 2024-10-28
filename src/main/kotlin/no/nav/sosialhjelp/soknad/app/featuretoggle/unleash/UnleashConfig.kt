@@ -40,6 +40,7 @@ class UnleashConfig(
     fun unleashClientMock(): Unleash =
         FakeUnleash().also {
             it.enable("sosialhjelp.soknad.kort_soknad")
+            it.enable("sosialhjelp.soknad.nytt-api")
             it.disable("sosialhjelp.soknad.kategorier")
         }
 }

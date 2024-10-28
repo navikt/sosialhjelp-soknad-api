@@ -8,15 +8,18 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import java.util.UUID
 
 @Component
 class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadService: SoknadService,
     private val personService: PersonService,
     private val environment: Environment,
 ) {
@@ -40,6 +43,7 @@ class Tilgangskontroll(
 
         val soknadEier =
             soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
+                ?: behandlingsId?.let { soknadService.getSoknadOrNull(UUID.fromString(it)) }?.eierPersonId
                 ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
         if (personId != soknadEier) throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
