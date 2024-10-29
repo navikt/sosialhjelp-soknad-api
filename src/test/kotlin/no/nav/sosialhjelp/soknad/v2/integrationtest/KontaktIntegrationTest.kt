@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
@@ -51,9 +50,6 @@ import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet as NyNavEnhet
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var kontaktRepository: KontaktRepository
-
     @Autowired
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
 

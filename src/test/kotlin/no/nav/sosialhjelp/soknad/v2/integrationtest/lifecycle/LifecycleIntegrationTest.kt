@@ -7,10 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
-import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
@@ -22,12 +20,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
-    @Autowired
-    private lateinit var eierRepository: EierRepository
-
-    @Autowired
-    private lateinit var kontaktRepository: KontaktRepository
-
     @Autowired
     private lateinit var familieRepository: FamilieRepository
 
