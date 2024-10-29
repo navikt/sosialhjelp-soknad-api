@@ -50,6 +50,16 @@ management:
 springdoc:
   api-docs:
     enabled: ${SWAGGER_ENABLED:false}
+  group-configs:
+    - group: 'old'
+      display-name: "Old api"
+      packages-to-exclude:
+        - 'no.nav.sosialhjelp.soknad.v2'
+    - group: 'new'
+      display-name: "New api"
+      packages-to-scan:
+        - 'no.nav.sosialhjelp.soknad.v2'
+
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}

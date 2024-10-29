@@ -20,7 +20,6 @@ class CreateDeleteSoknadHandler(
     private val mellomlagringService: MellomlagringService,
 ) {
     fun createSoknad(
-        token: String,
         isKort: Boolean,
     ): UUID =
         soknadService

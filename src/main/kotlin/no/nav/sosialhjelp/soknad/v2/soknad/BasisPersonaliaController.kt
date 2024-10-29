@@ -19,13 +19,11 @@ class BasisPersonaliaController(
     @GetMapping
     fun getBasisPersonalia(
         @PathVariable("soknadId") soknadId: UUID,
-    ): PersonaliaDto {
-        return eierService.findOrError(soknadId).toPersonaliaDto()
-    }
+    ): PersonaliaDto = eierService.findOrError(soknadId).toPersonaliaDto()
 }
 
-private fun Eier.toPersonaliaDto(): PersonaliaDto {
-    return PersonaliaDto(
+private fun Eier.toPersonaliaDto(): PersonaliaDto =
+    PersonaliaDto(
         navn =
             NavnDto(
                 fornavn = navn.fornavn,
@@ -35,7 +33,6 @@ private fun Eier.toPersonaliaDto(): PersonaliaDto {
         statsborgerskap = statsborgerskap,
         nordiskBorger = nordiskBorger,
     )
-}
 
 data class PersonaliaDto(
     val navn: NavnDto,
@@ -49,4 +46,6 @@ data class NavnDto(
     val fornavn: String,
     val mellomnavn: String? = null,
     val etternavn: String,
-)
+) {
+    val fulltNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn).filter { it.isNotBlank() }.joinToString(" ") { it.trim() }
+}

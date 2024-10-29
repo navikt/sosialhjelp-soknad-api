@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +13,6 @@ import java.util.UUID
 
 interface SoknadLifecycleService {
     fun startSoknad(
-        token: String,
         isKort: Boolean,
     ): UUID
 
@@ -30,15 +30,15 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
+    private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
     override fun startSoknad(
-        token: String,
         isKort: Boolean,
     ): UUID {
         // TODO Metadata
 
         return createDeleteSoknadHandler
-            .createSoknad(token, isKort)
+            .createSoknad(isKort)
             .also { soknadId ->
                 prometheusMetricsService.reportStartSoknad()
                 MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
@@ -57,7 +57,7 @@ class SoknadLifecycleServiceImpl(
                     logger.error("Feil ved sending av søknad.", it)
                 }.getOrThrow()
 
-        prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad)
+        prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad, adresseService.findMottaker(soknadId)?.kommunenummer)
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(sendtInfo.navEnhet.enhetsnavn),
         )

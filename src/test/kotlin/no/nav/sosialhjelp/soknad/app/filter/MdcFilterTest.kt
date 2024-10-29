@@ -20,6 +20,7 @@ import org.slf4j.MDC
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
 
 // @Disabled
 internal class MdcFilterTest {
@@ -88,6 +89,7 @@ internal class MdcFilterTest {
     @Test
     fun `should add behandlingsId`() {
         val request = MockHttpServletRequest()
+        request.setAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, mapOf("behandlingsId" to MOCK_BEHANDLINGS_ID))
         request.requestURI = "/sosialhjelp/soknad-api/soknader/$MOCK_BEHANDLINGS_ID/arbeid"
 
         val response = MockHttpServletResponse()

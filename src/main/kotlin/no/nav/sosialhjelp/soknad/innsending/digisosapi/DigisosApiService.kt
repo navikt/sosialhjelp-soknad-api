@@ -34,11 +34,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class DigisosApiService(
@@ -121,7 +117,7 @@ class DigisosApiService(
 
         genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT)
+        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT, jsonInternalSoknad.soknad.mottaker.kommunenummer)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         // Nymodell - Skyggeproduksjon - Sammenlikning av filer
@@ -150,14 +146,6 @@ class DigisosApiService(
             .filter { it.originalSoknadNAV != null }
             .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
             .firstNotNullOfOrNull { it.originalSoknadNAV?.timestampSendt }
-
-    private fun String.toLocalDateTime() =
-        runCatching {
-            ZonedDateTime
-                .parse(this, DateTimeFormatter.ISO_DATE_TIME)
-                .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
-                .toLocalDateTime()
-        }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,

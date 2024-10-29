@@ -196,6 +196,11 @@ class SoknadRessurs(
         return soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
     }
 
+    @GetMapping("/{behandlingsId}/isNyDatamodell")
+    fun isNyDatamodell(
+        @PathVariable behandlingsId: String,
+    ): Boolean = soknadServiceOld.hentSoknadMetadataOrNull(behandlingsId) == null
+
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
 

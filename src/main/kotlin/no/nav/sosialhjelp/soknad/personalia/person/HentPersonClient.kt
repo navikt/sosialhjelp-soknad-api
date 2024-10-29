@@ -53,17 +53,14 @@ class HentPersonClientImpl(
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder,
-) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    override fun hentPerson(ident: String): PersonDto? {
-        return hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
-    }
+) : PdlClient(webClientBuilder, baseurl),
+    HentPersonClient {
+    override fun hentPerson(ident: String): PersonDto? = hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
 
-    private fun hentPersonFraCache(ident: String): PersonDto? {
-        return redisService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
-    }
+    private fun hentPersonFraCache(ident: String): PersonDto? = redisService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
 
-    private fun hentPersonFraPdl(ident: String): PersonDto? {
-        return try {
+    private fun hentPersonFraPdl(ident: String): PersonDto? =
+        try {
             val response =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
@@ -82,18 +79,13 @@ class HentPersonClientImpl(
             log.error("Kall til PDL feilet (hentPerson)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
-    }
 
-    override fun hentEktefelle(ident: String): EktefelleDto? {
-        return hentEktefelleFraCache(ident) ?: hentEktefelleFraPdl(ident)
-    }
+    override fun hentEktefelle(ident: String): EktefelleDto? = hentEktefelleFraCache(ident) ?: hentEktefelleFraPdl(ident)
 
-    private fun hentEktefelleFraCache(ident: String): EktefelleDto? {
-        return redisService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
-    }
+    private fun hentEktefelleFraCache(ident: String): EktefelleDto? = redisService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
 
-    private fun hentEktefelleFraPdl(ident: String): EktefelleDto? {
-        return try {
+    private fun hentEktefelleFraPdl(ident: String): EktefelleDto? =
+        try {
             val response =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + azureAdToken())
@@ -112,18 +104,13 @@ class HentPersonClientImpl(
             log.error("Kall til PDL feilet (hentEktefelle)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
-    }
 
-    override fun hentBarn(ident: String): BarnDto? {
-        return hentBarnFraCache(ident) ?: hentBarnFraPdl(ident)
-    }
+    override fun hentBarn(ident: String): BarnDto? = hentBarnFraCache(ident) ?: hentBarnFraPdl(ident)
 
-    private fun hentBarnFraCache(ident: String): BarnDto? {
-        return redisService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
-    }
+    private fun hentBarnFraCache(ident: String): BarnDto? = redisService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
 
-    private fun hentBarnFraPdl(ident: String): BarnDto? {
-        return try {
+    private fun hentBarnFraPdl(ident: String): BarnDto? =
+        try {
             val response: String =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + azureAdToken())
@@ -142,21 +129,17 @@ class HentPersonClientImpl(
             log.error("Kall til PDL feilet (hentBarn)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
-    }
 
-    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? {
-        return hentAdressebeskyttelseFraCache(ident) ?: hentAdressebeskyttelseFraPdl(ident)
-    }
+    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? = hentAdressebeskyttelseFraCache(ident) ?: hentAdressebeskyttelseFraPdl(ident)
 
-    private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? {
-        return redisService.get(
+    private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? =
+        redisService.get(
             ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
             PersonAdressebeskyttelseDto::class.java,
         ) as? PersonAdressebeskyttelseDto
-    }
 
-    private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? {
-        return try {
+    private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? =
+        try {
             val body: String =
                 hentPersonRequest
                     .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
@@ -175,11 +158,14 @@ class HentPersonClientImpl(
             log.error("Kall til PDL feilet (hentPersonAdressebeskyttelse)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
-    }
 
     private fun tokenXtoken(ident: String) =
         runBlocking {
-            tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
+            tokendingsService.exchangeToken(
+                ident,
+                getToken(),
+                pdlAudience,
+            )
         }
 
     private fun azureAdToken() =
@@ -187,9 +173,7 @@ class HentPersonClientImpl(
             azureadService.getSystemToken(pdlScope)
         }
 
-    private fun variables(ident: String): Map<String, Any> {
-        return mapOf("historikk" to false, "ident" to ident)
-    }
+    private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
 
     private val hentPersonRequest get() = baseRequest.header(HEADER_TEMA, TEMA_KOM)
 

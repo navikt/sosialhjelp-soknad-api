@@ -34,44 +34,51 @@ class OkonomiskeOpplysningerServiceImpl(
         dokumentasjonLevert: Boolean,
         detaljer: List<OkonomiDetalj>,
     ) {
-        addSpecialCaseElement(soknadId, type)
+        if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
+            if (detaljer.isEmpty()) {
+                updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
+                return
+            }
+            okonomiService.addElementToOkonomi(soknadId = soknadId, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+        }
 
         if (typesWithOkonomiElement.contains(type.javaClass)) {
-            createElement(type, detaljer).let {
-                try {
-                    okonomiService.updateElement(soknadId = soknadId, element = it)
-                } catch (e: OkonomiElementFinnesIkkeException) {
-                    throw OkonomiElementFinnesIkkeException(
-                        message = e.message,
-                        cause = e,
-                        soknadId = soknadId,
-                    )
-                }
-            }
+            addDetaljerToElement(soknadId, type, detaljer)
+                .let { okonomiService.updateElement(soknadId = soknadId, element = it) }
         }
         updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
     }
 
-    // Typer som ikke er opprettet før i søknaden
-    private fun addSpecialCaseElement(
+    private fun addDetaljerToElement(
         soknadId: UUID,
-        type: OpplysningType,
-    ) {
-        if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
-            okonomiService.addElementToOkonomi(soknadId = soknadId, type = type)
-        }
-    }
-
-    private fun createElement(
         type: OpplysningType,
         detaljer: List<OkonomiDetalj>,
     ): OkonomiElement {
+        return findElement(soknadId, type)
+            .run {
+                when (this) {
+                    is Inntekt -> copy(inntektDetaljer = OkonomiDetaljer(detaljer))
+                    is Utgift -> copy(utgiftDetaljer = OkonomiDetaljer(detaljer))
+                    is Formue -> copy(formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
+                    else -> error("Ikke gyldig Okonomi-element: ${this.javaClass.simpleName}")
+                }
+            }
+    }
+
+    private fun findElement(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): OkonomiElement {
         return when (type) {
-            is InntektType -> Inntekt(type, inntektDetaljer = OkonomiDetaljer(detaljer))
-            is UtgiftType -> Utgift(type, utgiftDetaljer = OkonomiDetaljer(detaljer))
-            is FormueType -> Formue(type, formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
+            is InntektType -> okonomiService.getInntekter(soknadId).find { it.type == type }
+            is UtgiftType -> okonomiService.getUtgifter(soknadId).find { it.type == type }
+            is FormueType -> okonomiService.getFormuer(soknadId).find { it.type == type }
             else -> error("Ukjent Okonomi-type")
         }
+            ?: throw OkonomiElementFinnesIkkeException(
+                message = "Okonomi-element finnes ikke: $type",
+                soknadId = soknadId,
+            )
     }
 
     private fun getOkonomiskeDetaljerForType(

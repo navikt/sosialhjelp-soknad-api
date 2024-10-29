@@ -15,7 +15,9 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
+import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
@@ -73,11 +75,16 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var unleash: Unleash
 
+    @MockkBean(relaxed = true)
+    private lateinit var maskinportenClient: MaskinportenClient
+
+    @MockkBean(relaxed = true)
+    private lateinit var kommuneInfoClient: KommuneInfoClient
+
     @Test
     fun `Skal returnere alle adresser for soknad`() {
         val soknad = soknadRepository.save(opprettSoknad())
         val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
-
         doGet(
             uri = "/soknad/${soknad.id}/adresser",
             responseBodyClass = AdresserDto::class.java,

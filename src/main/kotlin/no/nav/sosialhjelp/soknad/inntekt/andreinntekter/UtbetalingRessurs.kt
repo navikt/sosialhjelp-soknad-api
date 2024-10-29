@@ -84,8 +84,16 @@ class UtbetalingRessurs(
             utbetalingerFrontend.bekreftelse,
             textService.getJsonOkonomiTittel("inntekt.inntekter"),
         )
-        setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
-        setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
+        when (utbetalingerFrontend.bekreftelse) {
+            true -> {
+                setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
+                setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
+            }
+            else -> {
+                setAlleUtbetalingerToFalse(opplysninger.utbetaling)
+                setBeskrivelseAvAnnetBlank(opplysninger)
+            }
+        }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
         // nyModell
@@ -127,6 +135,41 @@ class UtbetalingRessurs(
             )
         }
         opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
+    }
+
+    private fun setAlleUtbetalingerToFalse(
+        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
+    ) {
+        listOf(
+            UTBETALING_UTBYTTE to false,
+            UTBETALING_SALG to false,
+            UTBETALING_FORSIKRING to false,
+            UTBETALING_ANNET to false,
+        ).map { (utbetalingJsonType, isChecked) ->
+            addUtbetalingIfCheckedElseDeleteInOpplysninger(
+                utbetalinger,
+                utbetalingJsonType,
+                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
+                isChecked,
+            )
+        }
+    }
+
+    private fun setBeskrivelseAvAnnetBlank(
+        opplysninger: JsonOkonomiopplysninger,
+    ) {
+        if (opplysninger.beskrivelseAvAnnet == null) {
+            opplysninger.withBeskrivelseAvAnnet(
+                JsonOkonomibeskrivelserAvAnnet()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi("")
+                    .withSparing("")
+                    .withUtbetaling("")
+                    .withBoutgifter("")
+                    .withBarneutgifter(""),
+            )
+        }
+        opplysninger.beskrivelseAvAnnet.utbetaling = ""
     }
 
     private fun hasUtbetalingType(
