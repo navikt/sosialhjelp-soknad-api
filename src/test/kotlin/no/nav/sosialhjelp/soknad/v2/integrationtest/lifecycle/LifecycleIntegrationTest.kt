@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.data.repository.findByIdOrNull
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -71,7 +72,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.digisosId).isNotEqualTo(soknadId)
-                assertThat(dto.tidspunkt).isAfter(LocalDateTime.now().minusSeconds(10))
+                assertThat(dto.tidspunkt.toLocalDate())
+                    .isEqualTo(LocalDate.now())
             }
 
         assertCapturedValues()

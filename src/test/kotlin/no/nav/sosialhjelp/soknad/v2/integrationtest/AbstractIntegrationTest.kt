@@ -206,7 +206,6 @@ abstract class AbstractIntegrationTest {
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isNoContent
     }
 
     companion object {

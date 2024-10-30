@@ -69,12 +69,10 @@ class SoknadLifecycleServiceImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        // TODO Metadata
-
-        logger.info("Søknad avbrutt. Sletter data.")
-
         createDeleteSoknadHandler.cancelSoknad(soknadId)
         prometheusMetricsService.reportAvbruttSoknad(referer)
+
+        logger.info("Søknad avbrutt. Sletter data.")
     }
 
     companion object {
