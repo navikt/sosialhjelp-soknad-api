@@ -33,6 +33,9 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
+import no.nav.sosialhjelp.soknad.v2.metadata.NavMottaker
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -106,6 +109,23 @@ fun opprettEktefelle(): Ektefelle =
         folkeregistrertMedEktefelle = true,
         borSammen = true,
         kildeErSystem = true,
+    )
+
+fun opprettSoknadMetadata(
+    soknadId: UUID = UUID.randomUUID(),
+    status: SoknadStatus = SoknadStatus.OPPRETTET,
+    personId: String = AbstractIntegrationTest.userId,
+    opprettetDato: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    innsendtDato: LocalDateTime? = null,
+    navMottaker: NavMottaker = NavMottaker("1234", null),
+): SoknadMetadata =
+    SoknadMetadata(
+        soknadId = soknadId,
+        personId = personId,
+        status = status,
+        opprettet = opprettetDato,
+        innsendt = innsendtDato,
+        mottaker = navMottaker,
     )
 
 fun opprettSoknad(
@@ -197,7 +217,7 @@ fun opprettMidlertidigAdresse(
 
 fun opprettKontakt(
     soknadId: UUID,
-    telefonnummer: Telefonnummer = Telefonnummer("98766554", "12345678"),
+    telefonnummer: Telefonnummer = Telefonnummer("98766554", "+4798664534"),
     adresser: Adresser =
         Adresser(
             folkeregistrert = opprettFolkeregistrertAdresse(),
