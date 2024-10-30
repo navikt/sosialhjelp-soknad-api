@@ -221,7 +221,7 @@ internal class PersonServiceTest {
     internal fun gjenkjennerAdressebeskyttelse() {
         every { hentPersonClient.hentAdressebeskyttelse(any()) } returns mockk<PersonAdressebeskyttelseDto>()
 
-        // Ihht. https://pdl-docs.intern.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
+        // Ihht. https://pdl-docs.ansatt.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
         // hvilket betyr ingen addressebeskyttelse.
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns null
         assertThat(personService.harAdressebeskyttelse("ident")).isFalse()
