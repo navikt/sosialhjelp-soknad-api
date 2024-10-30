@@ -14,12 +14,16 @@ import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
+
+// TODO Ble mange argumenter til denne klassen - og ganske mye logikk. Refaktor?
 
 @Component
 class SendSoknadHandler(
@@ -28,6 +32,7 @@ class SendSoknadHandler(
     private val jsonGenerator: JsonInternalSoknadGenerator,
     private val soknadValidator: SoknadValidator,
     private val soknadService: SoknadService,
+    private val soknadMetadataService: SoknadMetadataService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -35,6 +40,7 @@ class SendSoknadHandler(
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
+        val innsendingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
 
         val digisosId: UUID =
             runCatching {
@@ -50,20 +56,33 @@ class SendSoknadHandler(
                         kommunenr = json.soknad.mottaker.kommunenummer,
                         navEksternRefId = soknadId.toString(),
                         token = SubjectHandlerUtils.getToken(),
-                    ).let { UUID.fromString(it) }
-            }.onFailure {
-                logger.error("Feil ved sending av soknad til FIKS", it)
-                throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
-            }.getOrThrow()
+                    )
+                    .let { UUID.fromString(it) }
+            }
+                .onSuccess {
+                    mottaker.kommunenummer
+                        ?.also {
+                            soknadMetadataService.updateSoknadSendt(
+                                soknadId = soknadId,
+                                innsendingstidspunkt = innsendingTidspunkt,
+                                kommunenummer = mottaker.kommunenummer,
+                            )
+                        }
+                        ?: error("NavMottaker mangler kommunenummer")
 
-        logger.info("Sendt ${json.soknad.data.soknadstype.value()} søknad til FIKS")
+                    soknadService.setInnsendingstidspunkt(soknadId, innsendingTidspunkt)
+                }
+                .onFailure {
+                    logger.error("Feil ved sending av soknad til FIKS", it)
+                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
+                }
+                .getOrThrow()
+
+        logger.info("Sendt ${json.soknad.data.soknadstype.value()} søknad til FIKS med DigisosId: $digisosId")
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
-        val innsendingTidspunkt = LocalDateTime.now().also { soknadService.setInnsendingstidspunkt(soknadId, it) }
-
         return SoknadSendtInfo(
-            // TODO Dette er vel ikke soknadId
             digisosId = digisosId,
             navEnhet = mottaker,
             isKortSoknad = soknadService.erKortSoknad(soknadId),

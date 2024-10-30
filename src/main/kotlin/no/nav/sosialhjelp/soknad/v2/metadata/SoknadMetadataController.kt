@@ -13,8 +13,6 @@ class SoknadMetadataController(private val soknadMetadataService: SoknadMetadata
     fun getInnsendtSoknadMetadata(
         @PathVariable soknadId: UUID,
     ): ResponseEntity<SoknadMetadata> {
-        return soknadMetadataService.findInnsendtSoknadMetadata(soknadId)
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.notFound().build()
+        TODO("Ikke implementert")
     }
 }

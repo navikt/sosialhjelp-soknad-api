@@ -17,7 +17,7 @@ class SoknadMetadataValidationTest {
     fun `Metadata med Innsendt og NavMottaker skal validere`() {
         assertDoesNotThrow {
             soknadMetadata.copy(
-                status = SoknadStatus.FERDIGSTILT_BRUKER,
+                status = SoknadStatus.SENDT,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
                 mottaker = NavMottaker(kommunenummer = "1234"),
             )
@@ -34,7 +34,7 @@ class SoknadMetadataValidationTest {
 
     @Test
     fun `Status FERDIGSTILT uten innsendt-dato skal feile`() {
-        assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.FERDIGSTILT_BRUKER) }
+        assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.SENDT) }
             .isInstanceOf(IllegalStateException::class.java)
     }
 
@@ -42,7 +42,7 @@ class SoknadMetadataValidationTest {
     fun `Status FERDIGSTILT uten mottaker skal feile`() {
         assertThatThrownBy {
             soknadMetadata.copy(
-                status = SoknadStatus.FERDIGSTILT_BRUKER,
+                status = SoknadStatus.SENDT,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             )
         }.isInstanceOf(IllegalStateException::class.java)

@@ -35,8 +35,6 @@ class SoknadLifecycleServiceImpl(
     override fun startSoknad(
         isKort: Boolean,
     ): UUID {
-        // TODO Metadata
-
         return createDeleteSoknadHandler
             .createSoknad(isKort)
             .also { soknadId ->

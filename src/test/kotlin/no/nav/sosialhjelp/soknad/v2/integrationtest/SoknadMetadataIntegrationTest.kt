@@ -4,8 +4,10 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
+import no.nav.sosialhjelp.soknad.v2.opprettNavEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -35,12 +37,21 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         soknadMetadataRepository.findByIdOrNull(uuid)!!
             .also {
                 assertThat(it.innsendt!!.toLocalDate()).isEqualTo(LocalDate.now())
-                assertThat(it.mottaker!!.kommunenummer).isEqualTo("0301")
+                assertThat(it.mottaker!!.kommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
+                assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
             }
     }
 
     @Test
     fun `Skal slette metadata ved sletting av soknad`() {
+        val uuid = opprettSoknadMedEierOgKontaktForInnsending()
+
+        doDelete(
+            uri = deleteUrl(uuid),
+            soknadId = uuid,
+        )
+
+        assertThat(soknadMetadataRepository.findByIdOrNull(uuid)).isNull()
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {

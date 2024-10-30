@@ -43,6 +43,7 @@ class CreateDeleteSoknadHandler(
             .also {
                 mellomlagringService.deleteAll(it.id)
                 soknadService.deleteSoknad(it.id)
+                soknadMetadataService.deleteMetadata(it.id)
             }
     }
 

@@ -49,7 +49,7 @@ enum class SoknadStatus {
 
     // TODO Skal vi ta vare på metadata for avbrutte soknader? Til hva ?
     AVBRUTT,
-    FERDIGSTILT_BRUKER,
+    SENDT,
     MOTTATT_FSL,
 }
 
@@ -58,7 +58,7 @@ private fun NavMottaker.validate() {
 }
 
 private fun SoknadStatus.validate(metadata: SoknadMetadata) {
-    if (this == SoknadStatus.FERDIGSTILT_BRUKER || this == SoknadStatus.MOTTATT_FSL) {
+    if (this == SoknadStatus.SENDT || this == SoknadStatus.MOTTATT_FSL) {
         if (metadata.innsendt == null) error("Mangler innsendt dato for ferdig søknad.")
         if (metadata.mottaker == null) error("Mangler mottaker for ferdig søknad.")
     }
