@@ -76,15 +76,6 @@ class SoknadV2AdapterService(
             }.onFailure { logger.warn("NyModell: Kunne ikke slette Soknad V2") }
     }
 
-    override fun createInnsendtSoknadMetadata(
-        behandlingsId: String,
-        eierId: String,
-        sendtInnDato: LocalDateTime?,
-        opprettetDato: LocalDateTime,
-    ) {
-        TODO("Not yet implemented")
-    }
-
     private fun opprettForventetDokumentasjon(
         behandlingsId: String,
         kortSoknad: Boolean,

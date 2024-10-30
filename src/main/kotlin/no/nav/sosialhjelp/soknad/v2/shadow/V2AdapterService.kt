@@ -16,11 +16,4 @@ interface V2AdapterService {
     )
 
     fun slettSoknad(behandlingsId: String)
-
-    fun createInnsendtSoknadMetadata(
-        behandlingsId: String,
-        eierId: String,
-        sendtInnDato: LocalDateTime?,
-        opprettetDato: LocalDateTime,
-    )
 }

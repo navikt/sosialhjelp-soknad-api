@@ -96,9 +96,6 @@ class SoknadServiceOld(
             kort,
         )
 
-        // Ny modell
-        v2AdapterService.createInnsendtSoknadMetadata(behandlingsId, eierId, null, soknadUnderArbeid.opprettetDato)
-
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
