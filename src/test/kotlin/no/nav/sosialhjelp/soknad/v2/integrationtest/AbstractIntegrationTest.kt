@@ -36,7 +36,7 @@ abstract class AbstractIntegrationTest {
     protected lateinit var kontaktRepository: KontaktRepository
 
     @Autowired
-    protected lateinit var innsendtSoknadMetadataRepository: SoknadMetadataRepository
+    protected lateinit var soknadMetadataRepository: SoknadMetadataRepository
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server

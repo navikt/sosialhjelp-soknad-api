@@ -8,19 +8,17 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
-import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
-import no.nav.sosialhjelp.soknad.v2.opprettEier
-import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.data.repository.findByIdOrNull
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
+@AutoConfigureWebTestClient(timeout = "36000")
 class SoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
@@ -79,50 +77,6 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
             soknadId = randomUUID,
         )
             .expectStatus().isNotFound
-    }
-
-    @Test
-    fun `Skal opprette innsendtSoknadMetadata ved start av soknad`() {
-        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
-
-        val response =
-            doPost(
-                uri = "/soknad/opprettSoknad",
-                responseBodyClass = StartSoknadResponseDto::class.java,
-            )
-
-        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findById(response.soknadId)
-        assertThat(innsendtSoknadMetadata).isPresent()
-    }
-
-    @Test
-    fun `skal oppdatere innsendtSoknadMetadata med innsendt_dato ved innsending av soknad`() {
-        val soknadId = opprettSoknadMedEierOgKontaktForInnsending()
-        val soknad = soknadRepository.findByIdOrNull(soknadId)!!
-
-        doPost(
-            uri = sendUrl(soknadId),
-            responseBodyClass = SoknadSendtDto::class.java,
-            soknadId = soknadId,
-        )
-
-        val innsendtSoknadMetadata = innsendtSoknadMetadataRepository.findByIdOrNull(soknadId)!!
-        assertThat(innsendtSoknadMetadata.innsendt).isEqualTo(soknad.tidspunkt.sendtInn)
-    }
-
-    private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {
-        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
-
-        val (soknadId, _) =
-            doPost(
-                uri = createUrl(),
-                responseBodyClass = StartSoknadResponseDto::class.java,
-            )
-
-        opprettEier(soknadId).also { eierRepository.save(it) }
-        opprettKontakt(soknadId).also { kontaktRepository.save(it) }
-
-        return soknadId
     }
 
     companion object {

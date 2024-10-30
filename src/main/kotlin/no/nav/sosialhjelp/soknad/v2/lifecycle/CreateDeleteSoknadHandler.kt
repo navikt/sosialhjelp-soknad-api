@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Component
@@ -18,21 +18,24 @@ class CreateDeleteSoknadHandler(
     private val registerDataService: RegisterDataService,
     private val dokumentasjonService: DokumentasjonService,
     private val mellomlagringService: MellomlagringService,
+    private val soknadMetadataService: SoknadMetadataService,
 ) {
     fun createSoknad(
         isKort: Boolean,
-    ): UUID =
-        soknadService
+    ): UUID {
+        val metadata = soknadMetadataService.createSoknadMetadata()
+
+        return soknadService
             .createSoknad(
                 eierId = SubjectHandlerUtils.getUserIdFromToken(),
-                soknadId = UUID.randomUUID(),
-                // TODO Spesifisert til UTC i filformatet
-                opprettetDato = LocalDateTime.now(),
+                soknadId = metadata.soknadId,
+                opprettetDato = metadata.opprettet,
                 kortSoknad = isKort,
             ).also { soknadId ->
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
+    }
 
     fun cancelSoknad(soknadId: UUID) {
         soknadService

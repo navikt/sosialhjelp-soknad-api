@@ -47,7 +47,6 @@ class SoknadLifecycleServiceImpl(
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
-        // TODO Metadata
         logger.info("Starter innsending av søknad.")
 
         val sendtInfo =

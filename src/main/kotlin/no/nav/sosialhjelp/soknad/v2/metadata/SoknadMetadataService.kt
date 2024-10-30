@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -8,7 +9,17 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Component
-class SoknadMetadataService(private val soknadMetadataRepository: SoknadMetadataRepository) {
+class SoknadMetadataService(
+    private val soknadMetadataRepository: SoknadMetadataRepository,
+) {
+    fun createSoknadMetadata(): SoknadMetadata {
+        return SoknadMetadata(
+            soknadId = UUID.randomUUID(),
+            personId = SubjectHandlerUtils.getUserIdFromToken(),
+        )
+            .let { soknadMetadataRepository.save(it) }
+    }
+
     fun findInnsendtSoknadMetadata(soknadId: UUID): SoknadMetadata? {
         return soknadMetadataRepository.findByIdOrNull(soknadId)
     }

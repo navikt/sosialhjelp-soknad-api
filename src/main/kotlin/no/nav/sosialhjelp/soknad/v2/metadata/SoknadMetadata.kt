@@ -14,7 +14,7 @@ import java.util.UUID
 
 @Repository
 interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudRepository<SoknadMetadata, UUID> {
-    @Query("select soknad_id from soknad_metadata where innsendt < :timestamp")
+    @Query("select soknad_id from soknad_metadata where opprettet < :timestamp")
     fun hentEldreEnn(timestamp: LocalDateTime): List<UUID>
 }
 

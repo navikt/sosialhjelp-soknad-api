@@ -14,11 +14,9 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
-interface SoknadRepository :
-    UpsertRepository<Soknad>,
-    ListCrudRepository<Soknad, UUID> {
-    @Query("SELECT * FROM soknad WHERE opprettet < :timestamp")
-    fun findOlderThan(timestamp: LocalDateTime): List<Soknad>
+interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {
+    @Query("SELECT id FROM soknad WHERE opprettet < :timestamp")
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
 
     @Query("SELECT * FROM soknad WHERE sendt_inn > :timestamp and eier_person_id = :eierId")
     fun findNewerThan(
@@ -32,6 +30,7 @@ data class Soknad(
     @Id
     val id: UUID = UUID.randomUUID(),
     val eierPersonId: String,
+    // TODO Denne blir vel duplisert på metadata og kan fjernes herfra?
     @Embedded.Empty
     val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
     @Embedded.Empty
