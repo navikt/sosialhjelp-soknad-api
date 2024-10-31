@@ -5,8 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseController
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
@@ -29,9 +29,8 @@ class V2AdresseControllerAdapter(
     ) {
         AdresserInput(
             adresseValg = adresseValg.toAdresseValg(),
-            brukerAdresse = adresseSoknad?.toAdresse(),
-        )
-            .let { adresseController.updateAdresser(soknadId, it) }
+            brukerAdresse = adresseSoknad?.toAdresseInput(),
+        ).let { adresseController.updateAdresser(soknadId, it) }
     }
 
     fun updateNavEnhet(
@@ -40,42 +39,40 @@ class V2AdresseControllerAdapter(
     ) {
         val kontakt = kontaktRepository.findByIdOrNull(soknadId) ?: Kontakt(soknadId)
 
-        navEnhetFrontend.toNavEnhet()
+        navEnhetFrontend
+            .toNavEnhet()
             .let { navEnhet -> kontakt.copy(mottaker = navEnhet) }
             .also { updatedKontakt -> kontaktRepository.save(updatedKontakt) }
     }
 }
 
-private fun NavEnhetFrontend.toNavEnhet(): NavEnhet {
-    return NavEnhet(
+private fun NavEnhetFrontend.toNavEnhet(): NavEnhet =
+    NavEnhet(
         kommunenummer = kommuneNr,
         kommunenavn = kommunenavn,
         enhetsnavn = enhetsnavn,
         enhetsnummer = enhetsnr,
         orgnummer = orgnr,
     )
-}
 
-private fun JsonAdresseValg.toAdresseValg(): AdresseValg {
-    return when (this) {
+private fun JsonAdresseValg.toAdresseValg(): AdresseValg =
+    when (this) {
         JsonAdresseValg.FOLKEREGISTRERT -> AdresseValg.FOLKEREGISTRERT
         JsonAdresseValg.MIDLERTIDIG -> AdresseValg.MIDLERTIDIG
         JsonAdresseValg.SOKNAD -> AdresseValg.SOKNAD
     }
-}
 
-private fun AdresseFrontend.toAdresse(): Adresse {
-    return when (type) {
+private fun AdresseFrontend.toAdresseInput(): AdresseInput =
+    when (type) {
         JsonAdresse.Type.GATEADRESSE ->
             this.gateadresse?.toV2Adresse()
                 ?: throw IllegalStateException("NyModell: Gateadresse mangler i input")
 
         else -> throw IllegalStateException("NyModell: Ukjent/ikke støttet adresse-type: $type")
     }
-}
 
-private fun GateadresseFrontend.toV2Adresse(): Adresse {
-    return VegAdresse(
+private fun GateadresseFrontend.toV2Adresse(): AdresseInput =
+    VegAdresse(
         kommunenummer = kommunenummer,
         adresselinjer = adresselinjer ?: emptyList(),
         bolignummer = bolignummer,
@@ -85,4 +82,3 @@ private fun GateadresseFrontend.toV2Adresse(): Adresse {
         husnummer = husnummer,
         husbokstav = husbokstav,
     )
-}

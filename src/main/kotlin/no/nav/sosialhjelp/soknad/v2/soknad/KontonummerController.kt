@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
@@ -23,33 +25,31 @@ class KontonummerController(
     @GetMapping
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID,
-    ): KontoInformasjonDto {
-        return eierService.findOrError(soknadId).kontonummer.toKontoInformasjonDto()
-    }
+    ): KontoInformasjonDto = eierService.findOrError(soknadId).kontonummer.toKontoInformasjonDto()
 
     @PutMapping
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) input: KontoInput,
-    ): KontoInformasjonDto {
-        return eierService.run {
-            when (input) {
-                is HarIkkeKontoInput -> updateKontonummer(soknadId = soknadId, harIkkeKonto = true)
-                is KontonummerBrukerInput ->
-                    updateKontonummer(soknadId = soknadId, kontonummerBruker = input.kontonummer)
-                else -> throw IkkeFunnetException("Ukjent KontoInput-type")
-            }
-        }.toKontoInformasjonDto()
-    }
+    ): KontoInformasjonDto =
+        eierService
+            .run {
+                when (input) {
+                    is HarIkkeKontoInput -> updateKontonummer(soknadId = soknadId, harIkkeKonto = true)
+                    is KontonummerBrukerInput ->
+                        updateKontonummer(soknadId = soknadId, kontonummerBruker = input.kontonummer)
+
+                    else -> throw IkkeFunnetException("Ukjent KontoInput-type")
+                }
+            }.toKontoInformasjonDto()
 }
 
-private fun Kontonummer.toKontoInformasjonDto(): KontoInformasjonDto {
-    return KontoInformasjonDto(
+private fun Kontonummer.toKontoInformasjonDto(): KontoInformasjonDto =
+    KontoInformasjonDto(
         harIkkeKonto = harIkkeKonto,
         kontonummerRegister = fraRegister,
         kontonummerBruker = fraBruker,
     )
-}
 
 data class KontoInformasjonDto(
     val harIkkeKonto: Boolean? = null,
@@ -60,10 +60,22 @@ data class KontoInformasjonDto(
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
+    property = "type",
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(HarIkkeKontoInput::class),
-    JsonSubTypes.Type(KontonummerBrukerInput::class),
+    JsonSubTypes.Type(HarIkkeKontoInput::class, name = "HarIkkeKonto"),
+    JsonSubTypes.Type(KontonummerBrukerInput::class, name = "KontonummerBruker"),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "HarIkkeKonto", schema = HarIkkeKontoInput::class),
+        DiscriminatorMapping(value = "KontonummerBruker", schema = KontonummerBrukerInput::class),
+    ],
+    subTypes = [
+        HarIkkeKontoInput::class,
+        KontonummerBrukerInput::class,
+    ],
 )
 interface KontoInput
 

@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseController
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
@@ -83,7 +84,7 @@ private fun JsonAdresseValg.toAdresseValg(): AdresseValg {
     }
 }
 
-private fun AdresseFrontend.toAdresse(): Adresse {
+private fun AdresseFrontend.toAdresse(): AdresseInput {
     return when (type) {
         JsonAdresse.Type.GATEADRESSE ->
             this.gateadresse?.toV2Adresse()
@@ -93,7 +94,7 @@ private fun AdresseFrontend.toAdresse(): Adresse {
     }
 }
 
-private fun GateadresseFrontend.toV2Adresse(): Adresse {
+private fun GateadresseFrontend.toV2Adresse(): AdresseInput {
     return VegAdresse(
         kommunenummer = kommunenummer,
         adresselinjer = adresselinjer ?: emptyList(),

@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.NavEnhetEnrichment
@@ -40,7 +44,12 @@ class AdresseController(
             .updateBrukerAdresse(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
-                brukerAdresse = adresserInput.brukerAdresse,
+                brukerAdresse =
+                    when (adresserInput.brukerAdresse) {
+                        is VegAdresse -> adresserInput.brukerAdresse
+                        is MatrikkelAdresse -> adresserInput.brukerAdresse
+                        else -> null
+                    },
             ).let { adresse ->
                 createAdresseDto(
                     adresser = adresse,
@@ -55,8 +64,23 @@ class AdresseController(
 
 data class AdresserInput(
     val adresseValg: AdresseValg,
-    val brukerAdresse: Adresse?,
+    val brukerAdresse: AdresseInput?,
 )
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = VegAdresse::class, name = "VegAdresse"),
+    JsonSubTypes.Type(value = MatrikkelAdresse::class, name = "MatrikkelAdresse"),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "VegAdresse", schema = VegAdresse::class),
+        DiscriminatorMapping(value = "MatrikkelAdresse", schema = MatrikkelAdresse::class),
+    ],
+    subTypes = [VegAdresse::class, MatrikkelAdresse::class],
+)
+interface AdresseInput
 
 data class AdresserDto(
     val adresseValg: AdresseValg? = null,
