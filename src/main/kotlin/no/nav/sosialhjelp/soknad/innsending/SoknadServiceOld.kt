@@ -230,7 +230,7 @@ class SoknadServiceOld(
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(
                     if (kortSoknad) {
-                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
+                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet").withStatus("")))
                     } else {
                         JsonVedleggSpesifikasjon()
                     },

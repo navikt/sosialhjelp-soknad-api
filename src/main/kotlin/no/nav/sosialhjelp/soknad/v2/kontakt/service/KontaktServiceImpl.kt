@@ -26,7 +26,7 @@ interface AdresseService {
 
     fun updateBrukerAdresse(
         soknadId: UUID,
-        adresseValg: AdresseValg,
+        adresseValg: AdresseValg?,
         brukerAdresse: Adresse?,
     ): Adresser
 
@@ -73,7 +73,7 @@ class KontaktServiceImpl(
     @Transactional
     override fun updateBrukerAdresse(
         soknadId: UUID,
-        adresseValg: AdresseValg,
+        adresseValg: AdresseValg?,
         brukerAdresse: Adresse?,
     ): Adresser {
         logger.info(
@@ -83,22 +83,39 @@ class KontaktServiceImpl(
         )
 
         val oldAdresse = findOrCreate(soknadId)
-        val adresse =
-            when (adresseValg) {
-                AdresseValg.FOLKEREGISTRERT -> oldAdresse.adresser.folkeregistrert
-                AdresseValg.MIDLERTIDIG -> oldAdresse.adresser.midlertidig
-                AdresseValg.SOKNAD -> brukerAdresse
+        val kontakt =
+            if (adresseValg != null) {
+                val adresse =
+                    when (adresseValg) {
+                        AdresseValg.FOLKEREGISTRERT -> oldAdresse.adresser.folkeregistrert
+                        AdresseValg.MIDLERTIDIG -> oldAdresse.adresser.midlertidig
+                        AdresseValg.SOKNAD -> null
+                    }
+                val eier = SubjectHandlerUtils.getUserIdFromToken()
+                val mottaker = adresse?.let { nyNavEnhetService.getNavEnhet(eier, it, adresseValg) }
+                oldAdresse
+                    .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = adresse), mottaker = mottaker) }
+                    .let { kontaktRepository.save(it) }
+            } else {
+                if (brukerAdresse != null) {
+                    if (oldAdresse.adresser.adressevalg != AdresseValg.SOKNAD) {
+                        throw IllegalArgumentException("Adressevalg er ikke allerede satt til ${AdresseValg.SOKNAD.name}, kan ikke oppdatere med brukeradresse")
+                    }
+
+                    val eier = SubjectHandlerUtils.getUserIdFromToken()
+                    val mottaker = nyNavEnhetService.getNavEnhet(eier, brukerAdresse, adresseValg)
+                    oldAdresse
+                        .run { copy(adresser = adresser.copy(fraBruker = brukerAdresse), mottaker = mottaker) }
+                        .let { kontaktRepository.save(it) }
+                } else {
+                    null
+                }
             }
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val mottaker = adresse?.let { nyNavEnhetService.getNavEnhet(eier, it, adresseValg) }
-        return oldAdresse
-            .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse), mottaker = mottaker ?: this.mottaker) }
-            .let { kontaktRepository.save(it) }
-            // Oppdater kort søknad
-            .also { adresse ->
+        return kontakt
+            ?.also { adresse ->
                 if (!MiljoUtils.isMockAltProfil()) {
                     // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-                    if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer && oldAdresse.adresser.adressevalg != null) {
+                    if (oldAdresse.mottaker?.kommunenummer == adresse.mottaker?.kommunenummer && oldAdresse.adresser.adressevalg != null) {
                         return@also
                     }
                     val token = SubjectHandlerUtils.getTokenOrNull()
@@ -106,7 +123,7 @@ class KontaktServiceImpl(
                         logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
                         return@also
                     }
-                    val kommunenummer = adresse.mottaker.kommunenummer
+                    val kommunenummer = adresse.mottaker?.kommunenummer
                     if (kommunenummer == null) {
                         logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
                         return@also
@@ -120,7 +137,7 @@ class KontaktServiceImpl(
                         kortSoknadService.transitionToStandard(soknadId)
                     }
                 }
-            }.adresser
+            }?.adresser ?: throw IllegalStateException("Kontakt ble ikke oppdatert")
     }
 
     override fun findMottaker(soknadId: UUID): NavEnhet? {

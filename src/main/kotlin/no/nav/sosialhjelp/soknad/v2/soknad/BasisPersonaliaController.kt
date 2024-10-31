@@ -19,10 +19,10 @@ class BasisPersonaliaController(
     @GetMapping
     fun getBasisPersonalia(
         @PathVariable("soknadId") soknadId: UUID,
-    ): PersonaliaDto = eierService.findOrError(soknadId).toPersonaliaDto()
+    ): PersonaliaDto = eierService.findOrError(soknadId).toPersonaliaDto(eierService.findEierPersonId(soknadId))
 }
 
-private fun Eier.toPersonaliaDto(): PersonaliaDto =
+private fun Eier.toPersonaliaDto(personId: String): PersonaliaDto =
     PersonaliaDto(
         navn =
             NavnDto(
@@ -30,6 +30,7 @@ private fun Eier.toPersonaliaDto(): PersonaliaDto =
                 mellomnavn = navn.mellomnavn,
                 etternavn = navn.etternavn,
             ),
+        fodselsnummer = personId,
         statsborgerskap = statsborgerskap,
         nordiskBorger = nordiskBorger,
     )
@@ -37,7 +38,7 @@ private fun Eier.toPersonaliaDto(): PersonaliaDto =
 data class PersonaliaDto(
     val navn: NavnDto,
     // TODO Nødvendig / riktig å sende med fødselsnummer i denne Dto'en ?
-//    val fodselsnummer: String? = null,
+    val fodselsnummer: String? = null,
     val statsborgerskap: String? = null,
     val nordiskBorger: Boolean? = null,
 )

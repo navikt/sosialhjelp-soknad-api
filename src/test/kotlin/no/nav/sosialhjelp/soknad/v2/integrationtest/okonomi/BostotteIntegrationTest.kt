@@ -88,8 +88,8 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
             uri = bostottUrl(soknad.id),
             requestBody = SamtykkeInput(hasSamtykke = true),
             soknadId = soknad.id,
-        )
-            .expectStatus().isBadRequest
+        ).expectStatus()
+            .isBadRequest
     }
 
     // TODO Skal vi alltid hente inn på nytt i dette tilfellet - eller skal vi ha annen logikk basert på dato?
@@ -124,9 +124,11 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         putBostotteInput(false)
 
         okonomiService.getInntekter(soknad.id).also { assertThat(it).isEmpty() }
-        okonomiService.getBekreftelser(soknad.id)
+        okonomiService
+            .getBekreftelser(soknad.id)
             .also { bekreftelser ->
-                assertThat(bekreftelser.toList()).hasSize(1)
+                assertThat(bekreftelser.toList())
+                    .hasSize(1)
                     .anyMatch { it.type == BekreftelseType.BOSTOTTE && !it.verdi }
             }
     }
@@ -168,41 +170,43 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).hasSize(2) }
 
         putBostotteInput(false)
-        okonomiService.getBekreftelser(soknad.id)
+        okonomiService
+            .getBekreftelser(soknad.id)
             .also { bekreftelser ->
-                assertThat(bekreftelser.toList()).hasSize(1)
+                assertThat(bekreftelser.toList())
+                    .hasSize(1)
                     .anyMatch { it.type == BekreftelseType.BOSTOTTE && !it.verdi }
             }
         okonomiService.getInntekter(soknad.id).also { assertThat(it).isEmpty() }
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
     }
 
-    private fun putBostotteInput(verdi: Boolean): BostotteDto {
-        return doPut(
+    private fun putBostotteInput(verdi: Boolean): BostotteDto =
+        doPut(
             uri = bostottUrl(soknad.id),
             requestBody = BostotteInput(hasBostotte = verdi),
             responseBodyClass = BostotteDto::class.java,
             soknadId = soknad.id,
         )
-    }
 
-    private fun postSamtykkeInput(verdi: Boolean): BostotteDto {
-        return doPost(
+    private fun postSamtykkeInput(verdi: Boolean): BostotteDto =
+        doPost(
             uri = bostottUrl(soknad.id),
             requestBody = SamtykkeInput(hasSamtykke = verdi),
             responseBodyClass = BostotteDto::class.java,
             soknadId = soknad.id,
         )
-    }
 
     private fun assertInntektOgDokumentasjon(hasSamtykke: Boolean?) {
-        okonomiService.getInntekter(soknad.id)
+        okonomiService
+            .getInntekter(soknad.id)
             .also { inntekter ->
                 assertThat(inntekter.toList())
                     .hasSize(1)
                     .allMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
             }
-        okonomiService.getBekreftelser(soknad.id)
+        okonomiService
+            .getBekreftelser(soknad.id)
             .also { bekreftelser ->
                 assertThat(bekreftelser.toList())
                     .anyMatch { it.type == BekreftelseType.BOSTOTTE }

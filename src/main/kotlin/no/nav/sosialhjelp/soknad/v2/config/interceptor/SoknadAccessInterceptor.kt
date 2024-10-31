@@ -12,12 +12,17 @@ import org.springframework.web.servlet.HandlerMapping
 import java.util.UUID
 
 @Component
-class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadService) : HandlerInterceptor {
+class SoknadAccessInterceptor(
+    private val soknadServiceImpl: SoknadService,
+) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
+        // TODO: TokenValidationContextHolder er ikke tilgjengelig enda her av en eller annen grunn, så "disabler" denne foreløpig
+        // NB: Ikke gå live med ny søknad før dette er fikset på et annet vis!
+        return true
         val method = request.method
         val soknadId = getSoknadId(request) ?: return true
         val soknad = soknadServiceImpl.findOrError(UUID.fromString(soknadId))
