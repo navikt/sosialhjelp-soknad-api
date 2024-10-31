@@ -108,16 +108,14 @@ class BostotteHusbankenFetcher(
     private fun daysToSubtract(bostotte: Bostotte): Long {
         // TODO Nødvendig å logge om saker/utbetalinger er null eller tom
         val hasSaker =
-            bostotte.saker.any {
-                    sak ->
-                sak.dato.isAfter(LocalDate.now().minusDays(30))
+            bostotte.saker.any { sak ->
+                sak.dato.isAfter(LocalDate.now().minusDays(31))
             }
         val hasUtbetalinger =
-            bostotte.utbetalinger.any {
-                    utbetaling ->
-                utbetaling.utbetalingsdato.isAfter(LocalDate.now().minusDays(30))
+            bostotte.utbetalinger.any { utbetaling ->
+                utbetaling.utbetalingsdato.isAfter(LocalDate.now().minusDays(31))
             }
-        return if (hasSaker || hasUtbetalinger) 30 else 60
+        return if (hasSaker || hasUtbetalinger) 31 else 62
     }
 }
 
