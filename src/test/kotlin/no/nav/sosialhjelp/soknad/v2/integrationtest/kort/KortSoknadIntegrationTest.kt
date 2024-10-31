@@ -25,7 +25,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
@@ -210,7 +210,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -232,7 +232,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
         // bytter tilbake til adresse hvor det finnes en soknad fra før med samme mottaker
         doUpdateAdresse(soknadId, adresseValg = AdresseValg.FOLKEREGISTRERT)
 
@@ -286,7 +286,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             }
 
         // oppdaterer adresse andre gang -> gir standard soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -352,7 +352,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     private fun doUpdateAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg = AdresseValg.FOLKEREGISTRERT,
-        brukerAdresse: Adresse? = null,
+        brukerAdresse: AdresseInput? = null,
     ): AdresserDto {
         return doPut(
             uri = updateAdresseUrl(soknadId),
@@ -412,7 +412,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     }
 }
 
-private fun createBrukerAdresse(): Adresse {
+private fun createBrukerAdresseInput(): AdresseInput {
     return VegAdresse(
         landkode = "NOR",
         kommunenummer = "4444",

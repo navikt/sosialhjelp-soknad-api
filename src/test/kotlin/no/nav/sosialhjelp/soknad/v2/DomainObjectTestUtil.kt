@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
@@ -290,6 +291,29 @@ fun opprettFolkeregistrertAdresse(
     husnummer: String? = "8",
     husbokstav: String? = "b",
 ): Adresse =
+    VegAdresse(
+        landkode,
+        kommunenummer,
+        adresselinjer,
+        bolignummer,
+        postnummer,
+        poststed,
+        gatenavn,
+        husnummer,
+        husbokstav,
+    )
+
+fun opprettFolkeregistrertAdresseInput(
+    landkode: String = "NO",
+    kommunenummer: String? = "2944",
+    adresselinjer: List<String> = listOf("Underetasjen", "Bak huset"),
+    bolignummer: String? = "7",
+    postnummer: String? = "2933",
+    poststed: String? = "Poststedet",
+    gatenavn: String? = "Vegadresseveien",
+    husnummer: String? = "8",
+    husbokstav: String? = "b",
+): AdresseInput =
     VegAdresse(
         landkode,
         kommunenummer,

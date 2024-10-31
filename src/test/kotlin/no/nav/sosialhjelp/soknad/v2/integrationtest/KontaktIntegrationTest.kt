@@ -37,7 +37,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
+import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresseInput
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -129,7 +129,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val adresserInput =
             AdresserInput(
                 adresseValg = AdresseValg.SOKNAD,
-                brukerAdresse = opprettFolkeregistrertAdresse(),
+                brukerAdresse = opprettFolkeregistrertAdresseInput(),
             )
 
         doPut(

@@ -96,7 +96,7 @@ class KontaktServiceImpl(
             .run {
                 copy(
                     adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
-                    mottaker = mottaker ?: this.mottaker,
+                    mottaker = mottaker,
                 )
             }
             .let { kontaktRepository.save(it) }
@@ -107,9 +107,8 @@ class KontaktServiceImpl(
     override fun findMottaker(soknadId: UUID): NavEnhet? {
         return kontaktRepository.findByIdOrNull(soknadId)
             ?.let {
-                // TODO Er vel strengt talt en uopprettelig feil isåfall?!
                 if (it.mottaker == null && it.adresser.adressevalg != null) {
-                    logger.error("NyModell: Fant ikke mottaker for søknad $soknadId")
+                    logger.warn("NyModell: Fant ikke mottaker for søknad $soknadId")
                     null
                 } else {
                     it.mottaker
