@@ -118,6 +118,7 @@ fun opprettSoknadMetadata(
     opprettetDato: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     innsendtDato: LocalDateTime? = null,
     navMottaker: NavMottaker = NavMottaker("1234", null),
+    digisosId: UUID? = UUID.randomUUID(),
 ): SoknadMetadata =
     SoknadMetadata(
         soknadId = soknadId,
@@ -126,6 +127,7 @@ fun opprettSoknadMetadata(
         opprettet = opprettetDato,
         innsendt = innsendtDato,
         mottaker = navMottaker,
+        digisosId = digisosId,
     )
 
 fun opprettSoknad(

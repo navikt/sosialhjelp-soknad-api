@@ -20,6 +20,7 @@ class SoknadMetadataValidationTest {
                 status = SoknadStatus.SENDT,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
                 mottaker = NavMottaker(kommunenummer = "1234"),
+                digisosId = UUID.randomUUID(),
             )
         }
 
@@ -28,6 +29,7 @@ class SoknadMetadataValidationTest {
                 status = SoknadStatus.MOTTATT_FSL,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
                 mottaker = NavMottaker(kommunenummer = "1234"),
+                digisosId = UUID.randomUUID(),
             )
         }
     }
@@ -49,6 +51,17 @@ class SoknadMetadataValidationTest {
     }
 
     @Test
+    fun `Status FERDIGSTILT uten DigisosId skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                mottaker = NavMottaker(kommunenummer = "1234"),
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
     fun `Status MOTTATT_FSL uten innsendt-dato skal feile`() {
         assertThatThrownBy { soknadMetadata.copy(status = SoknadStatus.MOTTATT_FSL) }
             .isInstanceOf(IllegalStateException::class.java)
@@ -60,6 +73,17 @@ class SoknadMetadataValidationTest {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+    }
+
+    @Test
+    fun `Status MOTTATT_FSL uten DigisosId skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.MOTTATT_FSL,
+                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                mottaker = NavMottaker(kommunenummer = "1234"),
             )
         }.isInstanceOf(IllegalStateException::class.java)
     }

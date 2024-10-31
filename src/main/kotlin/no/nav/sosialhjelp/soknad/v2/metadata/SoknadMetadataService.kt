@@ -23,6 +23,7 @@ class SoknadMetadataService(
         soknadId: UUID,
         innsendingstidspunkt: LocalDateTime,
         kommunenummer: String,
+        digisosId: UUID,
     ) {
         soknadMetadataRepository.findByIdOrNull(soknadId)
             ?.run {
@@ -30,6 +31,7 @@ class SoknadMetadataService(
                     innsendt = innsendingstidspunkt,
                     status = SoknadStatus.SENDT,
                     mottaker = NavMottaker(kommunenummer),
+                    digisosId = digisosId,
                 )
             }
             ?.also { soknadMetadataRepository.save(it) }

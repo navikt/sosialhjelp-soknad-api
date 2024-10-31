@@ -27,6 +27,7 @@ data class SoknadMetadata(
     val innsendt: LocalDateTime? = null,
     @Embedded.Nullable
     val mottaker: NavMottaker? = null,
+    val digisosId: UUID? = null,
 ) : DomainRoot {
     override fun getDbId() = soknadId
 
@@ -61,5 +62,6 @@ private fun SoknadStatus.validate(metadata: SoknadMetadata) {
     if (this == SoknadStatus.SENDT || this == SoknadStatus.MOTTATT_FSL) {
         if (metadata.innsendt == null) error("Mangler innsendt dato for ferdig søknad.")
         if (metadata.mottaker == null) error("Mangler mottaker for ferdig søknad.")
+        if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
     }
 }

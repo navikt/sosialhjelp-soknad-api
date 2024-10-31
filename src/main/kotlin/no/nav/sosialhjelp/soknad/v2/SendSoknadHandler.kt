@@ -59,13 +59,14 @@ class SendSoknadHandler(
                     )
                     .let { UUID.fromString(it) }
             }
-                .onSuccess {
+                .onSuccess { digisosId ->
                     mottaker.kommunenummer
                         ?.also {
                             soknadMetadataService.updateSoknadSendt(
                                 soknadId = soknadId,
                                 innsendingstidspunkt = innsendingTidspunkt,
                                 kommunenummer = mottaker.kommunenummer,
+                                digisosId = digisosId,
                             )
                         }
                         ?: error("NavMottaker mangler kommunenummer")
