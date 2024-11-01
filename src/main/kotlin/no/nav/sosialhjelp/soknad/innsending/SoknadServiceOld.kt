@@ -39,7 +39,6 @@ import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -58,9 +57,7 @@ class SoknadServiceOld(
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val v2AdapterService: V2AdapterService,
 ) {
-    @Transactional
     fun startSoknad(
         token: String?,
         kort: Boolean,
@@ -87,14 +84,6 @@ class SoknadServiceOld(
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-
-        // ny modell
-        v2AdapterService.createSoknad(
-            behandlingsId,
-            soknadUnderArbeid.opprettetDato,
-            eierId,
-            kort,
-        )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
@@ -129,27 +118,30 @@ class SoknadServiceOld(
         soknadMetadataRepository.oppdater(hentet)
     }
 
-    @Transactional
     fun avbrytSoknad(
         behandlingsId: String,
         referer: String?,
     ) {
-        log.info("Soknad avbrutt av bruker - slettes")
-
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        soknadUnderArbeidRepository
-            .hentSoknadNullable(behandlingsId, eier)
-            ?.let { soknadUnderArbeid ->
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
-                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+        runCatching {
+            val eier = SubjectHandlerUtils.getUserIdFromToken()
+            soknadUnderArbeidRepository
+                .hentSoknadNullable(behandlingsId, eier)
+                ?.let { soknadUnderArbeid ->
+                    if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
+                        mellomlagringService.deleteAllVedlegg(behandlingsId)
+                    }
+                    soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
+                    settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
                 }
-                soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
-                settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
+        }
+            .onSuccess {
+                prometheusMetricsService.reportAvbruttSoknad(referer)
+                log.info("Soknad avbrutt av bruker - slettes")
             }
-        prometheusMetricsService.reportAvbruttSoknad(referer)
-
-        // ny modell
-        v2AdapterService.slettSoknad(behandlingsId)
+            .onFailure {
+                log.error("Feil ved sletting av søknad", it)
+                throw it
+            }
     }
 
     fun settSoknadMetadataAvbrutt(

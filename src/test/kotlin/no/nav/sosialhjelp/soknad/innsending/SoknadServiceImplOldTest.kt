@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -42,7 +41,6 @@ internal class SoknadServiceImplOldTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val v2AdapterService: V2AdapterService = mockk(relaxed = true)
 
     private val soknadServiceOld =
         SoknadServiceOld(
@@ -54,7 +52,6 @@ internal class SoknadServiceImplOldTest {
             mellomlagringService,
             prometheusMetricsService,
             Clock.systemDefaultZone(),
-            v2AdapterService,
         )
 
     @BeforeEach
@@ -84,7 +81,6 @@ internal class SoknadServiceImplOldTest {
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadata.behandlingsId } returns "123"
-        every { v2AdapterService.createSoknad(any(), any(), any(), false) } just runs
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
