@@ -51,6 +51,7 @@ internal class SoknadServiceImplOldTest {
             skatteetatenSystemdata,
             mellomlagringService,
             prometheusMetricsService,
+            mockk(relaxed = true),
             Clock.systemDefaultZone(),
         )
 
