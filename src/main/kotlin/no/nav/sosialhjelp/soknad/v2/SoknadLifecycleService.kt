@@ -35,8 +35,6 @@ class SoknadLifecycleServiceImpl(
     override fun startSoknad(
         isKort: Boolean,
     ): UUID {
-        // TODO Metadata
-
         return createDeleteSoknadHandler
             .createSoknad(isKort)
             .also { soknadId ->
@@ -47,7 +45,6 @@ class SoknadLifecycleServiceImpl(
     }
 
     override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
-        // TODO Metadata
         logger.info("Starter innsending av søknad.")
 
         val sendtInfo =
@@ -72,12 +69,10 @@ class SoknadLifecycleServiceImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        // TODO Metadata
-
-        logger.info("Søknad avbrutt. Sletter data.")
-
         createDeleteSoknadHandler.cancelSoknad(soknadId)
         prometheusMetricsService.reportAvbruttSoknad(referer)
+
+        logger.info("Søknad avbrutt. Sletter data.")
     }
 
     companion object {

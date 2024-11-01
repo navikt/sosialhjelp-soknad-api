@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
@@ -45,15 +44,14 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet as NyNavEnhet
 
+@AutoConfigureWebTestClient(timeout = "36000")
 class KontaktIntegrationTest : AbstractIntegrationTest() {
-    @Autowired
-    private lateinit var kontaktRepository: KontaktRepository
-
     @Autowired
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
 

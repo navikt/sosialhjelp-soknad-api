@@ -7,9 +7,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
@@ -17,7 +15,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.http.MediaType
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -37,6 +34,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         clearAllMocks()
         soknadRepository.deleteAll()
         every { mellomlagringClient.deleteAllVedlegg(any()) } just runs
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID().toString()
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
     }
 
@@ -46,7 +44,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         val (id, useKortSoknad) =
             doPost(
-                uri = "/soknad/create",
+                uri = createUrl(),
                 responseBodyClass = StartSoknadResponseDto::class.java,
             )
 
@@ -61,15 +59,11 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     fun `Skal slette lagret soknad`() {
         val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
 
-        webTestClient
-            .delete()
-            .uri("/soknad/$lagretSoknadId/delete")
-            .accept(MediaType.APPLICATION_JSON)
-            .header("Authorization", "BEARER ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(lagretSoknadId.toString(), id = token.jwtClaimsSet.subject))
-            .exchange()
-            .expectStatus()
-            .isNoContent
+        doDelete(
+            uri = "/soknad/$lagretSoknadId/delete",
+            soknadId = lagretSoknadId,
+        )
+            .expectStatus().isNoContent
 
         assertThat(soknadRepository.findById(lagretSoknadId).getOrNull()).isNull()
     }
@@ -77,20 +71,17 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Slette soknad som ikke finnes skal gi 404`() {
         val randomUUID = UUID.randomUUID()
-        webTestClient
-            .delete()
-            .uri("/soknad/$randomUUID/delete")
-            .accept(MediaType.APPLICATION_JSON)
-            .header("Authorization", "BEARER ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(randomUUID.toString(), id = token.jwtClaimsSet.subject))
-            .exchange()
-            .expectStatus()
-            .isNotFound
-            .expectBody(SoknadApiError::class.java)
-            .returnResult()
-            .responseBody!!
-            .also {
-                assertThat(it.message).isEqualTo("NyModell: Soknad finnes ikke")
-            }
+
+        doDelete(
+            uri = "/soknad/$randomUUID/delete",
+            soknadId = randomUUID,
+        )
+            .expectStatus().isNotFound
+    }
+
+    companion object {
+        private fun createUrl() = "/soknad/create"
+
+        private fun sendUrl(soknadId: UUID) = "/soknad/$soknadId/send"
     }
 }

@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
@@ -11,8 +12,12 @@ import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettLivssituasjon
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.data.repository.findByIdOrNull
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 /**
@@ -95,5 +100,27 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
             originalEntity = opprettDokumentasjon(dbId, soknad.id),
             updatedEntity = opprettDokumentasjon(dbId, soknad.id).copy(status = DokumentasjonStatus.LASTET_OPP),
         )
+    }
+
+    @Test
+    fun `Verifisere CRUD-operasjoner for Metadata`() {
+        val soknadMetadata = opprettSoknadMetadata()
+
+        soknadMetadataRepository.save(soknadMetadata)
+        soknadMetadataRepository.findByIdOrNull(soknadMetadata.soknadId)!!
+            .also { assertThat(it).isEqualTo(soknadMetadata) }
+
+        val oppdatertMetadata =
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+            )
+        soknadMetadataRepository.save(oppdatertMetadata)
+        soknadMetadataRepository.findByIdOrNull(oppdatertMetadata.soknadId)!!
+            .also { assertThat(it).isEqualTo(oppdatertMetadata) }
+
+        soknadMetadataRepository.deleteById(soknadMetadata.soknadId)
+        soknadMetadataRepository.findByIdOrNull(soknadMetadata.soknadId)
+            .also { assertThat(it).isNull() }
     }
 }

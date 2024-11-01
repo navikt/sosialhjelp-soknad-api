@@ -4,6 +4,9 @@ import com.nimbusds.jwt.SignedJWT
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +28,15 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     protected lateinit var soknadRepository: SoknadRepository
+
+    @Autowired
+    protected lateinit var eierRepository: EierRepository
+
+    @Autowired
+    protected lateinit var kontaktRepository: KontaktRepository
+
+    @Autowired
+    protected lateinit var soknadMetadataRepository: SoknadMetadataRepository
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
@@ -194,7 +206,6 @@ abstract class AbstractIntegrationTest {
             .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
-            .expectStatus().isNoContent
     }
 
     companion object {

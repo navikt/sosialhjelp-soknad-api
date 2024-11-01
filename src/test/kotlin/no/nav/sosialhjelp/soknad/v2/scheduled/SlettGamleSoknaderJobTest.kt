@@ -1,13 +1,10 @@
-package no.nav.sosialhjelp.soknad.v2.scheduled.slettgamlesoknader
+package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.scheduled.SlettGamleSoknaderJob
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
@@ -21,13 +18,12 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var slettGamleSoknaderJob: SlettGamleSoknaderJob
 
-    @MockkBean
+    @MockkBean(relaxed = true)
     private lateinit var mellomlagringClient: MellomlagringClient
 
     @BeforeEach
     fun setup() {
         soknadRepository.deleteAll()
-        every { mellomlagringClient.deleteDokumenter(any()) } just runs
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
             MellomlagringDto("", emptyList())
     }
