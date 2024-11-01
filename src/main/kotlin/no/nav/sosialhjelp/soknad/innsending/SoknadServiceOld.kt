@@ -122,19 +122,25 @@ class SoknadServiceOld(
         behandlingsId: String,
         referer: String?,
     ) {
-        log.info("Soknad avbrutt av bruker - slettes")
-
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        soknadUnderArbeidRepository
-            .hentSoknadNullable(behandlingsId, eier)
-            ?.let { soknadUnderArbeid ->
-                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
-                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+        runCatching {
+            val eier = SubjectHandlerUtils.getUserIdFromToken()
+            soknadUnderArbeidRepository
+                .hentSoknadNullable(behandlingsId, eier)
+                ?.let { soknadUnderArbeid ->
+                    if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
+                        mellomlagringService.deleteAllVedlegg(behandlingsId)
+                    }
+                    soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
+                    settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
                 }
-                soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
-                settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
+        }
+            .onSuccess {
+                prometheusMetricsService.reportAvbruttSoknad(referer)
+                log.info("Soknad avbrutt av bruker - slettes")
             }
-        prometheusMetricsService.reportAvbruttSoknad(referer)
+            .onFailure {
+                log.error("Feil ved sletting av søknad", it)
+            }
     }
 
     fun settSoknadMetadataAvbrutt(
