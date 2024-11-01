@@ -87,6 +87,7 @@ class SoknadServiceOld(
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
         // innhenting fra register
+        log.info("Søknad opprettet - henter systemdata")
         systemdataUpdater.update(soknadUnderArbeid)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eierId)
