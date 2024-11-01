@@ -5,6 +5,8 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -29,6 +31,8 @@ interface AdresseService {
     ): Adresser
 
     fun findMottaker(soknadId: UUID): NavEnhet?
+
+    fun getEnrichment(kommunenummer: String): NavEnhetEnrichment
 }
 
 interface TelefonService {
@@ -45,6 +49,8 @@ class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
     private val kortSoknadService: KortSoknadService,
     private val nyNavEnhetService: NavEnhetService,
+    private val kommuneInfoService: KommuneInfoService,
+    private val kodeverkService: KodeverkService,
 ) : AdresseService,
     TelefonService {
     private val logger by logger()
@@ -117,9 +123,32 @@ class KontaktServiceImpl(
             }.adresser
     }
 
-    override fun findMottaker(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.mottaker
+    override fun findMottaker(soknadId: UUID): NavEnhet? {
+        val mottaker = kontaktRepository.findByIdOrNull(soknadId)?.mottaker
+        if (mottaker == null) {
+            logger.warn("NyModell: Ingen nav-enhet funnet for søknad $soknadId")
+            return null
+        }
+        return mottaker
+    }
+
+    override fun getEnrichment(kommunenummer: String): NavEnhetEnrichment {
+        val isDigisosKommune = kanMottaSoknader(kommunenummer)
+        val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
+        return NavEnhetEnrichment(kommunenavn, isDigisosKommune)
+    }
+
+    private fun kanMottaSoknader(kommunenummer: String): Boolean {
+        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer)
+        return isNyDigisosApiKommuneMedMottakAktivert
+    }
 
     private fun findOrCreate(soknadId: UUID) =
         kontaktRepository.findByIdOrNull(soknadId)
             ?: kontaktRepository.save(Kontakt(soknadId))
 }
+
+data class NavEnhetEnrichment(
+    val kommunenavn: String?,
+    val isDigisosKommune: Boolean,
+)
