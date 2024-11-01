@@ -84,10 +84,12 @@ class SoknadServiceOld(
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-
-        // pga. nyModell - opprette soknad før systemdata-updater
-        systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
+
+        // innhenting fra register
+        systemdataUpdater.update(soknadUnderArbeid)
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eierId)
 
         return StartSoknadResponse(behandlingsId, kort)
     }

@@ -36,7 +36,7 @@ class PersonDataFetcher(
                     personDataFetcher.fetchAndSave(soknadId, person)
                 }
                     .onFailure {
-                        logger.error("NyModell: Feil i PersonData-fetcher: $personDataFetcher")
+                        logger.warn("NyModell: Feil i PersonData-fetcher: $personDataFetcher", it)
                         if (!personDataFetcher.continueOnError()) throw it
                     }
             }
