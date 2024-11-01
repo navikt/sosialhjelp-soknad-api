@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
-import no.nav.sosialhjelp.soknad.v2.metadata.NavMottaker
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -19,7 +18,7 @@ class SoknadMetadataValidationTest {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-                mottaker = NavMottaker(kommunenummer = "1234"),
+                mottakerKommunenummer = "1234",
                 digisosId = UUID.randomUUID(),
             )
         }
@@ -28,7 +27,7 @@ class SoknadMetadataValidationTest {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-                mottaker = NavMottaker(kommunenummer = "1234"),
+                mottakerKommunenummer = "1234",
                 digisosId = UUID.randomUUID(),
             )
         }
@@ -56,7 +55,7 @@ class SoknadMetadataValidationTest {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-                mottaker = NavMottaker(kommunenummer = "1234"),
+                mottakerKommunenummer = "1234",
             )
         }.isInstanceOf(IllegalStateException::class.java)
     }
@@ -83,14 +82,20 @@ class SoknadMetadataValidationTest {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
                 innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-                mottaker = NavMottaker(kommunenummer = "1234"),
+                mottakerKommunenummer = "1234",
             )
         }.isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
-    fun `NavMottaker med feil lengde pa kommunenummer skal feile`() {
-        assertThatThrownBy { NavMottaker(kommunenummer = "12345") }
+    fun `Mottaker med feil lengde pa kommunenummer skal feile`() {
+        assertThatThrownBy {
+            soknadMetadata.copy(
+                status = SoknadStatus.SENDT,
+                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                mottakerKommunenummer = "12345",
+            )
+        }
             .isInstanceOf(IllegalStateException::class.java)
     }
 }

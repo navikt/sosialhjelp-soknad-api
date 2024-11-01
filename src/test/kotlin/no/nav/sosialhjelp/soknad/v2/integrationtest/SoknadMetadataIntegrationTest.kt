@@ -37,7 +37,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         soknadMetadataRepository.findByIdOrNull(uuid)!!
             .also {
                 assertThat(it.innsendt!!.toLocalDate()).isEqualTo(LocalDate.now())
-                assertThat(it.mottaker!!.kommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
+                assertThat(it.mottakerKommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
                 assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
             }
     }

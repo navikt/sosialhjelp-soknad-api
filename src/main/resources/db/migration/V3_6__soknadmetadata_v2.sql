@@ -5,7 +5,6 @@ create table soknad_metadata
     status varchar(50) not null,
     opprettet timestamp not null,
     innsendt timestamp,
-    kommunenummer varchar(20),
-    bydelsnummer varchar(20),
+    mottaker_kommunenummer varchar(20),
     digisos_id varchar(50)
 )

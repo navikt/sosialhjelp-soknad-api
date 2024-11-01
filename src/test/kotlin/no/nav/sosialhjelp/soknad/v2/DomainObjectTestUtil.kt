@@ -33,7 +33,6 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Botype
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Livssituasjon
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
-import no.nav.sosialhjelp.soknad.v2.metadata.NavMottaker
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
@@ -117,7 +116,7 @@ fun opprettSoknadMetadata(
     personId: String = AbstractIntegrationTest.userId,
     opprettetDato: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     innsendtDato: LocalDateTime? = null,
-    navMottaker: NavMottaker = NavMottaker("1234", null),
+    kommunenummer: String? = "1234",
     digisosId: UUID? = UUID.randomUUID(),
 ): SoknadMetadata =
     SoknadMetadata(
@@ -126,7 +125,7 @@ fun opprettSoknadMetadata(
         status = status,
         opprettet = opprettetDato,
         innsendt = innsendtDato,
-        mottaker = navMottaker,
+        mottakerKommunenummer = kommunenummer,
         digisosId = digisosId,
     )
 

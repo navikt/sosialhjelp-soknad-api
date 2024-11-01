@@ -30,7 +30,7 @@ class SoknadMetadataService(
                 copy(
                     innsendt = innsendingstidspunkt,
                     status = SoknadStatus.SENDT,
-                    mottaker = NavMottaker(kommunenummer),
+                    mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
                 )
             }
