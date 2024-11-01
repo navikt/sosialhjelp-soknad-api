@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
@@ -47,16 +46,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.status.toString(),
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
-        )
-
-        // ny modell
-        v2AdapterService.createSoknad(
-            soknadUnderArbeid.behandlingsId,
-            soknadUnderArbeid.opprettetDato,
-            soknadUnderArbeid.eier,
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.soknadstype
-                ?.let { it == JsonData.Soknadstype.KORT }
-                ?: false,
         )
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
