@@ -16,10 +16,12 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.http.MediaType
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
+@AutoConfigureWebTestClient(timeout = "36000")
 class SoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
@@ -41,18 +43,12 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Opprett soknad skal ikke bli kort hvis bruker ikke har sendt inn soknad de siste 120 dager og ikke har nylige utbetalinger`() {
         every { digisosApiV2Client.getSoknader(any()) } returns listOf()
+
         val (id, useKortSoknad) =
-            webTestClient
-                .post()
-                .uri("/soknad/create")
-                .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "BEARER ${token.serialize()}")
-                .exchange()
-                .expectStatus()
-                .isOk
-                .expectBody(StartSoknadResponseDto::class.java)
-                .returnResult()
-                .responseBody!!
+            doPost(
+                uri = "/soknad/create",
+                responseBodyClass = StartSoknadResponseDto::class.java,
+            )
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isFalse()

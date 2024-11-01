@@ -39,7 +39,6 @@ import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -47,7 +46,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.collections.ArrayList
 
 @Component
 class SoknadServiceOld(
@@ -59,7 +57,6 @@ class SoknadServiceOld(
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val v2AdapterService: V2AdapterService,
 ) {
     fun startSoknad(
         token: String?,
@@ -87,14 +84,6 @@ class SoknadServiceOld(
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
-
-        // ny modell
-        v2AdapterService.createSoknad(
-            behandlingsId,
-            soknadUnderArbeid.opprettetDato,
-            eierId,
-            kort,
-        )
 
         // pga. nyModell - opprette soknad før systemdata-updater
         systemdataUpdater.update(soknadUnderArbeid)
@@ -129,7 +118,6 @@ class SoknadServiceOld(
         soknadMetadataRepository.oppdater(hentet)
     }
 
-    @Transactional
     fun avbrytSoknad(
         behandlingsId: String,
         referer: String?,
@@ -147,9 +135,6 @@ class SoknadServiceOld(
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
             }
         prometheusMetricsService.reportAvbruttSoknad(referer)
-
-        // ny modell
-        v2AdapterService.slettSoknad(behandlingsId)
     }
 
     fun settSoknadMetadataAvbrutt(
