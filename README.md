@@ -9,7 +9,7 @@ Backend-applikasjon for søknad om økonomisk sosialhjelp.
 
 Spørsmål knyttet til koden eller teamet kan stilles til teamdigisos@nav.no.
 
-### For NAV-ansatte
+### For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 
