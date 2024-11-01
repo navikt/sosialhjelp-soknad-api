@@ -140,6 +140,7 @@ class SoknadServiceOld(
             }
             .onFailure {
                 log.error("Feil ved sletting av søknad", it)
+                throw it
             }
     }
 
