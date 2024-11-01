@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -56,6 +57,7 @@ class SoknadServiceOld(
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val mellomlagringService: MellomlagringService,
     private val prometheusMetricsService: PrometheusMetricsService,
+    private val v2AdapterService: V2AdapterService,
     private val clock: Clock,
 ) {
     fun startSoknad(
@@ -65,14 +67,12 @@ class SoknadServiceOld(
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
         val behandlingsId = opprettSoknadMetadata(eierId, kort) // TODO NyModell Metadata returnerer UUID
-
         MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
-        if (kort) {
-            log.info("Starter kort søknad")
-        } else {
-            log.info("Starter søknad")
+
+        when {
+            kort -> log.info("Starter kort søknad")
+            else -> log.info("Starter søknad")
         }
-        prometheusMetricsService.reportStartSoknad()
 
         val soknadUnderArbeid =
             SoknadUnderArbeid(
@@ -84,13 +84,19 @@ class SoknadServiceOld(
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
             )
+
+        // ny modell
+        v2AdapterService.createSoknad(
+            behandlingsId,
+            soknadUnderArbeid.opprettetDato,
+            eierId,
+            kort,
+        )
+
+        systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eierId)
 
-        // innhenting fra register
-        log.info("Søknad opprettet - henter systemdata")
-        systemdataUpdater.update(soknadUnderArbeid)
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eierId)
+        prometheusMetricsService.reportStartSoknad()
 
         return StartSoknadResponse(behandlingsId, kort)
     }
