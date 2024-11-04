@@ -54,6 +54,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 
         runTest(timeout = 5.seconds) {
             soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
+            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
