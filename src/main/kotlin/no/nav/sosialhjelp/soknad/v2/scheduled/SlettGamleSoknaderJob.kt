@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 @Component
@@ -25,8 +26,8 @@ class SlettGamleSoknaderJob(
                         soknadRepository
                             .findOlderThan(LocalDateTime.now().minusDays(14))
                             .also { oldUuids ->
-                                oldUuids.forEach { mellomlagringService.deleteAll(it) }
                                 soknadRepository.deleteAllById(oldUuids)
+                                slettFilerForSoknader(oldUuids)
                             }
                             .also { oldUuids -> logger.info("Slettet ${oldUuids.size} gamle søknader") }
                     }
@@ -36,6 +37,18 @@ class SlettGamleSoknaderJob(
             }
         }.onFailure {
             logger.error("Feil ved sletting av gamle søknader", it)
+        }
+    }
+
+    private fun slettFilerForSoknader(oldUuids: List<UUID>) {
+        oldUuids.forEach { uuid ->
+            runCatching { mellomlagringService.deleteAll(uuid) }
+                .onFailure { ex ->
+                    logger.warn(
+                        "Slette gamle soknaer: Feil eller fantes ingen filer hos FIKS for: $uuid",
+                        ex,
+                    )
+                }
         }
     }
 
