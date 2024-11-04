@@ -47,4 +47,17 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 
             assertThat(soknadRepository.findAll()).isNotEmpty()
         }
+
+    @Test
+    fun `Ved feil hos FIKS skal soknader lokalt fortsatt slettes`() {
+        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } throws RuntimeException("Feil hos FIKS")
+
+        runTest(timeout = 5.seconds) {
+            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
+
+            slettGamleSoknaderJob.slettGamleSoknader()
+
+            assertThat(soknadRepository.findAll()).isEmpty()
+        }
+    }
 }
