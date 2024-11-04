@@ -51,7 +51,6 @@ internal class SoknadServiceImplOldTest {
             skatteetatenSystemdata,
             mellomlagringService,
             prometheusMetricsService,
-            mockk(relaxed = true),
             Clock.systemDefaultZone(),
         )
 
@@ -85,6 +84,7 @@ internal class SoknadServiceImplOldTest {
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns lagSoknadUnderArbeid("123")
 
         soknadServiceOld.startSoknad("", false)
 
@@ -138,4 +138,16 @@ internal class SoknadServiceImplOldTest {
         private const val EIER = "Hans og Grete"
         private const val BEHANDLINGSID = "123"
     }
+}
+
+private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {
+    return SoknadUnderArbeid(
+        versjon = 1L,
+        behandlingsId = behandlingsId,
+        eier = "EIER",
+        jsonInternalSoknad = createEmptyJsonInternalSoknad("EIER", false),
+        status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+        opprettetDato = LocalDateTime.now(),
+        sistEndretDato = LocalDateTime.now(),
+    )
 }

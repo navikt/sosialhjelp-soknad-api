@@ -1,10 +1,20 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.slot
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
+import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,6 +30,61 @@ import java.util.UUID
 internal class SoknadUnderArbeidRepositoryJdbcTest {
     @Autowired
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+
+    @Autowired
+    private lateinit var soknadServiceOld: SoknadServiceOld
+
+    @MockkBean
+    private lateinit var systemdataUpdater: SystemdataUpdater
+
+    // "kopi" av logikken ved opprettelse av ny soknad i SoknadServiceOld
+    @Test
+    fun `Test ny flyt`() {
+        val eier = "12345678901"
+
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = UUID.randomUUID().toString(),
+                eier = eier,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
+                sistEndretDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
+            )
+                .also { soknadUnderArbeidRepository.opprettSoknad(it, eier) }
+                .let { soknadUnderArbeidRepository.hentSoknad(it.behandlingsId, eier) }
+
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        soknadUnderArbeid.sistEndretDato = now
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+
+        soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, eier)
+            .also {
+                assertThat(it.sistEndretDato).isEqualTo(now)
+                assertThat(it.sistEndretDato).isNotEqualTo(soknadUnderArbeid.sistEndretDato)
+            }
+    }
+
+    @Test
+    fun `Feil i systemdataUpdater skal slette soknad`() {
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
+        val soknadUnderArbeidCapturingSlot = slot<SoknadUnderArbeid>()
+        every { systemdataUpdater.update(capture(soknadUnderArbeidCapturingSlot)) } throws RuntimeException("Feil i systemdataUpdater")
+
+        assertThatThrownBy {
+            soknadServiceOld.startSoknad(UUID.randomUUID().toString(), false)
+        }.isInstanceOf(RuntimeException::class.java)
+
+        assertThatThrownBy {
+            soknadUnderArbeidRepository.hentSoknad(
+                soknadUnderArbeidCapturingSlot.captured.behandlingsId,
+                soknadUnderArbeidCapturingSlot.captured.eier,
+            )
+        }.isInstanceOf(SoknadUnderArbeidIkkeFunnetException::class.java)
+    }
 
     @Test
     fun opprettSoknadOppretterSoknadUnderArbeidIDatabasen() {
@@ -140,7 +205,6 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         private const val EIER = "12345678901"
         private const val EIER2 = "22222222222"
         private val BEHANDLINGSID = UUID.randomUUID().toString()
-        private const val TILKNYTTET_BEHANDLINGSID = "4567"
         private val OPPRETTET_DATO = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS)
         private val SIST_ENDRET_DATO = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
         private val JSON_INTERNAL_SOKNAD = JsonInternalSoknad()
