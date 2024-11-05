@@ -70,6 +70,7 @@ spec:
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
     inbound:
       rules:
+        - application: sosialhjelp-soknad-preprod
         - application: mine-saker-api
           namespace: min-side
         - application: dittnav-api
