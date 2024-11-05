@@ -4,7 +4,9 @@ create table soknad_metadata
     person_id varchar(30) not null,
     status varchar(50) not null,
     opprettet timestamp not null,
-    innsendt timestamp,
+    sist_endret timestamp not null,
+    sendt_inn timestamp,
     mottaker_kommunenummer varchar(20),
-    digisos_id varchar(50)
+    digisos_id varchar(50),
+    soknad_type varchar(50) not null
 )
