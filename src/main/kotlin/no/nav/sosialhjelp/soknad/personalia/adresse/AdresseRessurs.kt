@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -18,10 +19,10 @@ import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.personalia.AdresseToNyModellProxy
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -44,10 +45,10 @@ class AdresseRessurs(
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
     private val unleash: Unleash,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val kortSoknadService: KortSoknadService,
+    private val adresseProxy: AdresseToNyModellProxy,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -56,37 +57,42 @@ class AdresseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
-        val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
-        val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
+        val personId = SubjectHandlerUtils.getUserIdFromToken()
 
-        // TODO Ekstra logging
-        logger.info("Hender navEnhet - GET personalia/adresser")
-        val navEnhet =
-            try {
-                navEnhetService.getNavEnhet(
-                    eier,
-                    jsonInternalSoknad.soknad,
-                    jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg,
-                )
-            } catch (e: Exception) {
-                null
-            }
-        jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return adresseProxy.getAdresser(behandlingsId)
+        } else {
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
+            val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
+            val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
+            val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
 
-        return AdresseMapper.mapToAdresserFrontend(
-            sysFolkeregistrertAdresse,
-            sysMidlertidigAdresse,
-            jsonOppholdsadresse,
-            navEnhet,
-        )
+            // TODO Ekstra logging
+            logger.info("Hender navEnhet - GET personalia/adresser")
+            val navEnhet =
+                try {
+                    navEnhetService.getNavEnhet(
+                        personId,
+                        jsonInternalSoknad.soknad,
+                        jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg,
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+
+            return AdresseMapper.mapToAdresserFrontend(
+                sysFolkeregistrertAdresse,
+                sysMidlertidigAdresse,
+                jsonOppholdsadresse,
+                navEnhet,
+            )
+        }
     }
 
     @PutMapping
@@ -95,72 +101,77 @@ class AdresseRessurs(
         @RequestBody adresserFrontend: AdresserFrontendInput,
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val token = SubjectHandlerUtils.getToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val personalia = jsonInternalSoknad.soknad.data.personalia
-        when (adresserFrontend.valg) {
-            JsonAdresseValg.FOLKEREGISTRERT ->
-                personalia.oppholdsadresse =
-                    adresseSystemdata.createDeepCopyOfJsonAdresse(personalia.folkeregistrertAdresse)
 
-            JsonAdresseValg.MIDLERTIDIG ->
-                personalia.oppholdsadresse =
-                    adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(eier)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return adresseProxy.updateAdresse(behandlingsId, adresserFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
 
-            JsonAdresseValg.SOKNAD ->
-                personalia.oppholdsadresse =
-                    adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
+            val token = SubjectHandlerUtils.getToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val personalia = jsonInternalSoknad.soknad.data.personalia
+            when (adresserFrontend.valg) {
+                JsonAdresseValg.FOLKEREGISTRERT ->
+                    personalia.oppholdsadresse =
+                        adresseSystemdata.createDeepCopyOfJsonAdresse(personalia.folkeregistrertAdresse)
 
-            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
-        }
-        personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
-        personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        // TODO Ekstra logging
-        logger.info("Henter navEnhet - PUT personalia/adresser")
+                JsonAdresseValg.MIDLERTIDIG ->
+                    personalia.oppholdsadresse =
+                        adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personId)
 
-        val navEnhetFrontend =
-            navEnhetService
-                .getNavEnhet(
-                    eier,
-                    jsonInternalSoknad.soknad,
-                    adresserFrontend.valg,
-                )?.also {
-                    setNavEnhetAsMottaker(soknad, it, eier)
-                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+                JsonAdresseValg.SOKNAD ->
+                    personalia.oppholdsadresse =
+                        adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
 
-                    // Man må skru av og på kort søknad på forsiden i mock/lokalt
-                    if (!MiljoUtils.isMockAltProfil()) {
-                        kotlin
-                            .runCatching {
-                                val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
-                                if (changed) {
-                                    val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-                                    if (soknadMetadata != null) {
-                                        soknadMetadata.kortSoknad = isKort
-                                        soknadMetadataRepository.oppdater(soknadMetadata)
+                else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
+            }
+            personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
+            personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+            // TODO Ekstra logging
+            logger.info("Henter navEnhet - PUT personalia/adresser")
+
+            val navEnhetFrontend =
+                navEnhetService
+                    .getNavEnhet(
+                        personId,
+                        jsonInternalSoknad.soknad,
+                        adresserFrontend.valg,
+                    )?.also {
+                        setNavEnhetAsMottaker(soknad, it, personId)
+                        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+
+                        // Man må skru av og på kort søknad på forsiden i mock/lokalt
+                        if (!MiljoUtils.isMockAltProfil()) {
+                            kotlin
+                                .runCatching {
+                                    val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
+                                    if (changed) {
+                                        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                                        if (soknadMetadata != null) {
+                                            soknadMetadata.kortSoknad = isKort
+                                            soknadMetadataRepository.oppdater(soknadMetadata)
+                                        }
+                                        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
                                     }
-                                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+                                }.onFailure { error ->
+                                    logger.error(
+                                        "Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.",
+                                        error,
+                                    )
                                 }
-                            }.onFailure { error -> logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error) }
+                        }
+
+                        // TODO Ekstra logging
+                        logger.info("NavEnhetFrontend: $it")
+                        logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
                     }
 
-                    // TODO Ekstra logging
-                    logger.info("NavEnhetFrontend: $it")
-                    logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
-                }
-
-        // Ny modell
-        soknadV2ControllerAdapter.updateAdresse(
-            behandlingsId,
-            adresserFrontend,
-        )
-
-        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+            return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+        }
     }
 
     /* Sett søknadstype kort om bruker har rett på det. Gjøres her fordi vi må vite hvilken kommune som skal behandle søknaden.

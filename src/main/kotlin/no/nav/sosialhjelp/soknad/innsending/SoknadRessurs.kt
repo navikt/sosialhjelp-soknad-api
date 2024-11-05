@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy.nyDatamodellAktiv
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -21,6 +22,7 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
+import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleController
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -48,6 +50,7 @@ class SoknadRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val nedetidService: NedetidService,
     private val prometheusMetricsService: PrometheusMetricsService,
+    private val lifecycleController: SoknadLifecycleController,
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
     fun hentXsrfCookie(
@@ -171,12 +174,18 @@ class SoknadRessurs(
             } else {
                 false
             }
-        return soknadServiceOld
-            .startSoknad(token, isKort)
-            .also {
-                response.addCookie(xsrfCookie(it.brukerBehandlingId))
-                response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))
-            }
+
+        return if (nyDatamodellAktiv) {
+            lifecycleController.createSoknad(soknadstype, response)
+                .let { StartSoknadResponse(it.soknadId.toString(), it.useKortSoknad) }
+        } else {
+            soknadServiceOld
+                .startSoknad(token, isKort)
+                .also {
+                    response.addCookie(xsrfCookie(it.brukerBehandlingId))
+                    response.addCookie(xsrfCookieMedBehandlingsid(it.brukerBehandlingId))
+                }
+        }
     }
 
     @DeleteMapping("/{behandlingsId}")

@@ -20,3 +20,7 @@ private fun configureApplication(builder: SpringApplicationBuilder): SpringAppli
     return builder
         .sources(Application::class.java)
 }
+
+object ControllerToNewDatamodellProxy {
+    val nyDatamodellAktiv = true
+}
