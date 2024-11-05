@@ -19,10 +19,11 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleController
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @ProtectedWithClaims(
@@ -49,8 +51,8 @@ class SoknadRessurs(
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
     private val nedetidService: NedetidService,
-    private val prometheusMetricsService: PrometheusMetricsService,
     private val lifecycleController: SoknadLifecycleController,
+    private val v2MetadataService: SoknadMetadataService,
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
     fun hentXsrfCookie(
@@ -202,7 +204,12 @@ class SoknadRessurs(
         @PathVariable behandlingsId: String,
     ): Boolean {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        return soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
+
+        return if (nyDatamodellAktiv) {
+            v2MetadataService.getSoknadType(UUID.fromString(behandlingsId)) == SoknadType.KORT
+        } else {
+            soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
+        }
     }
 
     @GetMapping("/{behandlingsId}/isNyDatamodell")
