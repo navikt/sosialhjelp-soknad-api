@@ -26,7 +26,7 @@ services:
   sosialhjelp-mock-alt-api:
     profiles: [ full ]
     container_name: sosialhjelp-mock-alt-api
-    image: ghcr.io/navikt/sosialhjelp-mock-alt-api/sosialhjelp-mock-alt-api:latest
+    image: europe-north1-docker.pkg.dev/nais-management-233d/teamdigisos/sosialhjelp-mock-alt-api:latest
     restart: always
     ports:
       - "8989:8989"
