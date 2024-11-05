@@ -4,10 +4,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,14 +23,19 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class ArbeidRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll,
-    private val controllerAdapter: V2ControllerAdapter,
+    private val arbeidProxy: ArbeidProxy,
 ) {
     @GetMapping
     fun hentArbeid(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        return getArbeidFromSoknad(behandlingsId)
+
+        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            arbeidProxy.getArbeid(behandlingsId)
+        } else {
+            getArbeidFromSoknad(behandlingsId)
+        }
     }
 
     private fun getArbeidFromSoknad(behandlingsId: String): ArbeidsforholdResponse {
@@ -49,25 +54,27 @@ class ArbeidRessurs(
         @RequestBody arbeidFrontend: ArbeidsforholdRequest,
     ): ArbeidsforholdResponse {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val arbeid = jsonInternalSoknad.soknad.data.arbeid
 
-        arbeid.kommentarTilArbeidsforhold =
-            arbeidFrontend.kommentarTilArbeidsforhold?.takeIf { it.isNotBlank() }?.let {
-                JsonKommentarTilArbeidsforhold().apply {
-                    kilde = JsonKildeBruker.BRUKER
-                    verdi = it
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return arbeidProxy.updateArbeid(behandlingsId, arbeidFrontend)
+        } else {
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val arbeid = jsonInternalSoknad.soknad.data.arbeid
+
+            arbeid.kommentarTilArbeidsforhold =
+                arbeidFrontend.kommentarTilArbeidsforhold?.takeIf { it.isNotBlank() }?.let {
+                    JsonKommentarTilArbeidsforhold().apply {
+                        kilde = JsonKildeBruker.BRUKER
+                        verdi = it
+                    }
                 }
-            }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
-        // NyModell
-        controllerAdapter.updateArbeid(behandlingsId, arbeidFrontend)
-
-        return getArbeidFromSoknad(behandlingsId)
+            return getArbeidFromSoknad(behandlingsId)
+        }
     }
 
     private fun mapToArbeidsforholdFrontend(arbeidsforhold: JsonArbeidsforhold) =

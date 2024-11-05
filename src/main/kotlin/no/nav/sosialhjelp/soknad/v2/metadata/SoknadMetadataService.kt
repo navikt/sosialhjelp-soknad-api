@@ -55,4 +55,9 @@ class SoknadMetadataService(
 
     fun getOpenSoknader(personId: String): List<SoknadMetadata> =
         soknadMetadataRepository.findByPersonId(personId).filter { it.status == SoknadStatus.OPPRETTET }
+
+    fun getSoknadType(soknadId: UUID): SoknadType {
+        return soknadMetadataRepository.findByIdOrNull(soknadId)?.soknadType
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
 }
