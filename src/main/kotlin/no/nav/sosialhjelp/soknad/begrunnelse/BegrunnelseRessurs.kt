@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.begrunnelse
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,19 +25,24 @@ import org.springframework.web.bind.annotation.RestController
 class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: V2ControllerAdapter,
+    private val begrunnelseProxy: BegrunnelseProxy,
 ) {
     @GetMapping
     fun hentBegrunnelse(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BegrunnelseFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val begrunnelse = soknad.soknad.data.begrunnelse
-        return BegrunnelseFrontend(begrunnelse.hvaSokesOm, begrunnelse.hvorforSoke)
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return begrunnelseProxy.getBegrunnelse(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val begrunnelse = soknad.soknad.data.begrunnelse
+            return BegrunnelseFrontend(begrunnelse.hvaSokesOm, begrunnelse.hvorforSoke)
+        }
     }
 
     @PutMapping
@@ -46,19 +51,21 @@ class BegrunnelseRessurs(
         @RequestBody begrunnelseFrontend: BegrunnelseFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-        begrunnelse.kilde = JsonKildeBruker.BRUKER
-        begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
-        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
-        // NyModell
-        controllerAdapter.updateBegrunnelse(behandlingsId, begrunnelseFrontend)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            begrunnelseProxy.updateBegrunnelse(behandlingsId, begrunnelseFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
+            begrunnelse.kilde = JsonKildeBruker.BRUKER
+            begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
+            begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+        }
     }
 
     data class BegrunnelseFrontend(
