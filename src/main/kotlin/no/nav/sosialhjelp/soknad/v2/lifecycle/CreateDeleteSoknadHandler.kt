@@ -29,7 +29,7 @@ class CreateDeleteSoknadHandler(
             .createSoknad(
                 eierId = SubjectHandlerUtils.getUserIdFromToken(),
                 soknadId = metadata.soknadId,
-                opprettetDato = metadata.opprettet,
+                opprettetDato = metadata.tidspunkt.opprettet,
                 kortSoknad = isKort,
             ).also { soknadId ->
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
