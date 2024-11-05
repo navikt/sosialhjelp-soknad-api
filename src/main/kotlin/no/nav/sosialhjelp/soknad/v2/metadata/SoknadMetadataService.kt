@@ -28,7 +28,7 @@ class SoknadMetadataService(
         soknadMetadataRepository.findByIdOrNull(soknadId)
             ?.run {
                 copy(
-                    innsendt = innsendingstidspunkt,
+                    tidspunkt = tidspunkt.copy(sendtInn = innsendingstidspunkt),
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
@@ -41,4 +41,18 @@ class SoknadMetadataService(
     fun deleteMetadata(soknadId: UUID) {
         soknadMetadataRepository.deleteById(soknadId)
     }
+
+    fun getNumberOfSoknaderSentAfter(
+        personId: String,
+        minusDays: LocalDateTime,
+    ): Int =
+        soknadMetadataRepository.findByPersonId(personId)
+            .filter { it.status == SoknadStatus.SENDT || it.status == SoknadStatus.MOTTATT_FSL }
+            .count { metadata ->
+                metadata.tidspunkt.sendtInn?.isAfter(minusDays)
+                    ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
+            }
+
+    fun getOpenSoknader(personId: String): List<SoknadMetadata> =
+        soknadMetadataRepository.findByPersonId(personId).filter { it.status == SoknadStatus.OPPRETTET }
 }
