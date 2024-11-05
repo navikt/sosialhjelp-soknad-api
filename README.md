@@ -32,6 +32,13 @@ Start `Application.kt` med profilene `mock-alt,local,no-redis,log-console`.
 Krever at Docker Engine kjører. 'Local' starter opp nødvendige "bakgrunnsapper" i Docker.
 (Uten 'local' må bakgrunnsapper startes manuelt.)
 
+Vi har endret fra Github Container Registry til Google Artifact Registry for pakker (images). For å autentisere mot
+GAR må man først ha installert `gcloud cli` og autentisere seg med `gcloud auth login`. <br>
+Videre gjør man følgende for å autentisere Docker Daemon mot GAR: <br>
+`gcloud auth configure-docker europe-north1-docker.pkg.dev` <br>
+`gcloud auth print-access-token | docker login -u oauth2accesstoken
+--password-stdin https://europe-north1-docker.pkg.dev`
+
 **OBS!** Pga. hvordan MiljoUtils er implementert må profilene også defineres i miljøvariabelen SPRING_PROFILES_ACTIVE.
 
 ### Tekster
