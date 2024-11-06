@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -23,25 +24,31 @@ import org.springframework.web.bind.annotation.RestController
 class SystemregistrertInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll,
+    private val navYtelseProxy: NavYtelseProxy,
 ) {
     @GetMapping
     fun hentSystemregistrerteInntekter(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): SysteminntekterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
 
-        return SysteminntekterFrontend(
-            systeminntekter =
-                utbetalinger
-                    ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
-                    ?.map { mapToUtbetalingFrontend(it) },
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
-        )
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return navYtelseProxy.getNavYtelse(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
+
+            return SysteminntekterFrontend(
+                systeminntekter =
+                    utbetalinger
+                        ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
+                        ?.map { mapToUtbetalingFrontend(it) },
+                utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
+            )
+        }
     }
 
     private fun mapToUtbetalingFrontend(utbetaling: JsonOkonomiOpplysningUtbetaling): SysteminntektFrontend {
@@ -51,15 +58,15 @@ class SystemregistrertInntektRessurs(
             belop = utbetaling.netto,
         )
     }
-
-    data class SysteminntekterFrontend(
-        val systeminntekter: List<SysteminntektFrontend>? = null,
-        val utbetalingerFraNavFeilet: Boolean? = null,
-    )
-
-    data class SysteminntektFrontend(
-        val inntektType: String? = null,
-        val utbetalingsdato: String? = null,
-        val belop: Double? = null,
-    )
 }
+
+data class SysteminntekterFrontend(
+    val systeminntekter: List<SysteminntektFrontend>? = null,
+    val utbetalingerFraNavFeilet: Boolean? = null,
+)
+
+data class SysteminntektFrontend(
+    val inntektType: String? = null,
+    val utbetalingsdato: String? = null,
+    val belop: Double? = null,
+)
