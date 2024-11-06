@@ -15,7 +15,13 @@ interface IntegrasjonstatusRepository : UpsertRepository<Integrasjonstatus>, Lis
 
 @Service
 class IntegrasjonStatusService(private val repository: IntegrasjonstatusRepository) {
-    fun hasHusbankenFailed(soknadId: UUID): Boolean? = repository.findByIdOrNull(soknadId)?.feilStotteHusbanken
+    fun hasFetchHusbankenFailed(soknadId: UUID) = getStatus(soknadId)?.feilStotteHusbanken
+
+    fun hasFetchInntektSkatteetatenFailed(soknadId: UUID) = getStatus(soknadId)?.feilInntektSkatteetaten
+
+    fun hasFetchUtbetalingerFraNavFailed(soknadId: UUID) = getStatus(soknadId)?.feilUtbetalingerNav
+
+    private fun getStatus(soknadId: UUID) = repository.findByIdOrNull(soknadId)
 
     fun setUtbetalingerFraNavStatus(
         soknadId: UUID,
@@ -43,8 +49,6 @@ class IntegrasjonStatusService(private val repository: IntegrasjonstatusReposito
             .copy(feilInntektSkatteetaten = feilet)
             .let { repository.save(it) }
     }
-
-    fun getInntektSkatteetatenStatus(soknadId: UUID): Boolean? = repository.findByIdOrNull(soknadId)?.feilInntektSkatteetaten
 
     private fun findOrCreate(soknadId: UUID): Integrasjonstatus {
         return repository.findByIdOrNull(soknadId) ?: repository.save(Integrasjonstatus(soknadId))

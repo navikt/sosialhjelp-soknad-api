@@ -45,13 +45,19 @@ interface InntektSkatteetatenService {
     )
 }
 
+interface NavYtelseService {
+    fun getNavYtelse(soknadId: UUID): Inntekt?
+
+    fun getIntegrasjonStatusNavYtelse(soknadId: UUID): Boolean?
+}
+
 @Service
 @Transactional
 class InntektService(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val inntektSkatteetatenFetcher: InntektSkatteetatenFetcher,
-) : StudielanService, UtbetalingerService, InntektSkatteetatenService {
+) : StudielanService, UtbetalingerService, InntektSkatteetatenService, NavYtelseService {
     override fun getHarStudielan(soknadId: UUID): Boolean? {
         return okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.STUDIELAN_BEKREFTELSE }
@@ -134,7 +140,7 @@ class InntektService(
     }
 
     override fun getIntegrasjonStatusSkatt(soknadId: UUID): Boolean? {
-        return integrasjonStatusService.getInntektSkatteetatenStatus(soknadId)
+        return integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId)
     }
 
     override fun updateSamtykkeSkatt(
@@ -162,5 +168,13 @@ class InntektService(
                 InntektType.UTBETALING_FORSIKRING,
                 InntektType.UTBETALING_ANNET,
             )
+    }
+
+    override fun getNavYtelse(soknadId: UUID): Inntekt? {
+        return okonomiService.getInntekter(soknadId).find { it.type == InntektType.UTBETALING_NAVYTELSE }
+    }
+
+    override fun getIntegrasjonStatusNavYtelse(soknadId: UUID): Boolean? {
+        return integrasjonStatusService.hasFetchUtbetalingerFraNavFailed(soknadId)
     }
 }

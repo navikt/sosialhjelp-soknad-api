@@ -44,7 +44,7 @@ class BostotteServiceImpl(
                     samtykke = samtykke,
                     saker = okonomiService.getBostotteSaker(soknadId),
                     utbetalinger = okonomiService.getInntekter(soknadId).filter { it.type == InntektType.UTBETALING_HUSBANKEN },
-                    fetchHusbankenFeilet = integrasjonStatusService.hasHusbankenFailed(soknadId),
+                    fetchHusbankenFeilet = integrasjonStatusService.hasFetchHusbankenFailed(soknadId),
                 )
             }
     }
