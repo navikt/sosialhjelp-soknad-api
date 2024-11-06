@@ -25,7 +25,7 @@ class Tilgangskontroll(
         XsrfGenerator.sjekkXsrfToken(
             request.getHeader("X-XSRF-TOKEN"),
             behandlingsId,
-            environment.activeProfiles.contains("mock-alt"),
+            environment.activeProfiles.contains("mock-alt") || environment.activeProfiles.contains("local"),
         )
         verifiserBrukerHarTilgangTilSoknad(behandlingsId)
     }
