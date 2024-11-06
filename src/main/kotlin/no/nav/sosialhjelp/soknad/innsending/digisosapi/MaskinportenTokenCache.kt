@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -26,5 +27,5 @@ class MaskinportenTokenCache(
         redisTemplate.opsForValue().get(CacheKey(pid, scope))?.access_token
             ?.also { hitCounter.increment() } ?: null.also { missCounter.increment() }
 
-    data class CacheKey(val pid: String, val scope: String)
+    data class CacheKey(val pid: String, val scope: String) : Serializable
 }
