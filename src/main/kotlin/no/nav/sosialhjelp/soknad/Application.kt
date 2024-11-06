@@ -3,7 +3,9 @@ package no.nav.sosialhjelp.soknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 
+@ConfigurationPropertiesScan
 @SpringBootApplication
 class Application
 

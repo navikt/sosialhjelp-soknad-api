@@ -50,6 +50,7 @@ internal class DigisosApiServiceTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
     private val shadowProductionManager: ShadowProductionManager = mockk(relaxed = true)
     private val v2RegisterDataAdapter: SoknadV2AdapterService = mockk(relaxed = true)
+    private val maskinportenV2Service: MaskinportenV2Service = mockk()
 
     private val digisosApiService =
         DigisosApiService(
@@ -63,6 +64,7 @@ internal class DigisosApiServiceTest {
             shadowProductionManager,
             v2RegisterDataAdapter,
             mellomlagringService,
+            maskinportenV2Service,
         )
 
     private val eier = "12345678910"

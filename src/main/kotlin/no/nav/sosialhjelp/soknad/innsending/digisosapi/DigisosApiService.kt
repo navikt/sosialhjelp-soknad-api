@@ -39,6 +39,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
 class DigisosApiService(
@@ -52,6 +53,7 @@ class DigisosApiService(
     private val shadowProductionManager: ShadowProductionManager,
     private val v2AdapterService: V2AdapterService,
     private val mellomlagringService: MellomlagringService,
+    private val maskinportenV2Service: MaskinportenV2Service,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -112,7 +114,7 @@ class DigisosApiService(
                     dokumenter = filOpplastinger,
                     kommunenr = kommunenummer,
                     navEksternRefId = behandlingsId,
-                    token = token,
+                    token = digisosApiToken(),
                 )
             } catch (e: Exception) {
                 prometheusMetricsService.reportFeilet()
@@ -140,11 +142,11 @@ class DigisosApiService(
         utbetaltSince: LocalDateTime,
         planlagtBefore: LocalDateTime,
     ): Boolean {
-        val soknader = digisosApiV2Client.getSoknader(token)
+        val soknader = digisosApiV2Client.getSoknader(digisosApiToken())
         val innsynsfiler =
             soknader.map { soknad ->
                 soknad.digisosSoker?.metadata?.let {
-                    digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
+                    digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, digisosApiToken())
                 }
             }
         val utbetalte =
@@ -177,7 +179,7 @@ class DigisosApiService(
         hendelseSince: LocalDateTime,
         kommunenummer: String,
     ): Boolean {
-        val soknader = digisosApiV2Client.getSoknader(token)
+        val soknader = digisosApiV2Client.getSoknader(digisosApiToken())
         val hendelseTidspunkt =
             soknader.flatMap { soknad ->
                 soknad
@@ -185,7 +187,7 @@ class DigisosApiService(
                     ?.digisosSoker
                     ?.metadata
                     ?.let {
-                        digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, token)
+                        digisosApiV2Client.getInnsynsfil(soknad.fiksDigisosId, it, digisosApiToken())
                     }?.hendelser
                     ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
                     ?.mapNotNull { it.hendelsestidspunkt } ?: emptyList()
@@ -195,7 +197,7 @@ class DigisosApiService(
 
     // Instant.now().toEpochMilli()
     fun getTimestampSistSendtSoknad(token: String): Long? {
-        return digisosApiV2Client.getSoknader(token)
+        return digisosApiV2Client.getSoknader(digisosApiToken())
             .filter { it.originalSoknadNAV != null }
             .sortedByDescending { it.originalSoknadNAV?.timestampSendt }
             .firstNotNullOfOrNull { it.originalSoknadNAV?.timestampSendt }
@@ -330,6 +332,8 @@ class DigisosApiService(
     companion object {
         private val log = LoggerFactory.getLogger(DigisosApiService::class.java)
     }
+
+    private fun digisosApiToken(): String = maskinportenV2Service.getMaskinportenToken("ks:fiks", eier())
 }
 
 internal fun JsonInternalSoknad.humanifyHvaSokesOm() {

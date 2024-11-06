@@ -6,9 +6,14 @@ server:
   max-http-request-header-size: 16KB
 
 spring:
+  config:
+    # Importerer miljøvariabler fra .env.local
+    import:
+      - file:.env.local[.properties]
+
   data:
     redis:
-      password: ${REDIS_PASSWORD_CACHE:pw}
+      password: ${REDIS_PASSWORD_CACHE}
       host: ${REDIS_HOST_CACHE}
       username: ${REDIS_USERNAME_CACHE}
       port: ${REDIS_PORT_CACHE}
@@ -132,3 +137,9 @@ resilience4j:
     configs:
       default:
         max-attempts: 5
+
+maskinporten.v2:
+  endpoint: ${MASKINPORTEN_TOKEN_ENDPOINT}
+  client-id: ${MASKINPORTEN_CLIENT_ID}
+  client-jwk: ${MASKINPORTEN_CLIENT_JWK}
+  issuer: ${MASKINPORTEN_ISSUER}
