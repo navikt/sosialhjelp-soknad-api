@@ -108,7 +108,7 @@ spec:
     - name: KODEVERK_URL
       value: "https://kodeverk-api.nav.no"
     - name: KODEVERK_SCOPE
-      value: "api://dev-gcp.team-rocket.kodeverk-api/.default"
+      value: "dev-gcp.team-rocket.kodeverk-api"
     - name: KRR_AUDIENCE
       value: "dev-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
