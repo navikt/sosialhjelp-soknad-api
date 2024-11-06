@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -54,16 +55,22 @@ class OkonomiskeOpplysningerRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
     private val v2OkonomiAdapter: V2OkonomiAdapter,
+    private val okonomiskeOpplysningerProxy: OkonomiskeOpplysningerProxy,
 ) {
     @GetMapping
     fun hentOkonomiskeOpplysninger(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): VedleggFrontends {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = getUser()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        return hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return okonomiskeOpplysningerProxy.getOkonomiskeOpplysninger(behandlingsId)
+        } else {
+            val personId = getUser()
+            val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+
+            return hentBasertPaaMellomlagredeVedlegg(behandlingsId, personId, soknadUnderArbeid)
+        }
     }
 
     private fun hentBasertPaaMellomlagredeVedlegg(
@@ -124,42 +131,44 @@ class OkonomiskeOpplysningerRessurs(
         @RequestBody vedleggFrontend: VedleggFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = getUser()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonOkonomi =
-            soknad.jsonInternalSoknad
-                ?.soknad
-                ?.data
-                ?.okonomi ?: return
 
-        if (vedleggTypeToSoknadType.containsKey(vedleggFrontend.type)) {
-            val rader = vedleggFrontend.rader
-            if (rader != null) {
-                val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
-                when (getSoknadPath(vedleggFrontend.type)) {
-                    "utbetaling" ->
-                        if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
-                            addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
-                        } else {
-                            addAllUtbetalingerToJsonOkonomi(rader, jsonOkonomi.opplysninger, soknadType)
-                        }
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            okonomiskeOpplysningerProxy.updateOkonomiskeOpplysninger(behandlingsId, vedleggFrontend)
+        } else {
+            val personId = getUser()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonOkonomi =
+                soknad.jsonInternalSoknad
+                    ?.soknad
+                    ?.data
+                    ?.okonomi ?: return
 
-                    "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
-                    "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
-                    "formue" -> addAllFormuerToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
-                    "inntekt" -> addAllInntekterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+            if (vedleggTypeToSoknadType.containsKey(vedleggFrontend.type)) {
+                val rader = vedleggFrontend.rader
+                if (rader != null) {
+                    val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
+                    when (getSoknadPath(vedleggFrontend.type)) {
+                        "utbetaling" ->
+                            if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
+                                addAllInntekterToJsonOkonomiUtbetalinger(rader, jsonOkonomi.opplysninger, UTBETALING_HUSBANKEN)
+                            } else {
+                                addAllUtbetalingerToJsonOkonomi(rader, jsonOkonomi.opplysninger, soknadType)
+                            }
+
+                        "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(rader, vedleggFrontend.type, jsonOkonomi.opplysninger, soknadType)
+                        "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                        "formue" -> addAllFormuerToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                        "inntekt" -> addAllInntekterToJsonOkonomi(rader, jsonOkonomi.oversikt, soknadType)
+                    }
                 }
             }
+
+            setVedleggStatus(
+                vedleggFrontend = vedleggFrontend,
+                vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type),
+            )
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
-
-        setVedleggStatus(
-            vedleggFrontend = vedleggFrontend,
-            vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type),
-        )
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // ny modell
-        v2OkonomiAdapter.updateOkonomiskeOpplysninger(behandlingsId, vedleggFrontend)
     }
 
     private fun removeIkkePaakrevdeMellomlagredeVedlegg(
@@ -262,16 +271,16 @@ class OkonomiskeOpplysningerRessurs(
             else -> VedleggStatus.VedleggKreves
         }
 
-    data class VedleggFrontends(
-        var okonomiskeOpplysninger: List<VedleggFrontend>?,
-        // TODO Hvorfor må frontend ha oversikt over slettede vedlegg? Høre med Tore
-        var slettedeVedlegg: List<VedleggFrontend>?,
-        // TODO Hvorfor trenger frontend et eget flagg for dette? Høre med Tore
-        @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
-        var isOkonomiskeOpplysningerBekreftet: Boolean,
-    )
-
     companion object {
         private val log by logger()
     }
 }
+
+data class VedleggFrontends(
+    var okonomiskeOpplysninger: List<VedleggFrontend>?,
+    // TODO Hvorfor må frontend ha oversikt over slettede vedlegg? Høre med Tore
+    var slettedeVedlegg: List<VedleggFrontend>?,
+    // TODO Hvorfor trenger frontend et eget flagg for dette? Høre med Tore
+    @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
+    var isOkonomiskeOpplysningerBekreftet: Boolean,
+)
