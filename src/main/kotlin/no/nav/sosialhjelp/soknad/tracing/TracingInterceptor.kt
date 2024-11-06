@@ -37,7 +37,7 @@ class DefaultTracingInterceptor : TracingInterceptor {
 
 @Component
 @Profile("local")
-class LocalTracingInterceptor : HandlerInterceptor {
+class LocalTracingInterceptor : TracingInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
