@@ -7,7 +7,6 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -18,7 +17,7 @@ import java.util.UUID
 @Service
 class MaskinportenV2Service(
     private val maskinportenTokenCache: MaskinportenTokenCache,
-    @Value("maskinporten.v2") private val config: MaskinportenConfig,
+    private val config: MaskinportenProperties,
 ) {
     private val client: WebClient =
         WebClient.builder()
@@ -30,7 +29,7 @@ class MaskinportenV2Service(
         pid: String,
     ): String =
         maskinportenTokenCache.get(pid, scope) ?: obtainMaskinportenToken(scope, pid)
-            .also { token -> maskinportenTokenCache.put(pid, scope, token) }
+            .also { obtainedToken -> maskinportenTokenCache.put(pid, scope, obtainedToken) }
             .access_token
 
     private fun obtainMaskinportenToken(
@@ -44,7 +43,8 @@ class MaskinportenV2Service(
             .bodyToMono(MaskinportenToken::class.java)
             .blockOptional().orElseThrow { error("Failed to obtain Maskinporten token") }
 
-    private fun jwtBearerGrant(assertion: String) = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=$assertion"
+    private fun jwtBearerGrant(assertion: String) =
+        "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=$assertion"
 
     private fun getMaskinportenScope(
         scope: String,
