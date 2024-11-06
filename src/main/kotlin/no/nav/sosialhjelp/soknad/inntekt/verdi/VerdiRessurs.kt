@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
@@ -19,7 +20,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.V2FormueAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -39,32 +39,37 @@ class VerdiRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
-    private val v2FormueAdapter: V2FormueAdapter,
+    private val verdierProxy: VerdiProxy,
 ) {
     @GetMapping
     fun hentVerdier(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): VerdierFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = soknad.soknad.data.okonomi
 
-        if (okonomi.opplysninger.bekreftelse == null) {
-            return VerdierFrontend()
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return verdierProxy.getVerdier(behandlingsId)
+        } else {
+            val eier = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = soknad.soknad.data.okonomi
+
+            if (okonomi.opplysninger.bekreftelse == null) {
+                return VerdierFrontend()
+            }
+
+            return VerdierFrontend(
+                bekreftelse = getBekreftelse(okonomi.opplysninger),
+                bolig = hasVerdiType(okonomi.oversikt, VERDI_BOLIG),
+                campingvogn = hasVerdiType(okonomi.oversikt, VERDI_CAMPINGVOGN),
+                kjoretoy = hasVerdiType(okonomi.oversikt, VERDI_KJORETOY),
+                fritidseiendom = hasVerdiType(okonomi.oversikt, VERDI_FRITIDSEIENDOM),
+                annet = hasVerdiType(okonomi.oversikt, VERDI_ANNET),
+                beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi,
+            )
         }
-
-        return VerdierFrontend(
-            bekreftelse = getBekreftelse(okonomi.opplysninger),
-            bolig = hasVerdiType(okonomi.oversikt, VERDI_BOLIG),
-            campingvogn = hasVerdiType(okonomi.oversikt, VERDI_CAMPINGVOGN),
-            kjoretoy = hasVerdiType(okonomi.oversikt, VERDI_KJORETOY),
-            fritidseiendom = hasVerdiType(okonomi.oversikt, VERDI_FRITIDSEIENDOM),
-            annet = hasVerdiType(okonomi.oversikt, VERDI_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.verdi,
-        )
     }
 
     @PutMapping
@@ -73,34 +78,36 @@ class VerdiRessurs(
         @RequestBody verdierFrontend: VerdierFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_VERDI,
-            verdierFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.eierandeler"),
-        )
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            verdierProxy.updateVerdier(behandlingsId, verdierFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        when (verdierFrontend.bekreftelse) {
-            true -> {
-                setVerdier(okonomi.oversikt, verdierFrontend)
-                setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
+            setBekreftelse(
+                okonomi.opplysninger,
+                BEKREFTELSE_VERDI,
+                verdierFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel("inntekt.eierandeler"),
+            )
+
+            when (verdierFrontend.bekreftelse) {
+                true -> {
+                    setVerdier(okonomi.oversikt, verdierFrontend)
+                    setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
+                }
+                else -> {
+                    setAllVerdierToFalse(okonomi.oversikt)
+                    setBeskrivelseAvAnnetBlank(okonomi.opplysninger)
+                }
             }
-            else -> {
-                setAllVerdierToFalse(okonomi.oversikt)
-                setBeskrivelseAvAnnetBlank(okonomi.opplysninger)
-            }
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // NyModell
-        v2FormueAdapter.leggTilVerdi(behandlingsId, verdierFrontend)
     }
 
     private fun setVerdier(

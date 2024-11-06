@@ -12,6 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
@@ -20,7 +21,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.V2FormueAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -40,32 +40,37 @@ class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
-    private val okonomiAdapter: V2FormueAdapter,
+    private val formueProxy: FormueProxy,
 ) {
     @GetMapping
     fun hentFormue(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): FormueFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = soknad.soknad.data.okonomi
 
-        if (okonomi.opplysninger.bekreftelse == null) {
-            return FormueFrontend(beskrivelseAvAnnet = null)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return formueProxy.getFormue(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = soknad.soknad.data.okonomi
+
+            if (okonomi.opplysninger.bekreftelse == null) {
+                return FormueFrontend(beskrivelseAvAnnet = null)
+            }
+
+            return FormueFrontend(
+                brukskonto = hasFormueType(okonomi.oversikt, FORMUE_BRUKSKONTO),
+                sparekonto = hasFormueType(okonomi.oversikt, FORMUE_SPAREKONTO),
+                bsu = hasFormueType(okonomi.oversikt, FORMUE_BSU),
+                livsforsikring = hasFormueType(okonomi.oversikt, FORMUE_LIVSFORSIKRING),
+                verdipapirer = hasFormueType(okonomi.oversikt, FORMUE_VERDIPAPIRER),
+                annet = hasFormueType(okonomi.oversikt, FORMUE_ANNET),
+                beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing,
+            )
         }
-
-        return FormueFrontend(
-            brukskonto = hasFormueType(okonomi.oversikt, FORMUE_BRUKSKONTO),
-            sparekonto = hasFormueType(okonomi.oversikt, FORMUE_SPAREKONTO),
-            bsu = hasFormueType(okonomi.oversikt, FORMUE_BSU),
-            livsforsikring = hasFormueType(okonomi.oversikt, FORMUE_LIVSFORSIKRING),
-            verdipapirer = hasFormueType(okonomi.oversikt, FORMUE_VERDIPAPIRER),
-            annet = hasFormueType(okonomi.oversikt, FORMUE_ANNET),
-            beskrivelseAvAnnet = okonomi.opplysninger.beskrivelseAvAnnet?.sparing,
-        )
     }
 
     @PutMapping
@@ -74,28 +79,30 @@ class FormueRessurs(
         @RequestBody formueFrontend: FormueFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        val hasAnyFormueType =
-            formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
-                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_SPARING,
-            hasAnyFormueType,
-            textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
-        )
-        setFormue(okonomi.oversikt, formueFrontend)
-        setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            formueProxy.updateFormue(behandlingsId, formueFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        // nyModell
-        okonomiAdapter.leggTilFormue(behandlingsId, formueFrontend)
+            val hasAnyFormueType =
+                formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
+                    formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
+            setBekreftelse(
+                okonomi.opplysninger,
+                BEKREFTELSE_SPARING,
+                hasAnyFormueType,
+                textService.getJsonOkonomiTittel("inntekt.bankinnskudd"),
+            )
+            setFormue(okonomi.oversikt, formueFrontend)
+            setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+        }
     }
 
     private fun setFormue(
