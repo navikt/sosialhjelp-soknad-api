@@ -27,7 +27,7 @@ class OppsummeringRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): Oppsummering {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        return oppsummeringService.hentOppsummering(eier, behandlingsId)
+        val personId = SubjectHandlerUtils.getUserIdFromToken()
+        return oppsummeringService.hentOppsummering(personId, behandlingsId)
     }
 }
