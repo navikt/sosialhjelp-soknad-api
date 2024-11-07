@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
@@ -85,5 +86,5 @@ enum class AnnenDokumentasjonType(
     BEHOV(dokumentasjonForventet = true),
     ;
 
-    override val group: String get() = "Generell Dokumentasjon"
+    override val group: VedleggGruppe get() = VedleggGruppe.GenerelleVedlegg
 }
