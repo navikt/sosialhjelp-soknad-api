@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
 import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleController
@@ -7,6 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
@@ -16,6 +18,7 @@ class SendSoknadProxy(
     private val lifecycleController: SoknadLifecycleController,
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
+    private val jacksonObjectMapper: ObjectMapper,
 ) {
     fun sendSoknad(soknadId: String): SendTilUrlFrontend {
         return lifecycleController
@@ -24,6 +27,10 @@ class SendSoknadProxy(
                 forrigeSoknadSendt = getForrigeSoknadSendt(soknadId),
                 antallDokumenter = getNumberOfDocuments(soknadId),
             )
+            .also {
+                LoggerFactory.getLogger(this::class.java.simpleName)
+                    .info("Soknad Sendt: ${jacksonObjectMapper.writeValueAsString(it)}")
+            }
     }
 
     private fun getForrigeSoknadSendt(soknadId: String): LocalDateTime? {

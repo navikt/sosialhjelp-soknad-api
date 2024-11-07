@@ -143,6 +143,9 @@ class OkonomiskeOpplysningerRessurs(
                     ?.data
                     ?.okonomi ?: return
 
+            // TODO Er det riktig at backend skal styre om det skal rendres input-felter ?
+            // F.eks. skattemelding|skattemelding finnes ikke i mapperen - og får dermed ingen rader satt...
+            // dette gjør at det ikke rendres noe input-felter for typen i frontend
             if (vedleggTypeToSoknadType.containsKey(vedleggFrontend.type)) {
                 val rader = vedleggFrontend.rader
                 if (rader != null) {
