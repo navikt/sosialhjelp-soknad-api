@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.oppsummering.steg.ArbeidOgUtdanningSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.BegrunnelseSteg
@@ -28,7 +27,6 @@ import java.util.UUID
 class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val jsonGenerator: JsonInternalSoknadGenerator,
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
