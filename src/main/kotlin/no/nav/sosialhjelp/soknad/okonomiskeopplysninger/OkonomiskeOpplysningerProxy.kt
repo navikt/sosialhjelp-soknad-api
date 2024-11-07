@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -63,7 +62,7 @@ private fun DokumentasjonDto.toVedleggFrontend(): VedleggFrontend {
         type = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType"),
         alleredeLevert = dokumentasjonStatus == DokumentasjonStatus.LEVERT_TIDLIGERE,
         rader = detaljer?.map { it.toVedleggRadFrontend() },
-        gruppe = VedleggGruppe.valueOf(gruppe),
+        gruppe = gruppe,
         vedleggStatus = dokumentasjonStatus.toVedleggStatus(),
         filer = dokumenter.map { DokumentUpload(it.filnavn, it.dokumentId.toString()) },
     )
