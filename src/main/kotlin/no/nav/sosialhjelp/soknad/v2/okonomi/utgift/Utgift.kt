@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
@@ -53,12 +54,12 @@ enum class UtgiftType(
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
     ;
 
-    override val group: String get() =
+    override val group: VedleggGruppe get() =
         when (this) {
-            UTGIFTER_HUSLEIE, UTGIFTER_ANNET_BO -> "Bosituasjon"
-            BARNEBIDRAG_BETALER -> "Familie"
-            UTGIFTER_ANDRE_UTGIFTER -> "Andre utgifter"
-            else -> "Utgifter"
+            UTGIFTER_HUSLEIE, UTGIFTER_ANNET_BO -> VedleggGruppe.Bosituasjon
+            BARNEBIDRAG_BETALER -> VedleggGruppe.Familie
+            UTGIFTER_ANDRE_UTGIFTER -> VedleggGruppe.AndreUtgifter
+            else -> VedleggGruppe.Utgifter
         }
 }
 
