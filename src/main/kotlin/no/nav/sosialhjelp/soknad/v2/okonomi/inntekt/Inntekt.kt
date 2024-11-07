@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
@@ -47,11 +48,11 @@ enum class InntektType(
     UTBETALING_HUSBANKEN(dokumentasjonForventet = false),
     ;
 
-    override val group: String
+    override val group: VedleggGruppe
         get() =
             when (this) {
-                STUDIELAN_INNTEKT, SLUTTOPPGJOER, JOBB -> "Arbeid"
-                BARNEBIDRAG_MOTTAR -> "Familie"
-                else -> "Inntekt"
+                STUDIELAN_INNTEKT, SLUTTOPPGJOER, JOBB -> VedleggGruppe.Arbeid
+                BARNEBIDRAG_MOTTAR -> VedleggGruppe.Familie
+                else -> VedleggGruppe.Inntekt
             }
 }

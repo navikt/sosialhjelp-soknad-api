@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -55,7 +56,7 @@ data class ForventetDokumentasjonDto(
 
 data class DokumentasjonDto(
     val type: OpplysningType,
-    val gruppe: String,
+    val gruppe: VedleggGruppe,
     val detaljer: List<OkonomiDetaljDto>?,
     val dokumentasjonStatus: DokumentasjonStatus,
     val dokumenter: List<DokumentDto>,

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
@@ -31,5 +32,5 @@ enum class FormueType(
     VERDI_ANNET(dokumentasjonForventet = false),
     ;
 
-    override val group: String get() = "Inntekt"
+    override val group: VedleggGruppe get() = VedleggGruppe.Inntekt
 }
