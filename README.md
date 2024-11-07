@@ -39,6 +39,9 @@ Videre gjør man følgende for å autentisere Docker Daemon mot GAR: <br>
 `gcloud auth print-access-token | docker login -u oauth2accesstoken
 --password-stdin https://europe-north1-docker.pkg.dev`
 
+Dersom du får `Error: Cannot perform an interactive login from a non TTY device` i kommandoen over, kan du prøve å kjøre denne kommandoen i stedet:
+`ACCESS_TOKEN=$(gcloud auth print-access-token) echo $ACCESS_TOKEN | docker login -u oauth2accesstoken --password-stdin https://europe-north1-docker.pkg.dev`
+
 **OBS!** Pga. hvordan MiljoUtils er implementert må profilene også defineres i miljøvariabelen SPRING_PROFILES_ACTIVE.
 
 ### Tekster
