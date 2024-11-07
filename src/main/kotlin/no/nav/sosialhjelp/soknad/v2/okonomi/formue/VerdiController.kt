@@ -21,10 +21,9 @@ class VerdiController(
     fun getVerdier(
         @PathVariable("soknadId") soknadId: UUID,
     ): VerdierDto {
-        // TODO må først sjekke bekreftelse
         return verdiService.getVerdier(soknadId)?.let { verdier ->
             if (verdier.isEmpty()) {
-                VerdierDto(bekreftelse = false)
+                VerdierDto(bekreftelse = verdiService.getBekreftelse(soknadId))
             } else {
                 verdier.toVerdierDto(hasBekreftelse = true)
             }

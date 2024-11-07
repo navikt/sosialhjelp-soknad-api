@@ -22,7 +22,7 @@ data class Kontakt(
     val telefonnummer: Telefonnummer = Telefonnummer(),
     @Embedded.Empty
     val adresser: Adresser = Adresser(),
-    val mottaker: NavEnhet = NavEnhet(),
+    val mottaker: NavEnhet? = null,
 ) : DomainRoot {
     override fun getDbId() = soknadId
 }

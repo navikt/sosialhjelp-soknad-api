@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
@@ -9,6 +10,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -39,6 +41,7 @@ class InformasjonRessurs(
     private val kortSoknadService: KortSoknadService,
     private val soknadMetadataService: SoknadMetadataService,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
     @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     companion object {
@@ -82,19 +85,20 @@ class InformasjonRessurs(
         if (person === null) log.error("Fant ikke person for bruker")
 
         val numRecentlySent =
-            soknadMetadataService.getNumberOfSoknaderSentAfter(
-                personId = eier,
-                minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
-            )
+            if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                log.info("Søknad satt opp med ny datamodell")
 
-        val pabegynteSoknader: List<PabegyntSoknad> = soknadMetadataService.getOpenSoknader(eier).toPabegynteSoknader()
-
-//        val numRecentlySent =
-//            soknadMetadataRepository
-//                .hentInnsendteSoknaderForBrukerEtterTidspunkt(
-//                    eier,
-//                    LocalDateTime.now().minusDays(FJORTEN_DAGER),
-//                ).size
+                soknadMetadataService.getNumberOfSoknaderSentAfter(
+                    personId = eier,
+                    minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
+                )
+            } else {
+                soknadMetadataRepository
+                    .hentInnsendteSoknaderForBrukerEtterTidspunkt(
+                        eier,
+                        LocalDateTime.now().minusDays(FJORTEN_DAGER),
+                    ).size
+            }
 
         return SessionResponse(
             userBlocked = personService.harAdressebeskyttelse(eier),
