@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile
 class OpplastetVedleggRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val mellomlagringService: MellomlagringService,
+    private val dokumentProxy: DokumentProxy,
 ) {
     @GetMapping("/{behandlingsId}/{dokumentId}/fil")
     @Operation(summary = "Hent innhold i dokument")
@@ -50,24 +52,28 @@ class OpplastetVedleggRessurs(
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        log.info("Forsøker å hente dokument $dokumentId fra mellomlagring hos KS")
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return dokumentProxy.getDokument(behandlingsId, dokumentId, response)
+        } else {
+            log.info("Forsøker å hente dokument $dokumentId fra mellomlagring hos KS")
 
-        val dokument = mellomlagringService.getVedlegg(behandlingsId, dokumentId)
+            val dokument = mellomlagringService.getVedlegg(behandlingsId, dokumentId)
 
-        if (dokument == null) {
-            log.error("Fant ikke dokument $dokumentId hos KS")
-            throw IkkeFunnetException("Fant ikke vedlegg $dokumentId")
+            if (dokument == null) {
+                log.error("Fant ikke dokument $dokumentId hos KS")
+                throw IkkeFunnetException("Fant ikke vedlegg $dokumentId")
+            }
+
+            val contentType = MediaType.parseMediaType(detectMimeType(dokument.data))
+            val contentDisposition = "attachment; filename=\"${dokument.filnavn}\""
+            log.info("Fant dokument $dokumentId hos KS")
+
+            return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .contentType(contentType)
+                .body(dokument.data)
         }
-
-        val contentType = MediaType.parseMediaType(detectMimeType(dokument.data))
-        val contentDisposition = "attachment; filename=\"${dokument.filnavn}\""
-        log.info("Fant dokument $dokumentId hos KS")
-
-        return ResponseEntity
-            .ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-            .contentType(contentType)
-            .body(dokument.data)
     }
 
     @PostMapping("/{behandlingsId}/{dokumentasjonType}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -78,12 +84,16 @@ class OpplastetVedleggRessurs(
     ): DokumentUpload {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
-        val orginalData = VedleggUtils.getByteArray(fil)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return dokumentProxy.uploadDocument(behandlingsId, dokumentasjonType, fil)
+        } else {
+            val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
+            val orginalData = VedleggUtils.getByteArray(fil)
 
-        return mellomlagringService
-            .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
-            .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
+            return mellomlagringService
+                .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
+                .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
+        }
     }
 
     @DeleteMapping("/{behandlingsId}/{dokumentId}")
@@ -92,9 +102,13 @@ class OpplastetVedleggRessurs(
         @PathVariable("dokumentId") dokumentId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-
         log.info("Sletter dokument $dokumentId fra KS mellomlagring")
-        mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, dokumentId)
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            dokumentProxy.deleteDocument(behandlingsId, dokumentId)
+        } else {
+            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, dokumentId)
+        }
     }
 
     companion object {
