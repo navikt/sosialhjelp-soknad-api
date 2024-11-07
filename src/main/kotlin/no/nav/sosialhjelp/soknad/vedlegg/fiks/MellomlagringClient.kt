@@ -14,7 +14,9 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Compani
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
@@ -26,6 +28,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
@@ -105,7 +108,7 @@ class MellomlagringClientImpl(
     }
 
     override fun getDokumentMetadata(soknadId: UUID): MellomlagringDto? {
-        TODO("Not yet implemented")
+        return getMellomlagredeVedlegg(soknadId.toString())
     }
 
     /**
@@ -141,7 +144,19 @@ class MellomlagringClientImpl(
         filnavn: String,
         data: ByteArray,
     ) {
-        TODO("Not yet implemented")
+        postVedlegg(
+            navEksternId = soknadId.toString(),
+            filOpplasting =
+                FilOpplasting(
+                    data = ByteArrayInputStream(data),
+                    metadata =
+                        FilMetadata(
+                            filnavn = filnavn,
+                            mimetype = FileDetectionUtils.detectMimeType(data),
+                            storrelse = data.size.toLong(),
+                        ),
+                ),
+        )
     }
 
     private fun lastOpp(
@@ -244,7 +259,7 @@ class MellomlagringClientImpl(
         soknadId: UUID,
         dokumentId: UUID,
     ) {
-        TODO("Not yet implemented")
+        deleteVedlegg(soknadId.toString(), dokumentId.toString())
     }
 
     private fun createHttpEntityOfString(
