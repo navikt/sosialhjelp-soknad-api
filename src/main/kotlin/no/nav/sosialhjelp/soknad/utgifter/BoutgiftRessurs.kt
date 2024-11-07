@@ -16,6 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt
@@ -25,7 +26,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -45,32 +45,37 @@ class BoutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
-    private val v2ControllerAdapter: V2ControllerAdapter,
+    private val boutgifterProxy: BoutgifterProxy,
 ) {
     @GetMapping
     fun hentBoutgifter(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BoutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val jsonInternalSoknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val soknad = jsonInternalSoknad.soknad
-        val okonomi = soknad.data.okonomi
-        if (okonomi.opplysninger.bekreftelse == null) {
-            return BoutgifterFrontend(null, skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi))
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return boutgifterProxy.getBoutgifter(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val jsonInternalSoknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val soknad = jsonInternalSoknad.soknad
+            val okonomi = soknad.data.okonomi
+            if (okonomi.opplysninger.bekreftelse == null) {
+                return BoutgifterFrontend(null, skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi))
+            }
+            return BoutgifterFrontend(
+                bekreftelse = getBekreftelse(okonomi.opplysninger),
+                husleie = getUtgiftstype(okonomi.oversikt, UTGIFTER_HUSLEIE),
+                strom = getUtgiftstype(okonomi.opplysninger, UTGIFTER_STROM),
+                kommunalAvgift = getUtgiftstype(okonomi.opplysninger, UTGIFTER_KOMMUNAL_AVGIFT),
+                oppvarming = getUtgiftstype(okonomi.opplysninger, UTGIFTER_OPPVARMING),
+                boliglan = getUtgiftstype(okonomi.oversikt, UTGIFTER_BOLIGLAN_AVDRAG),
+                annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BO),
+                skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi),
+            )
         }
-        return BoutgifterFrontend(
-            bekreftelse = getBekreftelse(okonomi.opplysninger),
-            husleie = getUtgiftstype(okonomi.oversikt, UTGIFTER_HUSLEIE),
-            strom = getUtgiftstype(okonomi.opplysninger, UTGIFTER_STROM),
-            kommunalAvgift = getUtgiftstype(okonomi.opplysninger, UTGIFTER_KOMMUNAL_AVGIFT),
-            oppvarming = getUtgiftstype(okonomi.opplysninger, UTGIFTER_OPPVARMING),
-            boliglan = getUtgiftstype(okonomi.oversikt, UTGIFTER_BOLIGLAN_AVDRAG),
-            annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BO),
-            skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi),
-        )
     }
 
     @PutMapping
@@ -79,23 +84,25 @@ class BoutgiftRessurs(
         @RequestBody boutgifterFrontend: BoutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_BOUTGIFTER,
-            boutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.boutgift"),
-        )
-        setBoutgifter(okonomi, boutgifterFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
-        // nyModell
-        v2ControllerAdapter.updateBoutgifter(behandlingsId, boutgifterFrontend)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            boutgifterProxy.updateBoutgifter(behandlingsId, boutgifterFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = jsonInternalSoknad.soknad.data.okonomi
+            setBekreftelse(
+                okonomi.opplysninger,
+                BEKREFTELSE_BOUTGIFTER,
+                boutgifterFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel("utgifter.boutgift"),
+            )
+            setBoutgifter(okonomi, boutgifterFrontend)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+        }
     }
 
     private fun setBoutgifter(
