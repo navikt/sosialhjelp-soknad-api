@@ -9,6 +9,8 @@ import java.util.UUID
 interface VerdiService {
     fun getVerdier(soknadId: UUID): Set<Formue>?
 
+    fun getBekreftelse(soknadId: UUID): Boolean?
+
     fun removeVerdier(soknadId: UUID)
 
     fun updateVerdier(
@@ -28,6 +30,12 @@ class VerdiServiceImpl(
 ) : VerdiService {
     override fun getVerdier(soknadId: UUID): Set<Formue>? =
         okonomiService.getFormuer(soknadId).filter { verdiTyper.contains(it.type) }.toSet()
+
+    override fun getBekreftelse(soknadId: UUID): Boolean? =
+        okonomiService
+            .getBekreftelser(soknadId)
+            .find { it.type == BekreftelseType.BEKREFTELSE_VERDI }
+            ?.verdi
 
     override fun removeVerdier(soknadId: UUID) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_VERDI, verdi = false)

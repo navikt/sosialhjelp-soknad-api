@@ -47,6 +47,7 @@ internal class InformasjonRessursTest {
             pabegynteSoknaderService = pabegynteSoknaderService,
             kortSoknadService = kortSoknadService,
             maxUploadSize = DataSize.ofTerabytes(10),
+            soknadMetadataService = mockk(relaxed = true),
         )
 
     @BeforeEach

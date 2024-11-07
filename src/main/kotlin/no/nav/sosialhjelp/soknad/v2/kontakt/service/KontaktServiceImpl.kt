@@ -98,7 +98,7 @@ class KontaktServiceImpl(
             .also { adresse ->
                 if (!MiljoUtils.isMockAltProfil()) {
                     // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-                    if (oldAdresse.mottaker.kommunenummer == adresse.mottaker.kommunenummer && oldAdresse.adresser.adressevalg != null) {
+                    if (oldAdresse.mottaker?.kommunenummer == adresse.mottaker?.kommunenummer && oldAdresse.adresser.adressevalg != null) {
                         return@also
                     }
                     val token = SubjectHandlerUtils.getTokenOrNull()
@@ -106,7 +106,7 @@ class KontaktServiceImpl(
                         logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
                         return@also
                     }
-                    val kommunenummer = adresse.mottaker.kommunenummer
+                    val kommunenummer = adresse.mottaker?.kommunenummer
                     if (kommunenummer == null) {
                         logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
                         return@also

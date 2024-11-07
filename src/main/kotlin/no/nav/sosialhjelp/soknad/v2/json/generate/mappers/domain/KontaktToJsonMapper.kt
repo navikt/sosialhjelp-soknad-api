@@ -66,8 +66,8 @@ class KontaktToJsonMapper(
                 }
             }
 
-            json.mottaker = kontakt.mottaker.toJsonSoknadsmottakerInternal()
-            json.soknad.mottaker = kontakt.mottaker.toJsonSoknadsmottaker()
+            json.mottaker = kontakt.mottaker?.toJsonSoknadsmottakerInternal()
+            json.soknad.mottaker = kontakt.mottaker?.toJsonSoknadsmottaker()
         }
 
         private fun JsonInternalSoknad.initializeObjects() {
