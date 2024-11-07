@@ -19,6 +19,11 @@ class SoknadMetadataService(
             .let { soknadMetadataRepository.save(it) }
     }
 
+    fun getAllSoknaderMetadataForBruker(soknadId: UUID): List<SoknadMetadata>? {
+        return soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.let { metadata -> soknadMetadataRepository.findByPersonId(metadata.personId) }
+    }
+
     fun updateSoknadSendt(
         soknadId: UUID,
         innsendingstidspunkt: LocalDateTime,
