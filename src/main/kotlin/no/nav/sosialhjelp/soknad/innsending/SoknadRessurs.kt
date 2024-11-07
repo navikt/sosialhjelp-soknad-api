@@ -180,6 +180,7 @@ class SoknadRessurs(
         return if (nyDatamodellAktiv) {
             lifecycleController.createSoknad(soknadstype, response)
                 .let { StartSoknadResponse(it.soknadId.toString(), it.useKortSoknad) }
+                .also { logger.info("Starter soknad med ny datamodell") }
         } else {
             soknadServiceOld
                 .startSoknad(token, isKort)
