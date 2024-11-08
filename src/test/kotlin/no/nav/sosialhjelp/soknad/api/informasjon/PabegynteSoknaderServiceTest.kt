@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -24,6 +25,8 @@ internal class PabegynteSoknaderServiceTest {
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
 
         assertThat(pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr")).isEmpty()
+
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @Test
