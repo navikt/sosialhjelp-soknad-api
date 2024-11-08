@@ -43,7 +43,7 @@ internal class TelefonnummerRessursTest {
             tilgangskontroll,
             telefonnummerSystemdata,
             soknadUnderArbeidRepository,
-            controllerAdapter,
+            mockk(relaxed = true),
         )
 
     @BeforeEach

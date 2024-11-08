@@ -38,7 +38,7 @@ internal class BasisPersonaliaRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
 
     private val basisPersonaliaRessurs =
-        BasisPersonaliaRessurs(kodeverkService, soknadUnderArbeidRepository, tilgangskontroll)
+        BasisPersonaliaRessurs(kodeverkService, soknadUnderArbeidRepository, tilgangskontroll, mockk(relaxed = true))
 
     @BeforeEach
     fun setUp() {

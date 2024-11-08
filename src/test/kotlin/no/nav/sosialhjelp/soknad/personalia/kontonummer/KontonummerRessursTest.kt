@@ -39,7 +39,7 @@ internal class KontonummerRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             kontonummerService,
-            controllerAdapter,
+            mockk(relaxed = true),
         )
 
     @BeforeEach

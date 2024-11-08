@@ -33,7 +33,7 @@ class KontaktMapperTest {
         mapper.doMapping(kontakt, json)
 
         json.assertMidlertidigAdresse(kontakt.adresser.midlertidig)
-        json.assertNavEnhet(kontakt.mottaker)
+        json.assertNavEnhet(kontakt.mottaker!!)
 
         with(json.soknad.data.personalia) {
             assertTelefonnummerBruker(kontakt.telefonnummer)
