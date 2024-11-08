@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.repository
 
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -17,7 +18,7 @@ class SoknadMetadataValidationTest {
         assertDoesNotThrow {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
                 mottakerKommunenummer = "1234",
                 digisosId = UUID.randomUUID(),
             )
@@ -26,7 +27,7 @@ class SoknadMetadataValidationTest {
         assertDoesNotThrow {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
                 mottakerKommunenummer = "1234",
                 digisosId = UUID.randomUUID(),
             )
@@ -44,7 +45,7 @@ class SoknadMetadataValidationTest {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
             )
         }.isInstanceOf(IllegalStateException::class.java)
     }
@@ -54,7 +55,7 @@ class SoknadMetadataValidationTest {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
                 mottakerKommunenummer = "1234",
             )
         }.isInstanceOf(IllegalStateException::class.java)
@@ -71,7 +72,7 @@ class SoknadMetadataValidationTest {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
             )
         }.isInstanceOf(IllegalStateException::class.java)
     }
@@ -81,7 +82,7 @@ class SoknadMetadataValidationTest {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.MOTTATT_FSL,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
                 mottakerKommunenummer = "1234",
             )
         }.isInstanceOf(IllegalStateException::class.java)
@@ -92,7 +93,7 @@ class SoknadMetadataValidationTest {
         assertThatThrownBy {
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
                 mottakerKommunenummer = "12345",
             )
         }

@@ -53,7 +53,13 @@ internal class ForsorgerpliktRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
 
-    private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository, controllerAdapter)
+    private val forsorgerpliktRessurs =
+        ForsorgerpliktRessurs(
+            tilgangskontroll,
+            textService,
+            soknadUnderArbeidRepository,
+            mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

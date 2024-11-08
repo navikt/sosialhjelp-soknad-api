@@ -32,7 +32,7 @@ internal class BegrunnelseRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
-    private val begrunnelseRessurs = BegrunnelseRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
+    private val begrunnelseRessurs = BegrunnelseRessurs(tilgangskontroll, soknadUnderArbeidRepository, mockk(relaxed = true))
 
     @BeforeEach
     fun setUp() {

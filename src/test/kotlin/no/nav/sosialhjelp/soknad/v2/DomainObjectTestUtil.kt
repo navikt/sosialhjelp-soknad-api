@@ -123,8 +123,11 @@ fun opprettSoknadMetadata(
         soknadId = soknadId,
         personId = personId,
         status = status,
-        opprettet = opprettetDato,
-        innsendt = innsendtDato,
+        tidspunkt =
+            no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt(
+                opprettet = opprettetDato,
+                sendtInn = innsendtDato,
+            ),
         mottakerKommunenummer = kommunenummer,
         digisosId = digisosId,
     )
