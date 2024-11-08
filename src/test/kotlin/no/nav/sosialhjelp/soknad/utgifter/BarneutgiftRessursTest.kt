@@ -22,6 +22,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -61,6 +62,7 @@ internal class BarneutgiftRessursTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

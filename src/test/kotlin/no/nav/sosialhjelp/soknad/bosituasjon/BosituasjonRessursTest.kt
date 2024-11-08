@@ -11,6 +11,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -46,6 +47,7 @@ internal class BosituasjonRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { controllerAdapter.updateBosituasjon(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

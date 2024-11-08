@@ -7,6 +7,7 @@ import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -57,6 +58,7 @@ class OkonomiskeOpplysningerRessursTest {
     @BeforeEach
     fun setUp() {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

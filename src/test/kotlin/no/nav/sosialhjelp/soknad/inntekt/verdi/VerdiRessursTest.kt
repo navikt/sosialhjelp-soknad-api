@@ -19,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -61,6 +62,7 @@ internal class VerdiRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
