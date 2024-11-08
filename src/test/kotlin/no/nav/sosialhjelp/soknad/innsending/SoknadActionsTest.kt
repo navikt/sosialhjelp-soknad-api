@@ -13,6 +13,7 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -84,6 +85,7 @@ internal class SoknadActionsTest {
         every { nedetidService.isInnenforNedetid } returns false
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhetFrontend()
         every { soknadUnderArbeidRepository.hentSoknad(any(String::class), any()) } returns createSoknadUnderArbeid(eier)
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

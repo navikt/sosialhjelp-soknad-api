@@ -10,6 +10,7 @@ import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -40,6 +41,7 @@ internal class BegrunnelseRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { controllerAdapter.updateBegrunnelse(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
