@@ -33,7 +33,7 @@ internal class UtdanningRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
 
-    private val utdanningRessurs = UtdanningRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
+    private val utdanningRessurs = UtdanningRessurs(tilgangskontroll, soknadUnderArbeidRepository, mockk(relaxed = true))
 
     @BeforeEach
     fun setUp() {
