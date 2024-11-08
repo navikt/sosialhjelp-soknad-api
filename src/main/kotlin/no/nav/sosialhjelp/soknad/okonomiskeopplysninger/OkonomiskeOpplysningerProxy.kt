@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
@@ -58,14 +60,29 @@ private fun ForventetDokumentasjonDto.toVedleggFrontends(opplysningerBekreftet: 
     )
 
 private fun DokumentasjonDto.toVedleggFrontend(): VedleggFrontend {
+    val vedleggType = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
+
     return VedleggFrontend(
-        type = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType"),
+        type = vedleggType,
         alleredeLevert = dokumentasjonStatus == DokumentasjonStatus.LEVERT_TIDLIGERE,
-        rader = detaljer?.map { it.toVedleggRadFrontend() },
+        rader = detaljer.resolveRader(vedleggType),
         gruppe = gruppe,
         vedleggStatus = dokumentasjonStatus.toVedleggStatus(),
         filer = dokumenter.map { DokumentUpload(it.filnavn, it.dokumentId.toString()) },
     )
+}
+
+// TODO Frontend rendrer input-felter basert på hva som returneres for den spesifikke typen
+// TODO Derfor må det sendes med et tomt element for typer som skal ha input...
+// TODO Dette bør gjøres annerledes på frontend
+private fun VedleggType.getRadForEmptyList(): List<VedleggRadFrontend> {
+    return VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[this]
+        ?.let { listOf(VedleggRadFrontend()) }
+        ?: emptyList()
+}
+
+private fun List<OkonomiDetaljDto>?.resolveRader(vedleggType: VedleggType): List<VedleggRadFrontend> {
+    return if (this.isNullOrEmpty()) vedleggType.getRadForEmptyList() else this.map { it.toVedleggRadFrontend() }
 }
 
 private fun OkonomiDetaljDto.toVedleggRadFrontend(): VedleggRadFrontend {

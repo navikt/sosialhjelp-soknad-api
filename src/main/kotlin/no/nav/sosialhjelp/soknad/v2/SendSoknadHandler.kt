@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
@@ -89,6 +90,15 @@ class SendSoknadHandler(
             isKortSoknad = soknadService.erKortSoknad(soknadId),
             innsendingTidspunkt = innsendingTidspunkt,
         )
+            .also {
+                // TODO Logger ut json så data kan sjekkes
+                if (MiljoUtils.isNonProduction()) {
+                    logger.info(
+                        "Følgende JsonInternalSoknad sendt: \n\n" +
+                            JsonSosialhjelpObjectMapper.createObjectMapper().writeValueAsString(json),
+                    )
+                }
+            }
     }
 
     private fun JsonInternalSoknad.toVedleggJson(): String =
