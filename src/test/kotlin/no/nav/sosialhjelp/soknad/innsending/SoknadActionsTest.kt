@@ -66,6 +66,7 @@ internal class SoknadActionsTest {
             digisosApiService,
             nedetidService,
             navEnhetService,
+            sendSoknadProxy = mockk(relaxed = true),
         )
 
     private val token = "token"

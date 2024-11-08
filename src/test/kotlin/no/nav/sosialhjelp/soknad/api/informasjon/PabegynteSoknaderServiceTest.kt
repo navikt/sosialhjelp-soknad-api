@@ -4,13 +4,20 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class PabegynteSoknaderServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val pabegynteSoknaderService = PabegynteSoknaderService(soknadMetadataRepository)
+    private val soknadMetadataService: SoknadMetadataService = mockk()
+
+    private val pabegynteSoknaderService =
+        PabegynteSoknaderService(
+            soknadMetadataService,
+            soknadMetadataRepository,
+        )
 
     @Test
     fun brukerHarIngenPabegynteSoknader() {

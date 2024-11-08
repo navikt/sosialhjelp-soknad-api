@@ -33,7 +33,12 @@ internal class BosituasjonRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
-    private val bosituasjonRessurs = BosituasjonRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
+    private val bosituasjonRessurs =
+        BosituasjonRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            bosituasjonProxy = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {
