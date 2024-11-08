@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.slot
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
@@ -15,6 +16,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -36,6 +38,11 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @MockkBean
     private lateinit var systemdataUpdater: SystemdataUpdater
+
+    @BeforeEach
+    fun setUp() {
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
+    }
 
     // "kopi" av logikken ved opprettelse av ny soknad i SoknadServiceOld
     @Test
