@@ -56,8 +56,7 @@ internal class SoknadRessursTest {
             systemdata,
             tilgangskontroll,
             nedetidService,
-            lifecycleController = mockk(relaxed = true),
-            v2MetadataService = mockk(relaxed = true),
+            soknadHandlerProxy = mockk(relaxed = true),
         )
 
     @BeforeEach
