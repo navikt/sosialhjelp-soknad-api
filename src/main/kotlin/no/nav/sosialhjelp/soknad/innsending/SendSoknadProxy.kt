@@ -20,9 +20,12 @@ class SendSoknadProxy(
     private val soknadMetadataService: SoknadMetadataService,
     private val jacksonObjectMapper: ObjectMapper,
 ) {
-    fun sendSoknad(soknadId: String): SendTilUrlFrontend {
+    fun sendSoknad(
+        soknadId: String,
+        token: String?,
+    ): SendTilUrlFrontend {
         return lifecycleController
-            .sendSoknad(UUID.fromString(soknadId))
+            .sendSoknad(UUID.fromString(soknadId), token)
             .toSendTilUrlFrontend(
                 forrigeSoknadSendt = getForrigeSoknadSendt(soknadId),
                 antallDokumenter = getNumberOfDocuments(soknadId),
