@@ -75,7 +75,9 @@ class InformasjonRessurs(
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {
-                runCatching { kortSoknadService.isQualified(token, kommunenummer) }.onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }.getOrNull()
+                runCatching { kortSoknadService.isQualified(token, kommunenummer) }
+                    .onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }
+                    .getOrNull()
             } else {
                 null
             }

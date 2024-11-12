@@ -1,20 +1,22 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectionTokenXSubstantial
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
     private val mineSakerMetadataService: MineSakerMetadataService,
+    private val mineSakerProxy: MineSakerProxy,
 ) {
     /**
      * Henter informasjon om innsendte søknader via SoknadMetadataRepository.
@@ -22,8 +24,10 @@ class MineSakerMetadataRessurs(
      */
     @GetMapping("/innsendte")
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        return mineSakerMetadataService.hentInnsendteSoknader(fnr)
+        return when (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            true -> mineSakerProxy.hentInnsendteSoknader(personId())
+            false -> mineSakerMetadataService.hentInnsendteSoknader(personId())
+        }
     }
 
     @Unprotected

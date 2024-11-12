@@ -34,7 +34,7 @@ class SendSoknadProxy(
     }
 
     private fun getForrigeSoknadSendt(soknadId: String): LocalDateTime? {
-        return soknadMetadataService.getAllSoknaderMetadataForBruker(UUID.fromString(soknadId))
+        return soknadMetadataService.getAllSoknaderMetadataForBrukerBySoknadId(UUID.fromString(soknadId))
             ?.let { metadataList ->
                 metadataList
                     .filter { it.soknadId != UUID.fromString(soknadId) }
