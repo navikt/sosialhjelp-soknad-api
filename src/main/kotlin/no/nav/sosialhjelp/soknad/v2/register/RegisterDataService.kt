@@ -8,7 +8,7 @@ interface RegisterDataFetcher {
     fun fetchAndSave(soknadId: UUID)
 
     // Implementeres og settes til false av fetchere som skal stoppe hele prosessen
-    fun continueOnError(): Boolean = true
+    fun exceptionOnError(): Boolean = false
 }
 
 @Service
@@ -44,7 +44,7 @@ class RegisterDataService(
             runCatching { fetcher.fetchAndSave(soknadId) }
                 .onFailure {
                     logger.warn("NyModell: Registerdata-fetcher feilet: $fetcher", it)
-                    if (!fetcher.continueOnError()) throw it
+                    if (fetcher.exceptionOnError()) throw it
                 }
         }
     }

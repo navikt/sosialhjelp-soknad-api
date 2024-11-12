@@ -171,21 +171,22 @@ class SoknadRessurs(
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        // Tillater å overstyre søknadstype i test-miljøene
-        val isKort =
-            if (MiljoUtils.isNonProduction()) {
-                when (soknadstype) {
-                    "kort" -> true
-                    "standard" -> false
-                    else -> false
-                }
-            } else {
-                false
-            }
 
         return if (nyDatamodellAktiv) {
             soknadHandlerProxy.createSoknad(soknadstype, response)
         } else {
+            // Tillater å overstyre søknadstype i test-miljøene
+            val isKort =
+                if (MiljoUtils.isNonProduction()) {
+                    when (soknadstype) {
+                        "kort" -> true
+                        "standard" -> false
+                        else -> false
+                    }
+                } else {
+                    false
+                }
+
             soknadServiceOld
                 .startSoknad(token, isKort)
                 .also {
