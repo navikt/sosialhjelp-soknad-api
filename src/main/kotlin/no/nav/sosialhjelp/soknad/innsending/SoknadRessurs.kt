@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -21,9 +20,6 @@ import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
-import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleController
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -36,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectedWithClaims(
@@ -51,8 +48,7 @@ class SoknadRessurs(
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
     private val nedetidService: NedetidService,
-    private val lifecycleController: SoknadLifecycleController,
-    private val v2MetadataService: SoknadMetadataService,
+    private val soknadHandlerProxy: SoknadHandlerProxy,
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
     fun hentXsrfCookie(
@@ -62,7 +58,13 @@ class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         response.addCookie(xsrfCookie(behandlingsId))
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId))
-        soknadServiceOld.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
+
+        if (nyDatamodellAktiv) {
+            soknadHandlerProxy.updateLastChanged(behandlingsId)
+        } else {
+            soknadServiceOld.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
+        }
+
         return true
     }
 
@@ -72,38 +74,42 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): Boolean {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = getUserIdFromToken()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        logger.info("Kjører ny runde med innhenting av Systemdata")
-        systemdata.update(soknadUnderArbeid)
-
-        val updatedJsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
-        val notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.jsonInternalSoknad
-
-        soknadUnderArbeid.jsonInternalSoknad
-            ?.soknad
-            ?.data
-            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
-            ?.soknad
-            ?.data
-            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
-        soknadUnderArbeid.jsonInternalSoknad
-            ?.soknad
-            ?.data
-            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
-        notUpdatedSoknadUnderArbeid.jsonInternalSoknad
-            ?.soknad
-            ?.data
-            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
-
-        return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
-            false
+        if (nyDatamodellAktiv) {
+            return soknadHandlerProxy.isRegisterdataChanged(behandlingsId)
         } else {
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-            true
+            val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
+
+            logger.info("Kjører ny runde med innhenting av Systemdata")
+            systemdata.update(soknadUnderArbeid)
+
+            val updatedJsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
+            val notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
+            val notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+            notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+            soknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
+            notUpdatedSoknadUnderArbeid.jsonInternalSoknad
+                ?.soknad
+                ?.data
+                ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
+
+            return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
+                false
+            } else {
+                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, personId())
+                true
+            }
         }
     }
 
@@ -129,7 +135,7 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): List<BekreftelseRessurs> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = getUserIdFromToken()
+        val eier = personId()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val bekreftelser: MutableList<JsonOkonomibekreftelse> = mutableListOf()
@@ -178,9 +184,7 @@ class SoknadRessurs(
             }
 
         return if (nyDatamodellAktiv) {
-            lifecycleController.createSoknad(soknadstype, response)
-                .let { StartSoknadResponse(it.soknadId.toString(), it.useKortSoknad) }
-                .also { logger.info("Starter soknad med ny datamodell") }
+            soknadHandlerProxy.createSoknad(soknadstype, response)
         } else {
             soknadServiceOld
                 .startSoknad(token, isKort)
@@ -197,7 +201,12 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        soknadServiceOld.avbrytSoknad(behandlingsId, referer)
+
+        if (nyDatamodellAktiv) {
+            soknadHandlerProxy.cancelSoknad(behandlingsId, referer)
+        } else {
+            soknadServiceOld.avbrytSoknad(behandlingsId, referer)
+        }
     }
 
     @GetMapping("/{behandlingsId}/isKort")
@@ -207,7 +216,7 @@ class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
 
         return if (nyDatamodellAktiv) {
-            v2MetadataService.getSoknadType(UUID.fromString(behandlingsId)) == SoknadType.KORT
+            soknadHandlerProxy.getSoknadType(UUID.fromString(behandlingsId))
         } else {
             soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
         }

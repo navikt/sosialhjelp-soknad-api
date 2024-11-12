@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class OppsummeringService(
@@ -45,25 +46,28 @@ class OppsummeringService(
         fnr: String,
         behandlingsId: String,
     ): Oppsummering {
-        val jsonInternalSoknad =
-            if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                jsonGenerator.createJsonInternalSoknad(UUID.fromString(behandlingsId))
-            } else {
-                val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr)
-                val jsonInternalSoknad =
-                    soknadUnderArbeid.jsonInternalSoknad
-                        ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-
-                if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
-                    log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
-                }
-                jsonInternalSoknad
+        return useActiveJsonInternalSoknad(behandlingsId).let {
+            when (it.soknad.data.soknadstype) {
+                JsonData.Soknadstype.KORT -> kortSoknadOppsummering(it)
+                else -> soknadOppsummering(it, getVedleggInfo(behandlingsId))
             }
+        }
+    }
 
-        return if (jsonInternalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
-            kortSoknadOppsummering(jsonInternalSoknad)
+    private fun useActiveJsonInternalSoknad(behandlingsId: String): JsonInternalSoknad {
+        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            jsonGenerator.createJsonInternalSoknad(UUID.fromString(behandlingsId))
         } else {
-            soknadOppsummering(jsonInternalSoknad, getVedleggInfo(behandlingsId))
+            soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId()).jsonInternalSoknad
+                ?.also { json ->
+                    if (json.vedlegg?.vedlegg?.isEmpty() == null) {
+                        log.info(
+                            "Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, " +
+                                "ettersom side 8 ble hoppet over",
+                        )
+                    }
+                }
+                ?: error("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         }
     }
 
