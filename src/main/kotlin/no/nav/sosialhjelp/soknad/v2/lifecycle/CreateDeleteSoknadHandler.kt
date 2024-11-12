@@ -32,18 +32,21 @@ class CreateDeleteSoknadHandler(
                 opprettetDato = metadata.tidspunkt.opprettet,
                 kortSoknad = isKort,
             ).also { soknadId ->
+                // TODO Håndter feil ved innhenting av registerdata
                 registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
 
     fun cancelSoknad(soknadId: UUID) {
-        soknadService
-            .getSoknad(soknadId)
-            .also {
-                mellomlagringService.deleteAll(it.id)
-                soknadService.deleteSoknad(it.id)
-                soknadMetadataService.deleteMetadata(it.id)
+        soknadService.getSoknad(soknadId)
+            .also { soknad ->
+                dokumentasjonService.findDokumentasjonForSoknad(soknad.id)
+                    .let { mellomlagringService.getAllVedlegg(soknadId) }
+                    .also { all -> if (all.isNotEmpty()) mellomlagringService.deleteAll(soknad.id) }
+
+                soknadService.deleteSoknad(soknad.id)
+                soknadMetadataService.deleteMetadata(soknad.id)
             }
     }
 
