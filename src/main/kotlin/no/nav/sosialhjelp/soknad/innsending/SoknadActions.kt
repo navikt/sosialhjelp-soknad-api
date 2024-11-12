@@ -66,7 +66,7 @@ class SoknadActions(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return sendSoknadProxy.sendSoknad(behandlingsId)
+            return sendSoknadProxy.sendSoknad(behandlingsId, token)
         } else {
             val personId = SubjectHandlerUtils.getUserIdFromToken()
 
