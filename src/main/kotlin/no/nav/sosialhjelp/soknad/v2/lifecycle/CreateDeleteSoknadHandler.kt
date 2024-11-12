@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
@@ -33,7 +34,9 @@ class CreateDeleteSoknadHandler(
                 kortSoknad = isKort,
             ).also { soknadId ->
                 // TODO Håndter feil ved innhenting av registerdata
-                registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
+                runCatching {
+                    registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
+                }.onFailure { logger.warn("Feil ved opprettelse av soknad. Innhenting av registerdata", it) }
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
@@ -54,15 +57,12 @@ class CreateDeleteSoknadHandler(
         soknadId: UUID,
         kortSoknad: Boolean,
     ) {
-        val obligatorisk =
-            if (kortSoknad) {
-                obligatoriskeDokumentasjonsTyperForKortSoknad
-            } else {
-                obligatoriskeDokumentasjonsTyper
-            }
-        obligatorisk
-            .forEach {
-                dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = it)
+        when (kortSoknad) {
+            true -> obligatoriskeDokumentasjonsTyperForKortSoknad
+            false -> obligatoriskeDokumentasjonsTyper
+        }
+            .forEach { opplysningType ->
+                dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = opplysningType)
             }
     }
 
@@ -70,6 +70,10 @@ class CreateDeleteSoknadHandler(
     // TODO PS: I denne slette-prosessen må man ikke røre mellomlagrede vedlegg
     fun deleteSoknad(soknadId: UUID) {
         soknadService.deleteSoknad(soknadId)
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 
