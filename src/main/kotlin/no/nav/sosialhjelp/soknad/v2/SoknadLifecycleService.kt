@@ -21,7 +21,10 @@ interface SoknadLifecycleService {
         referer: String?,
     )
 
-    fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime>
+    fun sendSoknad(
+        soknadId: UUID,
+        token: String?,
+    ): Pair<UUID, LocalDateTime>
 }
 
 @Service
@@ -44,11 +47,14 @@ class SoknadLifecycleServiceImpl(
             }
     }
 
-    override fun sendSoknad(soknadId: UUID): Pair<UUID, LocalDateTime> {
+    override fun sendSoknad(
+        soknadId: UUID,
+        token: String?,
+    ): Pair<UUID, LocalDateTime> {
         logger.info("Starter innsending av søknad.")
 
         val sendtInfo =
-            runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
+            runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId, token) }
                 .onFailure {
                     prometheusMetricsService.reportFeilet()
                     logger.error("Feil ved sending av søknad.", it)

@@ -37,7 +37,14 @@ class SendSoknadHandler(
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    fun doSendAndReturnInfo(soknadId: UUID): SoknadSendtInfo {
+    fun doSendAndReturnInfo(
+        soknadId: UUID,
+        token: String?,
+    ): SoknadSendtInfo {
+        // TODO Remove before merge
+        logger.info("Token fra SHU: ${SubjectHandlerUtils.getToken()}")
+        logger.info("Token fra argument: $token")
+
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
@@ -56,7 +63,7 @@ class SendSoknadHandler(
                         dokumenter = getFilOpplastingList(json),
                         kommunenr = json.soknad.mottaker.kommunenummer,
                         navEksternRefId = soknadId.toString(),
-                        token = SubjectHandlerUtils.getToken(),
+                        token = token,
                     )
                     .let { UUID.fromString(it) }
             }
