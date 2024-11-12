@@ -101,7 +101,6 @@ spring-boot = [
     "spring-boot-starter-cache",
     "spring-boot-starter-data-jdbc",
     "spring-boot-starter-data-redis",
-    "spring-boot-starter-test",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
