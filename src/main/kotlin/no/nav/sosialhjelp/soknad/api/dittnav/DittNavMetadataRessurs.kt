@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 class DittNavMetadataRessurs(
     private val dittNavMetadataService: DittNavMetadataService,
 ) {
+    // TODO Må håndtere DittNav i ny datamodell
+
     @GetMapping("/pabegynte/aktive")
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()

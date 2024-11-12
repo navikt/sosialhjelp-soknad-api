@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectedWithClaims(
@@ -64,7 +64,7 @@ class OkonomiskeOpplysningerRessurs(
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
             return okonomiskeOpplysningerProxy.getOkonomiskeOpplysninger(behandlingsId)
         } else {
-            val personId = getUser()
+            val personId = personId()
             val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
 
             return hentBasertPaaMellomlagredeVedlegg(behandlingsId, personId, soknadUnderArbeid)
@@ -133,8 +133,7 @@ class OkonomiskeOpplysningerRessurs(
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
             okonomiskeOpplysningerProxy.updateOkonomiskeOpplysninger(behandlingsId, vedleggFrontend)
         } else {
-            val personId = getUser()
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
             val jsonOkonomi =
                 soknad.jsonInternalSoknad
                     ?.soknad
@@ -168,7 +167,7 @@ class OkonomiskeOpplysningerRessurs(
                 vedleggFrontend = vedleggFrontend,
                 vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type),
             )
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId())
         }
     }
 

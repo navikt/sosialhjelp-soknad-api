@@ -57,11 +57,11 @@ class AdresseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val personId = SubjectHandlerUtils.getUserIdFromToken()
 
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
             return adresseProxy.getAdresser(behandlingsId)
         } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
             val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
             val jsonInternalSoknad =
                 soknad.jsonInternalSoknad
