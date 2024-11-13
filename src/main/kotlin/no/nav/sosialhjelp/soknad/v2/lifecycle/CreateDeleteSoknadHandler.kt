@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -33,7 +34,7 @@ class CreateDeleteSoknadHandler(
                 )
             }
             .also { soknadId ->
-                registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
+                runRegisterDataFetchers(soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
@@ -50,6 +51,22 @@ class CreateDeleteSoknadHandler(
             }
     }
 
+    // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
+    // TODO PS: I denne slette-prosessen må man ikke røre mellomlagrede vedlegg
+    fun deleteSoknad(soknadId: UUID) {
+        soknadService.deleteSoknad(soknadId)
+    }
+
+    private fun runRegisterDataFetchers(soknadId: UUID) {
+        runCatching {
+            registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
+        }.onFailure {
+            logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
+            soknadService.deleteSoknad(soknadId)
+            throw it
+        }
+    }
+
     private fun createObligatoriskDokumentasjon(
         soknadId: UUID,
         kortSoknad: Boolean,
@@ -63,21 +80,19 @@ class CreateDeleteSoknadHandler(
             }
     }
 
-    // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-    // TODO PS: I denne slette-prosessen må man ikke røre mellomlagrede vedlegg
-    fun deleteSoknad(soknadId: UUID) {
-        soknadService.deleteSoknad(soknadId)
+    private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
+        listOf(
+            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            AnnenDokumentasjonType.BEHOV,
+        )
+
+    private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
+        listOf(
+            AnnenDokumentasjonType.SKATTEMELDING,
+            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+        )
+
+    companion object {
+        private val logger by logger()
     }
 }
-
-private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
-    listOf(
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-        AnnenDokumentasjonType.BEHOV,
-    )
-
-private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
-    listOf(
-        AnnenDokumentasjonType.SKATTEMELDING,
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-    )
