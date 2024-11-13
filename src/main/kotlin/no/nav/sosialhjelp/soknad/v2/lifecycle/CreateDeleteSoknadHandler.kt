@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -12,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class CreateDeleteSoknadHandler(
@@ -24,19 +23,17 @@ class CreateDeleteSoknadHandler(
     fun createSoknad(
         isKort: Boolean,
     ): UUID {
-        val metadata = soknadMetadataService.createSoknadMetadata()
-
-        return soknadService
-            .createSoknad(
-                eierId = SubjectHandlerUtils.getUserIdFromToken(),
-                soknadId = metadata.soknadId,
-                opprettetDato = metadata.tidspunkt.opprettet,
-                kortSoknad = isKort,
-            ).also { soknadId ->
-                // TODO Håndter feil ved innhenting av registerdata
-                runCatching {
-                    registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
-                }.onFailure { logger.warn("Feil ved opprettelse av soknad. Innhenting av registerdata", it) }
+        return soknadMetadataService.createSoknadMetadata()
+            .let {
+                soknadService.createSoknad(
+                    eierId = personId(),
+                    soknadId = it.soknadId,
+                    opprettetDato = it.tidspunkt.opprettet,
+                    kortSoknad = isKort,
+                )
+            }
+            .also { soknadId ->
+                registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
@@ -70,10 +67,6 @@ class CreateDeleteSoknadHandler(
     // TODO PS: I denne slette-prosessen må man ikke røre mellomlagrede vedlegg
     fun deleteSoknad(soknadId: UUID) {
         soknadService.deleteSoknad(soknadId)
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 

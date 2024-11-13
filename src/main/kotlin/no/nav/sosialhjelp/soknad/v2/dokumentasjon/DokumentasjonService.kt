@@ -4,7 +4,9 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.toSha512
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
@@ -35,6 +37,11 @@ interface DokumentasjonService {
         soknadId: UUID,
         opplysningType: OpplysningType,
         status: DokumentasjonStatus,
+    )
+
+    fun opprettObligatoriskDokumentasjon(
+        soknadId: UUID,
+        soknadType: SoknadType,
     )
 }
 
@@ -88,6 +95,7 @@ class DokumentasjonServiceImpl(
     }
 
     override fun resetForventetDokumentasjon(soknadId: UUID) {
+        deleteAllDokumenter(soknadId)
         dokumentasjonRepository.deleteAllBySoknadId(soknadId)
     }
 
@@ -108,6 +116,22 @@ class DokumentasjonServiceImpl(
                 copy(status = status).also { dokumentasjonRepository.save(it) }
             }
         } ?: error("Dokument finnes ikke")
+    }
+
+    override fun opprettObligatoriskDokumentasjon(
+        soknadId: UUID,
+        soknadType: SoknadType,
+    ) {
+        when (soknadType) {
+            SoknadType.KORT -> {
+                opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+                opprettDokumentasjon(soknadId, UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+            }
+            SoknadType.STANDARD -> {
+                opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
+                opprettDokumentasjon(soknadId, UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+            }
+        }
     }
 
     override fun getDokument(
@@ -186,8 +210,7 @@ class DokumentasjonServiceImpl(
     ): UUID {
         mellomlagringClient.postDokument(soknadId, filnavn, data)
 
-        return mellomlagringClient
-            .getDokumentMetadata(soknadId)
+        return mellomlagringClient.getDokumentMetadata(soknadId)
             ?.mellomlagringMetadataList
             ?.find { dokumentInfo -> dokumentInfo.filnavn == filnavn }
             ?.let { dokumentInfo -> UUID.fromString(dokumentInfo.filId) }
