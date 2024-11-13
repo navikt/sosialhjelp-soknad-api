@@ -7,9 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -36,15 +36,16 @@ class KortSoknadService(
     fun transitionToKort(soknadId: UUID) {
         log.info("Transitioning soknad $soknadId to kort")
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
-        dokumentService.deleteAllDokumenter(soknadId)
-        dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+
+        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
         soknadService.updateKortSoknad(soknadId, true)
     }
 
     @Transactional
     fun transitionToStandard(soknadId: UUID) {
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
-        dokumentService.deleteAllDokumenter(soknadId)
+
+        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)
         soknadService.updateKortSoknad(soknadId, false)
     }
 
