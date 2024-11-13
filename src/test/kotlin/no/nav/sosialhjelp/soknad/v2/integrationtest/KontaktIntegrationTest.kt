@@ -35,6 +35,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -245,8 +246,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).hasSize(1)
-        assertThat(dokumentasjon.first().type == AnnenDokumentasjonType.BEHOV)
+        assertThat(dokumentasjon).hasSize(2)
+        assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.deleteDokumenter(lagretSoknad.id) }
     }
 
@@ -304,7 +306,10 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).isEmpty()
+        assertThat(dokumentasjon)
+            .hasSize(2)
+            .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
+            .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.deleteDokumenter(lagretSoknad.id) }
     }
 }
