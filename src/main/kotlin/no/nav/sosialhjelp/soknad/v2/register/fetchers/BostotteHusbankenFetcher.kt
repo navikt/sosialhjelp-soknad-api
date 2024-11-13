@@ -20,6 +20,7 @@ import java.time.LocalDate
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as UtbetalingHusbanken
 
+// TODO Skal denne være en del av de vanlige fetcherne (interface) ?
 @Component
 class BostotteHusbankenFetcher(
     private val husbankenClient: HusbankenClient,
