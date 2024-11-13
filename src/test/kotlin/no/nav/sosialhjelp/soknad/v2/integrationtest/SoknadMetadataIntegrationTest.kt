@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
@@ -44,6 +46,8 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Skal slette metadata ved sletting av soknad`() {
+        every { mellomlagringService.getAllVedlegg(any<UUID>()) } returns emptyList()
+        every { mellomlagringService.deleteAll(any()) } just runs
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
         doDelete(
