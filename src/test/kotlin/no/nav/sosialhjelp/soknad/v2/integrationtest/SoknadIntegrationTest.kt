@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,6 +37,8 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.deleteAllVedlegg(any()) } just runs
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID().toString()
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
+        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
+            MellomlagringDto(UUID.randomUUID().toString(), mellomlagringMetadataList = emptyList())
     }
 
     @Test

@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
@@ -10,9 +12,11 @@ import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -25,6 +29,13 @@ import java.util.UUID
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
+
+    @BeforeEach
+    fun mocks() {
+        every { mellomlagringService.deleteAll(any()) } just runs
+        every { mellomlagringService.getAllVedlegg(any<UUID>()) } returns
+            listOf(MellomlagretVedleggMetadata("filnavn", "filId"))
+    }
 
     @Test
     fun `Opprette soknad skal generere soknads-objekt og hente register-data`() {
