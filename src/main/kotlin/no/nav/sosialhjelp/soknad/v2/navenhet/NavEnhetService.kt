@@ -32,14 +32,10 @@ class NavEnhetService(
         valg: AdresseValg?,
     ): NavEnhet? {
         if (valg == AdresseValg.FOLKEREGISTRERT) {
-            val kommunenummer =
-                getKommunenummer(adresse)
-            return if (adresse is VegAdresse || adresse is MatrikkelAdresse) {
-                finnNavEnhetFraGT(eier, kommunenummer)
-            } else {
-                finnNavEnhetFraAdresse(adresse)
-            }
+            runCatching { return finnNavEnhetFraGT(eier, getKommunenummer(adresse)) }
+                .onFailure { log.error("Kunne ikke hente NavEnhet fra GT", it) }
         }
+        log.info("Finner Nav-enhet fra adressesøk")
         return finnNavEnhetFraAdresse(adresse)
     }
 
