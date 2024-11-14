@@ -51,8 +51,7 @@ class KontaktServiceImpl(
     private val nyNavEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
     private val kodeverkService: KodeverkService,
-) : AdresseService,
-    TelefonService {
+) : AdresseService, TelefonService {
     private val logger by logger()
 
     override fun findTelefonInfo(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
@@ -83,14 +82,14 @@ class KontaktServiceImpl(
         )
 
         val oldAdresse = findOrCreate(soknadId)
-        val adresse =
+        val valgtAdresse =
             when (adresseValg) {
                 AdresseValg.FOLKEREGISTRERT -> oldAdresse.adresser.folkeregistrert
                 AdresseValg.MIDLERTIDIG -> oldAdresse.adresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val mottaker = adresse?.let { nyNavEnhetService.getNavEnhet(eier, it, adresseValg) }
+        val personId = SubjectHandlerUtils.getUserIdFromToken()
+        val mottaker = valgtAdresse?.let { nyNavEnhetService.getNavEnhet(personId, it, adresseValg) }
         return oldAdresse
             .run { copy(adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse), mottaker = mottaker ?: this.mottaker) }
             .let { kontaktRepository.save(it) }
@@ -113,6 +112,9 @@ class KontaktServiceImpl(
                     }
 
                     val qualifiesForKortSoknad = kortSoknadService.isEnabled(kommunenummer) && kortSoknadService.isQualified(token, kommunenummer)
+
+                    // TODO Ekstra logging
+                    logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
 
                     if (qualifiesForKortSoknad) {
                         kortSoknadService.transitionToKort(soknadId)
