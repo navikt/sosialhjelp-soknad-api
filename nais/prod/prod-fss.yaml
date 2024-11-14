@@ -54,6 +54,9 @@ spec:
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
     inbound:
       rules:
+        - application: sosialhjelp-soknad
+          namespace: teamdigisos
+          cluster: prod-gcp
         - application: mine-saker-api
           namespace: min-side
           cluster: prod-gcp
@@ -131,8 +134,8 @@ spec:
       value: "false"
     - name: SOKNAD_BOSTOTTE_URL
       value: "https://api.husbanken.no/bostotte/minbostotte"
-#    - name: SKATTEETATEN_API_BASEURL
-#      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+    #    - name: SKATTEETATEN_API_BASEURL
+    #      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
     - name: SKATTEETATEN_API_BASEURL
       value: "https://inntekt.api.skatteetaten.no/v1/digisos/"
     - name: NEDETID_START
