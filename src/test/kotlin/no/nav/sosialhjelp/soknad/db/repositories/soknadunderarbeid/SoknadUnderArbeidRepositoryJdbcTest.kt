@@ -62,11 +62,13 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
                 .also { soknadUnderArbeidRepository.opprettSoknad(it, eier) }
                 .let { soknadUnderArbeidRepository.hentSoknad(it.behandlingsId, eier) }
 
+        val eksisterendeSoknad = soknadUnderArbeid.copy()
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, eier)
             .also {
-                assertThat(it.sistEndretDato).isNotEqualTo(soknadUnderArbeid.sistEndretDato)
+                assertThat(it.sistEndretDato).isNotEqualTo(eksisterendeSoknad.sistEndretDato)
             }
     }
 
