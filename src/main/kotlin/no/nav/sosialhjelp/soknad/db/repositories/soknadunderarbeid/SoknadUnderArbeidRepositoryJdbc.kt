@@ -101,12 +101,13 @@ class SoknadUnderArbeidRepositoryJdbc(
     override fun oppdaterSoknadsdata(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
+        sistEndretDato: LocalDateTime,
     ) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
         val opprinneligVersjon = soknadUnderArbeid.versjon
         val oppdatertVersjon = opprinneligVersjon + 1
-        val sistEndretDato = LocalDateTime.now()
+
         val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
 
         val antallOppdaterteRader =
