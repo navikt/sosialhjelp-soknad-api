@@ -62,16 +62,11 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
                 .also { soknadUnderArbeidRepository.opprettSoknad(it, eier) }
                 .let { soknadUnderArbeidRepository.hentSoknad(it.behandlingsId, eier) }
 
-        val eksisterendeSoknad = soknadUnderArbeid.copy()
-
-        val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, now)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, eier)
             .also {
-                assertThat(it.sistEndretDato).isEqualTo(now)
-                assertThat(it.sistEndretDato).isNotEqualTo(eksisterendeSoknad.sistEndretDato)
+                assertThat(it.sistEndretDato).isNotEqualTo(soknadUnderArbeid.sistEndretDato)
             }
     }
 
