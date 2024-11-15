@@ -20,7 +20,12 @@ internal class KommuneInfoServiceTest {
     private val kommuneInfoClient: KommuneInfoClient = mockk()
     private val redisService: RedisService = mockk()
 
-    private val kommuneInfoService = KommuneInfoService(kommuneInfoClient, redisService)
+    private val kommuneInfoService =
+        KommuneInfoService(
+            kommuneInfoClient,
+            redisService,
+            kodeverkService = mockk(relaxed = true),
+        )
 
     companion object {
         private const val KOMMUNENR = "1234"
