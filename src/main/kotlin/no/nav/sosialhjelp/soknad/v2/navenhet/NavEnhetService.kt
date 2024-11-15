@@ -4,6 +4,7 @@ import io.getunleash.Unleash
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService.Companion.FEATURE_SEND_TIL_NAV_TESTKOMMUNE
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
@@ -23,6 +24,7 @@ class NavEnhetService(
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val norgService: NorgService,
     private val bydelFordelingService: BydelFordelingService,
+    private val kommuneInfoService: KommuneInfoService,
 ) {
     private val log by logger()
 
@@ -69,8 +71,9 @@ class NavEnhetService(
         // gt er 4 sifret kommunenummer eller 6 sifret bydelsnummer
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        val kommunenavn = kommunenummer?.let { kommuneInfoService.getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, kommunenummer, navEnhet?.sosialOrgNr, navEnhet?.kommunenavn)
+        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, kommunenummer, navEnhet?.sosialOrgNr, kommunenavn)
     }
 
     private fun finnNavEnhetFraAdresse(
@@ -80,8 +83,9 @@ class NavEnhetService(
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(adresse) ?: return null
         val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
         val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        val kommunenavn = adresseForslag.kommunenummer?.let { kommuneInfoService.getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, adresseForslag.kommunenummer, navEnhet?.sosialOrgNr, navEnhet?.kommunenavn)
+        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, adresseForslag.kommunenummer, navEnhet?.sosialOrgNr, kommunenavn)
     }
 
     private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? =

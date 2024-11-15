@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 class KommuneInfoService(
     private val kommuneInfoClient: KommuneInfoClient,
     private val redisService: RedisService,
+    private val kodeverkService: KodeverkService,
 ) {
     fun kanMottaSoknader(kommunenummer: String): Boolean {
         return hentFraCacheEllerServer(kommunenummer)?.kanMottaSoknader ?: false
@@ -39,6 +41,13 @@ class KommuneInfoService(
         return hentFraCacheEllerServer(kommunenummer)?.behandlingsansvarlig
             ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
             ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, kommunenavnFraAdresseforslag)
+    }
+
+    fun getBehandlingskommune(kommunenummer: String): String? {
+        return getBehandlingskommune(
+            kommunenummer,
+            kommunenavnFraAdresseforslag = kodeverkService.getKommunenavn(kommunenummer),
+        )
     }
 
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {

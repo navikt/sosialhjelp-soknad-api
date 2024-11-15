@@ -94,7 +94,7 @@ fun NavEnhet.toNavEnhetDto(enrichment: NavEnhetEnrichment?): NavEnhetDto =
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
         kommunenummer = kommunenummer,
-        kommunenavn = enrichment?.kommunenavn,
+        kommunenavn = kommunenavn,
         isMottakDeaktivert = enrichment?.isDigisosKommune == false,
         isMottakMidlertidigDeaktivert = enrichment?.isDigisosKommune == false,
     )
