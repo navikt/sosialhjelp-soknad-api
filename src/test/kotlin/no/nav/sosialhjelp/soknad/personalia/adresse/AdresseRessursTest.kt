@@ -170,7 +170,7 @@ internal class AdresseRessursTest {
         } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any(), any()) } just runs
 
         val adresserFrontend = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT)
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
