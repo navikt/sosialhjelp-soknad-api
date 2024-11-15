@@ -17,7 +17,8 @@ import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
@@ -42,6 +43,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -76,8 +78,15 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean(relaxed = true)
     private lateinit var maskinportenClient: MaskinportenClient
 
-    @MockkBean(relaxed = true)
-    private lateinit var kommuneInfoClient: KommuneInfoClient
+    @MockkBean
+    private lateinit var kommuneInfoService: KommuneInfoService
+
+    @BeforeEach
+    fun setup() {
+        every { kommuneInfoService.getBehandlingskommune(any()) } returns "Sandvika"
+        every { kommuneInfoService.getKommuneStatus(any(), any()) } returns KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
+        every { kommuneInfoService.kanMottaSoknader(any()) } returns true
+    }
 
     @Test
     fun `Skal returnere alle adresser for soknad`() {
@@ -136,7 +145,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(userId) } returns "abc"
-        val navEnhet = NavEnhet("123", "NAV", "NAV", "123")
+        val navEnhet = NavEnhet("123", "NAV Sandvika", "Sandvika", "123")
         every { norgService.getEnhetForGt("abc") } returns navEnhet
 
         every { mellomlagringClient.getMellomlagredeVedlegg(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
@@ -157,7 +166,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NyNavEnhet("NAV", "123", "1234", "123", "NAV"))
+            assertThat(it.mottaker).isEqualTo(NyNavEnhet("NAV Sandvika", "123", "1234", "123", "Sandvika"))
         }
     }
 
