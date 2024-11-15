@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Date
 
 @Repository
@@ -101,7 +102,6 @@ class SoknadUnderArbeidRepositoryJdbc(
     override fun oppdaterSoknadsdata(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
-        sistEndretDato: LocalDateTime,
     ) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -109,6 +109,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         val oppdatertVersjon = opprinneligVersjon + 1
 
         val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
+        val sistEndretDato = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
 
         val antallOppdaterteRader =
             jdbcTemplate.update(

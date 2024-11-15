@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-
 interface SoknadUnderArbeidRepository {
     fun opprettSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
@@ -27,7 +24,6 @@ interface SoknadUnderArbeidRepository {
     fun oppdaterSoknadsdata(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
-        sistEndretDato: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
     )
 
     fun oppdaterInnsendingStatus(
