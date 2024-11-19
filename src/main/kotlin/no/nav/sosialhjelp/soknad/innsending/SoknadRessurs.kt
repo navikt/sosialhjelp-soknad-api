@@ -217,7 +217,7 @@ class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
 
         return if (nyDatamodellAktiv) {
-            soknadHandlerProxy.getSoknadType(UUID.fromString(behandlingsId))
+            soknadHandlerProxy.isKort(UUID.fromString(behandlingsId))
         } else {
             soknadServiceOld.hentSoknadMetadata(behandlingsId).kortSoknad
         }
