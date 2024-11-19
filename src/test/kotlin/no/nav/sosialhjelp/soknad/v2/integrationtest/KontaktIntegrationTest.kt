@@ -88,6 +88,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoService.getBehandlingskommune(any()) } returns "Sandvika"
         every { kommuneInfoService.getKommuneStatus(any(), any()) } returns KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
+        every { digisosApiV2Client.getSoknader(any()) } returns emptyList()
     }
 
     @Test
