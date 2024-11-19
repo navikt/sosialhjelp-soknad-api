@@ -40,6 +40,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -112,7 +113,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere brukeradresse i soknad`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
@@ -173,7 +179,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere navenhet for manuelt innskrevet adresse`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
@@ -203,7 +214,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `skal slette dokumentasjon og dokumenter ved overgang til kort søknad`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
         dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = FormueType.FORMUE_BSU, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
@@ -262,8 +278,13 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `skal slette dokumentasjon og dokumenter ved overgang til standard søknad`() {
-        val lagretSoknad = opprettSoknad(kort = true).let { soknadRepository.save(it) }
+    fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
+        val lagretSoknad =
+            opprettSoknadMetadata(kort = true)
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId, kort = true) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
         dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
