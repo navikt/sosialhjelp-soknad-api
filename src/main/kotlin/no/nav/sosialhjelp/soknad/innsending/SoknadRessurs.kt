@@ -120,13 +120,19 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
+
         val harBostotteSamtykke =
             samtykker
                 .any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi == true }
         val harSkatteetatenSamtykke =
             samtykker
                 .any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi == true }
-        soknadServiceOld.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+
+        if (nyDatamodellAktiv) {
+            soknadHandlerProxy.updateSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+        } else {
+            soknadServiceOld.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+        }
     }
 
     @GetMapping("/{behandlingsId}/hentSamtykker")
@@ -135,15 +141,20 @@ class SoknadRessurs(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): List<BekreftelseRessurs> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = personId()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        val bekreftelser: MutableList<JsonOkonomibekreftelse> = mutableListOf()
-        hentBekreftelse(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)?.let { bekreftelser.add(it) }
-        hentBekreftelse(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)?.let { bekreftelser.add(it) }
-        return bekreftelser
-            .filter { it.verdi }
-            .map { BekreftelseRessurs(it.type, it.verdi) }
+        if (nyDatamodellAktiv) {
+            return soknadHandlerProxy.getSamtykker(behandlingsId, token)
+        } else {
+            val eier = personId()
+            val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+            val bekreftelser: MutableList<JsonOkonomibekreftelse> = mutableListOf()
+            hentBekreftelse(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)?.let { bekreftelser.add(it) }
+            hentBekreftelse(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)?.let { bekreftelser.add(it) }
+            return bekreftelser
+                .filter { it.verdi }
+                .map { BekreftelseRessurs(it.type, it.verdi) }
+        }
     }
 
     private fun hentBekreftelse(
