@@ -6,9 +6,12 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -30,11 +33,11 @@ class KortSoknadService(
     private val dokumentService: DokumentService,
     private val unleash: Unleash,
 ) {
-    private val log by logger()
+    private val logger by logger()
 
     @Transactional
     fun transitionToKort(soknadId: UUID) {
-        log.info("Transitioning soknad $soknadId to kort")
+        logger.info("Transitioning soknad $soknadId to kort")
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
 
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
@@ -80,7 +83,7 @@ class KortSoknadService(
                 ?.mapNotNull { it.hendelsestidspunkt }
                 ?.firstOrNull { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }
         if (mottattSiste120Dager != null) {
-            log.info("Bruker kvaliserer til kort søknad via søknad mottatt $mottattSiste120Dager")
+            logger.info("Bruker kvaliserer til kort søknad via søknad mottatt $mottattSiste120Dager")
             return true
         }
         return false
@@ -99,7 +102,7 @@ class KortSoknadService(
                 ?.firstOrNull { it >= fourMonthsAgo }
 
         if (utbetaltSiste120Dager != null) {
-            log.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste120Dager")
+            logger.info("Bruker kvalifiserer til kort søknad via utbetaling $utbetaltSiste120Dager")
             return true
         }
 
@@ -113,7 +116,7 @@ class KortSoknadService(
                 ?.firstOrNull { it < in14Days }
 
         if (planlagtInnen14Dager != null) {
-            log.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $planlagtInnen14Dager")
+            logger.info("Bruker kvalifiserer til kort søknad via planlagt utbetaling $planlagtInnen14Dager")
             return true
         }
         return false
@@ -126,4 +129,47 @@ class KortSoknadService(
                 .withZoneSameInstant(ZoneId.of("Europe/Oslo"))
                 .toLocalDateTime()
         }.getOrElse { LocalDate.parse(this).atStartOfDay() }
+
+    // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne)
+    @Transactional
+    fun resolveKortSoknad(
+        oldAdresse: Kontakt,
+        updatedAdresse: Kontakt,
+    ) {
+        if (!MiljoUtils.isMockAltProfil()) {
+            // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
+            if (
+                oldAdresse.mottaker?.kommunenummer == updatedAdresse.mottaker?.kommunenummer &&
+                oldAdresse.adresser.adressevalg != null
+            ) {
+                logger.info(
+                    "oldAdresse.mottaker?.kommunenummer: ${oldAdresse.mottaker?.kommunenummer}, " +
+                        "adresse.mottaker?.kommunenummer: ${updatedAdresse.mottaker?.kommunenummer}, " +
+                        "oldAdresse.adresser.adressevalg: ${oldAdresse.adresser.adressevalg}",
+                )
+                return
+            }
+            val token = getTokenOrNull()
+            if (token == null) {
+                logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
+                return
+            }
+            val kommunenummer = updatedAdresse.mottaker?.kommunenummer
+            if (kommunenummer == null) {
+                logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
+                return
+            }
+
+            val qualifiesForKortSoknad = isEnabled(kommunenummer) && isQualified(token, kommunenummer)
+
+            // TODO Ekstra logging
+            logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
+
+            if (qualifiesForKortSoknad) {
+                transitionToKort(updatedAdresse.soknadId)
+            } else {
+                transitionToStandard(updatedAdresse.soknadId)
+            }
+        }
+    }
 }
