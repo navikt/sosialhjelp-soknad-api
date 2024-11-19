@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -35,7 +34,6 @@ class KortSoknadService(
 ) {
     private val logger by logger()
 
-    @Transactional
     fun transitionToKort(soknadId: UUID) {
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
@@ -46,7 +44,6 @@ class KortSoknadService(
         soknadService.updateKortSoknad(soknadId, true)
     }
 
-    @Transactional
     fun transitionToStandard(soknadId: UUID) {
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
 
@@ -135,7 +132,6 @@ class KortSoknadService(
         }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
     // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne)
-    @Transactional
     fun resolveKortSoknad(
         oldAdresse: Kontakt,
         updatedAdresse: Kontakt,
@@ -173,10 +169,9 @@ class KortSoknadService(
 
             logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
 
-            if (qualifiesForKortSoknad) {
-                transitionToKort(updatedAdresse.soknadId)
-            } else {
-                transitionToStandard(updatedAdresse.soknadId)
+            when (qualifiesForKortSoknad) {
+                true -> transitionToKort(updatedAdresse.soknadId)
+                false -> transitionToStandard(updatedAdresse.soknadId)
             }
         }
     }
