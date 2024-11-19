@@ -9,9 +9,9 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -30,14 +30,16 @@ class KortSoknadService(
     private val clock: Clock,
     private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
-    private val dokumentService: DokumentService,
+    private val soknadMetadataService: SoknadMetadataService,
     private val unleash: Unleash,
 ) {
     private val logger by logger()
 
     @Transactional
     fun transitionToKort(soknadId: UUID) {
+        soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
+
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
 
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
@@ -46,6 +48,8 @@ class KortSoknadService(
 
     @Transactional
     fun transitionToStandard(soknadId: UUID) {
+        soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
+
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
 
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)

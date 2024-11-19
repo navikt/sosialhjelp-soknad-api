@@ -41,7 +41,7 @@ class SoknadHandlerProxy(
             .also { logger.info("Starter soknad med ny datamodell") }
     }
 
-    fun getSoknadType(soknadId: UUID) = soknadMetadataService.getSoknadType(soknadId) == SoknadType.KORT
+    fun isKort(soknadId: UUID) = soknadMetadataService.getSoknadType(soknadId) == SoknadType.KORT
 
     private fun createJson(soknadId: String) =
         jsonInternalSoknadGenerator.createJsonInternalSoknad(UUID.fromString(soknadId))
