@@ -167,6 +167,10 @@ class KortSoknadService(
             val qualifiesForKortSoknad = isEnabled(kommunenummer) && isQualified(token, kommunenummer)
 
             // TODO Ekstra logging
+
+            logger.info("Kort søknad, Enabled -> ${isEnabled(kommunenummer)}")
+            logger.info("Kort soknad, qualified -> ${isQualified(token, kommunenummer)}")
+
             logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
 
             if (qualifiesForKortSoknad) {
