@@ -147,7 +147,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere navenhet for valgt folkeregistrert adresse`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
