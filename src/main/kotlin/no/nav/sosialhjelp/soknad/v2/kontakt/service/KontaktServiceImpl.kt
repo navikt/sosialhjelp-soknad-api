@@ -90,6 +90,10 @@ class KontaktServiceImpl(
             }
                 ?.let { nyNavEnhetService.getNavEnhet(personId(), it, adresseValg) }
 
+        if (mottaker == null) {
+            logger.warn("NyModell: Fant ikke mottaker ved oppdatering av søknad $soknadId")
+        }
+
         return oldAdresse
             .run {
                 copy(
