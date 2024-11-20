@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
@@ -29,6 +30,7 @@ class KortSoknadService(
     private val dokumentasjonService: DokumentasjonService,
     private val dokumentService: DokumentService,
     private val unleash: Unleash,
+    private val jacksonObjectMapper: ObjectMapper,
 ) {
     private val log by logger()
 
@@ -55,14 +57,16 @@ class KortSoknadService(
         digisosApiService
             .getSoknaderForUser(token)
             // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
-            .asSequence()
+//            .asSequence()
             .filter { it.kommunenummer == kommunenummer }
             .sortedByDescending { it.sistEndret }
             .mapNotNull { soknad ->
                 soknad.digisosSoker?.metadata?.let {
                     digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
                 }
-            }.any { innsynsfil ->
+            }
+            .also { filer -> log.info("Innsynsfiler: ${jacksonObjectMapper.writeValueAsString(filer) }") }
+            .any { innsynsfil ->
                 innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
             }
 
