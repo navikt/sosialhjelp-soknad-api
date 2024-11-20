@@ -148,12 +148,16 @@ class KontaktServiceImpl(
     }
 
     override fun findMottaker(soknadId: UUID): NavEnhet? {
-        val mottaker = kontaktRepository.findByIdOrNull(soknadId)?.mottaker
-        if (mottaker == null) {
-            logger.warn("NyModell: Ingen nav-enhet funnet for søknad $soknadId")
-            return null
-        }
-        return mottaker
+        return kontaktRepository.findByIdOrNull(soknadId)
+            ?.let {
+                // TODO Er vel strengt talt en uopprettelig feil isåfall?!
+                if (it.mottaker == null && it.adresser.adressevalg != null) {
+                    logger.error("NyModell: Fant ikke mottaker for søknad $soknadId")
+                    null
+                } else {
+                    it.mottaker
+                }
+            }
     }
 
     override fun getEnrichment(kommunenummer: String): NavEnhetEnrichment {
