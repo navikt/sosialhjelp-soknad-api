@@ -21,18 +21,21 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhetDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Component
 class AdresseToNyModellProxy(
     private val adresseController: AdresseController,
 ) {
+    @Transactional(readOnly = true)
     fun getAdresser(
         soknadId: String,
     ): AdresserFrontend {
         return adresseController.getAdresser(UUID.fromString(soknadId)).toAdresserFrontend()
     }
 
+    @Transactional
     fun updateAdresse(
         soknadId: String,
         adresser: AdresserFrontendInput,
