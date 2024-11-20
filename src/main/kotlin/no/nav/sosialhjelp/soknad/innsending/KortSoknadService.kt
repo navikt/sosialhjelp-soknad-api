@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
@@ -56,8 +57,12 @@ class KortSoknadService(
     fun isQualified(
         token: String,
         kommunenummer: String,
-    ): Boolean =
-        digisosApiService
+    ): Boolean {
+        val soknaderForUser = digisosApiService.getSoknaderForUser(token)
+        // TODO fjern
+        logger.info("Soknader for bruker: ${jacksonObjectMapper().writeValueAsString(soknaderForUser)}")
+
+        return digisosApiService
             .getSoknaderForUser(token)
             // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
             .asSequence()
@@ -66,10 +71,18 @@ class KortSoknadService(
             .mapNotNull { soknad ->
                 soknad.digisosSoker?.metadata?.let {
                     digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
+                        .also { innsynsfil ->
+                            // TODO fjern
+                            logger.info(
+                                "Innsynsfil for soknad ${soknad.fiksDigisosId} funnet: " +
+                                    jacksonObjectMapper().writeValueAsString(innsynsfil),
+                            )
+                        }
                 }
             }.any { innsynsfil ->
                 innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
             }
+    }
 
     fun isEnabled(kommunenummer: String?): Boolean {
         val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
@@ -136,6 +149,12 @@ class KortSoknadService(
         oldAdresse: Kontakt,
         updatedAdresse: Kontakt,
     ) {
+        // TODO Fjern
+        logger.info(
+            "NyModell: Resolving kort søknad for soknad ${updatedAdresse.soknadId}. " +
+                "Mock-alt-profil: ${MiljoUtils.isMockAltProfil()}",
+        )
+
         if (!MiljoUtils.isMockAltProfil()) {
             // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
             if (

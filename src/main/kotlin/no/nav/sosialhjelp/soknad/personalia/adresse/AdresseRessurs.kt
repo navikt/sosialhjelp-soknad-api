@@ -103,6 +103,8 @@ class AdresseRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            // TODO Fjern
+            logger.info("Oppdaterer adresse for $behandlingsId med ny modell")
             return adresseProxy.updateAdresse(behandlingsId, adresserFrontend)
         } else {
             val personId = SubjectHandlerUtils.getUserIdFromToken()

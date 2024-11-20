@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
@@ -94,16 +95,23 @@ class KontaktServiceImpl(
             logger.warn("NyModell: Fant ikke mottaker ved oppdatering av søknad $soknadId")
         }
 
-        return oldAdresse
-            .run {
-                copy(
-                    adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
-                    mottaker = mottaker ?: this.mottaker,
-                )
-            }
-            .let { kontaktRepository.save(it) }
-            .also { updated -> kortSoknadService.resolveKortSoknad(oldAdresse, updated) }
-            .adresser
+        val adresse =
+            oldAdresse
+                .run {
+                    copy(
+                        adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
+                        mottaker = mottaker ?: this.mottaker,
+                    )
+                }
+                .let { kontaktRepository.save(it) }
+
+        // TODO Fjern
+        logger.info("Adresse før oppdatering: ${jacksonObjectMapper().writeValueAsString(oldAdresse)}")
+        logger.info("Adresse etter oppdatering: ${jacksonObjectMapper().writeValueAsString(adresse)}")
+
+        kortSoknadService.resolveKortSoknad(oldAdresse, adresse)
+
+        return adresse.adresser
 
 //        return oldAdresse
 //            .run {

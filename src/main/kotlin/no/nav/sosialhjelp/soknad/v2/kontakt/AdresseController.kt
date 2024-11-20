@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.NavEnhetEnrichment
@@ -35,22 +36,28 @@ class AdresseController(
     fun updateAdresser(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput,
-    ): AdresserDto =
-        adresseService
-            .updateBrukerAdresse(
+    ): AdresserDto {
+        // TODO Fjern
+        logger.info("Kaller ny AdresseService for oppdatering av adresser for søknad $soknadId")
+        val adresser =
+            adresseService.updateBrukerAdresse(
                 soknadId = soknadId,
                 adresseValg = adresserInput.adresseValg,
                 brukerAdresse = adresserInput.brukerAdresse,
-            ).let { adresse ->
-                createAdresseDto(
-                    adresser = adresse,
-                    mottaker =
-                        adresseService.findMottaker(soknadId)?.let { navEnhet ->
-                            val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
-                            navEnhet.toNavEnhetDto(enrichment)
-                        },
-                )
-            }
+            )
+        return adresser.let { adresse ->
+            createAdresseDto(
+                adresser = adresse,
+                mottaker =
+                    adresseService.findMottaker(soknadId)?.let { navEnhet ->
+                        val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
+                        navEnhet.toNavEnhetDto(enrichment)
+                    },
+            )
+        }
+    }
+
+    private val logger by logger()
 }
 
 data class AdresserInput(

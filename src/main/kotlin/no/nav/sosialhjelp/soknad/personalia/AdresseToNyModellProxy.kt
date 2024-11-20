@@ -41,6 +41,8 @@ class AdresseToNyModellProxy(
         adresser: AdresserFrontendInput,
     ): List<NavEnhetFrontend> {
         return adresser.valg?.let {
+            // TODO Fjern
+            logger.info("Proxy for oppdatering av adresse for søknad $soknadId")
             updateBrukerAdresse(soknadId = UUID.fromString(soknadId), it, adresser.soknad)
         }
             ?: error("NyModell: Adressevalg er påkrevd")
@@ -55,7 +57,11 @@ class AdresseToNyModellProxy(
             adresseValg = adresseValg.toAdresseValg(),
             brukerAdresse = adresseSoknad?.toAdresse(),
         )
-            .let { adresseController.updateAdresser(soknadId, it) }
+            .let {
+                // TODO fjern
+                logger.info("Kaller ny controller fra proxy for søknad $soknadId")
+                adresseController.updateAdresser(soknadId, it)
+            }
             .toNavEnhetFrontendList()
     }
 
