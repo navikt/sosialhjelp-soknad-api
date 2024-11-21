@@ -46,7 +46,9 @@ class SosialhjelpPdfGenerator(
 
             val fnr = jsonPersonIdentifikator.verdi // required
 
-            leggTilHeading(pdf, heading, navn, fnr)
+            val soknadstype = "Type søknad: " + if (jsonInternalSoknad.soknad.data?.soknadstype == JsonData.Soknadstype.KORT) "kort" else "standard"
+
+            leggTilHeading(pdf, soknadstype, heading, navn, fnr)
 
             leggTilPersonalia(pdf, pdfUtils, textHelpers, data.personalia, jsonInternalSoknad.midlertidigAdresse, utvidetSoknad)
             leggTilBegrunnelse(pdf, pdfUtils, data.begrunnelse, utvidetSoknad, isKortSoknad)
