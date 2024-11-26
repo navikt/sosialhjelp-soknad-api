@@ -16,25 +16,17 @@ import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 
 class KortSoknadServiceTest {
-    private lateinit var digisosApiService: DigisosApiService
-    private lateinit var clock: Clock
-    private lateinit var kortSoknadService: KortSoknadService
-    private lateinit var soknadService: SoknadService
-
-    @BeforeEach
-    fun setUp() {
-        digisosApiService = mockk()
-        soknadService = mockk()
-        clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
-        kortSoknadService = KortSoknadService(digisosApiService, clock, soknadService, mockk(), mockk(), mockk(relaxed = true))
-    }
+    private val digisosApiService: DigisosApiService = mockk()
+    private val soknadService: SoknadService = mockk()
+    private val clock: Clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
+    private val kortSoknadService: KortSoknadService =
+        KortSoknadService(digisosApiService, clock, soknadService, mockk(), mockk(), mockk(relaxed = true))
 
     @Test
     fun `should qualify if there is a recent soknad from fiks`() {
@@ -46,7 +38,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
     }
@@ -61,7 +53,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -76,7 +68,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
     }
@@ -91,7 +83,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -106,7 +98,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
     }
@@ -121,7 +113,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -136,7 +128,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -145,7 +137,7 @@ class KortSoknadServiceTest {
     fun `should not qualify if there are no recent soknader or utbetalinger`() {
         every { digisosApiService.getSoknaderForUser(any()) } returns emptyList()
         every { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) } returns mockk()
-        val result = kortSoknadService.isQualified("12345678901", "token")
+        val result = kortSoknadService.isQualifiedFromFiks("12345678901", "token")
 
         assertFalse(result)
     }
@@ -164,7 +156,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
         verify(exactly = 1) { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) }
@@ -184,7 +176,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualified("token", "0301")
+        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
         verify(exactly = 1) { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) }
