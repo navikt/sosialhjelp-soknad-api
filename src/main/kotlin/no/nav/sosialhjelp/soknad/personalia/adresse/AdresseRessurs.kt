@@ -186,7 +186,7 @@ class AdresseRessurs(
             logger.warn("Token er null, kan ikke sjekke om bruker har rett på kort søknad")
             return false to false
         }
-        val kortSoknad = kortSoknadService.isEnabled(navEnhet.kommuneNr) && kortSoknadService.isQualified(token, navEnhet.kommuneNr ?: "")
+        val kortSoknad = kortSoknadService.isEnabled(navEnhet.kommuneNr) && kortSoknadService.isQualifiedFromFiks(token, navEnhet.kommuneNr ?: "")
         val nySoknadstype =
             if (kortSoknad) {
                 logger.info("Bruker kvalifiserer til kort søknad")

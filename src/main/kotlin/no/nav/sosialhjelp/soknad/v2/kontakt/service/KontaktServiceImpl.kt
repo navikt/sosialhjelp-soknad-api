@@ -80,12 +80,12 @@ class KontaktServiceImpl(
                 "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
         )
 
-        val oldAdresse = findOrCreate(soknadId)
+        val oldKontakt = findOrCreate(soknadId)
 
         val mottaker =
             when (adresseValg) {
-                AdresseValg.FOLKEREGISTRERT -> oldAdresse.adresser.folkeregistrert
-                AdresseValg.MIDLERTIDIG -> oldAdresse.adresser.midlertidig
+                AdresseValg.FOLKEREGISTRERT -> oldKontakt.adresser.folkeregistrert
+                AdresseValg.MIDLERTIDIG -> oldKontakt.adresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
                 ?.let { nyNavEnhetService.getNavEnhet(personId(), it, adresseValg) }
@@ -94,7 +94,7 @@ class KontaktServiceImpl(
             logger.warn("NyModell: Fant ikke mottaker ved oppdatering av søknad $soknadId")
         }
 
-        return oldAdresse
+        return oldKontakt
             .run {
                 copy(
                     adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
@@ -102,51 +102,8 @@ class KontaktServiceImpl(
                 )
             }
             .let { kontaktRepository.save(it) }
-            .also { updated -> kortSoknadService.resolveKortSoknad(oldAdresse, updated) }
+            .also { kortSoknadService.resolveKortSoknad(oldKontakt, it) }
             .adresser
-
-//        return oldAdresse
-//            .run {
-//                copy(
-//                    adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
-//                    mottaker = mottaker ?: this.mottaker)
-//            }
-//            .let { kontaktRepository.save(it) }
-//            // Oppdater kort søknad
-//            .also { adresse ->
-//                if (!MiljoUtils.isMockAltProfil()) {
-//                    // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-//                    if (
-//                        oldAdresse.mottaker?.kommunenummer == adresse.mottaker?.kommunenummer &&
-//                        oldAdresse.adresser.adressevalg != null
-//                    ) {
-//                        logger.info("oldAdresse.mottaker?.kommunenummer: ${oldAdresse.mottaker?.kommunenummer}, " +
-//                                "adresse.mottaker?.kommunenummer: ${adresse.mottaker?.kommunenummer}, " +
-//                                "oldAdresse.adresser.adressevalg: ${oldAdresse.adresser.adressevalg}")
-//                        return@also
-//                    }
-//                    val token = getTokenOrNull()
-//                    if (token == null) {
-//                        logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
-//                        return@also
-//                    }
-//                    val kommunenummer = adresse.mottaker?.kommunenummer
-//                    if (kommunenummer == null) {
-//                        logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
-//                        return@also
-//                    }
-//
-//                    val qualifiesForKortSoknad =
-//                        kortSoknadService.isEnabled(kommunenummer) &&
-//                                kortSoknadService.isQualified(token, kommunenummer)
-//
-//                    // TODO Ekstra logging
-//                    logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
-//
-//                    if (qualifiesForKortSoknad) kortSoknadService.transitionToKort(soknadId)
-//                    else kortSoknadService.transitionToStandard(soknadId)
-//                }
-//            }.adresser
     }
 
     override fun findMottaker(soknadId: UUID): NavEnhet? {

@@ -11,7 +11,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -22,6 +24,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class KortSoknadService(
@@ -35,6 +38,8 @@ class KortSoknadService(
     private val logger by logger()
 
     fun transitionToKort(soknadId: UUID) {
+        if (soknadMetadataService.getMetadataForSoknad(soknadId).soknadType == SoknadType.KORT) return
+
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
 
@@ -45,6 +50,8 @@ class KortSoknadService(
     }
 
     fun transitionToStandard(soknadId: UUID) {
+        if (soknadMetadataService.getMetadataForSoknad(soknadId).soknadType == SoknadType.STANDARD) return
+
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
 
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
@@ -53,28 +60,38 @@ class KortSoknadService(
         soknadService.updateKortSoknad(soknadId, false)
     }
 
-    fun isQualified(
+    fun isQualifiedFromFiks(
         token: String,
         kommunenummer: String,
-    ): Boolean =
-        digisosApiService
-            .getSoknaderForUser(token)
-            // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
-            .asSequence()
-            .filter { it.kommunenummer == kommunenummer }
-            .sortedByDescending { it.sistEndret }
-            .mapNotNull { soknad ->
-                soknad.digisosSoker?.metadata?.let {
-                    digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
+    ): Boolean {
+        runCatching {
+            return digisosApiService.getSoknaderForUser(token)
+                // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
+                .asSequence()
+                .filter { it.kommunenummer == kommunenummer }
+                .sortedByDescending { it.sistEndret }
+                .mapNotNull { soknad ->
+                    soknad.digisosSoker?.metadata?.let {
+                        digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
+                    }
                 }
-            }.any { innsynsfil ->
-                innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
+                .any { innsynsfil ->
+                    innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
+                }
+        }
+            .onFailure {
+                logger.error("NyModell: Feil ved henting av innsynsfil fra FIKS", it)
             }
+        return false
+    }
 
     fun isEnabled(kommunenummer: String?): Boolean {
         val context = kommunenummer?.let { UnleashContext.builder().addProperty("kommunenummer", it).build() } ?: UnleashContext.builder().build()
         return unleash.isEnabled("sosialhjelp.soknad.kort_soknad", context, false)
     }
+
+    // semantisk convenience
+    private fun isKortSoknadNotEnabled(kommunenummer: String?) = !isEnabled(kommunenummer)
 
     private fun JsonDigisosSoker.hasRecentSoknadFromFiks(): Boolean {
         val mottattSiste120Dager =
@@ -133,46 +150,60 @@ class KortSoknadService(
 
     // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne)
     fun resolveKortSoknad(
-        oldAdresse: Kontakt,
-        updatedAdresse: Kontakt,
+        oldKontakt: Kontakt,
+        updatedKontakt: Kontakt,
     ) {
-        if (!MiljoUtils.isMockAltProfil()) {
-            // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-            if (
-                oldAdresse.mottaker?.kommunenummer == updatedAdresse.mottaker?.kommunenummer &&
-                oldAdresse.adresser.adressevalg != null
-            ) {
-                logger.info(
-                    "oldAdresse.mottaker?.kommunenummer: ${oldAdresse.mottaker?.kommunenummer}, " +
-                        "adresse.mottaker?.kommunenummer: ${updatedAdresse.mottaker?.kommunenummer}, " +
-                        "oldAdresse.adresser.adressevalg: ${oldAdresse.adresser.adressevalg}",
-                )
-                return
-            }
-            val token = getTokenOrNull()
-            if (token == null) {
-                logger.warn("NyModell: Token er null, kan ikke sjekke om bruker har rett på kort søknad")
-                return
-            }
-            val kommunenummer = updatedAdresse.mottaker?.kommunenummer
-            if (kommunenummer == null) {
-                logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
-                return
+        // I mock overstyrer man dette med valg på forsiden
+        if (MiljoUtils.isMockAltProfil()) return
+
+        // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
+        if (oldKontakt.hasMottakerNotChanged(updatedKontakt.mottaker)) return
+
+        val kommunenummer = updatedKontakt.getMottakerKommunenummerOrNull() ?: return
+
+        val qualifiesForKort =
+            when {
+                isKortSoknadNotEnabled(kommunenummer) -> false
+                isQualifiedFromMetadata(oldKontakt.soknadId, kommunenummer) -> true
+                else -> getTokenOrNull()?.let { isQualifiedFromFiks(it, kommunenummer) }
             }
 
-            val qualifiesForKortSoknad = isEnabled(kommunenummer) && isQualified(token, kommunenummer)
-
-            // TODO Ekstra logging
-
-            logger.info("Kort søknad, Enabled -> ${isEnabled(kommunenummer)}")
-            logger.info("Kort soknad, qualified -> ${isQualified(token, kommunenummer)}")
-
-            logger.info("NyModell: Bruker kvalifiserer til kort søknad: $qualifiesForKortSoknad")
-
-            when (qualifiesForKortSoknad) {
-                true -> transitionToKort(updatedAdresse.soknadId)
-                false -> transitionToStandard(updatedAdresse.soknadId)
-            }
+        when (qualifiesForKort) {
+            true -> transitionToKort(updatedKontakt.soknadId)
+            false -> transitionToStandard(updatedKontakt.soknadId)
+            null -> logger.warn("NyModell: Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
         }
+    }
+
+    private fun Kontakt.hasMottakerNotChanged(other: NavEnhet?): Boolean {
+        return mottaker?.kommunenummer == other?.kommunenummer && adresser.adressevalg != null
+    }
+
+    private fun Kontakt.getMottakerKommunenummerOrNull(): String? {
+        mottaker?.kommunenummer?.let { return it }
+
+        logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
+        return null
+    }
+
+    // sjekker om bruker har rett på kort søknad basert på metadata
+    private fun isQualifiedFromMetadata(
+        soknadId: UUID,
+        kommunenummer: String,
+    ): Boolean {
+        soknadMetadataService.getAllMetadataForPerson(personId())
+            .asSequence()
+            .filter { metadata -> metadata.status == SoknadStatus.SENDT || metadata.status == SoknadStatus.MOTTATT_FSL }
+            .filter { metadata -> metadata.mottakerKommunenummer == kommunenummer }
+            .filter { metadata -> metadata.soknadId != soknadId }
+            .sortedByDescending { metadata -> metadata.tidspunkt.sendtInn }
+            .mapNotNull { metadata -> metadata.tidspunkt.sendtInn }
+            .firstOrNull { sendtInn -> sendtInn >= LocalDateTime.now(clock).minusDays(120) }
+            ?.let { sendtInn ->
+                logger.info("Kvalifiserer til kort søknad via søknad mottatt: $sendtInn")
+                return true
+            }
+
+        return false
     }
 }
