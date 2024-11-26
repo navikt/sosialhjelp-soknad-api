@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -37,7 +38,8 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,18 +52,18 @@ import java.util.UUID
 class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
+
+        clearAllMocks()
+
+        soknadMetadataRepository.deleteAll()
+        soknadRepository.deleteAll()
+
         every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
         every { digisosService.getSoknaderForUser(any()) } returns emptyList()
-    }
-
-    @AfterEach
-    fun tearDown() {
-        clearAllMocks()
-        soknadMetadataRepository.deleteAll()
-        soknadRepository.deleteAll()
     }
 
     @Test
@@ -279,6 +281,18 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         private fun updateAdresseUrl(soknadId: UUID) = "/soknad/$soknadId/adresser"
 
         private fun isKortUrl(soknadId: UUID) = "/soknader/$soknadId/isKort"
+
+        @JvmStatic
+        @BeforeClass
+        fun beforeClass() {
+            ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun afterClass() {
+            ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
+        }
     }
 }
 
