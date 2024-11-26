@@ -57,7 +57,7 @@ internal class InformasjonRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { kortSoknadService.isQualified(any(), any()) } returns false
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
         every { personService.hentPerson(any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false

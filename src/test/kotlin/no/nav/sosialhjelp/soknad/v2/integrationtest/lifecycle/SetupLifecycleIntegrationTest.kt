@@ -174,14 +174,16 @@ fun createBostedsadresse(): Bostedsadresse {
     return Bostedsadresse(null, createVegadresse(), null)
 }
 
-fun createVegadresse(): Vegadresse {
+fun createVegadresse(
+    kommunenummer: String = "5555",
+): Vegadresse {
     return Vegadresse(
         adressenavn = "Adresseveien",
         husnummer = 8,
         husbokstav = null,
         tilleggsnavn = "Adressa",
         postnummer = "0102",
-        kommunenummer = "5555",
+        kommunenummer = kommunenummer,
         bruksenhetsnummer = null,
         bydelsnummer = null,
         poststed = "Poststedet",

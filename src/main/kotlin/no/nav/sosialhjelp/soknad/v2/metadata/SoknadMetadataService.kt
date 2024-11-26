@@ -20,6 +20,11 @@ class SoknadMetadataService(
             .let { soknadMetadataRepository.save(it) }
     }
 
+    fun getMetadataForSoknad(soknadId: UUID): SoknadMetadata {
+        return soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
+
     fun getAllSoknaderMetadataForBrukerBySoknadId(soknadId: UUID): List<SoknadMetadata>? {
         return soknadMetadataRepository.findByIdOrNull(soknadId)
             ?.let { metadata -> soknadMetadataRepository.findByPersonId(metadata.personId) }
