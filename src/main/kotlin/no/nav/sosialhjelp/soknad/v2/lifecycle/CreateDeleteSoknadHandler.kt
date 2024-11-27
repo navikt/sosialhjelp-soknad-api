@@ -74,6 +74,16 @@ private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> 
     listOf(
         UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
         AnnenDokumentasjonType.BEHOV,
+        AnnenDokumentasjonType.BARNEBIDRAG,
+        AnnenDokumentasjonType.BARNEHAGE,
+        AnnenDokumentasjonType.BARNEHAGE_SFO,
+        AnnenDokumentasjonType.BOSTOTTE,
+        AnnenDokumentasjonType.HUSLEIE,
+        AnnenDokumentasjonType.KONTOOVERSIKT,
+        AnnenDokumentasjonType.LONNSLIPP,
+        AnnenDokumentasjonType.STROM_OPPVARMING,
+        AnnenDokumentasjonType.STIPEND_LAN,
+        AnnenDokumentasjonType.ANNET,
     )
 
 private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =

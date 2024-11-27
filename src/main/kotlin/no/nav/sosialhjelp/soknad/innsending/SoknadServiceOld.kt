@@ -230,7 +230,21 @@ class SoknadServiceOld(
                         ).withKompatibilitet(ArrayList()),
                 ).withVedlegg(
                     if (kortSoknad) {
-                        JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
+                        JsonVedleggSpesifikasjon().withVedlegg(
+                            mutableListOf(
+                                JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("barnebidrag"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("barnehage"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("barnehageSFO"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("bostotte"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("husleie"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("kontooversikt"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("lonnslipp"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("stromOppvarming"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("stipendLan"),
+                                JsonVedlegg().withType("kort").withTilleggsinfo("annet"),
+                            ),
+                        )
                     } else {
                         JsonVedleggSpesifikasjon()
                     },

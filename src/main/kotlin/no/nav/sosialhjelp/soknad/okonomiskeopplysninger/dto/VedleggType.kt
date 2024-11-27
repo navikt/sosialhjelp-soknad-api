@@ -51,6 +51,17 @@ enum class VedleggType(
     StudentVedtak("student|vedtak", InntektType.STUDIELAN_INNTEKT),
     KortBehov("kort|behov", AnnenDokumentasjonType.BEHOV),
 
+    KortBarnebidrag("kort|barnebidrag", AnnenDokumentasjonType.BARNEBIDRAG),
+    KortBarnehage("kort|barnehage", AnnenDokumentasjonType.BARNEHAGE),
+    KortBarnehageSFO("kort|barnehageSFO", AnnenDokumentasjonType.BARNEHAGE_SFO),
+    KortHusleie("kort|husleie", AnnenDokumentasjonType.HUSLEIE),
+    KortBostotte("kort|bostotte", AnnenDokumentasjonType.BOSTOTTE),
+    KortKontoroversikt("kort|kontooversikt", AnnenDokumentasjonType.KONTOOVERSIKT),
+    KortLonnslipp("kort|lonnslipp", AnnenDokumentasjonType.LONNSLIPP),
+    KortStromOppvarming("kort|stromOppvarming", AnnenDokumentasjonType.STROM_OPPVARMING),
+    KortStipendLan("kort|stipendLan", AnnenDokumentasjonType.STIPEND_LAN),
+    KortAnnet("kort|annet", AnnenDokumentasjonType.ANNET),
+
     // Brukes ikke foreløpig
     KortSituasjonsendring("kort|situasjonsendring", null),
     ;

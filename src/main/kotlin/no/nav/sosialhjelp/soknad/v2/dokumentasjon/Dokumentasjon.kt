@@ -83,6 +83,16 @@ enum class AnnenDokumentasjonType(
     HUSLEIEKONTRAKT(dokumentasjonForventet = true),
     HUSLEIEKONTRAKT_KOMMUNAL(dokumentasjonForventet = true),
     BEHOV(dokumentasjonForventet = true),
+    BARNEBIDRAG(dokumentasjonForventet = true),
+    BARNEHAGE(dokumentasjonForventet = true),
+    BARNEHAGE_SFO(dokumentasjonForventet = true),
+    BOSTOTTE(dokumentasjonForventet = true),
+    HUSLEIE(dokumentasjonForventet = true),
+    KONTOOVERSIKT(dokumentasjonForventet = true),
+    LONNSLIPP(dokumentasjonForventet = true),
+    STROM_OPPVARMING(dokumentasjonForventet = true),
+    STIPEND_LAN(dokumentasjonForventet = true),
+    ANNET(dokumentasjonForventet = true),
     ;
 
     override val group: String get() = "Generell Dokumentasjon"

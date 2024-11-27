@@ -10,7 +10,10 @@ object OkonomiskGruppeMapper {
             VedleggType.HusleiekontraktHusleiekontrakt, VedleggType.HusleiekontraktKommunal -> return VedleggGruppe.Bosituasjon
             VedleggType.SluttoppgjorArbeid, VedleggType.LonnslippArbeid, VedleggType.StudentVedtak -> return VedleggGruppe.Arbeid
             VedleggType.AnnetAnnet -> return VedleggGruppe.AndreUtgifter
-            VedleggType.SkattemeldingSkattemelding, VedleggType.KortBehov, VedleggType.KortSituasjonsendring -> return VedleggGruppe.GenerelleVedlegg
+            VedleggType.SkattemeldingSkattemelding, VedleggType.KortBehov, VedleggType.KortSituasjonsendring,
+            VedleggType.KortAnnet, VedleggType.KortHusleie, VedleggType.KortBostotte, VedleggType.KortLonnslipp, VedleggType.KortBarnebidrag,
+            VedleggType.KortBarnehage, VedleggType.KortBarnehageSFO, VedleggType.KortKontoroversikt, VedleggType.KortStipendLan, VedleggType.KortStromOppvarming,
+            -> return VedleggGruppe.GenerelleVedlegg
             VedleggType.OppholdstillatelOppholdstillatel -> return VedleggGruppe.Statsborgerskap
             else -> {
                 val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
