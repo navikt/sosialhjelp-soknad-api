@@ -44,7 +44,7 @@ class KortSoknadService(
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
 
-        // Hvis en søknad er kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
+        // Hvis en søknad skal transformeres til kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
 
@@ -56,7 +56,7 @@ class KortSoknadService(
 
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
 
-        // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og lett til SKATTEMELDING
+        // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og legg til SKATTEMELDING
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
         dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
 
