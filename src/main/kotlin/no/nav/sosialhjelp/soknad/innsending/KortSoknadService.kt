@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
@@ -43,9 +44,10 @@ class KortSoknadService(
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.KORT)
         logger.info("Transitioning soknad $soknadId to kort")
 
+        // Hvis en søknad er kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
-
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
+
         soknadService.updateKortSoknad(soknadId, true)
     }
 
@@ -54,9 +56,10 @@ class KortSoknadService(
 
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
 
-        dokumentasjonService.resetForventetDokumentasjon(soknadId)
+        // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og lett til SKATTEMELDING
+        dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+        dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
 
-        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)
         soknadService.updateKortSoknad(soknadId, false)
     }
 
@@ -159,6 +162,9 @@ class KortSoknadService(
         // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
         if (oldKontakt.hasMottakerNotChanged(updatedKontakt.mottaker)) return
 
+        // Hvis soknad er standard - og det er gjort et adressevalg, så skal den ikke transformeres til kort
+        if (isSoknadTypeStandard(oldKontakt.soknadId) && oldKontakt.adresser.adressevalg != null) return
+
         val kommunenummer = updatedKontakt.getMottakerKommunenummerOrNull() ?: return
 
         val qualifiesForKort =
@@ -174,6 +180,9 @@ class KortSoknadService(
             null -> logger.warn("NyModell: Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
         }
     }
+
+    private fun isSoknadTypeStandard(soknadId: UUID) =
+        soknadMetadataService.getSoknadType(soknadId) == SoknadType.STANDARD
 
     private fun Kontakt.hasMottakerNotChanged(other: NavEnhet?): Boolean {
         return mottaker?.kommunenummer == other?.kommunenummer && adresser.adressevalg != null
