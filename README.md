@@ -19,7 +19,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 * JDK 21
 * Gradle
 * Spring Boot
-* Oracle DB
+* PostgreSQL db
 * Redis (cache)
 
 ### Krav
