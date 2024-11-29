@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
+import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -27,6 +28,7 @@ import java.util.UUID
 @RequestMapping("/dokument", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DokumentController(
     private val dokumentService: DokumentService,
+    private val virusScanner: VirusScanner,
 ) {
     @GetMapping("/{soknadId}/{dokumentId}")
     @Operation(summary = "Henter et gitt dokument")
@@ -62,13 +64,11 @@ class DokumentController(
     ): DokumentDto {
         val opplysningType = StringToOpplysningTypeConverter.convert(opplysningTypeString)
 
-        return dokumentService.saveDokument(
-            soknadId = soknadId,
-            type = opplysningType,
-            source = dokument.bytes,
-            orginaltFilnavn = dokument.originalFilename ?: error("Opplastet dokument mangler filnavn."),
-        )
-            .let { DokumentDto(it.dokumentId, it.filnavn) }
+        return dokument.originalFilename
+            ?.also { virusScanner.scan(filnavn = it, dokument.bytes, soknadId) }
+            ?.let { dokumentService.saveDokument(soknadId, opplysningType, dokument.bytes, orginaltFilnavn = it) }
+            ?.let { DokumentDto(it.dokumentId, it.filnavn) }
+            ?: throw IllegalArgumentException("Opplastet dokument mangler filnavn.")
     }
 
     @DeleteMapping("/{soknadId}/{dokumentId}")

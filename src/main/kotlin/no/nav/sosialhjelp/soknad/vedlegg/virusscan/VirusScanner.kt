@@ -3,12 +3,14 @@ package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadPossibleVirus
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.util.UUID
 
 /**
  * Integrasjonen er kopiert fra https://github.com/navikt/foreldrepengesoknad-api og modifisert til eget bruk
@@ -27,6 +29,19 @@ class VirusScanner(
         if (isInfected("N/A", data, "N/A", "N/A")) {
             throw DokumentUploadPossibleVirus("Fant virus i fil")
         }
+    }
+
+    fun scan(
+        filnavn: String,
+        data: ByteArray,
+        soknadId: UUID,
+    ) {
+        scan(
+            filnavn = filnavn,
+            data = data,
+            behandlingsId = soknadId.toString(),
+            fileType = FileDetectionUtils.detectMimeType(data),
+        )
     }
 
     fun scan(
