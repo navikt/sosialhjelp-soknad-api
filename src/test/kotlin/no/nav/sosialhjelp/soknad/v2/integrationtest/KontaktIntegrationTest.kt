@@ -291,6 +291,13 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 .let { opprettSoknad(id = it.soknadId, kort = true) }
                 .let { soknadRepository.save(it) }
 
+        dokumentasjonRepository.save(
+            Dokumentasjon(
+                soknadId = lagretSoknad.id,
+                type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            ),
+        )
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
         dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
@@ -301,6 +308,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
+        every { mellomlagringClient.deleteDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { digisosApiV2Client.getSoknader(any()) } returns
@@ -318,6 +326,15 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 ),
             )
         every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(JsonSoknadsStatus.Status.MOTTATT).withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString())))
+
+        dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
+            .run {
+                copy(
+                    status = DokumentasjonStatus.LASTET_OPP,
+                    dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512")),
+                )
+            }
+            .also { dokumentasjonRepository.save(it) }
 
         val adresserInput =
             AdresserInput(
@@ -347,5 +364,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
+
+        verify(exactly = 1) { mellomlagringClient.deleteDokument(any(), any()) }
     }
 }

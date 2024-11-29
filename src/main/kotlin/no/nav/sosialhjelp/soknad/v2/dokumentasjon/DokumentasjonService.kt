@@ -91,7 +91,8 @@ class DokumentasjonServiceImpl(
         dokumentasjonRepository
             .findAllBySoknadId(soknadId)
             .find { it.type == opplysningType }
-            ?.let { dokumentasjonRepository.deleteById(it.id) }
+            ?.also { it.dokumenter.forEach { dokument -> deleteDokument(soknadId, dokument.dokumentId) } }
+            ?.also { dokumentasjonRepository.deleteById(it.id) }
     }
 
     override fun resetForventetDokumentasjon(soknadId: UUID) {

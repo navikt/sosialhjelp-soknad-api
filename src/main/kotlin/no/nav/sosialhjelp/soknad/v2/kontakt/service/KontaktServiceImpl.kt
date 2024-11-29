@@ -88,7 +88,7 @@ class KontaktServiceImpl(
                 AdresseValg.MIDLERTIDIG -> oldKontakt.adresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-                ?.let { nyNavEnhetService.getNavEnhet(personId(), it, adresseValg) }
+                ?.let { valgtAdresse -> nyNavEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
 
         if (mottaker == null) {
             logger.warn("NyModell: Fant ikke mottaker ved oppdatering av søknad $soknadId")
