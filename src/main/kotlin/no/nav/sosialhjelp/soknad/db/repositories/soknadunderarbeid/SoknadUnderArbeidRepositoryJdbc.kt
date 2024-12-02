@@ -59,6 +59,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
     }
 
+    @Transactional(readOnly = true)
     override fun hentSoknad(
         soknadId: Long,
         eier: String,
@@ -71,6 +72,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         ).firstOrNull()
     }
 
+    @Transactional(readOnly = true)
     override fun hentSoknad(
         behandlingsId: String?,
         eier: String,
@@ -84,6 +86,7 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Deprecated("Gammelt repository")
+    @Transactional(readOnly = true)
     override fun hentSoknadNullable(
         behandlingsId: String?,
         eier: String,
@@ -144,6 +147,7 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Deprecated("Gammelt repository")
+    @Transactional
     override fun oppdaterInnsendingStatus(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
