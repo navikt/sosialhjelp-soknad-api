@@ -27,6 +27,7 @@ class DatabaseConfig(
         config.jdbcUrl = dbUrl
         config.poolName = "ManuelHikariPool"
         config.leakDetectionThreshold = 30000
+        config.maximumPoolSize = 4
 
         return HikariCPVaultUtil.createHikariDataSourceWithVaultIntegration(config, vaultMountPath, role)
     }

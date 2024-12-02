@@ -21,6 +21,7 @@ spring:
     hikari:
       pool-name: YamlHikariPool
       leak-detection-threshold: 30000
+      maximum-pool-size: 4
   servlet:
     multipart:
       max-file-size: 10MB
