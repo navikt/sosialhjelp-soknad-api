@@ -55,7 +55,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
     fun setUp() {
         mockkObject(SubjectHandlerUtils)
         mockkObject(VedleggUtils)
-        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns lagMellomlagringDto()
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns lagMellomlagringDto()
         every { SubjectHandlerUtils.getUserIdFromToken() } returns EIER
         every { VedleggUtils.validerFilOgReturnerNyttFilnavn(any(), any()) } returns Pair(FILNAVN, PDF_FILE.readBytes())
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
@@ -70,7 +70,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal oppdatere soknad_under_arbeid med filer i vedlegg hvis ingenting feiler mot Fiks mellomlagring`() {
-        every { mellomlagringClient.postVedlegg(any(), any()) } just runs
+        every { mellomlagringClient.lastOppDokument(any(), any()) } returns lagMellomlagringDto()
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
 
@@ -97,7 +97,7 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
 
     @Test
     internal fun `skal ikke oppdatere soknad_under_arbeid med filer i vedlegg hvis feil kaller mot FIKS`() {
-        every { mellomlagringClient.postVedlegg(any(), any()) } throws (IllegalStateException("feil"))
+        every { mellomlagringClient.lastOppDokument(any(), any()) } throws (IllegalStateException("feil"))
 
         soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)
 
@@ -152,7 +152,12 @@ internal class MellomLagringServiceUtenMocketRepositoryTest {
             navEksternRefId = BEHANDLINGSID,
             mellomlagringMetadataList =
                 listOf(
-                    MellomlagringDokumentInfo(filnavn = FILNAVN, filId = "uuid", storrelse = 123L, mimetype = "mime"),
+                    MellomlagringDokumentInfo(
+                        filnavn = FILNAVN,
+                        filId = UUID.randomUUID().toString(),
+                        storrelse = 123L,
+                        mimetype = "mime",
+                    ),
                 ),
         )
     }
