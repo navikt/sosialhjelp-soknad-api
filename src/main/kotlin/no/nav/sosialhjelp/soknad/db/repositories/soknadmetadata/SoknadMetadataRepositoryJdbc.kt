@@ -63,6 +63,7 @@ class SoknadMetadataRepositoryJdbc(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun hent(behandlingsId: String?): SoknadMetadata? =
         jdbcTemplate
             .query(
@@ -71,6 +72,7 @@ class SoknadMetadataRepositoryJdbc(
                 behandlingsId,
             ).firstOrNull()
 
+    @Transactional(readOnly = true)
     override fun hentAntallInnsendteSoknaderEtterTidspunkt(
         fnr: String?,
         tidspunkt: LocalDateTime?,
@@ -87,6 +89,7 @@ class SoknadMetadataRepositoryJdbc(
             0
         }
 
+    @Transactional(readOnly = true)
     override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
         jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) ORDER BY innsendtdato DESC",
@@ -96,6 +99,7 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
         )
 
+    @Transactional(readOnly = true)
     override fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
         jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
@@ -105,6 +109,7 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
 
+    @Transactional(readOnly = true)
     override fun hentPabegynteSoknaderForBruker(
         fnr: String,
         lest: Boolean,
@@ -118,6 +123,7 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
 
+    @Transactional(readOnly = true)
     override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
         fnr: String,
         tidsgrense: LocalDateTime,
@@ -131,6 +137,7 @@ class SoknadMetadataRepositoryJdbc(
             tidTilTimestamp(tidsgrense),
         )
 
+    @Transactional(readOnly = true)
     override fun oppdaterLest(
         soknadMetadata: SoknadMetadata,
         fnr: String,

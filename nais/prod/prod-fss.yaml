@@ -80,7 +80,7 @@ spec:
     limits:
       memory: 4Gi
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 2Gi
   envFrom:
     - configmap: loginservice-idporten
