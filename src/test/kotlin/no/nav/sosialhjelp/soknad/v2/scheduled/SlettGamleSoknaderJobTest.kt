@@ -24,7 +24,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         soknadRepository.deleteAll()
-        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto("", emptyList())
     }
 
@@ -50,7 +50,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 
     @Test
     fun `Ved feil hos FIKS skal soknader lokalt fortsatt slettes`() {
-        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } throws RuntimeException("Feil hos FIKS")
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } throws RuntimeException("Feil hos FIKS")
 
         runTest(timeout = 5.seconds) {
             soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))

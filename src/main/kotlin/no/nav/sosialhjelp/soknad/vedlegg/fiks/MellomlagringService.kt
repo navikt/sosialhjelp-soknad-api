@@ -27,7 +27,7 @@ class MellomlagringService(
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val navEksternId = getNavEksternId(behandlingsId)
-        return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
+        return mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)
             ?.mellomlagringMetadataList
             ?.map {
                 MellomlagretVedleggMetadata(
@@ -43,7 +43,7 @@ class MellomlagringService(
     ): MellomlagretVedlegg? {
         val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
         }
@@ -53,7 +53,7 @@ class MellomlagringService(
             ?.let {
                 MellomlagretVedlegg(
                     filnavn = it,
-                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId),
+                    data = mellomlagringClient.hentDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId),
                 )
             }
     }
@@ -81,14 +81,10 @@ class MellomlagringService(
 
         val filOpplasting = opprettFilOpplasting(filnavn, data)
         val navEksternId = getNavEksternId(behandlingsId)
-        mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
-
-        val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
 
         val filId =
-            mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
-                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+            mellomlagringClient.lastOppDokument(navEksternId = navEksternId, filOpplasting = filOpplasting)
+                .getFirstDocumentIdOrThrow()
 
         // nyModell
         dokumentasjonAdapter.saveDokumentMetadata(
@@ -102,7 +98,8 @@ class MellomlagringService(
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
             filId = filId,
-        ).also { log.info("Fil med filId $filId er lastet opp") }
+        )
+            .also { log.info("Fil med filId $filId er lastet opp") }
     }
 
     private fun opprettFilOpplasting(
@@ -127,7 +124,7 @@ class MellomlagringService(
         val navEksternId = getNavEksternId(behandlingsId)
 
         val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
             return
@@ -144,7 +141,7 @@ class MellomlagringService(
 
         // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
         // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS
-        mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+        mellomlagringClient.slettDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteVedlegg(
@@ -152,22 +149,22 @@ class MellomlagringService(
         vedleggId: String,
     ) {
         val navEksternId = getNavEksternId(behandlingsId)
-        mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+        mellomlagringClient.slettDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
         val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg =
-            mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
         } else {
-            mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
+            mellomlagringClient.slettAlleDokumenter(navEksternId = navEksternId)
         }
     }
 
     fun deleteAll(soknadId: UUID) {
-        mellomlagringClient.deleteAllVedlegg(soknadId.toString())
+        mellomlagringClient.slettAlleDokumenter(soknadId.toString())
     }
 
     // TODO Kan formålet gjøres annerledes (miljøvariable etc.) for å unngå miljøspesifikk logikk i koden
@@ -187,6 +184,13 @@ class MellomlagringService(
     companion object {
         private val log by logger()
     }
+}
+
+private fun MellomlagringDto.getFirstDocumentIdOrThrow(): String {
+    return mellomlagringMetadataList
+        ?.firstOrNull()
+        ?.filId
+        ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 }
 
 data class MellomlagretVedleggMetadata(

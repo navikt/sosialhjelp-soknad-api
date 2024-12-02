@@ -53,7 +53,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere eksisterende Dokument`() {
-        every { mellomlagringClient.getDokument(any(), any()) } returns pdfFil.readBytes()
+        every { mellomlagringClient.getDocument(any(), any()) } returns pdfFil.readBytes()
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
 
@@ -66,7 +66,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
-        every { mellomlagringClient.deleteDokument(any(), any()) } just runs
+        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
 
         doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
             .expectStatus().isNotFound
@@ -76,12 +76,12 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(it.message).isEqualTo("Dokument eksisterer ikke på noe Dokumentasjon")
             }
 
-        verify(exactly = 1) { mellomlagringClient.deleteDokument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
     }
 
     @Test
     fun `Dokument som ikke finnes i Mellomlagring skal slettes lokalt`() {
-        every { mellomlagringClient.getDokument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
+        every { mellomlagringClient.getDocument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
 
@@ -95,8 +95,8 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Laste opp dokument skal lagres i db og oppdatere dokumentasjonsstatus`() {
         val filnavnSlot = slot<String>()
-        every { mellomlagringClient.postDokument(any(), capture(filnavnSlot), any()) } just runs
-        every { mellomlagringClient.getDokumentMetadata(any()) } answers { createMellomlagringDto(filnavnSlot.captured) }
+        every { mellomlagringClient.uploadDocument(any(), capture(filnavnSlot), any()) } just runs
+        every { mellomlagringClient.getDocumentsMetadata(any()) } answers { createMellomlagringDto(filnavnSlot.captured) }
 
         Dokumentasjon(
             soknadId = soknad.id,
@@ -149,7 +149,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Slette siste Dokument i Dokumentasjon skal endre status`() {
-        every { mellomlagringClient.deleteDokument(any(), any()) } just runs
+        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
 
         val dokumentasjon = opprettDokumentasjon(soknadId = soknad.id).also { dokumentasjonRepository.save(it) }
         assertThat(dokumentasjon.status).isEqualTo(DokumentasjonStatus.LASTET_OPP)
