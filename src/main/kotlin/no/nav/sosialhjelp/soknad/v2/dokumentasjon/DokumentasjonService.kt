@@ -116,11 +116,11 @@ class DokumentasjonServiceImpl(
     ): Pair<String, ByteArray> {
         val dokument =
             runCatching { dokumentasjonRepository.findDokumentOrThrow(soknadId, dokumentId) }
-                .onFailure { mellomlagringClient.deleteDokument(soknadId, dokumentId) }
+                .onFailure { mellomlagringClient.deleteDocument(soknadId, dokumentId) }
                 .getOrThrow()
 
         val bytes =
-            runCatching { mellomlagringClient.getDokument(soknadId, dokumentId) }
+            runCatching { mellomlagringClient.getDocument(soknadId, dokumentId) }
                 .onFailure { dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokumentId) }
                 .getOrThrow()
 
@@ -154,7 +154,7 @@ class DokumentasjonServiceImpl(
             .also { dokumentasjonRepository.save(it) }
             .also {
                 logger.info("Sletter Dokument($dokumentId) fra Dokumentasjon(type: ${it.type.name}")
-                runCatching { mellomlagringClient.deleteDokument(soknadId, dokumentId) }
+                runCatching { mellomlagringClient.deleteDocument(soknadId, dokumentId) }
                     .onFailure { e ->
                         throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", e)
                     }
@@ -167,10 +167,10 @@ class DokumentasjonServiceImpl(
             .let { list -> dokumentasjonRepository.saveAll(list) }
 
         mellomlagringClient
-            .getMellomlagredeVedlegg(soknadId.toString())
+            .hentDokumenterMetadata(soknadId.toString())
             ?.also { dto ->
                 if (dto.mellomlagringMetadataList?.isNotEmpty() == true) {
-                    mellomlagringClient.deleteDokumenter(soknadId)
+                    mellomlagringClient.deleteAllDocuments(soknadId)
                 }
             }
     }
@@ -184,10 +184,10 @@ class DokumentasjonServiceImpl(
         filnavn: String,
         data: ByteArray,
     ): UUID {
-        mellomlagringClient.postDokument(soknadId, filnavn, data)
+        mellomlagringClient.uploadDocument(soknadId, filnavn, data)
 
         return mellomlagringClient
-            .getDokumentMetadata(soknadId)
+            .getDocumentsMetadata(soknadId)
             ?.mellomlagringMetadataList
             ?.find { dokumentInfo -> dokumentInfo.filnavn == filnavn }
             ?.let { dokumentInfo -> UUID.fromString(dokumentInfo.filId) }
@@ -198,7 +198,7 @@ class DokumentasjonServiceImpl(
         runCatching {
             copy(status = DokumentasjonStatus.LASTET_OPP, dokumenter = dokumenter.plus(dokument))
                 .also { dokumentasjonRepository.save(it) }
-        }.onFailure { mellomlagringClient.deleteDokument(soknadId, dokument.dokumentId) }
+        }.onFailure { mellomlagringClient.deleteDocument(soknadId, dokument.dokumentId) }
     }
 
     companion object {

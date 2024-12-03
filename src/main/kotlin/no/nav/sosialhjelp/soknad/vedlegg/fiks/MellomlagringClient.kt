@@ -31,43 +31,43 @@ import java.util.UUID
 import java.util.concurrent.Future
 
 interface MellomlagringClient {
-    fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto?
+    fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
 
-    fun getDokumentMetadata(soknadId: UUID): MellomlagringDto?
+    fun getDocumentsMetadata(soknadId: UUID): MellomlagringDto?
 
-    fun postVedlegg(
+    fun lastOppDokument(
         navEksternId: String,
         filOpplasting: FilOpplasting,
-    )
+    ): MellomlagringDto
 
-    fun postDokument(
+    fun uploadDocument(
         soknadId: UUID,
         filnavn: String,
         data: ByteArray,
     )
 
-    fun deleteAllVedlegg(navEksternId: String)
+    fun slettAlleDokumenter(navEksternId: String)
 
-    fun deleteDokumenter(soknadId: UUID)
+    fun deleteAllDocuments(soknadId: UUID)
 
-    fun getVedlegg(
+    fun hentDokument(
         navEksternId: String,
         digisosDokumentId: String,
     ): ByteArray
 
-    fun getDokument(
+    fun getDocument(
         soknadId: UUID,
         dokumentId: UUID,
     ): ByteArray
 
-    fun deleteVedlegg(
+    fun slettDokument(
         navEksternId: String,
         digisosDokumentId: String,
     )
 
-    fun deleteDokument(
+    fun deleteDocument(
         soknadId: UUID,
-        dokumentId: UUID,
+        documentId: UUID,
     )
 }
 
@@ -80,15 +80,14 @@ class MellomlagringClientImpl(
     /**
      * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
      */
-    override fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto? {
-        val responseString: String
-        try {
-            responseString = webClient.get()
+    override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? {
+        return try {
+            webClient.get()
                 .uri(MELLOMLAGRING_PATH, navEksternId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
                 .retrieve()
-                .bodyToMono<String>()
+                .bodyToMono<MellomlagringDto>()
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (e: WebClientResponseException) {
             if (e is BadRequest) {
@@ -101,42 +100,44 @@ class MellomlagringClientImpl(
             log.warn("Fiks - getMellomlagredeVedlegg feilet - ${e.responseBodyAsString}", e)
             throw e
         }
-        return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
 
-    override fun getDokumentMetadata(soknadId: UUID): MellomlagringDto? {
+    override fun getDocumentsMetadata(soknadId: UUID): MellomlagringDto? {
         TODO("Not yet implemented")
     }
 
     /**
      * Last opp vedlegg til mellomlagring for `navEksternId`
      */
-    override fun postVedlegg(
+    override fun lastOppDokument(
         navEksternId: String,
         filOpplasting: FilOpplasting,
-    ) {
+    ): MellomlagringDto {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
+        val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
-        try {
-            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-            lastOpp(
+        return runCatching {
+            doUploadDocument(
+                navEksternId = navEksternId,
                 filForOpplasting =
                     FilForOpplasting(
                         filnavn = filOpplasting.metadata.filnavn,
                         metadata = filOpplasting.metadata,
                         data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate),
                     ),
-                navEksternId = navEksternId,
             )
-            waitForFutures(krypteringFutureList)
-        } finally {
-            krypteringFutureList
-                .filter { !it.isDone && !it.isCancelled }
-                .forEach { it.cancel(true) }
+                .also { waitForFutures(krypteringFutureList) }
         }
+            .onFailure { log.error("Feil ved opplasting av dokument", it) }
+            .getOrElse { throw FiksException("Feil ved opplasting av dokument", it) }
+            .also {
+                krypteringFutureList
+                    .filter { !it.isDone && !it.isCancelled }
+                    .forEach { it.cancel(true) }
+            }
     }
 
-    override fun postDokument(
+    override fun uploadDocument(
         soknadId: UUID,
         filnavn: String,
         data: ByteArray,
@@ -144,21 +145,21 @@ class MellomlagringClientImpl(
         TODO("Not yet implemented")
     }
 
-    private fun lastOpp(
+    private fun doUploadDocument(
         filForOpplasting: FilForOpplasting<Any>,
         navEksternId: String,
-    ) {
+    ): MellomlagringDto {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
         body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
 
         val startTime = System.currentTimeMillis()
-        webClient.post()
+        return webClient.post()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .body(BodyInserters.fromMultipartData(body))
             .retrieve()
-            .bodyToMono<String>()
+            .bodyToMono<MellomlagringDto>()
             .doOnSuccess {
                 log.info("Mellomlagring av vedlegg ${filForOpplasting.metadata} utført.")
             }
@@ -169,12 +170,13 @@ class MellomlagringClientImpl(
                 )
             }
             .block()
+            ?: throw FiksException("MellomlagringDto er null ved opplasting av dokument", null)
     }
 
     /**
      * Slett alle mellomlagrede vedlegg for `navEksternId`
      */
-    override fun deleteAllVedlegg(navEksternId: String) {
+    override fun slettAlleDokumenter(navEksternId: String) {
         webClient.delete()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -186,14 +188,14 @@ class MellomlagringClientImpl(
             .block()
     }
 
-    override fun deleteDokumenter(soknadId: UUID) {
-        deleteAllVedlegg(soknadId.toString())
+    override fun deleteAllDocuments(soknadId: UUID) {
+        slettAlleDokumenter(soknadId.toString())
     }
 
     /**
      * Last ned mellomlagret vedlegg
      */
-    override fun getVedlegg(
+    override fun hentDokument(
         navEksternId: String,
         digisosDokumentId: String,
     ): ByteArray {
@@ -206,7 +208,7 @@ class MellomlagringClientImpl(
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
     }
 
-    override fun getDokument(
+    override fun getDocument(
         soknadId: UUID,
         dokumentId: UUID,
     ): ByteArray {
@@ -222,7 +224,7 @@ class MellomlagringClientImpl(
     /**
      * Slett mellomlagret vedlegg
      */
-    override fun deleteVedlegg(
+    override fun slettDokument(
         navEksternId: String,
         digisosDokumentId: String,
     ) {
@@ -240,9 +242,9 @@ class MellomlagringClientImpl(
             .block()
     }
 
-    override fun deleteDokument(
+    override fun deleteDocument(
         soknadId: UUID,
-        dokumentId: UUID,
+        documentId: UUID,
     ) {
         TODO("Not yet implemented")
     }
