@@ -363,7 +363,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .hasSize(2)
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
 
         verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
     }

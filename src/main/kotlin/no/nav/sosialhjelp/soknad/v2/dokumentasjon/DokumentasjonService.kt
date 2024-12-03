@@ -192,7 +192,7 @@ class DokumentasjonServiceImpl(
             .let { list -> dokumentasjonRepository.saveAll(list) }
 
         mellomlagringClient
-            .hentDokumenterMetadata(soknadId.toString())
+            .getDocumentsMetadata(soknadId)
             ?.also { dto ->
                 if (dto.mellomlagringMetadataList?.isNotEmpty() == true) {
                     mellomlagringClient.deleteAllDocuments(soknadId)

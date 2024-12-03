@@ -8,7 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.springframework.stereotype.Component
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
@@ -18,7 +19,7 @@ class CreateDeleteSoknadHandler(
     private val soknadService: SoknadService,
     private val registerDataService: RegisterDataService,
     private val dokumentasjonService: DokumentasjonService,
-    private val mellomlagringService: MellomlagringService,
+    private val mellomlagringClient: MellomlagringClient,
     private val soknadMetadataService: SoknadMetadataService,
 ) {
     fun createSoknad(
@@ -43,8 +44,8 @@ class CreateDeleteSoknadHandler(
         soknadService.getSoknad(soknadId)
             .also { soknad ->
                 dokumentasjonService.findDokumentasjonForSoknad(soknad.id)
-                    .let { mellomlagringService.getAllVedlegg(soknadId) }
-                    .also { all -> if (all.isNotEmpty()) mellomlagringService.deleteAll(soknad.id) }
+                    .let { mellomlagringClient.getDocumentsMetadata(soknadId) }
+                    ?.also { if (hasMellomlagredeDokumenter(it)) mellomlagringClient.deleteAllDocuments(soknadId) }
 
                 soknadService.deleteSoknad(soknad.id)
                 soknadMetadataService.deleteMetadata(soknad.id)
@@ -91,6 +92,12 @@ class CreateDeleteSoknadHandler(
             AnnenDokumentasjonType.SKATTEMELDING,
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
         )
+
+    private fun hasMellomlagredeDokumenter(dto: MellomlagringDto): Boolean {
+        dto.mellomlagringMetadataList
+            ?.let { if (it.isNotEmpty()) return true }
+        return false
+    }
 
     companion object {
         private val logger by logger()
