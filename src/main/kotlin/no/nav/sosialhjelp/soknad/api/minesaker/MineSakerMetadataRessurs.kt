@@ -22,8 +22,6 @@ class MineSakerMetadataRessurs(
      */
     @GetMapping("/innsendte")
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
-        // Foreløpig disable av denne. Fører til DOS?
-        return emptyList()
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return mineSakerMetadataService.hentInnsendteSoknader(fnr)
     }
