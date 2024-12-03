@@ -308,7 +308,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
-        every { mellomlagringClient.deleteDokument(any(), any()) } just runs
+        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { digisosApiV2Client.getSoknader(any()) } returns
@@ -365,6 +365,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
 
-        verify(exactly = 1) { mellomlagringClient.deleteDokument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
     }
 }

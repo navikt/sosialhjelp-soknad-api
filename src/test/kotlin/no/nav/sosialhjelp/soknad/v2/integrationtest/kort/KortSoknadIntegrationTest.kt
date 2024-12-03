@@ -64,7 +64,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         soknadMetadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
-        every { mellomlagringClient.getMellomlagredeVedlegg(any()) } returns MellomlagringDto("", emptyList())
+        every { mellomlagringClient.getDocumentsMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()

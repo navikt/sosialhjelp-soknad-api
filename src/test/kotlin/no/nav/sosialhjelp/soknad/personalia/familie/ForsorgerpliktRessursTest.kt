@@ -168,7 +168,7 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, emptyList())
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)

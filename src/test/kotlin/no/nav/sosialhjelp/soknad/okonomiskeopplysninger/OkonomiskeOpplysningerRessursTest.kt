@@ -101,7 +101,7 @@ class OkonomiskeOpplysningerRessursTest {
                 MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
             )
 
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
         val response = okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
 

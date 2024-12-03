@@ -106,7 +106,7 @@ class MellomlagringClientImpl(
     }
 
     override fun getDocumentsMetadata(soknadId: UUID): MellomlagringDto? {
-        return getMellomlagredeVedlegg(soknadId.toString())
+        return hentDokumenterMetadata(soknadId.toString())
     }
 
     /**
@@ -145,7 +145,7 @@ class MellomlagringClientImpl(
         filnavn: String,
         data: ByteArray,
     ) {
-        postVedlegg(
+        lastOppDokument(
             navEksternId = soknadId.toString(),
             filOpplasting =
                 FilOpplasting(
@@ -261,7 +261,7 @@ class MellomlagringClientImpl(
         soknadId: UUID,
         documentId: UUID,
     ) {
-        deleteVedlegg(soknadId.toString(), dokumentId.toString())
+        slettDokument(soknadId.toString(), documentId.toString())
     }
 
     private fun createHttpEntityOfString(
