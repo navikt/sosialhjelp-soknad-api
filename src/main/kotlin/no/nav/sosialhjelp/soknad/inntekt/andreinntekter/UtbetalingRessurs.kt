@@ -95,9 +95,6 @@ class UtbetalingRessurs(
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // nyModell
-        v2OkonomiAdapter.updateUtbetalinger(behandlingsId, utbetalingerFrontend)
     }
 
     private fun setUtbetalinger(

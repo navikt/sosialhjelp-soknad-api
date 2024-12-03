@@ -60,8 +60,6 @@ internal class DigisosApiServiceTest {
             dokumentListeService,
             prometheusMetricsService,
             Clock.systemDefaultZone(),
-            shadowProductionManager,
-            v2RegisterDataAdapter,
             mellomlagringService,
         )
 

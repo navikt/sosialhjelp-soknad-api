@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -39,7 +38,6 @@ class BarneutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
-    private val v2ControllerAdapter: V2ControllerAdapter,
 ) {
     @GetMapping
     fun hentBarneutgifter(
@@ -97,9 +95,6 @@ class BarneutgiftRessurs(
             else -> setAllBarneutgifterToFalse(okonomi)
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // NyModell
-        v2ControllerAdapter.updateBarneutgifter(behandlingsId, barneutgifterFrontend)
     }
 
     private fun setBarneutgifter(

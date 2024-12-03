@@ -62,7 +62,6 @@ internal class AdresseRessursTest {
             adresseSystemdata,
             soknadUnderArbeidRepository,
             navEnhetService,
-            soknadV2ControllerAdapter,
             unleash,
             soknadMetadataRepository,
             kortSoknadService,

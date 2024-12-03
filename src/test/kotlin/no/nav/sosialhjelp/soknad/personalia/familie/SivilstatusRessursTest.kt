@@ -41,7 +41,7 @@ internal class SivilstatusRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
 
-    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
+    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository)
 
     @BeforeEach
     fun setUp() {

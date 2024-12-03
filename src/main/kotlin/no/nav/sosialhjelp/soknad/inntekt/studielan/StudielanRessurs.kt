@@ -63,9 +63,6 @@ class StudielanRessurs(
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
-        // nyModell
-        v2InntektAdapter.leggTilStudielan(behandlingsId, studielanFrontend)
-
         return getStudielan(behandlingsId)
     }
 

@@ -39,7 +39,6 @@ internal class KontonummerRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             kontonummerService,
-            controllerAdapter,
         )
 
     @BeforeEach

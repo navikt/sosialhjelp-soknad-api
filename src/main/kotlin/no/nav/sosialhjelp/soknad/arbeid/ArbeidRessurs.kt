@@ -64,9 +64,6 @@ class ArbeidRessurs(
             }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
-        // NyModell
-        controllerAdapter.updateArbeid(behandlingsId, arbeidFrontend)
-
         return getArbeidFromSoknad(behandlingsId)
     }
 

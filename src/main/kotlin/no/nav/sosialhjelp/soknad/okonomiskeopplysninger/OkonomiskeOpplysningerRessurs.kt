@@ -157,9 +157,6 @@ class OkonomiskeOpplysningerRessurs(
             vedlegg = JsonVedleggUtils.vedleggByFrontendType(soknad, vedleggFrontend.type),
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // ny modell
-        v2OkonomiAdapter.updateOkonomiskeOpplysninger(behandlingsId, vedleggFrontend)
     }
 
     private fun removeIkkePaakrevdeMellomlagredeVedlegg(

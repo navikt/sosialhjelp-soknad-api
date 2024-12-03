@@ -93,9 +93,6 @@ class FormueRessurs(
         setFormue(okonomi.oversikt, formueFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // nyModell
-        okonomiAdapter.leggTilFormue(behandlingsId, formueFrontend)
     }
 
     private fun setFormue(

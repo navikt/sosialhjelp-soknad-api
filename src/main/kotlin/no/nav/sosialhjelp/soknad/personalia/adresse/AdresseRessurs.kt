@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2ControllerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -44,7 +43,6 @@ class AdresseRessurs(
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
-    private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter,
     private val unleash: Unleash,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val kortSoknadService: KortSoknadService,
@@ -153,12 +151,6 @@ class AdresseRessurs(
                     logger.info("NavEnhetFrontend: $it")
                     logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
                 }
-
-        // Ny modell
-        soknadV2ControllerAdapter.updateAdresse(
-            behandlingsId,
-            adresserFrontend,
-        )
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }

@@ -98,9 +98,6 @@ class VerdiRessurs(
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // NyModell
-        v2FormueAdapter.leggTilVerdi(behandlingsId, verdierFrontend)
     }
 
     private fun setVerdier(

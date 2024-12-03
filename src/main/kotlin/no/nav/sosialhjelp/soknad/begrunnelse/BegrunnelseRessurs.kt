@@ -56,9 +56,6 @@ class BegrunnelseRessurs(
         begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
         begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // NyModell
-        controllerAdapter.updateBegrunnelse(behandlingsId, begrunnelseFrontend)
     }
 
     data class BegrunnelseFrontend(
