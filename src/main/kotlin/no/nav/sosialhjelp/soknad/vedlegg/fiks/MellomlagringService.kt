@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
@@ -21,7 +20,6 @@ class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner,
-    private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
     fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
 

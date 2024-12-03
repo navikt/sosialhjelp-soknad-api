@@ -29,8 +29,6 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
-import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
-import no.nav.sosialhjelp.soknad.v2.shadow.SoknadV2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -48,8 +46,6 @@ internal class DigisosApiServiceTest {
     private val dokumentListeService: DokumentListeService = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val shadowProductionManager: ShadowProductionManager = mockk(relaxed = true)
-    private val v2RegisterDataAdapter: SoknadV2AdapterService = mockk(relaxed = true)
 
     private val digisosApiService =
         DigisosApiService(

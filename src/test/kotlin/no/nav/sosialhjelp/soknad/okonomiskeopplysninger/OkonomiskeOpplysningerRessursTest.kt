@@ -38,7 +38,6 @@ class OkonomiskeOpplysningerRessursTest {
             tilgangskontroll = tilgangskontroll,
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
             mellomlagringService = mellomlagringService,
-            v2OkonomiAdapter = mockk(relaxed = true),
         )
 
     private val behandlingsId = "123"

@@ -51,7 +51,6 @@ internal class VerdiRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
-            v2FormueAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach
