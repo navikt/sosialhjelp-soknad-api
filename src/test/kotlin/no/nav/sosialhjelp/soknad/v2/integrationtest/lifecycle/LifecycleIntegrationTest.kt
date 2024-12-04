@@ -19,13 +19,11 @@ import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-@AutoConfigureWebTestClient(timeout = "36000")
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository

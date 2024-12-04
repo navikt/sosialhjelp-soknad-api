@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -15,7 +14,6 @@ internal class MineSakerMetadataServiceTest {
     private val mineSakerMetadataService = MineSakerMetadataService(soknadMetadataRepository)
 
     @Test
-    @Disabled
     fun skalHenteInnsendteSoknaderForBruker() {
         val soknadMetadata =
             SoknadMetadata(

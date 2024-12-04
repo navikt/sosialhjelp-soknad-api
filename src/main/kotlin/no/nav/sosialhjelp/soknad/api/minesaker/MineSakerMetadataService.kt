@@ -13,8 +13,6 @@ class MineSakerMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     fun hentInnsendteSoknader(fnr: String): List<InnsendtSoknadDto> {
-        // Foreløpig disable av denne. Fører til DOS?
-        return emptyList()
         val innsendteSoknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
         log.debug("Fant ${innsendteSoknader.size} innsendte soknader")
         return innsendteSoknader.firstOrNull()

@@ -3,13 +3,11 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -21,7 +19,6 @@ import java.util.Date
 @Repository
 class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val v2AdapterService: V2AdapterService,
 ) : SoknadUnderArbeidRepository {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     private val writer = mapper.writerWithDefaultPrettyPrinter()
@@ -48,13 +45,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.status.toString(),
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
-        )
-
-        v2AdapterService.createSoknad(
-            behandlingsId = soknadUnderArbeid.behandlingsId,
-            opprettetDato = soknadUnderArbeid.opprettetDato,
-            eierId = soknadUnderArbeid.eier,
-            kortSoknad = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.soknadstype == JsonData.Soknadstype.KORT,
         )
 
         return hentSoknad(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.eier).soknadId
@@ -180,9 +170,6 @@ class SoknadUnderArbeidRepositoryJdbc(
             eier,
             soknadUnderArbeid.soknadId,
         )
-
-        // ny modell
-        v2AdapterService.slettSoknad(soknadUnderArbeid.behandlingsId)
     }
 
     private fun sjekkOmBrukerEierSoknadUnderArbeid(

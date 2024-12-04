@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.v2.shadow.DokumentasjonAdapter
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
@@ -21,7 +20,6 @@ class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner,
-    private val dokumentasjonAdapter: DokumentasjonAdapter,
 ) {
     fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
 
@@ -86,15 +84,6 @@ class MellomlagringService(
             mellomlagringClient.lastOppDokument(navEksternId = navEksternId, filOpplasting = filOpplasting)
                 .getFirstDocumentIdOrThrow()
 
-        // nyModell
-        dokumentasjonAdapter.saveDokumentMetadata(
-            behandlingsId = behandlingsId,
-            vedleggTypeString = vedleggstype,
-            dokumentId = filId,
-            filnavn = filnavn,
-            sha512 = sha512,
-        )
-
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
             filId = filId,
@@ -132,12 +121,6 @@ class MellomlagringService(
 
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
         soknadUnderArbeidService.fjernVedleggFraInternalSoknad(behandlingsId, aktueltVedlegg)
-
-        // nyModell
-        dokumentasjonAdapter.deleteDokumentMetadata(
-            behandlingsId = behandlingsId,
-            dokumentId = aktueltVedlegg.filId,
-        )
 
         // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
         // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS

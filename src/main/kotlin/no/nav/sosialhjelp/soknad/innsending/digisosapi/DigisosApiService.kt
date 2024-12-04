@@ -26,8 +26,6 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
-import no.nav.sosialhjelp.soknad.v2.json.compare.ShadowProductionManager
-import no.nav.sosialhjelp.soknad.v2.shadow.V2AdapterService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
@@ -45,8 +43,6 @@ class DigisosApiService(
     private val dokumentListeService: DokumentListeService,
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
-    private val shadowProductionManager: ShadowProductionManager,
-    private val v2AdapterService: V2AdapterService,
     private val mellomlagringService: MellomlagringService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
@@ -65,9 +61,6 @@ class DigisosApiService(
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid, innsendingsTidspunkt)
 
         jsonInternalSoknad.humanifyHvaSokesOm()
-
-        // Ny modell
-        v2AdapterService.setInnsendingstidspunkt(soknadUnderArbeid.behandlingsId, innsendingsTidspunkt)
 
         log.info("Starter innsending av søknad")
         // Opprettes, lagres på metadata og brukes til statistikk - er ikke en del av forsendelsen?
@@ -120,13 +113,7 @@ class DigisosApiService(
         prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT, jsonInternalSoknad.soknad.mottaker.kommunenummer)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
-        // Nymodell - Skyggeproduksjon - Sammenlikning av filer
-        shadowProductionManager.createAndCompareShadowJson(soknadUnderArbeid.behandlingsId, soknadUnderArbeid.jsonInternalSoknad)
-
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
-
-        // Ny Modell
-        v2AdapterService.slettSoknad(soknadUnderArbeid.behandlingsId)
 
         return digisosId
     }
