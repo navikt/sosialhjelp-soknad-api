@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.CapturingSlot
 import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
 import io.mockk.slot
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -41,7 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleFoedselDato
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleId
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.orgnr
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
 import java.util.UUID
@@ -69,7 +67,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var kontonummerService: KontonummerService
 
     @MockkBean
-    protected lateinit var mellomlagringService: MellomlagringService
+    protected lateinit var mellomlagringClient: MellomlagringClient
 
     @MockkBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
@@ -97,7 +95,6 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { mobiltelefonService.hent(any()) } returns "44553366"
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
-        every { mellomlagringService.deleteAll(any()) } just runs
         every {
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = capture(soknadJsonSlot),

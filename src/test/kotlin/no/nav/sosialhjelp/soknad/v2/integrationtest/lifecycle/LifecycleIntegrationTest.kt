@@ -12,11 +12,11 @@ import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -29,13 +29,6 @@ import java.util.UUID
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
-
-    @BeforeEach
-    fun mocks() {
-        every { mellomlagringService.deleteAll(any()) } just runs
-        every { mellomlagringService.getAllVedlegg(any<UUID>()) } returns
-            listOf(MellomlagretVedleggMetadata("filnavn", "filId"))
-    }
 
     @Test
     fun `Opprette soknad skal generere soknads-objekt og hente register-data`() {
@@ -57,10 +50,13 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Slette soknad skal fjerne soknad`() {
         val soknadId = createNewSoknad()
 
+        every { mellomlagringClient.getDocumentsMetadata(soknadId) } returns createMellomlagringDto(soknadId)
+        every { mellomlagringClient.deleteAllDocuments(soknadId) } just runs
+
         doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
-        verify(exactly = 1) { mellomlagringService.deleteAll(any()) }
+        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(soknadId) }
     }
 
     @Test
@@ -166,4 +162,19 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     }
+}
+
+private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
+    return MellomlagringDto(
+        navEksternRefId = soknadId.toString(),
+        mellomlagringMetadataList =
+            listOf(
+                MellomlagringDokumentInfo(
+                    filId = UUID.randomUUID().toString(),
+                    filnavn = "filnavn.pdf",
+                    storrelse = 1234L,
+                    mimetype = MimeTypes.APPLICATION_PDF,
+                ),
+            ),
+    )
 }
