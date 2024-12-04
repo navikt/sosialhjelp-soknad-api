@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
@@ -25,9 +24,6 @@ class FamilieSystemdata(
 ) : Systemdata {
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val jsonData = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data ?: return
-        if (jsonData.soknadstype == JsonData.Soknadstype.KORT) {
-            return
-        }
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val familie = jsonData.familie
         val systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator)

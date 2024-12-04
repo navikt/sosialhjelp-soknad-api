@@ -172,7 +172,7 @@ object Familie {
 
             // Forsørgerplikt
             val forsorgerplikt = familie.forsorgerplikt
-            if (forsorgerplikt != null && forsorgerplikt.harForsorgerplikt != null && java.lang.Boolean.TRUE == forsorgerplikt.harForsorgerplikt.verdi) {
+            if (forsorgerplikt != null && forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == true) {
                 if (utvidetSoknad) {
                     pdf.skrivTekst(pdfUtils.getTekst("familierelasjon.ingress_folkeregisteret"))
                     val antallBarnFraFolkeregisteret = forsorgerplikt.ansvar.count { it.barn.kilde == JsonKilde.SYSTEM }

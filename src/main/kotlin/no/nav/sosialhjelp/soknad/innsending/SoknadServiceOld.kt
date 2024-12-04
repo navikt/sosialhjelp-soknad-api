@@ -217,6 +217,10 @@ class SoknadServiceOld(
                                             JsonKontonummer()
                                                 .withKilde(JsonKilde.SYSTEM),
                                         ),
+                                )
+                                .withFamilie(
+                                    JsonFamilie()
+                                        .withForsorgerplikt(JsonForsorgerplikt()),
                                 ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
                         ).withMottaker(
                             JsonSoknadsmottaker()
@@ -244,9 +248,6 @@ fun JsonData.withStandardSoknadFelter(): JsonData =
         .withUtdanning(
             JsonUtdanning()
                 .withKilde(JsonKilde.BRUKER),
-        ).withFamilie(
-            JsonFamilie()
-                .withForsorgerplikt(JsonForsorgerplikt()),
         ).withBegrunnelse(
             JsonBegrunnelse()
                 .withKilde(JsonKildeBruker.BRUKER)
@@ -272,10 +273,7 @@ fun JsonData.withStandardSoknadFelter(): JsonData =
         )
 
 fun JsonData.withKortSoknadFelter(): JsonData =
-    withFamilie(
-        JsonFamilie()
-            .withForsorgerplikt(JsonForsorgerplikt()),
-    ).withArbeid(JsonArbeid())
+    withArbeid(JsonArbeid())
         .withBegrunnelse(
             JsonBegrunnelse()
                 .withKilde(JsonKildeBruker.BRUKER)
