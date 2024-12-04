@@ -47,6 +47,7 @@ internal class BostotteRessursTest {
             soknadUnderArbeidRepository,
             bostotteSystemdata,
             textService,
+            bostotteProxy = mockk(relaxed = true),
         )
 
     @BeforeEach

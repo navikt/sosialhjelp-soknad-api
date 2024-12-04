@@ -51,6 +51,7 @@ internal class UtbetalingRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
+            utbetalingProxy = mockk(relaxed = true),
         )
 
     @BeforeEach

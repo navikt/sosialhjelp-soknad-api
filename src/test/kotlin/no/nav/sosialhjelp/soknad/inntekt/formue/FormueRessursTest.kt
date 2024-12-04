@@ -41,7 +41,13 @@ internal class FormueRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val formueRessurs = FormueRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val formueRessurs =
+        FormueRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            formueProxy = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

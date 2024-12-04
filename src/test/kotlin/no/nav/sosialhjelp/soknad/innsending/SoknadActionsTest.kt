@@ -143,7 +143,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MED_MANGLER
 
         assertThatThrownBy { actions.sendSoknad(behandlingsId, token) }
