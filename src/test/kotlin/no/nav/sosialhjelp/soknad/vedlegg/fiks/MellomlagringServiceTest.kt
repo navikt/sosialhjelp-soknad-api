@@ -51,7 +51,6 @@ internal class MellomlagringServiceTest {
             mellomlagringClient,
             soknadUnderArbeidService,
             virusScanner,
-            dokumentasjonAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach

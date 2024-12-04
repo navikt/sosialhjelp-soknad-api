@@ -50,7 +50,6 @@ internal class UtbetalingRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
-            mockk(relaxed = true),
         )
 
     @BeforeEach

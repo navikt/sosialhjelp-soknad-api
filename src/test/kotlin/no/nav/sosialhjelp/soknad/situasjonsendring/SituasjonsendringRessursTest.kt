@@ -31,7 +31,7 @@ class SituasjonsendringRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
-    private val situasjonsendringRessurs = SituasjonsendringRessurs(tilgangskontroll, soknadUnderArbeidRepository, controllerAdapter)
+    private val situasjonsendringRessurs = SituasjonsendringRessurs(tilgangskontroll, soknadUnderArbeidRepository)
 
     @BeforeEach
     fun setUp() {

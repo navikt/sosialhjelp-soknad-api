@@ -40,7 +40,6 @@ internal class StudielanControllerTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
-            v2InntektAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach

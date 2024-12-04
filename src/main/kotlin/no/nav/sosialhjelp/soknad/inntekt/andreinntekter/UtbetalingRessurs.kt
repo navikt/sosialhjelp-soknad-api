@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2OkonomiAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -38,7 +37,6 @@ class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
-    private val v2OkonomiAdapter: V2OkonomiAdapter,
 ) {
     @GetMapping
     fun hentUtbetalinger(
@@ -95,9 +93,6 @@ class UtbetalingRessurs(
             }
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-        // nyModell
-        v2OkonomiAdapter.updateUtbetalinger(behandlingsId, utbetalingerFrontend)
     }
 
     private fun setUtbetalinger(
