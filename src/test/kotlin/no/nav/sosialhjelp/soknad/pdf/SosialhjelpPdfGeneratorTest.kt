@@ -209,6 +209,18 @@ internal class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
+    fun `Skal skrive ingen ektefelle hvis det ikke er en ektefelle der i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie()
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Ingen ektefelle funnet")
+    }
+
+    @Test
     fun `Skal legge ved barn hvis det finnes i kort søknad`() {
         val jsonInternalSoknad =
             createEmptyJsonInternalSoknad("pdfaTest", true).also {
@@ -218,6 +230,18 @@ internal class SosialhjelpPdfGeneratorTest {
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
         assertThat(text).contains("Johan Johansen")
+    }
+
+    @Test
+    fun `Skal skrive ingen registrerte barn hvis det ikke finnes i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(false).withKilde(JsonKilde.SYSTEM)))
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Du har ingen registrerte barn")
     }
 
     // *** Kan vel gjøres hakket mer elegant
