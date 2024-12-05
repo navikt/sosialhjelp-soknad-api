@@ -57,6 +57,7 @@ internal class DigisosApiServiceTest {
             prometheusMetricsService,
             Clock.systemDefaultZone(),
             mellomlagringService,
+            kodeverkService = mockk(relaxed = true),
         )
 
     private val eier = "12345678910"
