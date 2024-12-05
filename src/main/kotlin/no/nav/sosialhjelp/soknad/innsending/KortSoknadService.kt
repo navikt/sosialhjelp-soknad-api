@@ -111,7 +111,7 @@ class KortSoknadService(
     }
 
     private fun JsonDigisosSoker.hasRecentOrUpcomingUtbetalinger(): Boolean {
-        val fourMonthsAgo = LocalDateTime.now(clock).minusDays(120)
+        val fourMonthsAgo = LocalDateTime.now(clock).minusDays(50)
         val in14Days = LocalDateTime.now(clock).plusDays(14)
 
         val utbetaltSiste120Dager =

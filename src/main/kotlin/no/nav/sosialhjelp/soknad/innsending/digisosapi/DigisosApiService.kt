@@ -272,6 +272,7 @@ internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
 
     val result =
         when {
+            hvaSokesOm == null -> ""
             // Hvis ingen kategorier er valgt
             hvaSokesOm == "[]" -> ""
             // Hvis det er "vanlig" tekst i feltet

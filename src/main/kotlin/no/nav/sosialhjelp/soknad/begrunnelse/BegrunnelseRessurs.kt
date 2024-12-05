@@ -62,7 +62,7 @@ class BegrunnelseRessurs(
                     ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
             val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
             begrunnelse.kilde = JsonKildeBruker.BRUKER
-            begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
+            begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm ?: ""
             begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
