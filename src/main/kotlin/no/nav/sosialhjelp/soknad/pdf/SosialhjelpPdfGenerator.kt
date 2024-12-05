@@ -55,7 +55,7 @@ class SosialhjelpPdfGenerator(
             if (isKortSoknad) {
                 leggTilSituasjonsendring(pdf, pdfUtils, utvidetSoknad, data.situasjonendring)
             }
-            leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad)
+            leggTilFamilie(pdf, pdfUtils, data.familie, utvidetSoknad, isKortSoknad)
             leggTilInntektOgFormue(pdf, pdfUtils, data.okonomi, jsonInternalSoknad.soknad, utvidetSoknad, isKortSoknad)
             if (!isKortSoknad) {
                 leggTilArbeidOgUtdanning(pdf, pdfUtils, data.arbeid, data.utdanning, utvidetSoknad)

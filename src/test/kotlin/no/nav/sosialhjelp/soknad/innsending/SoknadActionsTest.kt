@@ -23,7 +23,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligEx
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -52,7 +51,6 @@ internal class SoknadActionsTest {
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val digisosApiService: DigisosApiService = mockk()
     private val nedetidService: NedetidService = mockk()
     private val navEnhetService: NavEnhetService = mockk()
@@ -113,7 +111,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns FIKS_NEDETID_OG_TOM_CACHE
 
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
