@@ -45,8 +45,7 @@ class SivilstatusProxy(private val sivilstandController: SivilstandController) {
             .getSivilstand(UUID.fromString(behandlingsId))
             .let {
                 SivilstatusFrontend(
-                    // TODO Spiller det noen rolle for frontend ??
-                    kildeErSystem = true,
+                    kildeErSystem = it.ektefelle?.kildeErSystem,
                     sivilstatus = it.sivilstatus?.let { status -> JsonSivilstatus.Status.valueOf(status.name) },
                     ektefelle =
                         it.ektefelle?.let { ektefelle ->

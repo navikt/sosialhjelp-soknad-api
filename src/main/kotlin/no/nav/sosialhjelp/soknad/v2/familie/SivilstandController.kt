@@ -60,6 +60,7 @@ data class EktefelleDto(
     val harDiskresjonskode: Boolean? = null,
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
+    val kildeErSystem: Boolean?,
 )
 
 fun Sivilstand.toSivilstandDto() =
@@ -68,6 +69,15 @@ fun Sivilstand.toSivilstandDto() =
         ektefelle?.toDto(),
     )
 
-fun Ektefelle.toDto() = EktefelleDto(personId, navn, fodselsdato, folkeregistrertMedEktefelle, borSammen)
+fun Ektefelle.toDto() =
+    EktefelleDto(
+        personId,
+        navn,
+        fodselsdato,
+        harDiskresjonskode,
+        folkeregistrertMedEktefelle,
+        borSammen,
+        kildeErSystem,
+    )
 
 fun EktefelleInput.toBarn() = Ektefelle(navn, fodselsdato, personId, borSammen = borSammen, kildeErSystem = false)
