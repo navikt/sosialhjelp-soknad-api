@@ -54,7 +54,7 @@ class SoknadLifecycleServiceImpl(
                     logger.error("Feil ved sending av søknad.", it)
                 }.getOrThrow()
 
-        prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad, adresseService.findMottaker(soknadId)?.kommunenummer)
+        prometheusMetricsService.reportSendt(sendtInfo.isKortSoknad, sendtInfo.navEnhet.kommunenavn)
         prometheusMetricsService.reportSoknadMottaker(
             MetricsUtils.navKontorTilMetricNavn(sendtInfo.navEnhet.enhetsnavn),
         )

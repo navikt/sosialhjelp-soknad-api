@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
@@ -44,6 +45,7 @@ class DigisosApiService(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val clock: Clock,
     private val mellomlagringService: MellomlagringService,
+    private val kodeverkService: KodeverkService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -110,7 +112,9 @@ class DigisosApiService(
 
         genererOgLoggVedleggskravStatistikk(vedlegg.vedleggListe)
 
-        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT, jsonInternalSoknad.soknad.mottaker.kommunenummer)
+        val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
+
+        prometheusMetricsService.reportSendt(jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT, kommunenavn)
         prometheusMetricsService.reportSoknadMottaker(navKontorTilMetricNavn(navEnhetsnavn))
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
