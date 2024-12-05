@@ -49,11 +49,23 @@ class FamilieToJsonMapper(
 
             with(json.soknad.data.familie) {
                 if (familie.ektefelle != null && familie.sivilstatus != null) {
-                    sivilstatus = familie.toJsonSivilstatus()
+                    sivilstatus = familie.toJsonSivilstatus().apply { handleValidationDependencies() }
                 }
                 forsorgerplikt = familie.toJsonForsorgerplikt()
             }
         }
+    }
+}
+
+// Skjema-valideringen i filformatet legger føringer for data som er lovlig i sammenheng med kilde.
+private fun JsonSivilstatus.handleValidationDependencies() {
+    when (kilde) {
+        JsonKilde.SYSTEM -> borSammenMed = null
+        JsonKilde.BRUKER -> {
+            folkeregistrertMedEktefelle = null
+            ektefelleHarDiskresjonskode = null
+        }
+        else -> error("Ugyldig kilde for sivilstatus")
     }
 }
 
