@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -34,6 +35,12 @@ import java.net.URI
 class ExceptionMapper(
     @Value("\${loginservice.url}") private val loginserviceUrl: URI,
 ) : ResponseEntityExceptionHandler() {
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handle(e: HttpMessageNotReadableException?) {
+        log.error("Returning HTTP 400 Bad Request. message: ${e?.message}, cause: ${e?.cause}", e)
+    }
+
     @ExceptionHandler
     fun handleSoknadApiException(e: SosialhjelpSoknadApiException): ResponseEntity<SoknadApiError> =
         when (e) {
