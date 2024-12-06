@@ -35,15 +35,14 @@ import java.net.URI
 class ExceptionMapper(
     @Value("\${loginservice.url}") private val loginserviceUrl: URI,
 ) : ResponseEntityExceptionHandler() {
-    @ExceptionHandler(HttpMessageNotReadableException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     override fun handleHttpMessageNotReadable(
-        e: HttpMessageNotReadableException,
+        ex: HttpMessageNotReadableException,
         headers: HttpHeaders,
         status: HttpStatusCode,
         request: WebRequest,
     ): ResponseEntity<Any> {
-        log.error("Returning HTTP 400 Bad Request. message: ${e.message}, cause: ${e.cause}", e)
+        log.error("Returning HTTP 400 Bad Request. message: ${ex.message}, cause: ${ex.cause}", ex)
         return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
     }
 
@@ -169,11 +168,11 @@ class ExceptionMapper(
         }
     }
 
-//    @ExceptionHandler(Throwable::class)
-//    fun handleThrowable(e: Throwable): ResponseEntity<*> {
-//        log.error("Noe uventet feilet: ${e.message}", e)
-//        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
-//    }
+    @ExceptionHandler(Throwable::class)
+    fun handleThrowable(e: Throwable): ResponseEntity<*> {
+        log.error("Noe uventet feilet: ${e.message}", e)
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
+    }
 
     @ExceptionHandler(value = [SamtidigOppdateringException::class])
     @ResponseStatus(value = HttpStatus.CONFLICT)
