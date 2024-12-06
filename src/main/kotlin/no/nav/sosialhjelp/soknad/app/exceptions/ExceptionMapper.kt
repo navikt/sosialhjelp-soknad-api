@@ -35,13 +35,19 @@ import java.net.URI
 class ExceptionMapper(
     @Value("\${loginservice.url}") private val loginserviceUrl: URI,
 ) : ResponseEntityExceptionHandler() {
-    @ExceptionHandler
+    @ExceptionHandler(HttpMessageNotReadableException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handle(e: HttpMessageNotReadableException?) {
-        log.error("Returning HTTP 400 Bad Request. message: ${e?.message}, cause: ${e?.cause}", e)
+    override fun handleHttpMessageNotReadable(
+        e: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
+        log.error("Returning HTTP 400 Bad Request. message: ${e.message}, cause: ${e.cause}", e)
+        return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(SosialhjelpSoknadApiException::class)
     fun handleSoknadApiException(e: SosialhjelpSoknadApiException): ResponseEntity<SoknadApiError> =
         when (e) {
             is SoknadAlleredeSendtException -> {
@@ -163,11 +169,11 @@ class ExceptionMapper(
         }
     }
 
-    @ExceptionHandler(Throwable::class)
-    fun handleThrowable(e: Throwable): ResponseEntity<*> {
-        log.error("Noe uventet feilet: ${e.message}", e)
-        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
-    }
+//    @ExceptionHandler(Throwable::class)
+//    fun handleThrowable(e: Throwable): ResponseEntity<*> {
+//        log.error("Noe uventet feilet: ${e.message}", e)
+//        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError))
+//    }
 
     @ExceptionHandler(value = [SamtidigOppdateringException::class])
     @ResponseStatus(value = HttpStatus.CONFLICT)
