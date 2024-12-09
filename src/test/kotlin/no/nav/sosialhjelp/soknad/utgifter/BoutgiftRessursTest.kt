@@ -56,7 +56,6 @@ internal class BoutgiftRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
-            v2ControllerAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach

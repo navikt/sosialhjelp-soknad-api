@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -36,7 +35,6 @@ import java.text.SimpleDateFormat
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val controllerAdapter: V2ControllerAdapter,
 ) {
     private val log by logger()
 
@@ -77,12 +75,6 @@ class SivilstatusRessurs(
         sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        kotlin
-            .runCatching {
-                controllerAdapter.updateSivilstand(behandlingsId, sivilstatusFrontend)
-            }.onFailure {
-                log.error("Noe feilet under oppdatering av sivilstatus i ny datamodell", it)
-            }
     }
 
     private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {

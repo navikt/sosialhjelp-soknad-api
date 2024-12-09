@@ -43,7 +43,6 @@ internal class TelefonnummerRessursTest {
             tilgangskontroll,
             telefonnummerSystemdata,
             soknadUnderArbeidRepository,
-            controllerAdapter,
         )
 
     @BeforeEach

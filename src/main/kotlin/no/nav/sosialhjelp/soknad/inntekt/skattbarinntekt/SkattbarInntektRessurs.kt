@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektOgFo
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -37,7 +36,6 @@ class SkattbarInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService,
-    private val v2ControllerAdapter: V2ControllerAdapter,
 ) {
     @GetMapping
     fun hentSkattbareInntekter(
@@ -55,9 +53,6 @@ class SkattbarInntektRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, samtykke)
-
-        // nyModell
-        v2ControllerAdapter.updateSamtykkeSkatteetaten(behandlingsId, samtykke)
     }
 
     @PutMapping
@@ -68,9 +63,6 @@ class SkattbarInntektRessurs(
     ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         setSamtykkeIfChanged(behandlingsId, input.samtykke)
-
-        // nyModell
-        v2ControllerAdapter.updateSamtykkeSkatteetaten(behandlingsId, input.samtykke)
 
         return getSkattbarInntekt(behandlingsId)
     }

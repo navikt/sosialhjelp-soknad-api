@@ -14,11 +14,9 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
-@AutoConfigureWebTestClient(timeout = "36000")
 class SoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
@@ -33,7 +31,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
         clearAllMocks()
         soknadRepository.deleteAll()
-        every { mellomlagringClient.deleteAllVedlegg(any()) } just runs
+        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID().toString()
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
     }

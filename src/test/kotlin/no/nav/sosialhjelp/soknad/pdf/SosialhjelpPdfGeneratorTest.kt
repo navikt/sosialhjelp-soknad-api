@@ -9,8 +9,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
@@ -24,13 +30,17 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
 import org.apache.commons.io.FileUtils
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException
 import org.apache.pdfbox.preflight.parser.PreflightParser
+import org.apache.pdfbox.text.PDFTextStripper
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.time.LocalDate
+import java.time.Year
 
 internal class SosialhjelpPdfGeneratorTest {
     private val kodeverkService: KodeverkService = mockk()
@@ -184,6 +194,54 @@ internal class SosialhjelpPdfGeneratorTest {
         } finally {
             file.deleteOnExit()
         }
+    }
+
+    @Test
+    fun `Skal legge ved ektefelle hvis det finnes i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie().withSivilstatus(JsonSivilstatus().withStatus(JsonSivilstatus.Status.GIFT).withEktefelle(JsonEktefelle().withPersonIdentifikator("12345789").withNavn(JsonNavn().withFornavn("Johanna").withEtternavn("Johansen")).withFodselsdato(LocalDate.of(1991, 1, 1).toString())).withKilde(JsonKilde.SYSTEM))
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Johanna Johansen")
+    }
+
+    @Test
+    fun `Skal skrive ingen ektefelle hvis det ikke er en ektefelle der i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie()
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Ingen ektefelle funnet")
+    }
+
+    @Test
+    fun `Skal legge ved barn hvis det finnes i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(true).withKilde(JsonKilde.SYSTEM)).withAnsvar(listOf(JsonAnsvar().withBarn(JsonBarn().withKilde(JsonKilde.SYSTEM).withFodselsdato(LocalDate.of(Year.now().minusYears(4).value, 1, 1).toString()).withNavn(JsonNavn().withFornavn("Johan").withEtternavn("Johansen"))))))
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Johan Johansen")
+    }
+
+    @Test
+    fun `Skal skrive ingen registrerte barn hvis det ikke finnes i kort søknad`() {
+        val jsonInternalSoknad =
+            createEmptyJsonInternalSoknad("pdfaTest", true).also {
+                it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(false).withKilde(JsonKilde.SYSTEM)))
+            }
+        val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
+        val pdf = Loader.loadPDF(bytes)
+        val text = PDFTextStripper().getText(pdf)
+        assertThat(text).contains("Du har ingen registrerte barn")
     }
 
     // *** Kan vel gjøres hakket mer elegant

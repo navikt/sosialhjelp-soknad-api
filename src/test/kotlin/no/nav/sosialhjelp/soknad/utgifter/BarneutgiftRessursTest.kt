@@ -49,7 +49,6 @@ internal class BarneutgiftRessursTest {
             tilgangskontroll,
             soknadUnderArbeidRepository,
             textService,
-            v2ControllerAdapter = mockk(relaxed = true),
         )
 
     @BeforeEach

@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -34,7 +35,18 @@ import java.net.URI
 class ExceptionMapper(
     @Value("\${loginservice.url}") private val loginserviceUrl: URI,
 ) : ResponseEntityExceptionHandler() {
-    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    override fun handleHttpMessageNotReadable(
+        ex: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
+        log.error("Returning HTTP 400 Bad Request. message: ${ex.message}, cause: ${ex.cause}", ex)
+        return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.DokumentUploadError))
+    }
+
+    @ExceptionHandler(SosialhjelpSoknadApiException::class)
     fun handleSoknadApiException(e: SosialhjelpSoknadApiException): ResponseEntity<SoknadApiError> =
         when (e) {
             is SoknadAlleredeSendtException -> {

@@ -40,7 +40,7 @@ internal class ArbeidRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
-    private val arbeidRessurs = ArbeidRessurs(soknadUnderArbeidRepository, tilgangskontroll, controllerAdapter)
+    private val arbeidRessurs = ArbeidRessurs(soknadUnderArbeidRepository, tilgangskontroll)
 
     @BeforeEach
     fun setUp() {
