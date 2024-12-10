@@ -72,8 +72,13 @@ class DigisosApiService(
         // lagDokumentForSaksbehandlerPdf(internalSoknad), lagDokumentForJuridiskPdf(internalSoknad), lagDokumentForBrukerkvitteringPdf()
         // Logger også ut hvor mange mellomlagrede vedlegg som finnes
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
+
+        // pga race conditions ved tidligere db-operasjoner, tar vi en siste sjekk på denne
+        syncKortSoknad(soknadUnderArbeid)
+
         // Json-streng av JsonSoknad-objektet
-        val soknadJson = getSoknadJson(soknadUnderArbeid)
+        val soknadJsonString = validateAndGetJsonString(soknadUnderArbeid)
+
         // Sjekker at JsonSoknad, JsonMottaker og JsonMottaker.enhetsnummer finnes - kun et wrapper-objekt for enhetsnummer
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
 
@@ -83,7 +88,7 @@ class DigisosApiService(
             json = jsonInternalSoknad,
         )
         // JsonVedleggSpesifikasjon - brukes av FSL som oppslagsinfo mot mellomlagring
-        val vedleggJson = getVedleggJson(jsonInternalSoknad)
+        val vedleggJsonString = validateAndGetJsonVedleggString(jsonInternalSoknad)
 
         if (MiljoUtils.isNonProduction()) {
             behandlingsId = createPrefixedBehandlingsId(behandlingsId)
@@ -97,9 +102,9 @@ class DigisosApiService(
         val digisosId =
             try {
                 digisosApiV2Client.krypterOgLastOppFiler(
-                    soknadJson = soknadJson,
+                    soknadJson = soknadJsonString,
                     tilleggsinformasjonJson = tilleggsinformasjonJson,
-                    vedleggJson = vedleggJson,
+                    vedleggJson = vedleggJsonString,
                     dokumenter = filOpplastinger,
                     kommunenr = kommunenummer,
                     navEksternRefId = behandlingsId,
@@ -120,6 +125,27 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         return digisosId
+    }
+
+    private fun syncKortSoknad(soknad: SoknadUnderArbeid) {
+        runCatching {
+            val kortSoknad =
+                soknadMetadataRepository.hent(soknad.behandlingsId)?.kortSoknad
+                    ?: error("Mangler metadata ved innsending")
+            val jsonData = soknad.jsonInternalSoknad?.soknad?.data ?: error("Mangler data i jsonInternalSoknad")
+
+            when (kortSoknad) {
+                true -> Soknadstype.KORT
+                false -> Soknadstype.STANDARD
+            }
+                .also { soknadstype ->
+                    if (jsonData.soknadstype != soknadstype) {
+                        log.warn("Oppdaterer soknadstype ved innsending. Metadata.kortSoknad -> $kortSoknad")
+                        jsonData.soknadstype = soknadstype
+                    }
+                }
+        }
+            .onFailure { log.error("Feil ved sjekk av soknadstype ved innsending", it) }
     }
 
     fun getSoknaderForUser(token: String): List<DigisosSak> = digisosApiV2Client.getSoknader(token)
@@ -160,7 +186,7 @@ class DigisosApiService(
         log.info("Oppdaterer metadata ved avslutning av søknad. ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
-    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String =
+    private fun validateAndGetJsonString(soknadUnderArbeid: SoknadUnderArbeid): String =
         try {
             val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.soknad)
             ensureValidSoknad(soknadJson)
@@ -228,7 +254,7 @@ class DigisosApiService(
         if (filer.isEmpty()) status = Vedleggstatus.VedleggKreves.toString()
     }
 
-    private fun getVedleggJson(json: JsonInternalSoknad): String =
+    private fun validateAndGetJsonVedleggString(json: JsonInternalSoknad): String =
         try {
             objectMapper.writeValueAsString(json.vedlegg).also { ensureValidVedlegg(it) }
         } catch (e: JsonProcessingException) {
