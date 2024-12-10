@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectedWithClaims(
@@ -54,7 +55,7 @@ class AdresseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = personId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
@@ -93,7 +94,7 @@ class AdresseRessurs(
         @RequestBody adresserFrontend: AdresserFrontendInput,
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = personId()
         val token = SubjectHandlerUtils.getToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad =
@@ -118,41 +119,46 @@ class AdresseRessurs(
         personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        // TODO Ekstra logging
-        logger.info("Henter navEnhet - PUT personalia/adresser")
 
         val navEnhetFrontend =
-            navEnhetService
-                .getNavEnhet(
-                    eier,
-                    jsonInternalSoknad.soknad,
-                    adresserFrontend.valg,
-                )?.also {
+            navEnhetService.getNavEnhet(
+                eier,
+                jsonInternalSoknad.soknad,
+                adresserFrontend.valg,
+            )
+                ?.also {
                     setNavEnhetAsMottaker(soknad, it, eier)
                     soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-
-                    // Man må skru av og på kort søknad på forsiden i mock/lokalt
-                    if (!MiljoUtils.isMockAltProfil()) {
-                        kotlin
-                            .runCatching {
-                                val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
-                                if (changed) {
-                                    val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-                                    if (soknadMetadata != null) {
-                                        soknadMetadata.kortSoknad = isKort
-                                        soknadMetadataRepository.oppdater(soknadMetadata)
-                                    }
-                                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-                                }
-                            }.onFailure { error -> logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error) }
-                    }
-
-                    // TODO Ekstra logging
-                    logger.info("NavEnhetFrontend: $it")
-                    logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
                 }
+                ?.also { resolveKortSoknad(behandlingsId, it, token) }
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+    }
+
+    private fun resolveKortSoknad(
+        behandlingsId: String,
+        navEnhet: NavEnhetFrontend,
+        token: String?,
+    ) {
+        // Man må skru av og på kort søknad på forsiden i mock/lokalt
+        if (!MiljoUtils.isMockAltProfil()) {
+            runCatching {
+                val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
+                val jsonInternalSoknad = soknad.jsonInternalSoknad ?: error("Finnes ikke jsonInternalSoknad")
+
+                val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(navEnhet, token)
+                if (changed) {
+                    val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                    if (soknadMetadata != null) {
+                        soknadMetadata.kortSoknad = isKort
+                        soknadMetadataRepository.oppdater(soknadMetadata)
+                    }
+                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId())
+                }
+            }.onFailure { error ->
+                logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error)
+            }
+        }
     }
 
     /* Sett søknadstype kort om bruker har rett på det. Gjøres her fordi vi må vite hvilken kommune som skal behandle søknaden.
