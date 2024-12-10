@@ -144,7 +144,16 @@ class AdresseRessurs(
                                     }
                                     soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
                                 }
-                            }.onFailure { error -> logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error) }
+                            }
+                            .onFailure { error ->
+                                soknadMetadataRepository.hent(behandlingsId)?.kortSoknad
+                                    .also {
+                                        logger.error(
+                                            "Noe feilet ved overgang fra/til kort søknad. metadata.kort = $it",
+                                            error,
+                                        )
+                                    }
+                            }
                     }
 
                     // TODO Ekstra logging
