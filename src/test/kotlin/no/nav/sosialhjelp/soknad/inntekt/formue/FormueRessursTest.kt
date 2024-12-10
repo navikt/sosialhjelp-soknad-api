@@ -158,7 +158,7 @@ internal class FormueRessursTest {
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val slot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any(), any()) } just runs
 
         val formueFrontend =
             FormueFrontend(

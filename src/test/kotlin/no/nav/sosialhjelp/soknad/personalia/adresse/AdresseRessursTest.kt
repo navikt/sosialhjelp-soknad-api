@@ -53,7 +53,7 @@ internal class AdresseRessursTest {
     private val navEnhetService: NavEnhetService = mockk()
     private val soknadV2ControllerAdapter: SoknadV2ControllerAdapter = mockk()
     private val unleash: Unleash = mockk()
-    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk(relaxed = true)
     private val kortSoknadService: KortSoknadService = mockk()
 
     private val adresseRessurs =
