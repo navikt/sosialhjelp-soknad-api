@@ -16,7 +16,7 @@ class MineSakerProxy(private val metadataService: SoknadMetadataService) {
                 InnsendtSoknadDto(
                     navn = TEMA_NAVN,
                     kode = TEMA_KODE_KOM,
-                    sistEndret = it.tidspunkt.sendtInn.toTimestamp(),
+                    sistEndret = it.tidspunkt.sendtInn?.toString() ?: "",
                 )
             }
     }
