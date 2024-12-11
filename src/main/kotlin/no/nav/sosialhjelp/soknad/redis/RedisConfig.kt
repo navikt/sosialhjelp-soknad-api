@@ -31,10 +31,6 @@ class RedisConfig(
                 .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .withSsl(true)
                 .build()
-        println("connecting to redis with host: $host")
-        println("connecting to redis with port: $port")
-        println("connecting to redis with username: $username")
-        println("connecting to redis with url: $redisURI")
         return RedisClient.create(redisURI)
     }
 
