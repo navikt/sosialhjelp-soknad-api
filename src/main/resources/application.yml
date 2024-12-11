@@ -8,6 +8,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 100MB
+  docker:
+    compose:
+      enabled: false
 
 digisos:
   cache:
