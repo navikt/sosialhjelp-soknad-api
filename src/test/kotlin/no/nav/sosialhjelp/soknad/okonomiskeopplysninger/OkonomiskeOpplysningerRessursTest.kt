@@ -207,7 +207,7 @@ class OkonomiskeOpplysningerRessursTest {
                 MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123"),
             )
 
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
 
         okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
             .also { dtos ->
