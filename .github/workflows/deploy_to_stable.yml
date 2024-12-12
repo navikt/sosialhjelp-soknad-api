@@ -17,10 +17,13 @@ jobs:
         include:
           - environment: prod
             cluster: prod-gcp
+            resource: prod-gcp
           - environment: prod
             cluster: prod-fss
+            resource: prod-fss
           - environment: dev
             cluster: dev-gcp
+            resource: preprod
     name: 'Deploy to ${{ matrix.cluster }}'
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
@@ -30,5 +33,5 @@ jobs:
     with:
       cluster-name: ${{ matrix.cluster }}
       resource-folder: ${{ matrix.environment }}
-      resource-name: ${{ matrix.cluster }}
+      resource-name: ${{ matrix.resource }}
     secrets: inherit
