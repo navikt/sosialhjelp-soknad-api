@@ -26,7 +26,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    uses: navikt/sosialhjelp-tci/.github/workflows/deploy_app.yml@v6
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v6
     with:
       cluster-name: ${{ matrix.cluster }}
       resource-folder: ${{ matrix.environment }}
