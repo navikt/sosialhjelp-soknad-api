@@ -5,4 +5,155 @@ metadata:
   namespace: teamdigisos
   labels:
     team: teamdigisos
-# To be continued for prod-gcp
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "150M"
+    nais.io/run-as-user: "1001"
+spec:
+  image: {{image}}
+  port: 8080
+  liveness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /sosialhjelp/soknad-api/internal/prometheus
+  replicas:
+    min: 2
+    max: 4
+  azure:
+    application:
+      enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:inntekt"
+        - name: "ks:fiks"
+  redis:
+    - instance: cache
+      access: readwrite
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_16
+        name: sosialhjelp-soknad-api-db
+        tier: db-custom-1-3840
+        diskSize: 10
+        databases:
+          - name: sosialhjelp-soknad-db
+            envVarPrefix: POSTGRES
+        cascadingDelete: false
+  tokenx:
+    enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: clamav
+          namespace: nais-system
+        - application: digdir-krr-proxy
+          namespace: team-rocket
+        - application: sokos-kontoregister-person
+          namespace: okonomi
+        - application: sosialhjelp-konvertering-til-pdf
+        - application: kodeverk-api
+          namespace: team-rocket
+      external:
+        - host: "api.fiks.ks.no"
+        - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
+        - host: "idporten.no"
+        - host: "api.husbanken.no"
+        - host: "pdl-api.prod-fss-pub.nais.io"
+        - host: "ereg-services.prod-fss-pub.nais.io"
+        - host: "aareg-services.prod-fss-pub.nais.io"
+        - host: "norg2.prod-fss-pub.nais.io"
+        - host: "sokos-utbetaldata.prod-fss-pub.nais.io"
+    inbound:
+      rules:
+        - application: sosialhjelp-soknad
+        - application: mine-saker-api
+          namespace: min-side
+        - application: dittnav-api
+          namespace: min-side
+        - application: tms-utkast
+          namespace: min-side
+        - application: tms-mikrofrontend-selector
+          namespace: min-side
+  leaderElection: true
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 512Mi
+  envFrom:
+    - secret: fiks-integrasjon-secret
+    - secret: testbruker-skatteetaten
+    - secret: sosialhjelp-soknad-api-unleash-api-token
+
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: "prodgcp,log-kibana"
+    - name: AAREG_AUDIENCE
+      value: "prod-fss:arbeidsforhold:aareg-services-nais"
+    - name: AAREG_URL
+      value: "https://aareg-services.prod-fss-pub.nais.io/api"
+    - name: CLAMAV_URL
+      value: "http://clamav.nais.svc.nais.local/scan"
+    - name: EREG_URL
+      value: "https://ereg-services.prod-fss-pub.nais.io/"
+    - name: DIGISOS_API_BASEURL
+      value: "https://api.fiks.ks.no/"
+    - name: KODEVERK_URL
+      value: "https://kodeverk-api.nav.no"
+    - name: KODEVERK_SCOPE
+      value: "api://prod-gcp.team-rocket.kodeverk-api/.default"
+    - name: KRR_AUDIENCE
+      value: "prod-gcp:team-rocket:digdir-krr-proxy"
+    - name: KRR_SCOPE
+      value: "prod-gcp.team-rocket.digdir-krr-proxy"
+    - name: KRR_URL
+      value: "http://digdir-krr-proxy.team-rocket"
+    - name: NORG_URL
+      value: "https://norg2.prod-fss-pub.nais.io/norg2/api/v1"
+    - name: UTBETALDATA_AUDIENCE
+      value: "prod-fss:okonomi:sokos-utbetaldata"
+    - name: UTBETALDATA_API_BASEURL
+      value: "https://sokos-utbetaldata.prod-fss-pub.nais.io"
+    - name: KONTOREGISTER_API_AUDIENCE
+      value: "prod-gcp:okonomi:sokos-kontoregister-person"
+    - name: KONTOREGISTER_API_BASEURL
+      value: "http://sokos-kontoregister-person.okonomi/"
+    - name: PDL_API_URL
+      value: "https://pdl-api.prod-fss-pub.nais.io/graphql"
+    - name: PDL_API_AUDIENCE
+      value: "prod-fss:pdl:pdl-api"
+    - name: PDL_API_SCOPE
+      value: "prod-fss.pdl.pdl-api"
+    - name: UNLEASH_ENV
+      value: "prod"
+    - name: SCHEDULER_DISABLE
+      value: "false"
+    - name: SOKNAD_BOSTOTTE_URL
+      value: "https://api.husbanken.no/bostotte/minbostotte"
+    - name: SKATTEETATEN_API_BASEURL
+      value: "https://inntekt.api.skatteetaten.no/v1/digisos/"
+    - name: NEDETID_START
+      value: "09.02.2023 12:00:00"
+    - name: NEDETID_SLUTT
+      value: "09.02.2023 14:00:00"
+    - name: ENVIRONMENT_NAME
+      value: "prod"
+    - name: UNLEASH_INSTANCE_ID
+      value: "prod-gcp"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "https://maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"
+    - name: GOTENBERG_URL
+      value: "http://sosialhjelp-konvertering-til-pdf/"
