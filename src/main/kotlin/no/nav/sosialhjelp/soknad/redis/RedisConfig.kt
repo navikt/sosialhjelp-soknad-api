@@ -21,7 +21,8 @@ class RedisConfig(
     private val log by logger()
 
     @Bean
-    fun redisClient(): RedisClient {
+    @Profile("preprod | prodgcp")
+    fun redisClientGcp(): RedisClient {
         val redisURI =
             RedisURI
                 .builder()
@@ -30,6 +31,20 @@ class RedisConfig(
                 .withAuthentication(username, password.toCharArray())
                 .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .withSsl(true)
+                .build()
+        return RedisClient.create(redisURI)
+    }
+
+    @Bean
+    @Profile("q0 | prodfss")
+    fun redisClientFss(): RedisClient {
+        val redisURI =
+            RedisURI
+                .builder()
+                .withHost(host)
+                .withPort(port)
+                .withPassword(password.toCharArray())
+                .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build()
         return RedisClient.create(redisURI)
     }
