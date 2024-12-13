@@ -93,10 +93,9 @@ krr_scope: ${KRR_SCOPE}
 
 no.nav.security.jwt.issuer:
   selvbetjening:
-    discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
+    discoveryurl: https://idporten.no/.well-known/openid-configuration
     validation:
       optional-claims: aud,nbf
-    proxyurl: ""
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
     accepted_audience: ${TOKEN_X_CLIENT_ID}
