@@ -93,9 +93,7 @@ spec:
       memory: 512Mi
   envFrom:
     - secret: fiks-integrasjon-secret
-    - secret: testbruker-skatteetaten
     - secret: sosialhjelp-soknad-api-unleash-api-token
-
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: "prodgcp,log-kibana"
