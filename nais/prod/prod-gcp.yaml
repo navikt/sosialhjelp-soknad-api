@@ -92,7 +92,6 @@ spec:
       cpu: 10m
       memory: 512Mi
   envFrom:
-    - configmap: loginservice-idporten
     - secret: fiks-integrasjon-secret
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
