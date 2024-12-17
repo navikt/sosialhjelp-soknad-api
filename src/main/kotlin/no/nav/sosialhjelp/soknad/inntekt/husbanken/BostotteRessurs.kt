@@ -77,8 +77,9 @@ class BostotteRessurs(
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         soknadUnderArbeidService
-            .updateWithRetries(soknad) {
-                val opplysninger = it.soknad.data.okonomi.opplysninger
+            .updateWithRetries(soknad) { jsonInternalSoknad ->
+
+                val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
                 OkonomiMapper.setBekreftelse(
                     opplysninger,
                     BOSTOTTE,
