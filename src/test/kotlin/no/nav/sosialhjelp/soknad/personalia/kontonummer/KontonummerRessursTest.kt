@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
@@ -34,11 +35,18 @@ internal class KontonummerRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
 
+    private val soknadUnderArbeidService =
+        SoknadUnderArbeidService(
+            soknadUnderArbeidRepository,
+            kommuneInfoService = mockk(),
+        )
+
     private val kontonummerRessurs =
         KontonummerRessurs(
             tilgangskontroll,
             soknadUnderArbeidRepository,
             kontonummerService,
+            soknadUnderArbeidService,
         )
 
     @BeforeEach
