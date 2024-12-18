@@ -31,13 +31,15 @@ class OkonomiskeOpplysningerRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
-    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
+    private val soknadUnderArbeidService: SoknadUnderArbeidService =
+        SoknadUnderArbeidService(soknadUnderArbeidRepository, mockk(relaxed = true))
 
     private val okonomiskeOpplysningerRessurs =
         OkonomiskeOpplysningerRessurs(
             tilgangskontroll = tilgangskontroll,
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
             mellomlagringService = mellomlagringService,
+            soknadUnderArbeidService = soknadUnderArbeidService,
         )
 
     private val behandlingsId = "123"
