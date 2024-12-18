@@ -148,12 +148,12 @@ class SoknadUnderArbeidService(
         soknad: SoknadUnderArbeid,
         updateJsonFunc: (json: JsonInternalSoknad) -> Unit,
     ) {
-        doUpdateWithRetries(soknad, 0, updateJsonFunc)
+        doUpdateWithRetries(soknad, 1, updateJsonFunc)
     }
 
     private fun doUpdateWithRetries(
         soknad: SoknadUnderArbeid,
-        retries: Int,
+        retry: Int,
         updateJsonFunc: (json: JsonInternalSoknad) -> Unit,
     ) {
         runCatching {
@@ -161,12 +161,12 @@ class SoknadUnderArbeidService(
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, getUserIdFromToken())
         }
             .onFailure {
-                if (retries < 5) {
-                    log.warn("Feil ved oppdatering av søknad, forsøker på nytt, retry=$retries")
+                if (retry <= 5) {
+                    log.warn("Feil ved oppdatering av søknad, forsøker på nytt, retry=$retry")
                     val soknadIDb = soknadUnderArbeidRepository.hentSoknad(soknad.behandlingsId, getUserIdFromToken())
-                    doUpdateWithRetries(soknadIDb, retries + 1, updateJsonFunc)
+                    doUpdateWithRetries(soknadIDb, retry + 1, updateJsonFunc)
                 } else {
-                    log.error("Kunne ikke oppdatere søknad etter $retries forsøk", it)
+                    log.error("Kunne ikke oppdatere søknad etter $retry forsøk", it)
                     throw it
                 }
             }
