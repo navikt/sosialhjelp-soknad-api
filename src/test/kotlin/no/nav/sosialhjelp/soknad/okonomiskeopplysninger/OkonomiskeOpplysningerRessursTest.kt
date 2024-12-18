@@ -14,6 +14,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
@@ -31,8 +33,9 @@ class OkonomiskeOpplysningerRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
+    private val kommuneInService: KommuneInfoService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService =
-        SoknadUnderArbeidService(soknadUnderArbeidRepository, mockk(relaxed = true))
+        SoknadUnderArbeidService(soknadUnderArbeidRepository, kommuneInService)
 
     private val okonomiskeOpplysningerRessurs =
         OkonomiskeOpplysningerRessurs(
@@ -58,6 +61,7 @@ class OkonomiskeOpplysningerRessursTest {
     @BeforeEach
     fun setUp() {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        every { kommuneInService.getKommuneStatus(any()) } returns KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
     }
 
     @AfterEach
@@ -93,7 +97,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
             listOf(
@@ -152,7 +155,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         // kun 1 mellomlagret fil - 1 færre enn soknad.json over viser
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
@@ -202,7 +204,6 @@ class OkonomiskeOpplysningerRessursTest {
 
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
-        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
 
         every { mellomlagringService.getAllVedlegg(behandlingsId) } returns
             listOf(
