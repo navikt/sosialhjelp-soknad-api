@@ -143,20 +143,41 @@ class BostotteRessurs(
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
+        // todo prøver med retries
+//        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+//        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
+
+        val lagretSamtykke =
+            jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+                .find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
 
         if (samtykke != lagretSamtykke) {
-            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
-            OkonomiMapper.setBekreftelse(
-                opplysninger,
-                BOSTOTTE_SAMTYKKE,
-                samtykke,
-                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-            )
-            bostotteSystemdata.updateSystemdataIn(soknad, token)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidService.updateWithRetries(soknad) {
+                val opplysninger = it.soknad.data.okonomi.opplysninger
+
+                OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
+                OkonomiMapper.setBekreftelse(
+                    opplysninger,
+                    BOSTOTTE_SAMTYKKE,
+                    samtykke,
+                    textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
+                )
+                bostotteSystemdata.updateSystemdataIn(it, token)
+            }
         }
+
+        // todo prøver med retries
+//        if (samtykke != lagretSamtykke) {
+//            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
+//            OkonomiMapper.setBekreftelse(
+//                opplysninger,
+//                BOSTOTTE_SAMTYKKE,
+//                samtykke,
+//                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
+//            )
+//            bostotteSystemdata.updateSystemdataIn(soknad, token)
+//            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+//        }
     }
 
     private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
