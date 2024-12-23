@@ -285,7 +285,7 @@ internal class BostotteRessursTest {
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til bostotteSystemdata
-        verify(exactly = 0) { bostotteSystemdata.updateSystemdataIn(any(), any()) }
+        verify(exactly = 0) { bostotteSystemdata.updateSystemdataIn(any<SoknadUnderArbeid>(), any()) }
 
         // Sjekker lagring av soknaden
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
