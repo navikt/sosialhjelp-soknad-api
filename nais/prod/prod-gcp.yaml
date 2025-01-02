@@ -67,6 +67,8 @@ spec:
         - application: sosialhjelp-konvertering-til-pdf
         - application: kodeverk-api
           namespace: team-rocket
+        - application: norg2
+          namespace: org
       external:
         - host: "api.fiks.ks.no"
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
@@ -75,7 +77,6 @@ spec:
         - host: "pdl-api.prod-fss-pub.nais.io"
         - host: "ereg-services.prod-fss-pub.nais.io"
         - host: "aareg-services.prod-fss-pub.nais.io"
-        - host: "norg2.prod-fss-pub.nais.io"
         - host: "sokos-utbetaldata.prod-fss-pub.nais.io"
     inbound:
       rules:
@@ -122,7 +123,7 @@ spec:
     - name: KRR_URL
       value: "http://digdir-krr-proxy.team-rocket"
     - name: NORG_URL
-      value: "https://norg2.prod-fss-pub.nais.io/norg2/api/v1"
+      value: "http://norg2.org/norg2/api/v1"
     - name: UTBETALDATA_AUDIENCE
       value: "prod-fss:okonomi:sokos-utbetaldata"
     - name: UTBETALDATA_API_BASEURL
