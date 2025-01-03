@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
@@ -53,6 +54,7 @@ class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val mellomlagringService: MellomlagringService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val okonomiskeOpplysningerProxy: OkonomiskeOpplysningerProxy,
 ) {
     @GetMapping
@@ -76,49 +78,55 @@ class OkonomiskeOpplysningerRessurs(
         eier: String,
         soknadUnderArbeid: SoknadUnderArbeid,
     ): VedleggFrontends {
-        val jsonOkonomi =
-            soknadUnderArbeid.jsonInternalSoknad
-                ?.soknad
-                ?.data
-                ?.okonomi ?: JsonOkonomi()
+        val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)
-        val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad) ?: emptyList()
         val mellomlagredeVedlegg =
-            if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
-                mellomlagringService.getAllVedlegg(behandlingsId)
-            } else {
-                emptyList()
+            when (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+                true -> mellomlagringService.getAllVedlegg(behandlingsId)
+                false -> emptyList()
             }
-
         val opplastedeVedleggFraJson =
             jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
-        if (opplastedeVedleggFraJson.isNotEmpty() &&
+
+        if (
+            opplastedeVedleggFraJson.isNotEmpty() &&
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
         ) {
             log.info("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
         }
 
-        val slettedeVedlegg =
-            removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
-        addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
+        // ikke den peneste løsningen - men dette skal returneres
+        var vedleggFrontendList = emptyList<VedleggFrontend>()
 
-        soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+        // /// ******** UPDATE WITH RETRIES *****
+        soknadUnderArbeidService.updateWithRetries(soknadUnderArbeid) {
+            val paakrevdeVedlegg =
+                VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
+                    ?: emptyList()
 
-        // sync lokale filer med mellomlagrede
-        val vedleggFrontendList =
-            jsonVedleggs.map {
-                mapMellomlagredeVedleggToVedleggFrontend(
-                    vedlegg = it,
-                    jsonOkonomi = jsonOkonomi,
-                    mellomlagredeVedlegg = mellomlagredeVedlegg,
-                )
-            }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+            val slettedeVedlegg =
+                removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
+
+            addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
+
+            soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+
+            // sync lokale filer med mellomlagrede
+            vedleggFrontendList =
+                jsonVedleggs.map {
+                    mapMellomlagredeVedleggToVedleggFrontend(
+                        vedlegg = it,
+                        jsonOkonomi = jsonOkonomi,
+                        mellomlagredeVedlegg = mellomlagredeVedlegg,
+                    )
+                }
+        }
 
         return VedleggFrontends(
             okonomiskeOpplysninger = vedleggFrontendList,
-            slettedeVedlegg = slettedeVedlegg,
+            // brukes ikke i frontend
+            slettedeVedlegg = emptyList(),
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi),
         )
     }

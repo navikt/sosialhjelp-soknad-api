@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
 import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,6 +25,7 @@ class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerService: KontonummerService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val kontonummerProxy: KontonummerProxy,
 ) {
     @GetMapping
@@ -91,8 +93,13 @@ class KontonummerRessurs(
         kontonummer: JsonKontonummer,
     ) {
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        soknad.jsonInternalSoknad!!.soknad.data.personalia.kontonummer = kontonummer
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+        soknadUnderArbeidService.updateWithRetries(soknad) {
+            it.soknad.data.personalia.kontonummer = kontonummer
+        }
+
+        // todo prøver med retries
+//        soknad.jsonInternalSoknad!!.soknad.data.personalia.kontonummer = kontonummer
+//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
     }
 
     private fun mapInputToJson(

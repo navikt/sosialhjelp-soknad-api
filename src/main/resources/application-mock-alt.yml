@@ -77,10 +77,6 @@ loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/
 
 virusscan_enabled: false
 
-springdoc:
-  api-docs:
-    enabled: ${SWAGGER_ENABLED:true}
-
 # redis
 redis_host: ${REDIS_HOST:localhost}
 redis_port: 6379
@@ -95,3 +91,18 @@ feature.fiks.kryptering.enabled: false
 #Nedetid
 nedetid.start: ${NEDETID_START:}
 nedetid.slutt: ${NEDETID_SLUTT:}
+
+springdoc:
+  api-docs:
+    enabled: true
+    groups:
+      enabled: true
+  group-configs:
+    - group: 'old'
+      display-name: "Old api"
+      packages-to-exclude:
+        - 'no.nav.sosialhjelp.soknad.v2'
+    - group: 'new'
+      display-name: "New api"
+      packages-to-scan:
+        - 'no.nav.sosialhjelp.soknad.v2'

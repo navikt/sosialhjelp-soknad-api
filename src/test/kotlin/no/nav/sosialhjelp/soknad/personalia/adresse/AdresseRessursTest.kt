@@ -30,6 +30,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
@@ -57,6 +58,12 @@ internal class AdresseRessursTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val kortSoknadService: KortSoknadService = mockk()
 
+    private val soknadUnderArbeidService: SoknadUnderArbeidService =
+        SoknadUnderArbeidService(
+            soknadUnderArbeidRepository,
+            kommuneInfoService = mockk(),
+        )
+
     private val adresseRessurs =
         AdresseRessurs(
             tilgangskontroll,
@@ -67,6 +74,7 @@ internal class AdresseRessursTest {
             soknadMetadataRepository,
             kortSoknadService,
             adresseProxy = mockk(relaxed = true),
+            soknadUnderArbeidService,
         )
 
     @BeforeEach
@@ -103,7 +111,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_BRUKER_GATE_ADRESSE,
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -123,7 +130,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_MATRIKKELADRESSE,
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -143,7 +149,6 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE,
         )
-        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -151,6 +156,7 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(null)
+                .apply { this.jsonInternalSoknad!!.midlertidigAdresse = null }
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(any()) } returns null
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
@@ -429,6 +435,8 @@ internal class AdresseRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.data.personalia
             .withOppholdsadresse(getSelectedAdresse(valg))
+        soknadUnderArbeid.jsonInternalSoknad!!
+            .withMidlertidigAdresse(JSON_SYS_USTRUKTURERT_ADRESSE)
         return soknadUnderArbeid
     }
 

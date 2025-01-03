@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
@@ -8,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -140,6 +142,34 @@ class SoknadUnderArbeidService(
                 )
             }
         }
+    }
+
+    fun updateWithRetries(
+        soknad: SoknadUnderArbeid,
+        updateJsonFunc: (json: JsonInternalSoknad) -> Unit,
+    ) {
+        doUpdateWithRetries(soknad, 1, updateJsonFunc)
+    }
+
+    private fun doUpdateWithRetries(
+        soknad: SoknadUnderArbeid,
+        retry: Int,
+        updateJsonFunc: (json: JsonInternalSoknad) -> Unit,
+    ) {
+        runCatching {
+            updateJsonFunc(soknad.jsonInternalSoknad ?: error("JsonInternalSoknad er null"))
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, getUserIdFromToken())
+        }
+            .onFailure {
+                if (retry <= 5) {
+                    log.warn("Feil ved oppdatering av søknad, forsøker på nytt, retry=$retry")
+                    val soknadIDb = soknadUnderArbeidRepository.hentSoknad(soknad.behandlingsId, getUserIdFromToken())
+                    doUpdateWithRetries(soknadIDb, retry + 1, updateJsonFunc)
+                } else {
+                    log.error("Kunne ikke oppdatere søknad etter $retry forsøk", it)
+                    throw it
+                }
+            }
     }
 
     companion object {

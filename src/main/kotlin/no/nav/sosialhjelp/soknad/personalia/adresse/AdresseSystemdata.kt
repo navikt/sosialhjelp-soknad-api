@@ -35,6 +35,7 @@ class AdresseSystemdata(
 
         val folkeregistrertAdresse = person?.bostedsadresse?.let { mapToJsonAdresse(it) }
         val midlertidigAdresse = person?.oppholdsadresse?.let { mapToJsonAdresse(it) }
+        soknadUnderArbeid.jsonInternalSoknad?.midlertidigAdresse = midlertidigAdresse
 
         if (valgtAdresseLikNull(personalia, folkeregistrertAdresse, midlertidigAdresse)) {
             personalia.oppholdsadresse = null

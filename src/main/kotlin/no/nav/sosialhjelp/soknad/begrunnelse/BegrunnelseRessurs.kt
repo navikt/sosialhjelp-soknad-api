@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,6 +27,7 @@ class BegrunnelseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val begrunnelseProxy: BegrunnelseProxy,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     @GetMapping
     fun hentBegrunnelse(
@@ -57,14 +59,23 @@ class BegrunnelseRessurs(
         } else {
             val personId = SubjectHandlerUtils.getUserIdFromToken()
             val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
-            val jsonInternalSoknad =
-                soknad.jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-            begrunnelse.kilde = JsonKildeBruker.BRUKER
-            begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm ?: ""
-            begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+            // todo prøver med retries
+// val jsonInternalSoknad =
+            soknad.jsonInternalSoknad
+                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            soknadUnderArbeidService.updateWithRetries(soknad) {
+                val begrunnelse = it.soknad.data.begrunnelse
+                begrunnelse.kilde = JsonKildeBruker.BRUKER
+                begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm ?: ""
+                begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
+            }
+
+            // todo prøver med retries
+            //        val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
+            //        begrunnelse.kilde = JsonKildeBruker.BRUKER
+            //        begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm ?: ""
+            //        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
+            //        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
     }
 

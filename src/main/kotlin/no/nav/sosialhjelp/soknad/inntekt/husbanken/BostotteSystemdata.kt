@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.inntekt.husbanken
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
@@ -33,7 +35,22 @@ class BostotteSystemdata(
         token: String?,
     ) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
-        val okonomi = soknad.data.okonomi
+        doUpdateSystemdataIn(soknad, token)
+    }
+
+    fun updateSystemdataIn(
+        json: JsonInternalSoknad,
+        token: String?,
+    ) {
+        val soknad = json.soknad ?: return
+        doUpdateSystemdataIn(soknad, token)
+    }
+
+    private fun doUpdateSystemdataIn(
+        jsonSoknad: JsonSoknad,
+        token: String?,
+    ) {
+        val okonomi = jsonSoknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val bostotte = innhentBostotteFraHusbanken(token)
 
@@ -48,13 +65,13 @@ class BostotteSystemdata(
                 okonomi.opplysninger.utbetaling.addAll(jsonBostotteUtbetalinger)
                 val jsonSaksStatuser = mapToBostotteSaker(bostotte, trengerViDataFraDeSiste60Dager)
                 okonomi.opplysninger.bostotte.saker.addAll(jsonSaksStatuser)
-                soknad.driftsinformasjon.stotteFraHusbankenFeilet = false
+                jsonSoknad.driftsinformasjon.stotteFraHusbankenFeilet = false
             } else {
-                soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
+                jsonSoknad.driftsinformasjon.stotteFraHusbankenFeilet = true
             }
         } else { // Ikke samtykke!
             fjernGamleHusbankenData(okonomi, true)
-            soknad.driftsinformasjon.stotteFraHusbankenFeilet = false
+            jsonSoknad.driftsinformasjon.stotteFraHusbankenFeilet = false
         }
     }
 

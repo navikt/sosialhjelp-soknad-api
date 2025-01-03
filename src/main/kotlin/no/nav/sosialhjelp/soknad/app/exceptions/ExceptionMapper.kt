@@ -33,7 +33,7 @@ import java.net.URI
 
 @ControllerAdvice
 class ExceptionMapper(
-    @Value("\${loginservice.url}") private val loginserviceUrl: URI,
+    @Value("\${loginservice.url:null}") private val loginserviceUrl: URI?,
 ) : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     override fun handleHttpMessageNotReadable(
@@ -162,7 +162,7 @@ class ExceptionMapper(
         }
 
         return if (listOf(HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN).contains(e.statusCode)) {
-            buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(loginserviceUrl))
+            loginserviceUrl?.let { buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(it)) } ?: buildError(HttpStatus.UNAUTHORIZED, "Unauthorized")
         } else {
             buildError(e.statusCode, SoknadApiError(SoknadApiErrorType.GeneralError))
         }
@@ -196,9 +196,9 @@ class ExceptionMapper(
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding> {
+    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<Any> {
         log.info("Bruker er ikke autentisert (enda). Sender 401 med loginurl. Feilmelding: ${e.message}")
-        return buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(loginserviceUrl))
+        return loginserviceUrl?.let { buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(it)) } ?: buildError(HttpStatus.UNAUTHORIZED, "Unauthorized")
     }
 
     @ExceptionHandler(value = [NotValidInputException::class])
