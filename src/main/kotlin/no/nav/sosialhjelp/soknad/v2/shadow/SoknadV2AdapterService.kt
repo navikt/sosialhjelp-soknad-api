@@ -86,59 +86,6 @@ class SoknadV2AdapterService(
                 soknadId = UUID.fromString(behandlingsId),
                 opplysningType = AnnenDokumentasjonType.BEHOV,
             )
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                opplysningType = AnnenDokumentasjonType.HUSLEIE,
-            )
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.BARNEBIDRAG,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.BARNEHAGE,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.BARNEHAGE_SFO,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.BOSTOTTE,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.HUSLEIE,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.KONTOOVERSIKT,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.LONNSLIPP,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.STROM_OPPVARMING,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.STIPEND_LAN,
-            )
-
-            dokumentasjonService.opprettDokumentasjon(
-                soknadId = UUID.fromString(behandlingsId),
-                AnnenDokumentasjonType.ANNET,
-            )
         } else {
             // oppretter dokumentasjon skattemelding
             dokumentasjonService.opprettDokumentasjon(

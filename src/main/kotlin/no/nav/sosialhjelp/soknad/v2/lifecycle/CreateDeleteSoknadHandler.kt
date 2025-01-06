@@ -5,6 +5,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -74,16 +76,14 @@ private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> 
     listOf(
         UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
         AnnenDokumentasjonType.BEHOV,
-        AnnenDokumentasjonType.BARNEBIDRAG,
-        AnnenDokumentasjonType.BARNEHAGE,
-        AnnenDokumentasjonType.BARNEHAGE_SFO,
-        AnnenDokumentasjonType.BOSTOTTE,
-        AnnenDokumentasjonType.HUSLEIE,
-        AnnenDokumentasjonType.KONTOOVERSIKT,
-        AnnenDokumentasjonType.LONNSLIPP,
-        AnnenDokumentasjonType.STROM_OPPVARMING,
-        AnnenDokumentasjonType.STIPEND_LAN,
-        AnnenDokumentasjonType.ANNET,
+        UtgiftType.UTGIFTER_BARNEHAGE,
+        UtgiftType.UTGIFTER_SFO,
+        InntektType.UTBETALING_HUSBANKEN,
+        AnnenDokumentasjonType.HUSLEIEKONTRAKT,
+        FormueType.FORMUE_ANNET,
+        UtgiftType.UTGIFTER_STROM,
+        InntektType.JOBB,
+        InntektType.STUDIELAN_INNTEKT,
     )
 
 private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =

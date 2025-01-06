@@ -100,16 +100,6 @@ object OpplysningTypeMapper {
             AnnenDokumentasjonType.HUSLEIEKONTRAKT -> JsonVerdi(null, VedleggType.HusleiekontraktHusleiekontrakt)
             AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL -> JsonVerdi(null, VedleggType.HusleiekontraktKommunal)
             AnnenDokumentasjonType.BEHOV -> JsonVerdi(null, VedleggType.KortBehov)
-            AnnenDokumentasjonType.BARNEBIDRAG -> JsonVerdi(null, VedleggType.KortBarnebidrag)
-            AnnenDokumentasjonType.BARNEHAGE -> JsonVerdi(null, VedleggType.KortBarnehage)
-            AnnenDokumentasjonType.BARNEHAGE_SFO -> JsonVerdi(null, VedleggType.KortBarnehageSFO)
-            AnnenDokumentasjonType.BOSTOTTE -> JsonVerdi(null, VedleggType.KortBostotte)
-            AnnenDokumentasjonType.HUSLEIE -> JsonVerdi(null, VedleggType.KortHusleie)
-            AnnenDokumentasjonType.KONTOOVERSIKT -> JsonVerdi(null, VedleggType.KortKontoroversikt)
-            AnnenDokumentasjonType.LONNSLIPP -> JsonVerdi(null, VedleggType.KortLonnslipp)
-            AnnenDokumentasjonType.STROM_OPPVARMING -> JsonVerdi(null, VedleggType.KortStromOppvarming)
-            AnnenDokumentasjonType.STIPEND_LAN -> JsonVerdi(null, VedleggType.KortStipendLan)
-            AnnenDokumentasjonType.ANNET -> JsonVerdi(null, VedleggType.KortAnnet)
         }
 }
 
