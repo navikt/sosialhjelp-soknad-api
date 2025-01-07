@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
@@ -38,6 +39,7 @@ class BostotteRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     @GetMapping
     fun hentBostotte(
@@ -69,33 +71,64 @@ class BostotteRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        OkonomiMapper.setBekreftelse(
-            opplysninger,
-            BOSTOTTE,
-            bostotteFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.bostotte"),
-        )
+        // todo prøver med retries
+//        val jsonInternalSoknad =
+        soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        bostotteFrontend.bekreftelse?.let {
-            if (java.lang.Boolean.TRUE == it) {
-                val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
-                OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                    tittel,
+        soknadUnderArbeidService
+            .updateWithRetries(soknad) { jsonInternalSoknad ->
+
+                val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+                OkonomiMapper.setBekreftelse(
+                    opplysninger,
+                    BOSTOTTE,
+                    bostotteFrontend.bekreftelse,
+                    textService.getJsonOkonomiTittel("inntekt.bostotte"),
                 )
-            } else {
-                OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
-                    opplysninger.utbetaling,
-                    UTBETALING_HUSBANKEN,
-                )
+
+                bostotteFrontend.bekreftelse?.let {
+                    if (java.lang.Boolean.TRUE == it) {
+                        val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
+                        OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
+                            opplysninger.utbetaling,
+                            UTBETALING_HUSBANKEN,
+                            tittel,
+                        )
+                    } else {
+                        OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
+                            opplysninger.utbetaling,
+                            UTBETALING_HUSBANKEN,
+                        )
+                    }
+                }
             }
-        }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // todo prøver med retries
+//        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+//        OkonomiMapper.setBekreftelse(
+//            opplysninger,
+//            BOSTOTTE,
+//            bostotteFrontend.bekreftelse,
+//            textService.getJsonOkonomiTittel("inntekt.bostotte"),
+//        )
+//
+//        bostotteFrontend.bekreftelse?.let {
+//            if (java.lang.Boolean.TRUE == it) {
+//                val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
+//                OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
+//                    opplysninger.utbetaling,
+//                    UTBETALING_HUSBANKEN,
+//                    tittel,
+//                )
+//            } else {
+//                OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
+//                    opplysninger.utbetaling,
+//                    UTBETALING_HUSBANKEN,
+//                )
+//            }
+//        }
+//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     @PostMapping("/samtykke")
@@ -110,20 +143,41 @@ class BostotteRessurs(
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
+        // todo prøver med retries
+//        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+//        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
+
+        val lagretSamtykke =
+            jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+                .find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
 
         if (samtykke != lagretSamtykke) {
-            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
-            OkonomiMapper.setBekreftelse(
-                opplysninger,
-                BOSTOTTE_SAMTYKKE,
-                samtykke,
-                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-            )
-            bostotteSystemdata.updateSystemdataIn(soknad, token)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidService.updateWithRetries(soknad) {
+                val opplysninger = it.soknad.data.okonomi.opplysninger
+
+                OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
+                OkonomiMapper.setBekreftelse(
+                    opplysninger,
+                    BOSTOTTE_SAMTYKKE,
+                    samtykke,
+                    textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
+                )
+                bostotteSystemdata.updateSystemdataIn(it, token)
+            }
         }
+
+        // todo prøver med retries
+//        if (samtykke != lagretSamtykke) {
+//            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
+//            OkonomiMapper.setBekreftelse(
+//                opplysninger,
+//                BOSTOTTE_SAMTYKKE,
+//                samtykke,
+//                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
+//            )
+//            bostotteSystemdata.updateSystemdataIn(soknad, token)
+//            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+//        }
     }
 
     private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =

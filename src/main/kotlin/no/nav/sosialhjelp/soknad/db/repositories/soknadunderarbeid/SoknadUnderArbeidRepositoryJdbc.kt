@@ -128,7 +128,8 @@ class SoknadUnderArbeidRepositoryJdbc(
                 return
             }
             throw SamtidigOppdateringException(
-                "Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId}" +
+                "Mulig versjonskonflikt -> Versjon SoknadIDb: ${soknadIDb.versjon}, " +
+                    "BehandlingsId ${soknadUnderArbeid.behandlingsId}, " +
                     " fra versjon $opprinneligVersjon til versjon $oppdatertVersjon",
             )
         }

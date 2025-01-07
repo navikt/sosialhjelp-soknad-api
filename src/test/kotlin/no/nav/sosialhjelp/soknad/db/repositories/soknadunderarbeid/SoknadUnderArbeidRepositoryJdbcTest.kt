@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.slot
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
@@ -188,6 +189,31 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
 
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
+    }
+
+    @Test
+    fun `Gjenskape samtidig oppdatering-problematikk`() {
+        val soknadUnderArbeid =
+            SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = UUID.randomUUID().toString(),
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
+                sistEndretDato = LocalDateTime.now().minusSeconds(50).truncatedTo(ChronoUnit.MILLIS),
+            )
+                .also { soknadUnderArbeidRepository.opprettSoknad(it, EIER) }
+                .let { soknadUnderArbeidRepository.hentSoknad(it.behandlingsId, EIER) }
+
+        val soknad1 = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, EIER)
+        val soknad2 = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, EIER)
+
+        soknad1.jsonInternalSoknad?.mottaker = JsonSoknadsmottaker().withNavEnhetsnavn("navn")
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad1, EIER)
+
+        val oppdatertSoknad = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeid.behandlingsId, EIER)
+        val a = 4
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {

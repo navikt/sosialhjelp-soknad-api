@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectedWithClaims(
@@ -46,6 +48,7 @@ class AdresseRessurs(
     private val unleash: Unleash,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val kortSoknadService: KortSoknadService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -54,30 +57,34 @@ class AdresseRessurs(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
+        val sysMidlertidigAdresse = jsonInternalSoknad.midlertidigAdresse
+
+        // todo skal ikke lagre noe ved get
+//        val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresseToJsonAdresse(personIdentifikator)
 
         // TODO Ekstra logging
         logger.info("Hender navEnhet - GET personalia/adresser")
         val navEnhet =
             try {
                 navEnhetService.getNavEnhet(
-                    eier,
+                    personId(),
                     jsonInternalSoknad.soknad,
                     jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg,
                 )
             } catch (e: Exception) {
                 null
             }
-        jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // todo skal ikke lagre noe ved get
+//        jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
+//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId())
 
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
@@ -93,9 +100,10 @@ class AdresseRessurs(
         @RequestBody adresserFrontend: AdresserFrontendInput,
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = personId()
         val token = SubjectHandlerUtils.getToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
         val jsonInternalSoknad =
             soknad.jsonInternalSoknad
                 ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -117,42 +125,74 @@ class AdresseRessurs(
         }
         personalia.oppholdsadresse?.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        // TODO Ekstra logging
-        logger.info("Henter navEnhet - PUT personalia/adresser")
 
         val navEnhetFrontend =
-            navEnhetService
-                .getNavEnhet(
-                    eier,
-                    jsonInternalSoknad.soknad,
-                    adresserFrontend.valg,
-                )?.also {
-                    setNavEnhetAsMottaker(soknad, it, eier)
-                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            navEnhetService.getNavEnhet(
+                eier,
+                jsonInternalSoknad.soknad,
+                adresserFrontend.valg,
+            )
+        navEnhetFrontend?.let { setNavEnhetAsMottaker(soknad, it, eier) }
 
-                    // Man må skru av og på kort søknad på forsiden i mock/lokalt
-                    if (!MiljoUtils.isMockAltProfil()) {
-                        kotlin
-                            .runCatching {
-                                val (changed, isKort) = jsonInternalSoknad.updateSoknadstype(it, token)
-                                if (changed) {
-                                    val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-                                    if (soknadMetadata != null) {
-                                        soknadMetadata.kortSoknad = isKort
-                                        soknadMetadataRepository.oppdater(soknadMetadata)
-                                    }
-                                    soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-                                }
-                            }.onFailure { error -> logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error) }
-                    }
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
 
-                    // TODO Ekstra logging
-                    logger.info("NavEnhetFrontend: $it")
-                    logger.info("Kommune fra soknad.mottaker.kommunenummer: ${jsonInternalSoknad.soknad.mottaker.kommunenummer}")
-                }
+        navEnhetFrontend?.let { resolveKortSoknad(behandlingsId, it, token) }
+            ?: logger.warn("Fant ikke navEnhetFrontend, kan ikke oppdatere kort søknad")
 
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+    }
+
+    // oppdaterer soknadsdata om bruker kvalifiserer for kort soknad
+    private fun resolveKortSoknad(
+        behandlingsId: String,
+        navEnhet: NavEnhetFrontend,
+        token: String?,
+    ) {
+        // Man må skru av og på kort søknad på forsiden i mock/lokalt
+        if (!MiljoUtils.isMockAltProfil()) {
+            runCatching {
+                val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId())
+                soknad.jsonInternalSoknad ?: error("Finnes ikke jsonInternalSoknad")
+
+                if (token == null) {
+                    logger.warn("Token er null, kan ikke sjekke om bruker har rett på kort søknad")
+                    return
+                }
+                val soknadstype = resolveSoknadstype(navEnhet, token)
+
+                soknadUnderArbeidService.updateWithRetries(soknad) {
+                    val (changed, isKort) = it.updateSoknadstype(navEnhet, soknadstype)
+                    if (changed) {
+                        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+                        if (soknadMetadata != null) {
+                            soknadMetadata.kortSoknad = isKort
+                            soknadMetadataRepository.oppdater(soknadMetadata)
+                        }
+                    }
+                }
+            }
+                .onFailure { error ->
+                    logger.error("Noe feilet under kort overgang fra/til kort søknad. Lar det gå uten å røre data.", error)
+                }
+        }
+    }
+
+    // sjekker - muligens eksternt - kom bruker kvalifiserer for kort soknad
+    private fun resolveSoknadstype(
+        navEnhet: NavEnhetFrontend,
+        token: String,
+    ): JsonData.Soknadstype {
+        val kortSoknad =
+            kortSoknadService.isEnabled(navEnhet.kommuneNr) &&
+                kortSoknadService.isQualified(token, navEnhet.kommuneNr ?: "")
+
+        return if (kortSoknad) {
+            logger.info("Bruker kvalifiserer til kort søknad")
+            JsonData.Soknadstype.KORT
+        } else {
+            logger.info("Bruker kvalifiserer ikke til kort søknad")
+            JsonData.Soknadstype.STANDARD
+        }
     }
 
     /* Sett søknadstype kort om bruker har rett på det. Gjøres her fordi vi må vite hvilken kommune som skal behandle søknaden.
@@ -161,21 +201,10 @@ class AdresseRessurs(
      */
     private fun JsonInternalSoknad.updateSoknadstype(
         navEnhet: NavEnhetFrontend,
-        token: String?,
+        nySoknadstype: JsonData.Soknadstype,
     ): Pair<Boolean, Boolean> {
-        if (token == null) {
-            logger.warn("Token er null, kan ikke sjekke om bruker har rett på kort søknad")
-            return false to false
-        }
-        val kortSoknad = kortSoknadService.isEnabled(navEnhet.kommuneNr) && kortSoknadService.isQualified(token, navEnhet.kommuneNr ?: "")
-        val nySoknadstype =
-            if (kortSoknad) {
-                logger.info("Bruker kvalifiserer til kort søknad")
-                JsonData.Soknadstype.KORT
-            } else {
-                logger.info("Bruker kvalifiserer ikke til kort søknad")
-                JsonData.Soknadstype.STANDARD
-            }
+        val kortSoknad = (nySoknadstype == JsonData.Soknadstype.KORT)
+
         if (nySoknadstype != soknad.data.soknadstype) {
             soknad.data.soknadstype = nySoknadstype
             if (nySoknadstype == JsonData.Soknadstype.STANDARD) {

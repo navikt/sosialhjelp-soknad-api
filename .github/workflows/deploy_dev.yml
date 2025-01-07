@@ -11,6 +11,7 @@ on:
         options:
           - 'mock'
           - 'dev-fss'
+          - 'preprod'
 
 jobs:
   set-cluster:
@@ -21,7 +22,7 @@ jobs:
     steps:
       - name: Sett cluster basert på config-file
         id: set-cluster-name
-        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v6
+        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v7
         with:
           resource-name: ${{ inputs.config-file-name }}
 
@@ -31,7 +32,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v6
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v7
     with:
       cluster-name: ${{ needs.set-cluster.outputs.cluster-name }}
       resource-name: ${{ inputs.config-file-name }}
