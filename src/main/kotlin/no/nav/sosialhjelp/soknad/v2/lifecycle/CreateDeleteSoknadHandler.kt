@@ -74,16 +74,16 @@ class CreateDeleteSoknadHandler(
 
 private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
     listOf(
-        UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-        AnnenDokumentasjonType.BEHOV,
-        UtgiftType.UTGIFTER_BARNEHAGE,
-        UtgiftType.UTGIFTER_SFO,
-        InntektType.UTBETALING_HUSBANKEN,
-        AnnenDokumentasjonType.HUSLEIEKONTRAKT,
-        FormueType.FORMUE_ANNET,
-        UtgiftType.UTGIFTER_STROM,
-        InntektType.JOBB,
-        InntektType.STUDIELAN_INNTEKT,
+        AnnenDokumentasjonType.BEHOV, // kort|behov
+        UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
+        UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
+        UtgiftType.UTGIFTER_SFO, // faktura|sfo
+        InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
+        AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
+        FormueType.FORMUE_ANNET, // kontooversikt|annet
+        UtgiftType.UTGIFTER_STROM, // faktura|strom
+        InntektType.JOBB, // lonnslipp|arbeid
+        InntektType.STUDIELAN_INNTEKT, // student|vedtak
     )
 
 private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =

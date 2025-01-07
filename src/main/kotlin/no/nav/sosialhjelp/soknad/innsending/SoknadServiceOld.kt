@@ -237,16 +237,16 @@ class SoknadServiceOld(
                         JsonVedleggSpesifikasjon().withVedlegg(
                             mutableListOf(
                                 JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
+                                JsonVedlegg().withType("annet").withTilleggsinfo("annet"),
                                 JsonVedlegg().withType("kort").withTilleggsinfo("barnebidrag"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("barnehage"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("barnehageSFO"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("bostotte"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("husleie"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("kontooversikt"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("lonnslipp"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("stromOppvarming"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("stipendLan"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("annet"),
+                                JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
+                                JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
+                                JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),
+                                JsonVedlegg().withType("husleiekontrakt").withTilleggsinfo("husleiekontrakt"),
+                                JsonVedlegg().withType("kontooversikt").withTilleggsinfo("annet"),
+                                JsonVedlegg().withType("lonnslipp").withTilleggsinfo("arbeid"),
+                                JsonVedlegg().withType("faktura").withTilleggsinfo("strom"),
+                                JsonVedlegg().withType("student").withTilleggsinfo("vedtak"),
                             ),
                         )
                     } else {

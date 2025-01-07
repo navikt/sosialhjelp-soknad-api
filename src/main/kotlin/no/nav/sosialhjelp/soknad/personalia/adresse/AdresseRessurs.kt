@@ -187,15 +187,14 @@ class AdresseRessurs(
                     listOf(
                         JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
                         JsonVedlegg().withType("kort").withTilleggsinfo("barnebidrag"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("barnehage"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("barnehageSFO"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("bostotte"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("husleie"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("kontooversikt"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("lonnslipp"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("stromOppvarming"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("stipendLan"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("annet"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
+                        JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),
+                        JsonVedlegg().withType("husleiekontrakt").withTilleggsinfo("husleiekontrakt"),
+                        JsonVedlegg().withType("kontooversikt").withTilleggsinfo("annet"),
+                        JsonVedlegg().withType("lonnslipp").withTilleggsinfo("arbeid"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("strom"),
+                        JsonVedlegg().withType("student").withTilleggsinfo("vedtak"),
                         JsonVedlegg().withType("annet").withTilleggsinfo("annet").withStatus("LastetOpp"),
                     ),
                 )
@@ -242,15 +241,15 @@ class AdresseRessurs(
         vedlegg.vedlegg.removeIf {
             (it.type == "kort" && it.tilleggsinfo == "behov") ||
                 (it.type == "kort" && it.tilleggsinfo == "barnebidrag") ||
-                (it.type == "kort" && it.tilleggsinfo == "barnehage") ||
-                (it.type == "kort" && it.tilleggsinfo == "barnehageSFO") ||
-                (it.type == "kort" && it.tilleggsinfo == "bostotte") ||
-                (it.type == "kort" && it.tilleggsinfo == "husleie") ||
-                (it.type == "kort" && it.tilleggsinfo == "kontooversikt") ||
-                (it.type == "kort" && it.tilleggsinfo == "lonnslipp") ||
-                (it.type == "kort" && it.tilleggsinfo == "stromOppvarming") ||
-                (it.type == "kort" && it.tilleggsinfo == "stipendLan") ||
-                (it.type == "kort" && it.tilleggsinfo == "annet") ||
+                (it.type == "faktura" && it.tilleggsinfo == "barnehage") ||
+                (it.type == "faktura" && it.tilleggsinfo == "sfo") ||
+                (it.type == "husbanken" && it.tilleggsinfo == "vedtak") ||
+                (it.type == "husleiekontrakt" && it.tilleggsinfo == "husleiekontrakt") ||
+                (it.type == "kontooversikt" && it.tilleggsinfo == "annet") ||
+                (it.type == "lonnslipp" && it.tilleggsinfo == "arbeid") ||
+                (it.type == "faktura" && it.tilleggsinfo == "strom") ||
+                (it.type == "student" && it.tilleggsinfo == "vedtak") ||
+                (it.type == "annet" && it.tilleggsinfo == "annet") ||
                 (it.type == "kort" && it.tilleggsinfo == "situasjonsendring")
         }
         if (!unleash.isEnabled("sosialhjelp.soknad.kategorier")) {
