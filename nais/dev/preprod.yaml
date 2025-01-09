@@ -89,8 +89,8 @@ spec:
     limits:
       memory: 2Gi
     requests:
-      cpu: 10m
-      memory: 512Mi
+      cpu: 20m
+      memory: 1380Mi
   envFrom:
     - configmap: loginservice-idporten
     - secret: fiks-integrasjon-secret
