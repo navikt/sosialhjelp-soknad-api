@@ -125,9 +125,11 @@ private fun Barn.toJson() =
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen),
         ).withHarDeltBosted(
-            JsonHarDeltBosted()
-                .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(deltBosted ?: false),
+            deltBosted?.let {
+                JsonHarDeltBosted()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(it)
+            },
         )
         // TODO Pr. nå settes det ikke noe samvarsgrad i frontend - riktig?
         .withSamvarsgrad(null)
