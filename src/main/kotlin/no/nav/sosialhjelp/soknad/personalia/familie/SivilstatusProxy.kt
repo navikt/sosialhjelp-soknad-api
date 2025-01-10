@@ -20,21 +20,25 @@ class SivilstatusProxy(private val sivilstandController: SivilstandController) {
     ) {
         familieFrontend
             .let {
+                if (it.sivilstatus == null) return
+
                 SivilstandInput(
-                    sivilstatus = it.sivilstatus?.name?.let { status -> Sivilstatus.valueOf(status) },
+                    sivilstatus = it.sivilstatus.name.let { status -> Sivilstatus.valueOf(status) },
                     ektefelle =
-                        it.ektefelle?.let { ektefelle ->
-                            EktefelleInput(
-                                ektefelle.personnummer,
-                                Navn(
-                                    ektefelle.navn?.fornavn ?: "",
-                                    ektefelle.navn?.mellomnavn ?: "",
-                                    ektefelle.navn?.etternavn ?: "",
-                                ),
-                                ektefelle.fodselsdato,
-                                familieFrontend.borSammenMed,
-                            )
-                        },
+                        it.ektefelle
+                            ?.let { ektefelle ->
+                                EktefelleInput(
+                                    personId = ektefelle.personnummer,
+                                    fodselsdato = ektefelle.fodselsdato,
+                                    borSammen = familieFrontend.borSammenMed,
+                                    navn =
+                                        Navn(
+                                            ektefelle.navn?.fornavn ?: "",
+                                            ektefelle.navn?.mellomnavn ?: "",
+                                            ektefelle.navn?.etternavn ?: "",
+                                        ),
+                                )
+                            },
                 )
             }
             .also { input -> sivilstandController.updateSivilstand(UUID.fromString(soknadId), input) }

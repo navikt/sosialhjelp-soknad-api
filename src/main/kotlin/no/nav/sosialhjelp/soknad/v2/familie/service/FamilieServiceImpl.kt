@@ -28,7 +28,7 @@ interface SivilstandService {
 
     fun updateSivilstand(
         soknadId: UUID,
-        sivilstatus: Sivilstatus?,
+        sivilstatus: Sivilstatus,
         ektefelle: Ektefelle?,
     ): Sivilstand
 }
@@ -114,7 +114,7 @@ class FamilieServiceImpl(
 
     override fun updateSivilstand(
         soknadId: UUID,
-        sivilstatus: Sivilstatus?,
+        sivilstatus: Sivilstatus,
         ektefelle: Ektefelle?,
     ): Sivilstand {
         return findOrCreate(soknadId)

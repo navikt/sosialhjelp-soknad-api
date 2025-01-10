@@ -78,7 +78,8 @@ private fun JsonInternalSoknad.initializeObjects() {
 
 private fun Familie.toJsonSivilstatus() =
     JsonSivilstatus()
-        .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.SYSTEM)
+        // hvis ektefelle finnes - sjekk kilde, ellers bruker
+        .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.BRUKER)
         // required i json-modellen
         .withStatus(sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT)
         .withEktefelle(ektefelle?.toJson())

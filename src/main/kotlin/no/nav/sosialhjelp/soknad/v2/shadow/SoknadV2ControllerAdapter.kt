@@ -204,8 +204,10 @@ class SoknadV2ControllerAdapter(
 
         val sivilstandInput =
             familieFrontend.run {
+                if (sivilstatus == null) return
+
                 SivilstandInput(
-                    sivilstatus?.name?.let { Sivilstatus.valueOf(it) },
+                    sivilstatus.name.let { Sivilstatus.valueOf(it) },
                     ektefelle?.let {
                         EktefelleInput(
                             ektefelle.personnummer,

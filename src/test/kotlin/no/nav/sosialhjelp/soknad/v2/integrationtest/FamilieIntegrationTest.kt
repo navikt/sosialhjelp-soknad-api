@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.familie.toBarn
+import no.nav.sosialhjelp.soknad.v2.familie.toEktefelle
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -70,35 +70,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Skal oppdatere familie med ektefelle`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
-        familieRepository.save(createFamilie(storedSoknad.id, ektefelle = null))
-
-        val ektefelle =
-            EktefelleInput(
-                personId = "12345678",
-                navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
-                fodselsdato = "10101900",
-                borSammen = true,
-            )
-        val sivilstandInput = SivilstandInput(Sivilstatus.GIFT, ektefelle)
-
-        doPut(
-            uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
-            sivilstandInput,
-            Unit::class.java,
-            storedSoknad.id,
-        )
-
-        familieRepository.findByIdOrNull(storedSoknad.id)?.let {
-            assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
-            assertThat(it.ektefelle).isEqualTo(ektefelle.toBarn())
-            assertThat(it.ektefelle?.kildeErSystem).isFalse()
-        }
-            ?: fail("Fant ikke familie")
-    }
-
-    @Test
     fun `Oppdatere deltBosted pa eksisterende barn skal lagres`() {
         val storedSoknad = soknadRepository.save(opprettSoknad())
         val personIdBarn = opprettFamilieMedBarn(storedSoknad.id)
@@ -127,6 +98,35 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
                         assertThat(barn.deltBosted).isTrue()
                     }
             }
+    }
+
+    @Test
+    fun `Skal oppdatere familie med ektefelle`() {
+        val storedSoknad = soknadRepository.save(opprettSoknad())
+        familieRepository.save(createFamilie(storedSoknad.id, ektefelle = null))
+
+        val ektefelle =
+            EktefelleInput(
+                personId = "12345678",
+                navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
+                fodselsdato = "10101900",
+                borSammen = true,
+            )
+        val sivilstandInput = SivilstandInput(Sivilstatus.GIFT, ektefelle)
+
+        doPut(
+            uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
+            sivilstandInput,
+            Unit::class.java,
+            storedSoknad.id,
+        )
+
+        familieRepository.findByIdOrNull(storedSoknad.id)?.let {
+            assertThat(it.sivilstatus).isEqualTo(Sivilstatus.GIFT)
+            assertThat(it.ektefelle).isEqualTo(ektefelle.toEktefelle())
+            assertThat(it.ektefelle?.kildeErSystem).isFalse()
+        }
+            ?: fail("Fant ikke familie")
     }
 
     private fun opprettFamilieMedBarn(soknadId: UUID): String {
