@@ -238,7 +238,7 @@ class SoknadServiceOld(
                             mutableListOf(
                                 JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
                                 JsonVedlegg().withType("annet").withTilleggsinfo("annet"),
-                                JsonVedlegg().withType("kort").withTilleggsinfo("barnebidrag"),
+                                JsonVedlegg().withType("barnebidrag").withTilleggsinfo("barnebidrag"),
                                 JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
                                 JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
                                 JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),

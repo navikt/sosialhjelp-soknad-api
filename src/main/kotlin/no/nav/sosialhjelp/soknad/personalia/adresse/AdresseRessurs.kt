@@ -215,7 +215,7 @@ class AdresseRessurs(
                 vedlegg.vedlegg.addAll(
                     listOf(
                         JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
-                        JsonVedlegg().withType("kort").withTilleggsinfo("barnebidrag"),
+                        JsonVedlegg().withType("barnebidrag").withTilleggsinfo("barnebidrag"),
                         JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
                         JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
                         JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),

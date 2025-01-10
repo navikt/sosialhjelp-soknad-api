@@ -100,6 +100,7 @@ object OpplysningTypeMapper {
             AnnenDokumentasjonType.HUSLEIEKONTRAKT -> JsonVerdi(null, VedleggType.HusleiekontraktHusleiekontrakt)
             AnnenDokumentasjonType.HUSLEIEKONTRAKT_KOMMUNAL -> JsonVerdi(null, VedleggType.HusleiekontraktKommunal)
             AnnenDokumentasjonType.BEHOV -> JsonVerdi(null, VedleggType.KortBehov)
+            AnnenDokumentasjonType.BARNEBIDRAG -> JsonVerdi(null, VedleggType.BarnebidragBarnebidrag)
         }
 }
 

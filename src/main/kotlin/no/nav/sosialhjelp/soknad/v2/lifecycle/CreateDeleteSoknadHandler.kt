@@ -76,7 +76,7 @@ private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> 
     listOf(
         AnnenDokumentasjonType.BEHOV, // kort|behov
         UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
-        UtgiftType.BARNEBIDRAG_BETALER, // barnebidrag|betaler
+        AnnenDokumentasjonType.BARNEBIDRAG, // barnebidrag|barnebidrag
         UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
         UtgiftType.UTGIFTER_SFO, // faktura|sfo
         InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak

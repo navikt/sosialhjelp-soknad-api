@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 object OkonomiskGruppeMapper {
     fun getGruppe(vedleggType: VedleggType): VedleggGruppe {
         when (vedleggType) {
-            VedleggType.BarnebidragMottar, VedleggType.BarnebidragBetaler, VedleggType.SamvarsavtaleBarn -> return VedleggGruppe.Familie
+            VedleggType.BarnebidragMottar, VedleggType.BarnebidragBetaler, VedleggType.BarnebidragBarnebidrag, VedleggType.SamvarsavtaleBarn -> return VedleggGruppe.Familie
             VedleggType.HusleiekontraktHusleiekontrakt, VedleggType.HusleiekontraktKommunal -> return VedleggGruppe.Bosituasjon
             VedleggType.SluttoppgjorArbeid, VedleggType.LonnslippArbeid, VedleggType.StudentVedtak -> return VedleggGruppe.Arbeid
             VedleggType.AnnetAnnet -> return VedleggGruppe.AndreUtgifter
