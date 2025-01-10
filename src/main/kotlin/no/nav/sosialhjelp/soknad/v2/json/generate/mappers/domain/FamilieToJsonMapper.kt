@@ -48,7 +48,7 @@ class FamilieToJsonMapper(
             json.initializeObjects()
 
             with(json.soknad.data.familie) {
-                if (familie.ektefelle != null && familie.sivilstatus != null) {
+                if (familie.sivilstatus != null) {
                     sivilstatus = familie.toJsonSivilstatus().apply { handleValidationDependencies() }
                 }
                 forsorgerplikt = familie.toJsonForsorgerplikt()

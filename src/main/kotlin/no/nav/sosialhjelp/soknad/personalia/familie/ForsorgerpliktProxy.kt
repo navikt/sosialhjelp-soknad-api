@@ -35,7 +35,12 @@ class ForsorgerpliktProxy(
                     barnebidrag = forsorgerpliktFrontend.barnebidrag?.name?.let { Barnebidrag.valueOf(it) },
                     ansvar =
                         forsorgerpliktFrontend.ansvar.map {
-                            BarnInput(null, it.barn?.fodselsnummer, it.harDeltBosted)
+                            BarnInput(
+                                // bruker personnummer-feltet for UUID (key) i proxy
+                                uuid = UUID.fromString(it.barn?.personnummer),
+                                personId = null,
+                                deltBosted = it.harDeltBosted,
+                            )
                         },
                 ),
         )
@@ -64,8 +69,9 @@ private fun BarnDto.toAnsvarFrontEnd() =
             BarnFrontend(
                 navn = navn?.toNavnFrontEnd(),
                 fodselsdato = fodselsdato,
+                // bruker midlertidig personnummer-feltet for UUID (key) i proxy
                 personnummer = this.uuid.toString(),
-                fodselsnummer = fodselsdato,
+                fodselsnummer = null,
             ),
         borSammenMed = borSammen,
         erFolkeregistrertSammen = folkeregistrertSammen,
