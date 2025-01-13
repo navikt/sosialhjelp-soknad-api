@@ -40,7 +40,7 @@ enum class VedleggType(
     KontooversiktLivsforsikring("kontooversikt|livsforsikring", FormueType.FORMUE_LIVSFORSIKRING),
     KontooversiktSparekonto("kontooversikt|sparekonto", FormueType.FORMUE_SPAREKONTO),
     LonnslippArbeid("lonnslipp|arbeid", InntektType.JOBB),
-    NedbetalingsplanAvdragslan("nedbetalingsplan|avdraglaan", UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG),
+    NedbetalingsplanAvdragslan("nedbetalingsplan|avdraglaan", UtgiftType.UTGIFTER_BOLIGLAN),
     OppholdstillatelOppholdstillatel("oppholdstillatel|oppholdstillatel", AnnenDokumentasjonType.OPPHOLDSTILLATELSE),
     SalgsoppgjorEiendom("salgsoppgjor|eiendom", InntektType.UTBETALING_SALG),
 
