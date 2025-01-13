@@ -10,12 +10,13 @@ import java.util.UUID
 @Component
 class UtdanningProxy(private val utdanningController: UtdanningController) {
     fun getUtdanning(soknadId: String): UtdanningFrontend {
-        return utdanningController.getUtdanning(UUID.fromString(soknadId)).let {
-            UtdanningFrontend(
-                erStudent = it.erStudent,
-                studengradErHeltid = it.studentgrad == Studentgrad.HELTID,
-            )
-        }
+        return utdanningController.getUtdanning(UUID.fromString(soknadId))
+            .let { utdanning ->
+                UtdanningFrontend(
+                    erStudent = utdanning.erStudent,
+                    studengradErHeltid = utdanning.studentgrad?.let { it == Studentgrad.HELTID },
+                )
+            }
     }
 
     fun updateUtdanning(

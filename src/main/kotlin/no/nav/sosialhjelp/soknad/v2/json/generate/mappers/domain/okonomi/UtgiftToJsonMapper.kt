@@ -79,13 +79,16 @@ class UtgiftToJsonMapper(
             .withOverstyrtAvBruker(false)
 
     private fun Utgift.toJsonOpplysningUtgifter(): List<JsonOkonomiOpplysningUtgift> {
-        return utgiftDetaljer.detaljer.let { detaljer ->
-            if (detaljer.isEmpty()) {
-                listOf(toJsonOpplysningUtgift())
-            } else {
-                detaljer.map { detalj -> this.copy().toJsonOpplysningUtgift(detalj as Belop, detalj.beskrivelse) }
+        return utgiftDetaljer.detaljer
+            .let { detaljer ->
+                when (detaljer.isEmpty()) {
+                    true -> listOf(toJsonOpplysningUtgift())
+                    else ->
+                        detaljer.map { detalj ->
+                            this.copy().toJsonOpplysningUtgift(detalj as Belop, detalj.beskrivelse)
+                        }
+                }
             }
-        }
     }
 
     private fun Utgift.toJsonOpplysningUtgift(
@@ -102,11 +105,11 @@ class UtgiftToJsonMapper(
 
 private fun Utgift.toTittel(detaljBeskrivelse: String? = null): String {
     return when (type) {
-        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt):${detaljBeskrivelse ?: ""}"
-        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt):${detaljBeskrivelse ?: ""}"
+        UtgiftType.UTGIFTER_ANNET_BO -> "Annen, bo (brukerangitt): ${detaljBeskrivelse ?: ""}"
+        UtgiftType.UTGIFTER_ANNET_BARN -> "Annen, barn(brukerangitt): ${detaljBeskrivelse ?: ""}"
         UtgiftType.UTGIFTER_BARN_TANNREGULERING -> "Tannregulering for barn (siste regning)"
         UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT -> "Kommunal avgift (siste regning)"
-        UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning):"
+        UtgiftType.UTGIFTER_BARN_FRITIDSAKTIVITETER -> "Fritidsaktiviteter for barn (siste regning): ${detaljBeskrivelse ?: ""}"
         UtgiftType.UTGIFTER_OPPVARMING -> "Oppvarming (siste regning)"
         UtgiftType.UTGIFTER_STROM -> "Strøm (siste regning)"
         UtgiftType.UTGIFTER_ANDRE_UTGIFTER -> "Annen (brukerangitt): ${detaljBeskrivelse ?: ""}"
