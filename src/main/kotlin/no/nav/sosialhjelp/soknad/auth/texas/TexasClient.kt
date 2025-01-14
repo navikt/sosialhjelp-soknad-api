@@ -15,7 +15,8 @@ class TexasService(val texasClient: TexasClient) {
         target: String,
     ): String {
         runCatching {
-            return when (val response = texasClient.fetchToken(mapOf("idProvider" to idProvider, "target" to target))) {
+            val params = mapOf("identity_provider" to idProvider, "target" to target)
+            return when (val response = texasClient.fetchToken(params)) {
                 is TokenResponse.Success -> response.token
                 is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
             }
@@ -38,14 +39,12 @@ class TexasClient(
     private val texasWebClient: WebClient =
         webClientBuilder
             .baseUrl(tokenEndpoint)
+            .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
             .build()
 
     fun fetchToken(params: Map<String, String>): TokenResponse {
         return texasWebClient
             .post()
-            .uri(tokenEndpoint)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
             .bodyValue(params)
             .retrieve()
             .bodyToMono(TokenResponse::class.java)
