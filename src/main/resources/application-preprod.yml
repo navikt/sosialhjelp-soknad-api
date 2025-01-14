@@ -12,6 +12,8 @@ spring:
       host: ${REDIS_HOST_CACHE}
       username: ${REDIS_USERNAME_CACHE}
       port: ${REDIS_PORT_CACHE}
+      ssl:
+        enabled: true
   main:
     banner-mode: off
   flyway:
