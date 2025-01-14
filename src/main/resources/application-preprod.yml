@@ -53,6 +53,7 @@ springdoc:
     enabled: ${SWAGGER_ENABLED:false}
 
 # rest
+endpoint_token_endpoint: ${ENDPOINT_TOKEN_ENDPOINT}
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_url: ${EREG_URL}
 aareg_url: ${AAREG_URL}

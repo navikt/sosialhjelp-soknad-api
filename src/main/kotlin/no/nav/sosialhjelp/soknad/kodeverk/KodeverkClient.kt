@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
@@ -25,6 +26,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     @Value("\${kodeverk_scope}") private val scope: String,
+    private val texasService: TexasService,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder,
 ) {
@@ -41,9 +43,21 @@ class KodeverkClient(
             }.baseUrl(kodeverkUrl)
             .build()
 
-    @Retry(name = "kodeverk")
+    fun hentKodeverkWithTexas(kodeverksnavn: String): KodeverkDto {
+        val token = texasService.getToken("azuread", "api://dev-gcp.team-rocket.kodeverk-api/.default")
+        return doHentKodeverk(kodeverksnavn, token)
+    }
+
     fun hentKodeverk(kodeverksnavn: String): KodeverkDto {
         val token = getAdToken()
+        return doHentKodeverk(kodeverksnavn, token)
+    }
+
+    @Retry(name = "kodeverk")
+    private fun doHentKodeverk(
+        kodeverksnavn: String,
+        token: String,
+    ): KodeverkDto {
         return runCatching {
             webClient
                 .get()
@@ -53,7 +67,8 @@ class KodeverkClient(
                         .queryParam("ekskluderUgyldige", "true")
                         .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
                         .build(kodeverksnavn)
-                }.header("Authorization", BEARER + token)
+                }
+                .header("Authorization", BEARER + token)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
