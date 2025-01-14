@@ -14,15 +14,18 @@ class KodeverkService(
     private val kodeverkDataService: KodeverkDataService,
 ) {
     fun getKommunenavn(kommunenummer: String): String? =
-        runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrNull()
+        runCatching { kodeverkDataService.hentKodeverk(Kommuner)[kommunenummer] }.getOrThrow()
 
     fun gjettKommunenummer(kommunenavn: String): String? =
         runCatching {
             val kommuner = kodeverkDataService.hentKodeverk(Kommuner)
             kommuner.keys.firstOrNull { key -> kommuner[key] == kommunenavn }
-        }.getOrNull()
+        }.getOrThrow()
 
-    fun getPoststed(postnummer: String): String? = runCatching { kodeverkDataService.hentKodeverk(Postnummer)[postnummer] }.getOrNull()
+    fun getPoststed(postnummer: String): String? =
+        runCatching { kodeverkDataService.hentKodeverk(Postnummer)[postnummer] }
+            .getOrThrow()
 
-    fun getLand(landkode: String): String? = runCatching { kodeverkDataService.hentKodeverk(Landkoder)[landkode] }.getOrNull()
+    fun getLand(landkode: String): String? =
+        runCatching { kodeverkDataService.hentKodeverk(Landkoder)[landkode] }.getOrThrow()
 }
