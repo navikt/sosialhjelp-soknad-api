@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 
 @Service
@@ -16,7 +15,7 @@ class TexasService(val texasClient: TexasClient) {
         target: String,
     ): String {
         runCatching {
-            return when (val response = texasClient.fetchToken(TokenRequest(idProvider, target))) {
+            return when (val response = texasClient.fetchToken(mapOf("idProvider" to idProvider, "target" to target))) {
                 is TokenResponse.Success -> response.token
                 is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
             }
@@ -41,13 +40,13 @@ class TexasClient(
             .baseUrl(tokenEndpoint)
             .build()
 
-    fun fetchToken(request: TokenRequest): TokenResponse {
+    fun fetchToken(params: Map<String, String>): TokenResponse {
         return texasWebClient
             .post()
             .uri(tokenEndpoint)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(request))
+            .bodyValue(params)
             .retrieve()
             .bodyToMono(TokenResponse::class.java)
             .block() ?: throw IllegalStateException("Failed to fetch token from Texas")

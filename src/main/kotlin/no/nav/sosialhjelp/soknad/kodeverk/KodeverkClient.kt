@@ -44,7 +44,11 @@ class KodeverkClient(
             .build()
 
     fun hentKodeverkWithTexas(kodeverksnavn: String): KodeverkDto {
-        val token = texasService.getToken("azuread", "api://dev-gcp.team-rocket.kodeverk-api/.default")
+        val token =
+            texasService.getToken(
+                idProvider = "azuread",
+                target = scope,
+            )
         return doHentKodeverk(kodeverksnavn, token)
     }
 
