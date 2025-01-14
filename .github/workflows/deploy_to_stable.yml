@@ -22,15 +22,16 @@ jobs:
           - environment: prod
             cluster: prod-fss
             resource: prod-fss
-          - environment: dev
-            cluster: dev-gcp
-            resource: preprod
+# Ikke deploy til preprod før vi er ferdig med å teste der
+#          - environment: dev
+#            cluster: dev-gcp
+#            resource: preprod
     name: 'Deploy to ${{ matrix.cluster }}'
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v6
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v7
     with:
       cluster-name: ${{ matrix.cluster }}
       resource-folder: ${{ matrix.environment }}
