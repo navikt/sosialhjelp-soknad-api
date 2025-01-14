@@ -16,11 +16,12 @@ class TexasService(val texasClient: TexasClient) {
         target: String,
     ): String {
         runCatching {
-            return when (val fetchToken = texasClient.fetchToken(TokenRequest(idProvider, target))) {
-                is TokenResponse.Success -> fetchToken.token
-                is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: ${fetchToken.errorDescription}")
+            return when (val response = texasClient.fetchToken(TokenRequest(idProvider, target))) {
+                is TokenResponse.Success -> response.token
+                is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
             }
         }
+            .onSuccess { logger.info("Successfully fetched token from Texas") }
             .onFailure { e -> logger.error("Failed to fetch token from Texas", e) }
         return ""
     }
