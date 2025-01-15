@@ -66,6 +66,8 @@ spec:
         - application: sosialhjelp-konvertering-til-pdf
         - application: norg2
           namespace: org
+        - application: kodeverk-api
+          namespace: team-rocket
       external:
         - host: "api.fiks.test.ks.no"
         - host: "teamdigisos-unleash-api.nav.cloud.nais.io"
@@ -75,6 +77,7 @@ spec:
         - host: "ereg-services.dev-fss-pub.nais.io"
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
+        - host: "kodeverk-api-nav.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad
