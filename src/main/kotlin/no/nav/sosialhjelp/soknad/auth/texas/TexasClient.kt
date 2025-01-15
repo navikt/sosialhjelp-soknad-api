@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 
 @Service
@@ -15,11 +16,15 @@ class TexasService(val texasClient: TexasClient) {
         target: String,
     ): String {
         runCatching {
-            val params = mapOf("identity_provider" to idProvider, "target" to target)
-            return when (val response = texasClient.fetchToken(params)) {
-                is TokenResponse.Success -> response.token
-                is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
-            }
+//            val params = mapOf("identity_provider" to idProvider, "target" to target)
+
+            return TokenRequestBody(idProvider, target)
+                .let {
+                    when (val response = texasClient.fetchToken(it)) {
+                        is TokenResponse.Success -> response.token
+                        is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
+                    }
+                }
         }
             .onSuccess { logger.info("Successfully fetched token from Texas") }
             .onFailure { e -> logger.error("Failed to fetch token from Texas", e) }
@@ -42,18 +47,18 @@ class TexasClient(
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
             .build()
 
-    fun fetchToken(params: Map<String, String>): TokenResponse {
+    fun fetchToken(params: TokenRequestBody): TokenResponse {
         return texasWebClient
             .post()
-            .bodyValue(params)
+            .body(BodyInserters.fromValue(params))
             .retrieve()
             .bodyToMono(TokenResponse::class.java)
             .block() ?: throw IllegalStateException("Failed to fetch token from Texas")
     }
 }
 
-data class TokenRequest(
-    @JsonProperty("id_provider")
+data class TokenRequestBody(
+    @JsonProperty("identity_provider")
     val idProvider: String,
     val target: String,
 )
