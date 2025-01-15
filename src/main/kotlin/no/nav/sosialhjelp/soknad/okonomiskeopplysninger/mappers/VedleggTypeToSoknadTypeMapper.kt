@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.AnnetAnnet
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.BarnebidragBarnebidrag
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.BarnebidragBetaler
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.BarnebidragMottar
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType.DokumentasjonAnnetBoutgift
@@ -37,6 +38,7 @@ object VedleggTypeToSoknadTypeMapper {
             AnnetAnnet to SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER,
             BarnebidragBetaler to SoknadJsonTyper.BARNEBIDRAG,
             BarnebidragMottar to SoknadJsonTyper.BARNEBIDRAG,
+            BarnebidragBarnebidrag to SoknadJsonTyper.BARNEBIDRAG,
             DokumentasjonAnnetBoutgift to SoknadJsonTyper.UTGIFTER_ANNET_BO,
             DokumentasjonAnnetInntekter to SoknadJsonTyper.UTBETALING_ANNET,
             DokumentasjonUtbytte to SoknadJsonTyper.UTBETALING_UTBYTTE,
@@ -68,7 +70,7 @@ object VedleggTypeToSoknadTypeMapper {
     fun getSoknadPath(vedleggType: VedleggType?): String =
         when (vedleggType) {
             DokumentasjonAnnetBoutgift, FakturaAnnetBarnutgift, FakturaTannbehandling, FakturaKommunaleavgifter,
-            FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet,
+            FakturaFritidsaktivitet, FakturaOppvarming, FakturaStrom, AnnetAnnet, BarnebidragBarnebidrag,
             -> "opplysningerUtgift"
             BarnebidragBetaler, FakturaSfo, FakturaBarnehage, FakturaHusleie, NedbetalingsplanAvdragslan -> "oversiktUtgift"
             KontooversiktBrukskonto, KontooversiktBsu, KontooversiktSparekonto, KontooversiktLivsforsikring,

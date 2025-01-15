@@ -4,6 +4,8 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Service
@@ -85,6 +87,42 @@ class SoknadV2AdapterService(
             dokumentasjonService.opprettDokumentasjon(
                 soknadId = UUID.fromString(behandlingsId),
                 opplysningType = AnnenDokumentasjonType.BEHOV,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.HUSLEIEKONTRAKT,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = AnnenDokumentasjonType.BARNEBIDRAG,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = UtgiftType.UTGIFTER_BARNEHAGE,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = UtgiftType.UTGIFTER_SFO,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = InntektType.UTBETALING_HUSBANKEN,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = FormueType.FORMUE_ANNET,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = InntektType.JOBB,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = UtgiftType.UTGIFTER_STROM,
+            )
+            dokumentasjonService.opprettDokumentasjon(
+                soknadId = UUID.fromString(behandlingsId),
+                opplysningType = InntektType.STUDIELAN_INNTEKT,
             )
         } else {
             // oppretter dokumentasjon skattemelding

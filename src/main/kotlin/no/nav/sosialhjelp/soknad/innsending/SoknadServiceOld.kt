@@ -237,7 +237,6 @@ class SoknadServiceOld(
                         JsonVedleggSpesifikasjon().withVedlegg(
                             mutableListOf(
                                 JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
-                                JsonVedlegg().withType("annet").withTilleggsinfo("annet"),
                                 JsonVedlegg().withType("barnebidrag").withTilleggsinfo("barnebidrag"),
                                 JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
                                 JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
@@ -247,6 +246,7 @@ class SoknadServiceOld(
                                 JsonVedlegg().withType("lonnslipp").withTilleggsinfo("arbeid"),
                                 JsonVedlegg().withType("faktura").withTilleggsinfo("strom"),
                                 JsonVedlegg().withType("student").withTilleggsinfo("vedtak"),
+                                JsonVedlegg().withType("annet").withTilleggsinfo("annet"),
                             ),
                         )
                     } else {

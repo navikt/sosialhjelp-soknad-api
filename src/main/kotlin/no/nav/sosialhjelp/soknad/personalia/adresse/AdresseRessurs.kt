@@ -269,7 +269,7 @@ class AdresseRessurs(
         soknad.data.situasjonendring = null
         vedlegg.vedlegg.removeIf {
             (it.type == "kort" && it.tilleggsinfo == "behov") ||
-                (it.type == "kort" && it.tilleggsinfo == "barnebidrag") ||
+                (it.type == "barnebidrag" && it.tilleggsinfo == "barnebidrag") ||
                 (it.type == "faktura" && it.tilleggsinfo == "barnehage") ||
                 (it.type == "faktura" && it.tilleggsinfo == "sfo") ||
                 (it.type == "husbanken" && it.tilleggsinfo == "vedtak") ||
