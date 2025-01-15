@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.bodyToMono
 
 @Service
 class TexasService(val texasClient: TexasClient) {
@@ -27,17 +29,14 @@ class TexasService(val texasClient: TexasClient) {
                 .let {
                     when (val response = texasClient.fetchToken(it)) {
                         is TokenResponse.Success -> response.token
-                        is TokenResponse.Error -> throw IllegalStateException("Failed to fetch token from Texas: $response")
+                        is TokenResponse.Error ->
+                            throw IllegalStateException(
+                                "Failed to fetch token from Texas: " + objectMapper.writeValueAsString(response),
+                            )
                     }
                 }
         }
-            .onSuccess { logger.info("Successfully fetched token from Texas") }
-            .onFailure { e -> logger.error("Failed to fetch token from Texas", e) }
         return ""
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 
@@ -52,29 +51,40 @@ class TexasClient(
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(jacksonObjectMapper()))
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
             }
             .build()
 
     fun fetchToken(params: TokenRequestBody): TokenResponse {
         logger.info("Trying to fetch token from Texas: ${objectMapper.writeValueAsString(params)}")
-        return texasWebClient
-            .post()
-            .body(BodyInserters.fromValue(params))
-            .retrieve()
-            .bodyToMono(TokenResponse::class.java)
-            .block()
-            .also { logger.info("Fetched token from Texas: $it") }
-            ?: throw IllegalStateException("Failed to fetch token from Texas")
+
+        val response =
+            try {
+                texasWebClient
+                    .post()
+                    .body(BodyInserters.fromValue(params))
+                    .retrieve()
+                    .bodyToMono<TokenResponse.Success>()
+                    .block()
+                    .also { logger.info("Fetched token from Texas: $it") }
+            } catch (e: WebClientResponseException) {
+                val error = e.responseBodyAsString
+                logger.error("Failed to fetch token from Texas: $error")
+                TokenResponse.Error(
+                    error =
+                        TokenErrorResponse(
+                            "Unknown error: ${e.statusCode}",
+                            e.statusText ?: "Unknown error",
+                        ),
+                    errorDescription = e.responseBodyAsString,
+                )
+            }
+        return response
     }
 
     companion object {
         private val logger by logger()
-        private val objectMapper =
-            jacksonObjectMapper()
-                .configure(SerializationFeature.INDENT_OUTPUT, true)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 }
 
@@ -104,3 +114,8 @@ data class TokenErrorResponse(
     @JsonProperty("error_description")
     val errorDescription: String,
 )
+
+private val objectMapper =
+    jacksonObjectMapper()
+        .configure(SerializationFeature.INDENT_OUTPUT, true)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
