@@ -1,9 +1,14 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.BodyInserters
@@ -45,15 +50,31 @@ class TexasClient(
         webClientBuilder
             .baseUrl(tokenEndpoint)
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(jacksonObjectMapper()))
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
+            }
             .build()
 
     fun fetchToken(params: TokenRequestBody): TokenResponse {
+        logger.info("Trying to fetch token from Texas: ${objectMapper.writeValueAsString(params)}")
         return texasWebClient
             .post()
             .body(BodyInserters.fromValue(params))
             .retrieve()
             .bodyToMono(TokenResponse::class.java)
-            .block() ?: throw IllegalStateException("Failed to fetch token from Texas")
+            .block()
+            .also { logger.info("Fetched token from Texas: $it") }
+            ?: throw IllegalStateException("Failed to fetch token from Texas")
+    }
+
+    companion object {
+        private val logger by logger()
+        private val objectMapper =
+            jacksonObjectMapper()
+                .configure(SerializationFeature.INDENT_OUTPUT, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 }
 
