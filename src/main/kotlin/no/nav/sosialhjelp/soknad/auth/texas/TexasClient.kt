@@ -22,21 +22,15 @@ class TexasService(val texasClient: TexasClient) {
         idProvider: String,
         target: String,
     ): String {
-        runCatching {
-//            val params = mapOf("identity_provider" to idProvider, "target" to target)
-
-            return TokenRequestBody(idProvider, target)
-                .let {
-                    when (val response = texasClient.fetchToken(it)) {
-                        is TokenResponse.Success -> response.token
-                        is TokenResponse.Error ->
-                            throw IllegalStateException(
-                                "Failed to fetch token from Texas: " + objectMapper.writeValueAsString(response),
-                            )
-                    }
+        return TokenRequestBody(idProvider, target)
+            .let {
+                when (val response = texasClient.fetchToken(it)) {
+                    is TokenResponse.Success -> response.token
+                    is TokenResponse.Error -> throw IllegalStateException(
+                        "Failed to fetch token from Texas: " + objectMapper.writeValueAsString(response),
+                    )
                 }
-        }
-        return ""
+            }
     }
 }
 
@@ -57,8 +51,6 @@ class TexasClient(
             .build()
 
     fun fetchToken(params: TokenRequestBody): TokenResponse {
-        logger.info("Trying to fetch token from Texas: ${objectMapper.writeValueAsString(params)}")
-
         val response =
             try {
                 texasWebClient
@@ -67,7 +59,6 @@ class TexasClient(
                     .retrieve()
                     .bodyToMono<TokenResponse.Success>()
                     .block()
-                    .also { logger.info("Fetched token from Texas: $it") }
             } catch (e: WebClientResponseException) {
                 val error = e.responseBodyAsString
                 logger.error("Failed to fetch token from Texas: $error")
