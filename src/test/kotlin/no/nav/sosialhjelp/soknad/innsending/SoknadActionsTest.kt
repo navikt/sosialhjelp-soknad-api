@@ -218,7 +218,7 @@ internal class SoknadActionsTest {
                 }
 
         every { soknadUnderArbeidRepository.hentSoknad("behandlingsid", eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhetFrontend()
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
         every { digisosApiService.getTimestampSistSendtSoknad(any()) } returns Instant.now().toEpochMilli()
