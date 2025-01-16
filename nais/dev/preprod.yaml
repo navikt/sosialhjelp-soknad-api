@@ -120,7 +120,7 @@ spec:
     - name: KRR_AUDIENCE
       value: "dev-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
-      value: "dev-gcp.team-rocket.digdir-krr-proxy"
+      value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
     - name: KRR_URL
       value: "http://digdir-krr-proxy.team-rocket"
     - name: LOGINSERVICE_URL
@@ -140,7 +140,7 @@ spec:
     - name: PDL_API_AUDIENCE
       value: "dev-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
-      value: "dev-fss.pdl.pdl-api"
+      value: "api://dev-fss.pdl.pdl-api/.default"
     - name: UNLEASH_ENV
       value: "dev-fss"
     - name: SCHEDULER_DISABLE
