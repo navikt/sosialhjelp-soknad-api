@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: sosialhjelp-soknad-api
+  name: sosialhjelp-soknad-api-dev
   namespace: teamdigisos
   labels:
     team: teamdigisos
@@ -43,11 +43,11 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_16
-        name: sosialhjelp-soknad-api-db-preprod
+        name: sosialhjelp-soknad-api-db-dev
         tier: db-custom-1-3840
         diskSize: 10
         databases:
-          - name: sosialhjelp-soknad-db-preprod
+          - name: sosialhjelp-soknad-db-dev
             envVarPrefix: POSTGRES
         cascadingDelete: false
   tokenx:
@@ -75,7 +75,7 @@ spec:
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
     inbound:
       rules:
-        - application: sosialhjelp-soknad
+        - application: sosialhjelp-soknad-dev
         - application: mine-saker-api
           namespace: min-side
         - application: dittnav-api
@@ -98,7 +98,7 @@ spec:
     - secret: sosialhjelp-soknad-api-unleash-api-token
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: "preprod,log-kibana"
+      value: "dev,log-kibana"
     - name: AAREG_AUDIENCE
       value: "dev-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
@@ -150,7 +150,7 @@ spec:
     - name: NEDETID_SLUTT
       value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
-      value: "preprod"
+      value: "dev"
     - name: UNLEASH_INSTANCE_ID
       value: "dev-gcp"
     - name: MASKINPORTEN_WELL_KNOWN_URL
