@@ -185,7 +185,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns HAR_KONFIGURASJON_MED_MANGLER
 
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
