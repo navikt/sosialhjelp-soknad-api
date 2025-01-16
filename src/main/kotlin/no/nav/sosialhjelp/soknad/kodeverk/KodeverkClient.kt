@@ -44,16 +44,12 @@ class KodeverkClient(
             .build()
 
     fun hentKodeverkWithTexas(kodeverksnavn: String): KodeverkDto {
-        val token =
-            texasService.getToken(
-                idProvider = "azuread",
-                target = scope,
-            )
+        val token = getAzureadToken()
         return doHentKodeverk(kodeverksnavn, token)
     }
 
     fun hentKodeverk(kodeverksnavn: String): KodeverkDto {
-        val token = getAdToken()
+        val token = getAzureadToken()
         return doHentKodeverk(kodeverksnavn, token)
     }
 
@@ -86,6 +82,8 @@ class KodeverkClient(
             }
         }.getOrThrow()
     }
+
+    fun getAzureadToken() = runBlocking { texasService.getToken("azuread", scope) }
 
     fun getAdToken() = runBlocking { azureadService.getSystemToken(scope) }
 

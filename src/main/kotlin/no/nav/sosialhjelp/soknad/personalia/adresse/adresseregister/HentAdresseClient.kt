@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -22,13 +23,14 @@ class HentAdresseClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
     fun hentMatrikkelAdresse(matrikkelId: String): MatrikkeladresseDto? {
         return try {
             val response =
                 baseRequest
-                    .header(HttpHeaders.AUTHORIZATION, BEARER + azureAdToken())
+                    .header(HttpHeaders.AUTHORIZATION, BEARER + getAzureAdToken())
                     .bodyValue(PdlRequest(PdlApiQuery.HENT_ADRESSE, variables(matrikkelId)))
                     .retrieve()
                     .bodyToMono<String>()
@@ -51,6 +53,8 @@ class HentAdresseClient(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
+
+    private fun getAzureAdToken() = runBlocking { texasService.getToken("azuread", pdlScope) }
 
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
 

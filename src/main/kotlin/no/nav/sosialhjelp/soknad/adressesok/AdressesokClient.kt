@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -22,13 +23,14 @@ class AdressesokClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
     fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {
             val response =
                 baseRequest
-                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .header(AUTHORIZATION, BEARER + getAzureadToken())
                     .bodyValue(PdlRequest(ADRESSE_SOK, variables))
                     .retrieve()
                     .bodyToMono<String>()
@@ -45,6 +47,8 @@ class AdressesokClient(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
+
+    private fun getAzureadToken() = runBlocking { texasService.getToken("azuread", pdlScope) }
 
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
 

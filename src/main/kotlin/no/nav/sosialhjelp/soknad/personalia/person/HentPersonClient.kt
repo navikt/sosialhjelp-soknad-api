@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
@@ -52,6 +53,7 @@ class HentPersonClientImpl(
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl),
     HentPersonClient {
@@ -88,7 +90,7 @@ class HentPersonClientImpl(
         try {
             val response =
                 hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .header(AUTHORIZATION, BEARER + getAzureAdToken())
                     .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
                     .retrieve()
                     .bodyToMono<String>()
@@ -113,7 +115,7 @@ class HentPersonClientImpl(
         try {
             val response: String =
                 hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + azureAdToken())
+                    .header(AUTHORIZATION, BEARER + getAzureAdToken())
                     .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
                     .retrieve()
                     .bodyToMono<String>()
@@ -168,10 +170,9 @@ class HentPersonClientImpl(
             )
         }
 
-    private fun azureAdToken() =
-        runBlocking {
-            azureadService.getSystemToken(pdlScope)
-        }
+    private fun getAzureAdToken() = runBlocking { texasService.getToken("azuread", pdlScope) }
+
+    private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
 
     private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
 
