@@ -28,8 +28,11 @@ class KodeverkDataServiceTest : KodeverkTestClass() {
         KodeverkClient(
             mockWebServer.url("/").toString(),
             "scope",
-            texasClient = TexasServiceImpl(mockk(relaxed = true)),
-            azureadService,
+            texasService =
+                TexasServiceImpl(
+                    texasClient = mockk(relaxed = true),
+                    azureadService = azureadService,
+                ),
             WebClient.builder(),
         )
 //    private val kodeverkDataService = KodeverkDataService(kodeverkClient)

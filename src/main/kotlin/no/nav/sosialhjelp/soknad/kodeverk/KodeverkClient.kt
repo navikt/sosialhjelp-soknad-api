@@ -23,7 +23,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     @Value("\${kodeverk_scope}") private val scope: String,
-    private val texasClient: TexasService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
@@ -45,7 +45,7 @@ class KodeverkClient(
     ): KodeverkDto =
         doHentKodeverk(
             kodeverksnavn,
-            token = texasClient.getAzureAdToken(scope),
+            token = texasService.getAzureAdToken(scope),
         )
 
 //    @Retry(name = "kodeverk")
