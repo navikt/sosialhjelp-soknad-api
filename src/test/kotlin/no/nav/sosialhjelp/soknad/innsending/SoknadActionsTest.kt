@@ -152,7 +152,7 @@ internal class SoknadActionsTest {
         soknadUnderArbeid.jsonInternalSoknad!!
             .soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier) } returns soknadUnderArbeid
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
         every { kommuneInfoService.getKommuneStatus(any(), true) } returns SKAL_SENDE_SOKNADER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
         every { digisosApiService.getTimestampSistSendtSoknad(any()) } returns Instant.now().toEpochMilli()
