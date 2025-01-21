@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
@@ -24,6 +25,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     @Value("\${kodeverk_scope}") private val scope: String,
+    private val texasClient: TexasService,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder,
 ) {
@@ -43,14 +45,11 @@ class KodeverkClient(
 
     fun hentKodeverk(
         kodeverksnavn: String,
-        token: String,
-    ): KodeverkDto {
-        return doHentKodeverk(kodeverksnavn, token)
-    }
-
-    fun hentKodeverk(kodeverksnavn: String): KodeverkDto {
-        return doHentKodeverk(kodeverksnavn, getAdToken())
-    }
+    ): KodeverkDto =
+        doHentKodeverk(
+            kodeverksnavn,
+            token = texasClient.getAzureAdToken(scope),
+        )
 
 //    @Retry(name = "kodeverk")
     fun doHentKodeverk(

@@ -11,8 +11,7 @@ class TexasServiceImpl(
     private val texasClient: TexasClient,
 ) : TexasService {
     override fun getAzureAdToken(target: String): String {
-        val tokenResponse = texasClient.getToken(IdentityProviders.AZURE_AD.value, target)
-        return when (tokenResponse) {
+        return when (val tokenResponse = texasClient.getToken(IdentityProviders.AZURE_AD.value, target)) {
             is TokenResponse.Success -> tokenResponse.token
             is TokenResponse.Error ->
                 throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
