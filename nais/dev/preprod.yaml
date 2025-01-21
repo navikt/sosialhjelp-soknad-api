@@ -5,6 +5,8 @@ metadata:
   namespace: teamdigisos
   labels:
     team: teamdigisos
+  annotations:
+    texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
   port: 8080
