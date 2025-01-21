@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
 import io.mockk.clearAllMocks
+import io.mockk.mockk
 import no.nav.security.mock.oauth2.http.objectMapper
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedHttpClient
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadClient
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadTokenResponse
+import no.nav.sosialhjelp.soknad.auth.texas.TexasServiceImpl
 import no.nav.sosialhjelp.soknad.redis.NoRedisService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -22,7 +24,14 @@ class KodeverkDataServiceTest : KodeverkTestClass() {
     private val azureadClient = AzureadClient(mockWebServer.url("/").toString(), "client_id", "client_secret", WebClient.builder(), unproxiedHttpClient())
     private val redisService = NoRedisService()
     private val azureadService = AzureadService(azureadClient, redisService)
-    private val kodeverkClient = KodeverkClient(mockWebServer.url("/").toString(), "scope", azureadService, WebClient.builder())
+    private val kodeverkClient =
+        KodeverkClient(
+            mockWebServer.url("/").toString(),
+            "scope",
+            texasClient = TexasServiceImpl(mockk(relaxed = true)),
+            azureadService,
+            WebClient.builder(),
+        )
 //    private val kodeverkDataService = KodeverkDataService(kodeverkClient)
 
     @BeforeEach
