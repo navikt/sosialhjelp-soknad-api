@@ -73,6 +73,7 @@ spec:
         - host: "ereg-services.dev-fss-pub.nais.io"
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
+        - host: "api-test.sits.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad
