@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.github.resilience4j.retry.annotation.Retry
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
@@ -41,9 +40,22 @@ class KodeverkClient(
             }.baseUrl(kodeverkUrl)
             .build()
 
-    @Retry(name = "kodeverk")
+    fun hentKodeverk(
+        kodeverksnavn: String,
+        token: String,
+    ): KodeverkDto {
+        return doHentKodeverk(kodeverksnavn, token)
+    }
+
     fun hentKodeverk(kodeverksnavn: String): KodeverkDto {
-        val token = getAdToken()
+        return doHentKodeverk(kodeverksnavn, getAdToken())
+    }
+
+//    @Retry(name = "kodeverk")
+    fun doHentKodeverk(
+        kodeverksnavn: String,
+        token: String,
+    ): KodeverkDto {
         return runCatching {
             webClient
                 .get()
