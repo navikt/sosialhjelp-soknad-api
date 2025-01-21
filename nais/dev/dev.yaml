@@ -61,6 +61,8 @@ spec:
           namespace: nais-system
         - application: digdir-krr-proxy
           namespace: team-rocket
+        - application: kodeverk-api
+          namespace: team-rocket
         - application: sokos-kontoregister-person
           namespace: okonomi
         - application: sosialhjelp-konvertering-til-pdf
@@ -75,7 +77,6 @@ spec:
         - host: "ereg-services.dev-fss-pub.nais.io"
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
-        - host: "kodeverk-api.nav.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad-dev
@@ -113,7 +114,7 @@ spec:
     - name: DIGISOS_API_BASEURL
       value: "https://api.fiks.test.ks.no/"
     - name: KODEVERK_URL
-      value: "https://kodeverk-api.nav.no"
+      value: "http://kodeverk-api.team-rocket"
     - name: KODEVERK_SCOPE
       value: "api://dev-gcp.team-rocket.kodeverk-api/.default"
     - name: KRR_AUDIENCE
