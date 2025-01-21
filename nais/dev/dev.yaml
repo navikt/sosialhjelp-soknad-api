@@ -5,6 +5,8 @@ metadata:
   namespace: teamdigisos
   labels:
     team: teamdigisos
+  annotations:
+    texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
   port: 8080
@@ -73,6 +75,7 @@ spec:
         - host: "ereg-services.dev-fss-pub.nais.io"
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
+        - host: "kodeverk-api.nav.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad-dev
