@@ -3,15 +3,12 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
@@ -26,8 +23,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     @Value("\${kodeverk_scope}") private val scope: String,
-    private val texasClient: TexasService,
-    private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
@@ -46,14 +42,11 @@ class KodeverkClient(
 
     fun hentKodeverk(
         kodeverksnavn: String,
-    ): KodeverkDto {
-        val token =
-            when (MiljoUtils.isProduction()) {
-                true -> getAdToken()
-                false -> texasClient.getAzureAdToken(scope)
-            }
-        return doHentKodeverk(kodeverksnavn, token)
-    }
+    ): KodeverkDto =
+        doHentKodeverk(
+            kodeverksnavn,
+            token = texasService.getAzureAdToken(scope),
+        )
 
 //    @Retry(name = "kodeverk")
     fun doHentKodeverk(
@@ -83,8 +76,6 @@ class KodeverkClient(
             }
         }.getOrThrow()
     }
-
-    fun getAdToken() = runBlocking { azureadService.getSystemToken(scope) }
 
     companion object {
         private val log = getLogger(KodeverkClient::class.java)
