@@ -37,7 +37,8 @@ class KodeverkClient(
                             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
                     ),
                 )
-            }.baseUrl(kodeverkUrl)
+            }
+            .baseUrl(kodeverkUrl)
             .build()
 
     fun hentKodeverk(

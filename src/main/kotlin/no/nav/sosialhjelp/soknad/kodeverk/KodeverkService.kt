@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 typealias Kodeverk = Map<String, String?>
@@ -11,6 +12,7 @@ typealias Kodeverk = Map<String, String?>
 class KodeverkService(
     private val kodeverkClient: KodeverkClient,
     private val texasClient: TexasService,
+    @Value("\${kodeverk_scope}") private val scope: String,
 ) {
     fun getKommunenavn(kommunenummer: String): String? = doHentKodeverk(Kommuner)[kommunenummer]
 
@@ -27,7 +29,7 @@ class KodeverkService(
         return runCatching {
             kodeverkClient.hentKodeverk(
                 kodeverksnavn,
-                token = texasClient.getAzureAdToken("kodeverk"),
+                token = texasClient.getAzureAdToken(scope),
             ).toMap()
         }
             .onFailure { logger.error("Kunne ikke hente Kodeverk", it) }
