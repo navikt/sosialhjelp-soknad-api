@@ -29,7 +29,7 @@ class TexasServiceImpl(
         return if (MiljoUtils.isProdFss()) {
             fssHandler.handleProdFss(idProvider, target)
         } else {
-            when (val tokenResponse = texasClient.getToken(IdentityProvider.AZURE_AD.value, target)) {
+            when (val tokenResponse = texasClient.getToken(idProvider.value, target)) {
                 is TokenResponse.Success -> tokenResponse.token
                 is TokenResponse.Error ->
                     throw IllegalStateException("Failed to fetch token from Texas: $tokenResponse")
