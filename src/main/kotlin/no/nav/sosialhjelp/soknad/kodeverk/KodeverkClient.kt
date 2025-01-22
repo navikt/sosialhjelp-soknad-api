@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
@@ -45,7 +46,7 @@ class KodeverkClient(
     ): KodeverkDto =
         doHentKodeverk(
             kodeverksnavn,
-            token = texasService.getAzureAdToken(scope),
+            token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
         )
 
 //    @Retry(name = "kodeverk")

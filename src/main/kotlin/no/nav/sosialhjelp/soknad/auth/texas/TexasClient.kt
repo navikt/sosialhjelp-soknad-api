@@ -17,14 +17,18 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class TexasClient(
-    @Value("\${nais_token_endpoint:null}") private val tokenEndpoint: String,
+    @Value("\${NAIS_TOKEN_ENDPOINT:null}") private val tokenEndpoint: String,
+    @Value("\${NAIS_TOKEN_EXCHANGE_ENDPOINT:null}") private val tokenExchangeEndpoint: String,
     webClientBuilder: WebClient.Builder,
 ) {
     fun getToken(
         identityProvider: String,
         target: String,
     ): TokenResponse {
-        return doFetchToken(TokenRequestBody.GetRequest(identityProvider, target))
+        return doFetchToken(
+            params = TokenRequestBody.GetRequest(identityProvider, target),
+            endpoint = tokenEndpoint,
+        )
     }
 
     fun exchangeToken(
@@ -32,14 +36,21 @@ class TexasClient(
         target: String,
         userToken: String,
     ): TokenResponse {
-        return doFetchToken(TokenRequestBody.ExchangeRequest(identityProvider, target, userToken))
+        return doFetchToken(
+            params = TokenRequestBody.ExchangeRequest(identityProvider, target, userToken),
+            endpoint = tokenExchangeEndpoint,
+        )
     }
 
-    private fun doFetchToken(params: TokenRequestBody): TokenResponse {
+    private fun doFetchToken(
+        params: TokenRequestBody,
+        endpoint: String,
+    ): TokenResponse {
         val response =
             try {
                 texasWebClient
                     .post()
+                    .uri(endpoint)
                     .body(BodyInserters.fromValue(params))
                     .retrieve()
                     .bodyToMono<TokenResponse.Success>()
@@ -61,7 +72,6 @@ class TexasClient(
 
     private val texasWebClient: WebClient =
         webClientBuilder
-            .baseUrl(tokenEndpoint)
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
