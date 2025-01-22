@@ -9,7 +9,8 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.springframework.beans.factory.annotation.Value
@@ -28,7 +29,7 @@ import java.time.format.DateTimeFormatter
 @Component
 class SkatteetatenClient(
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
-    private val maskinportenClient: MaskinportenClient,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -65,7 +66,7 @@ class SkatteetatenClient(
                     sokedata.tom.format(formatter),
                 )
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getMaskinportenToken())
                 .retrieve()
                 .bodyToMono<SkattbarInntekt>()
                 .onErrorResume(WebClientResponseException.NotFound::class.java) {
@@ -76,7 +77,8 @@ class SkatteetatenClient(
                     when (e) {
                         is WebClientResponseException ->
                             log.warn(
-                                "Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}",
+                                "Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} " +
+                                    "status ${e.statusCode}",
                             )
                         else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
                     }
@@ -86,6 +88,9 @@ class SkatteetatenClient(
             return null
         }
     }
+
+    private fun getMaskinportenToken(): String =
+        texasService.getToken(IdentityProvider.M2M, "skatteetaten:inntekt")
 
     companion object {
         private val log by logger()
