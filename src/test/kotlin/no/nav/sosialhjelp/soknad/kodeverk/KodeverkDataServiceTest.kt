@@ -31,6 +31,7 @@ class KodeverkDataServiceTest : KodeverkTestClass() {
             texasService =
                 TexasServiceImpl(
                     texasClient = mockk(relaxed = true),
+                    fssHandler = mockk(relaxed = true),
                 ),
             WebClient.builder(),
         )
