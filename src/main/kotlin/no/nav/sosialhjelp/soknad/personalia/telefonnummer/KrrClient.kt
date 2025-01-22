@@ -11,7 +11,8 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
@@ -28,7 +29,7 @@ class KrrClient(
     @Value("\${krr_audience}") private val krrAudience: String,
     @Value("\${krr_scope}") private val krrScope: String,
     private val tokendingsService: TokendingsService,
-    private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
@@ -76,7 +77,7 @@ class KrrClient(
             .block()
     }
 
-    private val azureAdToken get() = runBlocking { azureadService.getSystemToken(krrScope) }
+    private val azureAdToken get() = texasService.getToken(IdentityProvider.AZURE_AD, krrScope)
 
     companion object {
         private val log by logger()
