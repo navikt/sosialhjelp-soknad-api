@@ -31,7 +31,6 @@ class KodeverkDataServiceTest : KodeverkTestClass() {
             texasService =
                 TexasServiceImpl(
                     texasClient = mockk(relaxed = true),
-                    azureadService = azureadService,
                 ),
             WebClient.builder(),
         )
