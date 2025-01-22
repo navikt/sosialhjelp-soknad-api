@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.springframework.stereotype.Service
 
@@ -29,6 +30,8 @@ class TexasServiceImpl(
         return if (MiljoUtils.isProdFss()) {
             fssHandler.handleProdFss(idProvider, target)
         } else {
+            // TODO Midlertidig logging for å se om vi får token fra Texas
+            logger.info("Henter token fra Texas {idProvider: $idProvider, target: $target}")
             when (val tokenResponse = texasClient.getToken(idProvider.value, target)) {
                 is TokenResponse.Success -> tokenResponse.token
                 is TokenResponse.Error ->
@@ -48,6 +51,10 @@ class TexasServiceImpl(
             is TokenResponse.Error ->
                 throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
         }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 
