@@ -5,7 +5,8 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
@@ -19,7 +20,7 @@ class KommuneInfoClient(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val maskinportenClient: MaskinportenClient,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -32,7 +33,7 @@ class KommuneInfoClient(
         return kommuneInfoWebClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
@@ -44,13 +45,15 @@ class KommuneInfoClient(
     fun ping() {
         kommuneInfoWebClient.options()
             .uri(PATH_ALLE_KOMMUNEINFO)
-            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
             .bodyToMono<String>()
             .block()
     }
+
+    private fun getMaskinportenToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
     companion object {
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"
