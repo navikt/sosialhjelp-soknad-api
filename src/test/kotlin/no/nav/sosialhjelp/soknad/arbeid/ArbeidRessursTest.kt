@@ -110,7 +110,7 @@ internal class ArbeidRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
         val slot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
         val arbeidsforholdRequest = ArbeidsforholdRequest(KOMMENTAR)
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidsforholdRequest)
