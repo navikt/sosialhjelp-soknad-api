@@ -51,8 +51,6 @@ class TexasClient(
         params: TokenRequestBody,
         endpoint: String,
     ): TokenResponse {
-        logger.info("Fetching token from Texas ($endpoint) with request: $params")
-
         val response =
             try {
                 texasWebClient

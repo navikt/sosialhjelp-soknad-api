@@ -34,7 +34,7 @@ class TexasServiceImpl(
         target: String,
     ): String {
         return userTokenOrNull()?.let { userToken ->
-            when (val tokenResponse = texasClient.exchangeToken(IdentityProvider.AZURE_AD.value, target, userToken)) {
+            when (val tokenResponse = texasClient.exchangeToken(idProvider.value, target, userToken)) {
                 is TokenResponse.Success -> tokenResponse.token
                 is TokenResponse.Error ->
                     throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
