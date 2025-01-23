@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
@@ -9,11 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -28,17 +24,13 @@ class KrrClient(
     @Value("\${krr_url}") private val krrUrl: String,
     @Value("\${krr_audience}") private val krrAudience: String,
     @Value("\${krr_scope}") private val krrScope: String,
-    private val tokendingsService: TokendingsService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
 
     private val tokenxToken: String
-        get() =
-            runBlocking {
-                tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), krrAudience)
-            }
+        get() = texasService.exchangeToken(IdentityProvider.TOKENX, target = krrAudience)
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? =
         try {

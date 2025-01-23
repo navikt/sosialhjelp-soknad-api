@@ -7,7 +7,6 @@ metadata:
     team: teamdigisos
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
-    nais.io/run-as-user: "1001"
     texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
@@ -66,8 +65,6 @@ spec:
         - application: sokos-kontoregister-person
           namespace: okonomi
         - application: sosialhjelp-konvertering-til-pdf
-        - application: kodeverk-api
-          namespace: team-rocket
         - application: norg2
           namespace: org
       external:
@@ -80,6 +77,7 @@ spec:
         - host: "aareg-services.prod-fss-pub.nais.io"
         - host: "sokos-utbetaldata.prod-fss-pub.nais.io"
         - host: "inntekt.api.skatteetaten.no"
+        - host: "kodeverk-api.nav.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad
@@ -122,7 +120,7 @@ spec:
     - name: KRR_AUDIENCE
       value: "prod-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
-      value: "prod-gcp.team-rocket.digdir-krr-proxy"
+      value: "api://prod-gcp.team-rocket.digdir-krr-proxy/.default"
     - name: KRR_URL
       value: "http://digdir-krr-proxy.team-rocket"
     - name: NORG_URL
@@ -140,7 +138,7 @@ spec:
     - name: PDL_API_AUDIENCE
       value: "prod-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
-      value: "prod-fss.pdl.pdl-api"
+      value: "api://prod-fss.pdl.pdl-api/.default"
     - name: UNLEASH_ENV
       value: "prod"
     - name: SCHEDULER_DISABLE
