@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull as userTokenOrNull
 
 interface TexasService {
     fun getToken(
@@ -11,7 +12,6 @@ interface TexasService {
     fun exchangeToken(
         idProvider: IdentityProvider,
         target: String,
-        userToken: String,
     ): String
 }
 
@@ -29,17 +29,17 @@ class TexasServiceImpl(
         }
     }
 
-    // TODO Kan vi benytte SubjectHandlerUtils for user token ?
     override fun exchangeToken(
         idProvider: IdentityProvider,
         target: String,
-        userToken: String,
     ): String {
-        return when (val tokenResponse = texasClient.exchangeToken(IdentityProvider.AZURE_AD.value, target, userToken)) {
-            is TokenResponse.Success -> tokenResponse.token
-            is TokenResponse.Error ->
-                throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
-        }
+        return userTokenOrNull()?.let { userToken ->
+            when (val tokenResponse = texasClient.exchangeToken(IdentityProvider.AZURE_AD.value, target, userToken)) {
+                is TokenResponse.Success -> tokenResponse.token
+                is TokenResponse.Error ->
+                    throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
+            }
+        } ?: throw IllegalStateException("User token not found")
     }
 
     companion object {
