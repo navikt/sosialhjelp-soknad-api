@@ -3,14 +3,12 @@ package no.nav.sosialhjelp.soknad.auth.texas
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import org.springframework.stereotype.Component
 
-@Component
-class TempProdFssHandler(
+class ProdFssAuthService(
     private val azureadService: AzureadService,
     private val maskinportenClient: MaskinportenClient,
-) {
-    fun handleProdFss(
+) : TexasService {
+    override fun getToken(
         idProvider: IdentityProvider,
         target: String,
     ): String {
@@ -21,5 +19,13 @@ class TempProdFssHandler(
                 else -> throw IllegalStateException("IdentityProvider not supported: $idProvider")
             }
         }
+    }
+
+    override fun exchangeToken(
+        idProvider: IdentityProvider,
+        target: String,
+        userToken: String,
+    ): String {
+        TODO("Not yet implemented")
     }
 }
