@@ -42,10 +42,7 @@ class TexasClient(
                     identityProvider = identityProvider,
                     target = target,
                     userToken = userToken,
-                )
-                    .also {
-                        logger.info("Request exchange with params: $it")
-                    },
+                ),
             endpoint = tokenExchangeEndpoint,
         )
     }
@@ -54,6 +51,8 @@ class TexasClient(
         params: TokenRequestBody,
         endpoint: String,
     ): TokenResponse {
+        logger.info("Fetching token from Texas ($endpoint) with request: $params")
+
         val response =
             try {
                 texasWebClient
