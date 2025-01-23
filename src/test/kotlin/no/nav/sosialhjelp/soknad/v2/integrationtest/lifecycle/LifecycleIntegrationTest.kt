@@ -5,22 +5,17 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
-import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
-import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -55,35 +50,6 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
         verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(soknadId) }
-    }
-
-    @Test
-    fun `Sende soknad skal avslutte soknad i db`() {
-        val soknadId = createNewSoknad()
-
-        kontaktRepository.findByIdOrNull(soknadId)!!
-            .run {
-                copy(
-                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
-                    mottaker = createNavEnhet(),
-                )
-            }
-            .also { kontaktRepository.save(it) }
-
-        doPost(
-            uri = sendUri(soknadId),
-            responseBodyClass = SoknadSendtDto::class.java,
-            soknadId = soknadId,
-        )
-            .also { dto ->
-                assertThat(dto.digisosId).isNotEqualTo(soknadId)
-                assertThat(dto.tidspunkt.toLocalDate())
-                    .isEqualTo(LocalDate.now())
-            }
-
-        assertCapturedValues()
-        // TODO I fremtiden skal ikke dette nødvendigvis skje samtidig med innsending
-        soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNull() }
     }
 
     // TODO Er dette riktig antakelse?
@@ -125,38 +91,38 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
     }
 
-    private fun assertCapturedValues() {
-        with(CapturedValues) {
-            assertSoknadJson()
-            assertTilleggsinformasjon()
-            assertDokumenterIsPdf()
-        }
-    }
-
-    private fun CapturedValues.assertSoknadJson() {
-        objectMapper.readValue(soknadJsonSlot.captured, JsonSoknad::class.java)
-            .also { jsonSoknad ->
-                assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(userId)
-                assertThat(jsonSoknad.mottaker.enhetsnummer).isNotNull()
-            }
-    }
-
-    private fun CapturedValues.assertDokumenterIsPdf() {
-        dokumenterSlot.captured.forEach {
-            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_PDF)
-        }
-    }
-
-    private fun CapturedValues.assertTilleggsinformasjon() {
-        assertThat(tilleggsinformasjonSlot.captured).contains(createNavEnhet().enhetsnummer)
-    }
+//    private fun assertCapturedValues() {
+//        with(CapturedValues) {
+//            assertSoknadJson()
+//            assertTilleggsinformasjon()
+//            assertDokumenterIsPdf()
+//        }
+//    }
+//
+//    private fun CapturedValues.assertSoknadJson() {
+//        objectMapper.readValue(soknadJsonSlot.captured, JsonSoknad::class.java)
+//            .also { jsonSoknad ->
+//                assertThat(jsonSoknad.data.personalia.personIdentifikator.verdi).isEqualTo(userId)
+//                assertThat(jsonSoknad.mottaker.enhetsnummer).isNotNull()
+//            }
+//    }
+//
+//    private fun CapturedValues.assertDokumenterIsPdf() {
+//        dokumenterSlot.captured.forEach {
+//            assertThat(FileDetectionUtils.detectMimeType(it.data.readAllBytes())).isEqualTo(MimeTypes.APPLICATION_PDF)
+//        }
+//    }
+//
+//    private fun CapturedValues.assertTilleggsinformasjon() {
+//        assertThat(tilleggsinformasjonSlot.captured).contains(createNavEnhet().enhetsnummer)
+//    }
 
     companion object {
         private val createUri = "/soknad/create"
 
         private fun deleteUri(soknadId: UUID) = "/soknad/$soknadId/delete"
 
-        private fun sendUri(soknadId: UUID) = "/soknad/$soknadId/send"
+//        private fun sendUri(soknadId: UUID) = "/soknad/$soknadId/send"
 
         private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     }

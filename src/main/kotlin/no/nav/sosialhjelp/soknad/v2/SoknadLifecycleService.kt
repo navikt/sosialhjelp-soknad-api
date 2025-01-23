@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -31,7 +30,6 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
-    private val adresseService: AdresseService,
 ) : SoknadLifecycleService {
     override fun startSoknad(
         isKort: Boolean,
@@ -64,7 +62,7 @@ class SoknadLifecycleServiceImpl(
         )
 
         // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-        createDeleteSoknadHandler.deleteSoknad(soknadId)
+//        createDeleteSoknadHandler.deleteSoknad(soknadId)
 
         return Pair(sendtInfo.digisosId, sendtInfo.innsendingTidspunkt)
     }

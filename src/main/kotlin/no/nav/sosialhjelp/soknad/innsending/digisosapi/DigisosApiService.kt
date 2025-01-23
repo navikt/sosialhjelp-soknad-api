@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Component
 class DigisosApiService(
@@ -123,6 +124,13 @@ class DigisosApiService(
     }
 
     fun getSoknaderForUser(token: String): List<DigisosSak> = digisosApiV2Client.getSoknader(token)
+
+    fun getSoknaderMedStatusMotattFagsystem(digisosIdListe: List<UUID>): List<UUID> {
+        return digisosApiV2Client
+            .getStatusForSoknader(digisosIdListe).statusListe
+            .filter { it.levertFagsystem == true }
+            .map { it.digisosId }
+    }
 
     fun getInnsynsfilForSoknad(
         fiksDigisosId: String,

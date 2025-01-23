@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.v2.soknad.FiksSoknadStatusListe
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
@@ -37,6 +38,7 @@ import reactor.netty.http.client.HttpClient
 import java.io.IOException
 import java.time.Duration
 import java.util.Collections
+import java.util.UUID
 import java.util.concurrent.Future
 
 @Component
@@ -156,6 +158,30 @@ class DigisosApiV2Client(
             throw IllegalStateException("Henting av innsynsfil hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
         } catch (e: IOException) {
             throw IllegalStateException("Henting av innsynsfil hos Fiks feilet", e)
+        }
+    }
+
+    fun getStatusForSoknader(
+        digisosIdListe: List<UUID>,
+    ): FiksSoknadStatusListe {
+        val startTime = System.currentTimeMillis()
+        return try {
+            fiksWebClient
+                .post()
+                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/status")
+                .accept(MediaType.APPLICATION_JSON)
+//                TODO hent token fra maskinporten
+                .header(AUTHORIZATION, "Bearer token")
+                .bodyValue(digisosIdListe)
+                .retrieve()
+                .bodyToMono<FiksSoknadStatusListe>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block() ?: throw FiksException("Fiks - noe uventet feilet ved henting av status for søknader. Response er null?", null)
+        } catch (e: WebClientResponseException) {
+            val errorResponse = e.responseBodyAsString
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
+        } catch (e: IOException) {
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet", e)
         }
     }
 
