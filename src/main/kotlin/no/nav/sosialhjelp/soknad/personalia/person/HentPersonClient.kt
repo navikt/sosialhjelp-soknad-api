@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
@@ -49,7 +48,6 @@ class HentPersonClientImpl(
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val redisService: RedisService,
-    private val tokendingsService: TokendingsService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl),
