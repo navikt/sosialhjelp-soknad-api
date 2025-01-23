@@ -16,7 +16,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_redis.yml@v6
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_redis.yml@v7
     secrets: inherit
     with:
       to-prod-fss: true
