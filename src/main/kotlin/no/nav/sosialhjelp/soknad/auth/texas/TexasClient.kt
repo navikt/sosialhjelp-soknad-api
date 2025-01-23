@@ -37,7 +37,15 @@ class TexasClient(
         userToken: String,
     ): TokenResponse {
         return doFetchToken(
-            params = TokenRequestBody.ExchangeRequest(identityProvider, target, userToken),
+            params =
+                TokenRequestBody.ExchangeRequest(
+                    identityProvider = identityProvider,
+                    target = target,
+                    userToken = userToken,
+                )
+                    .also {
+                        logger.info("Request exchange with params: $it")
+                    },
             endpoint = tokenExchangeEndpoint,
         )
     }
