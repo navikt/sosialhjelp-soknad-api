@@ -8,6 +8,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
     nais.io/run-as-user: "1001"
+    texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
   port: 8080
