@@ -8,6 +8,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
     nais.io/run-as-user: "1001"
+    texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
   port: 8080
@@ -78,9 +79,11 @@ spec:
         - host: "ereg-services.prod-fss-pub.nais.io"
         - host: "aareg-services.prod-fss-pub.nais.io"
         - host: "sokos-utbetaldata.prod-fss-pub.nais.io"
+        - host: "inntekt.api.skatteetaten.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad
+        - application: sosialhjelp-soknad-intern
         - application: mine-saker-api
           namespace: min-side
         - application: dittnav-api
