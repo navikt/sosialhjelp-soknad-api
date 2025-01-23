@@ -3,10 +3,14 @@ package no.nav.sosialhjelp.soknad.auth.texas
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull as userTokenOrNull
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 class ProdFssAuthService(
     private val azureadService: AzureadService,
     private val maskinportenClient: MaskinportenClient,
+    private val tokendingsService: TokendingsService,
 ) : TexasService {
     override fun getToken(
         idProvider: IdentityProvider,
@@ -24,8 +28,14 @@ class ProdFssAuthService(
     override fun exchangeToken(
         idProvider: IdentityProvider,
         target: String,
-        userToken: String,
     ): String {
-        TODO("Not yet implemented")
+        return runBlocking {
+            userTokenOrNull()?.let { userToken ->
+                when (idProvider) {
+                    IdentityProvider.TOKENX -> tokendingsService.exchangeToken(personId(), userToken, target)
+                    else -> throw IllegalStateException("IdentityProvider not supported: $idProvider")
+                }
+            } ?: throw IllegalStateException("User token not found")
+        }
     }
 }

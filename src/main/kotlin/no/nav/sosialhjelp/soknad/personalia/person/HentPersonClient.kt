@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
@@ -14,7 +13,6 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
@@ -160,14 +158,7 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    private fun tokenXtoken(ident: String) =
-        runBlocking {
-            tokendingsService.exchangeToken(
-                ident,
-                getToken(),
-                pdlAudience,
-            )
-        }
+    private fun tokenXtoken(ident: String) = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 
     private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 

@@ -1,14 +1,12 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequest
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
@@ -34,7 +32,7 @@ class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val redisService: RedisService,
-    private val tokendingsService: TokendingsService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : NavUtbetalingerClient {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
@@ -67,11 +65,8 @@ class NavUtbetalingerClientImpl(
         }
     }
 
-    private fun tokenXtoken(audience: String): String {
-        return runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
-        }
-    }
+    private fun tokenXtoken(audience: String) =
+        texasService.exchangeToken(IdentityProvider.TOKENX, target = audience)
 
     private fun hentFraCache(ident: String): UtbetalDataDto? {
         return redisService.get(

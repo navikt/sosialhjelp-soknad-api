@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
@@ -13,10 +12,9 @@ import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.codec.json.Jackson2JsonDecoder
@@ -31,7 +29,7 @@ import java.time.format.DateTimeFormatter
 class AaregClient(
     @Value("\${aareg_url}") private val aaregUrl: String,
     @Value("\${aareg_audience}") private val aaregAudience: String,
-    private val tokendingsService: TokendingsService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val arbeidsforholdMapper: ObjectMapper =
@@ -43,9 +41,7 @@ class AaregClient(
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
     private val tokenxToken: String get() =
-        runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), aaregAudience)
-        }
+        texasService.exchangeToken(IdentityProvider.TOKENX, target = aaregAudience)
 
     private val webClient =
         unproxiedWebClientBuilder(webClientBuilder)
