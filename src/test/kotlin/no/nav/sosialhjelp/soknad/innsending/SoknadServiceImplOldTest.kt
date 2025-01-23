@@ -79,7 +79,7 @@ internal class SoknadServiceImplOldTest {
         every { soknadMetadataRepository.hentNesteId() } returns 999_999L
         every { soknadMetadataRepository.opprett(capture(soknadMetadataSlot)) } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadata.behandlingsId } returns "123"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
