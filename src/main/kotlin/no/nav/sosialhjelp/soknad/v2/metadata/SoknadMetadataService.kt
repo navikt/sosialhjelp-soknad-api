@@ -76,12 +76,26 @@ class SoknadMetadataService(
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
+    fun getIDForSoknaderMedStatusSendt(): List<UUID> {
+        return soknadMetadataRepository.hentSoknadIderMedStatus(SoknadStatus.SENDT)
+    }
+
     fun updateSoknadType(
         soknadId: UUID,
         soknadType: SoknadType,
     ) {
         soknadMetadataRepository.findByIdOrNull(soknadId)
             ?.run { copy(soknadType = soknadType) }
+            ?.also { soknadMetadataRepository.save(it) }
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
+
+    fun updateSoknadStatus(
+        soknadId: UUID,
+        soknadStatus: SoknadStatus,
+    ) {
+        soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.run { copy(status = soknadStatus) }
             ?.also { soknadMetadataRepository.save(it) }
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }

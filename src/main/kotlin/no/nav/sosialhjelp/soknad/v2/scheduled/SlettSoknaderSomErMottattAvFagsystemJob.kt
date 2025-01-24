@@ -4,17 +4,17 @@ import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import kotlin.time.Duration.Companion.seconds
 
 @Component
 class SlettSoknaderSomErMottattAvFagsystemJob(
-    private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val soknadRepository: SoknadRepository,
+    private val soknadService: SoknadService,
+    private val soknadMetadataService: SoknadMetadataService,
     private val digisosApiService: DigisosApiService,
     private val leaderElection: LeaderElection,
 ) {
@@ -28,13 +28,14 @@ class SlettSoknaderSomErMottattAvFagsystemJob(
                     withTimeoutOrNull(60.seconds) {
                         val soknadIderSomKanSlettes =
                             digisosApiService.getSoknaderMedStatusMotattFagsystem(
-                                soknadMetadataRepository.hentSoknadIderMedStatus(SoknadStatus.SENDT),
+                                soknadMetadataService.getIDForSoknaderMedStatusSendt(),
                             )
 
                         soknadIderSomKanSlettes.forEach {
-                            // TODO trenger vi egentlig denne? Heller ha en logg statement til slutt som sier hvor mange som ble slettet? Evt greit å ha denne i starten?
+                            // TODO trenger vi egentlig denne log statementen? Heller ha en logg statement til slutt som sier hvor mange som ble slettet? Evt greit å ha denne i starten?
                             logger.info("Slettet soknad med id $it")
-                            soknadRepository.deleteById(it)
+                            soknadService.deleteSoknad(it)
+                            soknadMetadataService.updateSoknadStatus(it, SoknadStatus.MOTTATT_FSL)
                         }
                     }
                 if (result == null) {
