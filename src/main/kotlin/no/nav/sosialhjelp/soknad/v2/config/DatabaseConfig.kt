@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 
-@Profile("!test & !mock-alt & !prodgcp & !preprod")
+@Profile("!test & !mock-alt & !prodgcp & !preprod & !dev")
 @Configuration
 @EnableJdbcRepositories(basePackages = ["no.nav.sosialhjelp.soknad.v2"])
 class DatabaseConfig(

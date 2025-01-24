@@ -7,7 +7,8 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -31,7 +32,7 @@ class DokumentlagerClient(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val maskinportenClient: MaskinportenClient,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -64,7 +65,7 @@ class DokumentlagerClient(
                 .header(ACCEPT, MediaType.ALL_VALUE)
                 .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-                .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
+                .header(AUTHORIZATION, BEARER + getMaskinportenToken())
                 .retrieve()
                 .bodyToMono<ByteArray>()
                 .onErrorMap(WebClientResponseException::class.java) { e ->
@@ -83,6 +84,9 @@ class DokumentlagerClient(
             throw RuntimeException(e)
         }
     }
+
+    private fun getMaskinportenToken(): String =
+        texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
     companion object {
         private val log by logger()

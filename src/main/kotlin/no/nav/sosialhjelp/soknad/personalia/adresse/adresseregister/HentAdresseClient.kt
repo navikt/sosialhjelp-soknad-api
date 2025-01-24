@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister
 
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentAdresseDto
@@ -9,7 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class HentAdresseClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
-    private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
     fun hentMatrikkelAdresse(matrikkelId: String): MatrikkeladresseDto? {
@@ -52,7 +52,7 @@ class HentAdresseClient(
         }
     }
 
-    private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
+    private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     private fun variables(matrikkelId: String): Map<String, Any> = mapOf("matrikkelId" to matrikkelId)
 

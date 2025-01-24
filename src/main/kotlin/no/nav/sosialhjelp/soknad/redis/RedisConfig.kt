@@ -21,7 +21,7 @@ class RedisConfig(
     private val log by logger()
 
     @Bean
-    @Profile("preprod | prodgcp")
+    @Profile("preprod | prodgcp | dev")
     fun redisClientGcp(): RedisClient {
         val redisURI =
             RedisURI

@@ -3,15 +3,14 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.github.resilience4j.retry.annotation.Retry
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
@@ -25,7 +24,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KodeverkClient(
     @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     @Value("\${kodeverk_scope}") private val scope: String,
-    private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
@@ -38,12 +37,23 @@ class KodeverkClient(
                             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
                     ),
                 )
-            }.baseUrl(kodeverkUrl)
+            }
+            .baseUrl(kodeverkUrl)
             .build()
 
-    @Retry(name = "kodeverk")
-    fun hentKodeverk(kodeverksnavn: String): KodeverkDto {
-        val token = getAdToken()
+    fun hentKodeverk(
+        kodeverksnavn: String,
+    ): KodeverkDto =
+        doHentKodeverk(
+            kodeverksnavn,
+            token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
+        )
+
+//    @Retry(name = "kodeverk")
+    fun doHentKodeverk(
+        kodeverksnavn: String,
+        token: String,
+    ): KodeverkDto {
         return runCatching {
             webClient
                 .get()
@@ -67,8 +77,6 @@ class KodeverkClient(
             }
         }.getOrThrow()
     }
-
-    fun getAdToken() = runBlocking { azureadService.getSystemToken(scope) }
 
     companion object {
         private val log = getLogger(KodeverkClient::class.java)

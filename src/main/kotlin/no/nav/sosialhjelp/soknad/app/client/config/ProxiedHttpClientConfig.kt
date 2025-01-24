@@ -9,7 +9,7 @@ import reactor.netty.http.client.HttpClient
 import reactor.netty.transport.ProxyProvider
 import java.net.URI
 
-@Profile("!(mock-alt|test|preprod|prodgcp)")
+@Profile("!(mock-alt|test|preprod|prodgcp|dev)")
 @Configuration
 class ProxiedHttpClientConfig(
     @Value("\${HTTPS_PROXY}") private val proxyUrl: String,
@@ -29,7 +29,7 @@ class ProxiedHttpClientConfig(
     }
 }
 
-@Profile("(mock-alt|test|preprod|prodgcp)")
+@Profile("(mock-alt|test|preprod|prodgcp|dev)")
 @Configuration
 class MockProxiedHttpClientConfig {
     @Bean

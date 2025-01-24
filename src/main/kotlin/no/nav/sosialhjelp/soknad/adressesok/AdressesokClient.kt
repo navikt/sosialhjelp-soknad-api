@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
@@ -9,7 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class AdressesokClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
-    private val azureadService: AzureadService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
     fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
@@ -46,7 +46,7 @@ class AdressesokClient(
         }
     }
 
-    private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
+    private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     companion object {
         private val log = getLogger(AdressesokClient::class.java)
