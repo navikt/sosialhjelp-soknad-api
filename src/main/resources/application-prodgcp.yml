@@ -17,8 +17,8 @@ spring:
   main:
     banner-mode: off
   flyway:
-    enabled: true
-    clean-disabled: true
+    enabled: false
+    clean-disabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${POSTGRES_JDBC_URL}
