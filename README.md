@@ -48,7 +48,13 @@ Dersom du får `Error: Cannot perform an interactive login from a non TTY device
 
 Tekstfiler finnes her: `src/main/resources`.
 
-### Samarbeid med frontend (fjerning av faktummodellen)
+
+
+### 28.01.2025 -> Ny datamodell
+Midlertidig lagring av data skjer ikke lenger ved en stor json-fil, men ved respektive tabeller i databasen. Når søknaden er
+ferdig utfylt av bruker vil json-strukturen genereres og sendes til KS FIKS.
+
+### Samarbeid med frontend (fjerning av faktummodellen) (Gjelder ikke fra 28.01.2025 -> ny datamodell)
 
 Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), og ved endringer som blir sendt fra
 frontend underveis i utfyllingen vil hele filen lagres. Vi må regne med at det kan skje at man får konflikt ved
