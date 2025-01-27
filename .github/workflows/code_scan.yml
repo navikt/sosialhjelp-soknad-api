@@ -3,7 +3,7 @@ name: 'Code Scanning with CodeQL'
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     tags-ignore:
       - '**' # Don't build any tags
     paths-ignore:
@@ -17,6 +17,6 @@ jobs:
       actions: read
       security-events: write
       contents: read
-    uses: navikt/sosialhjelp-ci/.github/workflows/codeql_java.yml@v6
+    uses: navikt/sosialhjelp-ci/.github/workflows/codeql_java.yml@v7
     with:
       java-version: '21'
