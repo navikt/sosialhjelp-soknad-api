@@ -3,7 +3,7 @@ name: 'Dependency Submission Gradle'
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - 'build.gradle.kts'
       - 'gradle/libs.versions.toml'
