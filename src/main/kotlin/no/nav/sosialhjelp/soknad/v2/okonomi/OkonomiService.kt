@@ -84,36 +84,76 @@ class OkonomiService(
             ?.also { okonomiRepository.save(it) }
     }
 
+//    fun addElementToOkonomi(
+//        soknadId: UUID,
+//        type: OpplysningType,
+//        beskrivelse: String? = null,
+//    ) {
+//        findOrCreateOkonomi(soknadId).run {
+//            when (type) {
+//                is FormueType -> addAndSaveElement(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
+//                is UtgiftType -> addAndSaveElement(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
+//                is InntektType -> addAndSaveElement(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
+//                else -> error("Ukjent OpplysningType for oppretting")
+//            }
+//        }
+//        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
+//    }
+
     fun addElementToOkonomi(
         soknadId: UUID,
         type: OpplysningType,
         beskrivelse: String? = null,
     ) {
-        findOrCreateOkonomi(soknadId).run {
-            when (type) {
-                is FormueType -> addAndSaveElement(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
-                is UtgiftType -> addAndSaveElement(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
-                is InntektType -> addAndSaveElement(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
-                else -> error("Ukjent OpplysningType for oppretting")
+        findOrCreateOkonomi(soknadId)
+            .run {
+                when (type) {
+                    is FormueType -> copy(formuer = formuer.removeOldAddNew(Formue(type, beskrivelse)))
+                    is UtgiftType -> copy(utgifter = utgifter.removeOldAddNew(Utgift(type, beskrivelse)))
+                    is InntektType -> copy(inntekter = inntekter.removeOldAddNew(Inntekt(type, beskrivelse)))
+                    else -> error("Ukjent OpplysningType for oppretting")
+                }
             }
-        }
+            .also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
+
         if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
+
+//    fun addElementToOkonomi(
+//        soknadId: UUID,
+//        element: OkonomiElement,
+//    ) {
+//        findOrCreateOkonomi(soknadId).run {
+//            when (element) {
+//                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
+//                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
+//                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
+//                else -> error("Ukjent OpplysningType for oppretting")
+//            }
+//        }
+//        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
+//    }
 
     fun addElementToOkonomi(
         soknadId: UUID,
         element: OkonomiElement,
     ) {
-        findOrCreateOkonomi(soknadId).run {
-            when (element) {
-                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
-                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
-                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
-                else -> error("Ukjent OpplysningType for oppretting")
+        findOrCreateOkonomi(soknadId)
+            .run {
+                when (element) {
+                    is Formue -> copy(formuer = formuer.removeOldAddNew(element))
+                    is Inntekt -> copy(inntekter = inntekter.removeOldAddNew(element))
+                    is Utgift -> copy(utgifter = utgifter.removeOldAddNew(element))
+                    else -> error("Ukjent OpplysningType for oppretting")
+                }
             }
-        }
+            .also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
+
         if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
     }
+
+    private fun <E : OkonomiElement> Set<E>.removeOldAddNew(element: E): Set<E> =
+        filter { it.type != element.type }.plus(element).toSet()
 
     fun updateElement(
         soknadId: UUID,
@@ -174,54 +214,72 @@ class OkonomiService(
             }
     }
 
+//    fun removeElementFromOkonomi(
+//        soknadId: UUID,
+//        type: OpplysningType,
+//    ) {
+//        findOrCreateOkonomi(soknadId).run {
+//            when (type) {
+//                is FormueType -> removeElementByTypeAndSave(formuer, type) { copy(formuer = it) }
+//                is UtgiftType -> removeElementByTypeAndSave(utgifter, type) { copy(utgifter = it) }
+//                is InntektType -> removeElementByTypeAndSave(inntekter, type) { copy(inntekter = it) }
+//                else -> error("Ukjent OpplysningType for removal")
+//            }
+//        }
+//        if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
+//    }
+
     fun removeElementFromOkonomi(
         soknadId: UUID,
         type: OpplysningType,
     ) {
-        findOrCreateOkonomi(soknadId).run {
-            when (type) {
-                is FormueType -> removeElementByTypeAndSave(formuer, type) { copy(formuer = it) }
-                is UtgiftType -> removeElementByTypeAndSave(utgifter, type) { copy(utgifter = it) }
-                is InntektType -> removeElementByTypeAndSave(inntekter, type) { copy(inntekter = it) }
-                else -> error("Ukjent OpplysningType for removal")
+        findOkonomi(soknadId)
+            ?.run {
+                when (type) {
+                    is FormueType -> copy(formuer = formuer.filter { it.type != type }.toSet())
+                    is UtgiftType -> copy(utgifter = utgifter.filter { it.type != type }.toSet())
+                    is InntektType -> copy(inntekter = inntekter.filter { it.type != type }.toSet())
+                    else -> error("Ukjent OpplysningType for removal")
+                }
             }
-        }
+            ?.also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
+
         if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
-    /**
-     * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
-     * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
-     */
-    private fun <E : OkonomiElement> addAndSaveElement(
-        sourceSet: Set<E>,
-        element: E,
-        updateSetInOkonomiFunc: (Set<E>) -> Okonomi,
-    ): Set<E> {
-        return if (typeExistsAndEqualBeskrivelse(sourceSet, element.type, element.beskrivelse)) {
-            sourceSet
-        } else {
-            sourceSet
-                .filter { it.type != element.type }.toSet()
-                .plus(element)
-                .also { updatedSet -> okonomiRepository.save(updateSetInOkonomiFunc.invoke(updatedSet)) }
-        }
-    }
+//    /**
+//     * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
+//     * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
+//     */
+//    private fun <E : OkonomiElement> addAndSaveElement(
+//        sourceSet: Set<E>,
+//        element: E,
+//        updateSetInOkonomiFunc: (Set<E>) -> Okonomi,
+//    ): Set<E> {
+//        return if (typeExistsAndEqualBeskrivelse(sourceSet, element.type, element.beskrivelse)) {
+//            sourceSet
+//        } else {
+//            sourceSet
+//                .filter { it.type != element.type }.toSet()
+//                .plus(element)
+//                .also { updatedSet -> okonomiRepository.save(updateSetInOkonomiFunc.invoke(updatedSet)) }
+//        }
+//    }
 
-    /**
-     * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
-     * Sjekker om elementet finnes, lager en     kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
-     */
-    private fun <E : OkonomiElement> removeElementByTypeAndSave(
-        sourceSet: Set<E>,
-        type: OpplysningType,
-        updateOkonomiFunction: (Set<E>) -> Okonomi,
-    ): Set<E> {
-        return sourceSet.find { it.type == type }
-            ?.let { existingEntity -> sourceSet.minus(existingEntity) }
-            ?.also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
-            ?: sourceSet
-    }
+//    /**
+//     * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
+//     * Sjekker om elementet finnes, lager en     kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
+//     */
+//    private fun <E : OkonomiElement> removeElementByTypeAndSave(
+//        sourceSet: Set<E>,
+//        type: OpplysningType,
+//        updateOkonomiFunction: (Set<E>) -> Okonomi,
+//    ): Set<E> {
+//        return sourceSet.find { it.type == type }
+//            ?.let { existingEntity -> sourceSet.minus(existingEntity) }
+//            ?.also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
+//            ?: sourceSet
+//    }
 
     private fun <E : OkonomiElement> typeExistsAndEqualBeskrivelse(
         set: Set<E>,
