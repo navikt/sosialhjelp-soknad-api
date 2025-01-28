@@ -25,12 +25,18 @@ class UpsertRepositoryImpl<T : DomainRoot>(
     private val template: JdbcAggregateTemplate,
 ) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
-        with(template) {
-            return when {
-                existsById(s.getDbId(), s.javaClass) -> update(s)
-                else -> insert(s)
+        return runCatching {
+            with(template) {
+                when {
+                    existsById(s.getDbId(), s.javaClass) -> update(s)
+                    else -> insert(s)
+                }
             }
         }
+            .onFailure {
+                throw RuntimeException("Feil (${it.javaClass.simpleName}) ved db-operasjon: ${it.message}")
+            }
+            .getOrThrow()
     }
 
     override fun <S : T> saveAll(entities: Iterable<S>): List<S> = template.saveAll(entities).toList()
