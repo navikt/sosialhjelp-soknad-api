@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
@@ -26,10 +27,15 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
     @Transactional
+    @Deprecated("Gammelt repository")
     override fun opprettSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
     ): Long? {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
+
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
         jdbcTemplate.update(
@@ -51,10 +57,14 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Transactional(readOnly = true)
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(
         soknadId: Long,
         eier: String,
     ): SoknadUnderArbeid? {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             soknadUnderArbeidRowMapper,
@@ -64,10 +74,14 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Transactional(readOnly = true)
+    @Deprecated("Gammelt repository")
     override fun hentSoknad(
         behandlingsId: String?,
         eier: String,
     ): SoknadUnderArbeid {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
@@ -82,6 +96,9 @@ class SoknadUnderArbeidRepositoryJdbc(
         behandlingsId: String?,
         eier: String,
     ): SoknadUnderArbeid? {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
@@ -96,6 +113,9 @@ class SoknadUnderArbeidRepositoryJdbc(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
     ) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
         val opprinneligVersjon = soknadUnderArbeid.versjon
@@ -144,6 +164,9 @@ class SoknadUnderArbeidRepositoryJdbc(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
     ) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
         val antallOppdaterteRader =
@@ -160,10 +183,14 @@ class SoknadUnderArbeidRepositoryJdbc(
     }
 
     @Transactional
+    @Deprecated("Gammelt repository")
     override fun slettSoknad(
         soknadUnderArbeid: SoknadUnderArbeid,
         eier: String,
     ) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
         jdbcTemplate.update(

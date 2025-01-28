@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
@@ -24,7 +26,11 @@ class SoknadMetadataRepositoryJdbc(
             ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
 
     @Transactional
+    @Deprecated("Gammelt repository")
     override fun opprett(metadata: SoknadMetadata) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         jdbcTemplate.update(
             "INSERT INTO soknadmetadata (behandlingsid, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato, is_kort_soknad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             metadata.behandlingsId,
@@ -45,7 +51,11 @@ class SoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
+    @Deprecated("Gammelt repository")
     override fun oppdater(metadata: SoknadMetadata?) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
         jdbcTemplate.update(
             "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ?, is_kort_soknad = ? WHERE id = ?",
             metadata?.skjema,
@@ -71,6 +81,11 @@ class SoknadMetadataRepositoryJdbc(
                 soknadMetadataRowMapper,
                 behandlingsId,
             ).firstOrNull()
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun hentAntallInnsendteSoknaderEtterTidspunkt(
@@ -88,6 +103,11 @@ class SoknadMetadataRepositoryJdbc(
         } catch (e: Exception) {
             0
         }
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
@@ -98,6 +118,11 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.FERDIG.name,
             SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
         )
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata> =
@@ -108,6 +133,11 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun hentPabegynteSoknaderForBruker(
@@ -122,6 +152,11 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name,
         )
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
@@ -136,12 +171,21 @@ class SoknadMetadataRepositoryJdbc(
             SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
             tidTilTimestamp(tidsgrense),
         )
+            .also {
+                if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                }
+            }
 
     @Transactional(readOnly = true)
     override fun oppdaterLest(
         soknadMetadata: SoknadMetadata,
         fnr: String,
     ) {
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+        }
+
         sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata, fnr)
         jdbcTemplate.update(
             "update soknadmetadata set LEST_DITT_NAV = ? where id = ? and fnr = ?",
@@ -158,5 +202,9 @@ class SoknadMetadataRepositoryJdbc(
         if (fnr == null || !fnr.equals(soknadMetadata.fnr, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med søknadens eier")
         }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
