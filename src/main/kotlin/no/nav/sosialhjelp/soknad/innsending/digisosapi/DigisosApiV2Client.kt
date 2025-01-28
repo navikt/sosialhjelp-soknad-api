@@ -11,6 +11,8 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -48,6 +50,7 @@ class DigisosApiV2Client(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -171,7 +174,7 @@ class DigisosApiV2Client(
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/status")
                 .accept(MediaType.APPLICATION_JSON)
 //                TODO hent token fra maskinporten
-                .header(AUTHORIZATION, "Bearer token")
+                .header(AUTHORIZATION, texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
                 .bodyValue(digisosIdListe)
                 .retrieve()
                 .bodyToMono<FiksSoknadStatusListe>()

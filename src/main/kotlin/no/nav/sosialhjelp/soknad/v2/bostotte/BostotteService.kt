@@ -88,6 +88,7 @@ class BostotteServiceImpl(
             else -> {
                 // fjern eventuelt tidligere lagrede inntekter og opprett ny tom
                 okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
+
                 okonomiService.addElementToOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
 
                 okonomiService.removeBostotteSaker(soknadId)
