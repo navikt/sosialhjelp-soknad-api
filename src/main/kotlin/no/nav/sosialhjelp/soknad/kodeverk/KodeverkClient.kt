@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.github.resilience4j.retry.annotation.Retry
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
@@ -51,7 +52,7 @@ class KodeverkClient(
             token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
         )
 
-//    @Retry(name = "kodeverk")
+    @Retry(name = "kodeverk")
     private fun doHentKodeverk(
         kodeverksnavn: String,
         token: String,
