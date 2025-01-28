@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
 
@@ -26,30 +25,13 @@ class UpsertRepositoryImpl<T : DomainRoot>(
     private val template: JdbcAggregateTemplate,
 ) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
-        return runCatching {
-            template.run {
-                when {
-                    existsById(s.getDbId(), s.javaClass) -> update(s)
-                    else -> insert(s)
-                }
+        with(template) {
+            return when {
+                existsById(s.getDbId(), s.javaClass) -> update(s)
+                else -> insert(s)
             }
         }
-            .onFailure {
-                logger.error(
-                    "Feil ved databaseoperasjon: " + "JavaClass: ${s.javaClass} " +
-                        "Cause: ${it.cause} " +
-                        "Stack trace: ${it.stackTrace}",
-                    it,
-                )
-            }
-            .getOrElse {
-                throw RuntimeException("Feil ved databaseoperasjon")
-            }
     }
 
     override fun <S : T> saveAll(entities: Iterable<S>): List<S> = template.saveAll(entities).toList()
-
-    companion object {
-        private val logger by logger()
-    }
 }
