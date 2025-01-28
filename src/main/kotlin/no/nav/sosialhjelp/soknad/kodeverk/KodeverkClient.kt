@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -42,7 +43,7 @@ class KodeverkClient(
             .baseUrl(kodeverkUrl)
             .build()
 
-//    @Cacheable("kodeverk")
+    @Cacheable("kodeverk")
     fun hentKodeverk(
         kodeverksnavn: String,
     ): KodeverkDto =
