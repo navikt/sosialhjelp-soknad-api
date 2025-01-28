@@ -44,7 +44,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         createAnswerForSkatteetatenClient()
 
         inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
 
         setBekreftelse(false)
         inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
