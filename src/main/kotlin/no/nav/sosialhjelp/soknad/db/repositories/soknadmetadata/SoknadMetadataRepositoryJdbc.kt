@@ -29,7 +29,7 @@ class SoknadMetadataRepositoryJdbc(
     @Deprecated("Gammelt repository")
     override fun opprett(metadata: SoknadMetadata) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         jdbcTemplate.update(
             "INSERT INTO soknadmetadata (behandlingsid, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato, is_kort_soknad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -54,7 +54,7 @@ class SoknadMetadataRepositoryJdbc(
     @Deprecated("Gammelt repository")
     override fun oppdater(metadata: SoknadMetadata?) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         jdbcTemplate.update(
             "UPDATE soknadmetadata SET skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ?, is_kort_soknad = ? WHERE id = ?",
@@ -83,7 +83,7 @@ class SoknadMetadataRepositoryJdbc(
             ).firstOrNull()
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -105,7 +105,7 @@ class SoknadMetadataRepositoryJdbc(
         }
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -120,7 +120,7 @@ class SoknadMetadataRepositoryJdbc(
         )
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -135,7 +135,7 @@ class SoknadMetadataRepositoryJdbc(
         )
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -154,7 +154,7 @@ class SoknadMetadataRepositoryJdbc(
         )
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -173,7 +173,7 @@ class SoknadMetadataRepositoryJdbc(
         )
             .also {
                 if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+                    logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
                 }
             }
 
@@ -183,7 +183,7 @@ class SoknadMetadataRepositoryJdbc(
         fnr: String,
     ) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            logger.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
 
         sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata, fnr)

@@ -33,7 +33,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ): Long? {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
 
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
@@ -63,7 +63,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ): SoknadUnderArbeid? {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
@@ -80,7 +80,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ): SoknadUnderArbeid {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -97,7 +97,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ): SoknadUnderArbeid? {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
@@ -114,7 +114,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         sjekkOmSoknadErLaast(soknadUnderArbeid)
@@ -165,7 +165,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         val sistEndretDato = LocalDateTime.now()
@@ -189,7 +189,7 @@ class SoknadUnderArbeidRepositoryJdbc(
         eier: String,
     ) {
         if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${this.javaClass}")
+            log.error("DETTE SKAL IKKE SKJE MED NY DATAMODELL AKTIV: ${Thread.dumpStack()}")
         }
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
 
