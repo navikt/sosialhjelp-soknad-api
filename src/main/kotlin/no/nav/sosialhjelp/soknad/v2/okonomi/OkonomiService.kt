@@ -84,55 +84,18 @@ class OkonomiService(
             ?.also { okonomiRepository.save(it) }
     }
 
-//    fun addElementToOkonomi(
-//        soknadId: UUID,
-//        type: OpplysningType,
-//        beskrivelse: String? = null,
-//    ) {
-//        findOrCreateOkonomi(soknadId).run {
-//            when (type) {
-//                is FormueType -> addAndSaveElement(formuer, Formue(type, beskrivelse)) { copy(formuer = it) }
-//                is UtgiftType -> addAndSaveElement(utgifter, Utgift(type, beskrivelse)) { copy(utgifter = it) }
-//                is InntektType -> addAndSaveElement(inntekter, Inntekt(type, beskrivelse)) { copy(inntekter = it) }
-//                else -> error("Ukjent OpplysningType for oppretting")
-//            }
-//        }
-//        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
-//    }
-
     fun addElementToOkonomi(
         soknadId: UUID,
         type: OpplysningType,
         beskrivelse: String? = null,
     ) {
-        findOrCreateOkonomi(soknadId)
-            .run {
-                when (type) {
-                    is FormueType -> copy(formuer = formuer.removeOldAddNew(Formue(type, beskrivelse)))
-                    is UtgiftType -> copy(utgifter = utgifter.removeOldAddNew(Utgift(type, beskrivelse)))
-                    is InntektType -> copy(inntekter = inntekter.removeOldAddNew(Inntekt(type, beskrivelse)))
-                    else -> error("Ukjent OpplysningType for oppretting")
-                }
-            }
-            .also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
-
-        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
+        when (type) {
+            is FormueType -> addElementToOkonomi(soknadId, Formue(type, beskrivelse))
+            is UtgiftType -> addElementToOkonomi(soknadId, Utgift(type, beskrivelse))
+            is InntektType -> addElementToOkonomi(soknadId, Inntekt(type, beskrivelse))
+            else -> error("Ukjent OpplysningType for oppretting")
+        }
     }
-
-//    fun addElementToOkonomi(
-//        soknadId: UUID,
-//        element: OkonomiElement,
-//    ) {
-//        findOrCreateOkonomi(soknadId).run {
-//            when (element) {
-//                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
-//                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
-//                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
-//                else -> error("Ukjent OpplysningType for oppretting")
-//            }
-//        }
-//        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
-//    }
 
     fun addElementToOkonomi(
         soknadId: UUID,
@@ -213,6 +176,21 @@ class OkonomiService(
                 }
             }
     }
+
+    //    fun addElementToOkonomi(
+//        soknadId: UUID,
+//        element: OkonomiElement,
+//    ) {
+//        findOrCreateOkonomi(soknadId).run {
+//            when (element) {
+//                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
+//                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
+//                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
+//                else -> error("Ukjent OpplysningType for oppretting")
+//            }
+//        }
+//        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
+//    }
 
 //    fun removeElementFromOkonomi(
 //        soknadId: UUID,

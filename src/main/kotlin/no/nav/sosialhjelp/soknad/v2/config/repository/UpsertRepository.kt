@@ -27,7 +27,7 @@ class UpsertRepositoryImpl<T : DomainRoot>(
 ) : UpsertRepository<T> {
     override fun <S : T> save(s: S): S {
         return runCatching {
-            template.run {
+            with(template) {
                 when {
                     existsById(s.getDbId(), s.javaClass) -> update(s)
                     else -> insert(s)
