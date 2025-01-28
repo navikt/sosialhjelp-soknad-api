@@ -36,10 +36,10 @@ class UpsertRepositoryImpl<T : DomainRoot>(
         }
             .onFailure {
                 logger.error(
-                    "Feil ved databaseoperasjon: " +
-                        "JavaClass: ${s.javaClass} " +
-                        "Type: " +
-                        "Thread dump: ${Thread.dumpStack()}",
+                    "Feil ved databaseoperasjon: " + "JavaClass: ${s.javaClass} " +
+                        "Cause: ${it.cause} " +
+                        "Stack trace: ${it.stackTrace}",
+                    it,
                 )
             }
             .getOrElse {
