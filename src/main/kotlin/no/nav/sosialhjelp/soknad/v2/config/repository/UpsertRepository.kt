@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.config.repository
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import org.postgresql.util.PSQLException
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate
 import java.util.UUID
 
@@ -35,21 +35,35 @@ class UpsertRepositoryImpl<T : DomainRoot>(
             }
         }
             .onFailure {
-                logger.error(
-                    "Feil ved databaseoperasjon: " + "JavaClass: ${s.javaClass} " +
-                        "Cause: ${it.cause} " +
-                        "Stack trace: ${it.stackTrace}",
-                    it,
-                )
+                generateErrorMessage(s, it)
+                    .let { (errorString, throwable) -> throw RuntimeException(errorString, throwable) }
             }
-            .getOrElse {
-                throw RuntimeException("Feil ved databaseoperasjon")
-            }
+            .getOrThrow()
     }
 
     override fun <S : T> saveAll(entities: Iterable<S>): List<S> = template.saveAll(entities).toList()
+}
 
-    companion object {
-        private val logger by logger()
+private fun generateErrorMessage(
+    element: DomainRoot,
+    throwable: Throwable,
+): Pair<String, Throwable?> {
+    val stringBuilder = StringBuilder()
+
+    stringBuilder.append("Update failed for element: ${element.javaClass} with id: ${element.getDbId()}\n")
+    stringBuilder.append("Caused By: ${throwable.javaClass}\n")
+
+    var rootException: Throwable? = null
+
+    var currentCause: Throwable? = throwable
+    while (currentCause != null) {
+        if (currentCause is PSQLException) {
+            rootException = currentCause
+        } else {
+            stringBuilder.append("Caused By: ${currentCause.javaClass}\n")
+        }
+
+        currentCause = currentCause.cause
     }
+    return Pair(stringBuilder.toString(), rootException)
 }
