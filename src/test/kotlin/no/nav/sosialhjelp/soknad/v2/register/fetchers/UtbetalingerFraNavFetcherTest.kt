@@ -45,9 +45,7 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
 
-        okonomiRepository.findByIdOrNull(soknad.id)!!.also {
-            assertThat(it.inntekter).isEmpty()
-        }
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilUtbetalingerNav).isFalse()
     }
 
@@ -57,9 +55,8 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
         utbetalingerFraNavFetcher.fetchAndSave(soknad.id)
 
-        okonomiRepository.findByIdOrNull(soknad.id)!!.also {
-            assertThat(it.inntekter).isEmpty()
-        }
+        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
+
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilUtbetalingerNav).isTrue()
     }
 
