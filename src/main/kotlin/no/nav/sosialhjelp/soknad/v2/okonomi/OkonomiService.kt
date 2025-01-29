@@ -177,36 +177,6 @@ class OkonomiService(
             }
     }
 
-    //    fun addElementToOkonomi(
-//        soknadId: UUID,
-//        element: OkonomiElement,
-//    ) {
-//        findOrCreateOkonomi(soknadId).run {
-//            when (element) {
-//                is Formue -> addAndSaveElement(formuer, element) { copy(formuer = it) }
-//                is Inntekt -> addAndSaveElement(inntekter, element) { copy(inntekter = it) }
-//                is Utgift -> addAndSaveElement(utgifter, element) { copy(utgifter = it) }
-//                else -> error("Ukjent OpplysningType for oppretting")
-//            }
-//        }
-//        if (element.type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
-//    }
-
-//    fun removeElementFromOkonomi(
-//        soknadId: UUID,
-//        type: OpplysningType,
-//    ) {
-//        findOrCreateOkonomi(soknadId).run {
-//            when (type) {
-//                is FormueType -> removeElementByTypeAndSave(formuer, type) { copy(formuer = it) }
-//                is UtgiftType -> removeElementByTypeAndSave(utgifter, type) { copy(utgifter = it) }
-//                is InntektType -> removeElementByTypeAndSave(inntekter, type) { copy(inntekter = it) }
-//                else -> error("Ukjent OpplysningType for removal")
-//            }
-//        }
-//        if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
-//    }
-
     fun removeElementFromOkonomi(
         soknadId: UUID,
         type: OpplysningType,
@@ -223,51 +193,6 @@ class OkonomiService(
             ?.also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
 
         if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
-    }
-
-//    /**
-//     * Felles-funksjon for å fjerne et element fra et set av Inntekt, Utgift eller Formue (OkonomiPoster)
-//     * Sjekker om elementet finnes og beskrivelse er lik, legger det til hvis det ikke gjør det
-//     */
-//    private fun <E : OkonomiElement> addAndSaveElement(
-//        sourceSet: Set<E>,
-//        element: E,
-//        updateSetInOkonomiFunc: (Set<E>) -> Okonomi,
-//    ): Set<E> {
-//        return if (typeExistsAndEqualBeskrivelse(sourceSet, element.type, element.beskrivelse)) {
-//            sourceSet
-//        } else {
-//            sourceSet
-//                .filter { it.type != element.type }.toSet()
-//                .plus(element)
-//                .also { updatedSet -> okonomiRepository.save(updateSetInOkonomiFunc.invoke(updatedSet)) }
-//        }
-//    }
-
-//    /**
-//     * Felles-funksjon for å fjerne et element fra et set (Inntekt, Utgift, Formue)
-//     * Sjekker om elementet finnes, lager en     kopi av settet uten elementet, og oppdaterer riktig variabel i Okonomi
-//     */
-//    private fun <E : OkonomiElement> removeElementByTypeAndSave(
-//        sourceSet: Set<E>,
-//        type: OpplysningType,
-//        updateOkonomiFunction: (Set<E>) -> Okonomi,
-//    ): Set<E> {
-//        return sourceSet.find { it.type == type }
-//            ?.let { existingEntity -> sourceSet.minus(existingEntity) }
-//            ?.also { updatedSet -> okonomiRepository.save(updateOkonomiFunction.invoke(updatedSet)) }
-//            ?: sourceSet
-//    }
-
-    private fun <E : OkonomiElement> typeExistsAndEqualBeskrivelse(
-        set: Set<E>,
-        type: OpplysningType,
-        beskrivelse: String?,
-    ): Boolean {
-        set.find { it.type == type }?.let {
-            if (it.beskrivelse == beskrivelse) return true
-        }
-        return false
     }
 
     private fun findOrCreateOkonomi(soknadId: UUID) = findOkonomi(soknadId) ?: okonomiRepository.save(Okonomi(soknadId))
