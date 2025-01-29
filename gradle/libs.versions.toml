@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.21"
-spring-boot = "3.3.5"
+spring-boot = "3.4.2"
 coroutines = "1.9.0"
 filformat = "1.2024.07.05-15.40-e5d4649f35ad"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
