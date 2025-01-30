@@ -67,6 +67,7 @@ private fun NavUtbetaling.toUtbetalingMedKomponent(orgNavn: String?) =
             Utbetaling(
                 brutto = brutto,
                 netto = netto,
+                belop = netto,
                 skattetrekk = skattetrekk,
                 andreTrekk = andreTrekk,
                 utbetalingsdato = utbetalingsdato,

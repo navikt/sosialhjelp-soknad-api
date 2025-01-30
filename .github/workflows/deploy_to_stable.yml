@@ -2,13 +2,12 @@ name: Deploy to stable environments
 on:
   workflow_run:
     workflows: [ 'Build Kotlin, Run Lint and Test' ]    # Venter på at bygg på master har kjørt uten feil
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - '*.md' # Ignorerer endringer i markdown-filer
       - 'compose/**' # Ignorerer endringer i docker-compose-filer
     types:
       - completed
-  workflow_dispatch:
 
 jobs:
   deploy-to-prod:
@@ -19,13 +18,9 @@ jobs:
           - environment: prod
             cluster: prod-gcp
             resource: prod-gcp
-          - environment: prod
-            cluster: prod-fss
-            resource: prod-fss
-# Ikke deploy til preprod før vi er ferdig med å teste der
-#          - environment: dev
-#            cluster: dev-gcp
-#            resource: preprod
+          - environment: dev
+            cluster: dev-gcp
+            resource: preprod
     name: 'Deploy to ${{ matrix.cluster }}'
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:

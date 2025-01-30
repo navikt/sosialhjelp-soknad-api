@@ -24,11 +24,14 @@ class SendSoknadProxy(
         soknadId: String,
         token: String?,
     ): SendTilUrlFrontend {
+        val forrigeSoknadSendt = getForrigeSoknadSendt(soknadId)
+        val antallDokumenter = getNumberOfDocuments(soknadId)
+
         return lifecycleController
             .sendSoknad(UUID.fromString(soknadId), token)
             .toSendTilUrlFrontend(
-                forrigeSoknadSendt = getForrigeSoknadSendt(soknadId),
-                antallDokumenter = getNumberOfDocuments(soknadId),
+                forrigeSoknadSendt = forrigeSoknadSendt,
+                antallDokumenter = antallDokumenter,
             )
             .also {
                 LoggerFactory.getLogger(this::class.java.simpleName)

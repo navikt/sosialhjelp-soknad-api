@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
@@ -41,10 +40,6 @@ class SendSoknadHandler(
         soknadId: UUID,
         token: String?,
     ): SoknadSendtInfo {
-        // TODO Remove before merge
-        logger.info("Token fra SHU: ${SubjectHandlerUtils.getToken()}")
-        logger.info("Token fra argument: $token")
-
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)

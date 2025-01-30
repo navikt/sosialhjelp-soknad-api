@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.BostotteHusbankenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface BostotteService {
@@ -30,6 +31,7 @@ interface BostotteService {
 }
 
 @Service
+@Transactional
 class BostotteServiceImpl(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,

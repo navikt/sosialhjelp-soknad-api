@@ -33,7 +33,15 @@ internal class TilgangskontrollTest {
     private val personService: PersonService = mockk()
     private val environment: Environment = mockk()
 
-    private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, soknadService, personService, environment)
+    private val tilgangskontroll =
+        Tilgangskontroll(
+            soknadMetadataRepository,
+            soknadUnderArbeidRepository,
+            soknadService,
+            personService,
+            environment,
+            soknadMetadataService = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {

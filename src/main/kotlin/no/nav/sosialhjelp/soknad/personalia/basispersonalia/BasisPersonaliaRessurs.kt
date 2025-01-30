@@ -65,6 +65,6 @@ class BasisPersonaliaRessurs(
 private fun PersonaliaDto.toBasisPersonaliaFrontend() =
     BasisPersonaliaFrontend(
         navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn),
-        fodselsnummer = "fodselsnummer",
+        fodselsnummer = SubjectHandlerUtils.getUserIdFromToken(),
         statsborgerskap = statsborgerskap,
     )
