@@ -82,6 +82,15 @@ class DigisosApiService(
             mellomlagretFiks = mellomlagringService.getAllVedlegg(behandlingsId),
             json = jsonInternalSoknad,
         )
+
+        /* I en kort søknad må man ha et vedlegg-objekt for å kunne vise fram opplastingsboksen på frontend,
+           men det er ikke riktig at de skal ha status VedleggKreves og dermed vises som vedleggskrav på innsyn.
+           Fjerner derfor alle vedlegg som ikke har filer her.
+         */
+        if (jsonInternalSoknad.soknad.data.soknadstype == Soknadstype.KORT) {
+            log.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
+            jsonInternalSoknad.vedlegg.vedlegg = jsonInternalSoknad.vedlegg.vedlegg.filter { it.filer.isNotEmpty() }
+        }
         // JsonVedleggSpesifikasjon - brukes av FSL som oppslagsinfo mot mellomlagring
         val vedleggJson = getVedleggJson(jsonInternalSoknad)
 
