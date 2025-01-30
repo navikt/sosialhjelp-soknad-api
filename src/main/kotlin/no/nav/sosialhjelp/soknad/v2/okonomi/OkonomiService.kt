@@ -22,6 +22,7 @@ import java.util.UUID
 class OkonomiService(
     private val okonomiRepository: OkonomiRepository,
     private val dokumentasjonService: DokumentasjonService,
+    private val okonomiElementDbHandler: OkonomiElementDbHandler,
 ) {
     fun getFormuer(soknadId: UUID): Set<Formue> = findOkonomi(soknadId)?.formuer ?: emptySet()
 
@@ -51,22 +52,14 @@ class OkonomiService(
         verdi: Boolean,
         tidspunkt: LocalDateTime = LocalDateTime.now(),
     ) {
-        val okonomi = findOrCreateOkonomi(soknadId)
-
-        okonomi.bekreftelser
-            .filter { it.type != type }
-            .plus(Bekreftelse(type, tidspunkt, verdi))
-            .let { bekreftelser -> okonomi.copy(bekreftelser = bekreftelser.toSet()) }
-            .also { okonomiRepository.save(it) }
+        okonomiElementDbHandler.updateBekreftelseInDb(soknadId, Bekreftelse(type, tidspunkt, verdi))
     }
 
     fun deleteBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
     ) {
-        okonomiRepository.findByIdOrNull(soknadId)
-            ?.run { copy(bekreftelser = bekreftelser.filter { it.type != type }.toSet()) }
-            ?.let { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
+        okonomiElementDbHandler.deleteBekreftelseInDb(soknadId, type)
     }
 
     fun addBostotteSak(
