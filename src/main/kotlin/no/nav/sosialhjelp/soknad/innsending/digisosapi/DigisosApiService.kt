@@ -82,6 +82,7 @@ class DigisosApiService(
             mellomlagretFiks = mellomlagringService.getAllVedlegg(behandlingsId),
             json = jsonInternalSoknad,
         )
+
         // JsonVedleggSpesifikasjon - brukes av FSL som oppslagsinfo mot mellomlagring
         val vedleggJson = getVedleggJson(jsonInternalSoknad)
 

@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -103,10 +104,20 @@ class SendSoknadHandler(
             }
     }
 
-    private fun JsonInternalSoknad.toVedleggJson(): String =
-        objectMapper
+    private fun JsonInternalSoknad.toVedleggJson(): String {
+        /* I en kort søknad må man ha et vedleggobjekt for å kunne vise fram opplastingsboksen på frontend,
+           men det er ikke riktig at de skal ha status VedleggKreves og dermed vises som vedleggskrav på innsyn.
+           Fjerner derfor alle vedlegg som ikke har filer her.
+         */
+        if (soknad.data.soknadstype == Soknadstype.KORT) {
+            logger.info("Søknadstype er KORT, fjerner alle vedlegg som ikke har filer")
+            vedlegg.vedlegg = vedlegg.vedlegg.filter { it.filer.isNotEmpty() }
+        }
+
+        return objectMapper
             .writeValueAsString(vedlegg)
             .also { JsonSosialhjelpValidator.ensureValidVedlegg(it) }
+    }
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
         // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer..
