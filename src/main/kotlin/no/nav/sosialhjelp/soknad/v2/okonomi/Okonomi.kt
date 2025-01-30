@@ -6,6 +6,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import org.springframework.data.annotation.Id
+import org.springframework.data.jdbc.repository.query.Modifying
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -15,7 +17,23 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
-interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID>
+interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID> {
+    @Modifying
+    @Query("INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) VALUES(:soknadId, :type, :tidspunkt, :verdi)")
+    fun insertBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+        tidspunkt: LocalDateTime,
+        verdi: Boolean,
+    )
+
+    @Modifying
+    @Query("DELETE FROM bekreftelse WHERE okonomi = :soknadId AND type = :type")
+    fun deleteBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+    )
+}
 
 @Table
 data class Okonomi(
