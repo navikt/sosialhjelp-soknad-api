@@ -61,7 +61,7 @@ interface DokumentService {
     fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): Dokumentasjon
+    )
 
     fun deleteAllDokumenter(soknadId: UUID)
 }
@@ -172,18 +172,19 @@ class DokumentasjonServiceImpl(
     override fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): Dokumentasjon =
+    ) {
         dokumentasjonRepository
             .removeDokumentFromDokumentasjon(soknadId, dokumentId)
-            .run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
-            .also { dokumentasjonRepository.save(it) }
-            .also {
+            ?.run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
+            ?.also { dokumentasjonRepository.save(it) }
+            ?.also {
                 logger.info("Sletter Dokument($dokumentId) fra Dokumentasjon(type: ${it.type.name}")
                 runCatching { mellomlagringClient.deleteDocument(soknadId, dokumentId) }
                     .onFailure { e ->
                         throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", e)
                     }
-            }
+            } ?: logger.warn("Dokument($dokumentId) ble ikke funnet på noe Dokumentasjon. Slettet tidligere?")
+    }
 
     override fun deleteAllDokumenter(soknadId: UUID) {
         dokumentasjonRepository
