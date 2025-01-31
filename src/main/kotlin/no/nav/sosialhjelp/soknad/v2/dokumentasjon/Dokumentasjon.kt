@@ -31,10 +31,10 @@ interface DokumentasjonRepository :
 fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokumentasjon =
-    findDokumentasjonForDokument(soknadId, dokumentId)
-        .removeDokument(dokumentId)
-        .let { dokumentasjon -> save(dokumentasjon) }
+): Dokumentasjon? =
+    findDokumentasjonForDokumentOrNull(soknadId, dokumentId)
+        ?.removeDokument(dokumentId)
+        ?.let { dokumentasjon -> save(dokumentasjon) }
 
 private fun DokumentasjonRepository.findDokumentasjonForDokument(
     soknadId: UUID,
@@ -42,6 +42,11 @@ private fun DokumentasjonRepository.findDokumentasjonForDokument(
 ): Dokumentasjon =
     findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
         ?: error("Dokument finnes ikke på noe Dokumentasjon")
+
+private fun DokumentasjonRepository.findDokumentasjonForDokumentOrNull(
+    soknadId: UUID,
+    dokumentId: UUID,
+): Dokumentasjon? = findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
 
 private fun Dokumentasjon.hasDokument(dokumentId: UUID): Boolean = dokumenter.map { it.dokumentId }.contains(dokumentId)
 
