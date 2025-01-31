@@ -62,6 +62,9 @@ azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
 krr_scope: dummyScope
+NAIS_TOKEN_EXCHANGE_ENDPOINT: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/tokenx}
+NAIS_TOKEN_ENDPOINT: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/maskinporten}
+
 
 no.nav.security.jwt.issuer:
   selvbetjening:
