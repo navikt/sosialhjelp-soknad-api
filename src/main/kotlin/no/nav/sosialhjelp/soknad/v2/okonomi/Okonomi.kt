@@ -3,8 +3,11 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Modifying
 import org.springframework.data.jdbc.repository.query.Query
@@ -32,6 +35,54 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     fun deleteBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO formue(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateFormue(
+        soknadId: UUID,
+        type: FormueType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM formue WHERE okonomi = :soknadId AND type = :type")
+    fun deleteFormue(
+        soknadId: UUID,
+        type: FormueType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO inntekt(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateInntekt(
+        soknadId: UUID,
+        type: InntektType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM inntekt WHERE okonomi = :soknadId AND type = :type")
+    fun deleteInntekt(
+        soknadId: UUID,
+        type: InntektType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO utgift(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateUtgift(
+        soknadId: UUID,
+        type: UtgiftType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM utgift WHERE okonomi = :soknadId AND type = :type")
+    fun deleteUtgift(
+        soknadId: UUID,
+        type: UtgiftType,
     )
 }
 
