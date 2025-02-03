@@ -15,17 +15,23 @@ class DocumentValidator(
 
         runCatching {
             dokumentasjonRepository.findAllBySoknadId(soknadId)
-                .flatMap { dokumentasjon -> dokumentasjon.dokumenter }
-                .forEach { dokument ->
-                    when (filIdsMellomlager.find { it == dokument.dokumentId.toString() }) {
-                        null -> {
-                            logger.warn("Dokument med id ${dokument.dokumentId} mangler i FIKS mellomlager. Sletter.")
-                            dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokument.dokumentId)
+                .forEach { dokumentasjon ->
+                    dokumentasjon.dokumenter.forEach { dokument ->
+                        when (filIdsMellomlager.find { it == dokument.dokumentId.toString() }) {
+                            null -> {
+                                logger.warn(
+                                    "Dokument(${dokument.dokumentId}) på dokumentasjon(type=${dokumentasjon.type}) " +
+                                        "mangler i FIKS mellomlager. Sletter.",
+                                )
+                                dokumentasjonRepository.removeDokumentFromDokumentasjon(soknadId, dokument.dokumentId)
+                            }
                         }
                     }
                 }
         }
-            .onFailure { throw IllegalStateException("Feil ved validering av dokumenter hos mellomlager", it) }
+            .onFailure {
+                throw IllegalStateException("Feil ved validering av dokumenter hos mellomlager", it)
+            }
     }
 
     companion object {
