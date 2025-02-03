@@ -18,6 +18,7 @@ class SlettSoknaderSomErMottattAvFagsystemJob(
     private val digisosApiService: DigisosApiService,
     private val leaderElection: LeaderElection,
 ) {
+//    TODO er hvert minutt grei frekvens?
     @Scheduled(cron = HVERT_MINUTT)
     suspend fun slettSoknaderSomErMottattAvFagsystem() {
         runCatching {

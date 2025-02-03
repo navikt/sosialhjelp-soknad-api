@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
@@ -173,8 +174,7 @@ class DigisosApiV2Client(
                 .post()
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/status")
                 .accept(MediaType.APPLICATION_JSON)
-//                TODO hent token fra maskinporten
-                .header(AUTHORIZATION, texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
+                .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
                 .bodyValue(digisosIdListe)
                 .retrieve()
                 .bodyToMono<FiksSoknadStatusListe>()
