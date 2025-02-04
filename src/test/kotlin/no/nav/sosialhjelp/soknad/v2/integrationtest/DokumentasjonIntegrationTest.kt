@@ -9,6 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
@@ -20,7 +21,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.toSha512
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
@@ -40,6 +41,9 @@ import java.util.UUID
 class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
+
+    @Autowired
+    private lateinit var documentValidator: DocumentValidator
 
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
@@ -96,7 +100,14 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     fun `Laste opp dokument skal lagres i db og oppdatere dokumentasjonsstatus`() {
         val filnavnSlot = slot<String>()
         every { mellomlagringClient.uploadDocument(any(), capture(filnavnSlot), any()) } just runs
-        every { mellomlagringClient.getDocumentsMetadata(any()) } answers { createMellomlagringDto(filnavnSlot.captured) }
+        every { mellomlagringClient.getDocumentsMetadata(any()) } answers {
+            createMellomlagringDto(
+                metadataList =
+                    listOf(
+                        createMellomlagringDokumentInfo(filnavnSlot.captured),
+                    ),
+            )
+        }
 
         Dokumentasjon(
             soknadId = soknad.id,
@@ -127,7 +138,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             .also { dokument ->
                 assertThat(dokument.dokumentId).isEqualTo(dokumentDto.dokumentId)
                 assertThat(dokument.filnavn).isEqualTo(dokumentDto.filnavn)
-                assertThat(dokument.sha512).isEqualTo(VedleggUtils.getSha512FromByteArray(pdfFil.readBytes()))
+                assertThat(dokument.sha512).isEqualTo(getSha512FromByteArray(pdfFil.readBytes()))
             }
     }
 
@@ -169,6 +180,124 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             }
     }
 
+    @Test
+    fun `Validere dokumenter hvor alle finnes skal ikke endre noe`() {
+        val metadataList =
+            listOf(
+                createMellomlagringDokumentInfo("1.pdf", filId = UUID.nameUUIDFromBytes("1".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("2.pdf", filId = UUID.nameUUIDFromBytes("2".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("3.pdf", filId = UUID.nameUUIDFromBytes("3".toByteArray()).toString()),
+            )
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            createMellomlagringDto(
+                metadataList = metadataList,
+            )
+
+        opprettDokumentasjon(
+            soknadId = soknad.id,
+            dokumenter =
+                metadataList.map {
+                    Dokument(
+                        dokumentId = UUID.fromString(it.filId),
+                        filnavn = it.filnavn,
+                        sha512 = getSha512FromByteArray(it.filnavn.toByteArray()),
+                    )
+                }.toSet(),
+        ).also { dokumentasjonRepository.save(it) }
+
+        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
+            assertThat(it).hasSize(1)
+            assertThat(it.first().dokumenter).hasSize(3)
+        }
+
+        dokumentasjonRepository.deleteAll()
+    }
+
+    @Test
+    fun `Validere dokumenter hvor det finnes ekstra dokumenter i mellomlager skal ikke gjore noe`() {
+        val metadataList =
+            listOf(
+                createMellomlagringDokumentInfo("1.pdf", filId = UUID.nameUUIDFromBytes("1".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("2.pdf", filId = UUID.nameUUIDFromBytes("2".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("3.pdf", filId = UUID.nameUUIDFromBytes("3".toByteArray()).toString()),
+            )
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            createMellomlagringDto(
+                metadataList = metadataList,
+            )
+
+        opprettDokumentasjon(
+            soknadId = soknad.id,
+            dokumenter =
+                metadataList
+                    .filter { it.filnavn != "3.pdf" }
+                    .map {
+                        Dokument(
+                            UUID.fromString(it.filId),
+                            it.filnavn,
+                            getSha512FromByteArray(it.filnavn.toByteArray()),
+                        )
+                    }.toSet(),
+        ).also { dokumentasjonRepository.save(it) }
+
+        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
+            assertThat(it).hasSize(1)
+            assertThat(it.first().dokumenter).hasSize(2)
+        }
+
+        dokumentasjonRepository.deleteAll()
+    }
+
+    @Test
+    fun `Validere dokumenter hvor Dokument ikke eksisterer i mellomlager skal slette dokument`() {
+        val metadataList =
+            listOf(
+                createMellomlagringDokumentInfo("1.pdf", filId = UUID.nameUUIDFromBytes("1".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("2.pdf", filId = UUID.nameUUIDFromBytes("2".toByteArray()).toString()),
+                createMellomlagringDokumentInfo("3.pdf", filId = UUID.nameUUIDFromBytes("3".toByteArray()).toString()),
+            )
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            createMellomlagringDto(
+                metadataList = metadataList,
+            )
+
+        opprettDokumentasjon(
+            soknadId = soknad.id,
+            dokumenter =
+                metadataList
+                    .map {
+                        Dokument(
+                            UUID.fromString(it.filId),
+                            it.filnavn,
+                            getSha512FromByteArray(it.filnavn.toByteArray()),
+                        )
+                    }
+                    .plus(Dokument(UUID.randomUUID(), "4.pdf", getSha512FromByteArray("4.pdf".toByteArray())))
+                    .toSet(),
+        ).also { dokumentasjonRepository.save(it) }
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
+            assertThat(it).hasSize(1)
+            assertThat(it.first().dokumenter).hasSize(4)
+        }
+
+        documentValidator.validateDocumentsExistsInMellomlager(soknad.id)
+
+        dokumentasjonRepository.findAllBySoknadId(soknad.id).also {
+            assertThat(it).hasSize(1)
+            assertThat(it.first().dokumenter).hasSize(3)
+        }
+
+        dokumentasjonRepository.deleteAll()
+    }
+
     private fun createFileUpload(): LinkedMultiValueMap<String, Any> {
         return LinkedMultiValueMap<String, Any>()
             .apply {
@@ -182,20 +311,24 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             }
     }
 
-    private fun createMellomlagringDto(filnavn: String): MellomlagringDto {
+    private fun createMellomlagringDto(
+        metadataList: List<MellomlagringDokumentInfo> = listOf(createMellomlagringDokumentInfo()),
+    ): MellomlagringDto {
         return MellomlagringDto(
             navEksternRefId = soknad.id.toString(),
-            mellomlagringMetadataList =
-                listOf(
-                    MellomlagringDokumentInfo(
-                        filnavn = filnavn,
-                        filId = UUID.randomUUID().toString(),
-                        storrelse = FileUtils.sizeOf(pdfFil),
-                        mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
-                    ),
-                ),
+            mellomlagringMetadataList = metadataList,
         )
     }
+
+    private fun createMellomlagringDokumentInfo(
+        filnavn: String = pdfFil.name,
+        filId: String = UUID.randomUUID().toString(),
+    ) = MellomlagringDokumentInfo(
+        filnavn = filnavn,
+        filId = filId,
+        storrelse = FileUtils.sizeOf(pdfFil),
+        mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+    )
 
     private fun saveDokumentasjonAndReturnDokumentId(): UUID {
         return opprettDokumentasjon(

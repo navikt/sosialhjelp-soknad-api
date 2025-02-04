@@ -61,6 +61,9 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Sende soknad skal avslutte soknad i db`() {
         val soknadId = createNewSoknad()
 
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
+
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
                 copy(
