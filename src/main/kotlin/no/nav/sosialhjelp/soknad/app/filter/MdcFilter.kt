@@ -41,9 +41,7 @@ class MdcFilter : OncePerRequestFilter() {
 
     private fun getBehandlingsId(request: HttpServletRequest): String? {
         val requestURI = request.requestURI
-        if (requestURI.matches(
-                Regex("^${SOKNAD_API_BASEURL}soknader/(.*)"),
-            ) &&
+        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/(.*)")) &&
             !requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/opprettSoknad(.*)"))
         ) {
             return requestURI.substringAfter("${SOKNAD_API_BASEURL}soknader/").substringBefore("/")
@@ -51,9 +49,7 @@ class MdcFilter : OncePerRequestFilter() {
         if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {
             return requestURI.substringAfter("${SOKNAD_API_BASEURL}innsendte/")
         }
-        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}ettersendteVedlegg/(.*)"))) {
-            return requestURI.substringAfter("${SOKNAD_API_BASEURL}ettersendteVedlegg/")
-        }
+
         /*
         Skal matche disse:
         /opplastetVedlegg/{behandlingsId}/{vedleggId}/fil GET

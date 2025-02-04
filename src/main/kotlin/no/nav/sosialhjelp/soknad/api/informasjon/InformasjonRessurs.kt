@@ -88,8 +88,6 @@ class InformasjonRessurs(
 
         val numRecentlySent =
             if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                log.info("Søknad satt opp med ny datamodell")
-
                 soknadMetadataService.getNumberOfSoknaderSentAfter(
                     personId = eier,
                     minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
