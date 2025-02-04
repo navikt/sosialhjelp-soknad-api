@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
 import java.util.UUID
 
@@ -55,6 +56,7 @@ class MellomlagringService(
             }
     }
 
+    @Transactional
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
