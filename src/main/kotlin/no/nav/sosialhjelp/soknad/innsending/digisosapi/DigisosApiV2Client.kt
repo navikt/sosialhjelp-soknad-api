@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FiksSoknaderStatusRequest
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.v2.soknad.FiksSoknadStatusListe
@@ -170,6 +171,8 @@ class DigisosApiV2Client(
     ): FiksSoknadStatusListe {
         val startTime = System.currentTimeMillis()
 
+        val fiksSoknaderStatusRequest = FiksSoknaderStatusRequest(digisosIdListe)
+
         log.info("Henter status for søknader med digisosIdListe: $digisosIdListe")
         return try {
             fiksWebClient
@@ -177,7 +180,7 @@ class DigisosApiV2Client(
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/status")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
-                .bodyValue(digisosIdListe)
+                .bodyValue(BodyInserters.fromValue(fiksSoknaderStatusRequest))
                 .retrieve()
                 .bodyToMono<FiksSoknadStatusListe>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
