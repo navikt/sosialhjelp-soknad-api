@@ -27,8 +27,9 @@ class OkonomiElementDbHandler(
         soknadId: UUID,
         bekreftelse: Bekreftelse,
     ) {
-        okonomiRepository.deleteBekreftelse(soknadId, bekreftelse.type)
-        okonomiRepository.insertBekreftelse(soknadId, bekreftelse.type, bekreftelse.tidspunkt, bekreftelse.verdi)
+        okonomiRepository.findBekreftelse(soknadId, bekreftelse.type)
+            ?.also { okonomiRepository.updateBekreftelse(soknadId, bekreftelse.type, bekreftelse.tidspunkt, bekreftelse.verdi) }
+            ?: okonomiRepository.insertBekreftelse(soknadId, bekreftelse.type, bekreftelse.tidspunkt, bekreftelse.verdi)
 
         okonomiRepository.findByIdOrNull(soknadId)
             ?.also { okonomi ->
