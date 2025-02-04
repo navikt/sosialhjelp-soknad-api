@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -11,7 +9,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayInputStream
 import java.util.UUID
 
@@ -24,8 +21,9 @@ class MellomlagringService(
     fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
-        val navEksternId = getNavEksternId(behandlingsId)
-        return mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)
+        // todo enhetlig løsning - eller fjerne helt
+//        val navEksternId = getNavEksternId(behandlingsId)
+        return mellomlagringClient.hentDokumenterMetadata(navEksternId = behandlingsId)
             ?.mellomlagringMetadataList
             ?.map {
                 MellomlagretVedleggMetadata(
@@ -39,9 +37,10 @@ class MellomlagringService(
         behandlingsId: String,
         vedleggId: String,
     ): MellomlagretVedlegg? {
-        val navEksternId = getNavEksternId(behandlingsId)
+        // todo enhetlig løsning - eller fjerne helt
+//        val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg =
-            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = behandlingsId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
         }
@@ -51,12 +50,11 @@ class MellomlagringService(
             ?.let {
                 MellomlagretVedlegg(
                     filnavn = it,
-                    data = mellomlagringClient.hentDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId),
+                    data = mellomlagringClient.hentDokument(navEksternId = behandlingsId, digisosDokumentId = vedleggId),
                 )
             }
     }
 
-    @Transactional
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
@@ -78,10 +76,11 @@ class MellomlagringService(
         )
 
         val filOpplasting = opprettFilOpplasting(filnavn, data)
-        val navEksternId = getNavEksternId(behandlingsId)
+        // todo enhetlig løsning - eller fjerne helt
+//        val navEksternId = getNavEksternId(behandlingsId)
 
         val filId =
-            mellomlagringClient.lastOppDokument(navEksternId = navEksternId, filOpplasting = filOpplasting)
+            mellomlagringClient.lastOppDokument(navEksternId = behandlingsId, filOpplasting = filOpplasting)
                 .getFirstDocumentIdOrThrow()
 
         return MellomlagretVedleggMetadata(
@@ -110,10 +109,11 @@ class MellomlagringService(
         behandlingsId: String,
         vedleggId: String,
     ) {
-        val navEksternId = getNavEksternId(behandlingsId)
+        // todo enhetlig løsning - eller fjerne helt
+//        val navEksternId = getNavEksternId(behandlingsId)
 
         val mellomlagredeVedlegg =
-            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = behandlingsId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
             return
@@ -124,25 +124,28 @@ class MellomlagringService(
 
         // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
         // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS
-        mellomlagringClient.slettDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+        mellomlagringClient.slettDokument(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
     }
 
     fun deleteVedlegg(
         behandlingsId: String,
         vedleggId: String,
     ) {
-        val navEksternId = getNavEksternId(behandlingsId)
-        mellomlagringClient.slettDokument(navEksternId = navEksternId, digisosDokumentId = vedleggId)
+        // todo enhetlig løsning - eller fjerne helt
+
+//        val navEksternId = getNavEksternId(behandlingsId)
+        mellomlagringClient.slettDokument(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
-        val navEksternId = getNavEksternId(behandlingsId)
+        // todo enhetlig løsning - eller fjerne helt
+//        val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg =
-            mellomlagringClient.hentDokumenterMetadata(navEksternId = navEksternId)?.mellomlagringMetadataList
+            mellomlagringClient.hentDokumenterMetadata(navEksternId = behandlingsId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
         } else {
-            mellomlagringClient.slettAlleDokumenter(navEksternId = navEksternId)
+            mellomlagringClient.slettAlleDokumenter(navEksternId = behandlingsId)
         }
     }
 
@@ -151,8 +154,9 @@ class MellomlagringService(
     }
 
     // TODO Kan formålet gjøres annerledes (miljøvariable etc.) for å unngå miljøspesifikk logikk i koden
-    private fun getNavEksternId(behandlingsId: String) =
-        if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+    // todo lag en enhetlig løsning - eller fjern helt
+//    private fun getNavEksternId(behandlingsId: String) =
+//        if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
     fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         val kanSoknadSendesMedDigisosApi =

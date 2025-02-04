@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -239,5 +237,5 @@ private fun DokumentasjonRepository.findDokumentOrThrow(
         ?: throw IkkeFunnetException("Dokument eksisterer ikke på noe Dokumentasjon")
 
 // TODO Denne må inn igjen før dette tar over - skulle gjerne løst det på en annen måte
-private fun getNavEksternId(soknadId: UUID) =
-    if (MiljoUtils.isNonProduction()) SenderUtils.createPrefixedBehandlingsId(soknadId.toString()) else soknadId.toString()
+// private fun getNavEksternId(soknadId: UUID) =
+//    if (MiljoUtils.isNonProduction()) SenderUtils.createPrefixedBehandlingsId(soknadId.toString()) else soknadId.toString()
