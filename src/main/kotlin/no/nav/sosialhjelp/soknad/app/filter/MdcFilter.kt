@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.clearMDC
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.putToMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -25,11 +25,11 @@ class MdcFilter : OncePerRequestFilter() {
         val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
 
-        val behandlingsId = getBehandlingsId(request)
+        val soknadId = getBehandlingsId(request)
 
         putToMDC(MDC_CALL_ID, callId)
         putToMDC(MDC_CONSUMER_ID, consumerId)
-        behandlingsId?.let { putToMDC(MDC_BEHANDLINGS_ID, it) }
+        soknadId?.let { putToMDC(MDC_SOKNAD_ID, it) }
         putToMDC(MDC_PATH, request.requestURI)
 
         try {
