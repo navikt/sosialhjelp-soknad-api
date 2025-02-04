@@ -12,9 +12,9 @@ import java.util.UUID
 class SoknadMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
-    fun createSoknadMetadata(): SoknadMetadata {
+    fun createSoknadMetadata(soknadId: UUID): SoknadMetadata {
         return SoknadMetadata(
-            soknadId = UUID.randomUUID(),
+            soknadId = soknadId,
             personId = SubjectHandlerUtils.getUserIdFromToken(),
         )
             .let { soknadMetadataRepository.save(it) }
