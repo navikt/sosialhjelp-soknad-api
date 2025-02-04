@@ -19,7 +19,7 @@ class DocumentValidator(
                     dokumentasjon.dokumenter.forEach { dokument ->
                         when (filIdsMellomlager.find { it == dokument.dokumentId.toString() }) {
                             null -> {
-                                logger.warn(
+                                logger.error(
                                     "Dokument(${dokument.dokumentId}) på dokumentasjon(type=${dokumentasjon.type}) " +
                                         "mangler i FIKS mellomlager. Sletter.",
                                 )
