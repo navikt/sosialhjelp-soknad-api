@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettNavEnhet
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
@@ -26,6 +27,9 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Skal oppdatere metadata ved innsending av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(uuid.toString(), emptyList())
 
         doPost(
             uri = sendUrl(uuid),

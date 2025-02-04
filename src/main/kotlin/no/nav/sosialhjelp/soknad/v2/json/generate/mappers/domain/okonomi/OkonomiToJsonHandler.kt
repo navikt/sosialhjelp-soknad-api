@@ -26,6 +26,8 @@ class OkonomiToJsonHandler(
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
         val jsonOkonomi = jsonInternalSoknad.initializeObjects()
+        // denne er satt til null pga kort soknad
+        jsonInternalSoknad.soknad.data.okonomi.opplysninger.withUtgift(emptyList())
 
         okonomiRepository.findByIdOrNull(soknadId)?.let { okonomi ->
             doMapping(okonomi, jsonOkonomi)

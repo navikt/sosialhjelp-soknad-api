@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -61,7 +59,7 @@ interface DokumentService {
     fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): Dokumentasjon
+    )
 
     fun deleteAllDokumenter(soknadId: UUID)
 }
@@ -172,18 +170,19 @@ class DokumentasjonServiceImpl(
     override fun deleteDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): Dokumentasjon =
+    ) {
         dokumentasjonRepository
             .removeDokumentFromDokumentasjon(soknadId, dokumentId)
-            .run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
-            .also { dokumentasjonRepository.save(it) }
-            .also {
+            ?.run { if (dokumenter.isEmpty()) copy(status = DokumentasjonStatus.FORVENTET) else this }
+            ?.also { dokumentasjonRepository.save(it) }
+            ?.also {
                 logger.info("Sletter Dokument($dokumentId) fra Dokumentasjon(type: ${it.type.name}")
                 runCatching { mellomlagringClient.deleteDocument(soknadId, dokumentId) }
                     .onFailure { e ->
                         throw IllegalStateException("Feil ved sletting av Dokument($dokumentId) hos Fiks", e)
                     }
-            }
+            } ?: logger.warn("Dokument($dokumentId) ble ikke funnet på noe Dokumentasjon. Slettet tidligere?")
+    }
 
     override fun deleteAllDokumenter(soknadId: UUID) {
         dokumentasjonRepository
@@ -238,5 +237,5 @@ private fun DokumentasjonRepository.findDokumentOrThrow(
         ?: throw IkkeFunnetException("Dokument eksisterer ikke på noe Dokumentasjon")
 
 // TODO Denne må inn igjen før dette tar over - skulle gjerne løst det på en annen måte
-private fun getNavEksternId(soknadId: UUID) =
-    if (MiljoUtils.isNonProduction()) SenderUtils.createPrefixedBehandlingsId(soknadId.toString()) else soknadId.toString()
+// private fun getNavEksternId(soknadId: UUID) =
+//    if (MiljoUtils.isNonProduction()) SenderUtils.createPrefixedBehandlingsId(soknadId.toString()) else soknadId.toString()

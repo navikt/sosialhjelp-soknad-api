@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -30,16 +31,16 @@ class SoknadLifecycleServiceImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
+    private val documentValidator: DocumentValidator,
 ) : SoknadLifecycleService {
-    override fun startSoknad(
-        isKort: Boolean,
-    ): UUID {
+    override fun startSoknad(isKort: Boolean): UUID {
+        val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
         return createDeleteSoknadHandler
-            .createSoknad(isKort)
-            .also { soknadId ->
+            .createSoknad(soknadId, isKort)
+            .also {
                 prometheusMetricsService.reportStartSoknad()
-                MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, soknadId.toString())
                 logger.info("Ny søknad opprettet")
+                MdcOperations.clearMDC()
             }
     }
 
@@ -48,6 +49,8 @@ class SoknadLifecycleServiceImpl(
         token: String?,
     ): Pair<UUID, LocalDateTime> {
         logger.info("Starter innsending av søknad.")
+
+        documentValidator.validateDocumentsExistsInMellomlager(soknadId)
 
         val sendtInfo =
             runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId, token) }

@@ -23,9 +23,10 @@ class CreateDeleteSoknadHandler(
     private val soknadMetadataService: SoknadMetadataService,
 ) {
     fun createSoknad(
+        soknadId: UUID,
         isKort: Boolean,
     ): UUID {
-        return soknadMetadataService.createSoknadMetadata()
+        return soknadMetadataService.createSoknadMetadata(soknadId)
             .let {
                 soknadService.createSoknad(
                     eierId = personId(),
@@ -34,7 +35,7 @@ class CreateDeleteSoknadHandler(
                     kortSoknad = isKort,
                 )
             }
-            .also { soknadId ->
+            .also {
                 runRegisterDataFetchers(soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }

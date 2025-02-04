@@ -38,7 +38,7 @@ object MdcOperations {
 
     fun clearMDC() {
         MDC.remove(MDC_CALL_ID)
-        MDC.remove(MDC_BEHANDLINGS_ID)
+        MDC.remove(MDC_SOKNAD_ID)
         MDC.remove(MDC_CONSUMER_ID)
     }
 
