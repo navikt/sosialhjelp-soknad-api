@@ -169,6 +169,8 @@ class DigisosApiV2Client(
         digisosIdListe: List<UUID>,
     ): FiksSoknadStatusListe {
         val startTime = System.currentTimeMillis()
+
+        log.info("Henter status for søknader med digisosIdListe: $digisosIdListe")
         return try {
             fiksWebClient
                 .post()
