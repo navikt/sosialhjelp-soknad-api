@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
 import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
-import no.nav.sosialhjelp.soknad.v2.bostotte.SamtykkeInput
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
@@ -175,9 +174,9 @@ class SoknadV2ControllerAdapter(
 
         val utdanningInput =
             utdanningFrontend.run {
-                when {
-                    erStudent == false -> IkkeStudentInput()
-                    erStudent == true -> {
+                when (erStudent) {
+                    false -> IkkeStudentInput()
+                    true -> {
                         StudentgradInput(
                             studentgrad = studengradErHeltid?.let { if (it) Studentgrad.HELTID else Studentgrad.DELTID },
                         )
@@ -329,7 +328,7 @@ class SoknadV2ControllerAdapter(
     ) {
         hasBostotte?.also {
             runWithNestedTransaction {
-                bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+                bostotteController.updateBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
             }.onFailure { logger.warn("NyModell: Oppdatering av Bostotte feilet", it) }
         }
     }
@@ -337,13 +336,11 @@ class SoknadV2ControllerAdapter(
     override fun updateBostotteSamtykke(
         soknadId: String,
         hasSamtykke: Boolean,
-        userToken: String?,
     ) {
         runWithNestedTransaction {
-            bostotteController.updateHasSamtykke(
+            bostotteController.updateBostotte(
                 soknadId = UUID.fromString(soknadId),
-                input = SamtykkeInput(hasSamtykke),
-                token = userToken,
+                input = BostotteInput(hasSamtykke = hasSamtykke),
             )
         }.onFailure { logger.warn("NyModell: Oppdatering av samtykke Bostotte feilet", it) }
     }

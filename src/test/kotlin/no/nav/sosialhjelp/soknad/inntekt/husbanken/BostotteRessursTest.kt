@@ -215,7 +215,7 @@ internal class BostotteRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val systemdataSlot = slot<JsonInternalSoknad>()
-        every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot), any()) } just runs
+        every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
 
@@ -254,7 +254,7 @@ internal class BostotteRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val systemdataSlot = slot<JsonInternalSoknad>()
-        every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot), any()) } just runs
+        every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
@@ -289,7 +289,7 @@ internal class BostotteRessursTest {
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til bostotteSystemdata
-        verify(exactly = 0) { bostotteSystemdata.updateSystemdataIn(any<SoknadUnderArbeid>(), any()) }
+        verify(exactly = 0) { bostotteSystemdata.updateSystemdataIn(any<SoknadUnderArbeid>()) }
 
         // Sjekker lagring av soknaden
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }

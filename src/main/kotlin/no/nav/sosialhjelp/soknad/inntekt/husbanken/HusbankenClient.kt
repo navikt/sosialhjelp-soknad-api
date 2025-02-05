@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClient
@@ -16,14 +17,14 @@ class HusbankenClient(
     private val log by logger()
 
     fun hentBostotte(
-        token: String?,
         fra: LocalDate,
         til: LocalDate,
     ): BostotteDto? {
+        val token = SubjectHandlerUtils.getTokenOrNull()
         return try {
             webClient.get()
                 .uri(QUERY_PARAMS, fra, til)
-                .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
+                .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, "BEARER $it") } }
                 .retrieve()
                 .bodyToMono<BostotteDto>()
                 .doOnSuccess { log.info("Hentet bostøtte informasjon fra Husbanken!") }

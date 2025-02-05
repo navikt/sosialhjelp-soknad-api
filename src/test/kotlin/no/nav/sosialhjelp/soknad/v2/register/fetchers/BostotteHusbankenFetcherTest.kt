@@ -34,7 +34,7 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
         createAnswerForHusbankenClient()
 
         setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
 
@@ -50,27 +50,27 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Ikke gitt samtykke eller samtykke = false skal ikke lagre data`() {
         createAnswerForHusbankenClient()
 
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
 
         setBostotteOgSamtykke(false)
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
 
         setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).hasSize(2)
     }
 
     @Test
     fun `Tomme lister lagrer ikke data`() {
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns BostotteDto(emptyList(), emptyList())
+        every { husbankenClient.hentBostotte(any(), any()) } returns BostotteDto(emptyList(), emptyList())
 
         setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
@@ -78,10 +78,10 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Client returnerer null setter integrasjonstatus feilet til true`() {
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
+        every { husbankenClient.hentBostotte(any(), any()) } returns null
 
         setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id, "token")
+        fetcher.fetchAndSave(soknad.id)
 
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isTrue()
     }
@@ -95,6 +95,6 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     private lateinit var husbankenClient: HusbankenClient
 
     private fun createAnswerForHusbankenClient() {
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns defaultResponseForHusbankenClient()
+        every { husbankenClient.hentBostotte(any(), any()) } returns defaultResponseForHusbankenClient()
     }
 }
