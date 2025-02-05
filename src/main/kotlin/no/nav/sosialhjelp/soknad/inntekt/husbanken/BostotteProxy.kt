@@ -35,10 +35,10 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         hasBostotte: Boolean,
         retry: Int = 1,
     ) {
-        while (retry <= 5) {
+        if (retry <= 5) {
             try {
                 if (retry != 1) logger.warn("Retry $retry for updateHasBostotte")
-                bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+                bostotteController.updateHasBostotte(soknadId.toUUID(), BostotteInput(hasBostotte))
             } catch (e: Exception) {
                 when (retry < 5) {
                     true -> doUpdateHasBostotte(soknadId, hasBostotte, retry + 1)
@@ -62,10 +62,10 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         token: String?,
         retry: Int = 1,
     ) {
-        while (retry <= 5) {
+        if (retry <= 5) {
             try {
                 if (retry != 1) logger.warn("Retry $retry for update Samtykke")
-                bostotteController.updateHasSamtykke(UUID.fromString(soknadId), SamtykkeInput(samtykke), token)
+                bostotteController.updateHasSamtykke(soknadId.toUUID(), SamtykkeInput(samtykke), token)
             } catch (e: Exception) {
                 when (retry < 5) {
                     true -> doUpdateSamtykke(soknadId, samtykke, token, retry + 1)
@@ -79,6 +79,8 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         private val logger by logger()
     }
 }
+
+private fun String.toUUID() = UUID.fromString(this)
 
 private fun UtbetalingBostotteDto.toJsonOkonomiOpplysningUtbetaling() =
     JsonOkonomiOpplysningUtbetaling()
