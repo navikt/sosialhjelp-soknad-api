@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
@@ -26,8 +27,24 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         soknadId: String,
         hasBostotte: Boolean?,
     ) {
-        hasBostotte?.also {
-            bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+        hasBostotte?.also { doUpdateHasBostotte(soknadId, it) }
+    }
+
+    private fun doUpdateHasBostotte(
+        soknadId: String,
+        hasBostotte: Boolean,
+        retry: Int = 1,
+    ) {
+        while (retry <= 5) {
+            try {
+                if (retry != 1) logger.warn("Retry $retry for updateHasBostotte")
+                bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+            } catch (e: Exception) {
+                when (retry < 5) {
+                    true -> doUpdateHasBostotte(soknadId, hasBostotte, retry + 1)
+                    false -> throw RuntimeException("Kunne ikke oppdatere bostøtte", e)
+                }
+            }
         }
     }
 
@@ -36,7 +53,30 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         samtykke: Boolean,
         token: String?,
     ) {
-        bostotteController.updateHasSamtykke(UUID.fromString(behandlingsId), SamtykkeInput(samtykke), token)
+        doUpdateSamtykke(behandlingsId, samtykke, token)
+    }
+
+    private fun doUpdateSamtykke(
+        soknadId: String,
+        samtykke: Boolean,
+        token: String?,
+        retry: Int = 1,
+    ) {
+        while (retry <= 5) {
+            try {
+                if (retry != 1) logger.warn("Retry $retry for update Samtykke")
+                bostotteController.updateHasSamtykke(UUID.fromString(soknadId), SamtykkeInput(samtykke), token)
+            } catch (e: Exception) {
+                when (retry < 5) {
+                    true -> doUpdateSamtykke(soknadId, samtykke, token, retry + 1)
+                    false -> throw RuntimeException("Kunne ikke oppdatere Samtykke for bostotte", e)
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

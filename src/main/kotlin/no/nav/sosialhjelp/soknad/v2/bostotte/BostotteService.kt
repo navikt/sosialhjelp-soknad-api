@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.BostotteHusbankenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
@@ -31,13 +32,13 @@ interface BostotteService {
 }
 
 @Service
-@Transactional
 class BostotteServiceImpl(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
     private val husbankenFetcher: BostotteHusbankenFetcher,
     private val dokumentasjonService: DokumentasjonService,
 ) : BostotteService {
+    @Transactional(readOnly = true)
     override fun getBostotteInfo(soknadId: UUID): BostotteInfo {
         return getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
             .let { (bostotte, samtykke) ->
@@ -51,6 +52,7 @@ class BostotteServiceImpl(
             }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun updateBostotte(
         soknadId: UUID,
         hasBostotte: Boolean,
@@ -59,6 +61,7 @@ class BostotteServiceImpl(
         syncInntektOgDokumentasjonsKrav(soknadId)
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
