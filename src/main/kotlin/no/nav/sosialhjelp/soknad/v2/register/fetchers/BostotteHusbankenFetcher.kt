@@ -30,21 +30,19 @@ class BostotteHusbankenFetcher(
 ) {
     fun fetchAndSave(
         soknadId: UUID,
-        token: String?,
     ) {
         if (hasBostotteAndSamtykke(soknadId)) {
             okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_HUSBANKEN)
             okonomiService.removeBostotteSaker(soknadId)
 
-            getBostotteSaker(soknadId, token)
+            getBostotteSaker(soknadId)
         }
     }
 
     private fun getBostotteSaker(
         soknadId: UUID,
-        token: String?,
     ) {
-        husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
+        husbankenClient.hentBostotte(LocalDate.now().minusDays(60), LocalDate.now())
             ?.toDomain()
             ?.let {
                 integrasjonStatusService.setStotteHusbankenStatus(soknadId, feilet = false)

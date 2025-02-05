@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmp
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -46,7 +45,6 @@ internal class SoknadRessursTest {
     private val systemdata: SystemdataUpdater = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val nedetidService: NedetidService = mockk()
-    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val ressurs =
         SoknadRessurs(
@@ -118,19 +116,19 @@ internal class SoknadRessursTest {
     @Test
     fun oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
 
         val samtykkeListe = emptyList<BekreftelseRessurs>()
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, false, false, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, false, false) }
     }
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, true)
@@ -138,13 +136,13 @@ internal class SoknadRessursTest {
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, true, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, true) }
     }
 
     @Test
     fun oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, false)
@@ -152,13 +150,13 @@ internal class SoknadRessursTest {
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
-        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, false, token) }
+        verify(exactly = 1) { soknadServiceOld.oppdaterSamtykker(BEHANDLINGSID, true, false) }
     }
 
     @Test
     fun hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns createSoknadUnderArbeid(EIER)
 
         val token = "token"
@@ -170,7 +168,7 @@ internal class SoknadRessursTest {
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
@@ -194,7 +192,7 @@ internal class SoknadRessursTest {
     @Test
     fun hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any(), any()) } just runs
+        every { soknadServiceOld.oppdaterSamtykker(any(), any(), any()) } just runs
         val internalSoknad = createEmptyJsonInternalSoknad(EIER, false)
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
