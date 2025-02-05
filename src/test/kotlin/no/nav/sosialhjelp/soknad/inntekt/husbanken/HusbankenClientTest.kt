@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -7,6 +9,7 @@ import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -19,6 +22,13 @@ internal class HusbankenClientTest {
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
 
     private val husbankenClient = HusbankenClient(webClient)
+
+    @BeforeEach
+    fun setup() {
+        StaticSubjectHandlerImpl()
+            .apply { setUser("123") }
+            .also { SubjectHandlerUtils.setNewSubjectHandlerImpl(it) }
+    }
 
     @AfterEach
     internal fun tearDown() {
@@ -38,7 +48,7 @@ internal class HusbankenClientTest {
                 .setBody(IOUtils.toString(inputStream, StandardCharsets.UTF_8)),
         )
 
-        val bostotte = husbankenClient.hentBostotte("token", fra, til)
+        val bostotte = husbankenClient.hentBostotte(fra, til)
 
         assertThat(bostotte).isNotNull
         assertThat(bostotte).isInstanceOf(BostotteDto::class.java)
@@ -62,7 +72,7 @@ internal class HusbankenClientTest {
                 .setResponseCode(503),
         )
 
-        val bostotte = husbankenClient.hentBostotte("token", fra, til)
+        val bostotte = husbankenClient.hentBostotte(fra, til)
 
         assertThat(bostotte).isNull()
     }
@@ -77,7 +87,7 @@ internal class HusbankenClientTest {
                 .setResponseCode(400),
         )
 
-        val bostotte = husbankenClient.hentBostotte("token", fra, til)
+        val bostotte = husbankenClient.hentBostotte(fra, til)
 
         assertThat(bostotte).isNull()
     }

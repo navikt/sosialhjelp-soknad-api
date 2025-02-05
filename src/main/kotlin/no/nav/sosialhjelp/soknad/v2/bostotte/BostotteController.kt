@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
@@ -9,14 +8,11 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
@@ -36,32 +32,18 @@ class BostotteController(
         return bostotteService.getBostotteInfo(soknadId).toBostotteDto()
     }
 
-    @PutMapping
-    fun updateHasBostotte(
+    @PostMapping
+    fun updateBostotte(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: BostotteInput,
     ): BostotteDto {
-        // todo Ekstra logging
-        logger.info("Oppdaterer bostøtte til ${input.hasBostotte}")
-        bostotteService.updateBostotte(soknadId, input.hasBostotte)
+        with(input) {
+            if (hasSamtykke != null && hasBostotte == null) {
+                throw UpdateBostotteException("Samtykke kan ikke settes uten at bostøtte er satt")
+            }
+        }
+        bostotteService.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
         return getBostotte(soknadId)
-    }
-
-    // TODO Samtykke er ikke relevant uten hasBostotte - kan dette gjøres annerledes? Samle i ett endepunkt f.eks.
-    @PostMapping
-    fun updateHasSamtykke(
-        @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: SamtykkeInput,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
-    ): BostotteDto {
-        // todo ekstra logging
-        logger.info("Oppdaterer samtykke for bostøtte ${input.hasSamtykke}")
-        bostotteService.updateSamtykke(soknadId, input.hasSamtykke, token)
-        return getBostotte(soknadId)
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 
@@ -83,6 +65,7 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
                 netto = netto,
                 utbetalingsdato = utbetalingsdato,
             )
+
         else -> error("Feil type OkonomiDetalj lagret for UTBETALING_HUSBANKEN")
     }
 }
@@ -120,6 +103,4 @@ private fun BostotteSak.toBostotteSakDto() =
         vedtaksstatus = vedtaksstatus,
     )
 
-data class BostotteInput(val hasBostotte: Boolean)
-
-data class SamtykkeInput(val hasSamtykke: Boolean)
+data class BostotteInput(val hasBostotte: Boolean? = null, val hasSamtykke: Boolean? = null)

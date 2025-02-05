@@ -20,13 +20,8 @@ interface BostotteService {
 
     fun updateBostotte(
         soknadId: UUID,
-        hasBostotte: Boolean,
-    )
-
-    fun updateSamtykke(
-        soknadId: UUID,
-        hasSamtykke: Boolean,
-        userToken: String?,
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean?,
     )
 }
 
@@ -53,28 +48,26 @@ class BostotteServiceImpl(
 
     override fun updateBostotte(
         soknadId: UUID,
-        hasBostotte: Boolean,
+        // TODO: Denne kan være non nullable når spor av gammelt API er fjernet
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean?,
     ) {
-        okonomiService.updateBekreftelse(soknadId, BOSTOTTE, hasBostotte)
+        // TODO: Fjern også denne når hasBostotte er non nullable
+        val hasConfirmedBostotte = hasBostotte.takeIf { it != null } ?: okonomiService.getBekreftelser(soknadId).find { it.type == BOSTOTTE }?.verdi
+        checkNotNull(hasConfirmedBostotte) { "Bruker har ikke oppdatert bostøttebekreftelse" }
+        okonomiService.updateBekreftelse(soknadId, BOSTOTTE, hasConfirmedBostotte)
         syncInntektOgDokumentasjonsKrav(soknadId)
-    }
-
-    override fun updateSamtykke(
-        soknadId: UUID,
-        hasSamtykke: Boolean,
-        userToken: String?,
-    ) {
-        validateHasBostotte(soknadId, hasSamtykke)
-
-        getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
-            .let { (_, samtykke) -> samtykke?.verdi != hasSamtykke }
-            .also { needsUpdate ->
-                if (needsUpdate) {
-                    okonomiService.updateBekreftelse(soknadId, BOSTOTTE_SAMTYKKE, hasSamtykke)
-                    syncInntektOgDokumentasjonsKrav(soknadId)
-                    if (hasSamtykke) husbankenFetcher.fetchAndSave(soknadId, userToken)
+        if (hasSamtykke != null) {
+            getBekreftelseAndSamtykke(okonomiService.getBekreftelser(soknadId))
+                .let { (_, samtykke) -> samtykke?.verdi != hasSamtykke }
+                .also { needsUpdate ->
+                    if (needsUpdate) {
+                        okonomiService.updateBekreftelse(soknadId, BOSTOTTE_SAMTYKKE, hasSamtykke)
+                        syncInntektOgDokumentasjonsKrav(soknadId)
+                        if (hasSamtykke) husbankenFetcher.fetchAndSave(soknadId)
+                    }
                 }
-            }
+        }
     }
 
     private fun syncInntektOgDokumentasjonsKrav(soknadId: UUID) {
@@ -104,22 +97,6 @@ class BostotteServiceImpl(
         okonomiService.removeBostotteSaker(soknadId)
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, InntektType.UTBETALING_HUSBANKEN)
     }
-
-    private fun validateHasBostotte(
-        soknadId: UUID,
-        hasSamtykke: Boolean,
-    ) {
-        if (hasSamtykke) {
-            if (okonomiService.getBekreftelser(soknadId).find { it.type == BOSTOTTE }?.verdi == true) {
-                return
-            } else {
-                throw UpdateBostotteException(
-                    message = "Kan ikke oppdatere samtykke. Bostotte er null eller false.",
-                    soknadId = soknadId,
-                )
-            }
-        }
-    }
 }
 
 private fun getBekreftelseAndSamtykke(bekreftelser: Set<Bekreftelse>): Pair<Bekreftelse?, Bekreftelse?> {
@@ -145,9 +122,9 @@ data class BostotteInfo(
 
 data class UpdateBostotteException(
     override val message: String?,
-    val soknadId: UUID,
+    val soknadId: UUID? = null,
 ) : SosialhjelpSoknadApiException(
         message = message,
         cause = null,
-        id = soknadId.toString(),
+        id = soknadId?.toString(),
     )
