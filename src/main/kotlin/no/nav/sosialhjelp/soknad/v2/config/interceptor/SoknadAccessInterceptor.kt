@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
@@ -19,6 +18,9 @@ class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadService) : Ha
         handler: Any,
     ): Boolean {
         val method = request.method
+        if (method == "OPTIONS") {
+            return true
+        }
         val soknadId = getSoknadId(request) ?: return true
         val soknad = soknadServiceImpl.findOrError(UUID.fromString(soknadId))
         val userId = SubjectHandlerUtils.getUserIdFromToken()
@@ -27,8 +29,6 @@ class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadService) : Ha
                 throw AuthorizationException("Bruker har ikke tilgang til søknaden")
             }
         } else if (method == "POST" || method == "PUT" || method == "DELETE") {
-            val xsrfToken = request.getHeader("X-XSRF-TOKEN")
-            XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId, false)
             if (soknad.eierPersonId != userId) {
                 throw AuthorizationException("Bruker har ikke tilgang til søknaden")
             }

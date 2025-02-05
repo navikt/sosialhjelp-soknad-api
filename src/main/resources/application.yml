@@ -17,6 +17,9 @@ digisos:
     kodeverk:
       time-to-live: 86400
 
+token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT}
+token_endpoint: ${NAIS_TOKEN_ENDPOINT}
+
 springdoc:
   api-docs:
     enabled: true

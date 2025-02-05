@@ -179,7 +179,7 @@ class BostotteRessurs(
                         samtykke,
                         textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
                     )
-                    bostotteSystemdata.updateSystemdataIn(it, token)
+                    bostotteSystemdata.updateSystemdataIn(it)
                 }
             }
         }

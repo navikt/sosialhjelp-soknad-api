@@ -32,27 +32,24 @@ class BostotteSystemdata(
 ) {
     fun updateSystemdataIn(
         soknadUnderArbeid: SoknadUnderArbeid,
-        token: String?,
     ) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
-        doUpdateSystemdataIn(soknad, token)
+        doUpdateSystemdataIn(soknad)
     }
 
     fun updateSystemdataIn(
         json: JsonInternalSoknad,
-        token: String?,
     ) {
         val soknad = json.soknad ?: return
-        doUpdateSystemdataIn(soknad, token)
+        doUpdateSystemdataIn(soknad)
     }
 
     private fun doUpdateSystemdataIn(
         jsonSoknad: JsonSoknad,
-        token: String?,
     ) {
         val okonomi = jsonSoknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
-            val bostotte = innhentBostotteFraHusbanken(token)
+            val bostotte = innhentBostotteFraHusbanken()
 
             if (bostotte != null) {
                 okonomi.opplysninger.bekreftelse
@@ -100,8 +97,8 @@ class BostotteSystemdata(
         return harNyeSaker || harNyeUtbetalinger
     }
 
-    private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
-        val bostotteDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
+    private fun innhentBostotteFraHusbanken(): Bostotte? {
+        val bostotteDto = husbankenClient.hentBostotte(LocalDate.now().minusDays(60), LocalDate.now())
 
         if (bostotteDto?.saker.isNullOrEmpty()) {
             log.info("BostotteDto.saker er null eller tom")

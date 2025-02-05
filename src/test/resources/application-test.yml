@@ -88,3 +88,6 @@ integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}
 redis_host: localhost
 redis_port: 6379
 redis_password: foobar
+
+token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/tokenx}
+token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://localhost:${mock-oauth2-server.port}/sosialhjelp/mock-alt-api/token/maskinporten}

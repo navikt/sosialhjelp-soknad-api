@@ -26,7 +26,7 @@ class CreateDeleteSoknadHandler(
         soknadId: UUID,
         isKort: Boolean,
     ): UUID {
-        return soknadMetadataService.createSoknadMetadata(soknadId)
+        return soknadMetadataService.createSoknadMetadata(soknadId, isKort)
             .let {
                 soknadService.createSoknad(
                     eierId = personId(),

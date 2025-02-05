@@ -129,9 +129,9 @@ class SoknadRessurs(
                 .any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi == true }
 
         if (nyDatamodellAktiv) {
-            soknadHandlerProxy.updateSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+            soknadHandlerProxy.updateSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke)
         } else {
-            soknadServiceOld.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
+            soknadServiceOld.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke)
         }
     }
 

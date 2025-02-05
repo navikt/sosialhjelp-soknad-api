@@ -55,10 +55,10 @@ internal class BostotteSystemdataTest {
             )
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val utbetalinger =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.utbetaling
@@ -90,10 +90,10 @@ internal class BostotteSystemdataTest {
             )
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val utbetalinger =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.utbetaling
@@ -123,10 +123,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -169,10 +169,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -199,10 +199,10 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
+        every { husbankenClient.hentBostotte(any(), any()) } returns null
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -229,10 +229,10 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
+        every { husbankenClient.hentBostotte(any(), any()) } returns null
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker = opplysninger.bostotte.saker
         assertThat(saker).hasSize(1)
         assertThat(
@@ -248,7 +248,7 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, false)
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -276,10 +276,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1)
         val saker1 =
             soknadUnderArbeid1.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -287,7 +287,7 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1)
         val saker2 =
             soknadUnderArbeid1.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -320,10 +320,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -354,10 +354,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto1, utbetalingDto2))
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val utbetalinger =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.utbetaling
@@ -392,10 +392,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -427,10 +427,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val saker =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.bostotte.saker
@@ -446,7 +446,7 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, false)
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         val utbetalinger =
             soknadUnderArbeid.jsonInternalSoknad!!
                 .soknad
@@ -474,10 +474,10 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto))
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
+        every { husbankenClient.hentBostotte(any(), any()) } returns bostotteDto
 
         // Kjøring:
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1)
         val utbetalinger1 =
             soknadUnderArbeid1.jsonInternalSoknad!!
                 .soknad.data.okonomi.opplysninger.utbetaling
@@ -485,7 +485,7 @@ internal class BostotteSystemdataTest {
 
         // Kjøring:
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
-        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
+        bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1)
         val utbetalinger2 =
             soknadUnderArbeid1.jsonInternalSoknad!!
                 .soknad

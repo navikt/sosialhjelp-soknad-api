@@ -22,7 +22,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "36000")
+@AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractIntegrationTest {
     @Autowired
