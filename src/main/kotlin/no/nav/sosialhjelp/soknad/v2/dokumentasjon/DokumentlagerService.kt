@@ -87,7 +87,8 @@ class FiksDokumentService(
 
         return mellomlagringClient.lastOppDokument(
             navEksternId = soknadId.toString(),
-            filOpplasting = createFilOpplasting(nyttFilnavn, data),
+            filnavn = nyttFilnavn,
+            data = data,
         )
             .let { dto -> dto.mellomlagringMetadataList?.firstOrNull() }?.toMellomlagretDokument(data)
             ?.also { logger.info("Dokument lastet opp til mellomlager: ${it.filId}") }

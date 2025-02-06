@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Compani
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.ByteArrayResource
@@ -25,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.concurrent.Future
 
@@ -34,6 +36,12 @@ interface MellomlagringClient {
     fun lastOppDokument(
         navEksternId: String,
         filOpplasting: FilOpplasting,
+    ): MellomlagringDto
+
+    fun lastOppDokument(
+        navEksternId: String,
+        filnavn: String,
+        data: ByteArray,
     ): MellomlagringDto
 
     fun slettAlleDokumenter(navEksternId: String)
@@ -78,6 +86,26 @@ class MellomlagringClientImpl(
             log.warn("Fiks - getMellomlagredeVedlegg feilet - ${e.responseBodyAsString}", e)
             throw e
         }
+    }
+
+    override fun lastOppDokument(
+        navEksternId: String,
+        filnavn: String,
+        data: ByteArray,
+    ): MellomlagringDto {
+        return lastOppDokument(
+            navEksternId = navEksternId,
+            filOpplasting =
+                FilOpplasting(
+                    metadata =
+                        FilMetadata(
+                            filnavn = filnavn,
+                            mimetype = "application/octet-stream",
+                            storrelse = data.size.toLong(),
+                        ),
+                    data = ByteArrayInputStream(data),
+                ),
+        )
     }
 
     /**
