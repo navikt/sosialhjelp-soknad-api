@@ -39,8 +39,8 @@ spec:
       runtime: java
     logging:
       destinations:
-        - loki
-        - elastic
+        - id: loki
+        - id: elastic
   webproxy: false
   accessPolicy:
     inbound:
