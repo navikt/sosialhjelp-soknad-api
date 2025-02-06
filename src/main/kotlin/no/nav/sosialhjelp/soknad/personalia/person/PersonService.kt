@@ -17,10 +17,13 @@ class PersonService(
     private val helper: MapperHelper,
     private val mapper: PdlDtoMapper,
 ) {
-    fun hentPerson(ident: String): Person? {
+    fun hentPerson(
+        ident: String,
+        hentEktefelle: Boolean = true,
+    ): Person? {
         val personDto = hentPersonClient.hentPerson(ident) ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
-        if (person != null) {
+        if (person != null && hentEktefelle) {
             person.ektefelle = hentEktefelle(personDto)
         }
         return person

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 /**
  * Håndterer informasjon om bruker og nylig innsendte/ufullstendige søknader,
@@ -66,12 +66,12 @@ class InformasjonRessurs(
 
     @GetMapping("/session")
     fun getSessionInfo(): SessionResponse {
-        val eier = getUser()
+        val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
         val token = SubjectHandlerUtils.getTokenOrNull()
         val userBlocked = personService.harAdressebeskyttelse(eier)
-        val person = if (userBlocked) null else personService.hentPerson(eier)
+        val person = if (userBlocked) null else personService.hentPerson(eier, hentEktefelle = false)
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {

@@ -67,8 +67,10 @@ enum class SoknadStatus {
 private fun SoknadStatus.validate(metadata: SoknadMetadata) {
     if (this == SoknadStatus.SENDT || this == SoknadStatus.MOTTATT_FSL) {
         if (metadata.tidspunkt.sendtInn == null) error("Mangler innsendt dato for ferdig søknad.")
-        if (metadata.mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
-        if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
-        if (metadata.mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
+        // Må disable disse fordi etter migrering til ny datamodell, så har vi ikke disse verdiene.
+        // TODO: Fiks når de har blitt sletta etter 200 dager: 23. august 2025
+        // if (metadata.mottakerKommunenummer == null) error("Mangler mottaker for ferdig søknad.")
+        // if (metadata.digisosId == null) error("Mangler digisosId for ferdig søknad.")
+        // if (metadata.mottakerKommunenummer.length != 4) error("Kommunenummer ikke 4 siffer")
     }
 }
