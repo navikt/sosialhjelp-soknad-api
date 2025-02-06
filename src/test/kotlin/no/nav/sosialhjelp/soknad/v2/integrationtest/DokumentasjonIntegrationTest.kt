@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -238,7 +237,6 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                     DokumentRef(
                         dokumentId = UUID.fromString(it.filId),
                         filnavn = it.filnavn,
-                        sha512 = getSha512FromByteArray(it.filnavn.toByteArray()),
                     )
                 }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
@@ -276,7 +274,6 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                         DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
-                            getSha512FromByteArray(it.filnavn.toByteArray()),
                         )
                     }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
@@ -313,10 +310,9 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                         DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
-                            getSha512FromByteArray(it.filnavn.toByteArray()),
                         )
                     }
-                    .plus(DokumentRef(UUID.randomUUID(), "4.pdf", getSha512FromByteArray("4.pdf".toByteArray())))
+                    .plus(DokumentRef(UUID.randomUUID(), "4.pdf"))
                     .toSet(),
         ).also { dokumentasjonRepository.save(it) }
 

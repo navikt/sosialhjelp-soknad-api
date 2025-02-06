@@ -52,7 +52,6 @@ class SoknadV2DokumentasjonAdapter(
                         DokumentRef(
                             dokumentId = UUID.fromString(dokumentId),
                             filnavn = filnavn,
-                            sha512 = sha512,
                         )
                     copy(status = DokumentasjonStatus.LASTET_OPP, dokumenter = dokumenter.plus(dokument))
                 }

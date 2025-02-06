@@ -67,7 +67,6 @@ private fun Dokumentasjon.mapToTilleggsinfo(): String {
 private fun DokumentRef.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
-        .withSha512(sha512)
 
 // TODO Spør FSL'ene om dette faktisk er noe de forholder seg til
 private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER

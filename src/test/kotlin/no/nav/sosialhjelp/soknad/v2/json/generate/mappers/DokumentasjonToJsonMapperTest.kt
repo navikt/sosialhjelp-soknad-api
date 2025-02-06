@@ -62,7 +62,7 @@ private fun createDokumentasjonList(): List<Dokumentasjon> {
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             dokumenter =
                 setOf(
-                    DokumentRef(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn", sha512 = "sha512"),
+                    DokumentRef(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn"),
                 ),
         ),
         opprettDokumentasjon(soknadId = UUID.randomUUID(), type = InntektType.STUDIELAN_INNTEKT, dokumenter = emptySet()),
