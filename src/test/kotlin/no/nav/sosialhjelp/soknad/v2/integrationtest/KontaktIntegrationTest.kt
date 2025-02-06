@@ -331,7 +331,14 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
-        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512"))))
+        dokumentasjonRepository.save(
+            Dokumentasjon(
+                soknadId = lagretSoknad.id,
+                type = AnnenDokumentasjonType.BEHOV,
+                status = DokumentasjonStatus.LASTET_OPP,
+                dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
+            ),
+        )
 
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
@@ -362,7 +369,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .run {
                 copy(
                     status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512")),
+                    dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
                 )
             }
             .also { dokumentasjonRepository.save(it) }

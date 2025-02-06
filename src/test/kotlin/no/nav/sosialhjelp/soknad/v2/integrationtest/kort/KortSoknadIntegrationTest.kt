@@ -12,7 +12,6 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
@@ -268,8 +267,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     status = DokumentasjonStatus.LASTET_OPP,
                     dokumenter =
                         setOf(
-                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg", "sha512"),
-                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg", "sha512"),
+                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
+                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
                         ),
                 )
             }
@@ -460,23 +459,3 @@ private fun createMottattHendelse(tidspunkt: String): JsonHendelse =
         .withType(JsonHendelse.Type.SOKNADS_STATUS)
         .withHendelsestidspunkt(tidspunkt)
         .withStatus(JsonSoknadsStatus.Status.MOTTATT)
-
-private fun createPastUtbetaling(
-    tidspunkt: String,
-    utbetalingstidspunkt: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withUtbetalingsdato(utbetalingstidspunkt)
-        .withStatus(JsonUtbetaling.Status.UTBETALT)
-
-private fun createUpcomingUtbetaling(
-    tidspunkt: String,
-    forfallsdato: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withForfallsdato(forfallsdato)
-        .withStatus(JsonUtbetaling.Status.PLANLAGT_UTBETALING)

@@ -459,7 +459,6 @@ fun opprettDokumenter(): Set<DokumentRef> =
         DokumentRef(
             dokumentId = UUID.randomUUID(),
             filnavn = "utskrift_brukskonto.pdf",
-            sha512 = UUID.randomUUID().toString(),
         ),
     )
 

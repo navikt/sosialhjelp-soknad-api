@@ -18,11 +18,10 @@ data class Dokumentasjon(
     override fun getDbId() = id
 }
 
-@Table("dokument")
+@Table
 data class DokumentRef(
     val dokumentId: UUID,
     val filnavn: String,
-    val sha512: String? = null,
 )
 
 enum class DokumentasjonStatus {
