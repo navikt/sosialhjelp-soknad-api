@@ -65,7 +65,7 @@ class MellomlagringService(
     ): MellomlagretVedleggMetadata {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
-        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, orginalData)
+        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavnOgData(orginaltFilnavn, orginalData)
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
         soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 

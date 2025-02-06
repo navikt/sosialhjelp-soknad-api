@@ -23,7 +23,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -226,14 +226,14 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
-        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = FormueType.FORMUE_BSU, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
+        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = FormueType.FORMUE_BSU, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512"))))
 
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
         every { norgService.getEnhetForGt("1234") } returns navEnhet
-        every { mellomlagringClient.getDocumentsMetadata(lagretSoknad.id) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
-        every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
+        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
         every { digisosApiV2Client.getSoknader(any()) } returns
@@ -278,7 +278,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         assertThat(dokumentasjon).hasSize(2)
         assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
+        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) }
     }
 
     @Test
@@ -298,15 +298,15 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
-        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
+        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512"))))
 
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
-        every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
-        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
+        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { digisosApiV2Client.getSoknader(any()) } returns
@@ -329,7 +329,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .run {
                 copy(
                     status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512")),
+                    dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512")),
                 )
             }
             .also { dokumentasjonRepository.save(it) }
@@ -362,6 +362,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
 
-        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.slettDokument(any(), any()) }
     }
 }

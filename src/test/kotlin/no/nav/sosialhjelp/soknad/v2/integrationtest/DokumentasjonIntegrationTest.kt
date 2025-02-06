@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -57,7 +57,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere eksisterende Dokument`() {
-        every { mellomlagringClient.getDocument(any(), any()) } returns pdfFil.readBytes()
+        every { mellomlagringClient.hentDokument(any(), any()) } returns pdfFil.readBytes()
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
 
@@ -70,7 +70,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
-        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
 
         doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
             .expectStatus().isNotFound
@@ -80,12 +80,12 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(it.message).isEqualTo("Dokument eksisterer ikke på noe Dokumentasjon")
             }
 
-        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.slettDokument(any(), any()) }
     }
 
     @Test
     fun `Dokument som ikke finnes i Mellomlagring skal slettes lokalt`() {
-        every { mellomlagringClient.getDocument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
+        every { mellomlagringClient.slettDokument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
 
@@ -99,14 +99,9 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Laste opp dokument skal lagres i db og oppdatere dokumentasjonsstatus`() {
         val filnavnSlot = slot<String>()
-        every { mellomlagringClient.uploadDocument(any(), capture(filnavnSlot), any()) } just runs
-        every { mellomlagringClient.getDocumentsMetadata(any()) } answers {
-            createMellomlagringDto(
-                metadataList =
-                    listOf(
-                        createMellomlagringDokumentInfo(filnavnSlot.captured),
-                    ),
-            )
+
+        every { mellomlagringClient.lastOppDokument(any(), any()) } answers {
+            createMellomlagringDto(metadataList = listOf(createMellomlagringDokumentInfo(filnavnSlot.captured)))
         }
 
         Dokumentasjon(
@@ -160,7 +155,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Slette siste Dokument i Dokumentasjon skal endre status`() {
-        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
 
         val dokumentasjon = opprettDokumentasjon(soknadId = soknad.id).also { dokumentasjonRepository.save(it) }
         assertThat(dokumentasjon.status).isEqualTo(DokumentasjonStatus.LASTET_OPP)
@@ -198,7 +193,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             soknadId = soknad.id,
             dokumenter =
                 metadataList.map {
-                    Dokument(
+                    DokumentRef(
                         dokumentId = UUID.fromString(it.filId),
                         filnavn = it.filnavn,
                         sha512 = getSha512FromByteArray(it.filnavn.toByteArray()),
@@ -236,7 +231,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 metadataList
                     .filter { it.filnavn != "3.pdf" }
                     .map {
-                        Dokument(
+                        DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
                             getSha512FromByteArray(it.filnavn.toByteArray()),
@@ -273,13 +268,13 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             dokumenter =
                 metadataList
                     .map {
-                        Dokument(
+                        DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
                             getSha512FromByteArray(it.filnavn.toByteArray()),
                         )
                     }
-                    .plus(Dokument(UUID.randomUUID(), "4.pdf", getSha512FromByteArray("4.pdf".toByteArray())))
+                    .plus(DokumentRef(UUID.randomUUID(), "4.pdf", getSha512FromByteArray("4.pdf".toByteArray())))
                     .toSet(),
         ).also { dokumentasjonRepository.save(it) }
 
@@ -334,7 +329,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
         return opprettDokumentasjon(
             soknadId = soknad.id,
             status = DokumentasjonStatus.LASTET_OPP,
-            dokumenter = setOf(Dokument(UUID.randomUUID(), pdfFil.name, pdfFil.readBytes().toSha512())),
+            dokumenter = setOf(DokumentRef(UUID.randomUUID(), pdfFil.name, pdfFil.readBytes().toSha512())),
         )
             .also { dokumentasjonRepository.save(it) }.dokumenter.first().dokumentId
     }
@@ -362,7 +357,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 private fun DokumentasjonRepository.findDokumentBySoknadId(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokument? {
+): DokumentRef? {
     return findAllBySoknadId(soknadId)
         .flatMap { it.dokumenter }
         .find { it.dokumentId == dokumentId }

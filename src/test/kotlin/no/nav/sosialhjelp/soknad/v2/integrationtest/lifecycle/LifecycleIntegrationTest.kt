@@ -48,13 +48,13 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Slette soknad skal fjerne soknad`() {
         val soknadId = createNewSoknad()
 
-        every { mellomlagringClient.getDocumentsMetadata(soknadId) } returns createMellomlagringDto(soknadId)
-        every { mellomlagringClient.deleteAllDocuments(soknadId) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(soknadId.toString()) } returns createMellomlagringDto(soknadId)
+        every { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) } just runs
 
         doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
-        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(soknadId) }
+        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
     }
 
     @Test

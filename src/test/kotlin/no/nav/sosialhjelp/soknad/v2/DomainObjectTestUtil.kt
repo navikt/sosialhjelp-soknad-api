@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -451,12 +451,12 @@ fun opprettDokumentasjon(
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
-    dokumenter: Set<Dokument> = opprettDokumenter(),
+    dokumenter: Set<DokumentRef> = opprettDokumenter(),
 ): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
 
-fun opprettDokumenter(): Set<Dokument> =
+fun opprettDokumenter(): Set<DokumentRef> =
     setOf(
-        Dokument(
+        DokumentRef(
             dokumentId = UUID.randomUUID(),
             filnavn = "utskrift_brukskonto.pdf",
             sha512 = UUID.randomUUID().toString(),
