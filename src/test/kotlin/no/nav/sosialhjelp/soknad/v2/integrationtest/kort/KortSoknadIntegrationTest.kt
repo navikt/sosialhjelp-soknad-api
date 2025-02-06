@@ -6,6 +6,8 @@ import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
@@ -64,6 +66,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         soknadMetadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
+        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true

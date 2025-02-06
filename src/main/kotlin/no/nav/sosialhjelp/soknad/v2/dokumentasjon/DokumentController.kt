@@ -54,14 +54,19 @@ class DokumentController(
                 throw IkkeFunnetException("Fant ikke dokumentreferanse $dokumentId")
             }
             else -> {
-                dokumentlagerService.getDokument(soknadId, dokumentId)
-                    .let {
-                        require(it.data != null) { "Fant ikke data for dokument $dokumentId" }
+                runCatching { dokumentlagerService.getDokument(soknadId, dokumentId) }
+                    .onFailure { dokumentRefService.removeRef(soknadId, dokumentId) }
+                    .getOrThrow()
+                    .let { mellomlagretDokument ->
+                        require(mellomlagretDokument.data != null) { "Fant ikke data for dokument $dokumentId" }
 
-                        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
+                        response.setHeader(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"${mellomlagretDokument.filnavn}\"",
+                        )
                         ResponseEntity.ok()
-                            .contentType(it.data.toMediaType())
-                            .body(it.data)
+                            .contentType(mellomlagretDokument.data.toMediaType())
+                            .body(mellomlagretDokument.data)
                     }
             }
         }

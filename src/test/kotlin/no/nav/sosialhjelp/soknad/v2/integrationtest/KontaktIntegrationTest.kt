@@ -124,6 +124,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
+        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
 
         val adresserInput =
             AdresserInput(
@@ -159,6 +160,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val navEnhet = NavEnhet("123", "NAV Sandvika", "Sandvika", "123")
         every { norgService.getEnhetForGt("abc") } returns navEnhet
 
+        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { unleash.isEnabled(any(), any<Boolean>()) } returns false
@@ -197,6 +199,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
+        every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         val adresserInput =
             AdresserInput(
@@ -217,7 +220,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `skal slette dokumentasjon og dokumenter ved overgang til kort søknad`() {
+    fun `skal slette dokumentasjon og dokumenter ved overgang til kort soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata()
                 .let { soknadMetadataRepository.save(it) }
@@ -226,13 +229,43 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
-        dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = FormueType.FORMUE_BSU, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf", "sha512"))))
+        dokumentasjonRepository.save(
+            Dokumentasjon(
+                soknadId = lagretSoknad.id,
+                type = FormueType.FORMUE_BSU,
+                status = DokumentasjonStatus.LASTET_OPP,
+                dokumenter = setOf(DokumentRef(UUID.randomUUID(), "test.pdf")),
+            ),
+        )
 
-        val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
-        every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
+        val vegadresse =
+            VegadresseDto(
+                "3883",
+                1,
+                null,
+                "Testveien",
+                "Nav kommune",
+                "1234",
+                "123",
+                "Navstad",
+                null,
+            )
+        every { adressesokClient.getAdressesokResult(any()) } returns
+            AdressesokResultDto(
+                listOf(
+                    AdressesokHitDto(vegadresse, 1F),
+                ),
+                1,
+                1,
+                1,
+            )
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
         every { norgService.getEnhetForGt("1234") } returns navEnhet
-        every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
+        every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns
+            MellomlagringDto(
+                lagretSoknad.id.toString(),
+                listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")),
+            )
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
@@ -362,6 +395,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
             .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
 
-        verify(exactly = 1) { mellomlagringClient.slettDokument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(any()) }
     }
 }

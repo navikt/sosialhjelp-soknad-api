@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -35,6 +36,7 @@ class KortSoknadService(
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
     private val unleash: Unleash,
+    private val dokumentlagerService: DokumentlagerService,
 ) {
     private val logger by logger()
 
@@ -174,6 +176,7 @@ class KortSoknadService(
                 else -> getTokenOrNull()?.let { isQualifiedFromFiks(it, kommunenummer) }
             }
 
+        dokumentlagerService.deleteAllDokumenterForSoknad(updatedKontakt.soknadId)
         when (qualifiesForKort) {
             true -> transitionToKort(updatedKontakt.soknadId)
             false -> transitionToStandard(updatedKontakt.soknadId)

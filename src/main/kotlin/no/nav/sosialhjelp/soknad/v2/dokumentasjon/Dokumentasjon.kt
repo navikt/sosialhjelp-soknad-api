@@ -22,7 +22,7 @@ data class Dokumentasjon(
 data class DokumentRef(
     val dokumentId: UUID,
     val filnavn: String,
-    val sha512: String,
+    val sha512: String? = null,
 )
 
 enum class DokumentasjonStatus {
