@@ -177,7 +177,7 @@ class DigisosApiV2Client(
         return try {
             fiksWebClient
                 .post()
-                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/status")
+                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
                 .bodyValue(BodyInserters.fromValue(fiksSoknaderStatusRequest))
