@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
@@ -64,7 +64,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         soknadMetadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
-        every { mellomlagringClient.getDocumentsMetadata(any()) } returns MellomlagringDto("", emptyList())
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
@@ -265,8 +265,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     status = DokumentasjonStatus.LASTET_OPP,
                     dokumenter =
                         setOf(
-                            Dokument(UUID.randomUUID(), "filnavn1.jpg", "sha512"),
-                            Dokument(UUID.randomUUID(), "filnavn2.jpg", "sha512"),
+                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg", "sha512"),
+                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg", "sha512"),
                         ),
                 )
             }

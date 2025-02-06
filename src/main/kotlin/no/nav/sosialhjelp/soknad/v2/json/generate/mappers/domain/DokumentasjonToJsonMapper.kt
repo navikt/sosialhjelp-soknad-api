@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -64,7 +64,7 @@ private fun Dokumentasjon.mapToTilleggsinfo(): String {
         ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }
 
-private fun Dokument.toJsonFiler() =
+private fun DokumentRef.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
         .withSha512(sha512)

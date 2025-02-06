@@ -49,7 +49,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Skal slette metadata ved sletting av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
-        every { mellomlagringClient.getDocumentsMetadata(uuid) } returns null
+        every { mellomlagringClient.hentDokumenterMetadata(uuid.toString()) } returns null
 
         doDelete(
             uri = deleteUrl(uuid),
@@ -57,7 +57,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         )
 
         assertThat(soknadMetadataRepository.findByIdOrNull(uuid)).isNull()
-        verify(exactly = 1) { mellomlagringClient.getDocumentsMetadata(uuid) }
+        verify(exactly = 1) { mellomlagringClient.hentDokumenterMetadata(uuid.toString()) }
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {

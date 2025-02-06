@@ -108,12 +108,12 @@ internal class DokumentasjonUtilsTest {
 
     @Test
     fun `Fil med samme navn, men annet innhold gir annet filnavn`() {
-        val (filnavn1, data1) = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, PDF_FILE.readBytes())
+        val (filnavn1, data1) = VedleggUtils.validerFilOgReturnerNyttFilnavnOgData(PDF_FILE.name, PDF_FILE.readBytes())
 
         val alteredBytes = PDF_FILE.readBytes()
         alteredBytes[alteredBytes.size / 2] = alteredBytes[alteredBytes.size / 2].inc()
 
-        val (filnavn2, data2) = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, alteredBytes)
+        val (filnavn2, data2) = VedleggUtils.validerFilOgReturnerNyttFilnavnOgData(PDF_FILE.name, alteredBytes)
 
         assertThat(detectMimeType(data1)).isEqualTo(detectMimeType(data2))
         assertThat(data1).isNotEqualTo(data2)

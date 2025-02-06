@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -32,9 +33,11 @@ class SoknadLifecycleServiceImpl(
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
     private val documentValidator: DocumentValidator,
+    private val dokumentlagerService: DokumentlagerService,
 ) : SoknadLifecycleService {
     override fun startSoknad(isKort: Boolean): UUID {
         val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
+
         return createDeleteSoknadHandler
             .createSoknad(soknadId, isKort)
             .also {
@@ -65,7 +68,7 @@ class SoknadLifecycleServiceImpl(
         )
 
         // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-        createDeleteSoknadHandler.deleteSoknad(soknadId)
+        createDeleteSoknadHandler.deleteAfterSent(soknadId)
 
         return Pair(sendtInfo.digisosId, sendtInfo.innsendingTidspunkt)
     }
@@ -74,10 +77,12 @@ class SoknadLifecycleServiceImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        createDeleteSoknadHandler.cancelSoknad(soknadId)
-        prometheusMetricsService.reportAvbruttSoknad(referer)
-
-        logger.info("Søknad avbrutt. Sletter data.")
+        runCatching { createDeleteSoknadHandler.cancelSoknad(soknadId) }
+            .onSuccess {
+                dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+                prometheusMetricsService.reportAvbruttSoknad(referer)
+                logger.info("Søknad avbrutt. Sletter data.")
+            }
     }
 
     companion object {

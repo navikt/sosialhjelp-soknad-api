@@ -27,7 +27,8 @@ import java.util.UUID
 object VedleggUtils {
     private val log by logger()
 
-    fun validerFilOgReturnerNyttFilnavn(
+    @Deprecated("Bruk heller validerFilOgReturnerNyttFilnavn")
+    fun validerFilOgReturnerNyttFilnavnOgData(
         filnavn: String,
         bytes: ByteArray,
     ): Pair<String, ByteArray> {
@@ -37,6 +38,16 @@ object VedleggUtils {
         val fileType = validerFil(bytes, filnavn)
         val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidRandom)
         return Pair(filnavnMedUuid, bytes)
+    }
+
+    fun validerFilOgReturnerNyttFilnavn(
+        filnavn: String,
+        bytes: ByteArray,
+    ): String {
+        val uuidRandom = UUID.randomUUID()
+
+        val fileType = validerFil(bytes, filnavn)
+        return lagFilnavn(filnavn, fileType, uuidRandom)
     }
 
     fun getSha512FromByteArray(bytes: ByteArray?): String {

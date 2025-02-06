@@ -35,7 +35,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID().toString()
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
-        every { mellomlagringClient.getDocumentsMetadata(any()) } returns
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(UUID.randomUUID().toString(), mellomlagringMetadataList = emptyList())
     }
 
