@@ -30,6 +30,10 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - loki
+        - elastic
   azure:
     application:
       enabled: true
