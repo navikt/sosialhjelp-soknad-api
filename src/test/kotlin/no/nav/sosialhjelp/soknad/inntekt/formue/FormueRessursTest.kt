@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -40,7 +41,13 @@ internal class FormueRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val textService: TextService = mockk()
-    private val formueRessurs = FormueRessurs(tilgangskontroll, soknadUnderArbeidRepository, textService)
+    private val formueRessurs =
+        FormueRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            textService,
+            formueProxy = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -49,6 +56,7 @@ internal class FormueRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

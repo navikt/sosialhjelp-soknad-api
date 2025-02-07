@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import io.mockk.every
+import io.mockk.verify
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
@@ -8,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettNavEnhet
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
@@ -26,6 +28,9 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Skal oppdatere metadata ved innsending av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(uuid.toString(), emptyList())
+
         doPost(
             uri = sendUrl(uuid),
             responseBodyClass = SoknadSendtDto::class.java,
@@ -34,7 +39,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
 
         soknadMetadataRepository.findByIdOrNull(uuid)!!
             .also {
-                assertThat(it.innsendt!!.toLocalDate()).isEqualTo(LocalDate.now())
+                assertThat(it.tidspunkt.sendtInn!!.toLocalDate()).isEqualTo(LocalDate.now())
                 assertThat(it.mottakerKommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
                 assertThat(it.status).isEqualTo(SoknadStatus.SENDT)
             }
@@ -44,12 +49,15 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Skal slette metadata ved sletting av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
+        every { mellomlagringClient.getDocumentsMetadata(uuid) } returns null
+
         doDelete(
             uri = deleteUrl(uuid),
             soknadId = uuid,
         )
 
         assertThat(soknadMetadataRepository.findByIdOrNull(uuid)).isNull()
+        verify(exactly = 1) { mellomlagringClient.getDocumentsMetadata(uuid) }
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {

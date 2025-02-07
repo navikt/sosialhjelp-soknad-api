@@ -113,7 +113,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         val oppdatertMetadata =
             soknadMetadata.copy(
                 status = SoknadStatus.SENDT,
-                innsendt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+                tidspunkt = soknadMetadata.tidspunkt.copy(sendtInn = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
             )
         soknadMetadataRepository.save(oppdatertMetadata)
         soknadMetadataRepository.findByIdOrNull(oppdatertMetadata.soknadId)!!

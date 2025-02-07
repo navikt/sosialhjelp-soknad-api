@@ -65,11 +65,12 @@ class SoknadLifecycleController(
     @PostMapping("/{soknadId}/send")
     fun sendSoknad(
         @PathVariable("soknadId") soknadId: UUID,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SoknadSendtDto {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
         }
-        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
+        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
 
         return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }

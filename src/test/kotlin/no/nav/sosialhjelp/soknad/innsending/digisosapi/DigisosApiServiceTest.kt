@@ -27,7 +27,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.TimestampFixer
 import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -47,7 +46,6 @@ internal class DigisosApiServiceTest {
     private val dokumentListeService: DokumentListeService = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val kodeverkService: KodeverkService = mockk(relaxed = true)
 
     private val digisosApiService =
         DigisosApiService(
@@ -59,7 +57,7 @@ internal class DigisosApiServiceTest {
             prometheusMetricsService,
             Clock.systemDefaultZone(),
             mellomlagringService,
-            kodeverkService,
+            kodeverkService = mockk(relaxed = true),
         )
 
     private val eier = "12345678910"

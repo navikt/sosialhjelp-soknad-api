@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
@@ -10,6 +12,8 @@ import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
@@ -44,15 +48,21 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Slette soknad skal fjerne soknad`() {
         val soknadId = createNewSoknad()
 
+        every { mellomlagringClient.getDocumentsMetadata(soknadId) } returns createMellomlagringDto(soknadId)
+        every { mellomlagringClient.deleteAllDocuments(soknadId) } just runs
+
         doDelete(uri = deleteUri(soknadId), soknadId = soknadId)
 
         assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
-        verify(exactly = 1) { mellomlagringService.deleteAll(any()) }
+        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(soknadId) }
     }
 
     @Test
     fun `Sende soknad skal avslutte soknad i db`() {
         val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
 
         kontaktRepository.findByIdOrNull(soknadId)!!
             .run {
@@ -153,4 +163,19 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
     }
+}
+
+private fun createMellomlagringDto(soknadId: UUID): MellomlagringDto {
+    return MellomlagringDto(
+        navEksternRefId = soknadId.toString(),
+        mellomlagringMetadataList =
+            listOf(
+                MellomlagringDokumentInfo(
+                    filId = UUID.randomUUID().toString(),
+                    filnavn = "filnavn.pdf",
+                    storrelse = 1234L,
+                    mimetype = MimeTypes.APPLICATION_PDF,
+                ),
+            ),
+    )
 }

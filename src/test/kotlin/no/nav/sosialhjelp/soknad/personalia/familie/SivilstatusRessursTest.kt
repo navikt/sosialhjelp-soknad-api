@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
-import io.mockk.Runs
 import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -15,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -28,7 +28,6 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.SivilstatusFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.v2.shadow.V2ControllerAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -39,9 +38,8 @@ import java.time.LocalDateTime
 internal class SivilstatusRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val controllerAdapter: V2ControllerAdapter = mockk()
 
-    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository)
+    private val sivilstatusRessurs = SivilstatusRessurs(tilgangskontroll, soknadUnderArbeidRepository, mockk(relaxed = true))
 
     @BeforeEach
     fun setUp() {
@@ -50,7 +48,7 @@ internal class SivilstatusRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-        every { controllerAdapter.updateSivilstand(any(), any()) } just Runs
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

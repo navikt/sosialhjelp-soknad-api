@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
@@ -37,30 +38,36 @@ class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
+    private val utbetalingProxy: UtbetalingProxy,
 ) {
     @GetMapping
     fun hentUtbetalinger(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = soknad.soknad.data.okonomi.opplysninger
 
-        if (opplysninger.bekreftelse == null) {
-            return UtbetalingerFrontend(utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return utbetalingProxy.getUtbetalinger(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val opplysninger = soknad.soknad.data.okonomi.opplysninger
+
+            if (opplysninger.bekreftelse == null) {
+                return UtbetalingerFrontend(utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet)
+            }
+            return UtbetalingerFrontend(
+                bekreftelse = getBekreftelse(opplysninger),
+                utbytte = hasUtbetalingType(opplysninger, UTBETALING_UTBYTTE),
+                salg = hasUtbetalingType(opplysninger, UTBETALING_SALG),
+                forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
+                annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
+                beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
+                utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
+            )
         }
-        return UtbetalingerFrontend(
-            bekreftelse = getBekreftelse(opplysninger),
-            utbytte = hasUtbetalingType(opplysninger, UTBETALING_UTBYTTE),
-            salg = hasUtbetalingType(opplysninger, UTBETALING_SALG),
-            forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
-            annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
-            beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-            utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
-        )
     }
 
     @PutMapping
@@ -69,30 +76,35 @@ class UtbetalingRessurs(
         @RequestBody utbetalingerFrontend: UtbetalingerFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
 
-        setBekreftelse(
-            opplysninger,
-            BEKREFTELSE_UTBETALING,
-            utbetalingerFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.inntekter"),
-        )
-        when (utbetalingerFrontend.bekreftelse) {
-            true -> {
-                setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
-                setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            utbetalingProxy.updateUtbetalinger(behandlingsId, utbetalingerFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+
+            setBekreftelse(
+                opplysninger,
+                BEKREFTELSE_UTBETALING,
+                utbetalingerFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel("inntekt.inntekter"),
+            )
+            when (utbetalingerFrontend.bekreftelse) {
+                true -> {
+                    setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
+                    setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
+                }
+                else -> {
+                    setAlleUtbetalingerToFalse(opplysninger.utbetaling)
+                    setBeskrivelseAvAnnetBlank(opplysninger)
+                }
             }
-            else -> {
-                setAlleUtbetalingerToFalse(opplysninger.utbetaling)
-                setBeskrivelseAvAnnetBlank(opplysninger)
-            }
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun setUtbetalinger(

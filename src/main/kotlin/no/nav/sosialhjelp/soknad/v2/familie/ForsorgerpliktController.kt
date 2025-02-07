@@ -33,7 +33,7 @@ class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
             .updateForsorger(
                 soknadId = soknadId,
                 barnebidrag = forsorgerInput.barnebidrag,
-                updated = forsorgerInput.ansvar.associate { (it.uuid ?: UUID.randomUUID()) to it.toBarn() },
+                updated = forsorgerInput.ansvar.associate { (it.uuid ?: UUID.randomUUID()) to it.toEktefelle() },
             )
             .toForsorgerDto()
     }
@@ -83,4 +83,4 @@ private fun Map<UUID, Barn>.mapToBarnDtoList(): List<BarnDto> {
     }
 }
 
-fun BarnInput.toBarn() = Barn(personId, deltBosted = deltBosted)
+fun BarnInput.toEktefelle() = Barn(personId, deltBosted = deltBosted)

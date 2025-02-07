@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
@@ -12,6 +13,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.util.unit.DataSize
@@ -22,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as getUser
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 /**
  * Håndterer informasjon om bruker og nylig innsendte/ufullstendige søknader,
@@ -35,8 +39,9 @@ class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
     private val kortSoknadService: KortSoknadService,
-    private val soknadMetadataRepository: SoknadMetadataRepository,
+    private val soknadMetadataService: SoknadMetadataService,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
     @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     companion object {
@@ -61,16 +66,18 @@ class InformasjonRessurs(
 
     @GetMapping("/session")
     fun getSessionInfo(): SessionResponse {
-        val eier = getUser()
+        val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
         val token = SubjectHandlerUtils.getTokenOrNull()
         val userBlocked = personService.harAdressebeskyttelse(eier)
-        val person = if (userBlocked) null else personService.hentPerson(eier)
+        val person = if (userBlocked) null else personService.hentPerson(eier, hentEktefelle = false)
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {
-                runCatching { kortSoknadService.isQualified(token, kommunenummer) }.onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }.getOrNull()
+                runCatching { kortSoknadService.isQualifiedFromFiks(token, kommunenummer) }
+                    .onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }
+                    .getOrNull()
             } else {
                 null
             }
@@ -80,11 +87,18 @@ class InformasjonRessurs(
         if (person === null) log.error("Fant ikke person for bruker")
 
         val numRecentlySent =
-            soknadMetadataRepository
-                .hentInnsendteSoknaderForBrukerEtterTidspunkt(
-                    eier,
-                    LocalDateTime.now().minusDays(FJORTEN_DAGER),
-                ).size
+            if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+                soknadMetadataService.getNumberOfSoknaderSentAfter(
+                    personId = eier,
+                    minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
+                )
+            } else {
+                soknadMetadataRepository
+                    .hentInnsendteSoknaderForBrukerEtterTidspunkt(
+                        eier,
+                        LocalDateTime.now().minusDays(FJORTEN_DAGER),
+                    ).size
+            }
 
         return SessionResponse(
             userBlocked = personService.harAdressebeskyttelse(eier),
@@ -114,4 +128,14 @@ class InformasjonRessurs(
         @Schema(description = "User qualifies for kort søknad")
         val qualifiesForKortSoknad: Boolean?,
     )
+}
+
+private fun List<SoknadMetadata>.toPabegynteSoknader(): List<PabegyntSoknad> {
+    return map {
+        PabegyntSoknad(
+            sistOppdatert = it.tidspunkt.sistEndret,
+            behandlingsId = it.soknadId.toString(),
+            isKort = it.soknadType == SoknadType.KORT,
+        )
+    }
 }

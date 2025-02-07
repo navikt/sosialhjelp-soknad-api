@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
-private fun OpplysningType.getJsonVerdier(): JsonVerdi =
+fun OpplysningType.getJsonVerdier(): JsonVerdi =
     when (this) {
         is InntektType -> OpplysningTypeMapper.getJsonVerdier(this)
         is UtgiftType -> OpplysningTypeMapper.getJsonVerdier(this)

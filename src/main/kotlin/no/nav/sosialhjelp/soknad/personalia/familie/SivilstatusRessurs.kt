@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
@@ -35,21 +35,25 @@ import java.text.SimpleDateFormat
 class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val sivilstatusProxy: SivilstatusProxy,
 ) {
-    private val log by logger()
-
     @GetMapping
     fun hentSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
 
-        return mapToSivilstatusFrontend(jsonSivilstatus)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return sivilstatusProxy.getSivilstatus(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
+
+            return mapToSivilstatusFrontend(jsonSivilstatus)
+        }
     }
 
     @PutMapping
@@ -59,22 +63,26 @@ class SivilstatusRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val familie = jsonInternalSoknad.soknad.data.familie
-        if (familie.sivilstatus == null) {
-            jsonInternalSoknad.soknad.data.familie.sivilstatus = JsonSivilstatus()
-        }
-        val sivilstatus = familie.sivilstatus
-        sivilstatus.kilde = JsonKilde.BRUKER
-        sivilstatus.status = sivilstatusFrontend.sivilstatus
-        sivilstatus.ektefelle = mapToJsonEktefelle(sivilstatusFrontend.ektefelle)
-        sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            sivilstatusProxy.updateSivilstand(behandlingsId, sivilstatusFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val familie = jsonInternalSoknad.soknad.data.familie
+            if (familie.sivilstatus == null) {
+                jsonInternalSoknad.soknad.data.familie.sivilstatus = JsonSivilstatus()
+            }
+            val sivilstatus = familie.sivilstatus
+            sivilstatus.kilde = JsonKilde.BRUKER
+            sivilstatus.status = sivilstatusFrontend.sivilstatus
+            sivilstatus.ektefelle = mapToJsonEktefelle(sivilstatusFrontend.ektefelle)
+            sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
+        }
     }
 
     private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {

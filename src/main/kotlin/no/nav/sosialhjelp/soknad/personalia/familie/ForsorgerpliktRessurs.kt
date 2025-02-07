@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
@@ -44,19 +45,25 @@ class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val textService: TextService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val forsorgerpliktProxy: ForsorgerpliktProxy,
 ) {
     @GetMapping
     fun hentForsorgerplikt(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = eier()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val jsonForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt
 
-        return mapToForsorgerpliktFrontend(jsonForsorgerplikt)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return forsorgerpliktProxy.getForsorgerplikt(behandlingsId)
+        } else {
+            val personId = eier()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val jsonForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt
+
+            return mapToForsorgerpliktFrontend(jsonForsorgerplikt)
+        }
     }
 
     @PutMapping
@@ -65,16 +72,21 @@ class ForsorgerpliktRessurs(
         @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
 
-        updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
-        updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            forsorgerpliktProxy.updateForsorgerplikt(behandlingsId, forsorgerpliktFrontend)
+        } else {
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+            updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+            updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+        }
     }
 
     private fun updateBarnebidrag(

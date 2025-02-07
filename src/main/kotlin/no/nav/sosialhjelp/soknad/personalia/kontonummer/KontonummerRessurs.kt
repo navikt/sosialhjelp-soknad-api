@@ -5,6 +5,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -25,24 +26,30 @@ class KontonummerRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerService: KontonummerService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
+    private val kontonummerProxy: KontonummerProxy,
 ) {
     @GetMapping
     fun hentKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val konto = loadKontonummer(behandlingsId)
-        if (konto.kilde == JsonKilde.SYSTEM && konto.verdi == null) {
-            val kontonummerRegister = kontonummerService.getKontonummer(eier())
-            storeKontonummer(
-                behandlingsId,
-                JsonKontonummer().apply {
-                    kilde = JsonKilde.SYSTEM
-                    verdi = kontonummerRegister
-                },
-            )
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return kontonummerProxy.getKontonummer(behandlingsId)
+        } else {
+            val konto = loadKontonummer(behandlingsId)
+            if (konto.kilde == JsonKilde.SYSTEM && konto.verdi == null) {
+                val kontonummerRegister = kontonummerService.getKontonummer(eier())
+                storeKontonummer(
+                    behandlingsId,
+                    JsonKontonummer().apply {
+                        kilde = JsonKilde.SYSTEM
+                        verdi = kontonummerRegister
+                    },
+                )
+            }
+            return mapJsonToDto(loadKontonummer(behandlingsId))
         }
-        return mapJsonToDto(loadKontonummer(behandlingsId))
     }
 
     @PutMapping
@@ -52,10 +59,15 @@ class KontonummerRessurs(
         kontoDto: KontonummerInputDto,
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val kontoJson = mapInputToJson(kontoDto, kontonummerService.getKontonummer(eier()))
-        storeKontonummer(behandlingsId, kontoJson)
 
-        return mapJsonToDto(kontoJson)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return kontonummerProxy.updateKontonummer(behandlingsId, kontoDto)
+        } else {
+            val kontoJson = mapInputToJson(kontoDto, kontonummerService.getKontonummer(eier()))
+            storeKontonummer(behandlingsId, kontoJson)
+
+            return mapJsonToDto(kontoJson)
+        }
     }
 
     @Schema(description = "Kontonummer for bruker - obs: PUT med (systemverdi !== null) vil nullstille brukerutfyltVerdi")

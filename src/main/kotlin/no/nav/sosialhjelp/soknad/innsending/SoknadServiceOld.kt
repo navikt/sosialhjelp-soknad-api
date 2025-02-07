@@ -65,7 +65,7 @@ class SoknadServiceOld(
         val eierId = SubjectHandlerUtils.getUserIdFromToken()
 
         val behandlingsId = opprettSoknadMetadata(eierId, kort) // TODO NyModell Metadata returnerer UUID
-        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
+        MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, behandlingsId)
 
         when {
             kort -> log.info("Starter kort søknad")

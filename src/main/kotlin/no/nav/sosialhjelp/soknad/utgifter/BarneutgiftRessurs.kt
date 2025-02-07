@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt
@@ -38,36 +39,42 @@ class BarneutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
+    private val barneutgiftProxy: BarneutgiftProxy,
 ) {
     @GetMapping
     fun hentBarneutgifter(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): BarneutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        val harForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt.harForsorgerplikt
-        if (harForsorgerplikt == null || harForsorgerplikt.verdi == null || !harForsorgerplikt.verdi) {
-            return BarneutgifterFrontend()
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return barneutgiftProxy.getBarneutgifter(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+
+            val harForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt.harForsorgerplikt
+            if (harForsorgerplikt == null || harForsorgerplikt.verdi == null || !harForsorgerplikt.verdi) {
+                return BarneutgifterFrontend()
+            }
+
+            val okonomi = soknad.soknad.data.okonomi
+            if (okonomi.opplysninger.bekreftelse == null) {
+                return BarneutgifterFrontend(true)
+            }
+
+            return BarneutgifterFrontend(
+                harForsorgerplikt = true,
+                bekreftelse = getBekreftelse(okonomi.opplysninger),
+                fritidsaktiviteter = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_FRITIDSAKTIVITETER),
+                barnehage = getUtgiftstype(okonomi.oversikt, UTGIFTER_BARNEHAGE),
+                sfo = getUtgiftstype(okonomi.oversikt, UTGIFTER_SFO),
+                tannregulering = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_TANNREGULERING),
+                annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BARN),
+            )
         }
-
-        val okonomi = soknad.soknad.data.okonomi
-        if (okonomi.opplysninger.bekreftelse == null) {
-            return BarneutgifterFrontend(true)
-        }
-
-        return BarneutgifterFrontend(
-            harForsorgerplikt = true,
-            bekreftelse = getBekreftelse(okonomi.opplysninger),
-            fritidsaktiviteter = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_FRITIDSAKTIVITETER),
-            barnehage = getUtgiftstype(okonomi.oversikt, UTGIFTER_BARNEHAGE),
-            sfo = getUtgiftstype(okonomi.oversikt, UTGIFTER_SFO),
-            tannregulering = getUtgiftstype(okonomi.opplysninger, UTGIFTER_BARN_TANNREGULERING),
-            annet = getUtgiftstype(okonomi.opplysninger, UTGIFTER_ANNET_BARN),
-        )
     }
 
     @PutMapping
@@ -76,25 +83,30 @@ class BarneutgiftRessurs(
         @RequestBody barneutgifterFrontend: BarneutgifterFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        setBekreftelse(
-            okonomi.opplysninger,
-            BEKREFTELSE_BARNEUTGIFTER,
-            barneutgifterFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("utgifter.barn"),
-        )
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            barneutgiftProxy.updateBarneutgifter(behandlingsId, barneutgifterFrontend)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val okonomi = jsonInternalSoknad.soknad.data.okonomi
 
-        when (barneutgifterFrontend.bekreftelse) {
-            true -> setBarneutgifter(okonomi, barneutgifterFrontend)
-            else -> setAllBarneutgifterToFalse(okonomi)
+            setBekreftelse(
+                okonomi.opplysninger,
+                BEKREFTELSE_BARNEUTGIFTER,
+                barneutgifterFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel("utgifter.barn"),
+            )
+
+            when (barneutgifterFrontend.bekreftelse) {
+                true -> setBarneutgifter(okonomi, barneutgifterFrontend)
+                else -> setAllBarneutgifterToFalse(okonomi)
+            }
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun setBarneutgifter(

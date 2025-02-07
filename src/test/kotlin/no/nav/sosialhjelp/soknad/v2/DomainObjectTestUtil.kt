@@ -35,6 +35,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.Studentgrad
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
@@ -123,10 +124,30 @@ fun opprettSoknadMetadata(
         soknadId = soknadId,
         personId = personId,
         status = status,
-        opprettet = opprettetDato,
-        innsendt = innsendtDato,
+        tidspunkt =
+            no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt(
+                opprettet = opprettetDato,
+                sendtInn = innsendtDato,
+            ),
         mottakerKommunenummer = kommunenummer,
         digisosId = digisosId,
+    )
+
+fun opprettSoknadMetadata(
+    id: UUID = UUID.randomUUID(),
+    kort: Boolean = false,
+): SoknadMetadata =
+    SoknadMetadata(
+        soknadId = id,
+        personId = AbstractIntegrationTest.userId,
+        status = SoknadStatus.OPPRETTET,
+        soknadType = if (kort) SoknadType.KORT else SoknadType.STANDARD,
+        tidspunkt =
+            no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt(
+                opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+            ),
+        mottakerKommunenummer = "1234",
+        digisosId = UUID.randomUUID(),
     )
 
 fun opprettSoknad(

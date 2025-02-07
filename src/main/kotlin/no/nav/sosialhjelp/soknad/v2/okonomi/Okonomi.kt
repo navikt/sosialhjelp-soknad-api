@@ -3,9 +3,14 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.annotation.Id
+import org.springframework.data.jdbc.repository.query.Modifying
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
@@ -15,7 +20,86 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Repository
-interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID>
+interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID> {
+    @Query("SELECT * FROM bekreftelse WHERE okonomi = :soknadId AND type = :type")
+    fun findBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+    ): Bekreftelse?
+
+    @Modifying
+    @Query("INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) VALUES(:soknadId, :type, :tidspunkt, :verdi)")
+    fun insertBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+        tidspunkt: LocalDateTime,
+        verdi: Boolean,
+    )
+
+    @Modifying
+    @Query("UPDATE bekreftelse SET tidspunkt = :tidspunkt, verdi = :verdi WHERE okonomi = :soknadId AND type = :type")
+    fun updateBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+        tidspunkt: LocalDateTime,
+        verdi: Boolean,
+    )
+
+    @Modifying
+    @Query("DELETE FROM bekreftelse WHERE okonomi = :soknadId AND type = :type")
+    fun deleteBekreftelse(
+        soknadId: UUID,
+        type: BekreftelseType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO formue(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateFormue(
+        soknadId: UUID,
+        type: FormueType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM formue WHERE okonomi = :soknadId AND type = :type")
+    fun deleteFormue(
+        soknadId: UUID,
+        type: FormueType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO inntekt(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateInntekt(
+        soknadId: UUID,
+        type: InntektType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM inntekt WHERE okonomi = :soknadId AND type = :type")
+    fun deleteInntekt(
+        soknadId: UUID,
+        type: InntektType,
+    )
+
+    @Modifying
+    @Query("INSERT INTO utgift(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    fun updateUtgift(
+        soknadId: UUID,
+        type: UtgiftType,
+        beskrivelse: String?,
+        detaljer: String?,
+    )
+
+    @Modifying
+    @Query("DELETE FROM utgift WHERE okonomi = :soknadId AND type = :type")
+    fun deleteUtgift(
+        soknadId: UUID,
+        type: UtgiftType,
+    )
+}
 
 @Table
 data class Okonomi(

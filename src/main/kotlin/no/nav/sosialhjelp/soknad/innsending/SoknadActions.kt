@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -51,6 +52,7 @@ class SoknadActions(
     private val digisosApiService: DigisosApiService,
     private val nedetidService: NedetidService,
     private val navEnhetService: NavEnhetService,
+    private val sendSoknadProxy: SendSoknadProxy,
 ) {
     @PostMapping("/send")
     fun sendSoknad(
@@ -62,41 +64,46 @@ class SoknadActions(
         }
 
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
 
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return sendSoknadProxy.sendSoknad(behandlingsId, token)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
 
-        updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
+            val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
 
-        val kommunenummer =
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-                ?: utledOgLagreKommunenummer(soknadUnderArbeid)
+            updateVedleggJsonWithHendelseTypeAndHendelseReferanse(personId, soknadUnderArbeid)
 
-        val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
-        log.info("Kommune: $kommunenummer Status: $kommuneStatus")
+            val kommunenummer =
+                soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+                    ?: utledOgLagreKommunenummer(soknadUnderArbeid)
 
-        return when (kommuneStatus) {
-            FIKS_NEDETID_OG_TOM_CACHE ->
-                throw SendingTilKommuneUtilgjengeligException(
-                    "Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
-                )
-            MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MED_MANGLER ->
-                throw SendingTilKommuneUtilgjengeligException("Manglende eller feil konfigurasjon. (SvarUt)")
-            SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD ->
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException(
-                    "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
-                )
-            SKAL_SENDE_SOKNADER_VIA_FDA -> {
-                log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
-                val forrigeSoknadSendt = hentForrigeSoknadSendt()
-                val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+            val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
+            log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
-                SendTilUrlFrontend(
-                    id = digisosId,
-                    sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
-                    antallDokumenter = getAntallDokumenter(soknadUnderArbeid.jsonInternalSoknad),
-                    forrigeSoknadSendt = forrigeSoknadSendt,
-                )
+            return when (kommuneStatus) {
+                FIKS_NEDETID_OG_TOM_CACHE ->
+                    throw SendingTilKommuneUtilgjengeligException(
+                        "Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.",
+                    )
+                MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MED_MANGLER ->
+                    throw SendingTilKommuneUtilgjengeligException("Manglende eller feil konfigurasjon. (SvarUt)")
+                SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD ->
+                    throw SendingTilKommuneErMidlertidigUtilgjengeligException(
+                        "Sending til kommune $kommunenummer er midlertidig utilgjengelig.",
+                    )
+                SKAL_SENDE_SOKNADER_VIA_FDA -> {
+                    log.info("Sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
+                    val forrigeSoknadSendt = hentForrigeSoknadSendt()
+                    val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+
+                    SendTilUrlFrontend(
+                        id = digisosId,
+                        sendtTil = SoknadMottakerFrontend.FIKS_DIGISOS_API,
+                        antallDokumenter = getAntallDokumenter(soknadUnderArbeid.jsonInternalSoknad),
+                        forrigeSoknadSendt = forrigeSoknadSendt,
+                    )
+                }
             }
         }
     }

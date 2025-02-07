@@ -36,9 +36,11 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -84,6 +86,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoService.getBehandlingskommune(any()) } returns "Sandvika"
         every { kommuneInfoService.getKommuneStatus(any(), any()) } returns KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
+        every { digisosApiV2Client.getSoknader(any()) } returns emptyList()
     }
 
     @Test
@@ -109,7 +112,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere brukeradresse i soknad`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
@@ -138,7 +146,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere navenhet for valgt folkeregistrert adresse`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
@@ -170,7 +183,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere navenhet for manuelt innskrevet adresse`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
@@ -200,7 +218,12 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `skal slette dokumentasjon og dokumenter ved overgang til kort søknad`() {
-        val lagretSoknad = opprettSoknad().let { soknadRepository.save(it) }
+        val lagretSoknad =
+            opprettSoknadMetadata()
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
         dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = FormueType.FORMUE_BSU, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
@@ -209,7 +232,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("1212", "Sandvika Nav-senter", "Sandvika", "123")
         every { norgService.getEnhetForGt("1234") } returns navEnhet
-        every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
+        every { mellomlagringClient.getDocumentsMetadata(lagretSoknad.id) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
@@ -252,14 +275,27 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).hasSize(1)
-        assertThat(dokumentasjon.first().type == AnnenDokumentasjonType.BEHOV)
+        assertThat(dokumentasjon).hasSize(2)
+        assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
     }
 
     @Test
-    fun `skal slette dokumentasjon og dokumenter ved overgang til standard søknad`() {
-        val lagretSoknad = opprettSoknad(kort = true).let { soknadRepository.save(it) }
+    fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
+        val lagretSoknad =
+            opprettSoknadMetadata(kort = true)
+                .let { soknadMetadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId, kort = true) }
+                .let { soknadRepository.save(it) }
+
+        dokumentasjonRepository.save(
+            Dokumentasjon(
+                soknadId = lagretSoknad.id,
+                type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            ),
+        )
+
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
         dokumentasjonRepository.save(Dokumentasjon(soknadId = lagretSoknad.id, type = AnnenDokumentasjonType.BEHOV, status = DokumentasjonStatus.LASTET_OPP, dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512"))))
@@ -270,6 +306,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) } just runs
+        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
         every { digisosApiV2Client.getSoknader(any()) } returns
@@ -287,6 +324,15 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 ),
             )
         every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(JsonSoknadsStatus.Status.MOTTATT).withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString())))
+
+        dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
+            .run {
+                copy(
+                    status = DokumentasjonStatus.LASTET_OPP,
+                    dokumenter = setOf(Dokument(UUID.randomUUID(), "test.pdf", "sha512")),
+                )
+            }
+            .also { dokumentasjonRepository.save(it) }
 
         val adresserInput =
             AdresserInput(
@@ -311,7 +357,11 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).isEmpty()
-        verify(exactly = 1) { mellomlagringClient.deleteAllDocuments(lagretSoknad.id) }
+        assertThat(dokumentasjon)
+            .hasSize(2)
+            .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
+            .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+
+        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
     }
 }

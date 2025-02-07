@@ -11,6 +11,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import jakarta.validation.Validation
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -47,6 +48,7 @@ internal class KontonummerRessursTest {
             soknadUnderArbeidRepository,
             kontonummerService,
             soknadUnderArbeidService,
+            mockk(relaxed = true),
         )
 
     @BeforeEach
@@ -58,6 +60,7 @@ internal class KontonummerRessursTest {
         every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM
         every { controllerAdapter.updateKontonummer(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

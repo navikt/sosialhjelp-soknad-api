@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.studielan
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
@@ -23,13 +24,19 @@ class StudielanRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService,
+    private val studielanProxy: StudielanProxy,
 ) {
     @GetMapping
     fun hentStudielanBekreftelse(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        return getStudielan(behandlingsId)
+
+        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            studielanProxy.getStudielan(behandlingsId)
+        } else {
+            getStudielan(behandlingsId)
+        }
     }
 
     @PutMapping
@@ -38,30 +45,35 @@ class StudielanRessurs(
         @RequestBody studielanFrontend: StudielanInputDTO,
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
 
-        OkonomiMapper.setBekreftelse(
-            opplysninger,
-            STUDIELAN,
-            studielanFrontend.bekreftelse,
-            textService.getJsonOkonomiTittel("inntekt.student"),
-        )
-        if (studielanFrontend.bekreftelse != null) {
-            OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt(
-                inntekter,
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return studielanProxy.leggTilStudielan(behandlingsId, studielanFrontend)
+        } else {
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+            val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
+
+            OkonomiMapper.setBekreftelse(
+                opplysninger,
                 STUDIELAN,
-                textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
                 studielanFrontend.bekreftelse,
+                textService.getJsonOkonomiTittel("inntekt.student"),
             )
-        }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
+            if (studielanFrontend.bekreftelse != null) {
+                OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt(
+                    inntekter,
+                    STUDIELAN,
+                    textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
+                    studielanFrontend.bekreftelse,
+                )
+            }
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
 
-        return getStudielan(behandlingsId)
+            return getStudielan(behandlingsId)
+        }
     }
 
     private fun getStudielan(behandlingsId: String): StudielanFrontend {

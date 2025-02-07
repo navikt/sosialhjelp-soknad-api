@@ -26,6 +26,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -53,7 +54,13 @@ internal class ForsorgerpliktRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
 
-    private val forsorgerpliktRessurs = ForsorgerpliktRessurs(tilgangskontroll, textService, soknadUnderArbeidRepository)
+    private val forsorgerpliktRessurs =
+        ForsorgerpliktRessurs(
+            tilgangskontroll,
+            textService,
+            soknadUnderArbeidRepository,
+            mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -65,6 +72,7 @@ internal class ForsorgerpliktRessursTest {
 
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
         every { controllerAdapter.updateForsorger(any(), any()) } just Runs
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
@@ -160,7 +168,7 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, emptyList())
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)

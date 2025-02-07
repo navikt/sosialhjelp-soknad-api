@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
+@Profile("(prodfss|test)")
 class TokendingsConfig(
     @Value("\${tokendings_url}") val tokendingsUrl: String,
     @Value("\${tokendings_client_id}") val tokendingsClientId: String,

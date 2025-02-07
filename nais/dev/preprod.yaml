@@ -5,6 +5,8 @@ metadata:
   namespace: teamdigisos
   labels:
     team: teamdigisos
+  annotations:
+    texas.nais.io/enabled: "true"
 spec:
   image: {{image}}
   port: 8080
@@ -28,6 +30,10 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   azure:
     application:
       enabled: true
@@ -73,6 +79,8 @@ spec:
         - host: "ereg-services.dev-fss-pub.nais.io"
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
+        - host: "kodeverk-api.nav.no"
+        - host: "api-test.sits.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad
@@ -116,7 +124,7 @@ spec:
     - name: KRR_AUDIENCE
       value: "dev-gcp:team-rocket:digdir-krr-proxy"
     - name: KRR_SCOPE
-      value: "dev-gcp.team-rocket.digdir-krr-proxy"
+      value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
     - name: KRR_URL
       value: "http://digdir-krr-proxy.team-rocket"
     - name: LOGINSERVICE_URL
@@ -136,9 +144,9 @@ spec:
     - name: PDL_API_AUDIENCE
       value: "dev-fss:pdl:pdl-api"
     - name: PDL_API_SCOPE
-      value: "dev-fss.pdl.pdl-api"
+      value: "api://dev-fss.pdl.pdl-api/.default"
     - name: UNLEASH_ENV
-      value: "dev-fss"
+      value: "dev-gcp"
     - name: SCHEDULER_DISABLE
       value: "false"
     - name: SOKNAD_BOSTOTTE_URL
@@ -150,9 +158,9 @@ spec:
     - name: NEDETID_SLUTT
       value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
-      value: "q0"
+      value: "preprod"
     - name: UNLEASH_INSTANCE_ID
-      value: "dev-fss"
+      value: "dev-gcp"
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "https://test.maskinporten.no/.well-known/oauth-authorization-server"
     - name: SWAGGER_ENABLED

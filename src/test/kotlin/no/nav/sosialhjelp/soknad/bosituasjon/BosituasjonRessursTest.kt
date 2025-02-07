@@ -11,6 +11,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -33,7 +34,12 @@ internal class BosituasjonRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val controllerAdapter: V2ControllerAdapter = mockk()
-    private val bosituasjonRessurs = BosituasjonRessurs(tilgangskontroll, soknadUnderArbeidRepository)
+    private val bosituasjonRessurs =
+        BosituasjonRessurs(
+            tilgangskontroll,
+            soknadUnderArbeidRepository,
+            bosituasjonProxy = mockk(relaxed = true),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -41,6 +47,7 @@ internal class BosituasjonRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { controllerAdapter.updateBosituasjon(any(), any()) } just runs
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
@@ -78,7 +85,7 @@ internal class BosituasjonRessursTest {
             createJsonInternalSoknadWithBosituasjon(Botype.LEIER, 2)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val bosituasjonFrontend = BosituasjonFrontend(Botype.ANNET, 3)
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend)
@@ -99,7 +106,7 @@ internal class BosituasjonRessursTest {
             createJsonInternalSoknadWithBosituasjon(null, 2)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val bosituasjonFrontend = BosituasjonFrontend(null, null)
         bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend)

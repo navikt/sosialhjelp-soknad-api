@@ -27,12 +27,19 @@ class SivilstandController(private val sivilstandService: SivilstandService) {
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody sivilstandInput: SivilstandInput,
     ): SivilstandDto {
-        if (sivilstandInput.sivilstatus != Sivilstatus.GIFT) {
-            require(sivilstandInput.ektefelle == null) { "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift" }
-        }
+        sivilstandInput.validate()
+
         return sivilstandService
-            .updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toBarn())
+            .updateSivilstand(soknadId, sivilstandInput.sivilstatus, sivilstandInput.ektefelle?.toEktefelle())
             .toSivilstandDto()
+    }
+
+    private fun SivilstandInput.validate() {
+        if (sivilstatus != Sivilstatus.GIFT) {
+            require(ektefelle == null) {
+                "Kan ikke sette ektefelle når man har valgt noe annet enn sivilstatus gift"
+            }
+        }
     }
 }
 
@@ -44,7 +51,7 @@ data class EktefelleInput(
 )
 
 data class SivilstandInput(
-    val sivilstatus: Sivilstatus?,
+    val sivilstatus: Sivilstatus,
     val ektefelle: EktefelleInput?,
 )
 
@@ -60,14 +67,27 @@ data class EktefelleDto(
     val harDiskresjonskode: Boolean? = null,
     val folkeregistrertMedEktefelle: Boolean? = null,
     val borSammen: Boolean? = null,
+    val kildeErSystem: Boolean?,
 )
 
-fun Sivilstand.toSivilstandDto() =
-    SivilstandDto(
-        this.sivilstatus,
-        ektefelle?.toDto(),
+fun Sivilstand.toSivilstandDto() = SivilstandDto(sivilstatus = sivilstatus, ektefelle = ektefelle?.toDto())
+
+fun Ektefelle.toDto() =
+    EktefelleDto(
+        personId,
+        navn,
+        fodselsdato,
+        harDiskresjonskode,
+        folkeregistrertMedEktefelle,
+        borSammen,
+        kildeErSystem = kildeErSystem,
     )
 
-fun Ektefelle.toDto() = EktefelleDto(personId, navn, fodselsdato, folkeregistrertMedEktefelle, borSammen)
-
-fun EktefelleInput.toBarn() = Ektefelle(navn, fodselsdato, personId, borSammen = borSammen, kildeErSystem = false)
+fun EktefelleInput.toEktefelle() =
+    Ektefelle(
+        navn,
+        fodselsdato,
+        personId,
+        borSammen = borSammen,
+        kildeErSystem = false,
+    )

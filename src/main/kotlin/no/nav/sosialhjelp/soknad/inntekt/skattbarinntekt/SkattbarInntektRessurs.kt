@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeBekreftelserIfPresent
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
@@ -36,13 +37,19 @@ class SkattbarInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService,
+    private val skattbarInntektProxy: SkattbarInntektProxy,
 ) {
     @GetMapping
     fun hentSkattbareInntekter(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        return getSkattbarInntekt(behandlingsId)
+
+        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            skattbarInntektProxy.getSkattbarInntekt(behandlingsId)
+        } else {
+            getSkattbarInntekt(behandlingsId)
+        }
     }
 
     @PostMapping("/samtykke")
@@ -52,7 +59,12 @@ class SkattbarInntektRessurs(
         @RequestBody samtykke: Boolean,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        setSamtykkeIfChanged(behandlingsId, samtykke)
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            skattbarInntektProxy.updateSamtykkeSkatteetaten(behandlingsId, samtykke)
+        } else {
+            setSamtykkeIfChanged(behandlingsId, samtykke)
+        }
     }
 
     @PutMapping
@@ -62,9 +74,13 @@ class SkattbarInntektRessurs(
         input: SkattbarInntektInputDTO,
     ): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        setSamtykkeIfChanged(behandlingsId, input.samtykke)
 
-        return getSkattbarInntekt(behandlingsId)
+        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            skattbarInntektProxy.updateSamtykkeSkatteetaten(behandlingsId, input.samtykke)
+        } else {
+            setSamtykkeIfChanged(behandlingsId, input.samtykke)
+            getSkattbarInntekt(behandlingsId)
+        }
     }
 
     /** Henter SkattbarInntektFrontend for en gitt behandlingsId. */

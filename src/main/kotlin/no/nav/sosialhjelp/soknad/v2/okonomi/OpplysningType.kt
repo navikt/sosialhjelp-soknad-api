@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -27,7 +28,7 @@ interface OpplysningType {
     val dokumentasjonForventet: Boolean?
 
     // TODO Er gruppe (tidligere VedleggGruppe) noe backenden skal holde styr på? - Tore
-    val group: String
+    val group: VedleggGruppe
 }
 
 @WritingConverter

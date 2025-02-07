@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -47,6 +48,7 @@ internal class InformasjonRessursTest {
             pabegynteSoknaderService = pabegynteSoknaderService,
             kortSoknadService = kortSoknadService,
             maxUploadSize = DataSize.ofTerabytes(10),
+            soknadMetadataService = mockk(relaxed = true),
         )
 
     @BeforeEach
@@ -55,14 +57,16 @@ internal class InformasjonRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { kortSoknadService.isQualified(any(), any()) } returns false
-        every { personService.hentPerson(any()) } returns PERSON
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
+        every { personService.hentPerson(any(), any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns emptyList()
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach

@@ -111,8 +111,7 @@ class BoutgiftServiceImpl(
                 UtgiftType.UTGIFTER_STROM,
                 UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT,
                 UtgiftType.UTGIFTER_OPPVARMING,
-                UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG,
-                UtgiftType.UTGIFTER_BOLIGLAN_RENTER,
+                UtgiftType.UTGIFTER_BOLIGLAN,
                 UtgiftType.UTGIFTER_ANNET_BO,
             )
     }

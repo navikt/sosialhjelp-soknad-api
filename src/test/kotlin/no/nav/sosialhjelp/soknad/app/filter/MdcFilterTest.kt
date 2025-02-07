@@ -4,10 +4,10 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -96,7 +96,7 @@ internal class MdcFilterTest {
 
         mdcFilter.doFilter(request, response, filterChain)
 
-        assertThat(filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID)).isEqualTo(MOCK_BEHANDLINGS_ID)
+        assertThat(filterChain.capturedMDCValue(MDC_SOKNAD_ID)).isEqualTo(MOCK_BEHANDLINGS_ID)
     }
 
     @Test
@@ -109,7 +109,7 @@ internal class MdcFilterTest {
         mdcFilter.doFilter(request, response, filterChain)
 
         assertThatExceptionOfType(NoSuchElementException::class.java)
-            .isThrownBy { filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID) }
+            .isThrownBy { filterChain.capturedMDCValue(MDC_SOKNAD_ID) }
     }
 
     @Test

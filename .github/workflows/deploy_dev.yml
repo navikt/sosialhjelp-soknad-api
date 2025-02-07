@@ -4,36 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       config-file-name:
-        description: 'Deploye til dev-gcp (mock) eller dev-fss?'
+        description: 'Deploye til mock, dev eller preprod?'
         required: true
-        default: 'dev-fss'
+        default: 'dev'
         type: choice
         options:
           - 'mock'
-          - 'dev-fss'
+          - 'dev'
           - 'preprod'
 
 jobs:
-  set-cluster:
-    name: 'Sett cluster basert på config-file'
-    runs-on: ubuntu-latest
-    outputs:
-      cluster-name: ${{ steps.set-cluster-name.outputs.cluster-name }}
-    steps:
-      - name: Sett cluster basert på config-file
-        id: set-cluster-name
-        uses: navikt/sosialhjelp-ci/actions/set-cluster-name@v7
-        with:
-          resource-name: ${{ inputs.config-file-name }}
-
   deploy-to-dev:
-    name: 'Deploy to dev'
-    needs: set-cluster
+    name: 'Deploy to Development'
     permissions:
       id-token: write
       contents: write
     uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v7
     with:
-      cluster-name: ${{ needs.set-cluster.outputs.cluster-name }}
+      cluster-name: dev-gcp
       resource-name: ${{ inputs.config-file-name }}
     secrets: inherit

@@ -45,5 +45,5 @@ class PersonDataFetcher(
     }
 
     // En Exception i denne logikken skal avbryte alt
-    override fun continueOnError(): Boolean = false
+    override fun exceptionOnError(): Boolean = true
 }

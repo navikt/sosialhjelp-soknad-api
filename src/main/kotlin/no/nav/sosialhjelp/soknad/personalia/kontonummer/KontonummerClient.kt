@@ -8,9 +8,8 @@ import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
@@ -34,7 +33,7 @@ class KontonummerClientImpl(
     @Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
     @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
     private val redisService: RedisService,
-    private val tokendingsService: TokendingsService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
@@ -66,7 +65,7 @@ class KontonummerClientImpl(
 
     private fun tokenXtoken(audience: String): String {
         return runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
+            texasService.exchangeToken(IdentityProvider.TOKENX, target = audience)
         }
     }
 

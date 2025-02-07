@@ -7,6 +7,7 @@ import io.mockk.runs
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -43,6 +44,7 @@ class OkonomiskeOpplysningerRessursTest {
             soknadUnderArbeidRepository = soknadUnderArbeidRepository,
             mellomlagringService = mellomlagringService,
             soknadUnderArbeidService = soknadUnderArbeidService,
+            okonomiskeOpplysningerProxy = mockk(relaxed = true),
         )
 
     private val behandlingsId = "123"
@@ -61,6 +63,7 @@ class OkonomiskeOpplysningerRessursTest {
     @BeforeEach
     fun setUp() {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
         every { kommuneInService.getKommuneStatus(any()) } returns KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
     }
 
@@ -103,7 +106,7 @@ class OkonomiskeOpplysningerRessursTest {
                 MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123"),
             )
 
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
         val response = okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
 
@@ -210,7 +213,7 @@ class OkonomiskeOpplysningerRessursTest {
                 MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123"),
             )
 
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
         okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
             .also { dtos ->

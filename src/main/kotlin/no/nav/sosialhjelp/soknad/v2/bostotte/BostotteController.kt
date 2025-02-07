@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
@@ -40,6 +41,8 @@ class BostotteController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: BostotteInput,
     ): BostotteDto {
+        // todo Ekstra logging
+        logger.info("Oppdaterer bostøtte til ${input.hasBostotte}")
         bostotteService.updateBostotte(soknadId, input.hasBostotte)
         return getBostotte(soknadId)
     }
@@ -51,8 +54,14 @@ class BostotteController(
         @RequestBody input: SamtykkeInput,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): BostotteDto {
+        // todo ekstra logging
+        logger.info("Oppdaterer samtykke for bostøtte ${input.hasSamtykke}")
         bostotteService.updateSamtykke(soknadId, input.hasSamtykke, token)
         return getBostotte(soknadId)
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.situasjonendring.JsonSituasjonendring
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -31,20 +32,26 @@ data class SituasjonsendringFrontend(
 class SituasjonsendringRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val situasjonendringProxy: SituasjonendringProxy,
 ) {
     @GetMapping
     fun hentSituasjonsendring(
         @PathVariable behandlingsId: String,
     ): SituasjonsendringFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        return jsonInternalSoknad.soknad.data.situasjonendring?.let {
-            SituasjonsendringFrontend(it.harNoeEndretSeg, it.hvaHarEndretSeg)
-        } ?: SituasjonsendringFrontend()
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return situasjonendringProxy.getSituasjonsendring(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            return jsonInternalSoknad.soknad.data.situasjonendring?.let {
+                SituasjonsendringFrontend(it.harNoeEndretSeg, it.hvaHarEndretSeg)
+            } ?: SituasjonsendringFrontend()
+        }
     }
 
     @PutMapping
@@ -53,25 +60,31 @@ class SituasjonsendringRessurs(
         @RequestBody situasjonsendring: SituasjonsendringFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: error("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        if (jsonInternalSoknad.soknad.data.situasjonendring == null) {
-            jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring().withHarNoeEndretSeg(false)
-        }
 
-        with(jsonInternalSoknad.soknad.data.situasjonendring) {
-            hvaHarEndretSeg = situasjonsendring.hvaErEndret
-            kilde = JsonKildeBruker.BRUKER
-        }
-
-        if (situasjonsendring.hvaErEndret != null) {
-            jsonInternalSoknad.vedlegg.vedlegg.add(JsonVedlegg().withType("kort").withTilleggsinfo("situasjonsendring"))
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return situasjonendringProxy.updateSituasjonsendring(behandlingsId, situasjonsendring)
         } else {
-            jsonInternalSoknad.vedlegg.vedlegg.removeIf { it.type == "kort" && it.tilleggsinfo == "situasjonsendring" }
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: error("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            if (jsonInternalSoknad.soknad.data.situasjonendring == null) {
+                jsonInternalSoknad.soknad.data.situasjonendring = JsonSituasjonendring().withHarNoeEndretSeg(false)
+            }
+
+            with(jsonInternalSoknad.soknad.data.situasjonendring) {
+                hvaHarEndretSeg = situasjonsendring.hvaErEndret
+                kilde = JsonKildeBruker.BRUKER
+            }
+
+            if (situasjonsendring.hvaErEndret != null) {
+                jsonInternalSoknad.vedlegg.vedlegg.add(JsonVedlegg().withType("kort").withTilleggsinfo("situasjonsendring"))
+            } else {
+                jsonInternalSoknad.vedlegg.vedlegg.removeIf { it.type == "kort" && it.tilleggsinfo == "situasjonsendring" }
+            }
+
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 }

@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @SpringBootApplication
 class Application
@@ -19,4 +21,10 @@ private fun configureApplication(builder: SpringApplicationBuilder): SpringAppli
     }
     return builder
         .sources(Application::class.java)
+}
+
+fun nowWithMillis() = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+
+object ControllerToNewDatamodellProxy {
+    var nyDatamodellAktiv = true
 }

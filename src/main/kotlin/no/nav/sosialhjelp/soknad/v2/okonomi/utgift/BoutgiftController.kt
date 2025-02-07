@@ -56,8 +56,9 @@ private fun HarBoutgifterInput.toUtgiftTypeSet(): Set<UtgiftType> {
         if (hasStrom) UtgiftType.UTGIFTER_STROM else null,
         if (hasKommunalAvgift) UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT else null,
         if (hasOppvarming) UtgiftType.UTGIFTER_OPPVARMING else null,
-        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG else null,
-        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_RENTER else null,
+        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN else null,
+//        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG else null,
+//        if (hasBoliglan) UtgiftType.UTGIFTER_BOLIGLAN_RENTER else null,
         if (hasAnnenBoutgift) UtgiftType.UTGIFTER_ANNET_BO else null,
     )
         .filterNotNull().toSet()
@@ -81,7 +82,8 @@ private fun Set<Utgift>.toBoutgifterDto(skalViseInfoVedBekreftelse: Boolean) =
         strom = hasType(UtgiftType.UTGIFTER_STROM),
         kommunalAvgift = hasType(UtgiftType.UTGIFTER_KOMMUNAL_AVGIFT),
         oppvarming = hasType(UtgiftType.UTGIFTER_OPPVARMING),
-        boliglan = hasType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER) || hasType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG),
+        boliglan = hasType(UtgiftType.UTGIFTER_BOLIGLAN),
+//        boliglan = hasType(UtgiftType.UTGIFTER_BOLIGLAN_RENTER) || hasType(UtgiftType.UTGIFTER_BOLIGLAN_AVDRAG),
         annet = hasType(UtgiftType.UTGIFTER_ANNET_BO),
         skalViseInfoVedBekreftelse = skalViseInfoVedBekreftelse,
     )

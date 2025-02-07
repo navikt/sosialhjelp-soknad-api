@@ -32,7 +32,11 @@ data class Soknad(
     val eierPersonId: String,
     // TODO Denne blir vel duplisert på metadata og kan fjernes herfra?
     @Embedded.Empty
-    val tidspunkt: Tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)),
+    val tidspunkt: Tidspunkt =
+        Tidspunkt(
+            opprettet = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+            sistEndret = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        ),
     @Embedded.Empty
     val begrunnelse: Begrunnelse = Begrunnelse(),
     @Column("is_kort_soknad")

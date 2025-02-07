@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -27,18 +28,24 @@ import org.springframework.web.bind.annotation.RestController
 class UtdanningRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val utdanningProxy: UtdanningProxy,
 ) {
     @GetMapping
     fun hentUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): UtdanningFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val utdanning = soknad.soknad.data.utdanning
-        return UtdanningFrontend(utdanning.erStudent, toStudentgradErHeltid(utdanning.studentgrad))
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            return utdanningProxy.getUtdanning(behandlingsId)
+        } else {
+            val personId = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad =
+                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val utdanning = soknad.soknad.data.utdanning
+            return UtdanningFrontend(utdanning.erStudent, toStudentgradErHeltid(utdanning.studentgrad))
+        }
     }
 
     @PutMapping
@@ -47,26 +54,31 @@ class UtdanningRessurs(
         @RequestBody utdanningFrontend: UtdanningFrontend,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val utdanning = jsonInternalSoknad.soknad.data.utdanning
-        val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
-        utdanning.kilde = JsonKilde.BRUKER
-        utdanning.erStudent = utdanningFrontend.erStudent
-        if (utdanningFrontend.erStudent == true) {
-            utdanning.studentgrad = toStudentgrad(utdanningFrontend.studengradErHeltid)
+
+        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
+            utdanningProxy.updateUtdanning(behandlingsId, utdanningFrontend)
         } else {
-            utdanning.studentgrad = null
-            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-            if (opplysninger.bekreftelse != null) {
-                opplysninger.bekreftelse.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
-                inntekter.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
+            val eier = SubjectHandlerUtils.getUserIdFromToken()
+            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+            val jsonInternalSoknad =
+                soknad.jsonInternalSoknad
+                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+            val utdanning = jsonInternalSoknad.soknad.data.utdanning
+            val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
+            utdanning.kilde = JsonKilde.BRUKER
+            utdanning.erStudent = utdanningFrontend.erStudent
+            if (utdanningFrontend.erStudent == true) {
+                utdanning.studentgrad = toStudentgrad(utdanningFrontend.studengradErHeltid)
+            } else {
+                utdanning.studentgrad = null
+                val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+                if (opplysninger.bekreftelse != null) {
+                    opplysninger.bekreftelse.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
+                    inntekter.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
+                }
             }
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     companion object {

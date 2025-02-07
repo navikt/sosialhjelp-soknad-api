@@ -18,6 +18,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
@@ -72,6 +73,7 @@ internal class AdresseRessursTest {
             unleash,
             soknadMetadataRepository,
             kortSoknadService,
+            adresseProxy = mockk(relaxed = true),
             soknadUnderArbeidService,
         )
 
@@ -83,6 +85,7 @@ internal class AdresseRessursTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { soknadV2ControllerAdapter.updateAdresse(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
+        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
@@ -301,7 +304,7 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", "321", null, null, null, null)
-        every { kortSoknadService.isQualified(any(), any()) } returns true
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
         val kommunenummerSlot = slot<String>()
         every { kortSoknadService.isEnabled(capture(kommunenummerSlot)) } returns true
         every { soknadMetadataRepository.hent(any()) } returns

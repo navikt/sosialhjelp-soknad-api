@@ -48,7 +48,7 @@ class FamilieToJsonMapper(
             json.initializeObjects()
 
             with(json.soknad.data.familie) {
-                if (familie.ektefelle != null && familie.sivilstatus != null) {
+                if (familie.sivilstatus != null) {
                     sivilstatus = familie.toJsonSivilstatus().apply { handleValidationDependencies() }
                 }
                 forsorgerplikt = familie.toJsonForsorgerplikt()
@@ -78,7 +78,8 @@ private fun JsonInternalSoknad.initializeObjects() {
 
 private fun Familie.toJsonSivilstatus() =
     JsonSivilstatus()
-        .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.SYSTEM)
+        // hvis ektefelle finnes - sjekk kilde, ellers bruker
+        .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.BRUKER)
         // required i json-modellen
         .withStatus(sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT)
         .withEktefelle(ektefelle?.toJson())
@@ -124,9 +125,11 @@ private fun Barn.toJson() =
                 .withKilde(JsonKildeSystem.SYSTEM)
                 .withVerdi(folkeregistrertSammen),
         ).withHarDeltBosted(
-            JsonHarDeltBosted()
-                .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(deltBosted ?: false),
+            deltBosted?.let {
+                JsonHarDeltBosted()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(it)
+            },
         )
         // TODO Pr. nå settes det ikke noe samvarsgrad i frontend - riktig?
         .withSamvarsgrad(null)
