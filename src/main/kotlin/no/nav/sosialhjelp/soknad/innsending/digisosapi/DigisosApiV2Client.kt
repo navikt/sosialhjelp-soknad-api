@@ -171,13 +171,14 @@ class DigisosApiV2Client(
     ): FiksSoknadStatusListe {
         val startTime = System.currentTimeMillis()
 
+        val sporingsId = UUID.randomUUID().toString()
         val fiksSoknaderStatusRequest = FiksSoknaderStatusRequest(digisosIdListe)
 
-        log.info("Henter status for søknader med digisosIdListe: $digisosIdListe")
+        log.info("Henter status for søknader med request: $fiksSoknaderStatusRequest og sporingsId: $sporingsId")
         return try {
             fiksWebClient
                 .post()
-                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status")
+                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status".plus("?sporingsId=$sporingsId"))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
                 .bodyValue(BodyInserters.fromValue(fiksSoknaderStatusRequest))
@@ -187,9 +188,9 @@ class DigisosApiV2Client(
                 .block() ?: throw FiksException("Fiks - noe uventet feilet ved henting av status for søknader. Response er null?", null)
         } catch (e: WebClientResponseException) {
             val errorResponse = e.responseBodyAsString
-            throw IllegalStateException("Henting av status for søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse. SporingsId: $sporingsId")
         } catch (e: IOException) {
-            throw IllegalStateException("Henting av status for søknader hos Fiks feilet", e)
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
         }
     }
 
