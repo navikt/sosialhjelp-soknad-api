@@ -111,7 +111,7 @@ spec:
       value: "mock"
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
-    - name: NAIS_TOKEN_EXCHANGE_ENDPOINT
+    - name: nais_token_exchange_endpoint
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/tokenx"
-    - name: NAIS_TOKEN_ENDPOINT
+    - name: nais_token_endpoint
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/maskinporten"
