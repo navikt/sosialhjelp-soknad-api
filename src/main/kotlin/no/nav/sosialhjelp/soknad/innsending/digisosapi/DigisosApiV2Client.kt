@@ -183,6 +183,7 @@ class DigisosApiV2Client(
                 .post()
                 .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status".plus("?sporingsId=$sporingsId"))
                 .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
                 .bodyValue(BodyInserters.fromValue(fiksSoknaderStatusRequest))
                 .retrieve()
