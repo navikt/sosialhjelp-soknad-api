@@ -35,9 +35,11 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import java.io.IOException
 import java.time.Duration
@@ -75,6 +77,7 @@ class DigisosApiV2Client(
             }.defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .filter(mdcExchangeFilter)
+            .filter(logRequest())
             .build()
 
     companion object {
@@ -249,4 +252,13 @@ class DigisosApiV2Client(
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }
+
+//    TODO fjerne, kun midlertidig logging av request
+    private fun logRequest(): ExchangeFilterFunction {
+        return ExchangeFilterFunction.ofRequestProcessor({ clientRequest ->
+            log.info("Request: {} {} {}", clientRequest.method(), clientRequest.url(), clientRequest.body())
+            clientRequest.headers().forEach({ name, values -> values.forEach({ value -> log.info("{}={}", name, value) }) })
+            Mono.just(clientRequest)
+        })
+    }
 }
