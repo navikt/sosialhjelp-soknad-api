@@ -185,9 +185,7 @@ class DigisosApiV2Client(
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, BEARER + texasService.getToken(IdentityProvider.M2M, "ks:fiks"))
-                .body(BodyInserters.fromValue(fiksSoknaderStatusRequest))
-                // funker
-//                .bodyValue(fiksSoknaderStatusRequest)
+                .bodyValue(fiksSoknaderStatusRequest)
                 .retrieve()
                 .bodyToMono<FiksSoknadStatusListe>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
