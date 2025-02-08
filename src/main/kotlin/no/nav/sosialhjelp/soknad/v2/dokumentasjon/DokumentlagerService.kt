@@ -99,11 +99,16 @@ class FiksDokumentService(
         soknadId: UUID,
         dokumentId: UUID,
     ) {
-        mellomlagringClient.slettDokument(soknadId.toString(), dokumentId.toString())
+        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
+            ?.let { dto -> dto.mellomlagringMetadataList?.find { it.filId == dokumentId.toString() } }
+            ?.also { metadata -> mellomlagringClient.slettDokument(soknadId.toString(), metadata.filId) }
+            ?: logger.warn("Kunne ikke finne dokument for sletting $dokumentId")
     }
 
     override fun deleteAllDokumenterForSoknad(soknadId: UUID) {
-        mellomlagringClient.slettAlleDokumenter(soknadId.toString())
+        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
+            ?.also { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
+            ?: logger.warn("Kunne ikke finne dokumenter for sletting for søknad $soknadId")
     }
 
     companion object {
