@@ -451,16 +451,18 @@ fun opprettDokumentasjon(
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
-    dokumenter: Set<DokumentRef> = opprettDokumenter(),
+    dokumenter: Set<DokumentRef> = opprettDokumenter(dokumentIds = listOf(UUID.randomUUID())),
 ): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
 
-fun opprettDokumenter(): Set<DokumentRef> =
-    setOf(
-        DokumentRef(
-            dokumentId = UUID.randomUUID(),
-            filnavn = "utskrift_brukskonto.pdf",
-        ),
-    )
+fun opprettDokumenter(dokumentIds: List<UUID>): Set<DokumentRef> =
+    dokumentIds
+        .map {
+            DokumentRef(
+                dokumentId = it,
+                filnavn = "utskrift_brukskonto$dokumentIds.pdf",
+            )
+        }
+        .toSet()
 
 fun createBostotteSak(beskrivelse: String? = null) =
     BostotteSak(
