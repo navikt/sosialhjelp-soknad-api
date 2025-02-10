@@ -81,7 +81,6 @@ interface V2ControllerAdapter {
     fun updateBostotteSamtykke(
         soknadId: String,
         hasSamtykke: Boolean,
-        userToken: String?,
     )
 
     fun updateSamtykkeSkatteetaten(

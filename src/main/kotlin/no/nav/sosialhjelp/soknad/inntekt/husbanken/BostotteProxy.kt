@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteSakDto
-import no.nav.sosialhjelp.soknad.v2.bostotte.SamtykkeInput
 import no.nav.sosialhjelp.soknad.v2.bostotte.UtbetalingBostotteDto
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -27,7 +26,7 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         hasBostotte: Boolean?,
     ) {
         hasBostotte?.also {
-            bostotteController.updateHasBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+            bostotteController.updateBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
         }
     }
 
@@ -36,7 +35,7 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         samtykke: Boolean,
         token: String?,
     ) {
-        bostotteController.updateHasSamtykke(UUID.fromString(behandlingsId), SamtykkeInput(samtykke), token)
+        bostotteController.updateBostotte(UUID.fromString(behandlingsId), BostotteInput(null, samtykke))
     }
 }
 

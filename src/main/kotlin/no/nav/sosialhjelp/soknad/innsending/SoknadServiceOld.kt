@@ -168,7 +168,6 @@ class SoknadServiceOld(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,
-        token: String?,
     ) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -176,7 +175,7 @@ class SoknadServiceOld(
             skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
         }
         if (harBostotteSamtykke) {
-            bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token)
+            bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid)
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
