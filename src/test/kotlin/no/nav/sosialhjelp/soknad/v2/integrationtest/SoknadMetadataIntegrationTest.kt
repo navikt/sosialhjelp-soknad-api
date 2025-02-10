@@ -52,6 +52,8 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
         every { mellomlagringClient.slettAlleDokumenter(uuid.toString()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(uuid.toString(), emptyList())
 
         doDelete(
             uri = deleteUrl(uuid),

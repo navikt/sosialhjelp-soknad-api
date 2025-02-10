@@ -63,9 +63,6 @@ class MellomlagringClientImpl(
     private val maskinportenClient: MaskinportenClient,
     private val webClient: WebClient,
 ) : MellomlagringClient {
-    /**
-     * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
-     */
     override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? {
         return try {
             webClient.get()

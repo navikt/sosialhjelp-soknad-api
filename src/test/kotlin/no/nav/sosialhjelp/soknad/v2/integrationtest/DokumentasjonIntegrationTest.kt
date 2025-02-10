@@ -83,9 +83,23 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
+        val dokumentId = UUID.randomUUID()
         every { mellomlagringClient.slettDokument(any(), any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = dokumentId.toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
 
-        doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
+        doGetFullResponse(uri = getUrl(soknad.id, dokumentId))
             .expectStatus().isNotFound
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody!!
@@ -196,9 +210,30 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Slette siste Dokument i Dokumentasjon skal endre status`() {
-        every { mellomlagringClient.slettDokument(any(), any()) } just runs
+        val dokumentId = UUID.randomUUID()
 
-        val dokumentasjon = opprettDokumentasjon(soknadId = soknad.id).also { dokumentasjonRepository.save(it) }
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = dokumentId.toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
+
+        val dokumentasjon =
+            opprettDokumentasjon(
+                soknadId = soknad.id,
+                dokumenter = setOf(DokumentRef(dokumentId, pdfFil.name)),
+            )
+                .also { dokumentasjonRepository.save(it) }
+
         assertThat(dokumentasjon.status).isEqualTo(DokumentasjonStatus.LASTET_OPP)
         assertThat(dokumentasjon.dokumenter).hasSize(1)
 
