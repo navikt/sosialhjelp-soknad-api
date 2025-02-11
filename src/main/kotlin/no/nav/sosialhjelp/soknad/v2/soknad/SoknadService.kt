@@ -26,8 +26,6 @@ interface SoknadService {
         innsendingsTidspunkt: LocalDateTime?,
     )
 
-    fun getSoknad(soknadId: UUID): Soknad
-
     fun hasSoknadNewerThan(
         eierId: String,
         tidspunkt: LocalDateTime,
@@ -56,8 +54,7 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService,
-    BegrunnelseService {
+) : SoknadService, BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -93,18 +90,16 @@ class SoknadServiceImpl(
             .also { soknadRepository.save(it) }
     }
 
-    override fun getSoknad(soknadId: UUID) =
-        getSoknadOrNull(soknadId)
-            ?: error("Soknad finnes ikke")
+    @Transactional(readOnly = true)
+    override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
 
-    override fun getSoknadOrNull(soknadId: UUID) =
-        soknadRepository.findByIdOrNull(soknadId)
-
+    @Transactional(readOnly = true)
     override fun hasSoknadNewerThan(
         eierId: String,
         tidspunkt: LocalDateTime,
     ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
+    @Transactional(readOnly = true)
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
 
     override fun updateKortSoknad(
@@ -116,6 +111,7 @@ class SoknadServiceImpl(
         soknadRepository.save(updatedSoknad)
     }
 
+    @Transactional(readOnly = true)
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 
     override fun updateBegrunnelse(

@@ -26,7 +26,15 @@ class KortSoknadServiceTest {
     private val soknadService: SoknadService = mockk()
     private val clock: Clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
     private val kortSoknadService: KortSoknadService =
-        KortSoknadService(digisosApiService, clock, soknadService, mockk(), mockk(), mockk(relaxed = true))
+        KortSoknadService(
+            digisosApiService,
+            clock,
+            soknadService,
+            mockk(),
+            mockk(),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+        )
 
     @Test
     fun `should qualify if there is a recent soknad from fiks`() {

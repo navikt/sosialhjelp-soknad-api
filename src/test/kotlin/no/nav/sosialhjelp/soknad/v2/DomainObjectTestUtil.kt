@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -451,17 +451,18 @@ fun opprettDokumentasjon(
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
-    dokumenter: Set<Dokument> = opprettDokumenter(),
+    dokumenter: Set<DokumentRef> = opprettDokumenter(dokumentIds = listOf(UUID.randomUUID())),
 ): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
 
-fun opprettDokumenter(): Set<Dokument> =
-    setOf(
-        Dokument(
-            dokumentId = UUID.randomUUID(),
-            filnavn = "utskrift_brukskonto.pdf",
-            sha512 = UUID.randomUUID().toString(),
-        ),
-    )
+fun opprettDokumenter(dokumentIds: List<UUID>): Set<DokumentRef> =
+    dokumentIds
+        .map {
+            DokumentRef(
+                dokumentId = it,
+                filnavn = "utskrift_brukskonto$dokumentIds.pdf",
+            )
+        }
+        .toSet()
 
 fun createBostotteSak(beskrivelse: String? = null) =
     BostotteSak(

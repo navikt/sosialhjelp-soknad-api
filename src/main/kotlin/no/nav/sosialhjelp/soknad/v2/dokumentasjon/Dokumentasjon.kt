@@ -13,15 +13,15 @@ data class Dokumentasjon(
     val soknadId: UUID,
     val type: OpplysningType,
     val status: DokumentasjonStatus = DokumentasjonStatus.FORVENTET,
-    val dokumenter: Set<Dokument> = emptySet(),
+    val dokumenter: Set<DokumentRef> = emptySet(),
 ) : DomainRoot {
     override fun getDbId() = id
 }
 
-data class Dokument(
+@Table
+data class DokumentRef(
     val dokumentId: UUID,
     val filnavn: String,
-    val sha512: String,
 )
 
 enum class DokumentasjonStatus {

@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -49,7 +51,9 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     fun `Skal slette metadata ved sletting av soknad`() {
         val uuid = opprettSoknadMedEierOgKontaktForInnsending()
 
-        every { mellomlagringClient.getDocumentsMetadata(uuid) } returns null
+        every { mellomlagringClient.slettAlleDokumenter(uuid.toString()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(uuid.toString(), emptyList())
 
         doDelete(
             uri = deleteUrl(uuid),
@@ -57,7 +61,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
         )
 
         assertThat(soknadMetadataRepository.findByIdOrNull(uuid)).isNull()
-        verify(exactly = 1) { mellomlagringClient.getDocumentsMetadata(uuid) }
+        verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(uuid.toString()) }
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {

@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import java.util.UUID
+
 open class SosialhjelpSoknadApiException : RuntimeException {
     var id: String? = null
         private set
@@ -35,3 +37,9 @@ class FeilVedSendingTilFiksException(
     t: Throwable?,
     id: String?,
 ) : SosialhjelpSoknadApiException(message, t, id)
+
+class SoknadLifecycleException(
+    message: String?,
+    t: Throwable?,
+    id: UUID?,
+) : SosialhjelpSoknadApiException(message, t, id.toString())
