@@ -37,6 +37,7 @@ class CreateDeleteSoknadHandler(
                 )
             }
             .also {
+                // TODO Løft dette et hakk opp ut av transaksjon
                 runRegisterDataFetchers(soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
