@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.io.ByteArrayInputStream
 import java.util.Collections
@@ -73,7 +74,7 @@ class MellomlagringClientImpl(
                 .bodyToMono<MellomlagringDto>()
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (e: WebClientResponseException) {
-            if (e is BadRequest) {
+            if (e is BadRequest || e is NotFound) {
                 val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(e.responseBodyAsString)
                 val message = errorMessage.message
                 if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
