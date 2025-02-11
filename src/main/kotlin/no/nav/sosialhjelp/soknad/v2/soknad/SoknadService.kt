@@ -23,7 +23,7 @@ interface SoknadService {
 
     fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: LocalDateTime?,
     )
 
     fun getSoknad(soknadId: UUID): Soknad
@@ -86,7 +86,7 @@ class SoknadServiceImpl(
 
     override fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: LocalDateTime?,
     ) {
         findOrError(soknadId)
             .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }

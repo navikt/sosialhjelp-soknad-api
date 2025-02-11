@@ -41,10 +41,12 @@ class SendSoknadHandler(
         soknadId: UUID,
         token: String?,
     ): SoknadSendtInfo {
+        val innsendingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        soknadService.setInnsendingstidspunkt(soknadId, innsendingTidspunkt)
+
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
-        val innsendingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
 
         val digisosId: UUID =
             runCatching {
@@ -74,10 +76,9 @@ class SendSoknadHandler(
                             )
                         }
                         ?: error("NavMottaker mangler kommunenummer")
-
-                    soknadService.setInnsendingstidspunkt(soknadId, innsendingTidspunkt)
                 }
                 .onFailure {
+                    soknadService.setInnsendingstidspunkt(soknadId, null)
                     logger.error("Feil ved sending av soknad til FIKS", it)
                     throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
                 }
