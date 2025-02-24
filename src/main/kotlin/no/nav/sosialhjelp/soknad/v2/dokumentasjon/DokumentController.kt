@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -27,8 +27,8 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/dokument", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DokumentController(
-    private val dokumentService: DokumentService,
-    private val virusScanner: VirusScanner,
+    private val dokumentlagerService: DokumentlagerService,
+    private val dokumentRefService: DokumentRefService,
 ) {
     @GetMapping("/{soknadId}/{dokumentId}")
     @Operation(summary = "Henter et gitt dokument")
@@ -48,12 +48,28 @@ class DokumentController(
         @PathVariable("dokumentId") dokumentId: UUID,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
-        dokumentService.getDokument(soknadId = soknadId, dokumentId = dokumentId)
-            .let { (filnavn, bytes) ->
-                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${filnavn}\"")
-                val mimeType = FileDetectionUtils.detectMimeType(bytes)
-                return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(bytes)
+        return when (dokumentRefService.getRef(soknadId, dokumentId)) {
+            null -> {
+                dokumentlagerService.deleteDokument(soknadId, dokumentId)
+                throw IkkeFunnetException("Fant ikke dokumentreferanse $dokumentId")
             }
+            else -> {
+                runCatching { dokumentlagerService.getDokument(soknadId, dokumentId) }
+                    .onFailure { dokumentRefService.removeRef(soknadId, dokumentId) }
+                    .getOrThrow()
+                    .let { mellomlagretDokument ->
+                        require(mellomlagretDokument.data != null) { "Fant ikke data for dokument $dokumentId" }
+
+                        response.setHeader(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"${mellomlagretDokument.filnavn}\"",
+                        )
+                        ResponseEntity.ok()
+                            .contentType(mellomlagretDokument.data.toMediaType())
+                            .body(mellomlagretDokument.data)
+                    }
+            }
+        }
     }
 
     @PostMapping("/{soknadId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -64,11 +80,20 @@ class DokumentController(
     ): DokumentDto {
         val opplysningType = StringToOpplysningTypeConverter.convert(opplysningTypeString)
 
-        return dokument.originalFilename
-            ?.also { virusScanner.scan(filnavn = it, dokument.bytes, soknadId) }
-            ?.let { dokumentService.saveDokument(soknadId, opplysningType, dokument.bytes, orginaltFilnavn = it) }
-            ?.let { DokumentDto(it.dokumentId, it.filnavn) }
-            ?: throw IllegalArgumentException("Opplastet dokument mangler filnavn.")
+        return runCatching {
+            dokument.originalFilename?.let { dokumentlagerService.uploadDokument(soknadId, dokument.bytes, it) }
+                ?: throw IllegalArgumentException("Opplastet dokument mangler filnavn.")
+        }
+            .onSuccess { mellomlagretDokument ->
+                dokumentRefService.addRef(
+                    soknadId = soknadId,
+                    type = opplysningType,
+                    fiksFilId = mellomlagretDokument.filId.toUuid(),
+                    filnavn = mellomlagretDokument.filnavn,
+                )
+            }
+            .getOrThrow()
+            .let { DokumentDto(it.filId.toUuid(), it.filnavn) }
     }
 
     @DeleteMapping("/{soknadId}/{dokumentId}")
@@ -76,6 +101,13 @@ class DokumentController(
         @PathVariable("soknadId") soknadId: UUID,
         @PathVariable("dokumentId") dokumentId: UUID,
     ) {
-        dokumentService.deleteDokument(soknadId, dokumentId)
+        runCatching { dokumentlagerService.deleteDokument(soknadId, dokumentId) }
+            .onSuccess { dokumentRefService.removeRef(soknadId, dokumentId) }
+            .onFailure { throw IllegalStateException("Feil ved sletting av dokument $dokumentId", it) }
     }
 }
+
+private fun String.toUuid() = UUID.fromString(this)
+
+private fun ByteArray.toMediaType(): MediaType =
+    FileDetectionUtils.detectMimeType(this).let { MediaType.parseMediaType(it) }

@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.shadow
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import org.springframework.stereotype.Component
@@ -49,10 +49,9 @@ class SoknadV2DokumentasjonAdapter(
             dokumentasjonRepository.findBySoknadIdAndType(UUID.fromString(behandlingsId), opplysningType)
                 ?.run {
                     val dokument =
-                        Dokument(
+                        DokumentRef(
                             dokumentId = UUID.fromString(dokumentId),
                             filnavn = filnavn,
-                            sha512 = sha512,
                         )
                     copy(status = DokumentasjonStatus.LASTET_OPP, dokumenter = dokumenter.plus(dokument))
                 }

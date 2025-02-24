@@ -4,9 +4,7 @@ server:
 spring:
   flyway:
     enabled: true
-    baseline-on-migrate: true
     clean-disabled: false
-    clean-on-validation-error: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/soknad-mock-db
@@ -62,8 +60,8 @@ azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
 krr_scope: dummyScope
-NAIS_TOKEN_EXCHANGE_ENDPOINT: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/tokenx}
-NAIS_TOKEN_ENDPOINT: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/maskinporten}
+token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/tokenx}
+token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/maskinporten}
 
 
 no.nav.security.jwt.issuer:

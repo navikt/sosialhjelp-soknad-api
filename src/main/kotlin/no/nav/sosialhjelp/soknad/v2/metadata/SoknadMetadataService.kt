@@ -12,10 +12,14 @@ import java.util.UUID
 class SoknadMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
-    fun createSoknadMetadata(soknadId: UUID): SoknadMetadata {
+    fun createSoknadMetadata(
+        soknadId: UUID,
+        isKort: Boolean,
+    ): SoknadMetadata {
         return SoknadMetadata(
             soknadId = soknadId,
             personId = SubjectHandlerUtils.getUserIdFromToken(),
+            soknadType = if (isKort) SoknadType.KORT else SoknadType.STANDARD,
         )
             .let { soknadMetadataRepository.save(it) }
     }

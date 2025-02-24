@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -16,7 +15,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
@@ -27,50 +25,36 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.io.ByteArrayInputStream
 import java.util.Collections
-import java.util.UUID
 import java.util.concurrent.Future
 
 interface MellomlagringClient {
     fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto?
-
-    fun getDocumentsMetadata(soknadId: UUID): MellomlagringDto?
 
     fun lastOppDokument(
         navEksternId: String,
         filOpplasting: FilOpplasting,
     ): MellomlagringDto
 
-    fun uploadDocument(
-        soknadId: UUID,
+    fun lastOppDokument(
+        navEksternId: String,
         filnavn: String,
         data: ByteArray,
-    )
+    ): MellomlagringDto
 
     fun slettAlleDokumenter(navEksternId: String)
-
-    fun deleteAllDocuments(soknadId: UUID)
 
     fun hentDokument(
         navEksternId: String,
         digisosDokumentId: String,
     ): ByteArray
 
-    fun getDocument(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ): ByteArray
-
     fun slettDokument(
         navEksternId: String,
         digisosDokumentId: String,
-    )
-
-    fun deleteDocument(
-        soknadId: UUID,
-        documentId: UUID,
     )
 }
 
@@ -80,9 +64,6 @@ class MellomlagringClientImpl(
     private val maskinportenClient: MaskinportenClient,
     private val webClient: WebClient,
 ) : MellomlagringClient {
-    /**
-     * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
-     */
     override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? {
         return try {
             webClient.get()
@@ -93,7 +74,7 @@ class MellomlagringClientImpl(
                 .bodyToMono<MellomlagringDto>()
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (e: WebClientResponseException) {
-            if (e is BadRequest) {
+            if (e is BadRequest || e is NotFound) {
                 val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(e.responseBodyAsString)
                 val message = errorMessage.message
                 if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
@@ -105,8 +86,24 @@ class MellomlagringClientImpl(
         }
     }
 
-    override fun getDocumentsMetadata(soknadId: UUID): MellomlagringDto? {
-        return hentDokumenterMetadata(soknadId.toString())
+    override fun lastOppDokument(
+        navEksternId: String,
+        filnavn: String,
+        data: ByteArray,
+    ): MellomlagringDto {
+        return lastOppDokument(
+            navEksternId = navEksternId,
+            filOpplasting =
+                FilOpplasting(
+                    metadata =
+                        FilMetadata(
+                            filnavn = filnavn,
+                            mimetype = "application/octet-stream",
+                            storrelse = data.size.toLong(),
+                        ),
+                    data = ByteArrayInputStream(data),
+                ),
+        )
     }
 
     /**
@@ -138,26 +135,6 @@ class MellomlagringClientImpl(
                     .filter { !it.isDone && !it.isCancelled }
                     .forEach { it.cancel(true) }
             }
-    }
-
-    override fun uploadDocument(
-        soknadId: UUID,
-        filnavn: String,
-        data: ByteArray,
-    ) {
-        lastOppDokument(
-            navEksternId = soknadId.toString(),
-            filOpplasting =
-                FilOpplasting(
-                    data = ByteArrayInputStream(data),
-                    metadata =
-                        FilMetadata(
-                            filnavn = filnavn,
-                            mimetype = FileDetectionUtils.detectMimeType(data),
-                            storrelse = data.size.toLong(),
-                        ),
-                ),
-        )
     }
 
     private fun doUploadDocument(
@@ -203,10 +180,6 @@ class MellomlagringClientImpl(
             .block()
     }
 
-    override fun deleteAllDocuments(soknadId: UUID) {
-        slettAlleDokumenter(soknadId.toString())
-    }
-
     /**
      * Last ned mellomlagret vedlegg
      */
@@ -221,19 +194,6 @@ class MellomlagringClientImpl(
             .bodyToMono<ByteArray>()
             .block()
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
-    }
-
-    override fun getDocument(
-        soknadId: UUID,
-        dokumentId: UUID,
-    ): ByteArray {
-        return webClient.get()
-            .uri(MELLOMLAGRING_DOKUMENT_PATH, soknadId, dokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .retrieve()
-            .bodyToMono<ByteArray>()
-            .block()
-            ?: throw IkkeFunnetException("Dokument ikke funnet hos Fiks mellomlager")
     }
 
     /**
@@ -255,13 +215,6 @@ class MellomlagringClientImpl(
                 log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
-    }
-
-    override fun deleteDocument(
-        soknadId: UUID,
-        documentId: UUID,
-    ) {
-        slettDokument(soknadId.toString(), documentId.toString())
     }
 
     private fun createHttpEntityOfString(

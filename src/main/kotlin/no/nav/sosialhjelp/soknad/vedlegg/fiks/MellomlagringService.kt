@@ -19,8 +19,7 @@ class MellomlagringService(
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner,
 ) {
-    fun getAllVedlegg(soknadId: UUID): List<MellomlagretVedleggMetadata> = getAllVedlegg(soknadId.toString())
-
+    @Deprecated("Bruk DokumentlagerService")
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         // todo enhetlig løsning - eller fjerne helt
 //        val navEksternId = getNavEksternId(behandlingsId)
@@ -34,6 +33,7 @@ class MellomlagringService(
             } ?: emptyList()
     }
 
+    @Deprecated("Bruk DokumentlagerService")
     fun getVedlegg(
         behandlingsId: String,
         vedleggId: String,
@@ -56,6 +56,7 @@ class MellomlagringService(
             }
     }
 
+    @Deprecated("Bruk DokumentlagerService")
     @Transactional
     fun uploadVedlegg(
         behandlingsId: String,
@@ -65,7 +66,7 @@ class MellomlagringService(
     ): MellomlagretVedleggMetadata {
         virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, detectMimeType(orginalData))
 
-        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavn(orginaltFilnavn, orginalData)
+        val (filnavn, data) = VedleggUtils.validerFilOgReturnerNyttFilnavnOgData(orginaltFilnavn, orginalData)
         // TODO - denne sjekken er egentlig bortkastet sålenge filnavnet genereres av randomUUID()
         soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
@@ -107,28 +108,7 @@ class MellomlagringService(
         )
     }
 
-    fun deleteVedleggAndUpdateVedleggstatus(
-        behandlingsId: String,
-        vedleggId: String,
-    ) {
-        // todo enhetlig løsning - eller fjerne helt
-//        val navEksternId = getNavEksternId(behandlingsId)
-
-        val mellomlagredeVedlegg =
-            mellomlagringClient.hentDokumenterMetadata(navEksternId = behandlingsId)?.mellomlagringMetadataList
-        if (mellomlagredeVedlegg.isNullOrEmpty()) {
-            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
-            return
-        }
-
-        val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
-        soknadUnderArbeidService.fjernVedleggFraInternalSoknad(behandlingsId, aktueltVedlegg)
-
-        // TODO Bør også være en transaksjon her også i tilfelle dette kallet får feil.
-        // forts. Dog fører det kun til at det blir liggende et "spøkelses-vedlegg" hos FIKS
-        mellomlagringClient.slettDokument(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
-    }
-
+    @Deprecated("Bruk DokumentlagerService")
     fun deleteVedlegg(
         behandlingsId: String,
         vedleggId: String,
@@ -139,6 +119,7 @@ class MellomlagringService(
         mellomlagringClient.slettDokument(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
     }
 
+    @Deprecated("Bruk DokumentlagerService")
     fun deleteAllVedlegg(behandlingsId: String) {
         // todo enhetlig løsning - eller fjerne helt
 //        val navEksternId = getNavEksternId(behandlingsId)
@@ -151,6 +132,7 @@ class MellomlagringService(
         }
     }
 
+    @Deprecated("Bruk DokumentlagerService")
     fun deleteAll(soknadId: UUID) {
         mellomlagringClient.slettAlleDokumenter(soknadId.toString())
     }
@@ -160,6 +142,7 @@ class MellomlagringService(
 //    private fun getNavEksternId(behandlingsId: String) =
 //        if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
+    @Deprecated("Bruk DokumentlagerService")
     fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         val kanSoknadSendesMedDigisosApi =
             try {

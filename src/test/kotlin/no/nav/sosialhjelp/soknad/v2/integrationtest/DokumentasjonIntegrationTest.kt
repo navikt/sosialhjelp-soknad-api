@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -21,8 +21,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.toSha512
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -57,9 +55,24 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere eksisterende Dokument`() {
-        every { mellomlagringClient.getDocument(any(), any()) } returns pdfFil.readBytes()
+        val filId = UUID.randomUUID()
 
-        val dokumentId = saveDokumentasjonAndReturnDokumentId()
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = filId.toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
+        every { mellomlagringClient.hentDokument(any(), any()) } returns pdfFil.readBytes()
+
+        val dokumentId = saveDokumentasjonAndReturnDokumentId(filId)
 
         doGetFullResponse(uri = getUrl(soknad.id, dokumentId))
             .expectHeader().valueMatches(HttpHeaders.CONTENT_DISPOSITION, ".*filename=\"${pdfFil.name}\".*")
@@ -70,24 +83,39 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Dokument som ikke finnes skal gi feil og slettes i mellomlagring`() {
-        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
+        val dokumentId = UUID.randomUUID()
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = dokumentId.toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
 
-        doGetFullResponse(uri = getUrl(soknad.id, UUID.randomUUID()))
+        doGetFullResponse(uri = getUrl(soknad.id, dokumentId))
             .expectStatus().isNotFound
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody!!
             .also {
-                assertThat(it.message).isEqualTo("Dokument eksisterer ikke på noe Dokumentasjon")
+                assertThat(it.message).contains("Fant ikke dokumentreferanse")
             }
 
-        verify(exactly = 1) { mellomlagringClient.deleteDocument(any(), any()) }
+        verify(exactly = 1) { mellomlagringClient.slettDokument(any(), any()) }
     }
 
     @Test
     fun `Dokument som ikke finnes i Mellomlagring skal slettes lokalt`() {
-        every { mellomlagringClient.getDocument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
+        every { mellomlagringClient.slettDokument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
+        assertThat(dokumentasjonRepository.findDokumentBySoknadId(soknad.id, dokumentId)).isNotNull()
 
         val response = doGetFullResponse(getUrl(soknad.id, dokumentId))
         response
@@ -99,12 +127,20 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Laste opp dokument skal lagres i db og oppdatere dokumentasjonsstatus`() {
         val filnavnSlot = slot<String>()
-        every { mellomlagringClient.uploadDocument(any(), capture(filnavnSlot), any()) } just runs
-        every { mellomlagringClient.getDocumentsMetadata(any()) } answers {
+
+        every { mellomlagringClient.lastOppDokument(soknad.id.toString(), capture(filnavnSlot), any()) } answers {
             createMellomlagringDto(
                 metadataList =
                     listOf(
-                        createMellomlagringDokumentInfo(filnavnSlot.captured),
+                        MellomlagringDokumentInfo(
+                            filnavn = filnavnSlot.captured,
+                            filId = UUID.randomUUID().toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype =
+                                FileDetectionUtils.detectMimeType(
+                                    pdfFil.readBytes(),
+                                ),
+                        ),
                     ),
             )
         }
@@ -138,12 +174,26 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             .also { dokument ->
                 assertThat(dokument.dokumentId).isEqualTo(dokumentDto.dokumentId)
                 assertThat(dokument.filnavn).isEqualTo(dokumentDto.filnavn)
-                assertThat(dokument.sha512).isEqualTo(getSha512FromByteArray(pdfFil.readBytes()))
             }
     }
 
     @Test
     fun `Last opp Dokument til ikke-eksisterende Dokumentasjon skal gi feil`() {
+        every { mellomlagringClient.lastOppDokument(any(), any(), any()) } answers {
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = UUID.randomUUID().toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
+        }
+
         doPostFullResponse(
             uri = saveUrl(soknad.id, UtgiftType.UTGIFTER_BOLIGLAN),
             requestBody = createFileUpload(),
@@ -160,9 +210,30 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Slette siste Dokument i Dokumentasjon skal endre status`() {
-        every { mellomlagringClient.deleteDocument(any(), any()) } just runs
+        val dokumentId = UUID.randomUUID()
 
-        val dokumentasjon = opprettDokumentasjon(soknadId = soknad.id).also { dokumentasjonRepository.save(it) }
+        every { mellomlagringClient.slettDokument(any(), any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(
+                navEksternRefId = soknad.id.toString(),
+                mellomlagringMetadataList =
+                    listOf(
+                        MellomlagringDokumentInfo(
+                            filnavn = pdfFil.name,
+                            filId = dokumentId.toString(),
+                            storrelse = FileUtils.sizeOf(pdfFil),
+                            mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
+                        ),
+                    ),
+            )
+
+        val dokumentasjon =
+            opprettDokumentasjon(
+                soknadId = soknad.id,
+                dokumenter = setOf(DokumentRef(dokumentId, pdfFil.name)),
+            )
+                .also { dokumentasjonRepository.save(it) }
+
         assertThat(dokumentasjon.status).isEqualTo(DokumentasjonStatus.LASTET_OPP)
         assertThat(dokumentasjon.dokumenter).hasSize(1)
 
@@ -198,10 +269,9 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             soknadId = soknad.id,
             dokumenter =
                 metadataList.map {
-                    Dokument(
+                    DokumentRef(
                         dokumentId = UUID.fromString(it.filId),
                         filnavn = it.filnavn,
-                        sha512 = getSha512FromByteArray(it.filnavn.toByteArray()),
                     )
                 }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
@@ -236,10 +306,9 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 metadataList
                     .filter { it.filnavn != "3.pdf" }
                     .map {
-                        Dokument(
+                        DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
-                            getSha512FromByteArray(it.filnavn.toByteArray()),
                         )
                     }.toSet(),
         ).also { dokumentasjonRepository.save(it) }
@@ -273,13 +342,12 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
             dokumenter =
                 metadataList
                     .map {
-                        Dokument(
+                        DokumentRef(
                             UUID.fromString(it.filId),
                             it.filnavn,
-                            getSha512FromByteArray(it.filnavn.toByteArray()),
                         )
                     }
-                    .plus(Dokument(UUID.randomUUID(), "4.pdf", getSha512FromByteArray("4.pdf".toByteArray())))
+                    .plus(DokumentRef(UUID.randomUUID(), "4.pdf"))
                     .toSet(),
         ).also { dokumentasjonRepository.save(it) }
 
@@ -330,11 +398,11 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
         mimetype = FileDetectionUtils.detectMimeType(pdfFil.readBytes()),
     )
 
-    private fun saveDokumentasjonAndReturnDokumentId(): UUID {
+    private fun saveDokumentasjonAndReturnDokumentId(filId: UUID = UUID.randomUUID()): UUID {
         return opprettDokumentasjon(
             soknadId = soknad.id,
             status = DokumentasjonStatus.LASTET_OPP,
-            dokumenter = setOf(Dokument(UUID.randomUUID(), pdfFil.name, pdfFil.readBytes().toSha512())),
+            dokumenter = setOf(DokumentRef(filId, pdfFil.name)),
         )
             .also { dokumentasjonRepository.save(it) }.dokumenter.first().dokumentId
     }
@@ -362,7 +430,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 private fun DokumentasjonRepository.findDokumentBySoknadId(
     soknadId: UUID,
     dokumentId: UUID,
-): Dokument? {
+): DokumentRef? {
     return findAllBySoknadId(soknadId)
         .flatMap { it.dokumenter }
         .find { it.dokumentId == dokumentId }

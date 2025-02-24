@@ -1,17 +1,16 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
 class DocumentValidator(
-    private val mellomlagringService: MellomlagringService,
     private val dokumentasjonRepository: DokumentasjonRepository,
+    private val dokumentlagerService: DokumentlagerService,
 ) {
     fun validateDocumentsExistsInMellomlager(soknadId: UUID) {
-        val filIdsMellomlager = mellomlagringService.getAllVedlegg(soknadId).map { metadata -> metadata.filId }
+        val filIdsMellomlager = dokumentlagerService.getAllDokumenterMetadata(soknadId).map { it.filId }
 
         runCatching {
             dokumentasjonRepository.findAllBySoknadId(soknadId)

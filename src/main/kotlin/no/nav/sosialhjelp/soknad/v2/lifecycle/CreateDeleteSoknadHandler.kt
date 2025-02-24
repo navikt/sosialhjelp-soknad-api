@@ -8,9 +8,10 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
@@ -19,14 +20,14 @@ class CreateDeleteSoknadHandler(
     private val soknadService: SoknadService,
     private val registerDataService: RegisterDataService,
     private val dokumentasjonService: DokumentasjonService,
-    private val mellomlagringClient: MellomlagringClient,
     private val soknadMetadataService: SoknadMetadataService,
 ) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun createSoknad(
         soknadId: UUID,
         isKort: Boolean,
     ): UUID {
-        return soknadMetadataService.createSoknadMetadata(soknadId)
+        return soknadMetadataService.createSoknadMetadata(soknadId, isKort)
             .let {
                 soknadService.createSoknad(
                     eierId = personId(),
@@ -36,26 +37,20 @@ class CreateDeleteSoknadHandler(
                 )
             }
             .also {
+                // TODO Løft dette et hakk opp ut av transaksjon
                 runRegisterDataFetchers(soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
 
+    @Transactional
     fun cancelSoknad(soknadId: UUID) {
-        soknadService.getSoknad(soknadId)
-            .also { soknad ->
-                dokumentasjonService.findDokumentasjonForSoknad(soknad.id)
-                    .let { mellomlagringClient.getDocumentsMetadata(soknadId) }
-                    ?.also { if (hasMellomlagredeDokumenter(it)) mellomlagringClient.deleteAllDocuments(soknadId) }
-
-                soknadService.deleteSoknad(soknad.id)
-                soknadMetadataService.deleteMetadata(soknad.id)
-            }
+        soknadService.deleteSoknad(soknadId)
+        // TODO - Hvis en søknad oppretter en FK til metadata med on cascade delete, trengs ikke begge disse kallene
+        soknadMetadataService.deleteMetadata(soknadId)
     }
 
-    // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-    // TODO PS: I denne slette-prosessen må man ikke røre mellomlagrede vedlegg
-    fun deleteSoknad(soknadId: UUID) {
+    fun deleteAfterSent(soknadId: UUID) {
         soknadService.deleteSoknad(soknadId)
     }
 

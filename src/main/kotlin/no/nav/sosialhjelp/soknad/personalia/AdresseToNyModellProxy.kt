@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseController
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
@@ -21,21 +22,18 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhetDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Component
 class AdresseToNyModellProxy(
     private val adresseController: AdresseController,
 ) {
-    @Transactional(readOnly = true)
     fun getAdresser(
         soknadId: String,
     ): AdresserFrontend {
         return adresseController.getAdresser(UUID.fromString(soknadId)).toAdresserFrontend()
     }
 
-    @Transactional
     fun updateAdresse(
         soknadId: String,
         adresser: AdresserFrontendInput,
@@ -86,7 +84,7 @@ private fun JsonAdresseValg.toAdresseValg(): AdresseValg {
     }
 }
 
-private fun AdresseFrontend.toAdresse(): Adresse {
+private fun AdresseFrontend.toAdresse(): AdresseInput {
     return when (type) {
         JsonAdresse.Type.GATEADRESSE ->
             this.gateadresse?.toV2Adresse()
@@ -96,7 +94,7 @@ private fun AdresseFrontend.toAdresse(): Adresse {
     }
 }
 
-private fun GateadresseFrontend.toV2Adresse(): Adresse {
+private fun GateadresseFrontend.toV2Adresse(): AdresseInput {
     return VegAdresse(
         kommunenummer = kommunenummer,
         adresselinjer = adresselinjer ?: emptyList(),

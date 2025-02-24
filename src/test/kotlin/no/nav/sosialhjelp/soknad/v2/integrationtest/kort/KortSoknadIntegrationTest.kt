@@ -6,11 +6,12 @@ import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
@@ -19,12 +20,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
@@ -64,7 +65,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         soknadMetadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
-        every { mellomlagringClient.getDocumentsMetadata(any()) } returns MellomlagringDto("", emptyList())
+        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
@@ -208,7 +210,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -230,7 +232,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
         // bytter tilbake til adresse hvor det finnes en soknad fra før med samme mottaker
         doUpdateAdresse(soknadId, adresseValg = AdresseValg.FOLKEREGISTRERT)
 
@@ -265,8 +267,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     status = DokumentasjonStatus.LASTET_OPP,
                     dokumenter =
                         setOf(
-                            Dokument(UUID.randomUUID(), "filnavn1.jpg", "sha512"),
-                            Dokument(UUID.randomUUID(), "filnavn2.jpg", "sha512"),
+                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
+                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
                         ),
                 )
             }
@@ -284,7 +286,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             }
 
         // oppdaterer adresse andre gang -> gir standard soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -350,7 +352,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     private fun doUpdateAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg = AdresseValg.FOLKEREGISTRERT,
-        brukerAdresse: Adresse? = null,
+        brukerAdresse: AdresseInput? = null,
     ): AdresserDto {
         return doPut(
             uri = updateAdresseUrl(soknadId),
@@ -410,7 +412,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     }
 }
 
-private fun createBrukerAdresse(): Adresse {
+private fun createBrukerAdresseInput(): AdresseInput {
     return VegAdresse(
         landkode = "NOR",
         kommunenummer = "4444",
@@ -457,23 +459,3 @@ private fun createMottattHendelse(tidspunkt: String): JsonHendelse =
         .withType(JsonHendelse.Type.SOKNADS_STATUS)
         .withHendelsestidspunkt(tidspunkt)
         .withStatus(JsonSoknadsStatus.Status.MOTTATT)
-
-private fun createPastUtbetaling(
-    tidspunkt: String,
-    utbetalingstidspunkt: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withUtbetalingsdato(utbetalingstidspunkt)
-        .withStatus(JsonUtbetaling.Status.UTBETALT)
-
-private fun createUpcomingUtbetaling(
-    tidspunkt: String,
-    forfallsdato: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withForfallsdato(forfallsdato)
-        .withStatus(JsonUtbetaling.Status.PLANLAGT_UTBETALING)

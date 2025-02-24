@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
@@ -68,7 +67,6 @@ class KontaktServiceImpl(
         kontaktRepository.findByIdOrNull(soknadId)?.adresser
             ?: throw IkkeFunnetException("Fant ikke adresser for soknad")
 
-    @Transactional
     override fun updateBrukerAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg,
@@ -98,7 +96,7 @@ class KontaktServiceImpl(
             .run {
                 copy(
                     adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
-                    mottaker = mottaker ?: this.mottaker,
+                    mottaker = mottaker,
                 )
             }
             .let { kontaktRepository.save(it) }
@@ -109,9 +107,8 @@ class KontaktServiceImpl(
     override fun findMottaker(soknadId: UUID): NavEnhet? {
         return kontaktRepository.findByIdOrNull(soknadId)
             ?.let {
-                // TODO Er vel strengt talt en uopprettelig feil isåfall?!
                 if (it.mottaker == null && it.adresser.adressevalg != null) {
-                    logger.error("NyModell: Fant ikke mottaker for søknad $soknadId")
+                    logger.warn("NyModell: Fant ikke mottaker for søknad $soknadId")
                     null
                 } else {
                     it.mottaker

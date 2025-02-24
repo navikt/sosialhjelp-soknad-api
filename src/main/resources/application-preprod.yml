@@ -18,9 +18,8 @@ spring:
     banner-mode: off
   flyway:
     enabled: true
-    clean-on-validation-error: true
-    clean-disabled: false
-    baseline-on-migrate: true
+    # settes denne til false - vil flyway kjøre clean migrate
+    clean-disabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${POSTGRES_JDBC_URL}
