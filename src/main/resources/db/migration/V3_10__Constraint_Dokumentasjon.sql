@@ -1,0 +1,1 @@
+ALTER TABLE dokumentasjon ADD CONSTRAINT unique_dokumentasjon UNIQUE (soknad_id, type);
