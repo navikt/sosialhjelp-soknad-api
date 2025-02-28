@@ -72,7 +72,7 @@ object UtgifterOgGjeld {
             pdf.addBlankLine()
 
             // Forsørgerplikt
-            if (soknad.data.familie != null && soknad.data.familie.forsorgerplikt != null && soknad.data.familie.forsorgerplikt.harForsorgerplikt != null && soknad.data.familie.forsorgerplikt.harForsorgerplikt.verdi) {
+            if (soknad.data?.familie?.forsorgerplikt?.harForsorgerplikt?.verdi == true) {
                 pdf.skrivTekstBold(pdfUtils.getTekst("utgifter.barn.sporsmal"))
                 if (utvidetSoknad) {
                     pdfUtils.skrivInfotekst(pdf, "utgifter.barn.infotekst.tekst")
