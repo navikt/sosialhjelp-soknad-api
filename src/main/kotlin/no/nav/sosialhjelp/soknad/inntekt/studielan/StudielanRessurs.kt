@@ -1,12 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.studielan
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
-import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,15 +9,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/inntekt/studielan", produces = [MediaType.APPLICATION_JSON_VALUE])
 class StudielanRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService,
     private val studielanProxy: StudielanProxy,
 ) {
     @GetMapping
@@ -32,11 +23,7 @@ class StudielanRessurs(
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            studielanProxy.getStudielan(behandlingsId)
-        } else {
-            getStudielan(behandlingsId)
-        }
+        return studielanProxy.getStudielan(behandlingsId)
     }
 
     @PutMapping
@@ -46,48 +33,7 @@ class StudielanRessurs(
     ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return studielanProxy.leggTilStudielan(behandlingsId, studielanFrontend)
-        } else {
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-            val jsonInternalSoknad =
-                soknad.jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-            val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
-
-            OkonomiMapper.setBekreftelse(
-                opplysninger,
-                STUDIELAN,
-                studielanFrontend.bekreftelse,
-                textService.getJsonOkonomiTittel("inntekt.student"),
-            )
-            if (studielanFrontend.bekreftelse != null) {
-                OkonomiMapper.addInntektIfCheckedElseDeleteInOversikt(
-                    inntekter,
-                    STUDIELAN,
-                    textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[STUDIELAN]),
-                    studielanFrontend.bekreftelse,
-                )
-            }
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
-
-            return getStudielan(behandlingsId)
-        }
-    }
-
-    private fun getStudielan(behandlingsId: String): StudielanFrontend {
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-
-        val erStudent = soknad.soknad.data.utdanning.erStudent ?: false
-        val harStudielan =
-            soknad.soknad.data.okonomi.opplysninger.bekreftelse
-                ?.firstOrNull { it.type == STUDIELAN }
-                ?.verdi
-
-        return StudielanFrontend(erStudent, harStudielan.takeIf { erStudent })
+        return studielanProxy.leggTilStudielan(behandlingsId, studielanFrontend)
     }
 
     // TODO: Disse klassene har veldig dårlige navn.
