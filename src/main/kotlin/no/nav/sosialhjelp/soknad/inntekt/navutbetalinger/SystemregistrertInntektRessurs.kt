@@ -1,12 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 )
 @RequestMapping("/soknader/{behandlingsId}/inntekt/systemdata", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SystemregistrertInntektRessurs(
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll,
     private val navYtelseProxy: NavYtelseProxy,
 ) {
@@ -32,31 +26,7 @@ class SystemregistrertInntektRessurs(
     ): SysteminntekterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return navYtelseProxy.getNavYtelse(behandlingsId)
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad =
-                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
-
-            return SysteminntekterFrontend(
-                systeminntekter =
-                    utbetalinger
-                        ?.filter { it.type == SoknadJsonTyper.UTBETALING_NAVYTELSE }
-                        ?.map { mapToUtbetalingFrontend(it) },
-                utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
-            )
-        }
-    }
-
-    private fun mapToUtbetalingFrontend(utbetaling: JsonOkonomiOpplysningUtbetaling): SysteminntektFrontend {
-        return SysteminntektFrontend(
-            inntektType = utbetaling.tittel,
-            utbetalingsdato = utbetaling.utbetalingsdato,
-            belop = utbetaling.netto,
-        )
+        return navYtelseProxy.getNavYtelse(behandlingsId)
     }
 }
 
