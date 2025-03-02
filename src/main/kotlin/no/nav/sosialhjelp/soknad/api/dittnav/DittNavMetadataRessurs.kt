@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
@@ -28,27 +27,24 @@ import java.time.format.DateTimeFormatter
 )
 @RequestMapping("/dittnav", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
-    private val dittNavMetadataService: DittNavMetadataService,
     private val metadataService: SoknadMetadataService,
 ) {
     @GetMapping("/pabegynte/aktive")
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return metadataService.getAllMetadataForPerson(fnr).filter { it.status == SoknadStatus.OPPRETTET }.map {
-                PabegyntSoknadDto(
-                    toUtc(it.tidspunkt.opprettet, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    "${it.soknadId}_aktiv",
-                    it.soknadId.toString(),
-                    PABEGYNT_SOKNAD_TITTEL,
-                    lenkeTilPabegyntSoknad(it.soknadId.toString()),
-                    SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
-                    toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    true,
-                )
-            }
+
+        return metadataService.getAllMetadataForPerson(fnr).filter { it.status == SoknadStatus.OPPRETTET }.map {
+            PabegyntSoknadDto(
+                toUtc(it.tidspunkt.opprettet, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "${it.soknadId}_aktiv",
+                it.soknadId.toString(),
+                PABEGYNT_SOKNAD_TITTEL,
+                lenkeTilPabegyntSoknad(it.soknadId.toString()),
+                SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
+                toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                true,
+            )
         }
-        return dittNavMetadataService.hentAktivePabegynteSoknader(fnr)
     }
 }
 
