@@ -1,23 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.andreinntekter
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_UTBETALING
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_ANNET
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -36,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/inntekt/utbetalinger", produces = [MediaType.APPLICATION_JSON_VALUE])
 class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService,
     private val utbetalingProxy: UtbetalingProxy,
 ) {
     @GetMapping
@@ -46,28 +28,7 @@ class UtbetalingRessurs(
     ): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return utbetalingProxy.getUtbetalinger(behandlingsId)
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad =
-                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val opplysninger = soknad.soknad.data.okonomi.opplysninger
-
-            if (opplysninger.bekreftelse == null) {
-                return UtbetalingerFrontend(utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet)
-            }
-            return UtbetalingerFrontend(
-                bekreftelse = getBekreftelse(opplysninger),
-                utbytte = hasUtbetalingType(opplysninger, UTBETALING_UTBYTTE),
-                salg = hasUtbetalingType(opplysninger, UTBETALING_SALG),
-                forsikring = hasUtbetalingType(opplysninger, UTBETALING_FORSIKRING),
-                annet = hasUtbetalingType(opplysninger, UTBETALING_ANNET),
-                beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet?.utbetaling,
-                utbetalingerFraNavFeilet = soknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet,
-            )
-        }
+        return utbetalingProxy.getUtbetalinger(behandlingsId)
     }
 
     @PutMapping
@@ -77,117 +38,7 @@ class UtbetalingRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            utbetalingProxy.updateUtbetalinger(behandlingsId, utbetalingerFrontend)
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
-            val jsonInternalSoknad =
-                soknad.jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-
-            setBekreftelse(
-                opplysninger,
-                BEKREFTELSE_UTBETALING,
-                utbetalingerFrontend.bekreftelse,
-                textService.getJsonOkonomiTittel("inntekt.inntekter"),
-            )
-            when (utbetalingerFrontend.bekreftelse) {
-                true -> {
-                    setUtbetalinger(opplysninger.utbetaling, utbetalingerFrontend)
-                    setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
-                }
-                else -> {
-                    setAlleUtbetalingerToFalse(opplysninger.utbetaling)
-                    setBeskrivelseAvAnnetBlank(opplysninger)
-                }
-            }
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
-        }
-    }
-
-    private fun setUtbetalinger(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-        utbetalingerFrontend: UtbetalingerFrontend,
-    ) {
-        listOf(
-            UTBETALING_UTBYTTE to utbetalingerFrontend.utbytte,
-            UTBETALING_SALG to utbetalingerFrontend.salg,
-            UTBETALING_FORSIKRING to utbetalingerFrontend.forsikring,
-            UTBETALING_ANNET to utbetalingerFrontend.annet,
-        ).map { (utbetalingJsonType, isChecked) ->
-            addUtbetalingIfCheckedElseDeleteInOpplysninger(
-                utbetalinger,
-                utbetalingJsonType,
-                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
-                isChecked,
-            )
-        }
-    }
-
-    private fun setBeskrivelseAvAnnet(
-        opplysninger: JsonOkonomiopplysninger,
-        utbetalingerFrontend: UtbetalingerFrontend,
-    ) {
-        if (opplysninger.beskrivelseAvAnnet == null) {
-            opplysninger.withBeskrivelseAvAnnet(
-                JsonOkonomibeskrivelserAvAnnet()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi("")
-                    .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""),
-            )
-        }
-        opplysninger.beskrivelseAvAnnet.utbetaling = utbetalingerFrontend.beskrivelseAvAnnet ?: ""
-    }
-
-    private fun setAlleUtbetalingerToFalse(
-        utbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>,
-    ) {
-        listOf(
-            UTBETALING_UTBYTTE to false,
-            UTBETALING_SALG to false,
-            UTBETALING_FORSIKRING to false,
-            UTBETALING_ANNET to false,
-        ).map { (utbetalingJsonType, isChecked) ->
-            addUtbetalingIfCheckedElseDeleteInOpplysninger(
-                utbetalinger,
-                utbetalingJsonType,
-                textService.getJsonOkonomiTittel(soknadTypeToTitleKey[utbetalingJsonType]),
-                isChecked,
-            )
-        }
-    }
-
-    private fun setBeskrivelseAvAnnetBlank(
-        opplysninger: JsonOkonomiopplysninger,
-    ) {
-        if (opplysninger.beskrivelseAvAnnet == null) {
-            opplysninger.withBeskrivelseAvAnnet(
-                JsonOkonomibeskrivelserAvAnnet()
-                    .withKilde(JsonKildeBruker.BRUKER)
-                    .withVerdi("")
-                    .withSparing("")
-                    .withUtbetaling("")
-                    .withBoutgifter("")
-                    .withBarneutgifter(""),
-            )
-        }
-        opplysninger.beskrivelseAvAnnet.utbetaling = ""
-    }
-
-    private fun hasUtbetalingType(
-        opplysninger: JsonOkonomiopplysninger,
-        type: String,
-    ): Boolean {
-        return opplysninger.utbetaling.any { it.type == type }
-    }
-
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
-        return opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_UTBETALING }?.verdi
+        utbetalingProxy.updateUtbetalinger(behandlingsId, utbetalingerFrontend)
     }
 
     data class UtbetalingerFrontend(
