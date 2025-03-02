@@ -24,7 +24,3 @@ private fun configureApplication(builder: SpringApplicationBuilder): SpringAppli
 }
 
 fun nowWithMillis() = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-
-object ControllerToNewDatamodellProxy {
-    var nyDatamodellAktiv = true
-}
