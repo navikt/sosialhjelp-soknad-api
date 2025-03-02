@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionTokenXSubstantial
 import org.slf4j.LoggerFactory
@@ -15,7 +14,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @ProtectionTokenXSubstantial
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MineSakerMetadataRessurs(
-    private val mineSakerMetadataService: MineSakerMetadataService,
     private val mineSakerProxy: MineSakerProxy,
 ) {
     /**
@@ -24,10 +22,7 @@ class MineSakerMetadataRessurs(
      */
     @GetMapping("/innsendte")
     fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
-        return when (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            true -> mineSakerProxy.hentInnsendteSoknader(personId())
-            false -> mineSakerMetadataService.hentInnsendteSoknader(personId())
-        }
+        return mineSakerProxy.hentInnsendteSoknader(personId())
     }
 
     @Unprotected
