@@ -9,7 +9,7 @@ import java.util.UUID
 
 @Component
 class BoutgifterProxy(private val boutgiftController: BoutgiftController) {
-    fun getBoutgifter(behandlingsId: String): BoutgiftRessurs.BoutgifterFrontend {
+    fun getBoutgifter(behandlingsId: String): BoutgifterFrontend {
         return boutgiftController
             .getBoutgifter(UUID.fromString(behandlingsId))
             .toBoutgifterFrontend()
@@ -17,7 +17,7 @@ class BoutgifterProxy(private val boutgiftController: BoutgiftController) {
 
     fun updateBoutgifter(
         behandlingsId: String,
-        boutgifterFrontend: BoutgiftRessurs.BoutgifterFrontend,
+        boutgifterFrontend: BoutgifterFrontend,
     ) {
         if (boutgifterFrontend.bekreftelse == null) return
 
@@ -43,7 +43,7 @@ class BoutgifterProxy(private val boutgiftController: BoutgiftController) {
 }
 
 private fun BoutgifterDto.toBoutgifterFrontend() =
-    BoutgiftRessurs.BoutgifterFrontend(
+    BoutgifterFrontend(
         bekreftelse = bekreftelse,
         husleie = husleie,
         strom = strom,
