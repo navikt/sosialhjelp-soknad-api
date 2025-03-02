@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDto
 import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
-import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
+import no.nav.sosialhjelp.soknad.utgifter.BoutgifterFrontend
 
 interface V2ControllerAdapter {
     fun updateArbeid(
@@ -60,7 +60,7 @@ interface V2ControllerAdapter {
 
     fun updateBoutgifter(
         behandlingsId: String,
-        boutgifterFrontend: BoutgiftRessurs.BoutgifterFrontend,
+        boutgifterFrontend: BoutgifterFrontend,
     )
 
     fun updateBarneutgifter(

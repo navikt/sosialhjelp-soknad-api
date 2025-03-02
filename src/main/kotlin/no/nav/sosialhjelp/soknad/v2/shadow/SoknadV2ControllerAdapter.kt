@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerInputDto
 import no.nav.sosialhjelp.soknad.situasjonsendring.SituasjonsendringFrontend
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningFrontend
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs
-import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs
+import no.nav.sosialhjelp.soknad.utgifter.BoutgifterFrontend
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
 import no.nav.sosialhjelp.soknad.v2.familie.BarnInput
@@ -258,7 +258,7 @@ class SoknadV2ControllerAdapter(
 
     override fun updateBoutgifter(
         behandlingsId: String,
-        boutgifterFrontend: BoutgiftRessurs.BoutgifterFrontend,
+        boutgifterFrontend: BoutgifterFrontend,
     ) {
         if (boutgifterFrontend.bekreftelse == null) return
 
