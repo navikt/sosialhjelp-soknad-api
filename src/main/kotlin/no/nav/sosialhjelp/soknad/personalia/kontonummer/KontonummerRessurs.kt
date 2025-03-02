@@ -3,12 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,16 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/personalia/kontonummer")
 class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kontonummerService: KontonummerService,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val kontonummerProxy: KontonummerProxy,
 ) {
     @GetMapping
@@ -34,22 +25,7 @@ class KontonummerRessurs(
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return kontonummerProxy.getKontonummer(behandlingsId)
-        } else {
-            val konto = loadKontonummer(behandlingsId)
-            if (konto.kilde == JsonKilde.SYSTEM && konto.verdi == null) {
-                val kontonummerRegister = kontonummerService.getKontonummer(eier())
-                storeKontonummer(
-                    behandlingsId,
-                    JsonKontonummer().apply {
-                        kilde = JsonKilde.SYSTEM
-                        verdi = kontonummerRegister
-                    },
-                )
-            }
-            return mapJsonToDto(loadKontonummer(behandlingsId))
-        }
+        return kontonummerProxy.getKontonummer(behandlingsId)
     }
 
     @PutMapping
@@ -60,14 +36,7 @@ class KontonummerRessurs(
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return kontonummerProxy.updateKontonummer(behandlingsId, kontoDto)
-        } else {
-            val kontoJson = mapInputToJson(kontoDto, kontonummerService.getKontonummer(eier()))
-            storeKontonummer(behandlingsId, kontoJson)
-
-            return mapJsonToDto(kontoJson)
-        }
+        return kontonummerProxy.updateKontonummer(behandlingsId, kontoDto)
     }
 
     @Schema(description = "Kontonummer for bruker - obs: PUT med (systemverdi !== null) vil nullstille brukerutfyltVerdi")
@@ -83,57 +52,6 @@ class KontonummerRessurs(
         val brukerdefinert: Boolean
             get() = brukerutfyltVerdi != null || harIkkeKonto
     }
-
-    private fun loadKontonummer(behandlingsId: String): JsonKontonummer =
-        soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-            .jsonInternalSoknad!!.soknad.data.personalia.kontonummer
-
-    private fun storeKontonummer(
-        behandlingsId: String,
-        kontonummer: JsonKontonummer,
-    ) {
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-        soknadUnderArbeidService.updateWithRetries(soknad) {
-            it.soknad.data.personalia.kontonummer = kontonummer
-        }
-
-        // todo prøver med retries
-//        soknad.jsonInternalSoknad!!.soknad.data.personalia.kontonummer = kontonummer
-//        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier())
-    }
-
-    private fun mapInputToJson(
-        inputDto: KontonummerInputDto,
-        kontoFraSystem: String?,
-    ): JsonKontonummer {
-        val definedByUser = inputDto.brukerutfyltVerdi != null || inputDto.harIkkeKonto == true
-
-        return when (definedByUser) {
-            true ->
-                JsonKontonummer()
-                    .withKilde(JsonKilde.BRUKER)
-                    .withVerdi(inputDto.brukerutfyltVerdi)
-                    .withHarIkkeKonto(inputDto.harIkkeKonto ?: false)
-
-            false ->
-                JsonKontonummer()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(kontoFraSystem)
-                    .withHarIkkeKonto(null)
-        }
-    }
-
-    /**
-     *  Jeg gleder meg til ny datamodell...
-     *  DAO har ikke plass til både brukerutfyltVerdi og systemverdi,
-     *  så dersom brukeren velger den ene, blir den andre slettet. ¯\_(ツ)_/¯
-     */
-    private fun mapJsonToDto(kontonummer: JsonKontonummer) =
-        KontonummerFrontend(
-            systemverdi = kontonummerService.getKontonummer(eier()),
-            brukerutfyltVerdi = kontonummer.verdi.takeIf { kontonummer.kilde == JsonKilde.BRUKER },
-            harIkkeKonto = kontonummer.harIkkeKonto ?: false,
-        )
 }
 
 data class KontonummerInputDto(
