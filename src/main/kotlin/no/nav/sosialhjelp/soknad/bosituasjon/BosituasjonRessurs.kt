@@ -1,10 +1,7 @@
 package no.nav.sosialhjelp.soknad.bosituasjon
 
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,14 +10,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknader/{behandlingsId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bosituasjonProxy: BosituasjonProxy,
 ) {
     @GetMapping
@@ -29,19 +24,7 @@ class BosituasjonRessurs(
     ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            bosituasjonProxy.getBosituasjon(behandlingsId)
-        } else {
-            getBosituasjonFromSoknad(behandlingsId)
-        }
-    }
-
-    private fun getBosituasjonFromSoknad(behandlingsId: String): BosituasjonFrontend {
-        val soknad =
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        val bosituasjon = soknad.soknad.data.bosituasjon
-        return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
+        return bosituasjonProxy.getBosituasjon(behandlingsId)
     }
 
     @PutMapping
@@ -51,24 +34,7 @@ class BosituasjonRessurs(
     ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            bosituasjonProxy.updateBosituasjon(behandlingsId, bosituasjonFrontend)
-        } else {
-            val personId = eier()
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
-            val jsonInternalSoknad =
-                soknad.jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val bosituasjon = jsonInternalSoknad.soknad.data.bosituasjon
-            bosituasjon.kilde = JsonKildeBruker.BRUKER
-            if (bosituasjonFrontend.botype != null) {
-                bosituasjon.botype = bosituasjonFrontend.botype
-            }
-            bosituasjon.antallPersoner = bosituasjonFrontend.antallPersoner
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
-
-            return getBosituasjonFromSoknad(behandlingsId)
-        }
+        return bosituasjonProxy.updateBosituasjon(behandlingsId, bosituasjonFrontend)
     }
 
     data class BosituasjonFrontend(
