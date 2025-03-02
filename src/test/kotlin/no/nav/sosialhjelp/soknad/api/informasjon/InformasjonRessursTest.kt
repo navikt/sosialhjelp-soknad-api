@@ -5,14 +5,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +20,7 @@ import org.springframework.util.unit.DataSize
 
 internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
-    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val soknadMetadataService: SoknadMetadataService = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
     private val kortSoknadService: KortSoknadService = mockk()
 
@@ -44,11 +43,10 @@ internal class InformasjonRessursTest {
         InformasjonRessurs(
             adresseSokService = mockk(),
             personService = personService,
-            soknadMetadataRepository = soknadMetadataRepository,
             pabegynteSoknaderService = pabegynteSoknaderService,
             kortSoknadService = kortSoknadService,
             maxUploadSize = DataSize.ofTerabytes(10),
-            soknadMetadataService = mockk(relaxed = true),
+            soknadMetadataService = soknadMetadataService,
         )
 
     @BeforeEach
@@ -61,12 +59,8 @@ internal class InformasjonRessursTest {
         every { personService.hentPerson(any(), any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false
-        every {
-            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
-        } returns emptyList()
+        every { soknadMetadataService.getNumberOfSoknaderSentAfter(any(), any()) } returns 2
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-
-        ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
     }
 
     @AfterEach
@@ -107,18 +101,14 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
-        every {
-            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
-        } returns emptyList()
+        every { soknadMetadataService.getNumberOfSoknaderSentAfter(any(), any()) } returns 0
 
         assertEquals(0, ressurs.getSessionInfo().numRecentlySent)
     }
 
     @Test
     fun harNyligInnsendteSoknader_flereSoknaderResponse() {
-        every {
-            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
-        } returns listOf(mockk(), mockk())
+        every { soknadMetadataService.getNumberOfSoknaderSentAfter(any(), any()) } returns 2
 
         assertEquals(2, ressurs.getSessionInfo().numRecentlySent)
     }
