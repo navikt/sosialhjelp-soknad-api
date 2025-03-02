@@ -1,21 +1,9 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper
-import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -37,11 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val bostotteSystemdata: BostotteSystemdata,
-    private val textService: TextService,
     private val bostotteProxy: BostotteProxy,
-    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     @GetMapping
     fun hentBostotte(
@@ -49,25 +33,7 @@ class BostotteRessurs(
     ): BostotteFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return bostotteProxy.getBostotte(behandlingsId)
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad =
-                soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId).jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            val opplysninger = soknad.soknad.data.okonomi.opplysninger
-            val bekreftelse = opplysninger.bekreftelse?.run { getBekreftelse(opplysninger) }
-
-            return BostotteFrontend(
-                bekreftelse = bekreftelse,
-                samtykke = bekreftelse?.run { hentSamtykkeFraSoknad(opplysninger) },
-                utbetalinger = mapToUtbetalinger(soknad),
-                saker = mapToUtSaksStatuser(soknad),
-                stotteFraHusbankenFeilet = soknad.soknad.driftsinformasjon.stotteFraHusbankenFeilet,
-                samtykkeTidspunkt = bekreftelse?.run { hentSamtykkeDatoFraSoknad(opplysninger) },
-            )
-        }
+        return bostotteProxy.getBostotte(behandlingsId)
     }
 
     @PutMapping
@@ -77,71 +43,10 @@ class BostotteRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            bostotteProxy.updateBostotteBekreftelse(
-                soknadId = behandlingsId,
-                hasBostotte = bostotteFrontend.bekreftelse,
-            )
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
-            // todo prøver med retries
-// val jsonInternalSoknad =
-            soknad.jsonInternalSoknad
-                ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-
-            soknadUnderArbeidService.updateWithRetries(soknad) { jsonInternalSoknad ->
-                val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-                OkonomiMapper.setBekreftelse(
-                    opplysninger,
-                    BOSTOTTE,
-                    bostotteFrontend.bekreftelse,
-                    textService.getJsonOkonomiTittel("inntekt.bostotte"),
-                )
-
-                bostotteFrontend.bekreftelse?.let {
-                    if (java.lang.Boolean.TRUE == it) {
-                        val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
-                        OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
-                            opplysninger.utbetaling,
-                            UTBETALING_HUSBANKEN,
-                            tittel,
-                        )
-                    } else {
-                        OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
-                            opplysninger.utbetaling,
-                            UTBETALING_HUSBANKEN,
-                        )
-                    }
-                }
-            }
-
-            // todo prøver med retries
-//        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-//        OkonomiMapper.setBekreftelse(
-//            opplysninger,
-//            BOSTOTTE,
-//            bostotteFrontend.bekreftelse,
-//            textService.getJsonOkonomiTittel("inntekt.bostotte"),
-//        )
-//
-// bostotteFrontend.bekreftelse?.let {
-            //            if (java.lang.Boolean.TRUE == it) {
-            //                val tittel = textService.getJsonOkonomiTittel(TitleKeyMapper.soknadTypeToTitleKey[BOSTOTTE])
-            //                OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger(
-            //                    opplysninger.utbetaling,
-            //                    UTBETALING_HUSBANKEN,
-            //                    tittel,
-            //                )
-            //            } else {
-            //                OkonomiMapper.removeUtbetalingIfPresentInOpplysninger(
-            //                    opplysninger.utbetaling,
-            //                    UTBETALING_HUSBANKEN,
-            //                )
-            //            }
-            //        }
-            //        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, personId)
-        }
+        bostotteProxy.updateBostotteBekreftelse(
+            soknadId = behandlingsId,
+            hasBostotte = bostotteFrontend.bekreftelse,
+        )
     }
 
     @PostMapping("/samtykke")
@@ -152,75 +57,8 @@ class BostotteRessurs(
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            bostotteProxy.updateBostotteSamtykke(behandlingsId, samtykke, token)
-        } else {
-            val personId = SubjectHandlerUtils.getUserIdFromToken()
-            val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId)
-            val jsonInternalSoknad =
-                soknad.jsonInternalSoknad
-                    ?: throw IllegalStateException("Kan ikke oppdatere samtykke hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-            // todo prøver med retries
-// val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
-            //        val lagretSamtykke = opplysninger.bekreftelse.find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
-
-            val lagretSamtykke =
-                jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
-                    .find { it.type == BOSTOTTE_SAMTYKKE }?.verdi
-
-            if (samtykke != lagretSamtykke) {
-                soknadUnderArbeidService.updateWithRetries(soknad) {
-                    val opplysninger = it.soknad.data.okonomi.opplysninger
-
-                    OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
-                    OkonomiMapper.setBekreftelse(
-                        opplysninger,
-                        BOSTOTTE_SAMTYKKE,
-                        samtykke,
-                        textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-                    )
-                    bostotteSystemdata.updateSystemdataIn(it)
-                }
-            }
-        }
-
-        // todo prøver med retries
-//        if (samtykke != lagretSamtykke) {
-//            OkonomiMapper.removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE)
-//            OkonomiMapper.setBekreftelse(
-//                opplysninger,
-//                BOSTOTTE_SAMTYKKE,
-//                samtykke,
-//                textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"),
-//            )
-//            bostotteSystemdata.updateSystemdataIn(soknad, token)
-//            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-//        }
+        bostotteProxy.updateBostotteSamtykke(behandlingsId, samtykke, token)
     }
-
-    private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean? =
-        opplysninger.bekreftelse
-            .find { it.type == BOSTOTTE_SAMTYKKE }
-            ?.verdi
-
-    private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? =
-        opplysninger.bekreftelse
-            .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .firstOrNull { it.verdi }
-            ?.bekreftelsesDato
-
-    private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? =
-        opplysninger.bekreftelse
-            .firstOrNull { it.type == BOSTOTTE }
-            ?.verdi
-
-    private fun mapToUtbetalinger(soknad: JsonInternalSoknad): List<JsonOkonomiOpplysningUtbetaling> =
-        soknad.soknad.data.okonomi.opplysninger.utbetaling
-            .filter { it.type == UTBETALING_HUSBANKEN }
-
-    private fun mapToUtSaksStatuser(soknad: JsonInternalSoknad): List<JsonBostotteSak> =
-        soknad.soknad.data.okonomi.opplysninger.bostotte.saker
-            .filter { it.type == UTBETALING_HUSBANKEN }
 
     data class BostotteFrontend(
         val bekreftelse: Boolean?,
