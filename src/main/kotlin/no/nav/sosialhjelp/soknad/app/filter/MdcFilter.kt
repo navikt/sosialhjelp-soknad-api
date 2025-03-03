@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_HTTP_METHOD
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_SOKNAD_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.clearMDC
@@ -25,11 +26,12 @@ class MdcFilter : OncePerRequestFilter() {
         val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
 
-        val soknadId = getBehandlingsId(request)
+        val soknadId = getSoknadId(request) ?: getBehandlingsId(request)
 
         putToMDC(MDC_CALL_ID, callId)
         putToMDC(MDC_CONSUMER_ID, consumerId)
         soknadId?.let { putToMDC(MDC_SOKNAD_ID, it) }
+        putToMDC(MDC_HTTP_METHOD, request.method)
         putToMDC(MDC_PATH, request.requestURI)
 
         try {
@@ -37,6 +39,19 @@ class MdcFilter : OncePerRequestFilter() {
         } finally {
             clearMDC()
         }
+    }
+
+    private fun getSoknadId(request: HttpServletRequest): String? {
+        return request.requestURI
+            ?.let {
+                if (
+                    it.matches(Regex("^${SOKNAD_API_BASEURL}soknad/(.*)")) &&
+                    !it.matches(Regex("^${SOKNAD_API_BASEURL}soknad/create"))
+                ) {
+                    return it.substringAfter("${SOKNAD_API_BASEURL}soknad/").substringBefore("/")
+                }
+                null
+            }
     }
 
     private fun getBehandlingsId(request: HttpServletRequest): String? {
