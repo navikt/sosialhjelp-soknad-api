@@ -26,7 +26,7 @@ spec:
     path: /sosialhjelp/soknad-api/internal/prometheus
   replicas:
     min: 2
-    max: 4
+    max: 5
   azure:
     application:
       enabled: true
@@ -93,10 +93,10 @@ spec:
   leaderElection: true
   resources:
     limits:
-      memory: 2Gi
+      memory: 3Gi
     requests:
-      cpu: 10m
-      memory: 512Mi
+      cpu: 200m
+      memory: 1024Mi
   envFrom:
     - secret: fiks-integrasjon-secret
     - secret: sosialhjelp-soknad-api-unleash-api-token
