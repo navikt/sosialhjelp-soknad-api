@@ -88,10 +88,6 @@ class KontaktServiceImpl(
             }
                 ?.let { valgtAdresse -> nyNavEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
 
-        if (mottaker == null) {
-            logger.warn("NyModell: Fant ikke mottaker ved oppdatering av søknad $soknadId")
-        }
-
         return oldKontakt
             .run {
                 copy(
@@ -105,15 +101,7 @@ class KontaktServiceImpl(
     }
 
     override fun findMottaker(soknadId: UUID): NavEnhet? {
-        return kontaktRepository.findByIdOrNull(soknadId)
-            ?.let {
-                if (it.mottaker == null && it.adresser.adressevalg != null) {
-                    logger.warn("NyModell: Fant ikke mottaker for søknad $soknadId")
-                    null
-                } else {
-                    it.mottaker
-                }
-            }
+        return kontaktRepository.findByIdOrNull(soknadId)?.mottaker
     }
 
     override fun getEnrichment(kommunenummer: String): NavEnhetEnrichment {
