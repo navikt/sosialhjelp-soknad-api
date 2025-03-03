@@ -108,7 +108,6 @@ class FiksDokumentService(
     override fun deleteAllDokumenterForSoknad(soknadId: UUID) {
         mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
             ?.also { mellomlagringClient.slettAlleDokumenter(soknadId.toString()) }
-            ?: logger.warn("Kunne ikke finne dokumenter for sletting for søknad $soknadId")
     }
 
     companion object {
