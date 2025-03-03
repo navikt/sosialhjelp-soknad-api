@@ -28,7 +28,7 @@ class PersonDataFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("NyModell: Register: Henter søker i PDL")
+        logger.info("Register: Henter søker i PDL")
 
         personService.hentPerson(personId())
             ?.let { person ->
@@ -37,7 +37,7 @@ class PersonDataFetcher(
                         personDataFetcher.fetchAndSave(soknadId, person)
                     }
                         .onFailure {
-                            logger.warn("NyModell: Feil i PersonData-fetcher: $personDataFetcher", it)
+                            logger.warn("Feil i PersonData-fetcher: $personDataFetcher", it)
                             if (!personDataFetcher.continueOnError()) throw it
                         }
                 }

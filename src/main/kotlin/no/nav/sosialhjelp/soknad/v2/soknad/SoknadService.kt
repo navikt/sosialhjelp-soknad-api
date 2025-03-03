@@ -58,7 +58,7 @@ class SoknadServiceImpl(
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("NyModell: Soknad finnes ikke")
+            ?: throw IkkeFunnetException("Soknad finnes ikke")
 
     override fun createSoknad(
         eierId: String,
@@ -78,7 +78,7 @@ class SoknadServiceImpl(
         soknadRepository
             .findByIdOrNull(soknadId)
             ?.let { soknadRepository.delete(it) }
-            ?: logger.warn("NyModell: Kan ikke slette soknad. Finnes ikke.")
+            ?: logger.warn("Kan ikke slette soknad. Finnes ikke.")
     }
 
     override fun setInnsendingstidspunkt(

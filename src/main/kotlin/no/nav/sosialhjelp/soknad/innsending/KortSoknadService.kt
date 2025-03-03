@@ -87,7 +87,7 @@ class KortSoknadService(
                 }
         }
             .onFailure {
-                logger.error("NyModell: Feil ved henting av innsynsfil fra FIKS", it)
+                logger.error("Feil ved henting av innsynsfil fra FIKS", it)
             }
         return false
     }
@@ -181,7 +181,7 @@ class KortSoknadService(
         when (qualifiesForKort) {
             true -> transitionToKort(updatedKontakt.soknadId)
             false -> transitionToStandard(updatedKontakt.soknadId)
-            null -> logger.warn("NyModell: Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
+            null -> logger.warn("Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
         }
     }
 
@@ -195,7 +195,7 @@ class KortSoknadService(
     private fun Kontakt.getMottakerKommunenummerOrNull(): String? {
         mottaker?.kommunenummer?.let { return it }
 
-        logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
+        logger.warn("Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
         return null
     }
 

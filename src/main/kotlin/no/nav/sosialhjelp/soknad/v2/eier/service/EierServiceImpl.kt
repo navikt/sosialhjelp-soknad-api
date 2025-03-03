@@ -34,7 +34,7 @@ class EierServiceImpl(
         kontonummerBruker: String?,
         harIkkeKonto: Boolean?,
     ): Kontonummer {
-        logger.info("NyModell: Oppdaterer kontonummerinformasjon fra bruker")
+        logger.info("Oppdaterer kontonummerinformasjon fra bruker")
         return findOrError(soknadId)
             .run {
                 copy(

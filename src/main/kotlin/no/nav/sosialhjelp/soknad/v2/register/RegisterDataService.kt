@@ -20,11 +20,11 @@ class RegisterDataService(
     // TODO Pakker inn logikken for skyggeprod slik at ingen Exception kastes
     fun runAllFetchersForShadowProd(soknadId: UUID) {
         runCatching { doRunListedFetchers(soknadId, allFetchers) }
-            .onFailure { logger.warn("NyModell: Feil i henting av Registerdata for skyggeprod", it) }
+            .onFailure { logger.warn("Feil i henting av Registerdata for skyggeprod", it) }
     }
 
     fun runAllRegisterDataFetchers(soknadId: UUID) {
-        logger.info("NyModell: Henter Register-data")
+        logger.info("Henter Register-data")
         doRunListedFetchers(soknadId = soknadId, listedFetchers = allFetchers)
     }
 
@@ -32,7 +32,7 @@ class RegisterDataService(
         soknadId: UUID,
         listedFetchers: List<RegisterDataFetcher>,
     ) {
-        logger.info("NyModell: Henter Register-data: ${listedFetchers.joinToString(separator = ", ")}")
+        logger.info("Henter Register-data: ${listedFetchers.joinToString(separator = ", ")}")
         doRunListedFetchers(soknadId = soknadId, listedFetchers = listedFetchers)
     }
 
@@ -43,7 +43,7 @@ class RegisterDataService(
         listedFetchers.forEach { fetcher ->
             runCatching { fetcher.fetchAndSave(soknadId) }
                 .onFailure {
-                    logger.warn("NyModell: Registerdata-fetcher feilet: $fetcher", it)
+                    logger.warn("Registerdata-fetcher feilet: $fetcher", it)
                     if (fetcher.exceptionOnError()) throw it
                 }
         }

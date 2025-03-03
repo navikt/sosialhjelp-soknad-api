@@ -14,7 +14,7 @@ class KontonummerFetcher(
     private val eierService: EierRegisterService,
 ) : RegisterDataFetcher {
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("NyModell: Henter ut kontonummer fra Kontoregister")
+        logger.info("Henter ut kontonummer fra Kontoregister")
         kontonummerService.getKontonummer(SubjectHandlerUtils.getUserIdFromToken())
             ?.let { eierService.updateKontonummerFromRegister(soknadId, kontonummerRegister = it) }
     }

@@ -41,7 +41,7 @@ class AdresseToNyModellProxy(
         return adresser.valg?.let {
             updateBrukerAdresse(soknadId = UUID.fromString(soknadId), it, adresser.soknad)
         }
-            ?: error("NyModell: Adressevalg er påkrevd")
+            ?: error("Adressevalg er påkrevd")
     }
 
     private fun updateBrukerAdresse(
@@ -88,9 +88,9 @@ private fun AdresseFrontend.toAdresse(): AdresseInput {
     return when (type) {
         JsonAdresse.Type.GATEADRESSE ->
             this.gateadresse?.toV2Adresse()
-                ?: throw IllegalStateException("NyModell: Gateadresse mangler i input")
+                ?: throw IllegalStateException("Gateadresse mangler i input")
 
-        else -> throw IllegalStateException("NyModell: Ukjent/ikke støttet adresse-type: $type")
+        else -> throw IllegalStateException("Ukjent/ikke støttet adresse-type: $type")
     }
 }
 

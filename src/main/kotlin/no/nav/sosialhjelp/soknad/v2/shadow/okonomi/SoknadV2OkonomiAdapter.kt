@@ -43,7 +43,7 @@ class SoknadV2OkonomiAdapter(
                 input = vedleggFrontend.resolveOkonomiInput(),
             )
         }
-            .onFailure { logger.warn("NyModell: Feil i oppdatering av Okonomiske Opplysninger", it) }
+            .onFailure { logger.warn("Feil i oppdatering av Okonomiske Opplysninger", it) }
     }
 
     override fun updateUtbetalinger(
@@ -72,7 +72,7 @@ class SoknadV2OkonomiAdapter(
                     )
                 }
             }
-        }.onFailure { logger.warn("NyModell: Oppdatering av Utbetalinger feilet", it) }
+        }.onFailure { logger.warn("Oppdatering av Utbetalinger feilet", it) }
     }
 
     private fun runWithNestedTransaction(function: () -> Unit): Result<Unit> {

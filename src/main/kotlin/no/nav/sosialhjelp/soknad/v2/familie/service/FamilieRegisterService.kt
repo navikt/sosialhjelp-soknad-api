@@ -29,7 +29,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
                 ektefelle = ektefelle,
             )
             .also { familieRepository.save(it) }
-            .also { logger.info("NyModell: Lagret info om sivilstand fra PDL") }
+            .also { logger.info("Lagret info om sivilstand fra PDL") }
     }
 
     fun updateForsorgerpliktRegister(
@@ -45,7 +45,7 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
                 )
             }
             .also { familieRepository.save(it) }
-            .also { logger.info("NyModell: Lagret info om forsorgerplikt fra PDL") }
+            .also { logger.info("Lagret info om forsorgerplikt fra PDL") }
     }
 
     private fun findOrCreate(soknadId: UUID): Familie {

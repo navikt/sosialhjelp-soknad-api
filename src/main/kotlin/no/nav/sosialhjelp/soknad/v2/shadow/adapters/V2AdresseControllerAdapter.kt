@@ -66,9 +66,9 @@ private fun AdresseFrontend.toAdresseInput(): AdresseInput =
     when (type) {
         JsonAdresse.Type.GATEADRESSE ->
             this.gateadresse?.toV2Adresse()
-                ?: throw IllegalStateException("NyModell: Gateadresse mangler i input")
+                ?: throw IllegalStateException("Gateadresse mangler i input")
 
-        else -> throw IllegalStateException("NyModell: Ukjent/ikke støttet adresse-type: $type")
+        else -> throw IllegalStateException("Ukjent/ikke støttet adresse-type: $type")
     }
 
 private fun GateadresseFrontend.toV2Adresse(): AdresseInput =

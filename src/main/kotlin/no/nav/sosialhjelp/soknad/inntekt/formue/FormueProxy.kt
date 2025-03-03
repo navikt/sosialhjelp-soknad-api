@@ -17,7 +17,7 @@ class FormueProxy(private val formueController: FormueController) {
         behandlingsId: String,
         formueFrontend: FormueRessurs.FormueFrontend,
     ) {
-        logger.info("NyModell: Oppdaterer formuer.")
+        logger.info("Oppdaterer formuer.")
 
         formueController.updateFormue(
             soknadId = UUID.fromString(behandlingsId),

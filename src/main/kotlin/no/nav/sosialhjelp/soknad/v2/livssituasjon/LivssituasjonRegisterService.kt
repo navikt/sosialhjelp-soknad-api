@@ -28,7 +28,7 @@ class LivssituasjonRegisterService(
         findOrCreate(soknadId)
             .run { copy(arbeid = arbeid.copy(arbeidsforhold = arbeidsforhold)) }
             .let { repository.save(it) }
-            .also { logger.info("NyModell: Lagret arbeidsforhold fra Aa-registeret") }
+            .also { logger.info("Lagret arbeidsforhold fra Aa-registeret") }
             .also { leggTilInntekt(soknadId, it.arbeid.arbeidsforhold) }
     }
 

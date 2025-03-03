@@ -20,7 +20,7 @@ class EierDataFetcher(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("NyModell: Register: Henter ut person-info fra søker")
+        logger.info("Register: Henter ut person-info fra søker")
         person.deriveStatsborgerskap()
             .let {
                 Eier(
@@ -37,7 +37,7 @@ class EierDataFetcher(
                 )
             }
             .also { eier -> eierService.updateFromRegister(eier) }
-            .also { logger.info("NyModell: Lagret personalia og kontonummer for søker") }
+            .also { logger.info("Lagret personalia og kontonummer for søker") }
     }
 
     override fun continueOnError() = false

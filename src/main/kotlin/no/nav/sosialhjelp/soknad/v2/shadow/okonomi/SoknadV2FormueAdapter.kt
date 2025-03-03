@@ -39,7 +39,7 @@ class SoknadV2FormueAdapter(
         behandlingsId: String,
         formueFrontend: FormueRessurs.FormueFrontend,
     ) {
-        logger.info("NyModell: Oppdaterer formuer.")
+        logger.info("Oppdaterer formuer.")
 
         runWithNestedTransaction {
             formueController.updateFormue(
@@ -47,14 +47,14 @@ class SoknadV2FormueAdapter(
                 input = formueFrontend.toFormueInput(),
             )
         }
-            .onFailure { logger.warn("NyModell: Legge til ny formue feilet", it) }
+            .onFailure { logger.warn("Legge til ny formue feilet", it) }
     }
 
     override fun leggTilVerdi(
         behandlingsId: String,
         verdierFrontend: VerdiRessurs.VerdierFrontend,
     ) {
-        logger.info("NyModell: Oppdaterer verdier.")
+        logger.info("Oppdaterer verdier.")
 
         verdierFrontend.toVerdierInput()?.let { input ->
             runWithNestedTransaction {

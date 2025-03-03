@@ -45,7 +45,7 @@ class UtbetalingerFraNavFetcher(
         soknadId: UUID,
         utbetalinger: List<NavUtbetaling>,
     ) {
-        logger.info("NyModell: Hentet ${utbetalinger.size} utbetalinger fra NAV")
+        logger.info("Hentet ${utbetalinger.size} utbetalinger fra NAV")
 
         if (utbetalinger.isEmpty()) return
 
