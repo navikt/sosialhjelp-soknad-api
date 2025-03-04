@@ -8,7 +8,9 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
+import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
@@ -283,7 +285,23 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     null,
                 ),
             )
-        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(JsonSoknadsStatus.Status.MOTTATT).withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString())))
+        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns
+            JsonDigisosSoker()
+                .withHendelser(
+                    listOf(
+                        createUpcomingUtbetaling(
+                            tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
+                            forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
+                            status = JsonUtbetaling.Status.UTBETALT,
+                            utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
+                        ),
+//                            JsonSoknadsStatus()
+//                                .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+//                                .withHendelsestidspunkt(
+//                                    LocalDate.now().minusMonths(1).toIsoString()
+//                                )
+                    ),
+                )
 
         val adresserInput =
             AdresserInput(
@@ -313,6 +331,19 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) }
     }
+
+    private fun createUpcomingUtbetaling(
+        tidspunkt: String,
+        forfallsdato: String,
+        utbetalingsdato: String = "2022-10-01T00:00:00Z",
+        status: JsonUtbetaling.Status = JsonUtbetaling.Status.PLANLAGT_UTBETALING,
+    ): JsonHendelse =
+        JsonUtbetaling()
+            .withType(JsonHendelse.Type.UTBETALING)
+            .withHendelsestidspunkt(tidspunkt)
+            .withForfallsdato(forfallsdato)
+            .withStatus(status)
+            .withUtbetalingsdato(utbetalingsdato)
 
     @Test
     fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
