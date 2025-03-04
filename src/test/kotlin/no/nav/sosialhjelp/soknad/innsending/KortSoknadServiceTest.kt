@@ -56,6 +56,7 @@ class KortSoknadServiceTest {
     fun `should not qualify if there are no recent soknad from fiks`() {
         val digisosSak = createDigisosSak()
         val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse("2020-10-01T00:00:00Z")))
+
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
@@ -156,7 +157,17 @@ class KortSoknadServiceTest {
         val digisosSak = createDigisosSak(sistEndret = 3L)
         val digisosSak2 = createDigisosSak(fiksDigisosId = "625986e9-1fbc-482c-acd5-a702059a6fba", sistEndret = 2L)
         val digisosSak3 = createDigisosSak(fiksDigisosId = "9edaffec-5065-4819-9173-b0d5ae39063f", sistEndret = 1L)
-        val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse("2022-10-01T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createUpcomingUtbetaling(
+                        tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
+                        forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
+                        status = JsonUtbetaling.Status.UTBETALT,
+                        utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
+                    ),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
