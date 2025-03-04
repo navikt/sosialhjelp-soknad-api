@@ -72,11 +72,9 @@ class KontaktServiceImpl(
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
     ): Adresser {
-        logger.info(
-            "Oppdaterer adresse for $soknadId. " +
-                "Adressevalg: $adresseValg, " +
-                "Adresse: ${brukerAdresse?.let { "Fylt ut av bruker" }}",
-        )
+        if (adresseValg == AdresseValg.SOKNAD && brukerAdresse != null) {
+            logger.info("Oppdaterer adresse: $adresseValg")
+        }
 
         val oldKontakt = findOrCreate(soknadId)
 

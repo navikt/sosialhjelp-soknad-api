@@ -28,7 +28,7 @@ class PersonDataFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Register: Henter søker i PDL")
+        logger.info("Henter person i PDL")
 
         personService.hentPerson(personId())
             ?.let { person ->

@@ -16,8 +16,7 @@ class TelefonnummerFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Register: Henter telefonnummer fra KRR-registeret")
-
+        logger.info("Henter telefonnummer fra register")
         mobiltelefonService.hent(getUserIdFromToken())
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }

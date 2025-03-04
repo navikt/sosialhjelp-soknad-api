@@ -29,7 +29,6 @@ class FamilieRegisterService(private val familieRepository: FamilieRepository) {
                 ektefelle = ektefelle,
             )
             .also { familieRepository.save(it) }
-            .also { logger.info("Lagret info om sivilstand fra PDL") }
     }
 
     fun updateForsorgerpliktRegister(
