@@ -18,14 +18,14 @@ class ArbeidsforholdFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("Register: Henter arbeidsforhold fra Aa-registeret")
+        logger.info("Henter arbeidsforhold fra Aa-registeret")
 
         arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
             livssituasjonService.updateArbeidsforhold(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
             )
-        } ?: logger.info("Register: Kunne ikke hente arbeidsforhold, eller det finnes ikke for person")
+        } ?: logger.info("Kunne ikke hente arbeidsforhold fra register, eller det finnes ikke for person")
     }
 }
 

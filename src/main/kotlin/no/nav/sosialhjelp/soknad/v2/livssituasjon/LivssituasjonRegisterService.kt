@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.data.repository.findByIdOrNull
@@ -17,8 +16,6 @@ class LivssituasjonRegisterService(
     private val repository: LivssituasjonRepository,
     private val okonomiService: OkonomiService,
 ) {
-    private val logger by logger()
-
     fun updateArbeidsforhold(
         soknadId: UUID,
         arbeidsforhold: List<Arbeidsforhold>,
@@ -28,7 +25,6 @@ class LivssituasjonRegisterService(
         findOrCreate(soknadId)
             .run { copy(arbeid = arbeid.copy(arbeidsforhold = arbeidsforhold)) }
             .let { repository.save(it) }
-            .also { logger.info("Lagret arbeidsforhold fra Aa-registeret") }
             .also { leggTilInntekt(soknadId, it.arbeid.arbeidsforhold) }
     }
 

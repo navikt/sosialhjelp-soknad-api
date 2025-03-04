@@ -27,14 +27,12 @@ class AdresseFetcher(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("Register: Lagrer adresse for soker")
-
+        logger.info("Oppdaterer adresser fra PDL")
         kontaktService.saveAdresserRegister(
             soknadId = soknadId,
             folkeregistrert = person.bostedsadresse?.toV2Adresse(hentAdresseService),
             midlertidig = person.oppholdsadresse?.toV2Adresse(),
         )
-            .also { logger.info("Lagret adresser fra PDL") }
     }
 
     override fun continueOnError() = false

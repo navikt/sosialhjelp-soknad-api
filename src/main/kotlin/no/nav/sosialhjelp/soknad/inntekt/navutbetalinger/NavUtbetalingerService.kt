@@ -101,7 +101,6 @@ class NavUtbetalingerService(
             if (ytelseskomponentList == null) {
                 return emptyList()
             }
-            log.info("Antall navytelser komponent {}", ytelseskomponentList.size)
             return ytelseskomponentList
                 .map {
                     NavKomponent(
