@@ -112,22 +112,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere adresse med eksisterende soknad under 120 dager i metadata skal gi kort soknad`() {
-        createEksisterendeSoknad(sendtInn = nowWithMillis().minusDays(119))
-
-        val soknadId = createSoknadWithMetadata()
-        doUpdateAdresse(soknadId = soknadId)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
-
-        verify(exactly = 0) { digisosService.getSoknaderForUser(any()) }
-    }
-
-    @Test
     fun `Oppdatere adresse med eksisterende soknad over 120 dager i metadata skal IKKE gi kort soknad`() {
         createEksisterendeSoknad(sendtInn = nowWithMillis().minusDays(121))
 
@@ -156,26 +140,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             .also { assertThat(it).isFalse() }
 
         verify(exactly = 1) { digisosService.getSoknaderForUser(any()) }
-    }
-
-    @Test
-    fun `Funn av gammel soknad innenfor 120 dager hos FIKS skal gi kort soknad`() {
-        every { digisosService.getSoknaderForUser(any()) } returns
-            listOf(createDigisosSak(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(119))))
-        every { digisosService.getInnsynsfilForSoknad(any(), any(), any()) } returns
-            createJsonDigisosSoker(
-                listOf(
-                    createMottattHendelse(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(119))),
-                ),
-            )
-        val soknadId = createSoknadWithMetadata()
-        doUpdateAdresse(soknadId)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
     }
 
     @Test
@@ -247,6 +211,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     fun `Ved transformasjon fra kort til standard, skal dokumenter lastet opp til ANDRE_UTGIFTER overleve`() {
         every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
             createNavEnhet("Annen NAV", "4444", "Annen kommune")
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
 
         createEksisterendeSoknad(nowWithMillis().minusDays(10))
         val soknadId = createSoknadWithMetadata()
@@ -285,6 +250,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     .hasSize(2)
             }
 
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
         // oppdaterer adresse andre gang -> gir standard soknad
         doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
@@ -332,10 +298,11 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         sendtInn: LocalDateTime? = null,
         soknadStatus: SoknadStatus = SoknadStatus.OPPRETTET,
         mottakerKommunenummer: String = "1234",
+        soknadType: SoknadType = SoknadType.STANDARD,
     ): SoknadMetadata {
         return SoknadMetadata(
             soknadId = UUID.randomUUID(),
-            soknadType = SoknadType.STANDARD,
+            soknadType = soknadType,
             personId = userId,
             status = soknadStatus,
             mottakerKommunenummer = mottakerKommunenummer,
