@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -44,8 +43,6 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,8 +55,6 @@ import java.util.UUID
 class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
-        ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
-
         clearAllMocks()
 
         soknadMetadataRepository.deleteAll()
@@ -364,18 +359,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         private fun updateAdresseUrl(soknadId: UUID) = "/soknad/$soknadId/adresser"
 
         private fun isKortUrl(soknadId: UUID) = "/soknader/$soknadId/isKort"
-
-        @JvmStatic
-        @BeforeClass
-        fun beforeClass() {
-            ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun afterClass() {
-            ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
-        }
     }
 }
 
