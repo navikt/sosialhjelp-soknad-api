@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.scheduled.leaderelection
+package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder

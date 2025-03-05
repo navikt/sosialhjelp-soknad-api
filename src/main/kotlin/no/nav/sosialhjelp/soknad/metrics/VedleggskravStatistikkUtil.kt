@@ -1,11 +1,10 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import jakarta.xml.bind.annotation.XmlRootElement
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.ANNET
 
@@ -114,3 +113,32 @@ object VedleggskravStatistikkUtil {
 }
 
 private fun isVedleggskravAnnet(vedlegg: VedleggMetadata) = ANNET == vedlegg.skjema && ANNET == vedlegg.tillegg
+
+@XmlRootElement
+data class VedleggMetadataListe(
+    var vedleggListe: MutableList<VedleggMetadata> = mutableListOf(),
+)
+
+@XmlRootElement
+data class VedleggMetadata(
+    var filUuid: String? = null,
+    var filnavn: String? = null,
+    var mimeType: String? = null,
+    var filStorrelse: String? = null,
+    var status: Vedleggstatus? = null,
+    var skjema: String? = null,
+    var tillegg: String? = null,
+    var hendelseType: JsonVedlegg.HendelseType? = null,
+    var hendelseReferanse: String? = null,
+)
+
+enum class Vedleggstatus {
+    // TODO Forventet og VedleggKreves er det samme - beholder begge inntil ny datamodell
+    FORVENTET,
+    VedleggKreves,
+    LastetOpp,
+    VedleggAlleredeSendt,
+    ;
+
+    fun er(status: Vedleggstatus): Boolean = this == status
+}

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.scheduled.leaderelection
+package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

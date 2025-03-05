@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.metrics
 
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.LastetOpp
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggAlleredeSendt
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggKreves
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererVedleggskravStatistikk
+import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus.LastetOpp
+import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus.VedleggAlleredeSendt
+import no.nav.sosialhjelp.soknad.metrics.Vedleggstatus.VedleggKreves
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
