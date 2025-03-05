@@ -25,10 +25,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.TimestampFixer
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType

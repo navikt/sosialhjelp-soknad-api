@@ -586,3 +586,90 @@ fun createPostboksAdresse(): JsonPostboksAdresse {
         this.poststed = "Oslo"
     }
 }
+
+fun createEmptyJsonInternalSoknad(
+    eier: String,
+    kortSoknad: Boolean,
+): JsonInternalSoknad =
+    JsonInternalSoknad()
+        .withSoknad(
+            JsonSoknad()
+                .withData(
+                    JsonData()
+                        .withSoknadstype(if (kortSoknad) JsonData.Soknadstype.KORT else JsonData.Soknadstype.STANDARD)
+                        .withPersonalia(
+                            JsonPersonalia()
+                                .withPersonIdentifikator(
+                                    JsonPersonIdentifikator()
+                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                        .withVerdi(eier),
+                                ).withNavn(
+                                    JsonSokernavn()
+                                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                        .withFornavn("")
+                                        .withMellomnavn("")
+                                        .withEtternavn(""),
+                                ).withKontonummer(
+                                    JsonKontonummer()
+                                        .withKilde(JsonKilde.SYSTEM),
+                                ),
+                        )
+                        .withFamilie(
+                            JsonFamilie()
+                                .withForsorgerplikt(JsonForsorgerplikt()),
+                        ).let { if (kortSoknad) it.withKortSoknadFelter() else it.withStandardSoknadFelter() },
+                ).withMottaker(
+                    no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("")
+                        .withEnhetsnummer(""),
+                ).withDriftsinformasjon(
+                    JsonDriftsinformasjon()
+                        .withUtbetalingerFraNavFeilet(false)
+                        .withInntektFraSkatteetatenFeilet(false)
+                        .withStotteFraHusbankenFeilet(false),
+                ).withKompatibilitet(ArrayList()),
+        ).withVedlegg(
+            if (kortSoknad) {
+                JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
+            } else {
+                JsonVedleggSpesifikasjon()
+            },
+        )
+
+fun JsonData.withStandardSoknadFelter(): JsonData =
+    withSoknadstype(JsonData.Soknadstype.STANDARD)
+        .withArbeid(JsonArbeid())
+        .withUtdanning(
+            JsonUtdanning()
+                .withKilde(JsonKilde.BRUKER),
+        ).withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvorforSoke("")
+                .withHvaSokesOm(""),
+        ).withBosituasjon(
+            JsonBosituasjon()
+                .withKilde(JsonKildeBruker.BRUKER),
+        ).withOkonomi(
+            JsonOkonomi()
+                .withOpplysninger(
+                    JsonOkonomiopplysninger()
+                        .withUtbetaling(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withBostotte(JsonBostotte())
+                        .withBekreftelse(ArrayList()),
+                ).withOversikt(
+                    JsonOkonomioversikt()
+                        .withInntekt(ArrayList())
+                        .withUtgift(ArrayList())
+                        .withFormue(ArrayList()),
+                ),
+        )
+
+fun JsonData.withKortSoknadFelter(): JsonData =
+    withArbeid(JsonArbeid())
+        .withBegrunnelse(
+            JsonBegrunnelse()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withHvaSokesOm(""),
+        ).withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger().withUtbetaling(ArrayList()).withBostotte(JsonBostotte()).withBekreftelse(ArrayList())))

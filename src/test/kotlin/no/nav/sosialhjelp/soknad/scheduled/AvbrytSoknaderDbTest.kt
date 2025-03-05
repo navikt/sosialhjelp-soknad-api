@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataTy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -160,7 +160,7 @@ class AvbrytSoknaderDbTest {
             versjon = 1L,
             behandlingsId = behandlingsId,
             eier = EIER,
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(behandlingsId, false),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(behandlingsId, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = FOR_GAMMEL,
             sistEndretDato = FOR_GAMMEL,
@@ -191,7 +191,7 @@ class AvbrytSoknaderDbTest {
                     versjon = 1L,
                     behandlingsId = behandlingsId,
                     eier = EIER,
-                    jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(behandlingsId, false),
+                    jsonInternalSoknad = createEmptyJsonInternalSoknad(behandlingsId, false),
                     status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                     opprettetDato = NY_ISH,
                     sistEndretDato = NY_ISH,

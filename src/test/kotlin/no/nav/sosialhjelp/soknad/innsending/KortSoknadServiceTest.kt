@@ -9,9 +9,9 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.humanifyHvaSokesOm
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
