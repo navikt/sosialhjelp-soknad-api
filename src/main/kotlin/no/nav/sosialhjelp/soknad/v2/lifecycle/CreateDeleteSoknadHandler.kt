@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
@@ -79,6 +80,7 @@ class CreateDeleteSoknadHandler(
 
     private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
         listOf(
+            FormueType.FORMUE_BRUKSKONTO,
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             AnnenDokumentasjonType.BEHOV,
         )
