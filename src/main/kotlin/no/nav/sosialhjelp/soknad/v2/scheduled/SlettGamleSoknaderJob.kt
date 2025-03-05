@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 @Component
 class SlettGamleSoknaderJob(
     private val leaderElection: LeaderElection,
+    // TODO Bruke service fremfor repository direkte, pga debug/sporing?
     private val soknadRepository: SoknadRepository,
     private val mellomlagringService: MellomlagringService,
 ) {

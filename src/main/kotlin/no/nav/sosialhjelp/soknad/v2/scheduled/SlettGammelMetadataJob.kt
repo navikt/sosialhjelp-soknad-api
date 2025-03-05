@@ -12,6 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 @Component
 class SlettGammelMetadataJob(
     private val leaderElection: LeaderElection,
+    // TODO Bruke service fremfor repository direkte pga debug/sporing?
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
