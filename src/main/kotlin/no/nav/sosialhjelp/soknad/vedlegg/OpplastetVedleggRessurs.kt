@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OpplastetVedleggRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val mellomlagringService: MellomlagringService,
     private val dokumentProxy: DokumentProxy,
 ) {
     @GetMapping("/{behandlingsId}/{dokumentId}/fil")

@@ -6,7 +6,7 @@ import io.mockk.every
 import io.mockk.slot
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService
+import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
@@ -49,7 +49,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var personService: PersonService
 
     @MockkBean
-    protected lateinit var arbeidsforholdService: ArbeidsforholdService
+    protected lateinit var arbeidsforholdService: AaregService
 
     @MockkBean
     protected lateinit var skattbarInntektService: SkattbarInntektService

@@ -2,64 +2,24 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.runs
 import io.mockk.unmockkObject
-import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.TimestampFixer
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.Clock
-import java.time.LocalDateTime
 
+// TODO Dette er strengt talt ikke en DigisosApiServiceTest lenger etter opprydding
 internal class DigisosApiServiceTest {
-    private val digisosApiV2Client: DigisosApiV2Client = mockk()
-    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val dokumentListeService: DokumentListeService = mockk()
-    private val mellomlagringService: MellomlagringService = mockk()
-    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-
-    private val digisosApiService =
-        DigisosApiService(
-            digisosApiV2Client,
-            soknadUnderArbeidService,
-            soknadUnderArbeidRepository,
-            soknadMetadataRepository,
-            dokumentListeService,
-            prometheusMetricsService,
-            Clock.systemDefaultZone(),
-            mellomlagringService,
-            kodeverkService = mockk(relaxed = true),
-        )
-
     private val eier = "12345678910"
 
     @BeforeEach
@@ -68,217 +28,11 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any(), any()) } just runs
     }
 
     @AfterEach
     fun tearDown() {
         unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun tilleggsinformasjonJson() {
-        val soknad = JsonSoknad().withMottaker(JsonSoknadsmottaker().withEnhetsnummer("1234"))
-        val tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad)
-        assertThat(tilleggsinformasjonJson).isEqualTo("{\"enhetsnummer\":\"1234\"}")
-    }
-
-    @Test
-    fun tilleggsinformasjonJson_withNoEnhetsnummer_shouldSetEnhetsnummerToNull() {
-        val soknad = JsonSoknad().withMottaker(JsonSoknadsmottaker())
-        val tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad)
-        assertThat(tilleggsinformasjonJson).isEqualTo("{}")
-    }
-
-    @Test
-    fun tilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
-        val soknad = JsonSoknad()
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { digisosApiService.getTilleggsinformasjonJson(soknad) }
-    }
-
-    @Test
-    fun etterInnsendingSkalSoknadUnderArbeidSlettes() {
-        mockkObject(MiljoUtils)
-        every { MiljoUtils.isNonProduction() } returns true
-        every { MiljoUtils.environmentName } returns "test"
-        every { mellomlagringService.getAllVedlegg(any(String::class)) } returns emptyList()
-
-        val soknadUnderArbeid =
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsid",
-                eier = eier,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-            )
-
-        val soknadMetadata =
-            SoknadMetadata(
-                id = 1L,
-                behandlingsId = "behandlingsid",
-                fnr = "12345678910",
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
-            )
-
-        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every {
-            digisosApiV2Client.krypterOgLastOppFiler(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-            )
-        } returns "digisosid"
-        every {
-            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
-                any(),
-            )
-        } just runs
-        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
-        every { soknadMetadataRepository.oppdater(any()) } just runs
-        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-
-        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
-
-        verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
-
-        unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun `Vedlegg med status AlleredeSendt og filer skal fil-referanser fjernes`() {
-        mockkObject(MiljoUtils)
-        every { MiljoUtils.isNonProduction() } returns true
-        every { MiljoUtils.environmentName } returns "test"
-        every { mellomlagringService.getAllVedlegg(any(String::class)) } returns emptyList()
-
-        val soknadUnderArbeid =
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsid",
-                eier = eier,
-                jsonInternalSoknad =
-                    createEmptyJsonInternalSoknad(eier, false)
-                        .withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(createVedlegg(VedleggStatus.VedleggAlleredeSendt))),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-            )
-
-        val soknadMetadata =
-            SoknadMetadata(
-                id = 1L,
-                behandlingsId = "behandlingsid",
-                fnr = "12345678910",
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
-            )
-
-        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every {
-            digisosApiV2Client.krypterOgLastOppFiler(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-            )
-        } returns "digisosid"
-        every {
-            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
-                any(),
-            )
-        } just runs
-        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
-        every { soknadMetadataRepository.oppdater(any()) } just runs
-        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-
-        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
-
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg.first().filer).hasSize(0)
-
-        unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun `Vedlegg med status LastetOpp men filer som ikke finne skal fil-referanser fjernes`() {
-        mockkObject(MiljoUtils)
-        every { MiljoUtils.isNonProduction() } returns true
-        every { MiljoUtils.environmentName } returns "test"
-        every { mellomlagringService.getAllVedlegg(any(String::class)) } returns emptyList()
-
-        val soknadUnderArbeid =
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsid",
-                eier = eier,
-                jsonInternalSoknad =
-                    createEmptyJsonInternalSoknad(eier, false)
-                        .withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(createVedlegg(VedleggStatus.LastetOpp))),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-            )
-
-        val soknadMetadata =
-            SoknadMetadata(
-                id = 1L,
-                behandlingsId = "behandlingsid",
-                fnr = "12345678910",
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
-            )
-
-        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every {
-            digisosApiV2Client.krypterOgLastOppFiler(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-            )
-        } returns "digisosid"
-        every {
-            soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(
-                any(),
-            )
-        } just runs
-        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
-        every { soknadMetadataRepository.oppdater(any()) } just runs
-        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-
-        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
-
-        assertThat(soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg.first().filer).hasSize(0)
-
-        unmockkObject(MiljoUtils)
-    }
-
-    private fun createVedlegg(status: VedleggStatus): List<JsonVedlegg> {
-        return listOf(
-            JsonVedlegg().withStatus(status.toString())
-                .withFiler(
-                    listOf(
-                        JsonFiler().withFilnavn("fil1.pdf").withSha512("sha512"),
-                        JsonFiler().withFilnavn("fil2.pdf").withSha512("sha512"),
-                    ),
-                ),
-        )
     }
 
     @Test
