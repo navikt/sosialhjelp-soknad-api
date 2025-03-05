@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.scheduling.annotation.Scheduled

@@ -34,6 +34,7 @@ class SoknadActions(
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
+
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
         return sendSoknadProxy.sendSoknad(behandlingsId, token)

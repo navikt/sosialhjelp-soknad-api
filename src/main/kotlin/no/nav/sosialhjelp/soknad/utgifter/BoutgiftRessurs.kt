@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.utgifter
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/utgifter/boutgifter", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BoutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val textService: TextService,
     private val boutgifterProxy: BoutgifterProxy,
 ) {
     @GetMapping
