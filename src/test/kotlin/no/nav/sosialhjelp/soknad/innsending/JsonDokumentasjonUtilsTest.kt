@@ -5,9 +5,10 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg.HendelseType
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 internal class JsonDokumentasjonUtilsTest {
     @Test
@@ -54,8 +55,8 @@ internal class JsonDokumentasjonUtilsTest {
         jsonVedlegg.add(
             JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name)
-                .withType(JsonVedleggUtils.ANNET)
-                .withTilleggsinfo(JsonVedleggUtils.ANNET)
+                .withType(VedleggskravStatistikkUtil.ANNET)
+                .withTilleggsinfo(VedleggskravStatistikkUtil.ANNET)
                 .withFiler(lagJsonFiler()),
         )
         return JsonVedleggSpesifikasjon()
@@ -70,5 +71,22 @@ internal class JsonDokumentasjonUtilsTest {
                 .withSha512("sha1"),
         )
         return filer
+    }
+}
+
+private fun isVedleggskravAnnet(vedlegg: JsonVedlegg) =
+    VedleggskravStatistikkUtil.ANNET == vedlegg.type &&
+        VedleggskravStatistikkUtil.ANNET == vedlegg.tilleggsinfo
+
+private fun addHendelseTypeAndHendelseReferanse(
+    jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon,
+) {
+    jsonVedleggSpesifikasjon.vedlegg.forEach {
+        if (isVedleggskravAnnet(it)) {
+            it.hendelseType = HendelseType.BRUKER
+        } else {
+            it.hendelseType = HendelseType.SOKNAD
+            it.hendelseReferanse = UUID.randomUUID().toString()
+        }
     }
 }

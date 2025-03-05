@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val textService: TextService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val forsorgerpliktProxy: ForsorgerpliktProxy,
 ) {
     @GetMapping

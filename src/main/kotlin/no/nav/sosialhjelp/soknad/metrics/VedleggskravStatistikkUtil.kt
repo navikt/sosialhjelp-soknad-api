@@ -6,12 +6,13 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.ANNET
 
 object VedleggskravStatistikkUtil {
     private val log by logger()
     private val mapper = jacksonObjectMapper()
+    const val ANNET = "annet"
 
     fun genererVedleggskravStatistikk(json: JsonInternalSoknad): VedleggskravStatistikk {
         val vedleggList = convertToVedleggMetadataListe(json).vedleggListe
@@ -21,7 +22,7 @@ object VedleggskravStatistikkUtil {
         var antallIkkeLevert = 0
         var totaltAntall = 0
         for (vedlegg in vedleggList) {
-            if (!JsonVedleggUtils.isVedleggskravAnnet(vedlegg)) {
+            if (!isVedleggskravAnnet(vedlegg)) {
                 totaltAntall++
                 when (vedlegg.status) {
                     Vedleggstatus.LastetOpp -> antallInnsendt++
@@ -61,7 +62,7 @@ object VedleggskravStatistikkUtil {
         var antallIkkeLevert = 0
         var totaltAntall = 0
         for (vedlegg in vedleggList) {
-            if (!JsonVedleggUtils.isVedleggskravAnnet(vedlegg)) {
+            if (!isVedleggskravAnnet(vedlegg)) {
                 totaltAntall++
                 when (vedlegg.status) {
                     Vedleggstatus.LastetOpp -> antallInnsendt++
@@ -111,3 +112,5 @@ object VedleggskravStatistikkUtil {
         val prosentIkkeLevert: Int,
     )
 }
+
+private fun isVedleggskravAnnet(vedlegg: VedleggMetadata) = ANNET == vedlegg.skjema && ANNET == vedlegg.tillegg

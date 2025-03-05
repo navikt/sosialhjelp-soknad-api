@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.LastetOpp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggAlleredeSendt
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggKreves
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererVedleggskravStatistikk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -23,7 +22,7 @@ internal class VedleggskravStatistikkUtilTest {
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
         vedleggList.add(createVedleggMetadata(VedleggKreves, "skjema", "tillegg"))
-        vedleggList.add(createVedleggMetadata(VedleggKreves, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
+        vedleggList.add(createVedleggMetadata(VedleggKreves, VedleggskravStatistikkUtil.ANNET, VedleggskravStatistikkUtil.ANNET))
 
         val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 9, 3, 2, 4)
@@ -65,7 +64,7 @@ internal class VedleggskravStatistikkUtilTest {
     @Test
     fun reportVedleggskrav_withAnnetLastetOpp_shouldReportZero() {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
-        vedleggList.add(createVedleggMetadata(LastetOpp, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
+        vedleggList.add(createVedleggMetadata(LastetOpp, VedleggskravStatistikkUtil.ANNET, VedleggskravStatistikkUtil.ANNET))
 
         val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
@@ -74,7 +73,7 @@ internal class VedleggskravStatistikkUtilTest {
     @Test
     fun reportVedleggskrav_withAnnetKreves_shouldReportZero() {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
-        vedleggList.add(createVedleggMetadata(VedleggKreves, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
+        vedleggList.add(createVedleggMetadata(VedleggKreves, VedleggskravStatistikkUtil.ANNET, VedleggskravStatistikkUtil.ANNET))
 
         val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
@@ -83,7 +82,7 @@ internal class VedleggskravStatistikkUtilTest {
     @Test
     fun reportVedleggskrav_withAnnetLevertTidligere_shouldReportZero() {
         val vedleggList: MutableList<VedleggMetadata> = ArrayList()
-        vedleggList.add(createVedleggMetadata(VedleggAlleredeSendt, JsonVedleggUtils.ANNET, JsonVedleggUtils.ANNET))
+        vedleggList.add(createVedleggMetadata(VedleggAlleredeSendt, VedleggskravStatistikkUtil.ANNET, VedleggskravStatistikkUtil.ANNET))
 
         val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
         verifyVedleggskravStatistikk(vedleggStatistikk, 0, 0, 0, 0)
