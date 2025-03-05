@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.Companion.PDL_STATSLOS
-import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.Companion.PDL_UKJENT_STATSBORGERSKAP
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,5 +14,10 @@ class TextHelpers(
             return "Statsløs"
         }
         return kodeverkService.getLand(landForkortelse)
+    }
+
+    companion object {
+        const val PDL_UKJENT_STATSBORGERSKAP = "XUK"
+        const val PDL_STATSLOS = "XXX"
     }
 }

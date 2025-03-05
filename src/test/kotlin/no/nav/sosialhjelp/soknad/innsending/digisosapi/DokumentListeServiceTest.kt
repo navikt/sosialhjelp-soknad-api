@@ -4,9 +4,9 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.assertj.core.api.Assertions.assertThat
@@ -29,7 +29,7 @@ internal class DokumentListeServiceTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsid",
                 eier = eier,
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier, false),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),

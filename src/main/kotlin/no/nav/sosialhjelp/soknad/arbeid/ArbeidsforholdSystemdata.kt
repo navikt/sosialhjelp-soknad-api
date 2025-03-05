@@ -5,61 +5,20 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
-import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+@Deprecated("Brukes ikke til formålet lenger. Se RegisterDataFetcher")
 @Component
-class ArbeidsforholdSystemdata(
-    private val arbeidsforholdService: ArbeidsforholdService,
-    private val textService: TextService,
-) : Systemdata {
-    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
-        if (internalSoknad.soknad.data.soknadstype == JsonData.Soknadstype.KORT) {
-            return
-        }
-        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(soknadUnderArbeid) ?: emptyList()
-        updateVedleggForventninger(internalSoknad, textService)
-    }
-
-    private fun innhentSystemArbeidsforhold(soknadUnderArbeid: SoknadUnderArbeid): List<JsonArbeidsforhold>? {
-        val arbeidsforholds: List<Arbeidsforhold>? =
-            try {
-                arbeidsforholdService.hentArbeidsforhold(soknadUnderArbeid.eier)
-            } catch (e: Exception) {
-                LOG.warn("Kunne ikke hente arbeidsforhold", e)
-                null
-            }
-        return arbeidsforholds?.map { mapToJsonArbeidsforhold(it) }
-    }
-
-    private fun mapToJsonArbeidsforhold(arbeidsforhold: Arbeidsforhold): JsonArbeidsforhold =
-        JsonArbeidsforhold()
-            .withArbeidsgivernavn(arbeidsforhold.arbeidsgivernavn)
-            .withFom(arbeidsforhold.fom?.toIsoString())
-            .withTom(arbeidsforhold.tom?.toIsoString())
-            .withKilde(JsonKilde.SYSTEM)
-            .withStillingsprosent(arbeidsforhold.fastStillingsprosent?.let { Math.toIntExact(it) })
-            .withStillingstype(arbeidsforhold.harFastStilling?.let { tilJsonStillingstype(it) })
-            .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
-
+class ArbeidsforholdSystemdata() {
     companion object {
-        private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
-
+        // TODO Rydd opp / implementer logikk
         fun updateVedleggForventninger(
             internalSoknad: JsonInternalSoknad,
             textService: TextService,
@@ -88,7 +47,5 @@ class ArbeidsforholdSystemdata(
             jsonVedleggs: List<JsonVedlegg>,
             vedleggstype: String,
         ): Boolean = jsonVedleggs.any { it.type == vedleggstype }
-
-        private fun tilJsonStillingstype(harFastStilling: Boolean): Stillingstype = if (harFastStilling) Stillingstype.FAST else Stillingstype.VARIABEL
     }
 }

@@ -10,8 +10,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,7 +46,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
                 versjon = 1L,
                 behandlingsId = "behandlingsId1",
                 eier = "11111111111",
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111", false),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad("11111111111", false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),
@@ -58,7 +58,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
                 versjon = 2L,
                 behandlingsId = "behandlingsId2",
                 eier = "11111111111",
-                jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad("11111111111", false),
+                jsonInternalSoknad = createEmptyJsonInternalSoknad("11111111111", false),
                 status = SoknadUnderArbeidStatus.UNDER_ARBEID,
                 opprettetDato = LocalDateTime.now(),
                 sistEndretDato = LocalDateTime.now(),

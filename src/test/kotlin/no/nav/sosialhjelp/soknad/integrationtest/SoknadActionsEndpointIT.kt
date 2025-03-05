@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -78,7 +78,7 @@ class SoknadActionsEndpointIT {
             behandlingsId = "BEHANDLINGSID",
             eier = BRUKER,
             jsonInternalSoknad =
-                SoknadServiceOld.createEmptyJsonInternalSoknad(
+                createEmptyJsonInternalSoknad(
                     BRUKER,
                     false,
                 ),

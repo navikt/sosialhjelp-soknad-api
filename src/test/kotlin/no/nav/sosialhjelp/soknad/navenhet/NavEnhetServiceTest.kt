@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService.Companion.FEATURE_SEND_TIL_NAV_TESTKOMMUNE
@@ -27,6 +26,7 @@ import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -268,7 +268,7 @@ class NavEnhetServiceTest {
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             eier = eier,
-            jsonInternalSoknad = SoknadServiceOld.createEmptyJsonInternalSoknad(eier, false),
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier, false),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
