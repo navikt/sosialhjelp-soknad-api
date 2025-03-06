@@ -230,7 +230,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                         setOf(
                             DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
                             DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
-                            DokumentRef(UUID.randomUUID(), "filnavn3.jpg"),
                         ),
                 )
             }
@@ -261,12 +260,13 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         dokumentasjonRepository.findAllBySoknadId(soknadId)
             .also { list ->
                 assertThat(list)
-                    .hasSize(2)
+                    .hasSize(3)
                     .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
                     .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(2)
+                    .hasSize(3)
             }
     }
 
