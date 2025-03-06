@@ -195,7 +195,7 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
         jsonOkonomi.opplysninger.utbetaling.first().let {
             assertThat(it.kilde).isEqualTo(JsonKilde.SYSTEM)
             assertThat(it.netto).isNotNull()
-            assertThat(it.belop).isNull()
+            assertThat(it.belop == null).isTrue()
         }
     }
 }
