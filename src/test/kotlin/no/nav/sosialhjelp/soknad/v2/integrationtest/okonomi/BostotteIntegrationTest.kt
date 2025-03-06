@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
@@ -13,7 +14,18 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus.UNDER_BE
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus.VEDTATT
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
@@ -37,6 +49,9 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @MockkBean
     private lateinit var husbankenClient: HusbankenClient
+
+    @Autowired
+    private lateinit var jsonInternalSoknadGenerator: JsonInternalSoknadGenerator
 
     @Test
     fun `Get skal returnere lagrede data`() {
@@ -169,6 +184,128 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
     }
 
+    @Test
+    fun `Informasjon om utbetaling fra Husbanken skal vises`() {
+        val belop = 12345.0
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer =
+                        OkonomiDetaljer(
+                            detaljer =
+                                listOf(
+                                    Utbetaling(
+                                        netto = belop,
+                                        utbetalingsdato = LocalDate.now().minusDays(10),
+                                        mottaker = Mottaker.HUSSTAND,
+                                    ),
+                                ),
+                        ),
+                ),
+        )
+
+        val dto =
+            doGet(
+                uri = bostottUrl(soknad.id),
+                responseBodyClass = BostotteDto::class.java,
+            )
+        assertThat(dto.utbetalinger).hasSize(1)
+        dto.utbetalinger.first()
+            .let {
+                assertThat(it.netto).isEqualTo(belop)
+                assertThat(it.utbetalingsdato).isNotNull()
+                assertThat(it.mottaker).isNotNull
+            }
+    }
+
+    @Test
+    fun `Informasjon fra bruker om utbetaling fra Husbanken skal ikke komme i DTO`() {
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
+                ),
+        )
+
+        val dto =
+            doGet(
+                uri = bostottUrl(soknad.id),
+                responseBodyClass = BostotteDto::class.java,
+            )
+        assertThat(dto.utbetalinger).hasSize(1)
+        dto.utbetalinger.first()
+            .let {
+                assertThat(it.netto).isNull()
+                assertThat(it.utbetalingsdato).isNull()
+                assertThat(it.mottaker).isNull()
+            }
+    }
+
+    @Test
+    fun `Mapping av informasjon fra Husbanken skal gi kilde system og belop i feltet netto`() {
+        eierRepository.createEier(soknad.id)
+        kontaktRepository.createAdresser(soknad.id)
+
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = true)
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Utbetaling(netto = 12345.0))),
+                ),
+        )
+
+        val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
+
+        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+            assertThat(this).hasSize(1)
+            this.first()
+                .let {
+                    assertThat(it.kilde).isEqualTo(JsonKilde.SYSTEM)
+                    assertThat(it.belop == null).isTrue()
+                    assertThat(it.netto).isNotNull()
+                }
+        }
+    }
+
+    @Test
+    fun `Mapping av informasjon om utbetaling fra Husbanken skal gi kilde bruker og belop i feltet belop`() {
+        eierRepository.createEier(soknad.id)
+        kontaktRepository.createAdresser(soknad.id)
+
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = false)
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
+                ),
+        )
+
+        val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
+
+        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+            assertThat(this).hasSize(1)
+            this.first()
+                .let {
+                    assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
+                    assertThat(it.netto == null).isTrue()
+                    assertThat(it.belop).isNotNull()
+                }
+        }
+    }
+
     private fun postBostotteInput(
         hasBostotte: Boolean? = null,
         hasSamtykke: Boolean? = null,
@@ -294,4 +431,34 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         private val today = LocalDate.now()
     }
+}
+
+private fun EierRepository.createEier(id: UUID) {
+    Eier(
+        soknadId = id,
+        statsborgerskap = "NOR",
+        nordiskBorger = true,
+        navn = Navn(fornavn = "Fornavn", mellomnavn = "", etternavn = "Etternavn"),
+    )
+        .also { save(it) }
+}
+
+private fun KontaktRepository.createAdresser(id: UUID) {
+    Kontakt(
+        soknadId = id,
+        adresser =
+            Adresser(
+                adressevalg = AdresseValg.FOLKEREGISTRERT,
+                folkeregistrert = VegAdresse(),
+            ),
+        mottaker =
+            NavEnhet(
+                enhetsnavn = "NavEnhet",
+                enhetsnummer = "123456",
+                kommunenummer = "0302",
+                orgnummer = "12345678",
+                kommunenavn = "Ett eller annet sted",
+            ),
+    )
+        .also { save(it) }
 }

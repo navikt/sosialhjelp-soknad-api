@@ -141,7 +141,11 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                                             brutto = brutto,
                                             netto = netto,
                                             utbetalingsdato = LocalDate.now(),
-                                            organisasjon = Organisasjon(navn = "NAV Gokkivold", orgnummer = "123456789"),
+                                            organisasjon =
+                                                Organisasjon(
+                                                    navn = "NAV Gokkivold",
+                                                    orgnummer = "123456789",
+                                                ),
                                         ),
                                     komponenter =
                                         listOf(
@@ -165,6 +169,34 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
             .anyMatch { it.kilde == JsonKilde.SYSTEM }
             .anyMatch { it.tittel == "Barnetrygd" }
             .anyMatch { it.netto == netto && it.belop == netto.toInt() }
+    }
+
+    @Test
+    fun `Bostotte hentet fra register skal ha OkonomiDetalj Utbetaling og havne i feltet netto`() {
+        val inntekt =
+            Inntekt(
+                type = InntektType.UTBETALING_HUSBANKEN,
+                inntektDetaljer =
+                    OkonomiDetaljer(
+                        detaljer =
+                            listOf(
+                                Utbetaling(
+                                    netto = 1234.0,
+                                    utbetalingsdato = LocalDate.now().minusDays(10),
+                                    mottaker = Mottaker.HUSSTAND,
+                                ),
+                            ),
+                    ),
+            )
+
+        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+
+        assertThat(jsonOkonomi.opplysninger.utbetaling).hasSize(1)
+        jsonOkonomi.opplysninger.utbetaling.first().let {
+            assertThat(it.kilde).isEqualTo(JsonKilde.SYSTEM)
+            assertThat(it.netto).isNotNull()
+            assertThat(it.belop).isNull()
+        }
     }
 }
 
