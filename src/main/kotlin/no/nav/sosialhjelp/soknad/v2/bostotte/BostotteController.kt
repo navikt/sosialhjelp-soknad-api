@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
@@ -60,7 +61,8 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
                 netto = netto,
                 utbetalingsdato = utbetalingsdato,
             )
-
+        // Belop betyr at bruker har tastet inn dette som en okonomisk opplysning -> dette omhandler data fra register
+        is Belop -> UtbetalingBostotteDto(null, null, null)
         else -> error("Feil type OkonomiDetalj lagret for UTBETALING_HUSBANKEN: ${this.javaClass}")
     }
 }
