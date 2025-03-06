@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
-class ArbeidsforholdService(
+class AaregService(
     private val aaregClient: AaregClient,
     private val organisasjonService: OrganisasjonService,
 ) {
@@ -18,6 +18,6 @@ class ArbeidsforholdService(
     }
 
     companion object {
-        private val log = getLogger(ArbeidsforholdService::class.java)
+        private val log = getLogger(AaregService::class.java)
     }
 }

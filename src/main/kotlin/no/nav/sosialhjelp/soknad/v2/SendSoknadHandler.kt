@@ -121,19 +121,11 @@ class SendSoknadHandler(
     }
 
     private fun getFilOpplastingList(json: JsonInternalSoknad): List<FilOpplasting> {
-        // TODO vi må ha en logikk som er sikker på at våre lokale referanser (og antall) stemmer..
-        // TODO ...overens med antall vedlegg hos mellomlagring
-//        val mellomlagredeVedlegg = mellomlagringService.getAllVedlegg(soknadUnderArbeid.behandlingsId)
-
         return listOf(
             lagDokumentForSaksbehandlerPdf(json),
             lagDokumentForJuridiskPdf(json),
             lagDokumentForBrukerkvitteringPdf(),
-        ).also {
-            logger.info("Antall vedlegg: ${it.size}.")
-            // TODO Antall mellomlastede vedlegg (filer!!) bør kunne utledes fra våre egne data
-//            log.info("Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}")
-        }
+        )
     }
 
     private fun lagDokumentForSaksbehandlerPdf(jsonInternalSoknad: JsonInternalSoknad): FilOpplasting {

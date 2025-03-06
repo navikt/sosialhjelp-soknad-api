@@ -2,9 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -16,7 +15,7 @@ class SlettGamleSoknaderJob(
     private val leaderElection: LeaderElection,
     // TODO Bruke service fremfor repository direkte, pga debug/sporing?
     private val soknadRepository: SoknadRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val dokumentlagerService: DokumentlagerService,
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() {
@@ -43,7 +42,7 @@ class SlettGamleSoknaderJob(
 
     private fun slettFilerForSoknader(oldUuids: List<UUID>) {
         oldUuids.forEach { uuid ->
-            runCatching { mellomlagringService.deleteAll(uuid) }
+            runCatching { dokumentlagerService.deleteAllDokumenterForSoknad(uuid) }
                 .onFailure { ex ->
                     logger.warn(
                         "Slette gamle soknaer: Feil eller fantes ingen filer hos FIKS for: $uuid",

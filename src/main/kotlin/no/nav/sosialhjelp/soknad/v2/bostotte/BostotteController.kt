@@ -61,7 +61,7 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
                 utbetalingsdato = utbetalingsdato,
             )
 
-        else -> error("Feil type OkonomiDetalj lagret for UTBETALING_HUSBANKEN")
+        else -> error("Feil type OkonomiDetalj lagret for UTBETALING_HUSBANKEN: ${this.javaClass}")
     }
 }
 
