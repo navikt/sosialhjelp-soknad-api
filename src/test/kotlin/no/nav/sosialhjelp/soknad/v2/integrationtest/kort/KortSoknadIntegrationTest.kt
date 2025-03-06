@@ -230,6 +230,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                         setOf(
                             DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
                             DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
+                            DokumentRef(UUID.randomUUID(), "filnavn3.jpg"),
                         ),
                 )
             }
