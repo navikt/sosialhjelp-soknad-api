@@ -37,6 +37,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -237,12 +238,13 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         dokumentasjonRepository.findAllBySoknadId(soknadId)
             .also { list ->
                 assertThat(list)
-                    .hasSize(2)
+                    .hasSize(3)
                     .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
                     .anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(2)
+                    .hasSize(3)
             }
 
         every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
