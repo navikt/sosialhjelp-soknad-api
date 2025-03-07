@@ -13,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -24,21 +25,30 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteController(
-    private val bostotteService: BostotteService,
+    private val bostotteUseCaseHandler: BostotteUseCaseHandler,
 ) {
     @GetMapping
     fun getBostotte(
         @PathVariable("soknadId") soknadId: UUID,
     ): BostotteDto {
-        return bostotteService.getBostotteInfo(soknadId).toBostotteDto()
+        return bostotteUseCaseHandler.getBostotteInfo(soknadId).toBostotteDto()
+    }
+
+    @PutMapping
+    fun updateBostotte(
+        @PathVariable("soknadId") soknadId: UUID,
+        @RequestBody hasBostotte: Boolean,
+    ): BostotteDto {
+        bostotteUseCaseHandler.updateBostotte(soknadId, hasBostotte)
+        return getBostotte(soknadId)
     }
 
     @PostMapping
-    fun updateBostotte(
+    fun updateSamtykke(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: BostotteInput,
+        @RequestBody hasSamtykke: Boolean,
     ): BostotteDto {
-        bostotteService.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
+        bostotteUseCaseHandler.updateSamtykke(soknadId, hasSamtykke)
         return getBostotte(soknadId)
     }
 }

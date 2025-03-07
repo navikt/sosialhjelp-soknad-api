@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteController
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteDto
-import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteSakDto
 import no.nav.sosialhjelp.soknad.v2.bostotte.UtbetalingBostotteDto
 import org.springframework.stereotype.Component
@@ -26,7 +25,7 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         hasBostotte: Boolean?,
     ) {
         hasBostotte?.also {
-            bostotteController.updateBostotte(UUID.fromString(soknadId), BostotteInput(hasBostotte))
+            bostotteController.updateBostotte(UUID.fromString(soknadId), hasBostotte)
         }
     }
 
@@ -35,7 +34,7 @@ class BostotteProxy(private val bostotteController: BostotteController) {
         samtykke: Boolean,
         token: String?,
     ) {
-        bostotteController.updateBostotte(UUID.fromString(behandlingsId), BostotteInput(null, samtykke))
+        bostotteController.updateBostotte(UUID.fromString(behandlingsId), samtykke)
     }
 }
 

@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenException
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.VedtakDto
@@ -72,7 +73,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere bostotte til false skal slette innhentet data`() {
         opprettBostotteData()
 
-        postBostotteInput(false)
+        putHasBostotte(false)
             .also { dto ->
                 assertThat(dto.hasBostotte).isFalse()
                 assertThat(dto.hasSamtykke).isNull()
@@ -85,7 +86,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Sette samtykke false skal slette innhentet data`() {
         opprettBostotteData()
 
-        postSamtykkeInput(false)
+        postHasSamtykke(false)
             .also { dto ->
                 assertThat(dto.hasBostotte).isTrue()
                 assertThat(dto.hasSamtykke).isFalse()
@@ -109,9 +110,10 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     // TODO Skal vi alltid hente inn på nytt i dette tilfellet - eller skal vi ha annen logikk basert på dato?
     @Test
     fun `Oppdatere samtykke som var true til true skal ikke trigge ny innhenting`() {
+        integrasjonStatusService.setStotteHusbankenStatus(soknad.id, false)
         opprettBostotteData()
 
-        postSamtykkeInput(true)
+        postHasSamtykke(true)
 
         verify(exactly = 0) { husbankenClient.hentBostotte(any(), any()) }
     }
@@ -122,7 +124,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, true)
 
-        postSamtykkeInput(true)
+        postHasSamtykke(true)
             .also { dto ->
                 assertThat(dto.hasBostotte).isTrue()
                 assertThat(dto.hasSamtykke).isTrue()
@@ -135,7 +137,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal hverken genereres inntekt eller dokumentasjon ved bostotte false`() {
-        postBostotteInput(false)
+        putHasBostotte(false)
 
         okonomiService.getInntekter(soknad.id).also { assertThat(it).isEmpty() }
         okonomiService.getBekreftelser(soknad.id)
@@ -147,34 +149,38 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal genereres inntekt og dokumentasjon ved bostotte true men ingen samtykke`() {
-        postBostotteInput(true)
+        putHasBostotte(true)
         assertInntektOgDokumentasjon(hasSamtykke = null)
     }
 
     @Test
     fun `Skal genereres inntekt og dokumentasjon ved bostotte true men samtykke false`() {
-        postBostotteInput(true, false)
+        putHasBostotte(true)
+        postHasSamtykke(false)
         assertInntektOgDokumentasjon(hasSamtykke = false)
     }
 
     @Test
     fun `Skal finnes inntekt og dokumentasjon ved bostotte og samtykke true, men innhenting feilet`() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns null
+        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
 
-        postBostotteInput(true, true)
+        putHasBostotte(true)
+        postHasSamtykke(true)
         assertInntektOgDokumentasjon(hasSamtykke = true)
+        assertThat(integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)).isTrue()
     }
 
     @Test
     fun `Sette bostotte til false skal fjerne inntekter og samtykke`() {
         setupHusbankenAnswer()
 
-        postBostotteInput(true, true)
+        putHasBostotte(true)
+        postHasSamtykke(true)
 
         assertInntektOgDokumentasjon(hasSamtykke = true)
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).hasSize(2) }
 
-        postBostotteInput(false)
+        putHasBostotte(false)
         okonomiService.getBekreftelser(soknad.id)
             .also { bekreftelser ->
                 assertThat(bekreftelser.toList()).hasSize(1)
@@ -306,22 +312,33 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         }
     }
 
-    private fun postBostotteInput(
-        hasBostotte: Boolean? = null,
-        hasSamtykke: Boolean? = null,
-    ): BostotteDto {
-        return doPost(
+    @Test
+    fun `Skal ha forventet dokumentasjon hvis clienten kaster exception`() {
+        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
+
+        putHasBostotte(true)
+        postHasSamtykke(true)
+
+        dokRepository.findBySoknadIdAndType(soknad.id, InntektType.UTBETALING_HUSBANKEN)
+            .also { assertThat(it).isNotNull }
+        okonomiService.getInntekter(soknad.id)
+            .find { it.type == InntektType.UTBETALING_HUSBANKEN }
+            .also { assertThat(it).isNotNull }
+    }
+
+    private fun putHasBostotte(hasBostotte: Boolean): BostotteDto {
+        return doPut(
             uri = bostottUrl(soknad.id),
-            requestBody = BostotteInput(hasBostotte, hasSamtykke),
+            requestBody = hasBostotte,
             responseBodyClass = BostotteDto::class.java,
             soknadId = soknad.id,
         )
     }
 
-    private fun postSamtykkeInput(verdi: Boolean): BostotteDto {
+    private fun postHasSamtykke(hasSamtykke: Boolean): BostotteDto {
         return doPost(
             uri = bostottUrl(soknad.id),
-            requestBody = BostotteInput(hasBostotte = true, hasSamtykke = verdi),
+            requestBody = hasSamtykke,
             responseBodyClass = BostotteDto::class.java,
             soknadId = soknad.id,
         )
