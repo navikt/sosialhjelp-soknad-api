@@ -27,7 +27,7 @@ class ArbeidOgFamilieSteg {
 
         return Steg(
             stegNr = 3,
-            tittel = "arbeidbolk.tittel",
+            tittel = "arbeidOgFamilie.tittel",
             avsnitt =
                 listOf(
                     Avsnitt(
