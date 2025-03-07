@@ -6,7 +6,8 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
@@ -61,7 +62,7 @@ interface MellomlagringClient {
 class MellomlagringClientImpl(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    private val maskinportenClient: MaskinportenClient,
+    private val texasService: TexasService,
     private val webClient: WebClient,
 ) : MellomlagringClient {
     override fun hentDokumenterMetadata(navEksternId: String): MellomlagringDto? {
@@ -69,7 +70,7 @@ class MellomlagringClientImpl(
             webClient.get()
                 .uri(MELLOMLAGRING_PATH, navEksternId)
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+                .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
                 .retrieve()
                 .bodyToMono<MellomlagringDto>()
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
@@ -148,7 +149,7 @@ class MellomlagringClientImpl(
         val startTime = System.currentTimeMillis()
         return webClient.post()
             .uri(MELLOMLAGRING_PATH, navEksternId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
             .body(BodyInserters.fromMultipartData(body))
             .retrieve()
             .bodyToMono<MellomlagringDto>()
@@ -171,7 +172,7 @@ class MellomlagringClientImpl(
     override fun slettAlleDokumenter(navEksternId: String) {
         webClient.delete()
             .uri(MELLOMLAGRING_PATH, navEksternId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
             .retrieve()
             .bodyToMono<String>()
             .doOnError(WebClientResponseException::class.java) {
@@ -189,7 +190,7 @@ class MellomlagringClientImpl(
     ): ByteArray {
         return webClient.get()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
             .retrieve()
             .bodyToMono<ByteArray>()
             .block()
@@ -205,7 +206,7 @@ class MellomlagringClientImpl(
     ) {
         webClient.delete()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + getToken())
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
@@ -216,6 +217,8 @@ class MellomlagringClientImpl(
             }
             .block()
     }
+
+    private fun getToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
     private fun createHttpEntityOfString(
         body: String,
