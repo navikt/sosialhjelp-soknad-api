@@ -19,11 +19,10 @@ class BostotteUseCaseHandler(
         hasBostotte: Boolean?,
         hasSamtykke: Boolean?,
     ) {
-        if (hasBostotte == existingHasBostotte(soknadId)) return
-
-        hasBostotte?.also { bostotteService.updateBostotte(soknadId, hasBostotte) }
-            ?: bostotteService.resetBostotte(soknadId)
-
+        if (hasBostotte != existingHasBostotte(soknadId)) {
+            hasBostotte?.also { bostotteService.updateBostotte(soknadId, hasBostotte) }
+                ?: bostotteService.resetBostotte(soknadId)
+        }
         if (hasBostotte == true) hasSamtykke?.also { updateSamtykke(soknadId, it) }
     }
 
