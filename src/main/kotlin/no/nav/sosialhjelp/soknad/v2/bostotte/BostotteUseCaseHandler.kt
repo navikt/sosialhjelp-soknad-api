@@ -16,14 +16,18 @@ class BostotteUseCaseHandler(
 
     fun updateBostotte(
         soknadId: UUID,
-        hasBostotte: Boolean,
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean?,
     ) {
-        if (hasBostotte == hasBostotte(soknadId)) return
+        if (hasBostotte == existingHasBostotte(soknadId)) return
 
-        bostotteService.updateBostotte(soknadId, hasBostotte)
+        hasBostotte?.also { bostotteService.updateBostotte(soknadId, hasBostotte) }
+            ?: bostotteService.resetBostotte(soknadId)
+
+        if (hasBostotte == true) hasSamtykke?.also { updateSamtykke(soknadId, it) }
     }
 
-    fun updateSamtykke(
+    private fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
     ) {
@@ -38,7 +42,7 @@ class BostotteUseCaseHandler(
         soknadId: UUID,
         hasSamtykke: Boolean,
     ): Boolean =
-        hasSamtykke == hasSamtykke(soknadId) && integrasjonStatusService.hasFetchHusbankenFailed(soknadId) == false
+        hasSamtykke == existingHasSamtykke(soknadId) && integrasjonStatusService.hasFetchHusbankenFailed(soknadId) == false
 
     private fun handleFetchFromHusbanken(soknadId: UUID) {
         runCatching { husbankenFetcher.fetch(soknadId) }
@@ -60,9 +64,9 @@ class BostotteUseCaseHandler(
             }
     }
 
-    private fun hasBostotte(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).bostotte?.verdi
+    private fun existingHasBostotte(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).bostotte?.verdi
 
-    private fun hasSamtykke(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).samtykke?.verdi
+    private fun existingHasSamtykke(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).samtykke?.verdi
 
     companion object {
         private val logger by logger()

@@ -33,6 +33,8 @@ interface BostotteService {
         saker: List<BostotteSak>,
         utbetalinger: Inntekt?,
     )
+
+    fun resetBostotte(soknadId: UUID)
 }
 
 @Service
@@ -107,7 +109,8 @@ class BostotteServiceImpl(
         okonomiService.getBekreftelser(soknadId)
             .find { it.type == BOSTOTTE }?.verdi == true
 
-    private fun resetBostotte(soknadId: UUID) {
+    @Transactional
+    override fun resetBostotte(soknadId: UUID) {
         okonomiService.deleteBekreftelse(soknadId, BOSTOTTE)
         okonomiService.deleteBekreftelse(soknadId, BOSTOTTE_SAMTYKKE)
         okonomiService.removeBostotteSaker(soknadId)

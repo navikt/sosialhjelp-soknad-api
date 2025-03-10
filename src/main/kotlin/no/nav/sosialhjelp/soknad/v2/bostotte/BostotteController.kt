@@ -13,7 +13,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -34,21 +33,13 @@ class BostotteController(
         return bostotteUseCaseHandler.getBostotteInfo(soknadId).toBostotteDto()
     }
 
-    @PutMapping
+    @PostMapping
     fun updateBostotte(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody hasBostotte: Boolean,
+        @RequestBody input: BostotteInput,
     ): BostotteDto {
-        bostotteUseCaseHandler.updateBostotte(soknadId, hasBostotte)
-        return getBostotte(soknadId)
-    }
+        bostotteUseCaseHandler.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
 
-    @PostMapping
-    fun updateSamtykke(
-        @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody hasSamtykke: Boolean,
-    ): BostotteDto {
-        bostotteUseCaseHandler.updateSamtykke(soknadId, hasSamtykke)
         return getBostotte(soknadId)
     }
 }
