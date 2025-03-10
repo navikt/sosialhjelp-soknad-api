@@ -16,7 +16,7 @@ class SaldoBrukskonto {
         oversikt: JsonOkonomioversikt,
     ): Avsnitt {
         return Avsnitt(
-            tittel = "oversikt.formue.konto.saldo",
+            tittel = "utbetalinger.inntekt.skattbar.oppsummering_kort_saldo_tittel",
             sporsmal = saldoBrukskontoSporsmal(oversikt),
         )
     }
@@ -38,7 +38,7 @@ class SaldoBrukskonto {
     private fun createSporsmalForSaldo(formuer: List<JsonOkonomioversiktFormue>): List<Sporsmal> {
         return formuer.map {
             Sporsmal(
-                tittel = "oversikt.formue.konto.saldo.sporsmal",
+                tittel = "utbetalinger.inntekt.skattbar.oppsummering_kort_saldo_sporsmal",
                 erUtfylt = true,
                 felt =
                     listOf(
@@ -54,7 +54,7 @@ class SaldoBrukskonto {
     private fun createEmptySporsmal(): List<Sporsmal> {
         return listOf(
             Sporsmal(
-                tittel = "formue.konto.saldo.ingen",
+                tittel = "utbetalinger.inntekt.skattbar.oppsummering_kort_konto_saldo_ingen",
                 erUtfylt = false,
                 felt = null,
             ),
