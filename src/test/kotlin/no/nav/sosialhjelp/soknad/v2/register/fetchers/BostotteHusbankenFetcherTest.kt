@@ -5,8 +5,11 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
+import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseForHusbankenClient
@@ -33,36 +36,21 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Hente bostotte-saker skal lagres i db`() {
         createAnswerForHusbankenClient()
 
-        setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id)
+        fetcher.fetch(soknad.id)
+            .also { (saker, inntekt) ->
+                assertThat(saker)
+                    .hasSize(2)
+                    .anyMatch { it.status == BostotteStatus.VEDTATT }
+                    .anyMatch { it.status == BostotteStatus.UNDER_BEHANDLING }
+                    .allMatch { it is BostotteSak }
 
-        okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
-
-            assertThat(okonomi.bostotteSaker).hasSize(2)
-            assertThat(okonomi.inntekter.toList()).hasSize(1)
-                .allMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
-                .allMatch { it.inntektDetaljer.detaljer.size == 2 }
-        }
-        assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isFalse()
-    }
-
-    @Test
-    fun `Ikke gitt samtykke eller samtykke = false skal ikke lagre data`() {
-        createAnswerForHusbankenClient()
-
-        fetcher.fetchAndSave(soknad.id)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
-
-        setBostotteOgSamtykke(false)
-        fetcher.fetchAndSave(soknad.id)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
-
-        setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
-        assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).hasSize(2)
+                assertThat(inntekt!!.type).isEqualTo(InntektType.UTBETALING_HUSBANKEN)
+                assertThat(inntekt.inntektDetaljer.detaljer.toList())
+                    .hasSize(2)
+                    .allMatch { it is Utbetaling }
+                    .allMatch { (it as Utbetaling).netto != null }
+                    .allMatch { (it as Utbetaling).mottaker != null }
+            }
     }
 
     @Test
@@ -70,20 +58,10 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
         every { husbankenClient.hentBostotte(any(), any()) } returns BostotteDto(emptyList(), emptyList())
 
         setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id)
+        fetcher.fetch(soknad.id)
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
-    }
-
-    @Test
-    fun `Client returnerer null setter integrasjonstatus feilet til true`() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns null
-
-        setBostotteOgSamtykke(true)
-        fetcher.fetchAndSave(soknad.id)
-
-        assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilStotteHusbanken).isTrue()
     }
 
     private fun setBostotteOgSamtykke(gitt: Boolean) {

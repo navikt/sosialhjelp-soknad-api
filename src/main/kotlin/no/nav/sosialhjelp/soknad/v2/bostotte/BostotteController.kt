@@ -24,13 +24,13 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteController(
-    private val bostotteService: BostotteService,
+    private val bostotteUseCaseHandler: BostotteUseCaseHandler,
 ) {
     @GetMapping
     fun getBostotte(
         @PathVariable("soknadId") soknadId: UUID,
     ): BostotteDto {
-        return bostotteService.getBostotteInfo(soknadId).toBostotteDto()
+        return bostotteUseCaseHandler.getBostotteInfo(soknadId).toBostotteDto()
     }
 
     @PostMapping
@@ -38,7 +38,8 @@ class BostotteController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: BostotteInput,
     ): BostotteDto {
-        bostotteService.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
+        bostotteUseCaseHandler.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
+
         return getBostotte(soknadId)
     }
 }
