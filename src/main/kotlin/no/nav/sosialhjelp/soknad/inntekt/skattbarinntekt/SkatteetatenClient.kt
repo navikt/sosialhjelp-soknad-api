@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -47,7 +48,7 @@ class SkatteetatenClient(
             }
             .build()
 
-    fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
+    fun hentSkattbarinntekt(fnr: String): SkattbarInntekt {
         val identifikator = if (!MiljoUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
 
         val sokedata =
@@ -83,9 +84,10 @@ class SkatteetatenClient(
                         else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
                     }
                 }
-                .block()
+                .block() ?: throw SkatteetatenException("Respons fra Skatteetaten er null?")
         } catch (e: Exception) {
-            return null
+            log.error("Feil ved henting av opplysninger fra Skatteetaten")
+            throw SkatteetatenException("Feil ved henting av opplysninger fra skatteetaten", e)
         }
     }
 
