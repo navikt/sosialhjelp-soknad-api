@@ -21,7 +21,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Hente utbetalinger skal returneres riktig`() {
         createAnswerForSkatteetatenClient()
 
-        inntektSkatteetatenFetcher.fetchInntekt().also { assertThat(it).hasSize(1) }
+        inntektSkatteetatenFetcher.fetchInntekt().also { assertThat(it).hasSize(2) }
     }
 
     @Test
