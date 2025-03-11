@@ -29,7 +29,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         setBekreftelse(true)
         createAnswerForSkatteetatenClient()
 
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
             assertThat(okonomi.inntekter.toList()).hasSize(1)
@@ -43,15 +43,15 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Ikke bekreftet eller false skal ikke hente opplysninger`() {
         createAnswerForSkatteetatenClient()
 
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)).isNull()
 
         setBekreftelse(false)
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
 
         setBekreftelse(true)
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
     }
 
@@ -60,7 +60,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
 
         setBekreftelse(true)
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilInntektSkatteetaten).isFalse()
@@ -71,7 +71,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         setBekreftelse(true)
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilInntektSkatteetaten).isTrue()
@@ -82,7 +82,7 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         createAnswerForSkatteetatenClient()
 
         setBekreftelse(true)
-        inntektSkatteetatenFetcher.fetchAndSave(soknad.id)
+        inntektSkatteetatenFetcher.fetch(soknad.id)
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).hasSize(1)
 

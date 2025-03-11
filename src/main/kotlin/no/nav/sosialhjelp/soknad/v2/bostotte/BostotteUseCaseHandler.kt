@@ -19,6 +19,7 @@ class BostotteUseCaseHandler(
         hasBostotte: Boolean?,
         hasSamtykke: Boolean?,
     ) {
+        // TODO Skal dato oppdateres selvom verdien er den samme som før?
         if (hasBostotte != existingHasBostotte(soknadId)) {
             hasBostotte?.also { bostotteService.updateBostotte(soknadId, hasBostotte) }
                 ?: bostotteService.resetBostotte(soknadId)
