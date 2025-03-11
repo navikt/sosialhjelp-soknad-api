@@ -26,7 +26,7 @@ class KontonummerProxy(
                 when {
                     kontoDto.harIkkeKonto == true -> HarIkkeKontoInput(true)
                     kontoDto.brukerutfyltVerdi != null -> KontonummerBrukerInput(kontoDto.brukerutfyltVerdi)
-                    else -> throw IllegalArgumentException("Ugyldig input")
+                    else -> KontonummerBrukerInput(null)
                 },
         ).toKontonummerFrontend()
     }

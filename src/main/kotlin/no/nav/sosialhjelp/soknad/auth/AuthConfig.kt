@@ -1,13 +1,9 @@
 package no.nav.sosialhjelp.soknad.auth
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.auth.texas.ProdFssAuthService
 import no.nav.sosialhjelp.soknad.auth.texas.TexasClient
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.auth.texas.TexasServiceImpl
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -19,17 +15,6 @@ class AuthConfig {
     fun texasService(texasClient: TexasClient): TexasService {
         logger.info("Using TexasService for GCP")
         return TexasServiceImpl(texasClient)
-    }
-
-    @Bean
-    @Profile("prodfss")
-    fun prodFssAuthService(
-        azureadService: AzureadService,
-        maskinportenClient: MaskinportenClient,
-        tokendingsService: TokendingsService,
-    ): TexasService {
-        logger.info("Using ProdFssAuthService for FSS")
-        return ProdFssAuthService(azureadService, maskinportenClient, tokendingsService)
     }
 
     companion object {

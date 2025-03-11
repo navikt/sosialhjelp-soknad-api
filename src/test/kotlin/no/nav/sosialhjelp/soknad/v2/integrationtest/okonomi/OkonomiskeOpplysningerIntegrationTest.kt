@@ -361,6 +361,14 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         }
     }
 
+    @Test
+    fun `Bostotte hentet fra register skal ikke returneres`() {
+    }
+
+    @Test
+    fun `Informasjon om bostotte fra bruker skal vises`() {
+    }
+
     companion object {
         fun getUrl(soknadId: UUID) = "/soknad/$soknadId/okonomiskeOpplysninger"
 

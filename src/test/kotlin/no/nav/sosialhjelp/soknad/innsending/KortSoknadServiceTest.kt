@@ -7,10 +7,11 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.humanifyHvaSokesOm
 import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThat
@@ -291,3 +292,29 @@ private fun createUpcomingUtbetaling(
         .withForfallsdato(forfallsdato)
         .withStatus(status)
         .withUtbetalingsdato(utbetalingsdato)
+
+internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
+    val hvaSokesOm =
+        soknad
+            ?.data
+            ?.begrunnelse
+            ?.hvaSokesOm
+
+    val humanifiedText = hvaSokesOm?.let { BegrunnelseUtils.jsonToHvaSokesOm(it) }
+
+    val result =
+        when {
+            hvaSokesOm == null -> ""
+            // Hvis ingen kategorier er valgt
+            hvaSokesOm == "[]" -> ""
+            // Hvis det er "vanlig" tekst i feltet
+            humanifiedText == null -> hvaSokesOm
+            // Hvis det er json-tekst
+            else -> humanifiedText
+        }
+
+    soknad
+        ?.data
+        ?.begrunnelse
+        ?.hvaSokesOm = result
+}

@@ -4,7 +4,7 @@ import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
-import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import org.springframework.beans.factory.annotation.Value
@@ -22,7 +22,7 @@ class MellomlagringConfig(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    private val maskinportenClient: MaskinportenClient,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -31,7 +31,7 @@ class MellomlagringConfig(
         return MellomlagringClientImpl(
             dokumentlagerClient,
             krypteringService,
-            maskinportenClient,
+            texasService,
             webClient,
         )
     }

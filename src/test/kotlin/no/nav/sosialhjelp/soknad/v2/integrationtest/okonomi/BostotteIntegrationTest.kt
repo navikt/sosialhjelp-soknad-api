@@ -3,7 +3,9 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenException
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.VedtakDto
@@ -13,7 +15,18 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus.UNDER_BE
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus.VEDTATT
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.bostotte.BostotteInput
+import no.nav.sosialhjelp.soknad.v2.eier.Eier
+import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
+import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
+import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
+import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
@@ -38,6 +51,9 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     @MockkBean
     private lateinit var husbankenClient: HusbankenClient
 
+    @Autowired
+    private lateinit var jsonInternalSoknadGenerator: JsonInternalSoknadGenerator
+
     @Test
     fun `Get skal returnere lagrede data`() {
         opprettBostotteData()
@@ -57,7 +73,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere bostotte til false skal slette innhentet data`() {
         opprettBostotteData()
 
-        postBostotteInput(false)
+        postBostotte(false)
             .also { dto ->
                 assertThat(dto.hasBostotte).isFalse()
                 assertThat(dto.hasSamtykke).isNull()
@@ -70,7 +86,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Sette samtykke false skal slette innhentet data`() {
         opprettBostotteData()
 
-        postSamtykkeInput(false)
+        postBostotte(hasBostotte = true, hasSamtykke = false)
             .also { dto ->
                 assertThat(dto.hasBostotte).isTrue()
                 assertThat(dto.hasSamtykke).isFalse()
@@ -80,23 +96,28 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     }
 
     @Test
-    fun `Sette samtykke true uten bostotte skal returnere bad request`() {
+    fun `Sette samtykke true uten bostotte skal fjerne alle data`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, false)
 
-        doPostFullResponse(
-            uri = bostottUrl(soknad.id),
-            requestBody = BostotteInput(hasSamtykke = true),
-            soknadId = soknad.id,
-        )
-            .expectStatus().isBadRequest
+        postBostotte(hasBostotte = null, hasSamtykke = true)
+            .also {
+                assertThat(it.hasBostotte).isNull()
+                assertThat(it.hasSamtykke).isNull()
+            }
+
+        okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
+        okonomiService.getInntekter(soknad.id)
+            .filter { it.type != InntektType.UTBETALING_HUSBANKEN }
+            .also { assertThat(it).isEmpty() }
     }
 
     // TODO Skal vi alltid hente inn på nytt i dette tilfellet - eller skal vi ha annen logikk basert på dato?
     @Test
     fun `Oppdatere samtykke som var true til true skal ikke trigge ny innhenting`() {
+        integrasjonStatusService.setStotteHusbankenStatus(soknad.id, false)
         opprettBostotteData()
 
-        postSamtykkeInput(true)
+        postBostotte(true)
 
         verify(exactly = 0) { husbankenClient.hentBostotte(any(), any()) }
     }
@@ -107,7 +128,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, true)
 
-        postSamtykkeInput(true)
+        postBostotte(hasBostotte = true, hasSamtykke = true)
             .also { dto ->
                 assertThat(dto.hasBostotte).isTrue()
                 assertThat(dto.hasSamtykke).isTrue()
@@ -120,7 +141,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal hverken genereres inntekt eller dokumentasjon ved bostotte false`() {
-        postBostotteInput(false)
+        postBostotte(false)
 
         okonomiService.getInntekter(soknad.id).also { assertThat(it).isEmpty() }
         okonomiService.getBekreftelser(soknad.id)
@@ -132,34 +153,35 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal genereres inntekt og dokumentasjon ved bostotte true men ingen samtykke`() {
-        postBostotteInput(true)
+        postBostotte(true)
         assertInntektOgDokumentasjon(hasSamtykke = null)
     }
 
     @Test
     fun `Skal genereres inntekt og dokumentasjon ved bostotte true men samtykke false`() {
-        postBostotteInput(true, false)
+        postBostotte(hasBostotte = true, hasSamtykke = false)
         assertInntektOgDokumentasjon(hasSamtykke = false)
     }
 
     @Test
     fun `Skal finnes inntekt og dokumentasjon ved bostotte og samtykke true, men innhenting feilet`() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns null
+        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
 
-        postBostotteInput(true, true)
+        postBostotte(hasBostotte = true, true)
         assertInntektOgDokumentasjon(hasSamtykke = true)
+        assertThat(integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)).isTrue()
     }
 
     @Test
     fun `Sette bostotte til false skal fjerne inntekter og samtykke`() {
         setupHusbankenAnswer()
 
-        postBostotteInput(true, true)
+        postBostotte(hasBostotte = true, hasSamtykke = true)
 
         assertInntektOgDokumentasjon(hasSamtykke = true)
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).hasSize(2) }
 
-        postBostotteInput(false)
+        postBostotte(false)
         okonomiService.getBekreftelser(soknad.id)
             .also { bekreftelser ->
                 assertThat(bekreftelser.toList()).hasSize(1)
@@ -169,22 +191,148 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
     }
 
-    private fun postBostotteInput(
-        hasBostotte: Boolean? = null,
+    @Test
+    fun `Informasjon om utbetaling fra Husbanken skal vises`() {
+        val belop = 12345.0
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer =
+                        OkonomiDetaljer(
+                            detaljer =
+                                listOf(
+                                    Utbetaling(
+                                        netto = belop,
+                                        utbetalingsdato = LocalDate.now().minusDays(10),
+                                        mottaker = Mottaker.HUSSTAND,
+                                    ),
+                                ),
+                        ),
+                ),
+        )
+
+        val dto =
+            doGet(
+                uri = bostottUrl(soknad.id),
+                responseBodyClass = BostotteDto::class.java,
+            )
+        assertThat(dto.utbetalinger).hasSize(1)
+        dto.utbetalinger.first()
+            .let {
+                assertThat(it.netto).isEqualTo(belop)
+                assertThat(it.utbetalingsdato).isNotNull()
+                assertThat(it.mottaker).isNotNull
+            }
+    }
+
+    @Test
+    fun `Informasjon fra bruker om utbetaling fra Husbanken skal ikke komme i DTO`() {
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
+                ),
+        )
+
+        val dto =
+            doGet(
+                uri = bostottUrl(soknad.id),
+                responseBodyClass = BostotteDto::class.java,
+            )
+        assertThat(dto.utbetalinger).hasSize(1)
+        dto.utbetalinger.first()
+            .let {
+                assertThat(it.netto).isNull()
+                assertThat(it.utbetalingsdato).isNull()
+                assertThat(it.mottaker).isNull()
+            }
+    }
+
+    @Test
+    fun `Mapping av informasjon fra Husbanken skal gi kilde system og belop i feltet netto`() {
+        eierRepository.createEier(soknad.id)
+        kontaktRepository.createAdresser(soknad.id)
+
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = true)
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Utbetaling(netto = 12345.0))),
+                ),
+        )
+
+        val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
+
+        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+            assertThat(this).hasSize(1)
+            this.first()
+                .let {
+                    assertThat(it.kilde).isEqualTo(JsonKilde.SYSTEM)
+                    assertThat(it.belop == null).isTrue()
+                    assertThat(it.netto).isNotNull()
+                }
+        }
+    }
+
+    @Test
+    fun `Mapping av informasjon om utbetaling fra Husbanken skal gi kilde bruker og belop i feltet belop`() {
+        eierRepository.createEier(soknad.id)
+        kontaktRepository.createAdresser(soknad.id)
+
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
+        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = false)
+
+        okonomiService.addElementToOkonomi(
+            soknadId = soknad.id,
+            element =
+                Inntekt(
+                    type = InntektType.UTBETALING_HUSBANKEN,
+                    inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
+                ),
+        )
+
+        val json = jsonInternalSoknadGenerator.createJsonInternalSoknad(soknad.id)
+
+        with(json.soknad.data.okonomi.opplysninger.utbetaling) {
+            assertThat(this).hasSize(1)
+            this.first()
+                .let {
+                    assertThat(it.kilde).isEqualTo(JsonKilde.BRUKER)
+                    assertThat(it.netto == null).isTrue()
+                    assertThat(it.belop).isNotNull()
+                }
+        }
+    }
+
+    @Test
+    fun `Skal ha forventet dokumentasjon hvis clienten kaster exception`() {
+        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
+
+        postBostotte(hasBostotte = true, true)
+
+        dokRepository.findBySoknadIdAndType(soknad.id, InntektType.UTBETALING_HUSBANKEN)
+            .also { assertThat(it).isNotNull }
+        okonomiService.getInntekter(soknad.id)
+            .find { it.type == InntektType.UTBETALING_HUSBANKEN }
+            .also { assertThat(it).isNotNull }
+    }
+
+    private fun postBostotte(
+        hasBostotte: Boolean?,
         hasSamtykke: Boolean? = null,
     ): BostotteDto {
         return doPost(
             uri = bostottUrl(soknad.id),
             requestBody = BostotteInput(hasBostotte, hasSamtykke),
-            responseBodyClass = BostotteDto::class.java,
-            soknadId = soknad.id,
-        )
-    }
-
-    private fun postSamtykkeInput(verdi: Boolean): BostotteDto {
-        return doPost(
-            uri = bostottUrl(soknad.id),
-            requestBody = BostotteInput(hasBostotte = true, hasSamtykke = verdi),
             responseBodyClass = BostotteDto::class.java,
             soknadId = soknad.id,
         )
@@ -294,4 +442,34 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         private val today = LocalDate.now()
     }
+}
+
+private fun EierRepository.createEier(id: UUID) {
+    Eier(
+        soknadId = id,
+        statsborgerskap = "NOR",
+        nordiskBorger = true,
+        navn = Navn(fornavn = "Fornavn", mellomnavn = "", etternavn = "Etternavn"),
+    )
+        .also { save(it) }
+}
+
+private fun KontaktRepository.createAdresser(id: UUID) {
+    Kontakt(
+        soknadId = id,
+        adresser =
+            Adresser(
+                adressevalg = AdresseValg.FOLKEREGISTRERT,
+                folkeregistrert = VegAdresse(),
+            ),
+        mottaker =
+            NavEnhet(
+                enhetsnavn = "NavEnhet",
+                enhetsnummer = "123456",
+                kommunenummer = "0302",
+                orgnummer = "12345678",
+                kommunenavn = "Ett eller annet sted",
+            ),
+    )
+        .also { save(it) }
 }

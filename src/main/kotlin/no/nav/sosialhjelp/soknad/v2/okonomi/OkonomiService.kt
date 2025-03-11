@@ -61,6 +61,15 @@ class OkonomiService(
         okonomiElementDbHandler.deleteBekreftelseInDb(soknadId, type)
     }
 
+    fun addBostotteSaker(
+        soknadId: UUID,
+        saker: List<BostotteSak>,
+    ) {
+        findOrCreateOkonomi(soknadId)
+            .run { copy(bostotteSaker = saker) }
+            .also { okonomiRepository.save(it) }
+    }
+
     fun addBostotteSak(
         soknadId: UUID,
         sak: BostotteSak,

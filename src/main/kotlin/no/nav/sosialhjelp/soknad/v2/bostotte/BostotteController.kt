@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.bostotte
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
@@ -23,13 +24,13 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BostotteController(
-    private val bostotteService: BostotteService,
+    private val bostotteUseCaseHandler: BostotteUseCaseHandler,
 ) {
     @GetMapping
     fun getBostotte(
         @PathVariable("soknadId") soknadId: UUID,
     ): BostotteDto {
-        return bostotteService.getBostotteInfo(soknadId).toBostotteDto()
+        return bostotteUseCaseHandler.getBostotteInfo(soknadId).toBostotteDto()
     }
 
     @PostMapping
@@ -37,7 +38,8 @@ class BostotteController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: BostotteInput,
     ): BostotteDto {
-        bostotteService.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
+        bostotteUseCaseHandler.updateBostotte(soknadId, input.hasBostotte, input.hasSamtykke)
+
         return getBostotte(soknadId)
     }
 }
@@ -60,7 +62,8 @@ private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
                 netto = netto,
                 utbetalingsdato = utbetalingsdato,
             )
-
+        // Belop betyr at bruker har tastet inn dette som en okonomisk opplysning -> dette omhandler data fra register
+        is Belop -> UtbetalingBostotteDto(null, null, null)
         else -> error("Feil type OkonomiDetalj lagret for UTBETALING_HUSBANKEN: ${this.javaClass}")
     }
 }
