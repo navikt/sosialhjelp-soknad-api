@@ -16,17 +16,20 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/inntekt/skattbarinntekt", produces = [MediaType.APPLICATION_JSON_VALUE])
 class InntektSkattetatenController(
-    private val skattService: InntektSkatteetatenService,
+    private val useCaseHandler: InntektSkatteetatenUseCaseHandler,
 ) {
     @GetMapping
     fun getSkattbarInntekt(
         @PathVariable("soknadId") soknadId: UUID,
     ): SkattbarInntektDto {
-        return SkattbarInntektDto(
-            inntektSkatteetaten = skattService.getInntektSkatt(soknadId)?.toInntektFraOrganisasjonDtos() ?: emptyList(),
-            inntektFraSkatteetatenFeilet = skattService.getIntegrasjonStatusSkatt(soknadId),
-            samtykke = skattService.getSamtykkeSkatt(soknadId)?.toSamtykkeDto(),
-        )
+        return useCaseHandler.getInntektSkattInfo(soknadId)
+            .let {
+                SkattbarInntektDto(
+                    inntektSkatteetaten = it.inntekt?.toInntektFraOrganisasjonDtos() ?: emptyList(),
+                    inntektFraSkatteetatenFeilet = it.getFailed,
+                    samtykke = it.samtykke?.toSamtykkeDto(),
+                )
+            }
     }
 
     @PutMapping("/samtykke")
@@ -34,7 +37,7 @@ class InntektSkattetatenController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody samtykke: Boolean,
     ): SkattbarInntektDto {
-        skattService.updateSamtykkeSkatt(soknadId, samtykke)
+        useCaseHandler.updateSamtykke(soknadId, samtykke)
         return getSkattbarInntekt(soknadId)
     }
 }

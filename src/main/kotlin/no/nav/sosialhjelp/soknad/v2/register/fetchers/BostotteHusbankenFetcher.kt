@@ -43,7 +43,7 @@ class BostotteHusbankenFetcher(
                         detaljer =
                             bostotte.utbetalinger
                                 .filter { it.utbetalingsdato.isAfter(LocalDate.now().minusDays(daysToSubtract(bostotte))) }
-                                .map { it.toUtbetaling() },
+                                .map { it.toUtbetalingDomain() },
                     ),
             )
         }
@@ -72,7 +72,7 @@ private fun Sak.toBostotteSak() =
         beskrivelse = vedtak?.beskrivelse,
     )
 
-private fun UtbetalingHusbanken.toUtbetaling() =
+private fun UtbetalingHusbanken.toUtbetalingDomain() =
     Utbetaling(
         netto = belop.toDouble(),
         mottaker = Mottaker.valueOf(mottaker.name),
