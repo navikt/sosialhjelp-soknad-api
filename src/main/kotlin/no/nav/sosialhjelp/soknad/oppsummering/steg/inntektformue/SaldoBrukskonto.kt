@@ -27,7 +27,7 @@ class SaldoBrukskonto {
         return oversikt.formue
             .filter { it.type == jsonTypeVerdi }
             .let { formuer ->
-                if (formuer.isEmpty()) {
+                if (formuer.isEmpty() || formuer.all { it.belop == null }) {
                     createEmptySporsmal()
                 } else {
                     createSporsmalForSaldo(formuer)
