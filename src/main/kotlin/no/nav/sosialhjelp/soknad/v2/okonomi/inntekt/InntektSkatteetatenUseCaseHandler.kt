@@ -38,7 +38,7 @@ class InntektSkatteetatenUseCaseHandler(
         soknadId: UUID,
         hasSamtykke: Boolean,
     ) {
-        if (!doesNotNeedUpdate(soknadId, hasSamtykke)) return
+        if (doesNotNeedUpdate(soknadId, hasSamtykke)) return
 
         inntektSkatteetatenService.updateSamtykkeSkatt(soknadId, hasSamtykke)
 
@@ -61,7 +61,7 @@ class InntektSkatteetatenUseCaseHandler(
     }
 
     private fun handleFetchFromSkatt(soknadId: UUID) {
-        runCatching { inntektSkatteetatenFetcher.fetch() }
+        runCatching { inntektSkatteetatenFetcher.fetchInntekt() }
             .onSuccess { utbetalinger -> inntektSkatteetatenService.saveUtbetalinger(soknadId, utbetalinger) }
             .onFailure { ex ->
                 logger.error("Fetching fra Skatteetaten feilet", ex)

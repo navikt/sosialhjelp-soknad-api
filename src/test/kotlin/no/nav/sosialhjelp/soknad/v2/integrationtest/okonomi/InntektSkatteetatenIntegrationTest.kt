@@ -255,7 +255,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
         private fun updateUrl(soknadId: UUID) = "/soknad/$soknadId/inntekt/skattbarinntekt/samtykke"
     }
 
-    private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntekt? {
+    private fun readResponseFromPath(path: String = "/skatt/InntektOgSkattToMaanederToArbeidsgivere.json"): SkattbarInntekt {
         val resourceAsStream = this.javaClass.getResourceAsStream(path) ?: error("Resource not found: $path")
         val json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
         return jacksonObjectMapper()
