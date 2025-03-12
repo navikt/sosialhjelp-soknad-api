@@ -151,7 +151,7 @@ spec:
     - name: SOKNAD_BOSTOTTE_URL
       value: "https://api.demo.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
-      value: "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+      value: "https://inntekt.api.skatteetaten-test.no/v1/digisos/"
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
