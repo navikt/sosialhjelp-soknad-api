@@ -80,6 +80,7 @@ spec:
         - host: "aareg-services.dev-fss-pub.nais.io"
         - host: "sokos-utbetaldata.dev-fss-pub.nais.io"
         - host: "kodeverk-api.nav.no"
+        - host: "inntekt.api.skatteetaten-test.no"
     inbound:
       rules:
         - application: sosialhjelp-soknad-dev
