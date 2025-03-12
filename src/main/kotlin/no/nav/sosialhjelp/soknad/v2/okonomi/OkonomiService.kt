@@ -144,6 +144,10 @@ class OkonomiService(
                 )
             else -> error("Ukjent okonomi-element")
         }
+
+        if (element.type.dokumentasjonForventet == true) {
+            dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
+        }
     }
 
     fun addElementToOkonomi(
