@@ -268,7 +268,54 @@ object InntektOgFormue {
                 pdf.addBlankLine()
             }
         }
+        // Bankinnskudd
+        pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.sporsmal"))
+        if (utvidetSoknad) {
+            pdfUtils.skrivHjelpetest(pdf, "inntekt.bankinnskudd.true.type.hjelpetekst.tekst")
+        }
+        val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
+        if (sparingBekreftelser.isNotEmpty()) {
+            val sparingBekreftelse = sparingBekreftelser[0]
+            val sparingAlternativer: MutableList<String> = ArrayList(6)
+            sparingAlternativer.add("brukskonto")
+            sparingAlternativer.add("sparekonto")
+            sparingAlternativer.add("bsu")
+            sparingAlternativer.add("livsforsikringssparedel")
+            sparingAlternativer.add("verdipapirer")
+            sparingAlternativer.add("belop")
 
+            if (sparingBekreftelse.verdi) {
+                okonomi.oversikt.formue.forEach { formue ->
+                    if (sparingAlternativer.contains(formue.type)) {
+                        pdf.skrivTekst(formue.tittel)
+                        if (formue.type == "belop") {
+                            pdf.addBlankLine()
+                            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"))
+                            if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.sparing != null) {
+                                pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.sparing)
+                            } else {
+                                pdfUtils.skrivIkkeUtfylt(pdf)
+                            }
+                        }
+                    }
+                }
+            } else {
+                pdfUtils.skrivIkkeUtfylt(pdf)
+            }
+        } else {
+            pdfUtils.skrivIkkeUtfylt(pdf)
+        }
+        if (utvidetSoknad) {
+            val bankinnskuddSvaralternativer: MutableList<String> = ArrayList(6)
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.brukskonto")
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.sparekonto")
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.bsu")
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.livsforsikringssparedel")
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.verdipapirer")
+            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.annet")
+            pdfUtils.skrivSvaralternativer(pdf, bankinnskuddSvaralternativer)
+        }
+        pdf.addBlankLine()
         // Kort søknad har kun skatteetaten-/bostøtte-/navytelser-spørsmål, så vi kan avslutte her
         if (isKortSoknad) {
             if (urisOnPage.isNotEmpty()) {
@@ -356,55 +403,6 @@ object InntektOgFormue {
             verdiJaSvaralternativer.add("inntekt.eierandeler.true.type.fritidseiendom")
             verdiJaSvaralternativer.add("inntekt.eierandeler.true.type.annet")
             pdfUtils.skrivSvaralternativer(pdf, verdiJaSvaralternativer)
-        }
-        pdf.addBlankLine()
-
-        // Bankinnskudd
-        pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.sporsmal"))
-        if (utvidetSoknad) {
-            pdfUtils.skrivHjelpetest(pdf, "inntekt.bankinnskudd.true.type.hjelpetekst.tekst")
-        }
-        val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
-        if (sparingBekreftelser.isNotEmpty()) {
-            val sparingBekreftelse = sparingBekreftelser[0]
-            val sparingAlternativer: MutableList<String> = ArrayList(6)
-            sparingAlternativer.add("brukskonto")
-            sparingAlternativer.add("sparekonto")
-            sparingAlternativer.add("bsu")
-            sparingAlternativer.add("livsforsikringssparedel")
-            sparingAlternativer.add("verdipapirer")
-            sparingAlternativer.add("belop")
-
-            if (sparingBekreftelse.verdi) {
-                okonomi.oversikt.formue.forEach { formue ->
-                    if (sparingAlternativer.contains(formue.type)) {
-                        pdf.skrivTekst(formue.tittel)
-                        if (formue.type == "belop") {
-                            pdf.addBlankLine()
-                            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"))
-                            if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.sparing != null) {
-                                pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.sparing)
-                            } else {
-                                pdfUtils.skrivIkkeUtfylt(pdf)
-                            }
-                        }
-                    }
-                }
-            } else {
-                pdfUtils.skrivIkkeUtfylt(pdf)
-            }
-        } else {
-            pdfUtils.skrivIkkeUtfylt(pdf)
-        }
-        if (utvidetSoknad) {
-            val bankinnskuddSvaralternativer: MutableList<String> = ArrayList(6)
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.brukskonto")
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.sparekonto")
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.bsu")
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.livsforsikringssparedel")
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.verdipapirer")
-            bankinnskuddSvaralternativer.add("inntekt.bankinnskudd.true.type.annet")
-            pdfUtils.skrivSvaralternativer(pdf, bankinnskuddSvaralternativer)
         }
         pdf.addBlankLine()
 
