@@ -95,14 +95,10 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
     }
 
-    enum class ABC { A, B, C }
-
     // TODO Skal vi alltid hente inn på nytt i dette tilfellet - eller skal vi ha annen logikk basert på dato?
     @Test
     fun `Oppdatere samtykke som var true til true skal ikke trigge ny innhenting`() {
         integrasjonStatusService.setStotteHusbankenStatus(soknad.id, false)
-
-        val abc = ABC.entries.associateWith { it.name.lowercase() }
 
         opprettBostotteData()
 
