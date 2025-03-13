@@ -5,8 +5,8 @@ import io.mockk.mockk
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
-import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleService
-import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleServiceImpl
+import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleHandlerImpl
+import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -53,8 +53,8 @@ class LifecycleServiceTest {
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler = mockk()
     private val sendSoknadHandler: SendSoknadHandler = mockk()
     private val dokumentlagerService: DokumentlagerService = mockk()
-    private val lifecycleService: SoknadLifecycleService =
-        SoknadLifecycleServiceImpl(
+    private val lifecycleService: SoknadLifecycleUseCaseHandler =
+        SoknadLifecycleHandlerImpl(
             prometheusMetricsService = mockk(relaxed = true),
             createDeleteSoknadHandler = createDeleteSoknadHandler,
             sendSoknadHandler = sendSoknadHandler,
