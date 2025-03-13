@@ -269,52 +269,32 @@ object InntektOgFormue {
         }
 
         // Bankinnskudd
-        if (isKortSoknad)
-            {
-                pdf.addBlankLine()
-                pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.kort.sporsmal"))
+        if (isKortSoknad) {
+            pdf.addBlankLine()
+            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.kort.sporsmal"))
 
-                val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
-                println("kort InntektOgFormue.kt: sparingBekreftelser: $sparingBekreftelser")
-                if (sparingBekreftelser.isNotEmpty()) {
-                    val sparingBekreftelse = sparingBekreftelser[0]
-                    println("kort InntektOgFormue.kt: inne if if sparingBekreftelse.isnotempty: $sparingBekreftelse")
-                    val sparingAlternativer: MutableList<String> = ArrayList(1)
-                    println("kort InntektOgFormue.kt: inne if if sparingBekreftelse.isnotempty sparingAlternativer: $sparingAlternativer")
-                    sparingAlternativer.add("brukskonto")
-
-                    if (sparingBekreftelse.verdi) {
-                        println("kort InntektOgFormue.kt: inne i if sparingBekreftelse.verdi: ${sparingBekreftelse.verdi}")
-                        okonomi.oversikt.formue.forEach { formue ->
-                            println("kort InntektOgFormue.kt: inne foreach formue: $formue")
-                            if (sparingAlternativer.contains(formue.type)) {
-                                println("kort InntektOgFormue.kt: inne i if formuetype")
-                                pdf.skrivTekst(formue.tittel)
-                                if (formue.type == "belop") {
-                                    println("kort InntektOgFormue.kt: inne i if beløp")
-                                    pdf.addBlankLine()
-                                    pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"))
-                                    if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.sparing != null) {
-                                        println("kort InntektOgFormue.kt: inne i if beskrivelseAvAnnet")
-                                        pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.sparing)
-                                    } else {
-                                        println("kort InntektOgFormue.kt: inne i else beskrivelseAvAnnet")
-                                        pdfUtils.skrivIkkeUtfylt(pdf)
-                                    }
-                                }
-                            }
+            val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
+            if (sparingBekreftelser.isNotEmpty()) {
+                val sparingBekreftelse = sparingBekreftelser[0]
+                if (sparingBekreftelse.verdi) {
+                    okonomi.oversikt.formue.forEach { formue ->
+                        if (formue.type == "brukskonto") {
+                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                pdf,
+                                formue.belop,
+                                "opplysninger.inntekt.bankinnskudd.brukskonto.belop.label",
+                            )
+                            pdf.addBlankLine()
                         }
-                    } else {
-                        println("kort InntektOgFormue.kt: inne i else sparingBekreftelse.verdi: ${sparingBekreftelse.verdi}")
-                        pdfUtils.skrivIkkeUtfylt(pdf)
                     }
                 } else {
-                    println("kort InntektOgFormue.kt: inne i else sparingBekreftelser.isNotEmpty()")
                     pdfUtils.skrivIkkeUtfylt(pdf)
                 }
-                println("kort InntektOgFormue.kt: ute av if else sparingBekreftelser.isNotEmpty()")
-                pdf.addBlankLine()
+            } else {
+                pdfUtils.skrivIkkeUtfylt(pdf)
             }
+            pdf.addBlankLine()
+        }
 
         // Kort søknad har kun skatteetaten-/bostøtte-/konto-/navytelser-spørsmål, så vi kan avslutte her
         if (isKortSoknad) {
