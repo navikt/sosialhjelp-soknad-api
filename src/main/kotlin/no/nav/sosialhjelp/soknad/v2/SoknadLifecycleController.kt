@@ -27,7 +27,7 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
-    private val soknadLifecycleService: SoknadLifecycleService,
+    private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/create")

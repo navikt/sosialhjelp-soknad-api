@@ -106,4 +106,18 @@ class SoknadMetadataService(
             }
             ?: error("Soknad finnes ikke, kan ikke oppdatere sist endret")
     }
+
+    fun getIDForSoknaderMedStatusSendt(): List<UUID> {
+        return soknadMetadataRepository.hentSoknadIderMedStatus(SoknadStatus.SENDT)
+    }
+
+    fun updateSoknadStatus(
+        soknadId: UUID,
+        soknadStatus: SoknadStatus,
+    ) {
+        soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.run { copy(status = soknadStatus) }
+            ?.also { soknadMetadataRepository.save(it) }
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
 }

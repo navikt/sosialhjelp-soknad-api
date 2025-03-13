@@ -17,6 +17,9 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
     @Query("select soknad_id from soknad_metadata where opprettet < :timestamp")
     fun hentEldreEnn(timestamp: LocalDateTime): List<UUID>
 
+    @Query("select soknad_id from soknad_metadata where status = :status")
+    fun hentSoknadIderMedStatus(status: SoknadStatus): List<UUID>
+
     fun findByPersonId(personId: String): List<SoknadMetadata>
 
     @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp")
