@@ -42,6 +42,8 @@ class SoknadLifecycleServiceImpl(
 
         return runCatching { createDeleteSoknadHandler.createSoknad(soknadId, isKort) }
             .onSuccess {
+                createDeleteSoknadHandler.runRegisterDataFetchers(soknadId)
+
                 prometheusMetricsService.reportStartSoknad()
                 logger.info("Ny søknad opprettet")
             }

@@ -19,9 +19,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @Component
 class CreateDeleteSoknadHandler(
     private val soknadService: SoknadService,
-    private val registerDataService: RegisterDataService,
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
+    private val registerDataService: RegisterDataService,
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun createSoknad(
@@ -38,8 +38,6 @@ class CreateDeleteSoknadHandler(
                 )
             }
             .also {
-                // TODO Løft dette et hakk opp ut av transaksjon
-                runRegisterDataFetchers(soknadId)
                 createObligatoriskDokumentasjon(soknadId, isKort)
             }
     }
@@ -51,18 +49,21 @@ class CreateDeleteSoknadHandler(
         soknadMetadataService.deleteMetadata(soknadId)
     }
 
+    @Transactional
     fun deleteAfterSent(soknadId: UUID) {
         soknadService.deleteSoknad(soknadId)
     }
 
-    private fun runRegisterDataFetchers(soknadId: UUID) {
+    @Transactional(propagation = Propagation.NEVER)
+    fun runRegisterDataFetchers(soknadId: UUID) {
         runCatching {
             registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
-        }.onFailure {
-            logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
-            soknadService.deleteSoknad(soknadId)
-            throw it
         }
+            .onFailure {
+                logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
+                soknadService.deleteSoknad(soknadId)
+                throw it
+            }
     }
 
     private fun createObligatoriskDokumentasjon(
