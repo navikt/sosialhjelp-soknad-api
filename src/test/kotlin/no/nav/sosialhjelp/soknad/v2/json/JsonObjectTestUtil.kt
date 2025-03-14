@@ -630,7 +630,21 @@ fun createEmptyJsonInternalSoknad(
                 ).withKompatibilitet(ArrayList()),
         ).withVedlegg(
             if (kortSoknad) {
-                JsonVedleggSpesifikasjon().withVedlegg(mutableListOf(JsonVedlegg().withType("kort").withTilleggsinfo("behov"), JsonVedlegg().withType("annet").withTilleggsinfo("annet")))
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    mutableListOf(
+                        JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
+                        JsonVedlegg().withType("barnebidrag").withTilleggsinfo("barnebidrag"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
+                        JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),
+                        JsonVedlegg().withType("husleiekontrakt").withTilleggsinfo("husleiekontrakt"),
+                        JsonVedlegg().withType("kontooversikt").withTilleggsinfo("annet"),
+                        JsonVedlegg().withType("lonnslipp").withTilleggsinfo("arbeid"),
+                        JsonVedlegg().withType("faktura").withTilleggsinfo("strom"),
+                        JsonVedlegg().withType("student").withTilleggsinfo("vedtak"),
+                        JsonVedlegg().withType("annet").withTilleggsinfo("annet").withStatus("LastetOpp"),
+                    ),
+                )
             } else {
                 JsonVedleggSpesifikasjon()
             },
