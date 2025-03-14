@@ -17,13 +17,13 @@ class DigisosApiService(
         token: String,
     ): JsonDigisosSoker = digisosApiV2Client.getInnsynsfil(fiksDigisosId, dokumentId, token)
 
-    fun getSoknaderMedStatusMotattFagsystem(digisosIdListe: List<UUID>): List<UUID> {
-        if (digisosIdListe.isEmpty()) {
-            return emptyList()
+    fun getSoknaderStatusMottatt(digisosIds: List<UUID>): List<UUID> {
+        return if (digisosIds.isEmpty()) {
+            emptyList()
         } else {
-            return digisosApiV2Client
-                .getStatusForSoknader(digisosIdListe).statusListe
-                .filter { it.levertFagsystem == true }
+            digisosApiV2Client
+                .getStatusForSoknader(digisosIds).statusListe
+                .filter { it.levertFagsystem }
                 .map { it.digisosId }
         }
     }
