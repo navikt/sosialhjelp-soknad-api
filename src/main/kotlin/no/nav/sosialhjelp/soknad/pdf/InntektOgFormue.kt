@@ -175,6 +175,12 @@ object InntektOgFormue {
             }
             pdf.addBlankLine()
         }
+        if (isKortSoknad) {
+            val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
+            if (bostotteBekreftelser.isEmpty()) {
+                pdfUtils.skrivIkkeUtfylt(pdf)
+            }
+        }
 
         val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon != null && soknad.driftsinformasjon.stotteFraHusbankenFeilet
         val bostotteSamtykke = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE_SAMTYKKE)
