@@ -9,6 +9,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
@@ -22,34 +24,36 @@ import java.util.UUID
 @Component
 class SoknadToJsonMapper(
     private val soknadRepository: SoknadRepository,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) : DomainToJsonMapper {
     override fun mapToJson(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        soknadRepository.findByIdOrNull(soknadId)?.let {
-            doMapping(it, jsonInternalSoknad)
-        }
+        val tidspunkt =
+            soknadMetadataRepository.findByIdOrNull(soknadId)?.tidspunkt
+                ?: error("Metadata for soknad (id=$soknadId) finnes ikke")
+
+        soknadRepository.findByIdOrNull(soknadId)
+            ?.let { soknad -> doMapping(soknad, tidspunkt, jsonInternalSoknad) }
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
     internal companion object Mapper {
         fun doMapping(
             domainSoknad: Soknad,
+            tidspunkt: Tidspunkt,
             json: JsonInternalSoknad,
         ) {
             with(json) {
                 initializeObjects()
 
                 soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
-
                 soknad.innsendingstidspunkt =
-                    domainSoknad.tidspunkt.sendtInn?.let {
+                    tidspunkt.sendtInn?.let {
                         TimestampConverter.convertToOffsettDateTimeUTCString(it)
                     }
-
                 soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
-
                 soknad.data.soknadstype = domainSoknad.toJsonSoknadType()
             }
         }

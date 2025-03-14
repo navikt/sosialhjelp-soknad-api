@@ -14,17 +14,10 @@ interface SoknadService {
     fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
-        opprettetDato: LocalDateTime,
         kortSoknad: Boolean,
     ): UUID
 
     fun deleteSoknad(soknadId: UUID)
-
-    fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime?,
-    )
 
     fun hasSoknadNewerThan(
         eierId: String,
@@ -63,12 +56,10 @@ class SoknadServiceImpl(
     override fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        opprettetDato: LocalDateTime,
         kortSoknad: Boolean,
     ): UUID =
         Soknad(
             id = soknadId,
-            tidspunkt = Tidspunkt(opprettet = opprettetDato),
             eierPersonId = eierId,
             kortSoknad = kortSoknad,
         ).let { soknadRepository.save(it) }
@@ -79,15 +70,6 @@ class SoknadServiceImpl(
             .findByIdOrNull(soknadId)
             ?.let { soknadRepository.delete(it) }
             ?: logger.warn("Kan ikke slette soknad. Finnes ikke.")
-    }
-
-    override fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime?,
-    ) {
-        findOrError(soknadId)
-            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
-            .also { soknadRepository.save(it) }
     }
 
     @Transactional(readOnly = true)
