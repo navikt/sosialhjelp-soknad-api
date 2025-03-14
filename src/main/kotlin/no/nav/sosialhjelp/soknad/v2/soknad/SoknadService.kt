@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadService {
@@ -18,11 +17,6 @@ interface SoknadService {
     ): UUID
 
     fun deleteSoknad(soknadId: UUID)
-
-    fun hasSoknadNewerThan(
-        eierId: String,
-        tidspunkt: LocalDateTime,
-    ): Boolean
 
     fun erKortSoknad(soknadId: UUID): Boolean
 
@@ -74,12 +68,6 @@ class SoknadServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
-
-    @Transactional(readOnly = true)
-    override fun hasSoknadNewerThan(
-        eierId: String,
-        tidspunkt: LocalDateTime,
-    ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
     @Transactional(readOnly = true)
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad

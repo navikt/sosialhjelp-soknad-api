@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import org.springframework.data.annotation.Id
-import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
@@ -13,16 +12,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Repository
-interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {
-    @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp")
-    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
-
-    @Query("SELECT * FROM soknad WHERE sendt_inn > :timestamp and eier_person_id = :eierId")
-    fun findNewerThan(
-        eierId: String,
-        timestamp: LocalDateTime,
-    ): List<Soknad>
-}
+interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
 
 @Table
 data class Soknad(
