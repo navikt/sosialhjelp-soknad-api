@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
@@ -10,12 +9,9 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.util.unit.DataSize
@@ -41,7 +37,6 @@ class InformasjonRessurs(
     private val kortSoknadService: KortSoknadService,
     private val soknadMetadataService: SoknadMetadataService,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
-    private val soknadMetadataRepository: SoknadMetadataRepository,
     @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     companion object {
@@ -87,18 +82,10 @@ class InformasjonRessurs(
         if (person === null) log.error("Fant ikke person for bruker")
 
         val numRecentlySent =
-            if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-                soknadMetadataService.getNumberOfSoknaderSentAfter(
-                    personId = eier,
-                    minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
-                )
-            } else {
-                soknadMetadataRepository
-                    .hentInnsendteSoknaderForBrukerEtterTidspunkt(
-                        eier,
-                        LocalDateTime.now().minusDays(FJORTEN_DAGER),
-                    ).size
-            }
+            soknadMetadataService.getNumberOfSoknaderSentAfter(
+                personId = eier,
+                minusDays = LocalDateTime.now().minusDays(FJORTEN_DAGER),
+            )
 
         return SessionResponse(
             userBlocked = personService.harAdressebeskyttelse(eier),
@@ -128,14 +115,4 @@ class InformasjonRessurs(
         @Schema(description = "User qualifies for kort søknad")
         val qualifiesForKortSoknad: Boolean?,
     )
-}
-
-private fun List<SoknadMetadata>.toPabegynteSoknader(): List<PabegyntSoknad> {
-    return map {
-        PabegyntSoknad(
-            sistOppdatert = it.tidspunkt.sistEndret,
-            behandlingsId = it.soknadId.toString(),
-            isKort = it.soknadType == SoknadType.KORT,
-        )
-    }
 }

@@ -23,10 +23,8 @@ interface SoknadService {
 
     fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: LocalDateTime?,
     )
-
-    fun getSoknad(soknadId: UUID): Soknad
 
     fun hasSoknadNewerThan(
         eierId: String,
@@ -56,12 +54,11 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService,
-    BegrunnelseService {
+) : SoknadService, BegrunnelseService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("NyModell: Soknad finnes ikke")
+            ?: throw IkkeFunnetException("Soknad finnes ikke")
 
     override fun createSoknad(
         eierId: String,
@@ -81,30 +78,28 @@ class SoknadServiceImpl(
         soknadRepository
             .findByIdOrNull(soknadId)
             ?.let { soknadRepository.delete(it) }
-            ?: logger.warn("NyModell: Kan ikke slette soknad. Finnes ikke.")
+            ?: logger.warn("Kan ikke slette soknad. Finnes ikke.")
     }
 
     override fun setInnsendingstidspunkt(
         soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime,
+        innsendingsTidspunkt: LocalDateTime?,
     ) {
         findOrError(soknadId)
             .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
             .also { soknadRepository.save(it) }
     }
 
-    override fun getSoknad(soknadId: UUID) =
-        getSoknadOrNull(soknadId)
-            ?: error("Soknad finnes ikke")
+    @Transactional(readOnly = true)
+    override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
 
-    override fun getSoknadOrNull(soknadId: UUID) =
-        soknadRepository.findByIdOrNull(soknadId)
-
+    @Transactional(readOnly = true)
     override fun hasSoknadNewerThan(
         eierId: String,
         tidspunkt: LocalDateTime,
     ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
+    @Transactional(readOnly = true)
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
 
     override fun updateKortSoknad(
@@ -116,6 +111,7 @@ class SoknadServiceImpl(
         soknadRepository.save(updatedSoknad)
     }
 
+    @Transactional(readOnly = true)
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 
     override fun updateBegrunnelse(

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.innsending
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -11,10 +10,10 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -25,7 +24,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class KortSoknadService(
@@ -35,6 +33,7 @@ class KortSoknadService(
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
     private val unleash: Unleash,
+    private val dokumentlagerService: DokumentlagerService,
 ) {
     private val logger by logger()
 
@@ -46,6 +45,7 @@ class KortSoknadService(
 
         // Hvis en søknad skal transformeres til kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
+        dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
 
         soknadService.updateKortSoknad(soknadId, true)
@@ -58,6 +58,7 @@ class KortSoknadService(
 
         // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og legg til SKATTEMELDING
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+        dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
         dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
 
         soknadService.updateKortSoknad(soknadId, false)
@@ -78,12 +79,10 @@ class KortSoknadService(
                         digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
                     }
                 }
-                .any { innsynsfil ->
-                    innsynsfil.hasRecentSoknadFromFiks() || innsynsfil.hasRecentOrUpcomingUtbetalinger()
-                }
+                .any { innsynsfil -> innsynsfil.hasRecentOrUpcomingUtbetalinger() }
         }
             .onFailure {
-                logger.error("NyModell: Feil ved henting av innsynsfil fra FIKS", it)
+                logger.error("Feil ved henting av innsynsfil fra FIKS", it)
             }
         return false
     }
@@ -95,20 +94,6 @@ class KortSoknadService(
 
     // semantisk convenience
     private fun isKortSoknadNotEnabled(kommunenummer: String?) = !isEnabled(kommunenummer)
-
-    private fun JsonDigisosSoker.hasRecentSoknadFromFiks(): Boolean {
-        val mottattSiste120Dager =
-            hendelser
-                ?.asSequence()
-                ?.filter { it is JsonSoknadsStatus && it.status == JsonSoknadsStatus.Status.MOTTATT }
-                ?.mapNotNull { it.hendelsestidspunkt }
-                ?.firstOrNull { it.toLocalDateTime() >= LocalDateTime.now(clock).minusDays(120) }
-        if (mottattSiste120Dager != null) {
-            logger.info("Bruker kvaliserer til kort søknad via søknad mottatt $mottattSiste120Dager")
-            return true
-        }
-        return false
-    }
 
     private fun JsonDigisosSoker.hasRecentOrUpcomingUtbetalinger(): Boolean {
         val fourMonthsAgo = LocalDateTime.now(clock).minusDays(50)
@@ -170,14 +155,13 @@ class KortSoknadService(
         val qualifiesForKort =
             when {
                 isKortSoknadNotEnabled(kommunenummer) -> false
-                isQualifiedFromMetadata(oldKontakt.soknadId, kommunenummer) -> true
                 else -> getTokenOrNull()?.let { isQualifiedFromFiks(it, kommunenummer) }
             }
 
         when (qualifiesForKort) {
             true -> transitionToKort(updatedKontakt.soknadId)
             false -> transitionToStandard(updatedKontakt.soknadId)
-            null -> logger.warn("NyModell: Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
+            null -> logger.warn("Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
         }
     }
 
@@ -191,28 +175,7 @@ class KortSoknadService(
     private fun Kontakt.getMottakerKommunenummerOrNull(): String? {
         mottaker?.kommunenummer?.let { return it }
 
-        logger.warn("NyModell: Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
+        logger.warn("Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
         return null
-    }
-
-    // sjekker om bruker har rett på kort søknad basert på metadata
-    private fun isQualifiedFromMetadata(
-        soknadId: UUID,
-        kommunenummer: String,
-    ): Boolean {
-        soknadMetadataService.getAllMetadataForPerson(personId())
-            .asSequence()
-            .filter { metadata -> metadata.status == SoknadStatus.SENDT || metadata.status == SoknadStatus.MOTTATT_FSL }
-            .filter { metadata -> metadata.mottakerKommunenummer == kommunenummer }
-            .filter { metadata -> metadata.soknadId != soknadId }
-            .sortedByDescending { metadata -> metadata.tidspunkt.sendtInn }
-            .mapNotNull { metadata -> metadata.tidspunkt.sendtInn }
-            .firstOrNull { sendtInn -> sendtInn >= LocalDateTime.now(clock).minusDays(120) }
-            ?.let { sendtInn ->
-                logger.info("Kvalifiserer til kort søknad via søknad mottatt: $sendtInn")
-                return true
-            }
-
-        return false
     }
 }

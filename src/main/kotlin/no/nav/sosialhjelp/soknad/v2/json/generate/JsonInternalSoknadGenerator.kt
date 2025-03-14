@@ -39,7 +39,7 @@ class JsonInternalSoknadGenerator(
     private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
 
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
-        val soknad = soknadService.getSoknad(soknadId)
+        val soknad = soknadService.findOrError(soknadId)
         return JsonInternalSoknad()
             .withSoknad(JsonSoknad())
             .withVedlegg(JsonVedleggSpesifikasjon())
@@ -67,7 +67,7 @@ class JsonInternalSoknadGenerator(
                 runCatching {
                     JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
                 }.onFailure {
-                    logger.warn("NyModell: Feil i validering av json", it)
+                    logger.warn("Feil i validering av json", it)
                 }
             }
 

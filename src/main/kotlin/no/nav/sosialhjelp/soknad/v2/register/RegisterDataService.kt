@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.register
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 interface RegisterDataFetcher {
@@ -17,23 +19,10 @@ class RegisterDataService(
 ) {
     private val logger by logger()
 
-    // TODO Pakker inn logikken for skyggeprod slik at ingen Exception kastes
-    fun runAllFetchersForShadowProd(soknadId: UUID) {
-        runCatching { doRunListedFetchers(soknadId, allFetchers) }
-            .onFailure { logger.warn("NyModell: Feil i henting av Registerdata for skyggeprod", it) }
-    }
-
+    @Transactional(propagation = Propagation.NEVER)
     fun runAllRegisterDataFetchers(soknadId: UUID) {
-        logger.info("NyModell: Henter Register-data")
+        logger.info("Henter Register-data")
         doRunListedFetchers(soknadId = soknadId, listedFetchers = allFetchers)
-    }
-
-    fun runSpecificFetchers(
-        soknadId: UUID,
-        listedFetchers: List<RegisterDataFetcher>,
-    ) {
-        logger.info("NyModell: Henter Register-data: ${listedFetchers.joinToString(separator = ", ")}")
-        doRunListedFetchers(soknadId = soknadId, listedFetchers = listedFetchers)
     }
 
     private fun doRunListedFetchers(
@@ -43,7 +32,7 @@ class RegisterDataService(
         listedFetchers.forEach { fetcher ->
             runCatching { fetcher.fetchAndSave(soknadId) }
                 .onFailure {
-                    logger.warn("NyModell: Registerdata-fetcher feilet: $fetcher", it)
+                    logger.warn("Registerdata-fetcher feilet: $fetcher", it)
                     if (fetcher.exceptionOnError()) throw it
                 }
         }

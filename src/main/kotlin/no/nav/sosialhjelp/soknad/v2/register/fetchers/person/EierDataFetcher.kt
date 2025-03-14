@@ -14,13 +14,11 @@ import java.util.UUID
 class EierDataFetcher(
     private val eierService: EierRegisterService,
 ) : PersonRegisterDataFetcher {
-    private val logger by logger()
-
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("NyModell: Register: Henter ut person-info fra søker")
+        logger.info("Oppdaterer informasjon om soker fra PDL")
         person.deriveStatsborgerskap()
             .let {
                 Eier(
@@ -37,7 +35,6 @@ class EierDataFetcher(
                 )
             }
             .also { eier -> eierService.updateFromRegister(eier) }
-            .also { logger.info("NyModell: Lagret personalia og kontonummer for søker") }
     }
 
     override fun continueOnError() = false
@@ -48,6 +45,8 @@ class EierDataFetcher(
     )
 
     companion object {
+        private val logger by logger()
+
         const val PDL_UKJENT_STATSBORGERSKAP = "XUK"
         const val PDL_STATSLOS = "XXX"
 

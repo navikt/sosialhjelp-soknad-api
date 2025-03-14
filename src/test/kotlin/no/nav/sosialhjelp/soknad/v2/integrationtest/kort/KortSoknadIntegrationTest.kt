@@ -6,25 +6,25 @@ import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
-import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
-import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
@@ -43,8 +43,6 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,14 +55,13 @@ import java.util.UUID
 class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
-        ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
-
         clearAllMocks()
 
         soknadMetadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
-        every { mellomlagringClient.getDocumentsMetadata(any()) } returns MellomlagringDto("", emptyList())
+        every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
@@ -110,22 +107,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere adresse med eksisterende soknad under 120 dager i metadata skal gi kort soknad`() {
-        createEksisterendeSoknad(sendtInn = nowWithMillis().minusDays(119))
-
-        val soknadId = createSoknadWithMetadata()
-        doUpdateAdresse(soknadId = soknadId)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
-
-        verify(exactly = 0) { digisosService.getSoknaderForUser(any()) }
-    }
-
-    @Test
     fun `Oppdatere adresse med eksisterende soknad over 120 dager i metadata skal IKKE gi kort soknad`() {
         createEksisterendeSoknad(sendtInn = nowWithMillis().minusDays(121))
 
@@ -154,26 +135,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             .also { assertThat(it).isFalse() }
 
         verify(exactly = 1) { digisosService.getSoknaderForUser(any()) }
-    }
-
-    @Test
-    fun `Funn av gammel soknad innenfor 120 dager hos FIKS skal gi kort soknad`() {
-        every { digisosService.getSoknaderForUser(any()) } returns
-            listOf(createDigisosSak(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(119))))
-        every { digisosService.getInnsynsfilForSoknad(any(), any(), any()) } returns
-            createJsonDigisosSoker(
-                listOf(
-                    createMottattHendelse(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(119))),
-                ),
-            )
-        val soknadId = createSoknadWithMetadata()
-        doUpdateAdresse(soknadId)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
     }
 
     @Test
@@ -208,7 +169,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -230,7 +191,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                 createSoknadMetadata(mottakerKommunenummer = "4444"),
             )
 
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
         // bytter tilbake til adresse hvor det finnes en soknad fra før med samme mottaker
         doUpdateAdresse(soknadId, adresseValg = AdresseValg.FOLKEREGISTRERT)
 
@@ -245,6 +206,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     fun `Ved transformasjon fra kort til standard, skal dokumenter lastet opp til ANDRE_UTGIFTER overleve`() {
         every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
             createNavEnhet("Annen NAV", "4444", "Annen kommune")
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
 
         createEksisterendeSoknad(nowWithMillis().minusDays(10))
         val soknadId = createSoknadWithMetadata()
@@ -265,8 +227,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     status = DokumentasjonStatus.LASTET_OPP,
                     dokumenter =
                         setOf(
-                            Dokument(UUID.randomUUID(), "filnavn1.jpg", "sha512"),
-                            Dokument(UUID.randomUUID(), "filnavn2.jpg", "sha512"),
+                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
+                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
                         ),
                 )
             }
@@ -283,8 +245,9 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     .hasSize(2)
             }
 
+        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
         // oppdaterer adresse andre gang -> gir standard soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresse())
+        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
         doGet(
             uri = isKortUrl(soknadId),
@@ -330,10 +293,11 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         sendtInn: LocalDateTime? = null,
         soknadStatus: SoknadStatus = SoknadStatus.OPPRETTET,
         mottakerKommunenummer: String = "1234",
+        soknadType: SoknadType = SoknadType.STANDARD,
     ): SoknadMetadata {
         return SoknadMetadata(
             soknadId = UUID.randomUUID(),
-            soknadType = SoknadType.STANDARD,
+            soknadType = soknadType,
             personId = userId,
             status = soknadStatus,
             mottakerKommunenummer = mottakerKommunenummer,
@@ -350,7 +314,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     private fun doUpdateAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg = AdresseValg.FOLKEREGISTRERT,
-        brukerAdresse: Adresse? = null,
+        brukerAdresse: AdresseInput? = null,
     ): AdresserDto {
         return doPut(
             uri = updateAdresseUrl(soknadId),
@@ -395,22 +359,10 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         private fun updateAdresseUrl(soknadId: UUID) = "/soknad/$soknadId/adresser"
 
         private fun isKortUrl(soknadId: UUID) = "/soknader/$soknadId/isKort"
-
-        @JvmStatic
-        @BeforeClass
-        fun beforeClass() {
-            ControllerToNewDatamodellProxy.nyDatamodellAktiv = true
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun afterClass() {
-            ControllerToNewDatamodellProxy.nyDatamodellAktiv = false
-        }
     }
 }
 
-private fun createBrukerAdresse(): Adresse {
+private fun createBrukerAdresseInput(): AdresseInput {
     return VegAdresse(
         landkode = "NOR",
         kommunenummer = "4444",
@@ -457,23 +409,3 @@ private fun createMottattHendelse(tidspunkt: String): JsonHendelse =
         .withType(JsonHendelse.Type.SOKNADS_STATUS)
         .withHendelsestidspunkt(tidspunkt)
         .withStatus(JsonSoknadsStatus.Status.MOTTATT)
-
-private fun createPastUtbetaling(
-    tidspunkt: String,
-    utbetalingstidspunkt: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withUtbetalingsdato(utbetalingstidspunkt)
-        .withStatus(JsonUtbetaling.Status.UTBETALT)
-
-private fun createUpcomingUtbetaling(
-    tidspunkt: String,
-    forfallsdato: String,
-): JsonHendelse =
-    JsonUtbetaling()
-        .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withForfallsdato(forfallsdato)
-        .withStatus(JsonUtbetaling.Status.PLANLAGT_UTBETALING)

@@ -6,17 +6,16 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatNoException
@@ -25,22 +24,20 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.core.env.Environment
 import java.time.LocalDateTime
+import java.util.UUID
 
 internal class TilgangskontrollTest {
-    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val soknadService: SoknadService = mockk(relaxed = true)
     private val personService: PersonService = mockk()
     private val environment: Environment = mockk()
+    private val soknadMetadataService: SoknadMetadataService = mockk()
 
     private val tilgangskontroll =
         Tilgangskontroll(
-            soknadMetadataRepository,
-            soknadUnderArbeidRepository,
             soknadService,
             personService,
             environment,
-            soknadMetadataService = mockk(relaxed = true),
+            soknadMetadataService,
         )
 
     @BeforeEach
@@ -60,100 +57,56 @@ internal class TilgangskontrollTest {
     @Test
     fun `verifiserBrukerHarTilgangTilSoknad skal gi tilgang`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid =
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsId",
-                eier = userId,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(userId, false),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-            )
+        val soknadId = UUID.randomUUID()
 
-        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
+        every { soknadService.getSoknadOrNull(soknadId) } returns
+            Soknad(soknadId, userId, kortSoknad = false)
+        every { soknadMetadataService.getMetadataForSoknad(any()) } returns
+            SoknadMetadata(
+                soknadId = soknadId,
+                personId = userId,
+                status = SoknadStatus.OPPRETTET,
+                tidspunkt = Tidspunkt(),
+            )
         every { personService.harAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(soknadId.toString()) }
     }
 
     @Test
     fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis SoknadUnderArbeid tilhorer andre enn innlogget bruker`() {
-        val soknadUnderArbeid =
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsId",
-                eier = "other_user",
-                jsonInternalSoknad = createEmptyJsonInternalSoknad("other_user", false),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
+        every { soknadMetadataService.getMetadataForSoknad(any()) } returns
+            SoknadMetadata(
+                soknadId = UUID.randomUUID(),
+                personId = "12345612345",
+                status = SoknadStatus.OPPRETTET,
+                tidspunkt = Tidspunkt(),
             )
 
-        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
-
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX") }
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(UUID.randomUUID().toString()) }
     }
 
     @Test
     fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis soknad ikke er innsendt men soknadUnderArbeid ikke finnes`() {
-        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
-        every { soknadService.getSoknadOrNull(any()) } returns null
+        every { soknadMetadataService.getMetadataForSoknad(any()) } throws IkkeFunnetException("ikke funnet")
 
-        assertThatExceptionOfType(AuthorizationException::class.java)
+        assertThatExceptionOfType(IkkeFunnetException::class.java)
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("54e7c9b2-0b25-4e2c-aa7c-bf8898a6b388") }
     }
 
     @Test
     fun `skal kaste SoknadAlleredeSendtException hvis soknad allerede er innsendt`() {
-        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.FERDIG
-        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
-
-        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
-        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
-    }
-
-    @Test
-    fun `bruker har tilgang til soknadens metadata hvis bruker ikke har adressebeskyttelse`() {
-        val userId = SubjectHandlerUtils.getUserIdFromToken()
-        val metadata =
+        every { soknadMetadataService.getMetadataForSoknad(any()) } returns
             SoknadMetadata(
-                id = 0L,
-                behandlingsId = "123",
-                fnr = userId,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
+                soknadId = UUID.randomUUID(),
+                personId = "12345612345",
+                status = SoknadStatus.SENDT,
+                tidspunkt = Tidspunkt(sendtInn = LocalDateTime.now()),
             )
-        every { soknadMetadataRepository.hent("123") } returns metadata
-        every { personService.harAdressebeskyttelse(userId) } returns false
-
-        assertThatNoException()
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123") }
-    }
-
-    @Test
-    fun `verifiserBrukerHarTilgangTilMetadata skal feile hvis metadata tilhorer andre enn innlogget bruker`() {
-        val metadata =
-            SoknadMetadata(
-                id = 0L,
-                behandlingsId = "123",
-                fnr = "other_user",
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now(),
-                kortSoknad = false,
-            )
-        every { soknadMetadataRepository.hent("123") } returns metadata
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123") }
+        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(UUID.randomUUID().toString()) }
     }
 
     @Test

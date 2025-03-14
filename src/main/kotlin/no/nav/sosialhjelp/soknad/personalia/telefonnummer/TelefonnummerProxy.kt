@@ -21,7 +21,7 @@ class TelefonnummerProxy(
         soknadId: String,
         telefonnummerBruker: String?,
     ): TelefonnummerFrontend {
-        logger.info("NyModell: Oppdaterer Telefonnummer.")
+        logger.info("Oppdaterer Telefonnummer.")
 
         return telefonnummerController.updateTelefonnummer(
             soknadId = UUID.fromString(soknadId),

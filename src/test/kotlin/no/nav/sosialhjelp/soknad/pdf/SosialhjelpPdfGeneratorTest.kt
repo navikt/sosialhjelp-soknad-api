@@ -25,10 +25,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import org.apache.commons.io.FileUtils
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException

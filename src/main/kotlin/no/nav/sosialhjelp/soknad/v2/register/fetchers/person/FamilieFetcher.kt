@@ -25,11 +25,10 @@ class FamilieFetcher(
         soknadId: UUID,
         person: Person,
     ) {
-        logger.info("NyModell: Register: Henter ut familie-info for søker")
         // TODO Hvis det av en eller annen årsak skulle finnes brukerinnfylte verdier, for så
         // ..plutselig finnes informasjon om ektefelle i register - hva da ?
         person.checkEktefelle()?.let {
-            logger.info("NyModell: Register: Oppdaterer ektefelle for søker")
+            logger.info("Oppdaterer informasjon om ektefelle fra PDL")
             familieService.updateSivilstatusFromRegister(
                 soknadId = soknadId,
                 sivilstatus = person.toSivilstatus(),
@@ -52,7 +51,7 @@ class FamilieFetcher(
             ?.let { it.ifEmpty { null } }
             ?.let { barnlist ->
 
-                logger.info("NyModell: Register: Henter info om barn for søker")
+                logger.info("Oppdaterer informasjon om barn fra PDL")
 
                 familieService.updateForsorgerpliktRegister(
                     soknadId = soknadId,

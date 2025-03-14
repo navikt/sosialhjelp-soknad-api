@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 
 fun OpplysningType.getJsonVerdier(): JsonVerdi =
     when (this) {

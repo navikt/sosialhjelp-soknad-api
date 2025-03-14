@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -12,6 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 @Component
 class SlettGammelMetadataJob(
     private val leaderElection: LeaderElection,
+    // TODO Bruke service fremfor repository direkte pga debug/sporing?
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)

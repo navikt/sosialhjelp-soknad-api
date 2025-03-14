@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
@@ -62,7 +62,7 @@ private fun createDokumentasjonList(): List<Dokumentasjon> {
             type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             dokumenter =
                 setOf(
-                    Dokument(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn", sha512 = "sha512"),
+                    DokumentRef(dokumentId = UUID.randomUUID(), filnavn = "ett filnavn"),
                 ),
         ),
         opprettDokumentasjon(soknadId = UUID.randomUUID(), type = InntektType.STUDIELAN_INNTEKT, dokumenter = emptySet()),

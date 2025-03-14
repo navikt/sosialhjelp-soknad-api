@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.oppsummering
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.oppsummering.steg.ArbeidOgUtdanningSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.BegrunnelseSteg
@@ -17,17 +15,14 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.ArbeidOgFamilieSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.BehovSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.SituasjonsendringSteg
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class OppsummeringService(
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val dokumentlagerService: DokumentlagerService,
     private val jsonGenerator: JsonInternalSoknadGenerator,
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
@@ -55,24 +50,11 @@ class OppsummeringService(
     }
 
     private fun useActiveJsonInternalSoknad(behandlingsId: String): JsonInternalSoknad {
-        return if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            jsonGenerator.createJsonInternalSoknad(UUID.fromString(behandlingsId))
-        } else {
-            soknadUnderArbeidRepository.hentSoknad(behandlingsId, personId()).jsonInternalSoknad
-                ?.also { json ->
-                    if (json.vedlegg?.vedlegg?.isEmpty() == null) {
-                        log.info(
-                            "Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, " +
-                                "ettersom side 8 ble hoppet over",
-                        )
-                    }
-                }
-                ?: error("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
-        }
+        return jsonGenerator.createJsonInternalSoknad(UUID.fromString(behandlingsId))
     }
 
     private fun getVedleggInfo(behandlingsId: String) =
-        mellomlagringService.getAllVedlegg(behandlingsId).map {
+        dokumentlagerService.getAllDokumenterMetadata(UUID.fromString(behandlingsId)).map {
             OppsummeringVedleggInfo(it.filnavn, it.filId)
         }
 
@@ -103,9 +85,5 @@ class OppsummeringService(
                 okonomiskeOpplysningerOgVedleggSteg.get(json, vedleggInfo),
             ),
         )
-    }
-
-    companion object {
-        private val log = getLogger(OppsummeringService::class.java)
     }
 }

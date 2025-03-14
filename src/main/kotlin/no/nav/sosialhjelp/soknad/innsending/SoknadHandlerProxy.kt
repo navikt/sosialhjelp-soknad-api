@@ -64,7 +64,7 @@ class SoknadHandlerProxy(
         hasBostotteSamtykke: Boolean,
         hasSkatteetatenSamtykke: Boolean,
     ) {
-        bostotteService.updateBostotte(UUID.fromString(soknadId), null, hasBostotteSamtykke)
+        bostotteService.updateBostotte(UUID.fromString(soknadId), hasBostotteSamtykke)
         inntektSkatteetatenService.updateSamtykkeSkatt(UUID.fromString(soknadId), hasSkatteetatenSamtykke)
     }
 

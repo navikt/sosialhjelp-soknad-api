@@ -32,7 +32,7 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
                 )
             }
             .also { kontaktRepository.save(it) }
-            .also { logger.info("NyModell: Lagret adresser fra PDL-register") }
+            .also { logger.info("Lagret adresser fra PDL-register") }
     }
 
     fun updateTelefonRegister(
@@ -42,7 +42,6 @@ class KontaktRegisterService(private val kontaktRepository: KontaktRepository) {
         findOrCreate(soknadId)
             .run { copy(telefonnummer = telefonnummer.copy(fraRegister = telefonRegister)) }
             .also { kontaktRepository.save(it) }
-            .also { logger.info("NyModell: Lagret telefonnummer fra KR-register.") }
     }
 
     private fun findOrCreate(soknadId: UUID) =

@@ -1,11 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.UTBETALING_SKATTEETATEN
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,19 +28,6 @@ interface UtbetalingerService {
     fun removeUtbetalinger(soknadId: UUID)
 }
 
-interface InntektSkatteetatenService {
-    fun getSamtykkeSkatt(soknadId: UUID): Bekreftelse?
-
-    fun getInntektSkatt(soknadId: UUID): Inntekt?
-
-    fun getIntegrasjonStatusSkatt(soknadId: UUID): Boolean?
-
-    fun updateSamtykkeSkatt(
-        soknadId: UUID,
-        samtykke: Boolean,
-    )
-}
-
 interface NavYtelseService {
     fun getNavYtelse(soknadId: UUID): Inntekt?
 
@@ -52,18 +35,18 @@ interface NavYtelseService {
 }
 
 @Service
-@Transactional
 class InntektService(
     private val okonomiService: OkonomiService,
     private val integrasjonStatusService: IntegrasjonStatusService,
-    private val inntektSkatteetatenFetcher: InntektSkatteetatenFetcher,
-) : StudielanService, UtbetalingerService, InntektSkatteetatenService, NavYtelseService {
+) : StudielanService, UtbetalingerService, NavYtelseService {
+    @Transactional(readOnly = true)
     override fun getHarStudielan(soknadId: UUID): Boolean? {
         return okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.STUDIELAN_BEKREFTELSE }
             ?.verdi
     }
 
+    @Transactional
     override fun updateStudielan(
         soknadId: UUID,
         mottarStudielan: Boolean,
@@ -83,6 +66,7 @@ class InntektService(
         }
     }
 
+    @Transactional(readOnly = true)
     override fun getUtbetalinger(soknadId: UUID): List<Inntekt>? {
         return okonomiService.getBekreftelser(soknadId)
             .find { it.type == BekreftelseType.BEKREFTELSE_UTBETALING }
@@ -97,6 +81,7 @@ class InntektService(
             }
     }
 
+    @Transactional
     override fun updateUtbetalinger(
         soknadId: UUID,
         eksisterendeTyper: Set<InntektType>,
@@ -117,6 +102,7 @@ class InntektService(
         }
     }
 
+    @Transactional
     override fun removeUtbetalinger(soknadId: UUID) {
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_UTBETALING, verdi = false)
 
@@ -125,39 +111,12 @@ class InntektService(
         }
     }
 
-    override fun getSamtykkeSkatt(soknadId: UUID): Bekreftelse? =
-        okonomiService.getBekreftelser(soknadId)
-            .find { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-
-    override fun getInntektSkatt(soknadId: UUID): Inntekt? {
-        return getSamtykkeSkatt(soknadId)?.let { samtykke ->
-            if (samtykke.verdi) {
-                okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
-            } else {
-                null
-            }
-        }
+    override fun getNavYtelse(soknadId: UUID): Inntekt? {
+        return okonomiService.getInntekter(soknadId).find { it.type == InntektType.UTBETALING_NAVYTELSE }
     }
 
-    override fun getIntegrasjonStatusSkatt(soknadId: UUID): Boolean? {
-        return integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknadId)
-    }
-
-    override fun updateSamtykkeSkatt(
-        soknadId: UUID,
-        samtykke: Boolean,
-    ) {
-        if (samtykke == getSamtykkeSkatt(soknadId)?.verdi) return
-
-        okonomiService.updateBekreftelse(soknadId, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke)
-
-        if (samtykke) {
-            inntektSkatteetatenFetcher.fetchAndSave(soknadId)
-        } else {
-            okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
-            // opprett inntekt og dokumentasjon for arbeidsinntekt
-            okonomiService.addElementToOkonomi(soknadId, InntektType.JOBB)
-        }
+    override fun getIntegrasjonStatusNavYtelse(soknadId: UUID): Boolean? {
+        return integrasjonStatusService.hasFetchUtbetalingerFraNavFailed(soknadId)
     }
 
     companion object {
@@ -168,13 +127,5 @@ class InntektService(
                 InntektType.UTBETALING_FORSIKRING,
                 InntektType.UTBETALING_ANNET,
             )
-    }
-
-    override fun getNavYtelse(soknadId: UUID): Inntekt? {
-        return okonomiService.getInntekter(soknadId).find { it.type == InntektType.UTBETALING_NAVYTELSE }
-    }
-
-    override fun getIntegrasjonStatusNavYtelse(soknadId: UUID): Boolean? {
-        return integrasjonStatusService.hasFetchUtbetalingerFraNavFailed(soknadId)
     }
 }

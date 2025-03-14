@@ -1,6 +1,7 @@
 spring:
   flyway:
     enabled: true
+    clean-disabled: false
   main:
     allow-bean-definition-overriding: true
   datasource:

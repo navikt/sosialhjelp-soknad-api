@@ -9,14 +9,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SoknadServiceOld.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
+import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 internal class FinnAdresseServiceTest {
     companion object {
@@ -43,10 +40,8 @@ internal class FinnAdresseServiceTest {
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
         every { adressesokService.getAdresseForslag(any<JsonGateAdresse>()) } returns lagAdresseForslag()
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personalia =
-            soknadUnderArbeid.jsonInternalSoknad!!
-                .soknad.data.personalia
+        val json = createEmptyJsonInternalSoknad(EIER, false)
+        val personalia = json.soknad.data.personalia
         personalia.folkeregistrertAdresse = createGateadresse()
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT)
         assertThat(adresseForslag?.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING)
@@ -57,10 +52,8 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personalia =
-            soknadUnderArbeid.jsonInternalSoknad!!
-                .soknad.data.personalia
+        val json = createEmptyJsonInternalSoknad(EIER, false)
+        val personalia = json.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
 
         val matrikkelAdresse =
@@ -82,10 +75,8 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun `finnAdresseFraSoknad returnerer null hvis hentAdresse ikke finner matrikkeladresse`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personalia =
-            soknadUnderArbeid.jsonInternalSoknad!!
-                .soknad.data.personalia
+        val json = createEmptyJsonInternalSoknad(EIER, false)
+        val personalia = json.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
 
         every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns null
@@ -96,10 +87,8 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun finnAdresseFraSoknadReturnererNullHvisAdresseValgMangler() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        val personalia =
-            soknadUnderArbeid.jsonInternalSoknad!!
-                .soknad.data.personalia
+        val json = createEmptyJsonInternalSoknad(EIER, false)
+        val personalia = json.soknad.data.personalia
         personalia.oppholdsadresse = createGateadresse()
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, null)
         assertThat(adresseForslag).isNull()
@@ -139,16 +128,5 @@ internal class FinnAdresseServiceTest {
             null,
             BYDEL,
             AdresseForslagType.GATEADRESSE,
-        )
-
-    private fun createSoknadUnderArbeid(): SoknadUnderArbeid =
-        SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "BEHANDLINGSID",
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER, false),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now(),
         )
 }

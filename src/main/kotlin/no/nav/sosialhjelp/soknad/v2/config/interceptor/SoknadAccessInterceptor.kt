@@ -11,7 +11,9 @@ import org.springframework.web.servlet.HandlerMapping
 import java.util.UUID
 
 @Component
-class SoknadAccessInterceptor(private val soknadServiceImpl: SoknadService) : HandlerInterceptor {
+class SoknadAccessInterceptor(
+    private val soknadServiceImpl: SoknadService,
+) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,

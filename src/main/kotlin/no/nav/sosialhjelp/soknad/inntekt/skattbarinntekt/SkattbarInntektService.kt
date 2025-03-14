@@ -18,21 +18,25 @@ class SkattbarInntektService(
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()
-        val summerteUtbetalinger = summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger, forskuddstrekk)
+        val summerteUtbetalinger =
+            summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(
+                utbetalinger,
+                forskuddstrekk,
+            )
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(summerteUtbetalinger)
     }
 
     private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(
-        utbetalinger: List<Utbetaling>?,
+        utbetalinger: List<Utbetaling>,
         trekk: List<Utbetaling>,
-    ): List<Utbetaling>? {
-        val bruttoOrgPerMaaned = utbetalinger?.groupBy { it.orgnummer }?.let { getUtBetalingPerMaanedPerOrg(it) }
+    ): List<Utbetaling> {
+        val bruttoOrgPerMaaned = getUtBetalingPerMaanedPerOrg(utbetalinger.groupBy { it.orgnummer })
         val trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(trekk.groupBy { it.orgnummer })
-        val utbetalingerBrutto: List<Utbetaling>? = bruttoOrgPerMaaned?.values?.flatMap { it.values }
+        val utbetalingerBrutto: List<Utbetaling> = bruttoOrgPerMaaned.values.flatMap { it.values }
 
         return utbetalingerBrutto
-            ?.filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
-            ?.onEach {
+            .filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
+            .onEach {
                 val localDateUtbetalingMap = trekkOrgPerMaaned[it.orgnummer]
                 if (localDateUtbetalingMap != null) {
                     val trekkUtbetaling = localDateUtbetalingMap[it.periodeFom]

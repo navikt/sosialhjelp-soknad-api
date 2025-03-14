@@ -8,6 +8,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatNoException
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -72,9 +73,7 @@ internal class HusbankenClientTest {
                 .setResponseCode(503),
         )
 
-        val bostotte = husbankenClient.hentBostotte(fra, til)
-
-        assertThat(bostotte).isNull()
+        assertThatThrownBy { husbankenClient.hentBostotte(fra, til) }.isInstanceOf(HusbankenException::class.java)
     }
 
     @Test
@@ -87,9 +86,7 @@ internal class HusbankenClientTest {
                 .setResponseCode(400),
         )
 
-        val bostotte = husbankenClient.hentBostotte(fra, til)
-
-        assertThat(bostotte).isNull()
+        assertThatThrownBy { husbankenClient.hentBostotte(fra, til) }.isInstanceOf(HusbankenException::class.java)
     }
 
     @Test

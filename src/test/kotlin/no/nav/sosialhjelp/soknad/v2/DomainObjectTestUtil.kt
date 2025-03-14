@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokument
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.eier.Eier
@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
+import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
@@ -302,6 +303,29 @@ fun opprettFolkeregistrertAdresse(
         husbokstav,
     )
 
+fun opprettFolkeregistrertAdresseInput(
+    landkode: String = "NO",
+    kommunenummer: String? = "2944",
+    adresselinjer: List<String> = listOf("Underetasjen", "Bak huset"),
+    bolignummer: String? = "7",
+    postnummer: String? = "2933",
+    poststed: String? = "Poststedet",
+    gatenavn: String? = "Vegadresseveien",
+    husnummer: String? = "8",
+    husbokstav: String? = "b",
+): AdresseInput =
+    VegAdresse(
+        landkode,
+        kommunenummer,
+        adresselinjer,
+        bolignummer,
+        postnummer,
+        poststed,
+        gatenavn,
+        husnummer,
+        husbokstav,
+    )
+
 fun opprettIntegrasjonstatus(
     soknadId: UUID,
     feilUtbetalingerNav: Boolean = false,
@@ -451,17 +475,18 @@ fun opprettDokumentasjon(
     soknadId: UUID,
     status: DokumentasjonStatus = DokumentasjonStatus.LASTET_OPP,
     type: OpplysningType = UtgiftType.UTGIFTER_STROM,
-    dokumenter: Set<Dokument> = opprettDokumenter(),
+    dokumenter: Set<DokumentRef> = opprettDokumenter(dokumentIds = listOf(UUID.randomUUID())),
 ): Dokumentasjon = Dokumentasjon(id, soknadId, type, status, dokumenter)
 
-fun opprettDokumenter(): Set<Dokument> =
-    setOf(
-        Dokument(
-            dokumentId = UUID.randomUUID(),
-            filnavn = "utskrift_brukskonto.pdf",
-            sha512 = UUID.randomUUID().toString(),
-        ),
-    )
+fun opprettDokumenter(dokumentIds: List<UUID>): Set<DokumentRef> =
+    dokumentIds
+        .map {
+            DokumentRef(
+                dokumentId = it,
+                filnavn = "utskrift_brukskonto$dokumentIds.pdf",
+            )
+        }
+        .toSet()
 
 fun createBostotteSak(beskrivelse: String? = null) =
     BostotteSak(

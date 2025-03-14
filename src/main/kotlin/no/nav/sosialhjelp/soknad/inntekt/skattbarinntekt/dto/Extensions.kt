@@ -5,11 +5,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-fun SkattbarInntekt?.mapToUtbetalinger(): List<Utbetaling>? {
-    if (this == null) {
-        return null
-    }
-
+fun SkattbarInntekt.mapToUtbetalinger(): List<Utbetaling> {
     val utbetalingerLonn: MutableList<Utbetaling> = mutableListOf()
     val utbetalingerPensjon: MutableList<Utbetaling> = mutableListOf()
     val dagmammaIEgenBolig: MutableList<Utbetaling> = mutableListOf()
@@ -49,10 +45,7 @@ fun SkattbarInntekt?.mapToUtbetalinger(): List<Utbetaling>? {
     return aggregertUtbetaling
 }
 
-fun SkattbarInntekt?.getForskuddstrekk(): List<Utbetaling> {
-    if (this == null) {
-        return emptyList()
-    }
+fun SkattbarInntekt.getForskuddstrekk(): List<Utbetaling> {
     val forskuddstrekk: MutableList<Utbetaling> = mutableListOf()
     oppgaveInntektsmottaker
         .forEach {

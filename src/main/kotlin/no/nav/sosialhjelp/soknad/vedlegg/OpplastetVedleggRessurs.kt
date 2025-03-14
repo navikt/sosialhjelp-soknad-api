@@ -5,15 +5,10 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sosialhjelp.soknad.ControllerToNewDatamodellProxy
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -30,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 class OpplastetVedleggRessurs(
     private val tilgangskontroll: Tilgangskontroll,
-    private val mellomlagringService: MellomlagringService,
     private val dokumentProxy: DokumentProxy,
 ) {
     @GetMapping("/{behandlingsId}/{dokumentId}/fil")
@@ -52,28 +46,7 @@ class OpplastetVedleggRessurs(
     ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return dokumentProxy.getDokument(behandlingsId, dokumentId, response)
-        } else {
-            log.info("Forsøker å hente dokument $dokumentId fra mellomlagring hos KS")
-
-            val dokument = mellomlagringService.getVedlegg(behandlingsId, dokumentId)
-
-            if (dokument == null) {
-                log.error("Fant ikke dokument $dokumentId hos KS")
-                throw IkkeFunnetException("Fant ikke vedlegg $dokumentId")
-            }
-
-            val contentType = MediaType.parseMediaType(detectMimeType(dokument.data))
-            val contentDisposition = "attachment; filename=\"${dokument.filnavn}\""
-            log.info("Fant dokument $dokumentId hos KS")
-
-            return ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .contentType(contentType)
-                .body(dokument.data)
-        }
+        return dokumentProxy.getDokument(behandlingsId, dokumentId, response)
     }
 
     @PostMapping("/{behandlingsId}/{dokumentasjonType}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -83,17 +56,7 @@ class OpplastetVedleggRessurs(
         @RequestParam("file") fil: MultipartFile,
     ): DokumentUpload {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            return dokumentProxy.uploadDocument(behandlingsId, dokumentasjonType, fil)
-        } else {
-            val orginaltFilnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet dokument mangler filnavn?")
-            val orginalData = VedleggUtils.getByteArray(fil)
-
-            return mellomlagringService
-                .uploadVedlegg(behandlingsId, dokumentasjonType, orginalData, orginaltFilnavn)
-                .let { DokumentUpload.fromMellomlagretVedleggMetadata(it) }
-        }
+        return dokumentProxy.uploadDocument(behandlingsId, dokumentasjonType, fil)
     }
 
     @DeleteMapping("/{behandlingsId}/{dokumentId}")
@@ -104,11 +67,7 @@ class OpplastetVedleggRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         log.info("Sletter dokument $dokumentId fra KS mellomlagring")
 
-        if (ControllerToNewDatamodellProxy.nyDatamodellAktiv) {
-            dokumentProxy.deleteDocument(behandlingsId, dokumentId)
-        } else {
-            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, dokumentId)
-        }
+        dokumentProxy.deleteDocument(behandlingsId, dokumentId)
     }
 
     companion object {

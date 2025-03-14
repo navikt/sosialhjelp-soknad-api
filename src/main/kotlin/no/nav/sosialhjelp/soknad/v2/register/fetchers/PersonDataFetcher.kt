@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
@@ -9,6 +8,7 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import java.util.UUID
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 interface PersonRegisterDataFetcher {
     fun fetchAndSave(
@@ -28,19 +28,20 @@ class PersonDataFetcher(
     private val logger by logger()
 
     override fun fetchAndSave(soknadId: UUID) {
-        logger.info("NyModell: Register: Henter søker i PDL")
+        logger.info("Henter person i PDL")
 
-        personService.hentPerson(getUserIdFromToken())?.let { person ->
-            personRegisterDataFetchers.forEach { personDataFetcher ->
-                runCatching {
-                    personDataFetcher.fetchAndSave(soknadId, person)
-                }
-                    .onFailure {
-                        logger.warn("NyModell: Feil i PersonData-fetcher: $personDataFetcher", it)
-                        if (!personDataFetcher.continueOnError()) throw it
+        personService.hentPerson(personId())
+            ?.let { person ->
+                personRegisterDataFetchers.forEach { personDataFetcher ->
+                    runCatching {
+                        personDataFetcher.fetchAndSave(soknadId, person)
                     }
+                        .onFailure {
+                            logger.warn("Feil i PersonData-fetcher: $personDataFetcher", it)
+                            if (!personDataFetcher.continueOnError()) throw it
+                        }
+                }
             }
-        }
             ?: error("Fant ikke søker i PDL")
     }
 

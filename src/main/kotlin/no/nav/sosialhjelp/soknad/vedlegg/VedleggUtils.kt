@@ -1,22 +1,14 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
-import org.apache.commons.io.IOUtils
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
-import org.bouncycastle.jcajce.provider.digest.SHA512
-import org.bouncycastle.util.encoders.Hex
-import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -30,25 +22,12 @@ object VedleggUtils {
     fun validerFilOgReturnerNyttFilnavn(
         filnavn: String,
         bytes: ByteArray,
-    ): Pair<String, ByteArray> {
-        // TODO Tilbake til randomUUID pga. av duplikatfeil hos FIKS - ukjent hvordan vi havner i den tilstanden
+    ): String {
         val uuidRandom = UUID.randomUUID()
 
         val fileType = validerFil(bytes, filnavn)
-        val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidRandom)
-        return Pair(filnavnMedUuid, bytes)
+        return lagFilnavn(filnavn, fileType, uuidRandom)
     }
-
-    fun getSha512FromByteArray(bytes: ByteArray?): String {
-        if (bytes == null) {
-            return ""
-        }
-        val sha512 = SHA512.Digest()
-        sha512.update(bytes)
-        return Hex.toHexString(sha512.digest())
-    }
-
-    fun ByteArray.toSha512(): String = getSha512FromByteArray(this)
 
     fun lagFilnavn(
         opplastetNavn: String,
@@ -119,17 +98,6 @@ object VedleggUtils {
         return fileType
     }
 
-    fun finnVedleggEllerKastException(
-        vedleggstype: String,
-        soknadUnderArbeid: SoknadUnderArbeid,
-    ): JsonVedlegg {
-        return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-            .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw IkkeFunnetException(
-                "Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?",
-            )
-    }
-
     private fun findFileExtension(filnavn: String): String? {
         val sisteIndexForPunktum = filnavn.lastIndexOf(".")
         if (sisteIndexForPunktum < 0) {
@@ -192,16 +160,6 @@ object VedleggUtils {
             ".pdf".equals(fileExtension, ignoreCase = true)
         } else {
             false
-        }
-    }
-
-    fun getByteArray(file: MultipartFile): ByteArray {
-        return try {
-            file.inputStream.use {
-                IOUtils.toByteArray(it)
-            }
-        } catch (e: IOException) {
-            throw DokumentUploadError("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
     }
 }

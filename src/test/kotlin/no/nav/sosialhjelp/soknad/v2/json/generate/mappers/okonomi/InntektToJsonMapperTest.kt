@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.v2.createInntekter
+import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -13,7 +14,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.shadow.okonomi.SoknadJsonTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -141,7 +141,11 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
                                             brutto = brutto,
                                             netto = netto,
                                             utbetalingsdato = LocalDate.now(),
-                                            organisasjon = Organisasjon(navn = "NAV Gokkivold", orgnummer = "123456789"),
+                                            organisasjon =
+                                                Organisasjon(
+                                                    navn = "NAV Gokkivold",
+                                                    orgnummer = "123456789",
+                                                ),
                                         ),
                                     komponenter =
                                         listOf(
@@ -165,6 +169,34 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
             .anyMatch { it.kilde == JsonKilde.SYSTEM }
             .anyMatch { it.tittel == "Barnetrygd" }
             .anyMatch { it.netto == netto && it.belop == netto.toInt() }
+    }
+
+    @Test
+    fun `Bostotte hentet fra register skal ha OkonomiDetalj Utbetaling og havne i feltet netto`() {
+        val inntekt =
+            Inntekt(
+                type = InntektType.UTBETALING_HUSBANKEN,
+                inntektDetaljer =
+                    OkonomiDetaljer(
+                        detaljer =
+                            listOf(
+                                Utbetaling(
+                                    netto = 1234.0,
+                                    utbetalingsdato = LocalDate.now().minusDays(10),
+                                    mottaker = Mottaker.HUSSTAND,
+                                ),
+                            ),
+                    ),
+            )
+
+        InntektToJsonMapper(inntekter = setOf(inntekt), jsonOkonomi).doMapping()
+
+        assertThat(jsonOkonomi.opplysninger.utbetaling).hasSize(1)
+        jsonOkonomi.opplysninger.utbetaling.first().let {
+            assertThat(it.kilde).isEqualTo(JsonKilde.SYSTEM)
+            assertThat(it.netto).isNotNull()
+            assertThat(it.belop == null).isTrue()
+        }
     }
 }
 

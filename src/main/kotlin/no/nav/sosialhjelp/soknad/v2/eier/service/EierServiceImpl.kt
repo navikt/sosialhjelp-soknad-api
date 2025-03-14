@@ -17,6 +17,8 @@ interface EierService {
         kontonummerBruker: String? = null,
         harIkkeKonto: Boolean? = null,
     ): Kontonummer
+
+    fun findEierPersonId(soknadId: UUID): String
 }
 
 @Service
@@ -32,7 +34,7 @@ class EierServiceImpl(
         kontonummerBruker: String?,
         harIkkeKonto: Boolean?,
     ): Kontonummer {
-        logger.info("NyModell: Oppdaterer kontonummerinformasjon fra bruker")
+        logger.info("Oppdaterer kontonummerinformasjon fra bruker")
         return findOrError(soknadId)
             .run {
                 copy(
@@ -42,9 +44,10 @@ class EierServiceImpl(
                             fraBruker = kontonummerBruker,
                         ),
                 )
-            }
-            .let { eier -> eierRepository.save(eier).kontonummer }
+            }.let { eier -> eierRepository.save(eier).kontonummer }
     }
+
+    override fun findEierPersonId(soknadId: UUID): String = eierRepository.getEierPersonId(soknadId)
 
     companion object {
         private val logger by logger()

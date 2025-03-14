@@ -4,20 +4,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 import java.util.UUID
 
 internal class DokumentasjonUtilsTest {
@@ -74,31 +69,27 @@ internal class DokumentasjonUtilsTest {
 
     @Test
     fun `FinnVedleggEllerKastException() finner vedlegg basert pa type og tilleggsinfo`() {
-        val soknadUnderArbeid =
-            createSoknadUnderArbeid(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType("hei")
-                                .withTilleggsinfo("på deg")
-                                .withStatus("VedleggKreves"),
-                        ),
+        val json =
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType("hei")
+                            .withTilleggsinfo("på deg")
+                            .withStatus("VedleggKreves"),
                     ),
                 ),
             )
-        val vedlegg = finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid)
-        assertThat(vedlegg.type).isEqualTo(soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0].type)
+        val vedlegg = finnVedleggEllerKastException("hei|på deg", json)
+        assertThat(vedlegg.type).isEqualTo(json.vedlegg.vedlegg[0].type)
     }
 
     @Test
     fun `Kast exception hvis vedlegg ikke finnes`() {
         val soknadUnderArbeid =
-            createSoknadUnderArbeid(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        emptyList(),
-                    ),
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    emptyList(),
                 ),
             )
         assertThatThrownBy { finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid) }
@@ -108,27 +99,27 @@ internal class DokumentasjonUtilsTest {
 
     @Test
     fun `Fil med samme navn, men annet innhold gir annet filnavn`() {
-        val (filnavn1, data1) = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, PDF_FILE.readBytes())
+        val filnavn1 = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, PDF_FILE.readBytes())
 
         val alteredBytes = PDF_FILE.readBytes()
         alteredBytes[alteredBytes.size / 2] = alteredBytes[alteredBytes.size / 2].inc()
 
-        val (filnavn2, data2) = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, alteredBytes)
+        val filnavn2 = VedleggUtils.validerFilOgReturnerNyttFilnavn(PDF_FILE.name, alteredBytes)
 
-        assertThat(detectMimeType(data1)).isEqualTo(detectMimeType(data2))
-        assertThat(data1).isNotEqualTo(data2)
         assertThat(filnavn1).isNotEqualTo(filnavn2)
     }
-
-    private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "123",
-            eier = "EIER",
-            jsonInternalSoknad = jsonInternalSoknad,
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now(),
-        )
-    }
 }
+
+private fun finnVedleggEllerKastException(
+    vedleggstype: String,
+    json: JsonInternalSoknad,
+): JsonVedlegg {
+    return getVedleggFromInternalSoknad(json)
+        .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
+        ?: throw IkkeFunnetException(
+            "Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?",
+        )
+}
+
+private fun getVedleggFromInternalSoknad(json: JsonInternalSoknad): MutableList<JsonVedlegg> =
+    json.vedlegg?.vedlegg ?: mutableListOf()
