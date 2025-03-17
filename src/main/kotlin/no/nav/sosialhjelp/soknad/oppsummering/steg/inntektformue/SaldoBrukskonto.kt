@@ -44,7 +44,7 @@ class SaldoBrukskonto {
                     listOf(
                         Felt(
                             type = Type.TEKST,
-                            svar = createSvar(it.belop.toString(), SvarType.TEKST),
+                            svar = createSvar(it.belop.toString() + " kr", SvarType.TEKST),
                         ),
                     ),
             )

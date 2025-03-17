@@ -286,7 +286,7 @@ object InntektOgFormue {
                     okonomi.oversikt.formue.forEach { formue ->
                         if (formue.type == "brukskonto") {
                             if (formue.belop != null) {
-                                pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                pdfUtils.skrivTekstMedGuardOgKrOgIkkeUtfylt(
                                     pdf,
                                     formue.belop,
                                     "opplysninger.inntekt.bankinnskudd.brukskonto.belop.label",

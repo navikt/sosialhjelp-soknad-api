@@ -86,6 +86,18 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
+    fun skrivTekstMedGuardOgKrOgIkkeUtfylt(
+        pdf: PdfGenerator,
+        verdi: Int?,
+        key: String,
+    ) {
+        if (verdi != null) {
+            pdf.skrivTekst(getTekst(key) + ": " + verdi + " kr")
+        } else {
+            pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"))
+        }
+    }
+
     fun skrivTekstMedGuardOgIkkeUtfylt(
         pdf: PdfGenerator,
         verdi: Double?,
