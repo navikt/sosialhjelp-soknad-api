@@ -285,11 +285,15 @@ object InntektOgFormue {
                 if (sparingBekreftelse.verdi) {
                     okonomi.oversikt.formue.forEach { formue ->
                         if (formue.type == "brukskonto") {
-                            pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
-                                pdf,
-                                formue.belop,
-                                "opplysninger.inntekt.bankinnskudd.brukskonto.belop.label",
-                            )
+                            if (formue.belop != null) {
+                                pdfUtils.skrivTekstMedGuardOgIkkeUtfylt(
+                                    pdf,
+                                    formue.belop,
+                                    "opplysninger.inntekt.bankinnskudd.brukskonto.belop.label",
+                                )
+                            } else {
+                                pdfUtils.skrivIkkeUtfylt(pdf)
+                            }
                             pdf.addBlankLine()
                         }
                     }
@@ -398,12 +402,9 @@ object InntektOgFormue {
             pdfUtils.skrivHjelpetest(pdf, "inntekt.bankinnskudd.true.type.hjelpetekst.tekst")
         }
         val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
-        println("InntektOgFormue.kt: sparingBekreftelser: $sparingBekreftelser")
         if (sparingBekreftelser.isNotEmpty()) {
             val sparingBekreftelse = sparingBekreftelser[0]
-            println("InntektOgFormue.kt: sparingBekreftelse: $sparingBekreftelse")
             val sparingAlternativer: MutableList<String> = ArrayList(6)
-            println("InntektOgFormue.kt: sparingAlternativer: $sparingAlternativer")
             sparingAlternativer.add("brukskonto")
             sparingAlternativer.add("sparekonto")
             sparingAlternativer.add("bsu")
@@ -412,21 +413,15 @@ object InntektOgFormue {
             sparingAlternativer.add("belop")
 
             if (sparingBekreftelse.verdi) {
-                println("InntektOgFormue.kt: sparingBekreftelse.verdi: ${sparingBekreftelse.verdi}")
                 okonomi.oversikt.formue.forEach { formue ->
-                    println("InntektOgFormue.kt: formue: $formue")
                     if (sparingAlternativer.contains(formue.type)) {
-                        println("InntektOgFormue.kt: inne i if formuetype")
                         pdf.skrivTekst(formue.tittel)
                         if (formue.type == "belop") {
-                            println("InntektOgFormue.kt: inne i if beløp")
                             pdf.addBlankLine()
                             pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label"))
                             if (okonomi.opplysninger.beskrivelseAvAnnet != null && okonomi.opplysninger.beskrivelseAvAnnet.sparing != null) {
-                                println("InntektOgFormue.kt: inne i if beskrivelseAvAnnet")
                                 pdf.skrivTekst(okonomi.opplysninger.beskrivelseAvAnnet.sparing)
                             } else {
-                                println("InntektOgFormue.kt: inne i else beskrivelseAvAnnet")
                                 pdfUtils.skrivIkkeUtfylt(pdf)
                             }
                         }
