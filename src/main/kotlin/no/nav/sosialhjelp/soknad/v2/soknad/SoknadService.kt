@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadService {
@@ -14,22 +13,10 @@ interface SoknadService {
     fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        // TODO Dokumentasjonen på filformatet sier at dette skal være UTC
-        opprettetDato: LocalDateTime,
         kortSoknad: Boolean,
     ): UUID
 
     fun deleteSoknad(soknadId: UUID)
-
-    fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime?,
-    )
-
-    fun hasSoknadNewerThan(
-        eierId: String,
-        tidspunkt: LocalDateTime,
-    ): Boolean
 
     fun erKortSoknad(soknadId: UUID): Boolean
 
@@ -63,12 +50,10 @@ class SoknadServiceImpl(
     override fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        opprettetDato: LocalDateTime,
         kortSoknad: Boolean,
     ): UUID =
         Soknad(
             id = soknadId,
-            tidspunkt = Tidspunkt(opprettet = opprettetDato),
             eierPersonId = eierId,
             kortSoknad = kortSoknad,
         ).let { soknadRepository.save(it) }
@@ -81,23 +66,8 @@ class SoknadServiceImpl(
             ?: logger.warn("Kan ikke slette soknad. Finnes ikke.")
     }
 
-    override fun setInnsendingstidspunkt(
-        soknadId: UUID,
-        innsendingsTidspunkt: LocalDateTime?,
-    ) {
-        findOrError(soknadId)
-            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt)) }
-            .also { soknadRepository.save(it) }
-    }
-
     @Transactional(readOnly = true)
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
-
-    @Transactional(readOnly = true)
-    override fun hasSoknadNewerThan(
-        eierId: String,
-        tidspunkt: LocalDateTime,
-    ): Boolean = soknadRepository.findNewerThan(eierId, tidspunkt).any()
 
     @Transactional(readOnly = true)
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad

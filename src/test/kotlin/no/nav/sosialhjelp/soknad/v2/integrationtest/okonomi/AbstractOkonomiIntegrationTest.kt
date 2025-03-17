@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
@@ -11,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
 
 abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
     @Autowired
@@ -22,12 +25,21 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     protected lateinit var integrasjonStatusService: IntegrasjonStatusService
 
+    protected lateinit var metadata: SoknadMetadata
     protected lateinit var soknad: Soknad
     protected lateinit var okonomi: Okonomi
 
     @BeforeEach
     protected fun setup() {
-        soknad = soknadRepository.save(opprettSoknad())
+        metadata =
+            soknadMetadataRepository.save(
+                SoknadMetadata(
+                    soknadId = UUID.randomUUID(),
+                    personId = "12345612345",
+                    status = SoknadStatus.OPPRETTET,
+                ),
+            )
+        soknad = soknadRepository.save(opprettSoknad(id = metadata.soknadId))
         okonomi =
             okonomiRepository.save(
                 Okonomi(soknadId = soknad.id),

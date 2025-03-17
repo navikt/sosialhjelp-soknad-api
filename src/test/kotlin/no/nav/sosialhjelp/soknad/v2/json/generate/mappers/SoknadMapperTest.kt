@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SoknadToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import org.assertj.core.api.Assertions
@@ -16,9 +17,10 @@ class SoknadMapperTest {
     fun `Soknad-data skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-        val soknad = opprettSoknad(sendtInn = now)
+        val soknad = opprettSoknad()
+        val tidspunkt = Tidspunkt(sendtInn = now)
 
-        SoknadToJsonMapper.doMapping(soknad, jsonInternalSoknad)
+        SoknadToJsonMapper.doMapping(soknad, tidspunkt, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
         jsonInternalSoknad.assertBegrunnelse(soknad.begrunnelse)

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.UUID
 
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
@@ -34,10 +33,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .also { soknadId -> assertThat(soknadId).isInstanceOf(UUID::class.java) }
             .also { soknadId ->
                 assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull
-                assertThat(
-                    soknadRepository.findByIdOrNull(soknadId)!!.tidspunkt.opprettet
-                        .isAfter(LocalDateTime.now().minusMinutes(1)),
-                ).isTrue()
+                assertThat(soknadMetadataRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(eierRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(familieRepository.findByIdOrNull(soknadId)).isNotNull
