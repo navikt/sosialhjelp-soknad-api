@@ -23,27 +23,26 @@ class SlettMottatteSoknaderJob(
     suspend fun slettSoknaderSomErMottattAvFagsystem() {
         runCatching {
             if (leaderElection.isLeader()) {
-                logger.info("Sletter søknader som er registret mottatt av fagsystem")
-
                 withTimeoutOrNull(60.seconds) {
                     val metadatas = metadataService.getMetadatasStatusSendt()
 
                     if (metadatas.isNotEmpty()) {
+                        logger.info("Sletter søknader som er registret mottatt av fagsystem")
                         metadatas
                             .mapNotNull { metadata ->
                                 if (metadata.digisosId == null) logger.error("DigisosId er null for ${metadata.soknadId}")
                                 metadata.digisosId
                             }
                             .let { digisosIdsSendt ->
-                                logger.info("$digisosIdsSendt soknader med status SENDT.")
+                                logger.info("${digisosIdsSendt.size} soknader med status SENDT.")
                                 digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt)
                             }
                             .let { digisosIdsMottatt ->
-                                logger.info("$digisosIdsMottatt soknader med status MOTTATT hos FIKS.")
+                                logger.info("${digisosIdsMottatt.size} soknader med status MOTTATT hos FIKS.")
                                 metadatas.getSoknadIdsStatusMottatt(digisosIdsMottatt)
                             }
                             .let { soknaderMottatt ->
-                                logger.info("$soknaderMottatt soknader lokalt med status MOTTATT")
+                                logger.info("${soknaderMottatt.size} soknader lokalt med status MOTTATT")
                                 val deleted = soknadJobService.deleteAllByIdCatchError(soknaderMottatt)
                                 logger.info("Slettet $deleted mottatte soknader")
                                 soknaderMottatt
