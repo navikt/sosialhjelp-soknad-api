@@ -17,7 +17,7 @@ class DigisosApiService(
         token: String,
     ): JsonDigisosSoker = digisosApiV2Client.getInnsynsfil(fiksDigisosId, dokumentId, token)
 
-    fun getSoknaderStatusMottatt(digisosIds: List<UUID>): List<UUID> {
+    fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
         return if (digisosIds.isEmpty()) {
             emptyList()
         } else {
