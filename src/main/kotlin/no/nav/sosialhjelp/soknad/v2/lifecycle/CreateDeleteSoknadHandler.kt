@@ -33,7 +33,6 @@ class CreateDeleteSoknadHandler(
                 soknadService.createSoknad(
                     eierId = personId(),
                     soknadId = it.soknadId,
-                    opprettetDato = it.tidspunkt.opprettet,
                     kortSoknad = isKort,
                 )
             }

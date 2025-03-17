@@ -57,6 +57,15 @@ class SoknadMetadataService(
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
+    fun updateSoknadMetadata(
+        soknadId: UUID,
+        status: SoknadStatus,
+    ) {
+        soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.run { copy(status = status, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            ?.also { soknadMetadataRepository.save(it) }
+    }
+
     fun deleteMetadata(soknadId: UUID) {
         soknadMetadataRepository.deleteById(soknadId)
     }

@@ -4,6 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
@@ -31,7 +35,8 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @Test
     fun `planlagt jobb skal slette soknader eldre enn 14 dager`() =
         runTest(timeout = 5.seconds) {
-            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
+            val soknadId = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(15))
+            soknadRepository.save(opprettSoknad(id = soknadId))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
@@ -41,7 +46,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @Test
     fun `Planlagt jobb skal ikke slette soknader nyere enn 14 dager`() =
         runTest(timeout = 5.seconds) {
-            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(13)))
+            soknadRepository.save(opprettSoknad())
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
@@ -53,12 +58,24 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
         every { mellomlagringClient.hentDokumenterMetadata(any()) } throws RuntimeException("Feil hos FIKS")
 
         runTest(timeout = 5.seconds) {
-            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
-            soknadRepository.save(opprettSoknad(opprettet = LocalDateTime.now().minusDays(15)))
+            val soknadId1 = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(15))
+            soknadRepository.save(opprettSoknad(id = soknadId1))
+            val soknadId2 = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(15))
+            soknadRepository.save(opprettSoknad(id = soknadId2))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).isEmpty()
         }
     }
+}
+
+private fun SoknadMetadataRepository.createMetadata(opprettet: LocalDateTime): UUID {
+    return SoknadMetadata(
+        soknadId = UUID.randomUUID(),
+        personId = "12345612345",
+        tidspunkt = Tidspunkt(opprettet = opprettet),
+    )
+        .also { save(it) }
+        .soknadId
 }

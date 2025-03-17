@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
@@ -42,7 +43,6 @@ class SendSoknadHandler(
         token: String?,
     ): SoknadSendtInfo {
         val innsendingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-        soknadService.setInnsendingstidspunkt(soknadId, innsendingTidspunkt)
 
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
@@ -78,7 +78,7 @@ class SendSoknadHandler(
                         ?: error("NavMottaker mangler kommunenummer")
                 }
                 .onFailure {
-                    soknadService.setInnsendingstidspunkt(soknadId, null)
+                    soknadMetadataService.updateSoknadMetadata(soknadId, SoknadStatus.OPPRETTET)
                     logger.error("Feil ved sending av soknad til FIKS", it)
                     throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
                 }
