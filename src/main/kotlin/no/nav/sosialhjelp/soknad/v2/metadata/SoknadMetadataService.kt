@@ -38,21 +38,37 @@ class SoknadMetadataService(
         return soknadMetadataRepository.findByPersonId(personId)
     }
 
+    fun setInnsendingstidspunkt(
+        soknadId: UUID,
+        sendtInn: LocalDateTime,
+    ): LocalDateTime {
+        return soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
+            ?.also { soknadMetadataRepository.save(it) }
+            ?.tidspunkt?.sendtInn
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
+
     fun updateSoknadSendt(
         soknadId: UUID,
-        innsendingstidspunkt: LocalDateTime,
         kommunenummer: String,
         digisosId: UUID,
     ) {
         soknadMetadataRepository.findByIdOrNull(soknadId)
             ?.run {
                 copy(
-                    tidspunkt = tidspunkt.copy(sendtInn = innsendingstidspunkt),
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
                 )
             }
+            ?.also { soknadMetadataRepository.save(it) }
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+    }
+
+    fun updateSendingFeilet(soknadId: UUID) {
+        soknadMetadataRepository.findByIdOrNull(soknadId)
+            ?.run { copy(status = SoknadStatus.OPPRETTET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
             ?.also { soknadMetadataRepository.save(it) }
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
