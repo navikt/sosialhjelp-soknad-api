@@ -104,7 +104,7 @@ class FamilieServiceImpl(
             .map { (uuid, existing) ->
                 updated.entries
                     .find { (key, updatedBarn) -> key == uuid || updatedBarn.personId == existing.personId }
-                    ?.let { (_, updatedBarn) -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted) }
+                    ?.let { (_, updatedBarn) -> uuid to existing.copy(deltBosted = updatedBarn.deltBosted, samvarsgrad = updatedBarn.samvarsgrad) }
                     ?: (uuid to existing)
             }
             .toMap()

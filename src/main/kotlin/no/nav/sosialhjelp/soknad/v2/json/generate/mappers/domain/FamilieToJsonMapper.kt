@@ -135,6 +135,6 @@ private fun Barn.toJson() =
         .withSamvarsgrad(null)
 
 // mellomnavn er required i json-modellen
-fun Navn.toJson() = JsonNavn().withFornavn(fornavn).withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn)
+fun Navn.toJson() = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

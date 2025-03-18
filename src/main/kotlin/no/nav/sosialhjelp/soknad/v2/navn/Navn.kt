@@ -1,9 +1,18 @@
 package no.nav.sosialhjelp.soknad.v2.navn
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 data class Navn(
-    val fornavn: String,
+    val fornavn: String? = null,
     val mellomnavn: String? = null,
-    val etternavn: String,
+    val etternavn: String? = null,
 ) {
-    fun getFulltNavn() = "$fornavn ${ mellomnavn?.let { "$it " }} $etternavn"
+    @JsonIgnore
+    fun getFulltNavn() = listOfNotNull(fornavn, mellomnavn, etternavn).joinToString(" ")
 }
+
+data class NavnInput(
+    val fornavn: String? = null,
+    val mellomnavn: String? = null,
+    val etternavn: String? = null,
+)

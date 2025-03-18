@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.navn.NavnInput
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -33,7 +33,7 @@ class InterceptorTest : AbstractIntegrationTest() {
                 .header("Authorization", "Bearer ${token.serialize()}")
                 .body(
                     BodyInserters.fromValue(
-                        SivilstandInput(Sivilstatus.GIFT, EktefelleInput("123", Navn(fornavn = "Ola", etternavn = "Nordmann"))),
+                        SivilstandInput(Sivilstatus.GIFT, EktefelleInput("123", NavnInput(fornavn = "Ola", etternavn = "Nordmann"))),
                     ),
                 )
                 .exchange()
@@ -62,7 +62,7 @@ class InterceptorTest : AbstractIntegrationTest() {
             .header("Authorization", "Bearer ${token.serialize()}")
             .body(
                 BodyInserters.fromValue(
-                    SivilstandInput(Sivilstatus.GIFT, EktefelleInput("121337", Navn(fornavn = "Ola", etternavn = "Nordmann"))),
+                    SivilstandInput(Sivilstatus.GIFT, EktefelleInput("121337", NavnInput(fornavn = "Ola", etternavn = "Nordmann"))),
                 ),
             )
             .exchange()
