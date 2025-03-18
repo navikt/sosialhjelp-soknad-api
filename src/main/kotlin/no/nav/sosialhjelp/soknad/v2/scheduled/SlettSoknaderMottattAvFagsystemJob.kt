@@ -13,7 +13,7 @@ import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 @Component
-class SlettMottatteSoknaderJob(
+class SlettSoknaderMottattAvFagsystemJob(
     private val leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
     private val soknadJobService: SoknadJobService,

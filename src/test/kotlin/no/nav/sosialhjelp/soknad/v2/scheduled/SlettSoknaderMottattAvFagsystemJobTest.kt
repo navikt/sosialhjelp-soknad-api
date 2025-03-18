@@ -19,12 +19,12 @@ import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.UUID
 
-class SlettMottatteSoknaderJobTest : AbstractIntegrationTest() {
+class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var digisosApiV2Client: DigisosApiV2Client
 
     @Autowired
-    private lateinit var slettMottatteSoknaderJob: SlettMottatteSoknaderJob
+    private lateinit var slettMottatteSoknaderJob: SlettSoknaderMottattAvFagsystemJob
 
     @BeforeEach
     fun setUp() {
