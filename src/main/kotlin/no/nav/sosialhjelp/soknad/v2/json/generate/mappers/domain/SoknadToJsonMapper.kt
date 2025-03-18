@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategorier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.core.Ordered
@@ -70,11 +71,16 @@ class SoknadToJsonMapper(
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
             JsonBegrunnelse()
-                .withHvaSokesOm(hvaSokesOm)
+                .withHvaSokesOm(handleKategorier())
                 .withHvorforSoke(hvorforSoke)
                 .withKilde(JsonKildeBruker.BRUKER)
     }
 }
+
+private fun Begrunnelse.handleKategorier(): String =
+    if (kategorier.sett.isNotEmpty()) kategorier.writeString() else hvaSokesOm
+
+private fun Kategorier.writeString(): String = sett.joinToString(separator = ", ") { it.key }
 
 private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
     when (this.kortSoknad) {

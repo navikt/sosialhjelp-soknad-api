@@ -7,6 +7,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeDetaljerToStringConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningTypeToStringConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOkonomiskeDetaljerConverter
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
+import no.nav.sosialhjelp.soknad.v2.soknad.JsonToKategorierConverter
+import no.nav.sosialhjelp.soknad.v2.soknad.KategorierToJsonConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 
@@ -23,6 +25,8 @@ class JdbcConverterConfig : AbstractJdbcConfiguration() {
             StringToOpplysningTypeConverter,
             OkonomiskeDetaljerToStringConverter<OkonomiDetalj>(),
             StringToOkonomiskeDetaljerConverter<OkonomiDetalj>(),
+            KategorierToJsonConverter,
+            JsonToKategorierConverter,
         )
     }
 }

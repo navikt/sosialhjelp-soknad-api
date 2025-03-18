@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -46,6 +48,7 @@ class BegrunnelseController(
 data class BegrunnelseDto(
     val hvaSokesOm: String = "",
     val hvorforSoke: String = "",
+    val kategorier: Set<Kategori>? = null,
 )
 
 fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
@@ -54,3 +57,24 @@ fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
         hvaSokesOm = hvaSokesOm,
     )
 }
+
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type",
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = HarHvaSokesOmInput::class, name = "HarHvaSokesOm"),
+    JsonSubTypes.Type(value = HarKategorierInput::class, name = "HarKategorier"),
+)
+sealed interface BegrunnelseInput
+
+data class HarHvaSokesOmInput(
+    val hvorforSoke: String,
+    val hvaSokesOm: String,
+) : BegrunnelseInput
+
+data class HarKategorierInput(
+    val hvorforSoke: String,
+    val kategorier: Set<Kategori>,
+) : BegrunnelseInput
