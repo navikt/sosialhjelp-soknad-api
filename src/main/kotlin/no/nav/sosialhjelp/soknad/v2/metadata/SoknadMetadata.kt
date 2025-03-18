@@ -17,10 +17,15 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
     @Query("select soknad_id from soknad_metadata where opprettet < :timestamp")
     fun hentEldreEnn(timestamp: LocalDateTime): List<UUID>
 
+    fun findAllByStatus(status: SoknadStatus): List<SoknadMetadata>
+
     fun findByPersonId(personId: String): List<SoknadMetadata>
 
-    @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp")
-    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
+    @Query("SELECT * FROM soknad_metadata WHERE soknad_id IN (:soknadIds) AND opprettet < :timestamp")
+    fun findOlderThan(
+        soknadIds: List<UUID>,
+        timestamp: LocalDateTime,
+    ): List<SoknadMetadata>
 }
 
 @Table

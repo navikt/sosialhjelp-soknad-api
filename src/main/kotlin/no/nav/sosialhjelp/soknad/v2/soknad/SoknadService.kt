@@ -28,6 +28,12 @@ interface SoknadService {
     fun getSoknadOrNull(soknadId: UUID): Soknad?
 }
 
+interface SoknadJobService {
+    fun getAllSoknader(): List<Soknad>
+
+    fun deleteAllByIdCatchError(ids: List<UUID>): Int
+}
+
 interface BegrunnelseService {
     fun findBegrunnelse(soknadId: UUID): Begrunnelse
 
@@ -41,7 +47,7 @@ interface BegrunnelseService {
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService, BegrunnelseService {
+) : SoknadService, BegrunnelseService, SoknadJobService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -68,6 +74,25 @@ class SoknadServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
+
+    @Transactional(readOnly = true)
+    override fun getAllSoknader(): List<Soknad> = soknadRepository.findAll()
+
+    /**
+     * Fail-safe sletting så alt som kan slettes slettes
+     */
+    @Transactional
+    override fun deleteAllByIdCatchError(ids: List<UUID>): Int {
+        var antallSlettet = 0
+
+        ids.forEach { id ->
+            runCatching { soknadRepository.deleteById(id) }
+                .onSuccess { antallSlettet++ }
+                .onFailure { logger.error("Kunne ikke slette Soknad (id=$id)", it) }
+        }
+
+        return antallSlettet
+    }
 
     @Transactional(readOnly = true)
     override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
