@@ -42,7 +42,6 @@ class SendSoknadHandler(
         token: String?,
     ): SoknadSendtInfo {
         val innsendingTidspunkt = soknadMetadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
-//        val innsendingTidspunkt = nowWithMillis()
 
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)

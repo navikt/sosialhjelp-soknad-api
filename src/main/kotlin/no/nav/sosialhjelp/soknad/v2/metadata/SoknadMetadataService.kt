@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.nowWithMillis
@@ -43,9 +42,9 @@ class SoknadMetadataService(
         soknadId: UUID,
         sendtInn: LocalDateTime,
     ): LocalDateTime {
-        return soknadMetadataRepository.findByIdOrNull(soknadId)
+        return metadataRepository.findByIdOrNull(soknadId)
             ?.run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
-            ?.also { soknadMetadataRepository.save(it) }
+            ?.also { metadataRepository.save(it) }
             ?.tidspunkt?.sendtInn
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
@@ -68,19 +67,10 @@ class SoknadMetadataService(
     }
 
     fun updateSendingFeilet(soknadId: UUID) {
-        soknadMetadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(status = SoknadStatus.OPPRETTET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
-            ?.also { soknadMetadataRepository.save(it) }
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
-    }
-
-    fun updateSoknadMetadata(
-        soknadId: UUID,
-        status: SoknadStatus,
-    ) {
         metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(status = status, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            ?.run { copy(status = SoknadStatus.OPPRETTET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
             ?.also { metadataRepository.save(it) }
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
     fun deleteMetadata(soknadId: UUID) {
@@ -136,21 +126,10 @@ class SoknadMetadataService(
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
-    fun getAllMetadataForSoknadIds(soknadIds: List<UUID>) = metadataRepository.findAllById(soknadIds)
-
     fun findForIdsOlderThan(
         soknadIds: List<UUID>,
         timestamp: LocalDateTime,
     ): List<SoknadMetadata> {
         return metadataRepository.findOlderThan(soknadIds, timestamp)
     }
-
-    companion object {
-        private val logger by logger()
-    }
 }
-
-data class SoknadIdToDigisosId(
-    val soknadId: UUID,
-    val digisosId: UUID,
-)
