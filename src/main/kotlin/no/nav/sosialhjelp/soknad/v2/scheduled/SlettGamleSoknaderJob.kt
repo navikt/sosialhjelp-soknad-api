@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -15,29 +16,25 @@ class SlettGamleSoknaderJob(
     private val leaderElection: LeaderElection,
     // TODO Bruke service fremfor repository direkte, pga debug/sporing?
     private val soknadRepository: SoknadRepository,
+    private val metadataRepository: SoknadMetadataRepository,
     private val dokumentlagerService: DokumentlagerService,
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() {
         runCatching {
             if (leaderElection.isLeader()) {
-                val result =
-                    withTimeoutOrNull(60.seconds) {
-                        soknadRepository
-                            .findOlderThan(LocalDateTime.now().minusDays(14))
-                            .also { oldUuids ->
-                                soknadRepository.deleteAllById(oldUuids)
-                                slettFilerForSoknader(oldUuids)
-                            }
-                            .also { oldUuids -> logger.info("Slettet ${oldUuids.size} gamle søknader") }
-                    }
-                if (result == null) {
-                    logger.error("Kunne ikke slette gamle søknader, tok for lang tid")
+                withTimeoutOrNull(60.seconds) {
+                    metadataRepository.findOlderThan(LocalDateTime.now().minusDays(14))
+                        .also {
+                            soknadRepository.deleteAllById(it)
+                            logger.info("Slettet $it gamle søknader")
+                            slettFilerForSoknader(it)
+                        }
                 }
+                    ?: logger.error("Kunne ikke slette gamle søknader, tok for lang tid")
             }
-        }.onFailure {
-            logger.error("Feil ved sletting av gamle søknader", it)
         }
+            .onFailure { logger.error("Feil ved sletting av gamle søknader", it) }
     }
 
     private fun slettFilerForSoknader(oldUuids: List<UUID>) {

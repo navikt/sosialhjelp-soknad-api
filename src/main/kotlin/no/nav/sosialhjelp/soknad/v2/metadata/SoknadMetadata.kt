@@ -18,6 +18,9 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
     fun hentEldreEnn(timestamp: LocalDateTime): List<UUID>
 
     fun findByPersonId(personId: String): List<SoknadMetadata>
+
+    @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp")
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID>
 }
 
 @Table

@@ -61,7 +61,6 @@ import no.nav.sosialhjelp.soknad.v2.situasjonsendring.Situasjonsendring
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
-import no.nav.sosialhjelp.soknad.v2.soknad.Tidspunkt
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -154,16 +153,12 @@ fun opprettSoknadMetadata(
 fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
     eierPersonId: String = AbstractIntegrationTest.userId,
-    opprettet: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
-    sistEndret: LocalDateTime? = null,
-    sendtInn: LocalDateTime? = null,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
     kort: Boolean = false,
 ): Soknad =
     Soknad(
         id = id,
         eierPersonId = eierPersonId,
-        tidspunkt = Tidspunkt(opprettet, sistEndret, sendtInn),
         begrunnelse = begrunnelse,
         kortSoknad = kort,
     )
