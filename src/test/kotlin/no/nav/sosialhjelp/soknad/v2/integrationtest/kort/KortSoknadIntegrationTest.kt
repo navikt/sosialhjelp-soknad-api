@@ -126,7 +126,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    @disabled("skippet fordi den er i veien foreløpig")
+    @Disabled("skippet fordi den er i veien foreløpig")
     fun `Oppdatere adresse uten soknad i metadata skal kalle FIKS`() {
         val soknadId = createSoknadWithMetadata()
 
