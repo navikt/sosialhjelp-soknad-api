@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
@@ -33,27 +32,22 @@ class SoknadToJsonMapperTest {
     fun `Begrunnelse med kategori skal mappes til JsonInternalSoknad`() {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
         val now = nowWithMillis()
-        val soknad = opprettSoknad(begrunnelse = createKategorier(Kategori.Husleie, Kategori.Nodhjelp.IkkeBosted))
+        val annet = "Trenger penger til bil"
+        val soknad =
+            opprettSoknad(
+                begrunnelse =
+                    createKategorier(
+                        annet = annet,
+                        Kategori.Husleie,
+                        Kategori.Nodhjelp.IkkeBosted,
+                    ),
+            )
         val tidspunkt = Tidspunkt(sendtInn = now)
 
         SoknadToJsonMapper.doMapping(soknad, tidspunkt, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
         jsonInternalSoknad.assertKategorier(soknad.begrunnelse.kategorier)
-    }
-
-    private val mapper = jacksonObjectMapper()
-
-    @Test
-    fun whatever() {
-        val livsoppholdString = mapper.writeValueAsString(Kategori.Livsopphold)
-        val ikkeMat = mapper.writeValueAsString(Kategori.Nodhjelp.IkkeMat)
-
-        val a = 4
-
-        val readValue = mapper.readValue(livsoppholdString, Kategori::class.java)
-
-        val b = 4
     }
 }
 
@@ -80,6 +74,9 @@ private fun JsonInternalSoknad.assertKategorier(kategorier: Kategorier) {
     }
 }
 
-private fun createKategorier(vararg kategorier: Kategori): Begrunnelse {
-    return Begrunnelse(kategorier = Kategorier(definerte = kategorier.toSet()))
+private fun createKategorier(
+    annet: String,
+    vararg kategorier: Kategori,
+): Begrunnelse {
+    return Begrunnelse(kategorier = Kategorier(definerte = kategorier.toSet(), annet = annet))
 }

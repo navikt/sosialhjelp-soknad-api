@@ -81,7 +81,9 @@ class SoknadToJsonMapper(
 private fun Begrunnelse.handleKategorier(): String =
     if (kategorier.definerte.isNotEmpty()) kategorier.writeString() else hvaSokesOm
 
-private fun Kategorier.writeString(): String = definerte.joinToString(separator = ", ") { it.mapToString() }
+private fun Kategorier.writeString(): String =
+    definerte.joinToString(separator = ", ") { it.mapToString() } +
+        "\n\n" + annet
 
 private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
     when (this.kortSoknad) {
