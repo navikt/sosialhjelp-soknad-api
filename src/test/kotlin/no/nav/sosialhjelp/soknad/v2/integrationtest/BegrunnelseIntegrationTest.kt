@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
+import no.nav.sosialhjelp.soknad.v2.soknad.HarHvaSokesOmInput
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -25,22 +26,22 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere begrunnelse skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
-        val inputBegrunnelse =
-            BegrunnelseDto(
+        val input =
+            HarHvaSokesOmInput(
                 hvaSokesOm = "Jeg bare må ha penger",
                 hvorforSoke = "Fordi jeg ikke har penger vel",
             )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
-            inputBegrunnelse,
+            input,
             BegrunnelseDto::class.java,
             soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(input.hvaSokesOm)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(input.hvorforSoke)
         }
             ?: fail("Feil i test")
     }
@@ -49,22 +50,22 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Input hvor ett felt er tomt skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
-        val inputBegrunnelse =
-            BegrunnelseDto(
+        val input =
+            HarHvaSokesOmInput(
                 hvaSokesOm = "",
                 hvorforSoke = "Fordi jeg ikke har penger vel",
             )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
-            inputBegrunnelse,
+            input,
             BegrunnelseDto::class.java,
             soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.begrunnelse.hvaSokesOm).isEqualTo("")
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(input.hvorforSoke)
         }
             ?: fail("Feil i test")
     }

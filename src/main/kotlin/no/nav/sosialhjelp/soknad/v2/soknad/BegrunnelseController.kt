@@ -16,32 +16,26 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/begrunnelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 class BegrunnelseController(
-    private val begrunnelseService: BegrunnelseService,
+    private val service: BegrunnelseService,
 ) {
     @GetMapping
     fun getBegrunnelse(
         @PathVariable("soknadId") soknadId: UUID,
     ): BegrunnelseDto {
-        return begrunnelseService.findBegrunnelse(soknadId).toBegrunnelseDto()
+        return service.findBegrunnelse(soknadId).toBegrunnelseDto()
     }
 
     @PutMapping
     fun updateBegrunnelse(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) begrunnelseDto: BegrunnelseDto,
+        @RequestBody(required = true) input: BegrunnelseInput,
     ): BegrunnelseDto {
-        val brukerdata =
-            begrunnelseDto.let {
-                begrunnelseService.updateBegrunnelse(
-                    soknadId = soknadId,
-                    begrunnelse =
-                        Begrunnelse(
-                            hvorforSoke = it.hvorforSoke,
-                            hvaSokesOm = it.hvaSokesOm,
-                        ),
-                )
-            }
-        return brukerdata.toBegrunnelseDto()
+        // TODO Trengs forskjellig håndtering av disse?
+        return when (input) {
+            is HarHvaSokesOmInput -> service.updateHvaSokesOm(soknadId, input.hvorforSoke, input.hvaSokesOm)
+            is HarKategorierInput -> service.updateKategorier(soknadId, input.hvorforSoke, input.kategorier)
+        }
+            .toBegrunnelseDto()
     }
 }
 
