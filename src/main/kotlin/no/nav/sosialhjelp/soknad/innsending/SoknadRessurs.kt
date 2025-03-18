@@ -1,13 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,44 +31,6 @@ class SoknadRessurs(
     private val nedetidService: NedetidService,
     private val soknadHandlerProxy: SoknadHandlerProxy,
 ) {
-    @GetMapping("/{behandlingsId}/erSystemdataEndret")
-    fun sjekkOmSystemdataErEndret(
-        @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
-    ): Boolean {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-
-        return soknadHandlerProxy.isRegisterdataChanged(behandlingsId)
-    }
-
-    @PostMapping("/{behandlingsId}/oppdaterSamtykker")
-    fun oppdaterSamtykker(
-        @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody samtykker: List<BekreftelseRessurs>,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
-    ) {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-
-        val harBostotteSamtykke =
-            samtykker
-                .any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi == true }
-        val harSkatteetatenSamtykke =
-            samtykker
-                .any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi == true }
-
-        soknadHandlerProxy.updateSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke)
-    }
-
-    @GetMapping("/{behandlingsId}/hentSamtykker")
-    fun hentSamtykker(
-        @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
-    ): List<BekreftelseRessurs> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-
-        return soknadHandlerProxy.getSamtykker(behandlingsId, token)
-    }
-
     @PostMapping("/opprettSoknad")
     fun opprettSoknad(
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
