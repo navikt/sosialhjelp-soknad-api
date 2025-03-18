@@ -78,18 +78,37 @@ class SoknadToJsonMapper(
     }
 }
 
-private fun Begrunnelse.handleKategorier(): String =
-    if (kategorier.definerte.isNotEmpty()) kategorier.writeString() else hvaSokesOm
-
-private fun Kategorier.writeString(): String =
-    definerte.joinToString(separator = ", ") { it.mapToString() } +
-        "\n\n" + annet
-
 private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
     when (this.kortSoknad) {
         true -> JsonData.Soknadstype.KORT
         false -> JsonData.Soknadstype.STANDARD
     }
+
+private fun Begrunnelse.handleKategorier(): String =
+    if (kategorier.isNotEmpty()) KategorierStringBuilder(kategorier).writeString() else hvaSokesOm
+
+private fun Kategorier.isNotEmpty() = definerte.isNotEmpty() || annet.isNotEmpty()
+
+private class KategorierStringBuilder(kategorier: Kategorier) {
+    private val nodhjelpList: List<Kategori.Nodhjelp> = kategorier.definerte.filterIsInstance<Kategori.Nodhjelp>()
+    private val resten: List<Kategori> = kategorier.definerte.filter { it !is Kategori.Nodhjelp }
+    private val annet: String? = kategorier.annet.let { it.ifEmpty { null } }
+
+    fun writeString(): String {
+        return """
+            |${if (nodhjelpList.isNotEmpty()) writeList("Nødhjelp", nodhjelpList) else "" }
+            |${if (resten.isNotEmpty()) writeList("Jeg søker om penger til", resten) else "" }
+            |${annet?.let { "Annet:\n $annet " } ?: "" }
+            """.trimMargin()
+    }
+
+    private fun writeList(
+        type: String,
+        list: List<Kategori>,
+    ): String {
+        return "$type: ${list.joinToString(", ") { it.mapToString() }.lowercase()}"
+    }
+}
 
 private fun Kategori.mapToString(): String {
     return when (this) {

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg.kort
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -13,7 +12,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 class BehovSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
+//        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
+
+        val harUtfyltHvaSokesOm = !begrunnelse.hvaSokesOm.isNullOrEmpty()
 
         val situasjonsendring = jsonInternalSoknad.soknad.data.situasjonendring
         val harFyltUtHvaErEndret = !situasjonsendring?.hvaHarEndretSeg.isNullOrBlank()
@@ -30,7 +31,8 @@ class BehovSteg {
                                 Sporsmal(
                                     tittel = "begrunnelse.kategorier.label",
                                     erUtfylt = harUtfyltHvaSokesOm,
-                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
+                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse.hvaSokesOm) else null,
+//                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
                                 ),
                                 Sporsmal("situasjon.kort.hvaErEndret.label", situasjonsendring?.hvaHarEndretSeg?.toFelt(), harFyltUtHvaErEndret),
                             ),
