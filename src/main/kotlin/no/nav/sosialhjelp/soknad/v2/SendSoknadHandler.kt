@@ -12,17 +12,16 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 // TODO Ble mange argumenter til denne klassen - og ganske mye logikk. Refaktor?
@@ -42,10 +41,10 @@ class SendSoknadHandler(
         soknadId: UUID,
         token: String?,
     ): SoknadSendtInfo {
-        val innsendingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+        val innsendingTidspunkt = soknadMetadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
+//        val innsendingTidspunkt = nowWithMillis()
 
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
-
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
 
         val digisosId: UUID =
@@ -70,7 +69,6 @@ class SendSoknadHandler(
                         ?.also {
                             soknadMetadataService.updateSoknadSendt(
                                 soknadId = soknadId,
-                                innsendingstidspunkt = innsendingTidspunkt,
                                 kommunenummer = mottaker.kommunenummer,
                                 digisosId = digisosId,
                             )
@@ -78,7 +76,7 @@ class SendSoknadHandler(
                         ?: error("NavMottaker mangler kommunenummer")
                 }
                 .onFailure {
-                    soknadMetadataService.updateSoknadMetadata(soknadId, SoknadStatus.OPPRETTET)
+                    soknadMetadataService.updateSendingFeilet(soknadId)
                     logger.error("Feil ved sending av soknad til FIKS", it)
                     throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
                 }
