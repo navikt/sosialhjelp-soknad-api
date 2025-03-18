@@ -171,7 +171,6 @@ class DigisosApiV2Client(
         val sporingsId = UUID.randomUUID().toString()
         val fiksSoknaderStatusRequest = FiksSoknaderStatusRequest(digisosIdListe)
 
-        log.info("Henter status for søknader med request: $fiksSoknaderStatusRequest og sporingsId: $sporingsId")
         return try {
             fiksWebClient
                 .post()
