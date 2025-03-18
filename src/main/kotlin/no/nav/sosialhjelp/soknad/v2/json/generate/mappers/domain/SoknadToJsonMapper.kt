@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategori
 import no.nav.sosialhjelp.soknad.v2.soknad.Kategorier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
@@ -78,12 +79,23 @@ class SoknadToJsonMapper(
 }
 
 private fun Begrunnelse.handleKategorier(): String =
-    if (kategorier.sett.isNotEmpty()) kategorier.writeString() else hvaSokesOm
+    if (kategorier.definerte.isNotEmpty()) kategorier.writeString() else hvaSokesOm
 
-private fun Kategorier.writeString(): String = sett.joinToString(separator = ", ") { it.key }
+private fun Kategorier.writeString(): String = definerte.joinToString(separator = ", ") { it.mapToString() }
 
 private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
     when (this.kortSoknad) {
         true -> JsonData.Soknadstype.KORT
         false -> JsonData.Soknadstype.STANDARD
     }
+
+private fun Kategori.mapToString(): String {
+    return when (this) {
+        Kategori.Husleie -> "Husleie"
+        Kategori.Livsopphold -> "Livsopphold"
+        Kategori.StromOgOppvarming -> "StromOgOppvarming"
+        Kategori.Nodhjelp.IkkeBosted -> "Nodhjelp.IkkeBosted"
+        Kategori.Nodhjelp.IkkeMat -> "Nodhjelp.IkkeMat"
+        Kategori.Nodhjelp.IkkeStrom -> "Nodhjelp.IkkeStrom"
+    }
+}

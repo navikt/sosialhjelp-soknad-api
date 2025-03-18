@@ -60,6 +60,7 @@ interface BegrunnelseService {
         soknadId: UUID,
         hvorforSoke: String,
         kategorier: Set<Kategori>,
+        annet: String,
     ): Begrunnelse
 }
 
@@ -153,9 +154,20 @@ class SoknadServiceImpl(
         soknadId: UUID,
         hvorforSoke: String,
         kategorier: Set<Kategori>,
+        annet: String,
     ): Begrunnelse =
         findOrError(soknadId)
-            .copy(begrunnelse = Begrunnelse(hvorforSoke = hvorforSoke, kategorier = Kategorier(sett = kategorier)))
+            .copy(
+                begrunnelse =
+                    Begrunnelse(
+                        hvorforSoke = hvorforSoke,
+                        kategorier =
+                            Kategorier(
+                                definerte = kategorier,
+                                annet = annet,
+                            ),
+                    ),
+            )
             .let { soknadRepository.save(it) }
             .begrunnelse
 

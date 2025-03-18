@@ -390,7 +390,7 @@ fun opprettBegrunnelse(
     Begrunnelse(
         hvorforSoke = hvorforSoke,
         hvaSokesOm = hvaSokesOm,
-        kategorier = Kategorier(sett = kategorier),
+        kategorier = Kategorier(definerte = kategorier),
     )
 
 fun opprettBosituasjon(

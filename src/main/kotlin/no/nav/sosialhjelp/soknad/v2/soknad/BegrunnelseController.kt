@@ -33,22 +33,31 @@ class BegrunnelseController(
         // TODO Trengs forskjellig håndtering av disse?
         return when (input) {
             is HarHvaSokesOmInput -> service.updateHvaSokesOm(soknadId, input.hvorforSoke, input.hvaSokesOm)
-            is HarKategorierInput -> service.updateKategorier(soknadId, input.hvorforSoke, input.kategorier)
-        }
-            .toBegrunnelseDto()
+            is HarKategorierInput -> service.updateKategorier(soknadId, input.hvorforSoke, input.kategorier, input.annet)
+        }.toBegrunnelseDto()
     }
 }
 
 data class BegrunnelseDto(
     val hvaSokesOm: String = "",
     val hvorforSoke: String = "",
-    val kategorier: Set<Kategori>? = null,
+    val kategorier: KategorierDto = KategorierDto(),
+)
+
+data class KategorierDto(
+    val definerte: Set<Kategori> = emptySet(),
+    val annet: String = "",
 )
 
 fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
     return BegrunnelseDto(
         hvorforSoke = hvorforSoke,
         hvaSokesOm = hvaSokesOm,
+        kategorier =
+            KategorierDto(
+                definerte = kategorier.definerte,
+                annet = kategorier.annet,
+            ),
     )
 }
 
@@ -71,4 +80,5 @@ data class HarHvaSokesOmInput(
 data class HarKategorierInput(
     val hvorforSoke: String,
     val kategorier: Set<Kategori>,
+    val annet: String,
 ) : BegrunnelseInput

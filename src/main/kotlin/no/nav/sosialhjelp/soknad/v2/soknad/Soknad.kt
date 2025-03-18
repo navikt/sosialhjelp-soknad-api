@@ -17,7 +17,6 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Repository
@@ -69,7 +68,8 @@ data class Begrunnelse(
 )
 
 data class Kategorier(
-    val sett: Set<Kategori> = emptySet(),
+    val definerte: Set<Kategori> = emptySet(),
+    val annet: String = "",
 )
 
 @JsonTypeInfo(
@@ -82,22 +82,22 @@ data class Kategorier(
     JsonSubTypes.Type(value = Kategori.Livsopphold::class, name = "Livsopphold"),
     JsonSubTypes.Type(value = Kategori.StromOgOppvarming::class, name = "StromOgOppvarming"),
     JsonSubTypes.Type(value = Kategori.Nodhjelp.IkkeMat::class, name = "Nodhjelp.IkkeMat"),
-    JsonSubTypes.Type(value = Kategori.Nodhjelp.IkkeStrom::class, name = "Nodhjelp.IkkeBosted"),
-    JsonSubTypes.Type(value = Kategori.Nodhjelp.IkkeBosted::class, name = "Nodhjelp.IkkeStrom"),
+    JsonSubTypes.Type(value = Kategori.Nodhjelp.IkkeStrom::class, name = "Nodhjelp.IkkeStrom"),
+    JsonSubTypes.Type(value = Kategori.Nodhjelp.IkkeBosted::class, name = "Nodhjelp.IkkeBosted"),
 )
-sealed class Kategori(val key: String) {
-    data object Livsopphold : Kategori("Livsopphold")
+sealed class Kategori {
+    data object Livsopphold : Kategori()
 
-    data object Husleie : Kategori("Husleie")
+    data object Husleie : Kategori()
 
-    data object StromOgOppvarming : Kategori("StromOgOppvarming")
+    data object StromOgOppvarming : Kategori()
 
-    sealed class Nodhjelp(underKategori: String) : Kategori("Nodhjelp.$underKategori") {
-        data object IkkeMat : Nodhjelp("IkkeMat")
+    sealed class Nodhjelp : Kategori() {
+        data object IkkeMat : Nodhjelp()
 
-        data object IkkeBosted : Nodhjelp("IkkeBosted")
+        data object IkkeBosted : Nodhjelp()
 
-        data object IkkeStrom : Nodhjelp("IkkeStrom")
+        data object IkkeStrom : Nodhjelp()
     }
 }
 
