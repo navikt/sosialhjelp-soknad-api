@@ -29,6 +29,8 @@ class SoknadMetadataService(
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
+    fun getMetadatasForIds(soknadIds: List<UUID>): List<SoknadMetadata> = metadataRepository.findAllById(soknadIds)
+
     fun getAllSoknaderMetadataForBrukerBySoknadId(soknadId: UUID): List<SoknadMetadata>? {
         return metadataRepository.findByIdOrNull(soknadId)
             ?.let { metadata -> metadataRepository.findByPersonId(metadata.personId) }
