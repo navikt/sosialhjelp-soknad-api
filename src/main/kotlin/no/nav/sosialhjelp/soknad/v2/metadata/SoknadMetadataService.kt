@@ -90,9 +90,6 @@ class SoknadMetadataService(
                     ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
             }
 
-    fun getOpenSoknader(personId: String): List<SoknadMetadata> =
-        metadataRepository.findByPersonId(personId).filter { it.status == SoknadStatus.OPPRETTET }
-
     fun getSoknadType(soknadId: UUID): SoknadType {
         return metadataRepository.findByIdOrNull(soknadId)?.soknadType
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
