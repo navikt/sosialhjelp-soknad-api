@@ -2,17 +2,16 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
 @Component
 class SlettGammelMetadataJob(
     private val leaderElection: LeaderElection,
-    // TODO Bruke service fremfor repository direkte pga debug/sporing?
-    private val soknadMetadataRepository: SoknadMetadataRepository,
+    private val metadataService: SoknadMetadataService,
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGammelMetadata() {
@@ -20,11 +19,11 @@ class SlettGammelMetadataJob(
             if (leaderElection.isLeader()) {
                 val result =
                     withTimeoutOrNull(60.seconds) {
-                        soknadMetadataRepository
-                            .hentEldreEnn(LocalDateTime.now().minusDays(200))
-                            .also { metadataUuids ->
-                                soknadMetadataRepository.deleteAllById(metadataUuids)
-                                logger.info("Slettet ${metadataUuids.size} gamle metadata-innslag")
+                        metadataService
+                            .findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))
+                            .also { soknadIds ->
+                                metadataService.deleteAll(soknadIds)
+                                logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
                             }
                     }
                 if (result == null) {
@@ -39,5 +38,6 @@ class SlettGammelMetadataJob(
     companion object {
         private val logger by logger()
         private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
+        private const val NUMBER_OF_DAYS = 200L
     }
 }

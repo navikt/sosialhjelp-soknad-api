@@ -132,4 +132,23 @@ class SoknadMetadataService(
     ): List<SoknadMetadata> {
         return metadataRepository.findOlderThan(soknadIds, timestamp)
     }
+
+    fun findSoknadIdsOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID> {
+        return metadataRepository.findOlderThanWithStatus(timestamp, status)
+    }
+
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
+        return metadataRepository.findSoknadIdsOlderThan(timestamp)
+    }
+
+    fun deleteAll(soknadIds: List<UUID>) {
+        metadataRepository.deleteAllById(soknadIds)
+    }
+
+    fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
+        return metadataRepository.findAllById(allSoknadIds)
+    }
 }
