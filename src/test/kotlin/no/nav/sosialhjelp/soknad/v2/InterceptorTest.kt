@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
@@ -32,7 +31,6 @@ class InterceptorTest : AbstractIntegrationTest() {
                 .uri("/soknad/${soknad.id}/familie/sivilstatus")
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer ${token.serialize()}")
-                .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.id.toString(), id = token.jwtClaimsSet.subject))
                 .body(
                     BodyInserters.fromValue(
                         SivilstandInput(Sivilstatus.GIFT, EktefelleInput("123", Navn(fornavn = "Ola", etternavn = "Nordmann"))),
@@ -62,7 +60,6 @@ class InterceptorTest : AbstractIntegrationTest() {
             .uri("/soknad/${soknad.id}/familie/sivilstatus")
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.id.toString(), id = token.jwtClaimsSet.subject))
             .body(
                 BodyInserters.fromValue(
                     SivilstandInput(Sivilstatus.GIFT, EktefelleInput("121337", Navn(fornavn = "Ola", etternavn = "Nordmann"))),

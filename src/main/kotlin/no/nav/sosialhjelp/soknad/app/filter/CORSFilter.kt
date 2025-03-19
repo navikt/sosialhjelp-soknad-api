@@ -28,7 +28,7 @@ class CORSFilter : Filter {
             httpResponse.setHeader("Access-Control-Allow-Origin", origin)
             httpResponse.setHeader(
                 "Access-Control-Allow-Headers",
-                "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace, baggage",
+                "Origin, Content-Type, Accept, Nav-Call-Id, Authorization, sentry-trace, baggage",
             )
             httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true")

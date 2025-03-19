@@ -9,8 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import java.util.UUID
 
 @Component
@@ -21,12 +19,6 @@ class Tilgangskontroll(
     private val soknadMetadataService: SoknadMetadataService,
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
-        val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
-        XsrfGenerator.sjekkXsrfToken(
-            request.getHeader("X-XSRF-TOKEN"),
-            behandlingsId,
-            environment.activeProfiles.contains("mock-alt"),
-        )
         verifiserBrukerHarTilgangTilSoknad(behandlingsId)
     }
 
