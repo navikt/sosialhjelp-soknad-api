@@ -28,6 +28,8 @@ interface SoknadService {
     )
 
     fun getSoknadOrNull(soknadId: UUID): Soknad?
+
+    fun findOpenSoknadIds(fnr: String): List<UUID>
 }
 
 interface SoknadJobService {
@@ -83,6 +85,9 @@ class SoknadServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
+
+    @Transactional(readOnly = true)
+    override fun findOpenSoknadIds(fnr: String): List<UUID> = soknadRepository.findOpenSoknadIds(fnr)
 
     @Transactional(readOnly = true)
     override fun findAllSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
