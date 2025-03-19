@@ -106,7 +106,7 @@ private class KategorierStringBuilder(kategorier: Kategorier) {
         type: String,
         list: List<Kategori>,
     ): String {
-        return "$type: ${list.joinToString(", ") { it.mapToString() }.lowercase()}"
+        return "$type: ${list.joinToString(", ") { it.mapToString() }}"
     }
 }
 
@@ -114,9 +114,9 @@ private fun Kategori.mapToString(): String {
     return when (this) {
         Kategori.Husleie -> "Husleie"
         Kategori.Livsopphold -> "Livsopphold"
-        Kategori.StromOgOppvarming -> "StromOgOppvarming"
-        Kategori.Nodhjelp.IkkeBosted -> "Nodhjelp.IkkeBosted"
-        Kategori.Nodhjelp.IkkeMat -> "Nodhjelp.IkkeMat"
-        Kategori.Nodhjelp.IkkeStrom -> "Nodhjelp.IkkeStrom"
+        Kategori.StromOgOppvarming -> "Strom og oppvarming"
+        Kategori.Nodhjelp.IkkeBosted -> "Har ikke bosted"
+        Kategori.Nodhjelp.IkkeMat -> "Har ikke mat"
+        Kategori.Nodhjelp.IkkeStrom -> "Har ikke strøm"
     }
 }
