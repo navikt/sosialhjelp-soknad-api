@@ -37,7 +37,7 @@ class TelefonnummerProxy(
 
 private fun TelefonnummerDto.toTelefonnummerFrontend() =
     TelefonnummerFrontend(
-        brukerdefinert = this.telefonnummerBruker != null,
         systemverdi = telefonnummerRegister,
+        brukerdefinert = this.telefonnummerBruker != null,
         brukerutfyltVerdi = telefonnummerBruker,
     )

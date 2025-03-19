@@ -26,15 +26,18 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
 import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import org.apache.commons.io.FileUtils
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException
 import org.apache.pdfbox.preflight.parser.PreflightParser
 import org.apache.pdfbox.text.PDFTextStripper
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -84,6 +87,7 @@ internal class SosialhjelpPdfGeneratorTest {
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
         internalSoknad.soknad.data.begrunnelse
             .withHvaSokesOm(text.toString())
+        internalSoknad.setInnsendingstidspunkt()
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
     }
@@ -91,8 +95,8 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun generatePdfWithVeryLongWords() {
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
-        internalSoknad.soknad.data.begrunnelse
-            .withHvaSokesOm("a".repeat(1000))
+        internalSoknad.soknad.data.begrunnelse.withHvaSokesOm("a".repeat(1000))
+        internalSoknad.setInnsendingstidspunkt()
 
         sosialhjelpPdfGenerator.generate(internalSoknad, false)
     }
@@ -107,6 +111,7 @@ internal class SosialhjelpPdfGeneratorTest {
         }
 
         val internalSoknad = jsonInternalSoknadWithMandatoryFields
+        internalSoknad.setInnsendingstidspunkt()
         internalSoknad.soknad.data.begrunnelse
             .withHvaSokesOm(text.toString())
 
@@ -119,6 +124,19 @@ internal class SosialhjelpPdfGeneratorTest {
         internalSoknad.soknad.withInnsendingstidspunkt("2020-03-12T08:35:45.329Z")
 
         sosialhjelpPdfGenerator.generate(internalSoknad, true)
+    }
+
+    @Test
+    fun `Innsendingstidspunkt ikke null ved pdf-generering`() {
+        val json = jsonInternalSoknadWithMandatoryFields
+
+        assertThatThrownBy { sosialhjelpPdfGenerator.generate(json, false) }
+            .isInstanceOf(PdfGenereringException::class.java)
+            .hasCauseInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    private fun JsonInternalSoknad.setInnsendingstidspunkt() {
+        this.soknad.innsendingstidspunkt = TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis())
     }
 
     private val jsonInternalSoknadWithMandatoryFields: JsonInternalSoknad
@@ -180,6 +198,7 @@ internal class SosialhjelpPdfGeneratorTest {
     @Test
     fun skalGenererePdfA() {
         val jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest", false)
+        jsonInternalSoknad.setInnsendingstidspunkt()
 
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val file = File("pdfaTest.pdf")
@@ -202,6 +221,7 @@ internal class SosialhjelpPdfGeneratorTest {
             createEmptyJsonInternalSoknad("pdfaTest", true).also {
                 it.soknad.data.familie = JsonFamilie().withSivilstatus(JsonSivilstatus().withStatus(JsonSivilstatus.Status.GIFT).withEktefelle(JsonEktefelle().withPersonIdentifikator("12345789").withNavn(JsonNavn().withFornavn("Johanna").withEtternavn("Johansen")).withFodselsdato(LocalDate.of(1991, 1, 1).toString())).withKilde(JsonKilde.SYSTEM))
             }
+        jsonInternalSoknad.setInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -214,6 +234,7 @@ internal class SosialhjelpPdfGeneratorTest {
             createEmptyJsonInternalSoknad("pdfaTest", true).also {
                 it.soknad.data.familie = JsonFamilie()
             }
+        jsonInternalSoknad.setInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -226,6 +247,7 @@ internal class SosialhjelpPdfGeneratorTest {
             createEmptyJsonInternalSoknad("pdfaTest", true).also {
                 it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(true).withKilde(JsonKilde.SYSTEM)).withAnsvar(listOf(JsonAnsvar().withBarn(JsonBarn().withKilde(JsonKilde.SYSTEM).withFodselsdato(LocalDate.of(Year.now().minusYears(4).value, 1, 1).toString()).withNavn(JsonNavn().withFornavn("Johan").withEtternavn("Johansen"))))))
             }
+        jsonInternalSoknad.setInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)
@@ -238,6 +260,7 @@ internal class SosialhjelpPdfGeneratorTest {
             createEmptyJsonInternalSoknad("pdfaTest", true).also {
                 it.soknad.data.familie = JsonFamilie().withForsorgerplikt(JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt().withVerdi(false).withKilde(JsonKilde.SYSTEM)))
             }
+        jsonInternalSoknad.setInnsendingstidspunkt()
         val bytes = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, true)
         val pdf = Loader.loadPDF(bytes)
         val text = PDFTextStripper().getText(pdf)

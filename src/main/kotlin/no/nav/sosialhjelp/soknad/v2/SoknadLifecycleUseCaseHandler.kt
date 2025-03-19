@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
 
-interface SoknadLifecycleService {
+interface SoknadLifecycleUseCaseHandler {
     fun startSoknad(
         isKort: Boolean,
     ): UUID
@@ -29,13 +29,13 @@ interface SoknadLifecycleService {
 }
 
 @Service
-class SoknadLifecycleServiceImpl(
+class SoknadLifecycleHandlerImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
     private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
     private val documentValidator: DocumentValidator,
     private val dokumentlagerService: DokumentlagerService,
-) : SoknadLifecycleService {
+) : SoknadLifecycleUseCaseHandler {
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det i MDC manuelt siden det ikke finnes i request enda
         val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
@@ -51,8 +51,8 @@ class SoknadLifecycleServiceImpl(
                 prometheusMetricsService.reportFeilet()
                 throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
             }
-            .getOrThrow()
             .also { MdcOperations.clearMDC() }
+            .getOrThrow()
     }
 
     override fun sendSoknad(
@@ -71,7 +71,7 @@ class SoknadLifecycleServiceImpl(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
                 )
                 // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-                createDeleteSoknadHandler.deleteAfterSent(soknadId)
+//                createDeleteSoknadHandler.deleteAfterSent(soknadId)
             }
             .onFailure {
                 // TODO Markere at soknaden har feilet ved å sette status på metadata?

@@ -11,6 +11,8 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -37,6 +39,7 @@ import reactor.netty.http.client.HttpClient
 import java.io.IOException
 import java.time.Duration
 import java.util.Collections
+import java.util.UUID
 import java.util.concurrent.Future
 
 @Component
@@ -46,6 +49,7 @@ class DigisosApiV2Client(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
+    private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
@@ -159,6 +163,34 @@ class DigisosApiV2Client(
         }
     }
 
+    fun getStatusForSoknader(
+        digisosIdListe: List<UUID>,
+    ): FiksSoknadStatusListe {
+        val startTime = System.currentTimeMillis()
+
+        val sporingsId = UUID.randomUUID().toString()
+        val fiksSoknaderStatusRequest = FiksSoknaderStatusRequest(digisosIdListe)
+
+        return try {
+            fiksWebClient
+                .post()
+                .uri("$digisosApiEndpoint/digisos/api/v1/nav/soknader/status".plus("?sporingsId=$sporingsId"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "BEARER ${texasService.getToken(IdentityProvider.M2M, "ks:fiks")}")
+                .bodyValue(fiksSoknaderStatusRequest)
+                .retrieve()
+                .bodyToMono<FiksSoknadStatusListe>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block() ?: throw FiksException("Fiks - noe uventet feilet ved henting av status for søknader. Response er null?", null)
+        } catch (e: WebClientResponseException) {
+            val errorResponse = e.responseBodyAsString
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse. SporingsId: $sporingsId")
+        } catch (e: IOException) {
+            throw IllegalStateException("Henting av status for søknader hos Fiks feilet. SporingsId: $sporingsId", e)
+        }
+    }
+
     private fun lastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
@@ -215,3 +247,16 @@ class DigisosApiV2Client(
             throw IllegalStateException(e)
         }
 }
+
+data class FiksSoknaderStatusRequest(
+    val digisosIdListe: List<UUID>,
+)
+
+data class FiksSoknadStatusListe(
+    val statusListe: List<FiksSoknadStatus>,
+)
+
+data class FiksSoknadStatus(
+    val digisosId: UUID,
+    val levertFagsystem: Boolean,
+)

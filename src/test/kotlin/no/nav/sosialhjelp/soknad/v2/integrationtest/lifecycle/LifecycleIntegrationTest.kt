@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
@@ -81,8 +82,8 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             }
 
         assertCapturedValues()
-        // TODO I fremtiden skal ikke dette nødvendigvis skje samtidig med innsending
-        soknadRepository.findByIdOrNull(soknadId).let { assertThat(it).isNull() }
+        soknadMetadataRepository.findByIdOrNull(soknadId)!!
+            .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
     }
 
     // TODO Er dette riktig antakelse?
