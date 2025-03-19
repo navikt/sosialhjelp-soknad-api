@@ -2,13 +2,14 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
 @Component
@@ -19,19 +20,12 @@ class SlettGamleSoknaderJob(
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() {
+        // TODO Skal gamle soknader beholde status OPPRETTET etter sletting - eller ha en annen status?
         runCatching {
             if (leaderElection.isLeader()) {
                 withTimeoutOrNull(60.seconds) {
-                    val metadataForEksisterendeSoknader =
-                        metadataService.findForIdsOlderThan(
-                            soknadIds = soknadJobService.getAllSoknader().map { it.id },
-                            timestamp = getTimestamp(),
-                        )
-
-                    // gamle soknader som skal slettes
-                    metadataForEksisterendeSoknader
-                        .filter { it.status == OPPRETTET }
-                        .also { handleOldStatusOpprettet(it) }
+                    val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+                    if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
                 }
                     ?: logger.error("Kunne ikke slette gamle søknader, tok for lang tid")
             }
@@ -39,11 +33,19 @@ class SlettGamleSoknaderJob(
             .onFailure { logger.error("Feil ved sletting av gamle søknader", it) }
     }
 
-    private fun handleOldStatusOpprettet(metadatas: List<SoknadMetadata>) {
-        if (metadatas.isNotEmpty()) {
-            val deleted = soknadJobService.deleteAllByIdCatchError(metadatas.map { it.soknadId })
-            logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
+    private fun handleOldSoknadIds(soknadIds: List<UUID>) {
+        var deleted = 0
+
+        soknadIds.forEach { soknadId ->
+            runCatching { soknadJobService.deleteSoknadById(soknadId) }
+                .onSuccess {
+                    deleted++
+                    metadataService.updateSoknadStatus(soknadId, AVBRUTT)
+                }
+                .onFailure { logger.error("Kunne ikke slette soknad", it) }
+                .getOrNull()
         }
+        logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
     }
 
     companion object {

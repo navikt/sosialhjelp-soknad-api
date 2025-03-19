@@ -41,11 +41,10 @@ class SlettSoknaderMottattAvFagsystemJob(
                                 logger.info("${digisosIdsMottatt.size} soknader med status MOTTATT hos FIKS.")
                                 metadatas.getSoknadIdsStatusMottatt(digisosIdsMottatt)
                             }
-                            .let { soknaderMottatt ->
-                                logger.info("${soknaderMottatt.size} soknader lokalt med status MOTTATT")
-                                val deleted = soknadJobService.deleteAllByIdCatchError(soknaderMottatt)
-                                logger.info("Slettet $deleted mottatte soknader")
-                                soknaderMottatt
+                            .let { mottattIds ->
+                                soknadJobService.deleteSoknaderByIds(mottattIds)
+                                logger.info("Slettet ${mottattIds.size} mottatte soknader")
+                                mottattIds
                             }
                             .forEach { metadataService.updateSoknadStatus(it, SoknadStatus.MOTTATT_FSL) }
                     }
