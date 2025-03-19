@@ -90,6 +90,9 @@ class SoknadServiceImpl(
     override fun findOpenSoknadIds(fnr: String): List<UUID> = soknadRepository.findOpenSoknadIds(fnr)
 
     @Transactional(readOnly = true)
+    override fun findOpenSoknadIds(fnr: String): List<UUID> = soknadRepository.findOpenSoknadIds(fnr)
+
+    @Transactional(readOnly = true)
     override fun findAllSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
 
     @Transactional(readOnly = true)
