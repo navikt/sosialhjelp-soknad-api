@@ -15,13 +15,16 @@ import org.springframework.stereotype.Component
 class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
+    private val leaderElection: LeaderElection,
 ) {
     @Scheduled(cron = HVER_TIME)
     fun sjekkStatus() {
-        soknadJobService.findAllSoknadIds()
-            .let { ids -> metadataService.findAllMetadatasForIds(ids) }
-            .filter { metadatas -> metadatas.status != OPPRETTET }
-            .also { notOpprettet -> if (notOpprettet.isNotEmpty()) handleGamleSoknader(notOpprettet) }
+        if (leaderElection.isLeader()) {
+            soknadJobService.findAllSoknadIds()
+                .let { ids -> metadataService.findAllMetadatasForIds(ids) }
+                .filter { metadatas -> metadatas.status != OPPRETTET }
+                .also { notOpprettet -> if (notOpprettet.isNotEmpty()) handleGamleSoknader(notOpprettet) }
+        }
     }
 
     private fun handleGamleSoknader(metadatas: List<SoknadMetadata>) {
