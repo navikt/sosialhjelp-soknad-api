@@ -29,6 +29,8 @@ class SoknadMetadataService(
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
+    fun getMetadatasForIds(soknadIds: List<UUID>): List<SoknadMetadata> = metadataRepository.findAllById(soknadIds)
+
     fun getAllSoknaderMetadataForBrukerBySoknadId(soknadId: UUID): List<SoknadMetadata>? {
         return metadataRepository.findByIdOrNull(soknadId)
             ?.let { metadata -> metadataRepository.findByPersonId(metadata.personId) }
@@ -88,9 +90,6 @@ class SoknadMetadataService(
                     ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
             }
 
-    fun getOpenSoknader(personId: String): List<SoknadMetadata> =
-        metadataRepository.findByPersonId(personId).filter { it.status == SoknadStatus.OPPRETTET }
-
     fun getSoknadType(soknadId: UUID): SoknadType {
         return metadataRepository.findByIdOrNull(soknadId)?.soknadType
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
@@ -131,5 +130,24 @@ class SoknadMetadataService(
         timestamp: LocalDateTime,
     ): List<SoknadMetadata> {
         return metadataRepository.findOlderThan(soknadIds, timestamp)
+    }
+
+    fun findSoknadIdsOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID> {
+        return metadataRepository.findOlderThanWithStatus(timestamp, status)
+    }
+
+    fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
+        return metadataRepository.findSoknadIdsOlderThan(timestamp)
+    }
+
+    fun deleteAll(soknadIds: List<UUID>) {
+        metadataRepository.deleteAllById(soknadIds)
+    }
+
+    fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
+        return metadataRepository.findAllById(allSoknadIds)
     }
 }

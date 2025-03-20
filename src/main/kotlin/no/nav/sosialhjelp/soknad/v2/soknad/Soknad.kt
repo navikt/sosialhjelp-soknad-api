@@ -2,7 +2,9 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.data.annotation.Id
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
@@ -12,7 +14,23 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Repository
-interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID>
+interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad, UUID> {
+    @Query(
+        "SELECT id FROM soknad WHERE id IN " +
+            "(SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp AND status = :status)",
+    )
+    fun findSoknadIdsOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID>
+
+    @Query(
+        "SELECT id FROM soknad WHERE id IN " +
+            "(SELECT soknad_id FROM soknad_metadata " +
+            "WHERE person_id = :fnr AND status = 'OPPRETTET')",
+    )
+    fun findOpenSoknadIds(fnr: String): List<UUID>
+}
 
 @Table
 data class Soknad(

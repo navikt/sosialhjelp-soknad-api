@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
@@ -11,7 +10,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -37,20 +35,6 @@ class SoknadRessurs(
     private val nedetidService: NedetidService,
     private val soknadHandlerProxy: SoknadHandlerProxy,
 ) {
-    @GetMapping("/{behandlingsId}/xsrfCookie")
-    fun hentXsrfCookie(
-        @PathVariable("behandlingsId") behandlingsId: String,
-        response: HttpServletResponse,
-    ): Boolean {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        response.addCookie(xsrfCookie(behandlingsId))
-        response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId))
-
-        soknadHandlerProxy.updateLastChanged(behandlingsId)
-
-        return true
-    }
-
     @GetMapping("/{behandlingsId}/erSystemdataEndret")
     fun sjekkOmSystemdataErEndret(
         @PathVariable("behandlingsId") behandlingsId: String,
@@ -120,23 +104,5 @@ class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
 
         return soknadHandlerProxy.isKort(UUID.fromString(behandlingsId))
-    }
-
-    companion object {
-        const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
-
-        private fun xsrfCookie(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))
-            xsrfCookie.path = "/"
-            xsrfCookie.secure = true
-            return xsrfCookie
-        }
-
-        private fun xsrfCookieMedBehandlingsid(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie("$XSRF_TOKEN-$behandlingId", XsrfGenerator.generateXsrfToken(behandlingId))
-            xsrfCookie.path = "/"
-            xsrfCookie.secure = true
-            return xsrfCookie
-        }
     }
 }

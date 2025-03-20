@@ -2,9 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.UUID
 
 interface SoknadService {
@@ -26,12 +28,21 @@ interface SoknadService {
     )
 
     fun getSoknadOrNull(soknadId: UUID): Soknad?
+
+    fun findOpenSoknadIds(fnr: String): List<UUID>
 }
 
 interface SoknadJobService {
-    fun getAllSoknader(): List<Soknad>
+    fun findAllSoknadIds(): List<UUID>
 
-    fun deleteAllByIdCatchError(ids: List<UUID>): Int
+    fun findSoknadIdsOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID>
+
+    fun deleteSoknadById(id: UUID)
+
+    fun deleteSoknaderByIds(ids: List<UUID>)
 }
 
 interface BegrunnelseService {
@@ -76,22 +87,25 @@ class SoknadServiceImpl(
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
 
     @Transactional(readOnly = true)
-    override fun getAllSoknader(): List<Soknad> = soknadRepository.findAll()
+    override fun findOpenSoknadIds(fnr: String): List<UUID> = soknadRepository.findOpenSoknadIds(fnr)
 
-    /**
-     * Fail-safe sletting så alt som kan slettes slettes
-     */
-    @Transactional
-    override fun deleteAllByIdCatchError(ids: List<UUID>): Int {
-        var antallSlettet = 0
+    @Transactional(readOnly = true)
+    override fun findAllSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
 
-        ids.forEach { id ->
-            runCatching { soknadRepository.deleteById(id) }
-                .onSuccess { antallSlettet++ }
-                .onFailure { logger.error("Kunne ikke slette Soknad (id=$id)", it) }
-        }
+    @Transactional(readOnly = true)
+    override fun findSoknadIdsOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID> {
+        return soknadRepository.findSoknadIdsOlderThanWithStatus(timestamp, status)
+    }
 
-        return antallSlettet
+    override fun deleteSoknadById(id: UUID) {
+        soknadRepository.deleteById(id)
+    }
+
+    override fun deleteSoknaderByIds(ids: List<UUID>) {
+        soknadRepository.deleteAllById(ids)
     }
 
     @Transactional(readOnly = true)

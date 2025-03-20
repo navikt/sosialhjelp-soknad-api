@@ -15,7 +15,7 @@ import java.util.UUID
 @Repository
 interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudRepository<SoknadMetadata, UUID> {
     @Query("select soknad_id from soknad_metadata where opprettet < :timestamp")
-    fun hentEldreEnn(timestamp: LocalDateTime): List<UUID>
+    fun findSoknadIdsOlderThan(timestamp: LocalDateTime): List<UUID>
 
     fun findAllByStatus(status: SoknadStatus): List<SoknadMetadata>
 
@@ -26,6 +26,12 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
         soknadIds: List<UUID>,
         timestamp: LocalDateTime,
     ): List<SoknadMetadata>
+
+    @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp AND status = :status")
+    fun findOlderThanWithStatus(
+        timestamp: LocalDateTime,
+        status: SoknadStatus,
+    ): List<UUID>
 }
 
 @Table

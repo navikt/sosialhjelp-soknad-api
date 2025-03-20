@@ -5,6 +5,10 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
@@ -22,6 +26,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         soknadRepository.deleteAll()
+        soknadMetadataRepository.deleteAll()
     }
 
     @Test
@@ -33,16 +38,19 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).isEmpty()
+            assertThat(soknadMetadataRepository.findAll()).hasSize(1).allMatch { it.status == AVBRUTT }
         }
 
     @Test
     fun `Planlagt jobb skal ikke slette soknader nyere enn 14 dager`() =
         runTest(timeout = 5.seconds) {
-            soknadRepository.save(opprettSoknad())
+            val soknadId = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(10))
+            soknadRepository.save(opprettSoknad(id = soknadId))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).hasSize(1)
+            assertThat(soknadMetadataRepository.findAll()).hasSize(1).allMatch { it.status == OPPRETTET }
         }
 
     @Test
@@ -50,9 +58,9 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
         runTest {
             val ids =
                 listOf(
-                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), SoknadStatus.SENDT),
-                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), SoknadStatus.MOTTATT_FSL),
-                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), SoknadStatus.OPPRETTET),
+                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), SENDT),
+                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), MOTTATT_FSL),
+                    createMetadataAndSoknad(LocalDateTime.now().minusDays(15), OPPRETTET),
                 )
 
             slettGamleSoknaderJob.slettGamleSoknader()
@@ -63,9 +71,9 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             val metadatas = soknadMetadataRepository.findAllById(allSoknader.map { it.id })
             assertThat(metadatas)
                 .hasSize(2)
-                .anyMatch { it.status == SoknadStatus.SENDT }
-                .anyMatch { it.status == SoknadStatus.MOTTATT_FSL }
-                .noneMatch { it.status == SoknadStatus.OPPRETTET }
+                .anyMatch { it.status == SENDT }
+                .anyMatch { it.status == MOTTATT_FSL }
+                .noneMatch { it.status == OPPRETTET }
         }
     }
 
@@ -82,7 +90,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 
 fun SoknadMetadataRepository.createMetadata(
     opprettet: LocalDateTime,
-    status: SoknadStatus = SoknadStatus.OPPRETTET,
+    status: SoknadStatus = OPPRETTET,
 ): UUID {
     return SoknadMetadata(
         soknadId = UUID.randomUUID(),
