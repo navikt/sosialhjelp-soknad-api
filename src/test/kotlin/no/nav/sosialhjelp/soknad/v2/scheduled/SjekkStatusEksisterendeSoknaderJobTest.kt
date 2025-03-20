@@ -1,7 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -37,6 +40,33 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
         assertThatThrownBy { sjekkStatusSoknaderSendt.sjekkStatus() }
             .isInstanceOf(EksisterendeSoknaderStatusException::class.java)
+    }
+
+    @Test
+    fun `Tar kun stilling til eksisterende soknader`() {
+        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
+        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
+        val idFeilStatus = createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.SENDT)
+
+        assertThatThrownBy { sjekkStatusSoknaderSendt.sjekkStatus() }
+            .isInstanceOf(EksisterendeSoknaderStatusException::class.java)
+
+        soknadRepository.deleteById(idFeilStatus)
+
+        SoknadMetadata(
+            UUID.randomUUID(),
+            "12345612345",
+            SoknadStatus.SENDT,
+            Tidspunkt(sendtInn = nowWithMillis().minusDays(4)),
+        ).also { soknadMetadataRepository.save(it) }
+
+        soknadMetadataRepository.findAll().also { metadatas ->
+            assertThat(metadatas)
+                .hasSize(4)
+                .anyMatch { it.status == SoknadStatus.SENDT }
+                .anyMatch { it.status == SoknadStatus.OPPRETTET }
+        }
+        assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
     }
 
     private fun createMetadataAndSoknad(
