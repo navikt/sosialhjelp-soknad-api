@@ -48,7 +48,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -223,7 +222,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    @Disabled("skippet fordi den er i veien foreløpig")
     fun `skal slette dokumentasjon og dokumenter ved overgang til kort soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata()
@@ -349,7 +347,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             .withUtbetalingsdato(utbetalingsdato)
 
     @Test
-    @Disabled("skippet fordi den er i veien foreløpig")
     fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata(kort = true)
