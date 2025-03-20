@@ -40,6 +40,8 @@ interface SoknadJobService {
         status: SoknadStatus,
     ): List<UUID>
 
+    fun findSoknadIdsWithStatus(status: SoknadStatus): List<UUID>
+
     fun deleteSoknadById(id: UUID)
 
     fun deleteSoknaderByIds(ids: List<UUID>)
@@ -98,6 +100,11 @@ class SoknadServiceImpl(
         status: SoknadStatus,
     ): List<UUID> {
         return soknadRepository.findSoknadIdsOlderThanWithStatus(timestamp, status)
+    }
+
+    @Transactional(readOnly = true)
+    override fun findSoknadIdsWithStatus(status: SoknadStatus): List<UUID> {
+        return soknadRepository.findIdsWithStatus(status)
     }
 
     override fun deleteSoknadById(id: UUID) {

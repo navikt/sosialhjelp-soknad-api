@@ -24,7 +24,9 @@ class SlettSoknaderMottattAvFagsystemJob(
         runCatching {
             if (leaderElection.isLeader()) {
                 withTimeoutOrNull(60.seconds) {
-                    val metadatas = metadataService.getMetadatasStatusSendt()
+                    val metadatas =
+                        soknadJobService.findSoknadIdsWithStatus(SoknadStatus.SENDT)
+                            .let { metadataService.getMetadatasForIds(it) }
 
                     if (metadatas.isNotEmpty()) {
                         logger.info("Sletter søknader som er registret mottatt av fagsystem")

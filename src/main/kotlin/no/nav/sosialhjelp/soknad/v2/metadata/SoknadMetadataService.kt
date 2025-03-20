@@ -113,8 +113,6 @@ class SoknadMetadataService(
             ?: error("Soknad finnes ikke, kan ikke oppdatere sist endret")
     }
 
-    fun getMetadatasStatusSendt() = metadataRepository.findAllByStatus(SoknadStatus.SENDT)
-
     fun updateSoknadStatus(
         soknadId: UUID,
         soknadStatus: SoknadStatus,
@@ -123,20 +121,6 @@ class SoknadMetadataService(
             ?.run { copy(status = soknadStatus) }
             ?.also { metadataRepository.save(it) }
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
-    }
-
-    fun findForIdsOlderThan(
-        soknadIds: List<UUID>,
-        timestamp: LocalDateTime,
-    ): List<SoknadMetadata> {
-        return metadataRepository.findOlderThan(soknadIds, timestamp)
-    }
-
-    fun findSoknadIdsOlderThanWithStatus(
-        timestamp: LocalDateTime,
-        status: SoknadStatus,
-    ): List<UUID> {
-        return metadataRepository.findOlderThanWithStatus(timestamp, status)
     }
 
     fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
