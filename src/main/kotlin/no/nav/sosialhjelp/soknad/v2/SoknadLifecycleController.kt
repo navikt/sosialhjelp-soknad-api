@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -27,7 +25,7 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
-    private val soknadLifecycleService: SoknadLifecycleService,
+    private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/create")
@@ -55,9 +53,6 @@ class SoknadLifecycleController(
         return soknadLifecycleService
             .startSoknad(isKort)
             .let { soknadId ->
-                response.addCookie(xsrfCookie(soknadId))
-                response.addCookie(xsrfCookieMedBehandlingsid(soknadId))
-
                 StartSoknadResponseDto(soknadId, false)
             }
     }
@@ -81,24 +76,6 @@ class SoknadLifecycleController(
         @RequestHeader(value = HttpHeaders.REFERER) referer: String?,
     ) {
         soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
-    }
-
-    companion object {
-        const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
-
-        private fun xsrfCookie(soknadId: UUID): Cookie {
-            val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(soknadId.toString()))
-            xsrfCookie.path = "/"
-            xsrfCookie.secure = true
-            return xsrfCookie
-        }
-
-        private fun xsrfCookieMedBehandlingsid(soknadId: UUID): Cookie {
-            val xsrfCookie = Cookie("$XSRF_TOKEN-$soknadId", XsrfGenerator.generateXsrfToken(soknadId.toString()))
-            xsrfCookie.path = "/"
-            xsrfCookie.secure = true
-            return xsrfCookie
-        }
     }
 }
 

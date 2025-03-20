@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 import com.nimbusds.jwt.SignedJWT
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
-import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
@@ -85,7 +84,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
@@ -114,7 +112,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
@@ -133,7 +130,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .contentType(MediaType.APPLICATION_JSON)
 //            .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
@@ -153,7 +149,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .contentType(MediaType.MULTIPART_FORM_DATA)
 //            .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
@@ -173,7 +168,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .contentType(contentType)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
@@ -188,7 +182,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.put()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
@@ -205,7 +198,6 @@ abstract class AbstractIntegrationTest {
         return webTestClient.delete()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
-            .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId?.toString(), id = token.jwtClaimsSet.subject))
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
     }

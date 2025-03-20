@@ -30,6 +30,7 @@ class SosialhjelpPdfGenerator(
         utvidetSoknad: Boolean,
     ): ByteArray =
         try {
+            validate(jsonInternalSoknad)
             val pdf = PdfGenerator()
 
             val data = jsonInternalSoknad.soknad.data
@@ -104,4 +105,9 @@ class SosialhjelpPdfGenerator(
         pdf.addDividerLine()
         pdf.addBlankLine()
     }
+}
+
+private fun validate(json: JsonInternalSoknad) {
+    // Innsendingstidspunkt skal ikke være null ved pdf-generering
+    requireNotNull(json.soknad.innsendingstidspunkt)
 }
