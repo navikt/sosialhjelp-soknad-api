@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -47,10 +48,9 @@ class SlettSoknaderMottattAvFagsystemJob(
                                 if (mottatteIds.isNotEmpty()) {
                                     soknadJobService.deleteSoknaderByIds(mottatteIds)
                                     logger.info("Slettet ${mottatteIds.size} mottatte soknader")
+                                    mottatteIds.forEach { metadataService.updateSoknadStatus(it, MOTTATT_FSL) }
                                 }
-                                mottatteIds
                             }
-                            .forEach { metadataService.updateSoknadStatus(it, SoknadStatus.MOTTATT_FSL) }
                     }
                 }
                     ?: logger.error("Kunne ikke slette søknader som er registrert mottatt av fagsystem, tok for lang tid")
