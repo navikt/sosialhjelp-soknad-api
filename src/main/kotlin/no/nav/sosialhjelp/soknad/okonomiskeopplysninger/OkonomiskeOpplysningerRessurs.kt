@@ -45,9 +45,9 @@ class OkonomiskeOpplysningerRessurs(
 
 data class VedleggFrontends(
     var okonomiskeOpplysninger: List<VedleggFrontend>?,
-    // TODO Hvorfor må frontend ha oversikt over slettede vedlegg? Høre med Tore
+    // TODO Hvorfor må frontend ha oversikt over slettede vedlegg? Høre med Tore -- FJERNES
     var slettedeVedlegg: List<VedleggFrontend>?,
-    // TODO Hvorfor trenger frontend et eget flagg for dette? Høre med Tore
+    // TODO Hvorfor trenger frontend et eget flagg for dette? Høre med Tore -- SJEKK OPP
     @Schema(description = "True dersom bruker har oppgitt noen økonomiske opplysninger", readOnly = true)
     var isOkonomiskeOpplysningerBekreftet: Boolean,
 )

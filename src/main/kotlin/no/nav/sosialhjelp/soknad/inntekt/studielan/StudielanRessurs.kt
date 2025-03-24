@@ -36,8 +36,6 @@ class StudielanRessurs(
         return studielanProxy.leggTilStudielan(behandlingsId, studielanFrontend)
     }
 
-    // TODO: Disse klassene har veldig dårlige navn.
-    // TODO Skal backend bestemme om inntekt studielan skal vises?
     data class StudielanFrontend(
         /** Søker er student */
         val skalVises: Boolean,
