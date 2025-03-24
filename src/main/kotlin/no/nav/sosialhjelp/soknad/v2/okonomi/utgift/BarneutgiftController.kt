@@ -37,7 +37,7 @@ class BarneutgiftController(
                     hasBekreftelse = barneutgiftService.getBekreftelse(soknadId),
                 )
             }
-        } ?: BarneutgifterDto(hasForsorgerplikt = true, hasBekreftelse = false)
+        } ?: BarneutgifterDto(hasForsorgerplikt = true)
     }
 
     @PutMapping
