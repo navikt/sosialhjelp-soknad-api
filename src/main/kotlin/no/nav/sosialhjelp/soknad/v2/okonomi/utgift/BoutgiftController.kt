@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -88,10 +90,18 @@ private fun Set<Utgift>.toBoutgifterDto(skalViseInfoVedBekreftelse: Boolean) =
         skalViseInfoVedBekreftelse = skalViseInfoVedBekreftelse,
     )
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(HarIkkeBoutgifterInput::class),
-    JsonSubTypes.Type(HarBoutgifterInput::class),
+    JsonSubTypes.Type(HarIkkeBoutgifterInput::class, name = "HarIkkeBoutgifterInput"),
+    JsonSubTypes.Type(HarBoutgifterInput::class, name = "HarBoutgifterInput"),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "HarIkkeBoutgifterInput", schema = HarIkkeBoutgifterInput::class),
+        DiscriminatorMapping(value = "HarBoutgifterInput", schema = HarBoutgifterInput::class),
+    ],
+    subTypes = [HarIkkeBoutgifterInput::class, HarBoutgifterInput::class],
 )
 interface BoutgifterInput
 
