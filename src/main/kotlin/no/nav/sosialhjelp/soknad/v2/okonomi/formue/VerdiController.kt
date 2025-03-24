@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -71,10 +73,18 @@ data class VerdierDto(
     val beskrivelseVerdi: String? = null,
 )
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(HarIkkeVerdierInput::class),
     JsonSubTypes.Type(HarVerdierInput::class),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "HarIkkeVerdierInput", schema = HarIkkeVerdierInput::class),
+        DiscriminatorMapping(value = "HarVerdierInput", schema = HarVerdierInput::class),
+    ],
+    subTypes = [HarIkkeVerdierInput::class, HarVerdierInput::class],
 )
 interface VerdierInput
 
