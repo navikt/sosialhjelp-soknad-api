@@ -30,4 +30,10 @@ object MiljoUtils {
         val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
         return value.contains("mock-alt")
     }
+
+    // For å kunne teste i mock eller dev
+    fun isMockOrDev(): Boolean {
+        val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
+        return value.contains("mock-alt") || value.contains("dev")
+    }
 }

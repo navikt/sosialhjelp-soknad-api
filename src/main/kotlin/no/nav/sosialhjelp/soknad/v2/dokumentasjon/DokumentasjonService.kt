@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -129,6 +130,7 @@ class DokumentasjonServiceImpl(
         when (soknadType) {
             SoknadType.KORT -> {
                 opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+                opprettDokumentasjon(soknadId, FormueType.FORMUE_BRUKSKONTO)
                 opprettDokumentasjon(soknadId, UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
             }
             SoknadType.STANDARD -> {

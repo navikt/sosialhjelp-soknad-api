@@ -99,7 +99,7 @@ class PdfGenerator {
     }
 
     fun addBlankLine() {
-        y -= 20f
+        y -= 10f
     }
 
     fun skrivTekst(text: String?) {

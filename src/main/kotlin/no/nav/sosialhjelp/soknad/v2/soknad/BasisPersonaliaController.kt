@@ -26,9 +26,9 @@ private fun Eier.toPersonaliaDto(personId: String): PersonaliaDto =
     PersonaliaDto(
         navn =
             NavnDto(
-                fornavn = navn.fornavn,
+                fornavn = navn.fornavn ?: "",
                 mellomnavn = navn.mellomnavn,
-                etternavn = navn.etternavn,
+                etternavn = navn.etternavn ?: "",
             ),
         fodselsnummer = personId,
         statsborgerskap = statsborgerskap,

@@ -149,11 +149,10 @@ object InntektOgFormue {
 
         // Bostotte
         pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.overskrift"))
+        pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
 
         var mottarBostotte = false
         if (!isKortSoknad) {
-            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bostotte.sporsmal.sporsmal"))
-
             val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
             if (bostotteBekreftelser.isNotEmpty()) {
                 val bostotteBekreftelse = bostotteBekreftelser[0]
@@ -175,6 +174,12 @@ object InntektOgFormue {
                 pdfUtils.skrivSvaralternativer(pdf, bostotteSvaralternativer)
             }
             pdf.addBlankLine()
+        }
+        if (isKortSoknad) {
+            val bostotteBekreftelser = hentBekreftelser(okonomi, SoknadJsonTyper.BOSTOTTE)
+            if (bostotteBekreftelser.isEmpty()) {
+                pdfUtils.skrivIkkeUtfylt(pdf)
+            }
         }
 
         val hentingFraHusbankenHarFeilet = soknad.driftsinformasjon != null && soknad.driftsinformasjon.stotteFraHusbankenFeilet
@@ -269,7 +274,39 @@ object InntektOgFormue {
             }
         }
 
-        // Kort søknad har kun skatteetaten-/bostøtte-/navytelser-spørsmål, så vi kan avslutte her
+        // Bankinnskudd
+        if (isKortSoknad) {
+            pdf.addBlankLine()
+            pdf.skrivTekstBold(pdfUtils.getTekst("inntekt.bankinnskudd.true.type.kort.sporsmal"))
+
+            val sparingBekreftelser = hentBekreftelser(okonomi, "sparing")
+            if (sparingBekreftelser.isNotEmpty()) {
+                val sparingBekreftelse = sparingBekreftelser[0]
+                if (sparingBekreftelse.verdi) {
+                    okonomi.oversikt.formue.forEach { formue ->
+                        if (formue.type == "brukskonto") {
+                            if (formue.belop != null) {
+                                pdfUtils.skrivTekstMedGuardOgKrOgIkkeUtfylt(
+                                    pdf,
+                                    formue.belop,
+                                    "opplysninger.inntekt.bankinnskudd.brukskonto.belop.label",
+                                )
+                            } else {
+                                pdfUtils.skrivIkkeUtfylt(pdf)
+                            }
+                            pdf.addBlankLine()
+                        }
+                    }
+                } else {
+                    pdfUtils.skrivIkkeUtfylt(pdf)
+                }
+            } else {
+                pdfUtils.skrivIkkeUtfylt(pdf)
+            }
+            pdf.addBlankLine()
+        }
+
+        // Kort søknad har kun skatteetaten-/bostøtte-/konto-/navytelser-spørsmål, så vi kan avslutte her
         if (isKortSoknad) {
             if (urisOnPage.isNotEmpty()) {
                 pdfUtils.addLinks(pdf, urisOnPage)

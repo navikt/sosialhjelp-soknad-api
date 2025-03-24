@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandController
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
-import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.navn.NavnInput
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -32,10 +32,10 @@ class SivilstatusProxy(private val sivilstandController: SivilstandController) {
                                     fodselsdato = ektefelle.fodselsdato,
                                     borSammen = familieFrontend.borSammenMed,
                                     navn =
-                                        Navn(
-                                            ektefelle.navn?.fornavn ?: "",
-                                            ektefelle.navn?.mellomnavn ?: "",
-                                            ektefelle.navn?.etternavn ?: "",
+                                        NavnInput(
+                                            ektefelle.navn?.fornavn,
+                                            ektefelle.navn?.mellomnavn,
+                                            ektefelle.navn?.etternavn,
                                         ),
                                 )
                             },

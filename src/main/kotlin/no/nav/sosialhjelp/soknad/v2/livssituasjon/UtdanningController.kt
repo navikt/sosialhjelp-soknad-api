@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -51,13 +53,18 @@ private fun Utdanning.toUtdanningDto() =
         studentgrad = studentgrad,
     )
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-)
 @JsonSubTypes(
-    JsonSubTypes.Type(IkkeStudentInput::class),
-    JsonSubTypes.Type(StudentgradInput::class),
+    JsonSubTypes.Type(IkkeStudentInput::class, name = "IkkeStudent"),
+    JsonSubTypes.Type(StudentgradInput::class, name = "Studentgrad"),
+)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "IkkeStudent", schema = IkkeStudentInput::class),
+        DiscriminatorMapping(value = "Studentgrad", schema = StudentgradInput::class),
+    ],
+    subTypes = [IkkeStudentInput::class, StudentgradInput::class],
 )
 interface UtdanningInput
 

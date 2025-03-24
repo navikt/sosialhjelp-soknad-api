@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -24,7 +25,9 @@ class SlettSoknaderMottattAvFagsystemJob(
         runCatching {
             if (leaderElection.isLeader()) {
                 withTimeoutOrNull(60.seconds) {
-                    val metadatas = metadataService.getMetadatasStatusSendt()
+                    val metadatas =
+                        soknadJobService.findSoknadIdsWithStatus(SoknadStatus.SENDT)
+                            .let { metadataService.getMetadatasForIds(it) }
 
                     if (metadatas.isNotEmpty()) {
                         logger.info("Sletter søknader som er registret mottatt av fagsystem")
@@ -41,12 +44,13 @@ class SlettSoknaderMottattAvFagsystemJob(
                                 logger.info("${digisosIdsMottatt.size} soknader med status MOTTATT hos FIKS.")
                                 metadatas.getSoknadIdsStatusMottatt(digisosIdsMottatt)
                             }
-                            .let { mottattIds ->
-                                soknadJobService.deleteSoknaderByIds(mottattIds)
-                                logger.info("Slettet ${mottattIds.size} mottatte soknader")
-                                mottattIds
+                            .let { mottatteIds ->
+                                if (mottatteIds.isNotEmpty()) {
+                                    soknadJobService.deleteSoknaderByIds(mottatteIds)
+                                    logger.info("Slettet ${mottatteIds.size} mottatte soknader")
+                                    mottatteIds.forEach { metadataService.updateSoknadStatus(it, MOTTATT_FSL) }
+                                }
                             }
-                            .forEach { metadataService.updateSoknadStatus(it, SoknadStatus.MOTTATT_FSL) }
                     }
                 }
                     ?: logger.error("Kunne ikke slette søknader som er registrert mottatt av fagsystem, tok for lang tid")

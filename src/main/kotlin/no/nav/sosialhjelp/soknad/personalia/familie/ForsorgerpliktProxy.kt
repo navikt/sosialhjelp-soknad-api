@@ -40,6 +40,8 @@ class ForsorgerpliktProxy(
                                 uuid = UUID.fromString(it.barn?.personnummer),
                                 personId = null,
                                 deltBosted = it.harDeltBosted,
+                                samvarsgrad = it.samvarsgrad,
+                                folkeregistrertSammen = it.erFolkeregistrertSammen,
                             )
                         },
                 ),

@@ -326,8 +326,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).hasSize(2)
+        assertThat(dokumentasjon).hasSize(3)
         assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
+        assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) }
     }

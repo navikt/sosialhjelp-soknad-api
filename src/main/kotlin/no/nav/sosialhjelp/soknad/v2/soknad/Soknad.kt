@@ -30,6 +30,9 @@ interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad
             "WHERE person_id = :fnr AND status = 'OPPRETTET')",
     )
     fun findOpenSoknadIds(fnr: String): List<UUID>
+
+    @Query("SELECT id FROM soknad WHERE id IN (SELECT soknad_id FROM soknad_metadata WHERE status = :status)")
+    fun findIdsWithStatus(status: SoknadStatus): List<UUID>
 }
 
 @Table

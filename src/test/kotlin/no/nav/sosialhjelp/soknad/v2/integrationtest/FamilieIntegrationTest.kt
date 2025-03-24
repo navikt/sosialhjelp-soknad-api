@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.v2.createBarn
 import no.nav.sosialhjelp.soknad.v2.createFamilie
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
@@ -16,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.toEktefelle
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
+import no.nav.sosialhjelp.soknad.v2.navn.NavnInput
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -108,7 +106,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         val ektefelle =
             EktefelleInput(
                 personId = "12345678",
-                navn = Navn(fornavn = "Mr.", etternavn = "Cool"),
+                navn = NavnInput(fornavn = "Mr.", etternavn = "Cool"),
                 fodselsdato = "10101900",
                 borSammen = true,
             )
@@ -145,28 +143,5 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         )
             .also { familieRepository.save(it) }
             .let { it.ansvar.entries.first().value.personId!! }
-    }
-
-    private fun createForsorgerpliktFrontend(personId: String): ForsorgerpliktFrontend {
-        return ForsorgerpliktFrontend(
-            harForsorgerplikt = true,
-            barnebidrag = null,
-            ansvar =
-                listOf(
-                    AnsvarFrontend(
-                        borSammenMed = null,
-                        erFolkeregistrertSammen = null,
-                        harDeltBosted = true,
-                        samvarsgrad = null,
-                        barn =
-                            BarnFrontend(
-                                navn = null,
-                                fodselsdato = null,
-                                personnummer = personId,
-                                fodselsnummer = null,
-                            ),
-                    ),
-                ),
-        )
     }
 }

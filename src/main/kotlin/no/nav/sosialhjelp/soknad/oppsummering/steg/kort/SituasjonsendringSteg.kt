@@ -8,24 +8,27 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.BostotteHusbanken
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.NavUtbetalinger
+import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SaldoBrukskonto
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SkattbarInntekt
 
 class SituasjonsendringSteg {
     private val bostotteHusbanken = BostotteHusbanken()
     private val skatt = SkattbarInntekt()
     private val navUtbetalinger = NavUtbetalinger()
+    private val saldoBrukskonto = SaldoBrukskonto()
 
-    fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val situasjonsendring = jsonInternalSoknad.soknad.data.situasjonendring
+    fun get(json: JsonInternalSoknad): Steg {
+        val situasjonsendring = json.soknad.data.situasjonendring
 
         return Steg(
             stegNr = 4,
             tittel = "situasjon.kort.tittel",
             avsnitt =
                 listOf(
-                    skatt.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi, jsonInternalSoknad.soknad.driftsinformasjon),
-                    bostotteHusbanken.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi.opplysninger, jsonInternalSoknad.soknad.driftsinformasjon, autoConfirmation = true),
-                    navUtbetalinger.getAvsnitt(jsonInternalSoknad.soknad.data.okonomi.opplysninger, jsonInternalSoknad.soknad.driftsinformasjon),
+                    skatt.getAvsnitt(json.soknad.data.okonomi, json.soknad.driftsinformasjon),
+                    bostotteHusbanken.getAvsnitt(json.soknad.data.okonomi.opplysninger, json.soknad.driftsinformasjon, autoConfirmation = true),
+                    navUtbetalinger.getAvsnitt(json.soknad.data.okonomi.opplysninger, json.soknad.driftsinformasjon),
+                    saldoBrukskonto.getAvsnitt(json.soknad.data.okonomi.oversikt),
                 ),
         )
     }

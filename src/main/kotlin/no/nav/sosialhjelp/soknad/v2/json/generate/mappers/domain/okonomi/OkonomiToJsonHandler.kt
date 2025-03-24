@@ -79,6 +79,7 @@ private fun Okonomi.setupKortMappers(json: JsonOkonomi): List<OkonomiElementsToJ
     listOf(
         InntektToJsonMapper(inntekter, json, bekreftelser),
         BostotteSakToJsonMapper(bostotteSaker, json),
+        FormueToJsonMapper(formuer, json),
     ).let { list ->
         when {
             bekreftelser.isEmpty() -> list
