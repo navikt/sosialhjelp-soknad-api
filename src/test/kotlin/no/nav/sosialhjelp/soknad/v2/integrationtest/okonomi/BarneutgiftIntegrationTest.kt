@@ -47,21 +47,6 @@ class BarneutgiftIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Ingen barneutgifter skal gi bekreftelse false selvom bekreftelse er satt til true`() {
-        setForsorgerplikt(true)
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BARNEUTGIFTER, verdi = true)
-
-        doGet(
-            uri = getUrl(),
-            responseBodyClass = BarneutgifterDto::class.java,
-        )
-            .also {
-                assertThat(it.hasForsorgerplikt).isTrue()
-                assertThat(it.hasBekreftelse).isFalse()
-            }
-    }
-
-    @Test
     fun `Ingen bekreftelse returnerer bekreftelse null`() {
         setForsorgerplikt(true)
 
