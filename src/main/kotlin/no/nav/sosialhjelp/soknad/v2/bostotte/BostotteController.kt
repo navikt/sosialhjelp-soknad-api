@@ -77,7 +77,6 @@ data class BostotteDto(
     val fetchHusbankenFeilet: Boolean?,
 )
 
-// TODO Hvilke felt er egentlig interessante for frontend?
 data class UtbetalingBostotteDto(
     val mottaker: Mottaker?,
     val netto: Double?,

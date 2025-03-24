@@ -153,10 +153,6 @@ spec:
       value: "https://api.demo.husbanken.no/bostotte/minbostotte"
     - name: SKATTEETATEN_API_BASEURL
       value: "https://inntekt.api.skatteetaten-test.no/v1/digisos/"
-    - name: NEDETID_START
-      value: "09.02.2023 12:00:00"
-    - name: NEDETID_SLUTT
-      value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
       value: "dev"
     - name: UNLEASH_INSTANCE_ID
