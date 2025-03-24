@@ -1,9 +1,19 @@
 package no.nav.sosialhjelp.soknad.v2
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
@@ -65,10 +75,28 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker as MottakerSoknad
+
+fun createValidEmptyJsonInternalSoknad(): JsonInternalSoknad {
+    return createJsonInternalSoknadWithInitializedSuperObjects()
+        .apply {
+            soknad
+                .withDriftsinformasjon(JsonDriftsinformasjon())
+                .withMottaker(MottakerSoknad())
+            soknad.data
+                .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger()))
+                .withBegrunnelse(JsonBegrunnelse().withKilde(JsonKildeBruker.BRUKER).withHvaSokesOm(""))
+                .withPersonalia(JsonPersonalia())
+            soknad.data.personalia
+                .withKontonummer(JsonKontonummer())
+                .withNavn(JsonSokernavn())
+                .withPersonIdentifikator(JsonPersonIdentifikator())
+        }
+}
 
 fun createJsonInternalSoknadWithInitializedSuperObjects(): JsonInternalSoknad =
     JsonInternalSoknad().apply {
-        soknad = JsonSoknad()
+        soknad = JsonSoknad().withData(JsonData())
         vedlegg = JsonVedleggSpesifikasjon()
         mottaker = JsonSoknadsmottaker()
         midlertidigAdresse = JsonAdresse()
