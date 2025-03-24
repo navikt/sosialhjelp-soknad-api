@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
@@ -81,16 +82,16 @@ fun createValidEmptyJsonInternalSoknad(): JsonInternalSoknad {
     return createJsonInternalSoknadWithInitializedSuperObjects()
         .apply {
             soknad
-                .withDriftsinformasjon(JsonDriftsinformasjon())
+                .withDriftsinformasjon(JsonDriftsinformasjon().withInntektFraSkatteetatenFeilet(false))
                 .withMottaker(MottakerSoknad())
             soknad.data
                 .withOkonomi(JsonOkonomi().withOpplysninger(JsonOkonomiopplysninger()))
                 .withBegrunnelse(JsonBegrunnelse().withKilde(JsonKildeBruker.BRUKER).withHvaSokesOm(""))
                 .withPersonalia(JsonPersonalia())
             soknad.data.personalia
-                .withKontonummer(JsonKontonummer())
-                .withNavn(JsonSokernavn())
-                .withPersonIdentifikator(JsonPersonIdentifikator())
+                .withKontonummer(JsonKontonummer().withKilde(JsonKilde.SYSTEM))
+                .withNavn(JsonSokernavn().withFornavn("").withMellomnavn("").withEtternavn(""))
+                .withPersonIdentifikator(JsonPersonIdentifikator().withVerdi("12345612345"))
         }
 }
 
