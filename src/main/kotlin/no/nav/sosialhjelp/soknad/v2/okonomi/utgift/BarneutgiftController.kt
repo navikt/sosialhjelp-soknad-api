@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
 import org.springframework.http.MediaType
@@ -32,10 +34,10 @@ class BarneutgiftController(
             } else {
                 BarneutgifterDto(
                     hasForsorgerplikt = true,
-                    hasBekreftelse = false,
+                    hasBekreftelse = barneutgiftService.getBekreftelse(soknadId),
                 )
             }
-        } ?: BarneutgifterDto(hasForsorgerplikt = true)
+        } ?: BarneutgifterDto(hasForsorgerplikt = true, hasBekreftelse = false)
     }
 
     @PutMapping
@@ -80,10 +82,17 @@ private fun Set<Utgift>.toBarneutgifterDto(hasForsorgerplikt: Boolean) =
         hasAnnenUtgiftBarn = hasType(UtgiftType.UTGIFTER_ANNET_BARN),
     )
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(HarIkkeBarneutgifterInput::class),
-    JsonSubTypes.Type(HarBarneutgifterInput::class),
+    JsonSubTypes.Type(HarIkkeBarneutgifterInput::class, name = "HarIkkeBarneutgifterInput"),
+    JsonSubTypes.Type(HarBarneutgifterInput::class, name = "HarBarneutgifterInput"),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "HarIkkeBarneutgifterInput", schema = HarIkkeBarneutgifterInput::class),
+        DiscriminatorMapping(value = "HarBarneutgifterInput", schema = HarBarneutgifterInput::class),
+    ],
 )
 interface BarneutgifterInput
 
