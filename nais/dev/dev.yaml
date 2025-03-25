@@ -43,9 +43,6 @@ spec:
       consumes:
         - name: "skatteetaten:inntekt"
         - name: "ks:fiks"
-  redis:
-    - instance: cache
-      access: readwrite
   valkey:
     - instance: cache
       access: readwrite
