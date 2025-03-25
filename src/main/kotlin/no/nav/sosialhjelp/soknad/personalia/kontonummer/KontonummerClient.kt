@@ -11,10 +11,10 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
-import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.redis.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.valkey.CACHE_30_MINUTES_IN_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
+import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -32,7 +32,7 @@ interface KontonummerClient {
 class KontonummerClientImpl(
     @Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
     @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
@@ -70,7 +70,7 @@ class KontonummerClientImpl(
     }
 
     private fun hentKontonummerFraCache(ident: String): KontoDto? {
-        return redisService.get(KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident, KontoDto::class.java) as? KontoDto
+        return valkeyService.get(KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident, KontoDto::class.java) as? KontoDto
     }
 
     private fun lagreKontonummerTilCache(
@@ -78,13 +78,13 @@ class KontonummerClientImpl(
         kontoDto: KontoDto,
     ) {
         try {
-            redisService.setex(
+            valkeyService.setex(
                 KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident,
-                redisObjectMapper.writeValueAsBytes(kontoDto),
+                valkeyObjectMapper.writeValueAsBytes(kontoDto),
                 CACHE_30_MINUTES_IN_SECONDS,
             )
         } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av kontoDto til redis", e)
+            log.warn("Noe feilet ved lagring av kontoDto til valkey", e)
         }
     }
 

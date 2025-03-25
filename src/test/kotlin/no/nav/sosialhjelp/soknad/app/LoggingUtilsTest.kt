@@ -47,7 +47,7 @@ internal class LoggingUtilsTest {
     }
 
     @Test
-    fun skalFjerneFnrFraRedisFeilmelding() {
+    fun skalFjerneFnrFraValkeyFeilmelding() {
         val str = "cache key=hent-person-12345612345"
         val res = maskerFnr(str)
         assertThat(res).isEqualTo("cache key=hent-person-[FNR]")

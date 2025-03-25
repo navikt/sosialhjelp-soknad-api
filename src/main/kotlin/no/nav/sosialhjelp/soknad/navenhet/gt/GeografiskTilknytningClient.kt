@@ -13,9 +13,9 @@ import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
-import no.nav.sosialhjelp.soknad.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.valkey.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.PDL_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -28,7 +28,7 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val texasService: TexasService,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
@@ -71,7 +71,7 @@ class GeografiskTilknytningClient(
         texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 
     private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
-        return redisService.get(
+        return valkeyService.get(
             GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
             GeografiskTilknytningDto::class.java,
         ) as? GeografiskTilknytningDto
@@ -84,7 +84,7 @@ class GeografiskTilknytningClient(
         geografiskTilknytningDto: GeografiskTilknytningDto,
     ) {
         try {
-            redisService.setex(
+            valkeyService.setex(
                 GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
                 pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
                 PDL_CACHE_SECONDS,

@@ -11,10 +11,10 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequ
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
-import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.redis.RedisService
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.redis.UTBETALDATA_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.CACHE_30_MINUTES_IN_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.UTBETALDATA_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
+import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
@@ -31,7 +31,7 @@ interface NavUtbetalingerClient {
 class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : NavUtbetalingerClient {
@@ -69,7 +69,7 @@ class NavUtbetalingerClientImpl(
         texasService.exchangeToken(IdentityProvider.TOKENX, target = audience)
 
     private fun hentFraCache(ident: String): UtbetalDataDto? {
-        return redisService.get(
+        return valkeyService.get(
             UTBETALDATA_CACHE_KEY_PREFIX + ident,
             UtbetalDataDto::class.java,
         ) as? UtbetalDataDto
@@ -80,13 +80,13 @@ class NavUtbetalingerClientImpl(
         utbetalDataDto: UtbetalDataDto,
     ) {
         try {
-            redisService.setex(
+            valkeyService.setex(
                 UTBETALDATA_CACHE_KEY_PREFIX + ident,
-                redisObjectMapper.writeValueAsBytes(utbetalDataDto),
+                valkeyObjectMapper.writeValueAsBytes(utbetalDataDto),
                 CACHE_30_MINUTES_IN_SECONDS,
             )
         } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av UtbetalDataDto til redis", e)
+            log.warn("Noe feilet ved lagring av UtbetalDataDto til valkey", e)
         }
     }
 

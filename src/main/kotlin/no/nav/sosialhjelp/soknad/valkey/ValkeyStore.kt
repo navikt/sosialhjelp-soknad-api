@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.redis
+package no.nav.sosialhjelp.soknad.valkey
 
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisCommandTimeoutException
@@ -8,13 +8,13 @@ import io.lettuce.core.codec.RedisCodec
 import io.lettuce.core.codec.StringCodec
 import org.slf4j.LoggerFactory
 
-class RedisStore(
-    redisClient: RedisClient,
+class ValkeyStore(
+    valkeyClient: RedisClient,
 ) {
     private val commands: RedisCommands<String, ByteArray>
 
     init {
-        val connection = redisClient.connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE))
+        val connection = valkeyClient.connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE))
         commands = connection.sync()
     }
 
@@ -22,7 +22,7 @@ class RedisStore(
         return try {
             commands.get(key)
         } catch (e: RedisCommandTimeoutException) {
-            log.warn("Redis timeout. Returnerer null.", e)
+            log.warn("Valkey timeout. Returnerer null.", e)
             null
         }
     }
@@ -35,7 +35,7 @@ class RedisStore(
         return try {
             commands.setex(key, timeToLiveSeconds, value)
         } catch (e: RedisCommandTimeoutException) {
-            log.warn("Redis timeout. Returnerer null.", e)
+            log.warn("Valkey timeout. Returnerer null.", e)
             null
         }
     }
@@ -47,12 +47,12 @@ class RedisStore(
         return try {
             commands.set(key, value)
         } catch (e: RedisCommandTimeoutException) {
-            log.warn("Redis timeout. Returnerer null.", e)
+            log.warn("Valkey timeout. Returnerer null.", e)
             null
         }
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(RedisStore::class.java)
+        private val log = LoggerFactory.getLogger(ValkeyStore::class.java)
     }
 }

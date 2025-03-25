@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.redis.RedisService
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_CACHE_KEY
+import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
+import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets.UTF_8
@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 @Component
 class KommuneInfoService(
     private val kommuneInfoClient: KommuneInfoClient,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     private val kodeverkService: KodeverkService,
 ) {
     fun kanMottaSoknader(kommunenummer: String): Boolean {
@@ -52,7 +52,7 @@ class KommuneInfoService(
 
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
         if (skalBrukeCache()) {
-            val cachedMap = redisService.getKommuneInfos()
+            val cachedMap = valkeyService.getKommuneInfos()
             if (!cachedMap.isNullOrEmpty()) {
                 return cachedMap
             }
@@ -64,7 +64,7 @@ class KommuneInfoService(
         val kommuneInfoMap = kommuneInfoList.associateBy { it.kommunenummer }
 
         if (kommuneInfoMap.isEmpty()) {
-            val cachedMap = redisService.getKommuneInfos()
+            val cachedMap = valkeyService.getKommuneInfos()
             if (!cachedMap.isNullOrEmpty()) {
                 log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.")
                 return cachedMap
@@ -80,7 +80,7 @@ class KommuneInfoService(
     }
 
     private fun skalBrukeCache(): Boolean {
-        return redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)
+        return valkeyService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)
             ?.let { LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME).plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now()) }
             ?: false
     }
@@ -118,18 +118,18 @@ class KommuneInfoService(
     private fun oppdaterCache(kommuneInfoList: List<KommuneInfo>?) {
         try {
             if (!kommuneInfoList.isNullOrEmpty()) {
-                redisService.setex(
+                valkeyService.setex(
                     KOMMUNEINFO_CACHE_KEY,
-                    redisObjectMapper.writeValueAsBytes(kommuneInfoList),
+                    valkeyObjectMapper.writeValueAsBytes(kommuneInfoList),
                     KOMMUNEINFO_CACHE_SECONDS,
                 )
-                redisService.set(
+                valkeyService.set(
                     KOMMUNEINFO_LAST_POLL_TIME_KEY,
                     LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8),
                 )
             }
         } catch (e: JsonProcessingException) {
-            log.warn("Noe galt skjedde ved mapping av kommuneinfolist for caching i redis", e)
+            log.warn("Noe galt skjedde ved mapping av kommuneinfolist for caching i valkey", e)
         }
     }
 

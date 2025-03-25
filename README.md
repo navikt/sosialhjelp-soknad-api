@@ -20,7 +20,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 * Gradle
 * Spring Boot
 * PostgreSQL db
-* Redis (cache)
+* Valkey (cache)
 
 ### Krav
 
