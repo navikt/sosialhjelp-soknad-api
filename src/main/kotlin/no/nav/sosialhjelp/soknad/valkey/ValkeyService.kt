@@ -1,13 +1,13 @@
-package no.nav.sosialhjelp.soknad.redis
+package no.nav.sosialhjelp.soknad.valkey
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-interface RedisService {
+interface ValkeyService {
     fun get(
         key: String,
         requestedClass: Class<*>,
@@ -29,18 +29,18 @@ interface RedisService {
     )
 }
 
-class RedisServiceImpl(
-    private val redisStore: RedisStore,
-) : RedisService {
+class ValkeyServiceImpl(
+    private val valkeyStore: ValkeyStore,
+) : ValkeyService {
     override fun get(
         key: String,
         requestedClass: Class<*>,
     ): Any? {
-        val value = redisStore.get(key)
+        val value = valkeyStore.get(key)
 
         return if (value != null) {
             try {
-                redisObjectMapper.readValue(value, requestedClass)
+                valkeyObjectMapper.readValue(value, requestedClass)
             } catch (e: IOException) {
                 log.warn("Fant key=${maskerFnr(key)} i cache, men value var ikke ${requestedClass.simpleName}", e)
                 null
@@ -51,13 +51,13 @@ class RedisServiceImpl(
     }
 
     override fun getString(key: String): String? {
-        return redisStore.get(key)
+        return valkeyStore.get(key)
             ?.let { String(it, StandardCharsets.UTF_8) }
     }
 
     override fun getKommuneInfos(): Map<String, KommuneInfo>? {
-        val value = redisStore.get(KOMMUNEINFO_CACHE_KEY)
-        return RedisUtils.toKommuneInfoMap(value)
+        val value = valkeyStore.get(KOMMUNEINFO_CACHE_KEY)
+        return ValkeyUtils.toKommuneInfoMap(value)
     }
 
     override fun setex(
@@ -65,7 +65,7 @@ class RedisServiceImpl(
         value: ByteArray,
         timeToLiveSeconds: Long,
     ) {
-        val result = redisStore.setex(key, value, timeToLiveSeconds)
+        val result = valkeyStore.setex(key, value, timeToLiveSeconds)
         handleResponse(key, result)
     }
 
@@ -73,7 +73,7 @@ class RedisServiceImpl(
         key: String,
         value: ByteArray,
     ) {
-        val result = redisStore.set(key, value)
+        val result = valkeyStore.set(key, value)
         handleResponse(key, result)
     }
 
@@ -89,11 +89,11 @@ class RedisServiceImpl(
     }
 
     companion object {
-        private val log = getLogger(RedisServiceImpl::class.java)
+        private val log = getLogger(ValkeyServiceImpl::class.java)
     }
 }
 
-class NoRedisService : RedisService {
+class NoValkeyService : ValkeyService {
     override fun get(
         key: String,
         requestedClass: Class<*>,

@@ -19,12 +19,12 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.redis.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.BARN_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.EKTEFELLE_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.redis.PERSON_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.valkey.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.BARN_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.EKTEFELLE_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.PDL_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.PERSON_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -47,14 +47,14 @@ class HentPersonClientImpl(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl),
     HentPersonClient {
     override fun hentPerson(ident: String): PersonDto? = hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
 
-    private fun hentPersonFraCache(ident: String): PersonDto? = redisService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
+    private fun hentPersonFraCache(ident: String): PersonDto? = valkeyService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
 
     private fun hentPersonFraPdl(ident: String): PersonDto? =
         try {
@@ -79,7 +79,7 @@ class HentPersonClientImpl(
 
     override fun hentEktefelle(ident: String): EktefelleDto? = hentEktefelleFraCache(ident) ?: hentEktefelleFraPdl(ident)
 
-    private fun hentEktefelleFraCache(ident: String): EktefelleDto? = redisService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
+    private fun hentEktefelleFraCache(ident: String): EktefelleDto? = valkeyService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
 
     private fun hentEktefelleFraPdl(ident: String): EktefelleDto? =
         try {
@@ -104,7 +104,7 @@ class HentPersonClientImpl(
 
     override fun hentBarn(ident: String): BarnDto? = hentBarnFraCache(ident) ?: hentBarnFraPdl(ident)
 
-    private fun hentBarnFraCache(ident: String): BarnDto? = redisService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
+    private fun hentBarnFraCache(ident: String): BarnDto? = valkeyService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
 
     private fun hentBarnFraPdl(ident: String): BarnDto? =
         try {
@@ -130,7 +130,7 @@ class HentPersonClientImpl(
     override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? = hentAdressebeskyttelseFraCache(ident) ?: hentAdressebeskyttelseFraPdl(ident)
 
     private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? =
-        redisService.get(
+        valkeyService.get(
             ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
             PersonAdressebeskyttelseDto::class.java,
         ) as? PersonAdressebeskyttelseDto
@@ -170,7 +170,7 @@ class HentPersonClientImpl(
         pdlResponse: Any,
     ) {
         try {
-            redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
+            valkeyService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
         } catch (e: JsonProcessingException) {
             log.error("Noe feilet ved serialisering av response fra Pdl - ${pdlResponse.javaClass.name}", e)
         }

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.redis
+package no.nav.sosialhjelp.soknad.valkey
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,10 +10,10 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import org.slf4j.LoggerFactory
 import java.io.IOException
 
-object RedisUtils {
-    private val log = LoggerFactory.getLogger(RedisUtils::class.java)
+object ValkeyUtils {
+    private val log = LoggerFactory.getLogger(ValkeyUtils::class.java)
 
-    val redisObjectMapper: ObjectMapper =
+    val valkeyObjectMapper: ObjectMapper =
         JsonSosialhjelpObjectMapper.createObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerKotlinModule()
@@ -22,7 +22,7 @@ object RedisUtils {
     fun toKommuneInfoMap(value: ByteArray?): Map<String, KommuneInfo>? {
         if (value != null) {
             try {
-                return redisObjectMapper.readValue<Array<KommuneInfo>>(value)
+                return valkeyObjectMapper.readValue<Array<KommuneInfo>>(value)
                     .associateBy { it.kommunenummer }
             } catch (e: IOException) {
                 log.warn("noe feilet ved deserialisering til kommuneInfoMap", e)

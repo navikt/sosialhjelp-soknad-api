@@ -11,11 +11,11 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
-import no.nav.sosialhjelp.soknad.redis.CACHE_24_HOURS_IN_SECONDS
-import no.nav.sosialhjelp.soknad.redis.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.valkey.CACHE_24_HOURS_IN_SECONDS
+import no.nav.sosialhjelp.soknad.valkey.GT_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.GT_LAST_POLL_TIME_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
+import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 @Component
 class NorgClient(
     @Value("\${norg_url}") private val norgUrl: String,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
@@ -64,17 +64,17 @@ class NorgClient(
         navEnhetDto: NavEnhetDto,
     ) {
         try {
-            redisService.setex(
+            valkeyService.setex(
                 GT_CACHE_KEY_PREFIX + geografiskTilknytning,
-                redisObjectMapper.writeValueAsBytes(navEnhetDto),
+                valkeyObjectMapper.writeValueAsBytes(navEnhetDto),
                 CACHE_24_HOURS_IN_SECONDS,
             )
-            redisService.set(
+            valkeyService.set(
                 GT_LAST_POLL_TIME_PREFIX + geografiskTilknytning,
                 LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8),
             )
         } catch (e: JsonProcessingException) {
-            log.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e)
+            log.warn("Noe galt skjedde ved oppdatering av kodeverk til Valkey", e)
         }
     }
 

@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.dto.toNavEnhet
-import no.nav.sosialhjelp.soknad.redis.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.valkey.GT_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.GT_LAST_POLL_TIME_PREFIX
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
 @Component
 class NorgService(
     private val norgClient: NorgClient,
-    private val redisService: RedisService,
+    private val valkeyService: ValkeyService,
 ) {
     fun getEnhetForGt(gt: String?): NavEnhet? {
         if (gt == null || !gt.matches(Regex("^[0-9]+$"))) {
@@ -43,13 +43,13 @@ class NorgService(
     }
 
     private fun skalBrukeCache(gt: String): Boolean {
-        val timeString = redisService.getString(GT_LAST_POLL_TIME_PREFIX + gt) ?: return false
+        val timeString = valkeyService.getString(GT_LAST_POLL_TIME_PREFIX + gt) ?: return false
         val lastPollTime = LocalDateTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now())
     }
 
     private fun hentFraCache(gt: String): NavEnhetDto? {
-        return redisService.get(GT_CACHE_KEY_PREFIX + gt, NavEnhetDto::class.java) as? NavEnhetDto
+        return valkeyService.get(GT_CACHE_KEY_PREFIX + gt, NavEnhetDto::class.java) as? NavEnhetDto
     }
 
     private fun hentFraConsumerMedCacheSomFallback(gt: String): NavEnhetDto? {

@@ -15,7 +15,7 @@ import java.time.Duration
 @EnableCaching
 class CacheConfig {
     @Bean
-    fun redisCustomizer(
+    fun valkeyCustomizer(
         @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
     ): RedisCacheManagerBuilderCustomizer {
         return RedisCacheManagerBuilderCustomizer { builder ->

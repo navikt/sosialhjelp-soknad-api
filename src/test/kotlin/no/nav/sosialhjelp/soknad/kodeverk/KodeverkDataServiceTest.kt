@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.kodeverk
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.auth.texas.TexasServiceImpl
-import no.nav.sosialhjelp.soknad.redis.NoRedisService
+import no.nav.sosialhjelp.soknad.valkey.NoValkeyService
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 class KodeverkDataServiceTest : KodeverkTestClass() {
     private val mockWebServer = MockWebServer()
-    private val redisService = NoRedisService()
+    private val valkeyService = NoValkeyService()
     private val kodeverkClient =
         KodeverkClient(
             mockWebServer.url("/").toString(),
