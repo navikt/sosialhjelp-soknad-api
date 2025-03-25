@@ -86,7 +86,6 @@ class CreateDeleteSoknadHandler(
             AnnenDokumentasjonType.BEHOV,
             AnnenDokumentasjonType.BEHOV, // kort|behov
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
-            AnnenDokumentasjonType.BARNEBIDRAG, // barnebidrag|barnebidrag
             UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
             UtgiftType.UTGIFTER_SFO, // faktura|sfo
             InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak

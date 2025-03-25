@@ -633,7 +633,6 @@ fun createEmptyJsonInternalSoknad(
                 JsonVedleggSpesifikasjon().withVedlegg(
                     mutableListOf(
                         JsonVedlegg().withType("kort").withTilleggsinfo("behov"),
-                        JsonVedlegg().withType("barnebidrag").withTilleggsinfo("barnebidrag"),
                         JsonVedlegg().withType("faktura").withTilleggsinfo("barnehage"),
                         JsonVedlegg().withType("faktura").withTilleggsinfo("sfo"),
                         JsonVedlegg().withType("husbanken").withTilleggsinfo("vedtak"),

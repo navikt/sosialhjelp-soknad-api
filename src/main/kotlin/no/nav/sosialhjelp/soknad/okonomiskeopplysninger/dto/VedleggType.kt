@@ -50,7 +50,6 @@ enum class VedleggType(
     SluttoppgjorArbeid("sluttoppgjor|arbeid", InntektType.SLUTTOPPGJOER),
     StudentVedtak("student|vedtak", InntektType.STUDIELAN_INNTEKT),
     KortBehov("kort|behov", AnnenDokumentasjonType.BEHOV),
-    BarnebidragBarnebidrag("barnebidrag|barnebidrag", AnnenDokumentasjonType.BARNEBIDRAG),
 
     // Brukes ikke foreløpig
     KortSituasjonsendring("kort|situasjonsendring", null),

@@ -40,7 +40,6 @@ enum class AnnenDokumentasjonType(
     HUSLEIEKONTRAKT(dokumentasjonForventet = true),
     HUSLEIEKONTRAKT_KOMMUNAL(dokumentasjonForventet = true),
     BEHOV(dokumentasjonForventet = true),
-    BARNEBIDRAG(dokumentasjonForventet = true),
     ;
 
     override val group: VedleggGruppe get() = VedleggGruppe.GenerelleVedlegg
