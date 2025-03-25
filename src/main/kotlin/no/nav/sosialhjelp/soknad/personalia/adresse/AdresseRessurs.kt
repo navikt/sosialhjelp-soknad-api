@@ -30,7 +30,6 @@ class AdresseRessurs(
     fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String,
     ): AdresserFrontend {
-        // TODO Sjekk logikken mot ny datamodell
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
 
         return adresseProxy.getAdresser(behandlingsId)
