@@ -23,8 +23,6 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
-    // TODO Dokumentasjonsforventninger
-
     @Test
     fun `Hente boutgifter skal returnere lagrede data`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = true)
@@ -42,7 +40,6 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
             }
     }
 
-    // TODO Dette er forutsatt at bruker har svart ja, uten å spesifisere.. Er det egentlig riktig?
     @Test
     fun `Ingen boutgifter skal gi bekreftelse false selvom bekreftelse er satt true`() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = true)

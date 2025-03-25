@@ -50,7 +50,7 @@ data class Soknad(
 
 data class Tidspunkt(
     val opprettet: LocalDateTime,
-    // TODO Hvordan skal diverse PUT / POSTS / REGISTER-OPPDATERINGER oppdatere denne?
+    // TODO Hvordan skal diverse PUT / POSTS / REGISTER-OPPDATERINGER oppdatere denne? Skal den brukes til noe?
     var sistEndret: LocalDateTime? = null,
     var sendtInn: LocalDateTime? = null,
 )

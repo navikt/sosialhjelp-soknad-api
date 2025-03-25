@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiOpplysning
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -14,7 +14,7 @@ data class Formue(
     override val beskrivelse: String? = null,
     @Column("detaljer")
     val formueDetaljer: OkonomiDetaljer<Belop> = OkonomiDetaljer(),
-) : OkonomiElement
+) : OkonomiOpplysning
 
 enum class FormueType(
     override val dokumentasjonForventet: Boolean,

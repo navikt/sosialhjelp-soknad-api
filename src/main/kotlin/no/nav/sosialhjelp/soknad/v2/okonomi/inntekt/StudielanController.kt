@@ -37,7 +37,6 @@ class StudielanController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: StudielanInput,
     ): StudielanDto {
-        // TODO kaste error hvis erStudent = null || false, eller la det fremgå av dto ? Tore / Frontend
         utdanningService.findUtdanning(soknadId)?.let {
             if (it.erStudent) studielanService.updateStudielan(soknadId, input.mottarStudielan)
         }

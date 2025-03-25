@@ -20,7 +20,7 @@ class SlettGamleSoknaderJob(
 ) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() {
-        // TODO Skal gamle soknader beholde status OPPRETTET etter sletting - eller ha en annen status?
+        // TODO Skal gamle soknader beholde status OPPRETTET etter sletting - eller ha en annen status? (Eller fjernes)
         runCatching {
             if (leaderElection.isLeader()) {
                 withTimeoutOrNull(60.seconds) {

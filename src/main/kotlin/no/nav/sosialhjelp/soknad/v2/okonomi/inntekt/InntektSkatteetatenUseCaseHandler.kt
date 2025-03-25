@@ -84,7 +84,6 @@ data class InntektSkattInfo(
     val samtykke: Bekreftelse?,
 )
 
-// TODO Rydd opp / implementer logikk
 // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
 fun updateVedleggForventninger(
     internalSoknad: JsonInternalSoknad,
