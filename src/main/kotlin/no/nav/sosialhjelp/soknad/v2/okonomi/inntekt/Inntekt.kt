@@ -16,7 +16,6 @@ data class Inntekt(
     val inntektDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
 ) : OkonomiElement
 
-// TODO Tar vare på hvilket Json-objekt de hører til inntil vi får avklart med FSL om vi kan gjøre noe annerledes
 enum class InntektType(
     override val dokumentasjonForventet: Boolean,
 ) : OpplysningType {

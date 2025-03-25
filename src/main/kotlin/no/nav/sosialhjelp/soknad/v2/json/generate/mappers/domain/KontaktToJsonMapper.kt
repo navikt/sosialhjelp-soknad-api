@@ -83,7 +83,6 @@ class KontaktToJsonMapper(
                 .withKilde(if (adresseValg == AdresseValg.SOKNAD) JsonKilde.BRUKER else JsonKilde.SYSTEM)
                 .withAdresseValg(JsonAdresseValg.fromValue(adresseValg.name.lowercase()))
 
-        // TODO Tilsvarer logikk for AdresseRessurs#midlertidigLostningForPostadresse
         private fun Adresse.mapToPostadresse(valg: AdresseValg): JsonAdresse? =
             if (this is MatrikkelAdresse) {
                 null

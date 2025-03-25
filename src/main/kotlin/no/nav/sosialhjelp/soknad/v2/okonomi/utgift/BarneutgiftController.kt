@@ -59,7 +59,6 @@ class BarneutgiftController(
 }
 
 data class BarneutgifterDto(
-    // TODO dette bør/kan vel spørres om på annet endepunkt ? - Tore
     val hasForsorgerplikt: Boolean = false,
     val hasBekreftelse: Boolean? = null,
     val hasFritidsaktiviteter: Boolean = false,

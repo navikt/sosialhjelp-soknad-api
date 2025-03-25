@@ -6,7 +6,6 @@ import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableExcepti
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
-import no.nav.sosialhjelp.soknad.v2.NotValidInputException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
@@ -199,13 +198,6 @@ class ExceptionMapper(
     fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding?> {
         log.info("Bruker er ikke autentisert (enda). Sender 401 med loginurl. Feilmelding: ${e.message}")
         return loginserviceUrl?.let { buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(it)) } ?: buildError(HttpStatus.UNAUTHORIZED)
-    }
-
-    @ExceptionHandler(value = [NotValidInputException::class])
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    fun handleNotValidInputException(e: NotValidInputException): ResponseEntity<SoknadApiError> {
-        log.error("Ugyldige input: ${e.message}, id: ${e.id}")
-        return buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
     }
 
     @ExceptionHandler(value = [MetaDataNotAvailableException::class, IssuerConfigurationException::class])

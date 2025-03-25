@@ -16,7 +16,6 @@ import java.util.UUID
 @Repository
 interface LivssituasjonRepository : UpsertRepository<Livssituasjon>, ListCrudRepository<Livssituasjon, UUID>
 
-// TODO Navn?
 @Table
 data class Livssituasjon(
     @Id val soknadId: UUID,

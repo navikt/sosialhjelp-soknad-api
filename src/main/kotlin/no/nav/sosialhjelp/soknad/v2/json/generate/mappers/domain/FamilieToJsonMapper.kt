@@ -143,7 +143,6 @@ private fun Barn.toJson() =
                     .withVerdi(it)
             },
         )
-        // TODO Pr. nå settes det ikke noe samvarsgrad i frontend - riktig?
         .withSamvarsgrad(null)
 
 // mellomnavn er required i json-modellen

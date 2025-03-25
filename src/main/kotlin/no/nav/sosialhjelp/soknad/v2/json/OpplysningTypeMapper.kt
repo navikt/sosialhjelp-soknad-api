@@ -23,7 +23,6 @@ fun OpplysningType.getVedleggTillegginfoString(): String? = getJsonVerdier().ved
 
 fun OpplysningType.getSoknadJsonTypeString(): String? = getJsonVerdier().navn?.verdi
 
-// TODO Pågående avklaring med FSL hvor man kanskje slipper denne "2-dimensjonale" mappingen
 object OpplysningTypeMapper {
     fun getJsonVerdier(utgiftType: UtgiftType): JsonVerdi =
         when (utgiftType) {

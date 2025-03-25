@@ -23,8 +23,6 @@ import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
 import java.util.UUID
 
-// TODO Ble mange argumenter til denne klassen - og ganske mye logikk. Refaktor?
-
 @Component
 class SendSoknadHandler(
     private val digisosApiV2Client: DigisosApiV2Client,

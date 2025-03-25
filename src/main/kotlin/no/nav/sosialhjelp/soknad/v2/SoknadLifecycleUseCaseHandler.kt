@@ -72,7 +72,6 @@ class SoknadLifecycleHandlerImpl(
                 )
             }
             .onFailure {
-                // TODO Markere at soknaden har feilet ved å sette status på metadata? - avklaring med Tone rundt juridiske spørsmål
                 prometheusMetricsService.reportFeilet()
                 throw SoknadLifecycleException("Feil ved innsending av søknad.", it, soknadId)
             }
