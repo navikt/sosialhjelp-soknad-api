@@ -24,7 +24,6 @@ class NavYtelseController(private val navYtelseService: NavYtelseService) {
     }
 }
 
-// TODO Endre strukturen så man ikke replikerer samme type på alle objekter
 private fun Inntekt.toUtbetalingerDto(): List<NavUtbetalingerDto> {
     return inntektDetaljer.detaljer
         .map { it as UtbetalingMedKomponent }

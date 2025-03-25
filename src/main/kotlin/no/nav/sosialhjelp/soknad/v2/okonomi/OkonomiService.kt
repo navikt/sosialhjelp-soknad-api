@@ -118,7 +118,7 @@ class OkonomiService(
 
     fun addElementToOkonomi(
         soknadId: UUID,
-        element: OkonomiElement,
+        element: OkonomiOpplysning,
     ) {
         when (element) {
             is Inntekt ->
@@ -179,12 +179,12 @@ class OkonomiService(
         if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
 
-    private fun <E : OkonomiElement> Set<E>.removeOldAddNew(element: E): Set<E> =
+    private fun <E : OkonomiOpplysning> Set<E>.removeOldAddNew(element: E): Set<E> =
         filter { it.type != element.type }.plus(element).toSet()
 
     fun updateElement(
         soknadId: UUID,
-        element: OkonomiElement,
+        element: OkonomiOpplysning,
     ) {
         findOkonomi(soknadId)
             ?.let {

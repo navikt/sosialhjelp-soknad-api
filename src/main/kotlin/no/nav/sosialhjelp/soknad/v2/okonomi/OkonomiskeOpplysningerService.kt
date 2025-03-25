@@ -53,7 +53,7 @@ class OkonomiskeOpplysningerServiceImpl(
         soknadId: UUID,
         type: OpplysningType,
         detaljer: List<OkonomiDetalj>,
-    ): OkonomiElement {
+    ): OkonomiOpplysning {
         return findElement(soknadId, type)
             .run {
                 when (this) {
@@ -68,7 +68,7 @@ class OkonomiskeOpplysningerServiceImpl(
     private fun findElement(
         soknadId: UUID,
         type: OpplysningType,
-    ): OkonomiElement {
+    ): OkonomiOpplysning {
         return when (type) {
             is InntektType -> okonomiService.getInntekter(soknadId).find { it.type == type }
             is UtgiftType -> okonomiService.getUtgifter(soknadId).find { it.type == type }

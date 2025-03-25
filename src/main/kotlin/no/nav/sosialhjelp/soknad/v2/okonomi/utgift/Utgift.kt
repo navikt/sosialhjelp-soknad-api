@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElement
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiOpplysning
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -14,9 +14,8 @@ data class Utgift(
     override val beskrivelse: String? = null,
     @Column("detaljer")
     val utgiftDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
-) : OkonomiElement
+) : OkonomiOpplysning
 
-// TODO Mappingen skal ikke gjøres her - tar kun vare på som referanse inntil videre
 enum class UtgiftType(
     override val dokumentasjonForventet: Boolean,
 ) : OpplysningType {
@@ -48,8 +47,6 @@ enum class UtgiftType(
     // felles håndtering av renter og avdrag fordi de knyttes sammen
     UTGIFTER_BOLIGLAN(dokumentasjonForventet = true),
 
-    // TODO trenger/skal disse være 2 ? begge mappes til samme input: se BoutgiftRessurs#setBoutgifter
-    // TODO Flytt til Json-mapping
     UTGIFTER_BOLIGLAN_AVDRAG(dokumentasjonForventet = true),
     UTGIFTER_BOLIGLAN_RENTER(dokumentasjonForventet = false),
     ;
