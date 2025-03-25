@@ -68,5 +68,4 @@ private fun DokumentRef.toJsonFiler() =
     JsonFiler()
         .withFilnavn(filnavn)
 
-// TODO Spør FSL'ene om dette faktisk er noe de forholder seg til
 private fun OpplysningType.isUtgiftTypeAnnet() = this == UtgiftType.UTGIFTER_ANDRE_UTGIFTER

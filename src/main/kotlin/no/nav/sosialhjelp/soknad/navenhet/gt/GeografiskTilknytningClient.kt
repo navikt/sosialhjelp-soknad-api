@@ -33,9 +33,6 @@ class GeografiskTilknytningClient(
 ) : PdlClient(webClientBuilder, baseurl) {
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
         hentFraCache(ident)?.let {
-            // TODO Ekstra logging
-            log.info("Henter geografisk tilknytning fra cache: $it")
-
             return it
         }
 
@@ -54,9 +51,6 @@ class GeografiskTilknytningClient(
             pdlResponse.checkForPdlApiErrors()
             return pdlResponse.data.hentGeografiskTilknytning
                 ?.also {
-                    // TODO Ekstra logging
-                    log.info("Lagrer geografisk tilknytning til cache: $it")
-
                     lagreTilCache(ident, it)
                 }
         } catch (e: PdlApiException) {

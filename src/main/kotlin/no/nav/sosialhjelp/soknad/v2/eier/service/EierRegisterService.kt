@@ -6,17 +6,15 @@ import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
-// TODO Denne kjører med Prop.NESTED fordi den ikke må ødelegge for annen skriving
-@Transactional(propagation = Propagation.NESTED)
 @Service
 class EierRegisterService(
     private val eierRepository: EierRepository,
     private val dokumentasjonService: DokumentasjonService,
 ) {
+    @Transactional
     fun updateFromRegister(eier: Eier) {
         // oppdatere eier hvis finnes
         eierRepository
@@ -35,8 +33,10 @@ class EierRegisterService(
         resolveOppholdstillatelse(eier)
     }
 
+    @Transactional(readOnly = true)
     fun getKontonummer(soknadId: UUID) = eierRepository.findByIdOrNull(soknadId)?.kontonummer
 
+    @Transactional
     fun updateKontonummerFromRegister(
         soknadId: UUID,
         kontonummerRegister: String,

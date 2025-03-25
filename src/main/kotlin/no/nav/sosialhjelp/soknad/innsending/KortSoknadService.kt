@@ -136,7 +136,7 @@ class KortSoknadService(
                 .toLocalDateTime()
         }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
-    // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne)
+    // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne) - LAG TRELLO
     fun resolveKortSoknad(
         oldKontakt: Kontakt,
         updatedKontakt: Kontakt,
