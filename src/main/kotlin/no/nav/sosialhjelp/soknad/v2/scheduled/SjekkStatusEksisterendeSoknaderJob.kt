@@ -49,7 +49,7 @@ class SjekkStatusEksisterendeSoknaderJob(
                 .map { Pair(it.soknadId, it.status) }
                 .also {
                     logger.error(
-                        "Etter $NUMBER_OF_DAYS dager finnes det fortsatt ${it.size} eksisterende sendte soknader.\n " +
+                        "Etter $NUMBER_OF_DAYS dager finnes det fortsatt ${it.size} soknader med status SENDT.\n " +
                             mapper.writeValueAsString(it),
                     )
                 }
@@ -64,7 +64,6 @@ class SjekkStatusEksisterendeSoknaderJob(
                 .map { Pair(it.soknadId, it.status) }
                 .also { logger.error("Eksisterende soknader med feil status: \n" + mapper.writeValueAsString(it)) }
         }
-
         return metadatas.size
     }
 
