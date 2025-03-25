@@ -43,6 +43,9 @@ spec:
   redis:
     - instance: cache
       access: readwrite
+  valkey:
+    - instance: cache
+      access: readwrite
   gcp:
     sqlInstances:
       - type: POSTGRES_16
