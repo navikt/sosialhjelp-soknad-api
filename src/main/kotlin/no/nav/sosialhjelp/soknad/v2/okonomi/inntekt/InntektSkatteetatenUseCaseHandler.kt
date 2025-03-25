@@ -33,7 +33,6 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
-    // TODO Skal dato oppdateres selvom verdien er lik?
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,

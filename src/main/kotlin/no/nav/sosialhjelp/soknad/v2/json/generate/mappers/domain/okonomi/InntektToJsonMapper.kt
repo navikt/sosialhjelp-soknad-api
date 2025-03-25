@@ -75,7 +75,6 @@ private fun Inntekt.toJsonOversiktInntekter(): List<JsonOkonomioversiktInntekt> 
 
 private fun Inntekt.toJsonOversiktInntekt(detalj: OkonomiDetalj? = null) =
     JsonOkonomioversiktInntekt()
-        // TODO Typene må mappes til Kilde
         .withKilde(JsonKilde.BRUKER)
         .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
@@ -103,8 +102,6 @@ private fun Inntekt.toJsonOpplysningUtbetalinger(): List<JsonOkonomiOpplysningUt
 
 private fun Inntekt.toJsonOpplysingUtbetaling(detalj: OkonomiDetalj? = null): JsonOkonomiOpplysningUtbetaling {
     return JsonOkonomiOpplysningUtbetaling()
-        // TODO Kilder må håndteres da de kan være både SYSTEM og BRUKER
-        // TODO For de fleste opplysningstypene vil det enkleste være mapping pr. OpplysningType
         .withKilde(InntektTypeToKildeMapper.getKilde(type))
         .withType(type.toSoknadJsonTypeString())
         .withTittel(toTittel())
@@ -151,7 +148,6 @@ private fun Utbetaling.addUtbetaling(jsonUtbetaling: JsonOkonomiOpplysningUtbeta
 }
 
 private fun Organisasjon.toJsonOrganisasjon(): JsonOrganisasjon? {
-    // TODO Hvordan skal vi håndtere orgnummer? ( Må fikses i mock hvis det skal validere)
     orgnummer?.let {
         if (it.matches(Regex("\\d{9}"))) {
             return JsonOrganisasjon().withNavn(navn).withOrganisasjonsnummer(orgnummer)
@@ -182,12 +178,8 @@ private fun Inntekt.toTittel(): String {
         InntektType.UTBETALING_UTBYTTE -> "Utbytte fra aksjer, obligasjoner eller fond"
         InntektType.UTBETALING_SALG -> "Solgt eiendom og/eller eiendel"
         InntektType.SLUTTOPPGJOER -> "Sluttoppgjør/feriepenger etter skatt"
-        // TODO Utbetaling husbanken har hatt en Utbetaling når BOSTOTTE har vært true...
-        // TODO ...men allikevel ikke hvis SAMTYKKE også er true.
         InntektType.UTBETALING_HUSBANKEN -> "Statlig bostøtte"
-        // TODO UTBETALING_SKATTEETATEN bevarer tittel innhentingen
         InntektType.UTBETALING_SKATTEETATEN -> if (!beskrivelse.isNullOrBlank()) beskrivelse else "Lønnsinntekt"
-        // TODO UTBETALING_NAVYTELSE bevarer tittel innhentingen
         InntektType.UTBETALING_NAVYTELSE -> beskrivelse ?: ""
     }
 }

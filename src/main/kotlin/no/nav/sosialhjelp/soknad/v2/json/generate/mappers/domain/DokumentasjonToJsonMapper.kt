@@ -50,7 +50,6 @@ private fun Dokumentasjon.toJsonVedlegg() =
         // TODO Hvordan ønsker vi å benytte denne referansen... Altså hva skal den peke på?
         .withHendelseReferanse(if (type.isUtgiftTypeAnnet()) null else UUID.randomUUID().toString())
 
-// TODO Midlertidig mapping til VedleggStatus
 internal fun DokumentasjonStatus.toVedleggStatusString(): String =
     when (this) {
         DokumentasjonStatus.LASTET_OPP -> Vedleggstatus.LastetOpp.name
@@ -59,7 +58,6 @@ internal fun DokumentasjonStatus.toVedleggStatusString(): String =
     }
 
 private fun Dokumentasjon.mapToTilleggsinfo(): String {
-    // TODO Se hva denne skal/bør inneholde etter vi forhåpentligvis har gått over til felles typer for elementer
     return type.getVedleggTillegginfoString()
         ?: error("Mangler mapping for vedleggType.tilleggsinfo: $type")
 }

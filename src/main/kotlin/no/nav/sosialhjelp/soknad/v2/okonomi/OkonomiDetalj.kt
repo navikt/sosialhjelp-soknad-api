@@ -50,14 +50,12 @@ data class AvdragRenter(
     val renter: Double? = null,
 ) : OkonomiDetalj
 
-// TODO Sjekk bruk av utbetaling og om det trengs alle feltene
 data class Utbetaling(
     val brutto: Double? = null,
     val netto: Double? = null,
     val belop: Double? = null,
     val skattetrekk: Double? = null,
     val andreTrekk: Double? = null,
-    // TODO Skal være YYYY-MM-DD
     val utbetalingsdato: LocalDate? = null,
     val periodeFom: LocalDate? = null,
     val periodeTom: LocalDate? = null,
