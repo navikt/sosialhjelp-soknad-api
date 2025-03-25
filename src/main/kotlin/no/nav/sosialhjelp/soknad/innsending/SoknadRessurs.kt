@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import jakarta.servlet.http.HttpServletResponse
-import java.util.UUID
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.innsending.dto.StartSoknadResponse
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @ProtectedWithClaims(
