@@ -31,16 +31,17 @@ interface DokumentasjonService {
         type: OpplysningType,
     ): Boolean
 
-    fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        opplysningType: OpplysningType,
-        status: DokumentasjonStatus,
-    )
+    fun updateDokumentasjon(dokumentasjon: Dokumentasjon)
 
     fun opprettObligatoriskDokumentasjon(
         soknadId: UUID,
         soknadType: SoknadType,
     )
+
+    fun findDokumentasjonByType(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): Dokumentasjon?
 }
 
 interface DokumentRefService {
@@ -110,16 +111,10 @@ class DokumentasjonServiceImpl(
     ): Boolean = findDokumentasjonForSoknad(soknadId).find { it.type == type }?.dokumenter?.isNotEmpty() ?: false
 
     @Transactional
-    override fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        opplysningType: OpplysningType,
-        status: DokumentasjonStatus,
-    ) {
-        dokumentasjonRepository.findBySoknadIdAndType(soknadId, opplysningType)?.run {
-            if (this.status != status) {
-                copy(status = status).also { dokumentasjonRepository.save(it) }
-            }
-        } ?: error("Dokument finnes ikke")
+    override fun updateDokumentasjon(dokumentasjon: Dokumentasjon) {
+        dokumentasjonRepository.findBySoknadIdAndType(dokumentasjon.soknadId, dokumentasjon.type)
+            ?.also { dokumentasjonRepository.save(it) }
+            ?: error("Dokumentasjon finnes ikke")
     }
 
     @Transactional
@@ -139,6 +134,12 @@ class DokumentasjonServiceImpl(
             }
         }
     }
+
+    override fun findDokumentasjonByType(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): Dokumentasjon? =
+        dokumentasjonRepository.findBySoknadIdAndType(soknadId, type)
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun addRef(

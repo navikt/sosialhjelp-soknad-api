@@ -5,19 +5,21 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonController
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BelopDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
-import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentasjonDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskOpplysningDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -29,19 +31,48 @@ import java.util.UUID
 @Component
 class OkonomiskeOpplysningerProxy(
     private val okonomiskeOpplysningerController: OkonomiskeOpplysningerController,
+    private val dokumentasjonController: DokumentasjonController,
     private val okonomiService: OkonomiService,
 ) {
     fun getOkonomiskeOpplysninger(behandlingsId: String): VedleggFrontends {
-        return okonomiskeOpplysningerController
-            .getForventetDokumentasjon(UUID.fromString(behandlingsId))
-            .toVedleggFrontends(isOpplysningerBekreftet(behandlingsId))
+        val forventetDokumentasjon = dokumentasjonController.getForventetDokumentasjon(UUID.fromString(behandlingsId))
+        val okonomiskeOpplysningerForTyper =
+            okonomiskeOpplysningerController.getOkonomiskeOpplysningerForTyper(
+                soknadId = UUID.fromString(behandlingsId),
+                typer = forventetDokumentasjon.dokumentasjon.map { it.type },
+            )
+
+        return forventetDokumentasjon.dokumentasjon.toVedleggFrontends(
+            okonomiskeOpplysningerForTyper = okonomiskeOpplysningerForTyper,
+            isOpplysningerBekreftet = isOpplysningerBekreftet(behandlingsId),
+        )
+    }
+
+    private fun List<DokumentasjonDto>.toVedleggFrontends(
+        okonomiskeOpplysningerForTyper: List<OkonomiskOpplysningDto>,
+        isOpplysningerBekreftet: Boolean,
+    ): VedleggFrontends {
+        return VedleggFrontends(
+            isOkonomiskeOpplysningerBekreftet = isOpplysningerBekreftet,
+            slettedeVedlegg = null,
+            okonomiskeOpplysninger = this.map { it.toVedleggFrontend(okonomiskeOpplysningerForTyper) },
+        )
     }
 
     fun updateOkonomiskeOpplysninger(
         behandlingsId: String,
         vedleggFrontend: VedleggFrontend,
     ) {
-        okonomiskeOpplysningerController.updateOkonomiskeDetaljer(
+        dokumentasjonController.updateDokumentasjonStatus(
+            soknadId = UUID.fromString(behandlingsId),
+            input =
+                DokumentasjonInput(
+                    type = vedleggFrontend.type.opplysningType ?: error("Manglende mapping for VedleggType -> OpplysningType"),
+                    hasLevert = vedleggFrontend.alleredeLevert ?: false,
+                ),
+        )
+
+        okonomiskeOpplysningerController.updateOkonomiskeOpplysninger(
             soknadId = UUID.fromString(behandlingsId),
             input = vedleggFrontend.resolveOkonomiInput(),
         )
@@ -52,21 +83,16 @@ class OkonomiskeOpplysningerProxy(
     }
 }
 
-private fun ForventetDokumentasjonDto.toVedleggFrontends(opplysningerBekreftet: Boolean) =
-    VedleggFrontends(
-        isOkonomiskeOpplysningerBekreftet = opplysningerBekreftet,
-        slettedeVedlegg = null,
-        okonomiskeOpplysninger = this.forventetDokumentasjon.map { it.toVedleggFrontend() },
-    )
-
-private fun DokumentasjonDto.toVedleggFrontend(): VedleggFrontend {
+private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: List<OkonomiskOpplysningDto>): VedleggFrontend {
     val vedleggType = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
+
+    val detaljer = okonomiskeOpplysningerForTyper.find { it.type == type }?.detaljer
 
     return VedleggFrontend(
         type = vedleggType,
         alleredeLevert = dokumentasjonStatus == DokumentasjonStatus.LEVERT_TIDLIGERE,
         rader = detaljer.resolveRader(vedleggType),
-        gruppe = gruppe,
+        gruppe = type.group,
         vedleggStatus = dokumentasjonStatus.toVedleggStatus(),
         filer = dokumenter.map { DokumentUpload(it.filnavn, it.dokumentId.toString()) },
     )
@@ -136,20 +162,17 @@ private fun VedleggFrontend.resolveOkonomiInput(): AbstractOkonomiInput {
 
 private fun VedleggFrontend.toLonnsInput() =
     LonnsInput(
-        dokumentasjonLevert = alleredeLevert ?: false,
         detalj = rader?.first().let { LonnsInntektDto(brutto = it?.brutto?.toDouble(), netto = it?.netto?.toDouble()) },
     )
 
 private fun VedleggFrontend.toBoliglanInput() =
     BoliglanInput(
-        dokumentasjonLevert = alleredeLevert ?: false,
         detaljer = rader?.map { AvdragRenterDto(it.avdrag?.toDouble(), it.renter?.toDouble()) } ?: emptyList(),
     )
 
 private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType) =
     GenericOkonomiInput(
         opplysningType = opplysningType,
-        dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
             if (rader.isNullOrEmpty() || (rader.size == 1 && rader[0].allFieldsNull())) {
                 emptyList()
