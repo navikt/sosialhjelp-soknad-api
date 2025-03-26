@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.redis
+package no.nav.sosialhjelp.soknad.valkey
 
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import java.time.Duration
 
+// TODO: Migrer til å bruke Valkey på ordentlig. Vi kommer ikke til å kunne bruke nye valkey-features før dette er gjort
+//   Vi bruker valkey, men behandler den som en redis-instans (bruker ikke valkey-features).
 @Configuration
 @Profile("!no-redis")
-class RedisConfig(
+class ValkeyConfig(
     @Value("\${redis_host}") private val host: String,
     @Value("\${redis_port}") private val port: Int,
     @Value("\${redis_password}") private val password: String,
@@ -21,8 +23,7 @@ class RedisConfig(
     private val log by logger()
 
     @Bean
-    @Profile("preprod | prodgcp | dev")
-    fun redisClientGcp(): RedisClient {
+    fun valkeyClientGcp(): RedisClient {
         val redisURI =
             RedisURI
                 .builder()
@@ -35,45 +36,33 @@ class RedisConfig(
         return RedisClient.create(redisURI)
     }
 
+    // TODO: Erstattes med spring-boots @Cacheable
     @Bean
-    @Profile("q0 | prodfss")
-    fun redisClientFss(): RedisClient {
-        val redisURI =
-            RedisURI
-                .builder()
-                .withHost(host)
-                .withPort(port)
-                .withPassword(password.toCharArray())
-                .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .build()
-        return RedisClient.create(redisURI)
-    }
+    fun valkeyStore(redisClient: RedisClient): ValkeyStore = ValkeyStore(redisClient)
 
+    // TODO: Erstattes med spring-boots @Cacheable
     @Bean
-    fun redisStore(redisClient: RedisClient): RedisStore = RedisStore(redisClient)
-
-    @Bean
-    fun redisService(redisStore: RedisStore): RedisService {
+    fun valkeyService(valkeyStore: ValkeyStore): ValkeyService {
         log.info("Starter RedisService")
-        return RedisServiceImpl(redisStore)
+        return ValkeyServiceImpl(valkeyStore)
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(RedisConfig::class.java)
+        private val log = LoggerFactory.getLogger(ValkeyConfig::class.java)
         private const val TIMEOUT_SECONDS: Long = 1
     }
 }
 
 @Configuration
 @Profile("no-redis")
-class NoRedisConfig {
+class NoValkeyConfig {
     @Bean
-    fun redisService(): RedisService {
-        log.error("Starter NoRedisService. Skal ikke skje i prod.")
-        return NoRedisService()
+    fun valkeyService(): ValkeyService {
+        log.error("Starter NoValkeyService. Skal ikke skje i prod.")
+        return NoValkeyService()
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(NoRedisConfig::class.java)
+        private val log = LoggerFactory.getLogger(NoValkeyConfig::class.java)
     }
 }

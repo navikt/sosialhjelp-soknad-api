@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.redis
+package no.nav.sosialhjelp.soknad.valkey
 
 const val KOMMUNEINFO_CACHE_KEY = "alle-kommuneinfo-key"
 const val KOMMUNEINFO_LAST_POLL_TIME_KEY = "kommuneinfo-last-poll-time-key"

@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
-import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.valkey.ValkeyService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -27,8 +27,8 @@ internal class NorgServiceTest {
     }
 
     private val norgClient: NorgClient = mockk()
-    private val redisService: RedisService = mockk()
-    private val norgService = NorgService(norgClient, redisService)
+    private val valkeyService: ValkeyService = mockk()
+    private val norgService = NorgService(norgClient, valkeyService)
 
     private val navEnhetDto = NavEnhetDto("Nav Enhet", ENHETSNUMMER)
 
@@ -47,7 +47,7 @@ internal class NorgServiceTest {
     @Test
     internal fun finnEnhetForGtBrukerTestOrgNrForTest() {
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
-        every { redisService.getString(any()) } returns null
+        every { valkeyService.getString(any()) } returns null
         val navEnhet = norgService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_TEST)
     }
@@ -55,7 +55,7 @@ internal class NorgServiceTest {
     @Test
     fun finnEnhetForGtBrukerOrgNrFraNorgForProd() {
         every { MiljoUtils.isNonProduction() } returns false
-        every { redisService.getString(any()) } returns null
+        every { valkeyService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
         val navEnhet = norgService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_PROD)
@@ -67,7 +67,7 @@ internal class NorgServiceTest {
         val gt = "3434"
         val sosialOrgNummer = "974592274"
         val navEnhetDtoLom = NavEnhetDto("Nav Enhet", "0513")
-        every { redisService.getString(any()) } returns null
+        every { valkeyService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns navEnhetDtoLom
         val navEnhet = norgService.getEnhetForGt(gt)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(sosialOrgNummer)
@@ -79,7 +79,7 @@ internal class NorgServiceTest {
         val gt = "3432"
         val sosialOrgNummer = "976641175"
         val navEnhetDtoSjaak = NavEnhetDto("Nav Enhet", "0513")
-        every { redisService.getString(any()) } returns null
+        every { valkeyService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns navEnhetDtoSjaak
         val navEnhet = norgService.getEnhetForGt(gt)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(sosialOrgNummer)
@@ -88,34 +88,34 @@ internal class NorgServiceTest {
     @Test
     fun skalHenteNavEnhetForGtFraConsumer() {
         every { MiljoUtils.isNonProduction() } returns false
-        every { redisService.getString(any()) } returns null
+        every { valkeyService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
         val navEnhet = norgService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_PROD)
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
-        verify(exactly = 1) { redisService.getString(any()) }
-        verify(exactly = 0) { redisService.get(any(), any()) }
+        verify(exactly = 1) { valkeyService.getString(any()) }
+        verify(exactly = 0) { valkeyService.get(any(), any()) }
     }
 
     @Test
     fun skalHenteNavEnhetForGtFraCache() {
         every { MiljoUtils.isNonProduction() } returns false
-        every { redisService.getString(any()) } returns LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { redisService.get(any(), any()) } returns navEnhetDto
+        every { valkeyService.getString(any()) } returns LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { valkeyService.get(any(), any()) } returns navEnhetDto
         val navEnhet = norgService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_PROD)
         verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
-        verify(exactly = 1) { redisService.getString(any()) }
-        verify(exactly = 1) { redisService.get(any(), any()) }
+        verify(exactly = 1) { valkeyService.getString(any()) }
+        verify(exactly = 1) { valkeyService.get(any(), any()) }
     }
 
     @Test
     fun skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
         every { MiljoUtils.isNonProduction() } returns false
         every {
-            redisService.getString(any())
+            valkeyService.getString(any())
         } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { redisService.get(any(), any()) } returns navEnhetDto
+        every { valkeyService.get(any(), any()) } returns navEnhetDto
         every {
             norgClient.hentNavEnhetForGeografiskTilknytning(
                 GT,
@@ -124,16 +124,16 @@ internal class NorgServiceTest {
         val navEnhet = norgService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_PROD)
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
-        verify(exactly = 1) { redisService.getString(any()) }
-        verify(exactly = 1) { redisService.get(any(), any()) }
+        verify(exactly = 1) { valkeyService.getString(any()) }
+        verify(exactly = 1) { valkeyService.get(any(), any()) }
     }
 
     @Test
     fun skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
         every {
-            redisService.getString(any())
+            valkeyService.getString(any())
         } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { redisService.get(any(), any()) } returns null
+        every { valkeyService.get(any(), any()) } returns null
         every {
             norgClient.hentNavEnhetForGeografiskTilknytning(
                 GT,
@@ -144,14 +144,14 @@ internal class NorgServiceTest {
             .isThrownBy { norgService.getEnhetForGt(GT) }
 
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
-        verify(exactly = 1) { redisService.getString(any()) }
-        verify(exactly = 1) { redisService.get(any(), any()) }
+        verify(exactly = 1) { valkeyService.getString(any()) }
+        verify(exactly = 1) { valkeyService.get(any(), any()) }
     }
 
     @Test
     fun skalReturnereNullHvisConsumerReturnererNull() {
         every {
-            redisService.getString(any())
+            valkeyService.getString(any())
         } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns null
 
@@ -159,7 +159,7 @@ internal class NorgServiceTest {
         assertThat(navEnhet).isNull()
 
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
-        verify(exactly = 1) { redisService.getString(any()) }
-        verify(exactly = 0) { redisService.get(any(), any()) } // sjekker ikke cache hvis consumer returnerer null (404 not found)
+        verify(exactly = 1) { valkeyService.getString(any()) }
+        verify(exactly = 0) { valkeyService.get(any(), any()) } // sjekker ikke cache hvis consumer returnerer null (404 not found)
     }
 }

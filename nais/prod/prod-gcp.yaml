@@ -40,7 +40,7 @@ spec:
       consumes:
         - name: "skatteetaten:inntekt"
         - name: "ks:fiks"
-  redis:
+  valkey:
     - instance: cache
       access: readwrite
   gcp:

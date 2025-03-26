@@ -82,10 +82,16 @@ private fun Familie.toJsonSivilstatus() =
         .withKilde(ektefelle?.toJsonKilde() ?: JsonKilde.BRUKER)
         // required i json-modellen
         .withStatus(sivilstatus?.toJson() ?: JsonSivilstatus.Status.UGIFT)
-        .withEktefelle(ektefelle?.toJson())
+        .withEktefelle(ektefelle?.toJson() ?: toEmptyEktefelleIfGift(sivilstatus))
         .withBorSammenMed(ektefelle?.borSammen)
         .withFolkeregistrertMedEktefelle(ektefelle?.folkeregistrertMedEktefelle)
         .withEktefelleHarDiskresjonskode(false)
+
+private fun toEmptyEktefelleIfGift(sivilstatus: Sivilstatus?): JsonEktefelle? =
+    when (sivilstatus) {
+        Sivilstatus.GIFT -> JsonEktefelle().withNavn(toEmptyJsonNavn())
+        else -> null
+    }
 
 private fun Ektefelle.toJsonKilde() = if (kildeErSystem) JsonKilde.SYSTEM else JsonKilde.BRUKER
 
@@ -93,9 +99,15 @@ private fun Sivilstatus.toJson() = JsonSivilstatus.Status.valueOf(name)
 
 private fun Ektefelle.toJson() =
     JsonEktefelle()
-        .withNavn(navn?.toJson())
+        .withNavn(navn?.toJson() ?: toEmptyJsonNavn())
         .withFodselsdato(fodselsdato)
         .withPersonIdentifikator(personId)
+
+private fun toEmptyJsonNavn() =
+    JsonNavn()
+        .withFornavn("")
+        .withMellomnavn("")
+        .withEtternavn("")
 
 private fun Familie.toJsonForsorgerplikt() =
     JsonForsorgerplikt()
@@ -135,6 +147,6 @@ private fun Barn.toJson() =
         .withSamvarsgrad(null)
 
 // mellomnavn er required i json-modellen
-fun Navn.toJson() = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
+fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
 
 private fun Iterable<Barn>.toJson() = map(Barn::toJson)

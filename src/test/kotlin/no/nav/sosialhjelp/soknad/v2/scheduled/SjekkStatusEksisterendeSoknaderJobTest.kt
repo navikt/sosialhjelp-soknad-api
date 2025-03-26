@@ -35,21 +35,21 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
     @Test
     fun `Eksisterende soknader som ikke har status OPPRETTET skal kaste feil`() {
-        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.SENDT)
-        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.MOTTATT_FSL)
+        createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, nowMinusDays(10))
+        createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, nowMinusDays(10))
 
         assertThatThrownBy { sjekkStatusSoknaderSendt.sjekkStatus() }
-            .isInstanceOf(EksisterendeSoknaderStatusException::class.java)
+            .isInstanceOf(SoknaderFeilStatusException::class.java)
     }
 
     @Test
     fun `Tar kun stilling til eksisterende soknader`() {
-        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
-        createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
-        val idFeilStatus = createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.SENDT)
+        createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
+        createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
+        val idFeilStatus = createMetadataAndSoknad(nowMinusDays(14), SoknadStatus.SENDT, nowMinusDays(10))
 
         assertThatThrownBy { sjekkStatusSoknaderSendt.sjekkStatus() }
-            .isInstanceOf(EksisterendeSoknaderStatusException::class.java)
+            .isInstanceOf(SoknaderFeilStatusException::class.java)
 
         soknadRepository.deleteById(idFeilStatus)
 
@@ -69,11 +69,19 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
         assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
     }
 
+    @Test
+    fun `Eksisterende soknader sendt inn for under en uke siden skal ikke kaste feil`() {
+        createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
+    }
+
+    private fun nowMinusDays(days: Long): LocalDateTime = LocalDateTime.now().minusDays(days)
+
     private fun createMetadataAndSoknad(
         opprettet: LocalDateTime,
         status: SoknadStatus,
+        sendtInn: LocalDateTime = LocalDateTime.now(),
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status)
+        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

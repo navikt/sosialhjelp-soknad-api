@@ -91,11 +91,12 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 fun SoknadMetadataRepository.createMetadata(
     opprettet: LocalDateTime,
     status: SoknadStatus = OPPRETTET,
+    sendtInn: LocalDateTime = LocalDateTime.now(),
 ): UUID {
     return SoknadMetadata(
         soknadId = UUID.randomUUID(),
         personId = "12345612345",
-        tidspunkt = Tidspunkt(opprettet = opprettet, sendtInn = LocalDateTime.now()),
+        tidspunkt = Tidspunkt(opprettet = opprettet, sendtInn = sendtInn),
         status = status,
     )
         .also { save(it) }

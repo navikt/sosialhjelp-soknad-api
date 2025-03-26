@@ -4,7 +4,7 @@ spring:
       file: "compose/docker-compose-local.yml"
       lifecycle-management: start-only
       enabled: true
-      # Fjern denne dersom du kun ønsker redis/postgres, ikke mock-alt & -api
+      # Fjern denne dersom du kun ønsker valkey/postgres, ikke mock-alt & -api
       profiles:
         active: "full"
       # Dersom database skal nullstilles hver gang applikasjonen restarter:

@@ -200,18 +200,6 @@ class ArbeidOgFamilieSteg {
                 felt = if (harArbeidsforhold) arbeidsforholdFelter(arbeid.forhold) else null,
             ),
         )
-        // TODO: Er denne med?
-        //        val harKommentarTilArbeidsforhold =
-//            arbeid.kommentarTilArbeidsforhold != null && arbeid.kommentarTilArbeidsforhold.verdi != null
-//        if (harKommentarTilArbeidsforhold) {
-//            sporsmal.add(
-//                Sporsmal(
-//                    tittel = "opplysninger.arbeidsituasjon.kommentarer.label",
-//                    erUtfylt = true,
-//                    felt = kommentarFelter(arbeid.kommentarTilArbeidsforhold),
-//                ),
-//            )
-//        }
         return sporsmal
     }
 

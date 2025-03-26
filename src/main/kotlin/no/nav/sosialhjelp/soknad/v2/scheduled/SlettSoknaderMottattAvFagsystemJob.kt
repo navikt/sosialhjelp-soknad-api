@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -25,33 +25,12 @@ class SlettSoknaderMottattAvFagsystemJob(
         runCatching {
             if (leaderElection.isLeader()) {
                 withTimeoutOrNull(60.seconds) {
-                    val metadatas =
-                        soknadJobService.findSoknadIdsWithStatus(SoknadStatus.SENDT)
-                            .let { metadataService.getMetadatasForIds(it) }
-
-                    if (metadatas.isNotEmpty()) {
-                        logger.info("Sletter søknader som er registret mottatt av fagsystem")
-                        metadatas
-                            .mapNotNull { metadata ->
-                                if (metadata.digisosId == null) logger.error("DigisosId er null for ${metadata.soknadId}")
-                                metadata.digisosId
-                            }
-                            .let { digisosIdsSendt ->
-                                logger.info("${digisosIdsSendt.size} soknader med status SENDT.")
-                                digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt)
-                            }
-                            .let { digisosIdsMottatt ->
-                                logger.info("${digisosIdsMottatt.size} soknader med status MOTTATT hos FIKS.")
-                                metadatas.getSoknadIdsStatusMottatt(digisosIdsMottatt)
-                            }
-                            .let { mottatteIds ->
-                                if (mottatteIds.isNotEmpty()) {
-                                    soknadJobService.deleteSoknaderByIds(mottatteIds)
-                                    logger.info("Slettet ${mottatteIds.size} mottatte soknader")
-                                    mottatteIds.forEach { metadataService.updateSoknadStatus(it, MOTTATT_FSL) }
-                                }
-                            }
-                    }
+                    val metadatas = getExistingMetadatasStatusSendt()
+                    metadatas
+                        .mapNotNull { metadata -> metadata.getDigisosId() }
+                        .let { digisosIdsSendt -> digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt) }
+                        .let { digisosIdsMottatt -> metadatas.filterSoknadIdsStatusMottat(digisosIdsMottatt) }
+                        .also { soknadIdsMottatt -> handleMottatteIds(soknadIdsMottatt) }
                 }
                     ?: logger.error("Kunne ikke slette søknader som er registrert mottatt av fagsystem, tok for lang tid")
             }
@@ -60,10 +39,27 @@ class SlettSoknaderMottattAvFagsystemJob(
         }
     }
 
-    private fun List<SoknadMetadata>.getSoknadIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
+    private fun getExistingMetadatasStatusSendt(): List<SoknadMetadata> =
+        soknadJobService.findSoknadIdsWithStatus(SENDT).let { metadataService.getMetadatasForIds(it) }
+
+    // TODO Metadata med denne statusen uten DigisosId skal egentlig ikke kunne skje, men kaster vi en feil her...
+    // ... vil det stoppe opp oppdateringen for mange andre objekter også
+    private fun SoknadMetadata.getDigisosId(): UUID? =
+        digisosId
+            .also { if (digisosId == null) logger.error("DigisosId er null for $soknadId") }
+
+    private fun List<SoknadMetadata>.filterSoknadIdsStatusMottat(digisosIds: List<UUID>): List<UUID> {
         return this
             .filter { digisosIds.contains(it.digisosId) }
             .map { it.soknadId }
+    }
+
+    private fun handleMottatteIds(mottatteIds: List<UUID>) {
+        if (mottatteIds.isNotEmpty()) {
+            logger.info("Sletter ${mottatteIds.size} med status MOTTATT hos FIKS")
+            soknadJobService.deleteSoknaderByIds(mottatteIds)
+            mottatteIds.forEach { metadataService.updateSoknadStatus(it, MOTTATT_FSL) }
+        }
     }
 
     companion object {
