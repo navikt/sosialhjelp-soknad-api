@@ -1,39 +1,48 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 interface OkonomiskeOpplysningerService {
+    fun getOkonomiskeOpplysningerForTyper(
+        soknadId: UUID,
+        typer: List<OpplysningType>,
+    ): List<OkonomiElement>
+
     fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
         type: OpplysningType,
-        dokumentasjonLevert: Boolean,
-        detaljer: List<OkonomiDetalj>?,
+        detaljer: List<OkonomiDetalj>,
     )
-
-    fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>?>
 }
 
 @Service
 class OkonomiskeOpplysningerServiceImpl(
     private val okonomiService: OkonomiService,
-    private val dokumentasjonService: DokumentasjonService,
 ) : OkonomiskeOpplysningerService {
+    override fun getOkonomiskeOpplysningerForTyper(
+        soknadId: UUID,
+        typer: List<OpplysningType>,
+    ): List<OkonomiElement> =
+        typer.map { findElement(soknadId, it) }
+
     override fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
         type: OpplysningType,
-        dokumentasjonLevert: Boolean,
-        detaljer: List<OkonomiDetalj>?,
+        detaljer: List<OkonomiDetalj>,
     ) {
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
-            if (detaljer.isNullOrEmpty()) {
-                updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
+            if (detaljer.isEmpty()) {
+                okonomiService.removeElementFromOkonomi(soknadId, type)
                 return
             }
-            okonomiService.addElementToOkonomi(soknadId = soknadId, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+            okonomiService.addElementToOkonomi(soknadId, type)
         }
 
         if (type is OkonomiOpplysningType) {
@@ -42,8 +51,6 @@ class OkonomiskeOpplysningerServiceImpl(
                     .also { okonomiService.updateElement(soknadId = soknadId, opplysning = it) }
             }
         }
-
-        updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
     }
 
     private fun addDetaljerToElement(
@@ -77,28 +84,8 @@ class OkonomiskeOpplysningerServiceImpl(
             )
     }
 
-    override fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>?> =
-        dokumentasjonService.findDokumentasjonForSoknad(soknadId).associateWith {
-            if (it.type is OkonomiOpplysningType) it.type.getOkonomiskeDetaljerForType(soknadId) else null
-        }
-
-    private fun OkonomiOpplysningType.getOkonomiskeDetaljerForType(soknadId: UUID): List<OkonomiDetalj> =
-        okonomiService.findDetaljerOrNull(soknadId, this) ?: emptyList()
-
-    private fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        type: OpplysningType,
-        levertTidligere: Boolean,
-    ) {
-        // TODO hvis 'levertTidligere' er false - er det ikke sikkert man skal røre noe mer
-        // TODO er den true, bør man kanskje slette eventuelle lagret Dokumentasjon (og Dokumenter)?
-        // TODO Hvis status er LEVERT_TIDLIGERE ved innsending - slett alle referanser og filer i mellomlager
-        when {
-            levertTidligere -> DokumentasjonStatus.LEVERT_TIDLIGERE
-            dokumentasjonService.hasDokumenterForType(soknadId, type) -> DokumentasjonStatus.LASTET_OPP
-            else -> DokumentasjonStatus.FORVENTET
-        }
-            .let { dokumentasjonService.updateDokumentasjonStatus(soknadId, type, it) }
+    companion object {
+        val typesWithOkonomiElement = listOf(InntektType::class.java, UtgiftType::class.java, FormueType::class.java)
     }
 }
 

@@ -30,7 +30,7 @@ fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
 ): Dokumentasjon? =
     findDokumentasjonForDokumentOrNull(soknadId, dokumentId)
         ?.removeDokument(dokumentId)
-        ?.updateDokumentasjonStatus()
+        ?.updateDokumentasjon()
         ?.let { dokumentasjon -> save(dokumentasjon) }
 
 private fun DokumentasjonRepository.findDokumentasjonForDokument(
@@ -53,7 +53,7 @@ private fun Dokumentasjon.removeDokument(dokumentId: UUID): Dokumentasjon =
         ?.let { dokument -> copy(dokumenter = dokumenter.minus(dokument)) }
         ?: error("Dokument finnes ikke på Dokumentasjon")
 
-private fun Dokumentasjon.updateDokumentasjonStatus(): Dokumentasjon {
+private fun Dokumentasjon.updateDokumentasjon(): Dokumentasjon {
     return when {
         status == DokumentasjonStatus.LEVERT_TIDLIGERE -> clearDokumenter()
         dokumenter.isEmpty() -> copy(status = DokumentasjonStatus.FORVENTET)

@@ -3,9 +3,11 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -21,57 +23,46 @@ class OkonomiskeOpplysningerController(
     private val okonomiskeOpplysningerService: OkonomiskeOpplysningerService,
 ) {
     @GetMapping
-    fun getForventetDokumentasjon(
+    fun getOkonomiskeOpplysningerForTyper(
         @PathVariable("soknadId") soknadId: UUID,
-    ): ForventetDokumentasjonDto {
-        return okonomiskeOpplysningerService.getForventetDokumentasjon(soknadId)
-            .map { it.toDokumentasjonDto() }
-            .let { dtos -> ForventetDokumentasjonDto(dtos) }
+        @RequestBody typer: List<OpplysningType>,
+    ): List<OkonomiskOpplysningDto> {
+        return okonomiskeOpplysningerService.getOkonomiskeOpplysningerForTyper(soknadId, typer)
+            .map { it.toOkonomiskOpplysningDto() }
     }
 
     @PutMapping
-    fun updateOkonomiskeDetaljer(
+    fun updateOkonomiskeOpplysninger(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: AbstractOkonomiInput,
-    ): ForventetDokumentasjonDto {
+    ) {
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
             type = input.getOpplysningType(),
-            dokumentasjonLevert = input.dokumentasjonLevert,
             detaljer = input.mapToOkonomiDetalj(),
         )
-        return getForventetDokumentasjon(soknadId)
     }
 }
 
-data class ForventetDokumentasjonDto(
-    val forventetDokumentasjon: List<DokumentasjonDto>,
-)
-
-data class DokumentasjonDto(
+data class OkonomiskOpplysningDto(
     val type: OpplysningType,
-    val gruppe: VedleggGruppe,
     val detaljer: List<OkonomiDetaljDto>?,
-    val dokumentasjonStatus: DokumentasjonStatus,
-    val dokumenter: List<DokumentDto>,
 )
 
-data class DokumentDto(
-    val dokumentId: UUID,
-    val filnavn: String,
-)
-
-private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>?>.toDokumentasjonDto(): DokumentasjonDto {
-    return DokumentasjonDto(
-        type = key.type,
-        gruppe = key.type.group,
-        dokumentasjonStatus = key.status,
-        detaljer = value?.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
-        dokumenter =
-            key.dokumenter.map { dokument ->
-                DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)
-            },
+private fun OkonomiElement.toOkonomiskOpplysningDto(): OkonomiskOpplysningDto {
+    return OkonomiskOpplysningDto(
+        type = type,
+        detaljer = this.mapFromOkonomiElement(),
     )
+}
+
+private fun OkonomiElement.mapFromOkonomiElement(): List<OkonomiDetaljDto> {
+    return when (this) {
+        is Inntekt -> this.inntektDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
+        is Utgift -> this.utgiftDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
+        is Formue -> this.formueDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
+        else -> error("Ugyldig okonomi-element")
+    }
 }
 
 private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
@@ -89,33 +80,24 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
     JsonSubTypes.Type(GenericOkonomiInput::class),
     JsonSubTypes.Type(LonnsInput::class),
     JsonSubTypes.Type(BoliglanInput::class),
-    JsonSubTypes.Type(DocumentationInput::class),
 )
-sealed interface AbstractOkonomiInput {
-    val dokumentasjonLevert: Boolean
-}
-
-data class DocumentationInput(
-    val opplysningType: OpplysningType,
-    override val dokumentasjonLevert: Boolean,
-) : AbstractOkonomiInput
+sealed interface AbstractOkonomiInput
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    val okonomiOpplysningType: OkonomiOpplysningType,
-    override val dokumentasjonLevert: Boolean,
+    val opplysningType: OpplysningType,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
 
 // Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
 data class LonnsInput(
-    override val dokumentasjonLevert: Boolean,
+    val inntektType: InntektType = InntektType.JOBB,
     val detalj: LonnsInntektDto,
 ) : AbstractOkonomiInput
 
 // For boliglån hentes det inn ett eller flere renter og avdrag-par.
 data class BoliglanInput(
-    override val dokumentasjonLevert: Boolean,
+    val utgiftType: UtgiftType = UtgiftType.UTGIFTER_BOLIGLAN,
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
@@ -146,16 +128,14 @@ data class AvdragRenterDto(
 
 private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
     when (this) {
-        is DocumentationInput -> opplysningType
-        is GenericOkonomiInput -> okonomiOpplysningType
+        is GenericOkonomiInput -> opplysningType
         is LonnsInput -> InntektType.JOBB
         is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }
 
-private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj>? =
+private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj> =
     when (this) {
         is GenericOkonomiInput -> detaljer.map { Belop(belop = it.belop, beskrivelse = it.beskrivelse) }
         is LonnsInput -> listOf(BruttoNetto(brutto = detalj.brutto, netto = detalj.netto))
         is BoliglanInput -> detaljer.map { AvdragRenter(it.avdrag, it.renter) }
-        is DocumentationInput -> null
     }
