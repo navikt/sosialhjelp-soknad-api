@@ -83,7 +83,6 @@ class CreateDeleteSoknadHandler(
         listOf(
             FormueType.FORMUE_BRUKSKONTO,
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-            AnnenDokumentasjonType.BEHOV,
             AnnenDokumentasjonType.BEHOV, // kort|behov
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
             UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
@@ -94,6 +93,8 @@ class CreateDeleteSoknadHandler(
             UtgiftType.UTGIFTER_STROM, // faktura|strom
             InntektType.JOBB, // lonnslipp|arbeid
             InntektType.STUDIELAN_INNTEKT, // student|vedtak
+            InntektType.BARNEBIDRAG_MOTTAR,
+            UtgiftType.BARNEBIDRAG_BETALER,
         )
 
     private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
