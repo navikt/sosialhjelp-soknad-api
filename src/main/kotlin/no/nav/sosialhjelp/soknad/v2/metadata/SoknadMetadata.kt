@@ -57,6 +57,7 @@ enum class SoknadStatus {
 
     // TODO Skal vi ta vare på metadata for ikke innsendte soknader over 14 dager? Isåfall må status endres
     UTGATT,
+    SENDING_FEILET,
     SENDT,
     MOTTATT_FSL,
 }

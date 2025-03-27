@@ -66,7 +66,7 @@ class SoknadMetadataService(
 
     fun updateSendingFeilet(soknadId: UUID) {
         metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(status = SoknadStatus.OPPRETTET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            ?.run { copy(status = SoknadStatus.SENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
             ?.also { metadataRepository.save(it) }
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }

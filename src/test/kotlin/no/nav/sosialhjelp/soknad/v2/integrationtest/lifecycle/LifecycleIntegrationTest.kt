@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import java.time.LocalDate
 import java.util.UUID
 
@@ -105,6 +106,35 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
+    }
+
+    @Test
+    fun `Feil ved sending til FIKS skal sette status FEILET`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
+            RuntimeException("Noe feilet")
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostExpectError(
+            uri = sendUri(soknadId),
+            requestBody = "",
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+            soknadId = soknadId,
+        )
+
+        soknadMetadataRepository.findByIdOrNull(soknadId)!!
+            .also { assertThat(it.status).isEqualTo(SoknadStatus.SENDING_FEILET) }
     }
 
     private fun createNewSoknad(): UUID {
