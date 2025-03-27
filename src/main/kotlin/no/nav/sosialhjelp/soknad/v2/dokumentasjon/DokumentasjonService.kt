@@ -16,7 +16,7 @@ interface DokumentasjonService {
     fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-    )
+    ): Dokumentasjon
 
     fun fjernForventetDokumentasjon(
         soknadId: UUID,
@@ -81,8 +81,8 @@ class DokumentasjonServiceImpl(
     override fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-    ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
+    ): Dokumentasjon {
+        return dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
             ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
 
@@ -114,7 +114,7 @@ class DokumentasjonServiceImpl(
     @Transactional
     override fun updateDokumentasjon(dokumentasjon: Dokumentasjon) {
         dokumentasjonRepository.findBySoknadIdAndType(dokumentasjon.soknadId, dokumentasjon.type)
-            ?.also { dokumentasjonRepository.save(it) }
+            ?.also { dokumentasjonRepository.save(dokumentasjon) }
             ?: error("Dokumentasjon finnes ikke")
     }
 

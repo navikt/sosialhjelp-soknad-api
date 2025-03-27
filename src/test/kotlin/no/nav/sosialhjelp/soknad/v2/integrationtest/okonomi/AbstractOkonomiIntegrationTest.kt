@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerDto
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
@@ -46,11 +46,11 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
             )
     }
 
-    protected fun doPutInputAndReturnDto(input: AbstractOkonomiInput): ForventetDokumentasjonDto {
+    protected fun doPutInputAndReturnDto(input: AbstractOkonomiInput): OkonomiskeOpplysningerDto {
         return doPut(
             uri = OkonomiskeOpplysningerIntegrationTest.getUrl(soknad.id),
             requestBody = input,
-            responseBodyClass = ForventetDokumentasjonDto::class.java,
+            responseBodyClass = OkonomiskeOpplysningerDto::class.java,
             soknadId = soknad.id,
         )
     }

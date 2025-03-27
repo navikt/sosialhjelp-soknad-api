@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -12,7 +14,6 @@ import java.util.UUID
 interface OkonomiskeOpplysningerService {
     fun getOkonomiskeOpplysningerForTyper(
         soknadId: UUID,
-        typer: List<OpplysningType>,
     ): List<OkonomiElement>
 
     fun updateOkonomiskeOpplysninger(
@@ -25,18 +26,23 @@ interface OkonomiskeOpplysningerService {
 @Service
 class OkonomiskeOpplysningerServiceImpl(
     private val okonomiService: OkonomiService,
+    private val dokumentasjonService: DokumentasjonService,
 ) : OkonomiskeOpplysningerService {
     override fun getOkonomiskeOpplysningerForTyper(
         soknadId: UUID,
-        typer: List<OpplysningType>,
-    ): List<OkonomiElement> =
-        typer.map { findElement(soknadId, it) }
+    ): List<OkonomiElement> {
+        return dokumentasjonService.findDokumentasjonForSoknad(soknadId)
+            .filter { typesWithOkonomiElement.contains(it.type.javaClass) }
+            .map { findElement(soknadId, it.type) }
+    }
 
     override fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
         type: OpplysningType,
         detaljer: List<OkonomiDetalj>,
     ) {
+        type.validate(soknadId)
+
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
             if (detaljer.isEmpty()) {
                 okonomiService.removeElementFromOkonomi(soknadId, type)
@@ -45,11 +51,13 @@ class OkonomiskeOpplysningerServiceImpl(
             okonomiService.addElementToOkonomi(soknadId, type)
         }
 
-        if (type is OkonomiOpplysningType) {
-            detaljer?.also { detaljerNotNull ->
-                addDetaljerToElement(soknadId, type, detaljerNotNull)
-                    .also { okonomiService.updateElement(soknadId = soknadId, opplysning = it) }
-            }
+        addDetaljerToElement(soknadId, type, detaljer).also { okonomiService.updateElement(soknadId, it) }
+    }
+
+    private fun OpplysningType.validate(soknadId: UUID) {
+        if (!typesWithOkonomiElement.contains(this.javaClass)) error("${this.name} har ikke økonomiske opplysninger.")
+        if (dokumentasjonService.findDokumentasjonByType(soknadId, this) == null) {
+            throw IkkeFunnetException("Finnes ikke dokumentasjon for ${this.name}")
         }
     }
 

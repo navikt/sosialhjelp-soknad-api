@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
@@ -8,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.toVedleggStatusString
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
+import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
@@ -52,6 +57,17 @@ class DokumentasjonToJsonMapperTest {
             }
         }
     }
+
+    private val mapper = jacksonObjectMapper()
+
+    @Test
+    fun whatever() {
+        val a: OpplysningType = InntektType.JOBB
+        val writeValueAsString = mapper.writeValueAsString(a)
+        val obj = mapper.readValue(writeValueAsString, OpplysningType::class.java)
+
+        val b = 4
+    }
 }
 
 private fun createDokumentasjonList(): List<Dokumentasjon> {
@@ -67,4 +83,21 @@ private fun createDokumentasjonList(): List<Dokumentasjon> {
         ),
         opprettDokumentasjon(soknadId = UUID.randomUUID(), type = InntektType.STUDIELAN_INNTEKT, dokumenter = emptySet()),
     )
+}
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = EnumA::class, name = "EnumA"),
+    JsonSubTypes.Type(value = EnumB::class, name = "EnumB"),
+)
+interface SuperType
+
+enum class EnumA : SuperType {
+    NOE,
+    ANNET,
+}
+
+enum class EnumB : SuperType {
+    EN,
+    TO,
 }
