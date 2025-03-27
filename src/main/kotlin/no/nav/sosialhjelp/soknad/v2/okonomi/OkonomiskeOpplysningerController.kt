@@ -26,26 +26,35 @@ class OkonomiskeOpplysningerController(
     private val okonomiskeOpplysningerService: OkonomiskeOpplysningerService,
 ) {
     @GetMapping
-    fun getOkonomiskeOpplysningerForTyper(
+    fun getOkonomiskeOpplysninger(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody typer: List<OpplysningType>,
-    ): List<OkonomiskOpplysningDto> {
-        return okonomiskeOpplysningerService.getOkonomiskeOpplysningerForTyper(soknadId, typer)
+    ): OkonomiskeOpplysningerDto {
+        return okonomiskeOpplysningerService.getOkonomiskeOpplysningerForTyper(soknadId)
             .map { it.toOkonomiskOpplysningDto() }
+            .let { OkonomiskeOpplysningerDto(it) }
     }
 
     @PutMapping
-    fun updateOkonomiskeOpplysninger(
+    fun updateOkonomiskOpplysning(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: AbstractOkonomiInput,
-    ) {
+    ): OkonomiskeOpplysningerDto {
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
             type = input.getOpplysningType(),
             detaljer = input.mapToOkonomiDetalj(),
         )
+        return getOkonomiskeOpplysninger(soknadId)
     }
 }
+
+data class OpplysningTyperInput(
+    val typer: List<OpplysningType>,
+)
+
+data class OkonomiskeOpplysningerDto(
+    val opplysninger: List<OkonomiskOpplysningDto>,
+)
 
 data class OkonomiskOpplysningDto(
     val type: OpplysningType,

@@ -12,11 +12,11 @@ import java.util.UUID
 
 @RestController
 @ProtectionSelvbetjeningHigh
-@RequestMapping("/soknad/{soknadId}/dokumentasjon")
+@RequestMapping("/soknad/{soknadId}/dokumentasjon/forventet")
 class DokumentasjonController(
     private val handler: DokumentasjonStatusUseCaseHandler,
 ) {
-    @GetMapping("/forventet")
+    @GetMapping
     fun getForventetDokumentasjon(
         @PathVariable("soknadId") soknadId: UUID,
     ): ForventetDokumentasjonDto {
@@ -32,9 +32,7 @@ class DokumentasjonController(
     ): ForventetDokumentasjonDto {
         handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type, hasLevert = input.hasLevert)
 
-        return handler.findForventetDokumentasjon(soknadId)
-            .map { it.toDokumentasjonDto() }
-            .let { ForventetDokumentasjonDto(it) }
+        return getForventetDokumentasjon(soknadId)
     }
 }
 

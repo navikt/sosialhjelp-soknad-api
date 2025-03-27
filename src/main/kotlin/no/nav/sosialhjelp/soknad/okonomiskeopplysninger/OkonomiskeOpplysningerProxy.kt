@@ -19,8 +19,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskOpplysningDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -37,10 +37,7 @@ class OkonomiskeOpplysningerProxy(
     fun getOkonomiskeOpplysninger(behandlingsId: String): VedleggFrontends {
         val forventetDokumentasjon = dokumentasjonController.getForventetDokumentasjon(UUID.fromString(behandlingsId))
         val okonomiskeOpplysningerForTyper =
-            okonomiskeOpplysningerController.getOkonomiskeOpplysningerForTyper(
-                soknadId = UUID.fromString(behandlingsId),
-                typer = forventetDokumentasjon.dokumentasjon.map { it.type },
-            )
+            okonomiskeOpplysningerController.getOkonomiskeOpplysninger(soknadId = UUID.fromString(behandlingsId))
 
         return forventetDokumentasjon.dokumentasjon.toVedleggFrontends(
             okonomiskeOpplysningerForTyper = okonomiskeOpplysningerForTyper,
@@ -49,7 +46,7 @@ class OkonomiskeOpplysningerProxy(
     }
 
     private fun List<DokumentasjonDto>.toVedleggFrontends(
-        okonomiskeOpplysningerForTyper: List<OkonomiskOpplysningDto>,
+        okonomiskeOpplysningerForTyper: OkonomiskeOpplysningerDto,
         isOpplysningerBekreftet: Boolean,
     ): VedleggFrontends {
         return VedleggFrontends(
@@ -72,7 +69,7 @@ class OkonomiskeOpplysningerProxy(
                 ),
         )
 
-        okonomiskeOpplysningerController.updateOkonomiskeOpplysninger(
+        okonomiskeOpplysningerController.updateOkonomiskOpplysning(
             soknadId = UUID.fromString(behandlingsId),
             input = vedleggFrontend.resolveOkonomiInput(),
         )
@@ -83,10 +80,10 @@ class OkonomiskeOpplysningerProxy(
     }
 }
 
-private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: List<OkonomiskOpplysningDto>): VedleggFrontend {
+private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: OkonomiskeOpplysningerDto): VedleggFrontend {
     val vedleggType = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
 
-    val detaljer = okonomiskeOpplysningerForTyper.find { it.type == type }?.detaljer
+    val detaljer = okonomiskeOpplysningerForTyper.opplysninger.find { it.type == type }?.detaljer
 
     return VedleggFrontend(
         type = vedleggType,
