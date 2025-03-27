@@ -104,8 +104,6 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 @Table
 data class Okonomi(
     @Id val soknadId: UUID,
-    // TODO inntekter, utgifter, formuer og bekreftelser bør være map for å gjenspeile kun 1 innslag pr. type
-    // TODO eventuelt for set må equals-metoden for disse kun sammenlikne på typen
     val inntekter: Set<Inntekt> = emptySet(),
     val utgifter: Set<Utgift> = emptySet(),
     val formuer: Set<Formue> = emptySet(),
@@ -156,7 +154,7 @@ enum class BostotteStatus {
 }
 
 // Inntekt, Utgift, Formue
-interface OkonomiElement {
+interface OkonomiOpplysning {
     val type: OpplysningType
     val beskrivelse: String?
 }

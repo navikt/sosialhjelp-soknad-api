@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 
 data class VedleggFrontend(
     val type: VedleggType,
-    // TODO Trenger vi gruppe? - Hører hjemme i frontend? Sjekk med Tore
     val gruppe: VedleggGruppe,
     val rader: List<VedleggRadFrontend>? = null,
     @Schema(description = "Ignoreres dersom alleredeLevert === true", readOnly = true, deprecated = true)

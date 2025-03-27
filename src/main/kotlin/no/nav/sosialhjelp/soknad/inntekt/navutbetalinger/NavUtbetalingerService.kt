@@ -21,7 +21,7 @@ class NavUtbetalingerService(
         if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
             return null
         }
-        // TODO Unødvendig mellomledd når gammel logikk er fjernet
+        // TODO Unødvendig mellomledd når gammel logikk er fjernet - SKRIVE OM MAPPING - kutt mellomledd
         utbetalinger = mapToNavutbetalinger(utbetalDataDto)
 
         log.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")

@@ -16,7 +16,6 @@ import java.time.LocalDate
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as UtbetalingHusbanken
 
-// TODO Skal denne være en del av de vanlige fetcherne (interface) ?
 @Component
 class BostotteHusbankenFetcher(
     private val husbankenClient: HusbankenClient,
@@ -51,7 +50,6 @@ class BostotteHusbankenFetcher(
     // Dette er fordi søker kan ha fått avslag for en måned grunnet for høy inntekt,
     // men søker har tidligere fått bostøtte og det er forventet at søker får bostøtte neste måned.
     private fun daysToSubtract(bostotte: Bostotte): Long {
-        // TODO Nødvendig å logge om saker/utbetalinger er null eller tom
         val hasSaker =
             bostotte.saker.any { sak ->
                 sak.dato.isAfter(LocalDate.now().minusDays(31))

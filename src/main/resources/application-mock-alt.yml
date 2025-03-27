@@ -89,10 +89,6 @@ scheduler.disable: false
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: false
 
-#Nedetid
-nedetid.start: ${NEDETID_START:}
-nedetid.slutt: ${NEDETID_SLUTT:}
-
 springdoc:
   api-docs:
     enabled: true

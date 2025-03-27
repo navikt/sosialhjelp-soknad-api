@@ -70,11 +70,8 @@ class SoknadLifecycleHandlerImpl(
                 prometheusMetricsService.reportSoknadMottaker(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
                 )
-                // TODO Pr. dags dato skal en søknad slettes ved innsending - i fremtiden skal den slettes ved mottatt kvittering
-//                createDeleteSoknadHandler.deleteAfterSent(soknadId)
             }
             .onFailure {
-                // TODO Markere at soknaden har feilet ved å sette status på metadata?
                 prometheusMetricsService.reportFeilet()
                 throw SoknadLifecycleException("Feil ved innsending av søknad.", it, soknadId)
             }

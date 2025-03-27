@@ -33,7 +33,6 @@ class InntektSkatteetatenUseCaseHandler(
         )
     }
 
-    // TODO Skal dato oppdateres selvom verdien er lik?
     fun updateSamtykke(
         soknadId: UUID,
         hasSamtykke: Boolean,
@@ -85,7 +84,6 @@ data class InntektSkattInfo(
     val samtykke: Bekreftelse?,
 )
 
-// TODO Rydd opp / implementer logikk
 // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
 fun updateVedleggForventninger(
     internalSoknad: JsonInternalSoknad,

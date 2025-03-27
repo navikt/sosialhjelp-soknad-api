@@ -71,7 +71,6 @@ class UtgiftToJsonMapper(
 
     private fun Utgift.toJsonOversiktUtgift(belop: Belop? = null) =
         JsonOkonomioversiktUtgift()
-            // TODO Sjekk om alle utgifter er kilde = BRUKER
             .withKilde(JsonKilde.BRUKER)
             .withType(type.toSoknadJsonTypeString())
             .withTittel(toTittel())
