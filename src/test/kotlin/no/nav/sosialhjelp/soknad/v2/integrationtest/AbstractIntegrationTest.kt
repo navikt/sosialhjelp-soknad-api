@@ -202,6 +202,24 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
+    protected fun doPostExpectError(
+        uri: String,
+        requestBody: Any,
+        httpStatus: HttpStatus,
+        soknadId: UUID? = null,
+    ): SoknadApiError {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(requestBody))
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus)
+            .expectBody(SoknadApiError::class.java)
+            .returnResult()
+            .responseBody!!
+    }
+
     protected fun doDelete(
         uri: String,
         soknadId: UUID? = null,
