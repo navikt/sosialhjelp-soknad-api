@@ -45,10 +45,6 @@ class OkonomiskeOpplysningerController(
     }
 }
 
-data class OpplysningTyperInput(
-    val typer: List<OpplysningType>,
-)
-
 data class OkonomiskeOpplysningerDto(
     val opplysninger: List<OkonomiskOpplysningDto>,
 )

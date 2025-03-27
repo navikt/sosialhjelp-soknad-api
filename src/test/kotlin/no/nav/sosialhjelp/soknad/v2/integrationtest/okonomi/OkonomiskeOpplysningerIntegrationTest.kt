@@ -76,7 +76,12 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         ikkeRelevanteOkonomiTyper.forEach { okonomiService.addElementToOkonomi(soknad.id, it) }
         andreDokTyper.forEach { dokRepository.save(Dokumentasjon(soknadId = soknad.id, type = it)) }
 
-        okonomiRepository.findAll().also { assertThat(it).hasSize(5) }
+        okonomiRepository.findByIdOrNull(soknad.id)!!
+            .also {
+                assertThat(it.formuer).hasSize(2)
+                assertThat(it.inntekter).hasSize(1)
+                assertThat(it.utgifter).hasSize(2)
+            }
         dokRepository.findAllBySoknadId(soknad.id).also { assertThat(it).hasSize(5) }
 
         doGet(
