@@ -17,12 +17,12 @@ class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(jobName = "Sletter gamle soknader som ikke er sendt inn", leaderElection) {
+) : AbstractJob(leaderElection, "Slette soknader") {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() =
         doInJob {
-            soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
-                .also { ids -> if (ids.isNotEmpty()) handleOldSoknadIds(ids) }
+            val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+            if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
         }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
