@@ -134,7 +134,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         )
 
         soknadMetadataRepository.findByIdOrNull(soknadId)!!
-            .also { assertThat(it.status).isEqualTo(SoknadStatus.SENDING_FEILET) }
+            .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
     }
 
     private fun createNewSoknad(): UUID {
