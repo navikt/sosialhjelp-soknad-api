@@ -119,10 +119,11 @@ fun SoknadMetadataRepository.createMetadata(
     opprettet: LocalDateTime,
     status: SoknadStatus = OPPRETTET,
     sendtInn: LocalDateTime = LocalDateTime.now(),
+    personId: String = "12345612345",
 ): UUID {
     return SoknadMetadata(
         soknadId = UUID.randomUUID(),
-        personId = "12345612345",
+        personId = personId,
         tidspunkt = Tidspunkt(opprettet = opprettet, sendtInn = sendtInn),
         status = status,
     )
