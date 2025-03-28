@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 /**
@@ -54,7 +54,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSessionInfo(): SessionResponse {
+    fun getSessionInfo(): SessionDto {
         val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
