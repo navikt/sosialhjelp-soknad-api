@@ -38,14 +38,14 @@ class DittNavMetadataRessurs(
             .let { ids -> metadataService.getMetadatasForIds(ids) }
             .map {
                 PabegyntSoknadDto(
-                    toUtc(it.tidspunkt.opprettet, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    "${it.soknadId}_aktiv",
-                    it.soknadId.toString(),
-                    PABEGYNT_SOKNAD_TITTEL,
-                    lenkeTilPabegyntSoknad(it.soknadId.toString()),
-                    SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
-                    toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    true,
+                    eventTidspunkt = toUtc(it.tidspunkt.opprettet, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    eventId = "${it.soknadId}_aktiv",
+                    grupperingsId = it.soknadId.toString(),
+                    tekst = PABEGYNT_SOKNAD_TITTEL,
+                    link = lenkeTilPabegyntSoknad(it.soknadId.toString()),
+                    sikkerhetsnivaa = SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
+                    sistOppdatert = toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    isAktiv = true,
                 )
             }
     }
