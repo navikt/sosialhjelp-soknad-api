@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
@@ -28,6 +29,7 @@ class SjekkStatusEksisterendeSoknaderJob(
             soknadJobService.findAllSoknadIds()
                 .let { ids -> metadataService.findAllMetadatasForIds(ids) }
                 .filter { metadatas -> metadatas.status != OPPRETTET }
+                .filter { metadatas -> metadatas.status != INNSENDING_FEILET }
                 .also { notOpprettet -> if (notOpprettet.isNotEmpty()) handleGamleSoknader(notOpprettet) }
         }
 

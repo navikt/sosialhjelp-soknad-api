@@ -28,10 +28,12 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Eksisterende soknader med status OPPRETTET kaster ikke feil`() =
+    fun `Eksisterende soknader med status OPPRETTET eller INNSENDING_FEILET kaster ikke feil`() =
         runTest(timeout = 5.seconds) {
             createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
-            assertThat(soknadRepository.findAll()).hasSize(1)
+            createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.INNSENDING_FEILET)
+
+            assertThat(soknadRepository.findAll()).hasSize(2)
 
             assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
         }
@@ -85,8 +87,6 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
             assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
         }
 
-    private fun nowMinusDays(days: Long): LocalDateTime = LocalDateTime.now().minusDays(days)
-
     private fun createMetadataAndSoknad(
         opprettet: LocalDateTime,
         status: SoknadStatus,
@@ -98,3 +98,5 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
         return soknadId
     }
 }
+
+fun nowMinusDays(days: Long): LocalDateTime = LocalDateTime.now().minusDays(days)

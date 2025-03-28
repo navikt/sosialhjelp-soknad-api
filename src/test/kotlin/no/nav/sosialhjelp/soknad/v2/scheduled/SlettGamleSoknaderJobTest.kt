@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.test.runTest
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
@@ -69,14 +71,38 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             val allSoknader = soknadRepository.findAllById(ids)
             assertThat(allSoknader).hasSize(2)
 
-            val metadatas = soknadMetadataRepository.findAllById(allSoknader.map { it.id })
+            val metadatas = soknadMetadataRepository.findAllById(ids)
             assertThat(metadatas)
-                .hasSize(2)
+                .hasSize(3)
                 .anyMatch { it.status == SENDT }
                 .anyMatch { it.status == MOTTATT_FSL }
+                .anyMatch { it.status == AVBRUTT }
                 .noneMatch { it.status == OPPRETTET }
         }
     }
+
+    @Test
+    fun `Skal ikke slette soknader med SENDING_FEILET`() =
+        runTest(timeout = 5.seconds) {
+            val ids =
+                listOf(
+                    createMetadataAndSoknad(nowWithMillis().minusDays(15), INNSENDING_FEILET),
+                    createMetadataAndSoknad(nowWithMillis().minusDays(15), OPPRETTET),
+                )
+
+            slettGamleSoknaderJob.slettGamleSoknader()
+
+            soknadRepository.findAllById(ids)
+                .also { assertThat(it).hasSize(1) }
+
+            soknadMetadataRepository.findAllById(ids)
+                .also { metadata ->
+                    assertThat(metadata)
+                        .hasSize(2)
+                        .anyMatch { it.status == INNSENDING_FEILET }
+                        .anyMatch { it.status == AVBRUTT }
+                }
+        }
 
     private fun createMetadataAndSoknad(
         opprettet: LocalDateTime,
