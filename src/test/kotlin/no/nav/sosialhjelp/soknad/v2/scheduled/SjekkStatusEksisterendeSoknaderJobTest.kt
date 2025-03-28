@@ -1,23 +1,21 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.test.runTest
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SjekkStatusEksisterendeSoknaderJob
-import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SoknaderFeilStatusException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
     @Autowired
@@ -31,7 +29,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
     @Test
     fun `Eksisterende soknader med status OPPRETTET kaster ikke feil`() =
-        runTest {
+        runTest(timeout = 5.seconds) {
             createMetadataAndSoknad(LocalDateTime.now().minusDays(10), SoknadStatus.OPPRETTET)
             assertThat(soknadRepository.findAll()).hasSize(1)
 
@@ -40,18 +38,16 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
     @Test
     fun `Eksisterende soknader som ikke har status OPPRETTET skal kaste feil`() =
-        runTest {
+        runTest(timeout = 5.seconds) {
             createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, nowMinusDays(10))
             createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, nowMinusDays(10))
 
             assertThrows<SoknaderFeilStatusException> { sjekkStatusSoknaderSendt.sjekkStatus() }
         }
 
-    // TODO Inntil KS har byttet endepunkt til å sjekke SvarUt-status kan denne være disablet
     @Test
-    @Disabled
     fun `Tar kun stilling til eksisterende soknader`() =
-        runTest {
+        runTest(timeout = 5.seconds) {
             createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
             createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
             val idFeilStatus = createMetadataAndSoknad(nowMinusDays(14), SoknadStatus.SENDT, nowMinusDays(10))
@@ -73,6 +69,19 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
                     .anyMatch { it.status == SoknadStatus.SENDT }
                     .anyMatch { it.status == SoknadStatus.OPPRETTET }
             }
+
+            assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
+        }
+
+    @Test
+    fun `Eksisterende soknader sendt inn for under en uke siden skal ikke kaste feil`() =
+        runTest(timeout = 5.seconds) {
+            createMetadataAndSoknad(nowMinusDays(14), SoknadStatus.SENDT, nowMinusDays(5))
+
+            soknadMetadataRepository.findAll().also {
+                assertThat(it).hasSize(1).allMatch { it.status == SoknadStatus.SENDT }
+            }
+
             assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
         }
 

@@ -21,7 +21,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
     leaderElection: LeaderElection,
-) : AbstractJob(jobName = "Sjekk status eksisterende soknader", leaderElection) {
+) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader") {
     @Scheduled(cron = HVER_TIME)
     suspend fun sjekkStatus() =
         doInJob {
@@ -33,8 +33,8 @@ class SjekkStatusEksisterendeSoknaderJob(
 
     private fun handleGamleSoknader(metadatas: List<SoknadMetadata>) {
         val numberOfSoknaderWrongStatus =
-//            handleStatusSendt(metadatas.filter { it.status == SENDT }) +
-            handleOther(metadatas.filter { it.status != SENDT })
+            handleStatusSendt(metadatas.filter { it.status == SENDT }) +
+                handleOther(metadatas.filter { it.status != SENDT })
 
         if (numberOfSoknaderWrongStatus != 0) {
             throw SoknaderFeilStatusException("Det finnes $numberOfSoknaderWrongStatus med feil status")
