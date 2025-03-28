@@ -60,7 +60,18 @@ abstract class AbstractIntegrationTest {
             soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
             every { personIdService.findPersonId(soknadId) } returns userId
         }
-        token = mockOAuth2Server.issueToken("tokenx", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        token =
+            when (useTokenX) {
+                true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
+                false -> Pair("selvbetjening", "someaudience")
+            }.let { (issuer, audience) ->
+                mockOAuth2Server.issueToken(
+                    issuerId = issuer,
+                    subject = userId,
+                    audience = audience,
+                    claims = mapOf("acr" to "idporten-loa-high"),
+                )
+            }
     }
 
     protected fun <T> doGet(
