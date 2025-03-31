@@ -19,7 +19,6 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, personId = userId)
         createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
         createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
-        soknadMetadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.AVBRUTT, personId = userId)
         soknadMetadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, personId = userId)
 
         val pabegyntSoknadDtos =

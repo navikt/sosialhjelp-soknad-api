@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.UTGATT
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -30,7 +29,8 @@ class SlettGamleSoknaderJob(
             runCatching { soknadJobService.deleteSoknadById(soknadId) }
                 .onSuccess {
                     deleted++
-                    metadataService.updateSoknadStatus(soknadId, UTGATT)
+                    // TODO Hvis man har FK i databasen fra soknad -> metadata slipper man denne doble slettingen
+                    metadataService.deleteMetadata(soknadId)
                 }
                 .onFailure { logger.error("Kunne ikke slette soknad", it) }
                 .getOrNull()

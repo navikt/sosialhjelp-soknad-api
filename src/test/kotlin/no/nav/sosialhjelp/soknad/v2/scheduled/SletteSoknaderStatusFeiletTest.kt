@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
@@ -57,12 +56,16 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
             createMetadataAndSoknad(nowMinusDays(20), OPPRETTET)
             createMetadataAndSoknad(nowMinusDays(20), SENDT)
             createMetadataAndSoknad(nowMinusDays(20), MOTTATT_FSL)
-            createMetadataAndSoknad(nowMinusDays(20), AVBRUTT)
+            createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET)
 
             sletteJob.sletteSoknaderStatusFeilet()
 
-            soknadRepository.findAll().also { assertThat(it).hasSize(4) }
-            soknadMetadataRepository.findAll().also { assertThat(it).noneMatch { it.status == INNSENDING_FEILET } }
+            soknadRepository.findAll().also { assertThat(it).hasSize(2) }
+            soknadMetadataRepository.findAll().also { metadatas ->
+                assertThat(metadatas)
+                    .isNotEmpty()
+                    .noneMatch { it.status == INNSENDING_FEILET }
+            }
         }
 
     private fun createMetadataAndSoknad(

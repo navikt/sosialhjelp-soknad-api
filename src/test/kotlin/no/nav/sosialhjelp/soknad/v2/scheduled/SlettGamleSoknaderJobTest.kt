@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
@@ -41,7 +40,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).isEmpty()
-            assertThat(soknadMetadataRepository.findAll()).hasSize(1).allMatch { it.status == AVBRUTT }
+            assertThat(soknadMetadataRepository.findAll()).isEmpty()
         }
 
     @Test
@@ -73,10 +72,9 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
 
             val metadatas = soknadMetadataRepository.findAllById(ids)
             assertThat(metadatas)
-                .hasSize(3)
+                .hasSize(2)
                 .anyMatch { it.status == SENDT }
                 .anyMatch { it.status == MOTTATT_FSL }
-                .anyMatch { it.status == AVBRUTT }
                 .noneMatch { it.status == OPPRETTET }
         }
     }
@@ -98,9 +96,8 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             soknadMetadataRepository.findAllById(ids)
                 .also { metadata ->
                     assertThat(metadata)
-                        .hasSize(2)
+                        .hasSize(1)
                         .anyMatch { it.status == INNSENDING_FEILET }
-                        .anyMatch { it.status == AVBRUTT }
                 }
         }
 
