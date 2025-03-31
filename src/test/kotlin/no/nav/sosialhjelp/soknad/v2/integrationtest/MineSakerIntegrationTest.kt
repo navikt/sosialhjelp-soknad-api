@@ -84,7 +84,7 @@ class MineSakerIntegrationTest : AbstractIntegrationTest() {
             mottakerKommunenummer = "0301",
             tidspunkt = Tidspunkt(sendtInn = nowWithMillis()),
         )
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
             .soknadId
     }
 

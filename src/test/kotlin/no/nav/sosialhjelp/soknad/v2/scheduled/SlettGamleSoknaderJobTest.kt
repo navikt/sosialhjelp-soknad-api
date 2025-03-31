@@ -28,31 +28,31 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         soknadRepository.deleteAll()
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
     }
 
     @Test
     fun `Planlagt jobb skal slette soknader eldre enn 14 dager`() =
         runTest(timeout = 5.seconds) {
-            val soknadId = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(15))
+            val soknadId = metadataRepository.createMetadata(LocalDateTime.now().minusDays(15))
             soknadRepository.save(opprettSoknad(id = soknadId))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).isEmpty()
-            assertThat(soknadMetadataRepository.findAll()).isEmpty()
+            assertThat(metadataRepository.findAll()).isEmpty()
         }
 
     @Test
     fun `Planlagt jobb skal ikke slette soknader nyere enn 14 dager`() =
         runTest(timeout = 5.seconds) {
-            val soknadId = soknadMetadataRepository.createMetadata(LocalDateTime.now().minusDays(10))
+            val soknadId = metadataRepository.createMetadata(LocalDateTime.now().minusDays(10))
             soknadRepository.save(opprettSoknad(id = soknadId))
 
             slettGamleSoknaderJob.slettGamleSoknader()
 
             assertThat(soknadRepository.findAll()).hasSize(1)
-            assertThat(soknadMetadataRepository.findAll()).hasSize(1).allMatch { it.status == OPPRETTET }
+            assertThat(metadataRepository.findAll()).hasSize(1).allMatch { it.status == OPPRETTET }
         }
 
     @Test
@@ -70,7 +70,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             val allSoknader = soknadRepository.findAllById(ids)
             assertThat(allSoknader).hasSize(2)
 
-            val metadatas = soknadMetadataRepository.findAllById(ids)
+            val metadatas = metadataRepository.findAllById(ids)
             assertThat(metadatas)
                 .hasSize(2)
                 .anyMatch { it.status == SENDT }
@@ -93,7 +93,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
             soknadRepository.findAllById(ids)
                 .also { assertThat(it).hasSize(1) }
 
-            soknadMetadataRepository.findAllById(ids)
+            metadataRepository.findAllById(ids)
                 .also { metadata ->
                     assertThat(metadata)
                         .hasSize(1)
@@ -105,7 +105,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
         opprettet: LocalDateTime,
         status: SoknadStatus,
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status)
+        val soknadId = metadataRepository.createMetadata(opprettet, status)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId
