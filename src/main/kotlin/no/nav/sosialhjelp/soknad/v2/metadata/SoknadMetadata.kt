@@ -66,12 +66,6 @@ data class Tidspunkt(
 
 enum class SoknadStatus {
     OPPRETTET,
-
-    // TODO Skal vi ta vare på metadata for avbrutte soknader? Til hva ?
-    AVBRUTT,
-
-    // TODO Skal vi ta vare på metadata for ikke innsendte soknader over 14 dager? Isåfall må status endres
-    UTGATT,
     INNSENDING_FEILET,
     SENDT,
     MOTTATT_FSL,
