@@ -35,7 +35,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .also { soknadId -> assertThat(soknadId).isInstanceOf(UUID::class.java) }
             .also { soknadId ->
                 assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull
-                assertThat(soknadMetadataRepository.findByIdOrNull(soknadId)).isNotNull
+                assertThat(metadataRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(eierRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(familieRepository.findByIdOrNull(soknadId)).isNotNull
@@ -83,7 +83,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             }
 
         assertCapturedValues()
-        soknadMetadataRepository.findByIdOrNull(soknadId)!!
+        metadataRepository.findByIdOrNull(soknadId)!!
             .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
     }
 
@@ -133,7 +133,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             soknadId = soknadId,
         )
 
-        soknadMetadataRepository.findByIdOrNull(soknadId)!!
+        metadataRepository.findByIdOrNull(soknadId)!!
             .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
     }
 

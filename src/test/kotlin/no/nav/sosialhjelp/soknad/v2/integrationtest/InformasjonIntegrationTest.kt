@@ -19,7 +19,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, personId = userId)
         createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
         createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
-        soknadMetadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, personId = userId)
+        metadataRepository.createMetadata(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, personId = userId)
 
         val pabegyntSoknadDtos =
             doGet(
@@ -32,7 +32,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
                 }
 
         pabegyntSoknadDtos
-            .map { soknadMetadataRepository.findByIdOrNull(it.soknadId)!! }
+            .map { metadataRepository.findByIdOrNull(it.soknadId)!! }
             .also { metadatas ->
                 assertThat(metadatas)
                     .allMatch { it.status == OPPRETTET || it.status == INNSENDING_FEILET }
@@ -49,7 +49,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         sendtInn: LocalDateTime = LocalDateTime.now(),
         personId: String,
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn, personId = personId)
+        val soknadId = metadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn, personId = personId)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

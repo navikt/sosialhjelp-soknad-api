@@ -23,7 +23,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
         soknadRepository.deleteAll()
     }
 
@@ -63,9 +63,9 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
                 "12345612345",
                 SoknadStatus.SENDT,
                 Tidspunkt(sendtInn = nowWithMillis().minusDays(4)),
-            ).also { soknadMetadataRepository.save(it) }
+            ).also { metadataRepository.save(it) }
 
-            soknadMetadataRepository.findAll().also { metadatas ->
+            metadataRepository.findAll().also { metadatas ->
                 assertThat(metadatas)
                     .hasSize(4)
                     .anyMatch { it.status == SoknadStatus.SENDT }
@@ -80,7 +80,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
         runTest(timeout = 5.seconds) {
             createMetadataAndSoknad(nowMinusDays(14), SoknadStatus.SENDT, nowMinusDays(5))
 
-            soknadMetadataRepository.findAll().also {
+            metadataRepository.findAll().also {
                 assertThat(it).hasSize(1).allMatch { it.status == SoknadStatus.SENDT }
             }
 
@@ -92,7 +92,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
         status: SoknadStatus,
         sendtInn: LocalDateTime = LocalDateTime.now(),
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn)
+        val soknadId = metadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

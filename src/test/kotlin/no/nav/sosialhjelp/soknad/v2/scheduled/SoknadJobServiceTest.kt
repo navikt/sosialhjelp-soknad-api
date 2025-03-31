@@ -29,7 +29,7 @@ class SoknadJobServiceTest : AbstractIntegrationTest() {
                 personId = "12345612345",
                 tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().minusDays(18)),
                 status = SoknadStatus.OPPRETTET,
-            ).also { soknadMetadataRepository.save(it) }
+            ).also { metadataRepository.save(it) }
 
         soknadJobService.findSoknadIdsOlderThanWithStatus(nowWithMillis().minusDays(14), SoknadStatus.OPPRETTET)
             .also { ids ->
@@ -43,7 +43,7 @@ class SoknadJobServiceTest : AbstractIntegrationTest() {
         opprettet: LocalDateTime,
         status: SoknadStatus,
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status)
+        val soknadId = metadataRepository.createMetadata(opprettet, status)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

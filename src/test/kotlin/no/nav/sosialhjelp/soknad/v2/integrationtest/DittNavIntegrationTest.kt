@@ -40,7 +40,7 @@ class DittNavIntegrationTest : AbstractIntegrationTest() {
         doGet(uri = url, responseBodyClass = String::class.java)
             .let { jacksonObjectMapper().readValue(it) as List<PabegyntSoknadDto> }
             .also { assertThat(it).hasSize(2) }
-            .map { soknadMetadataRepository.findByIdOrNull(UUID.fromString(it.grupperingsId)) }
+            .map { metadataRepository.findByIdOrNull(UUID.fromString(it.grupperingsId)) }
             .also { metadata ->
                 assertThat(metadata)
                     .hasSize(2)
@@ -86,7 +86,7 @@ class DittNavIntegrationTest : AbstractIntegrationTest() {
         sendtInn: LocalDateTime = LocalDateTime.now(),
         personId: String,
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn, personId = personId)
+        val soknadId = metadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn, personId = personId)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

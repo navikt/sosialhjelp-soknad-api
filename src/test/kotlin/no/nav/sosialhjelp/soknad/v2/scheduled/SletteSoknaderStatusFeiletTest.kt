@@ -12,6 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
@@ -23,7 +24,7 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setUp() {
         soknadRepository.deleteAll()
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
     }
 
     @Test
@@ -34,7 +35,7 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
             sletteJob.sletteSoknaderStatusFeilet()
 
             soknadRepository.findAll().also { assertThat(it).isEmpty() }
-            soknadMetadataRepository.findAll()
+            metadataRepository.findAll()
                 .also { metadata -> assertThat(metadata).hasSize(1).allMatch { it.status == INNSENDING_FEILET } }
         }
 
@@ -46,7 +47,7 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
             sletteJob.sletteSoknaderStatusFeilet()
 
             soknadRepository.findAll().also { assertThat(it).hasSize(1) }
-            soknadMetadataRepository.findAll()
+            metadataRepository.findAll()
                 .also { metadata -> assertThat(metadata).hasSize(1).allMatch { it.status == INNSENDING_FEILET } }
         }
 
@@ -56,16 +57,24 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
             createMetadataAndSoknad(nowMinusDays(20), OPPRETTET)
             createMetadataAndSoknad(nowMinusDays(20), SENDT)
             createMetadataAndSoknad(nowMinusDays(20), MOTTATT_FSL)
-            createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET)
+            createMetadataAndSoknad(opprettet = nowMinusDays(25), INNSENDING_FEILET, sendtInn = nowMinusDays(20))
 
             sletteJob.sletteSoknaderStatusFeilet()
 
-            soknadRepository.findAll().also { assertThat(it).hasSize(2) }
-            soknadMetadataRepository.findAll().also { metadatas ->
-                assertThat(metadatas)
-                    .isNotEmpty()
-                    .noneMatch { it.status == INNSENDING_FEILET }
-            }
+            soknadRepository.findAll()
+                .also { assertThat(it).hasSize(3) }
+                .map { it.id }
+                .forEach { id ->
+                    metadataRepository.findByIdOrNull(id)!!
+                        .also {
+                            assertThat(it).isNotNull()
+                            assertThat(it.status).isNotEqualTo(INNSENDING_FEILET)
+                        }
+                }
+
+            assertThat(metadataRepository.findAll())
+                .hasSize(4)
+                .anyMatch { it.status == INNSENDING_FEILET }
         }
 
     private fun createMetadataAndSoknad(
@@ -73,7 +82,7 @@ class SletteSoknaderStatusFeiletTest : AbstractIntegrationTest() {
         status: SoknadStatus,
         sendtInn: LocalDateTime = LocalDateTime.now(),
     ): UUID {
-        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn)
+        val soknadId = metadataRepository.createMetadata(opprettet, status, sendtInn = sendtInn)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId
