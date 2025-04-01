@@ -35,7 +35,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
 
             assertThat(soknadRepository.findAll()).hasSize(2)
 
-            assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
+            assertDoesNotThrow { sjekkStatusSoknaderSendt.checkIfExistingSoknaderHasWrongStatus() }
         }
 
     @Test
@@ -44,7 +44,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
             createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, nowMinusDays(10))
             createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.MOTTATT_FSL, nowMinusDays(10))
 
-            assertThrows<SoknaderFeilStatusException> { sjekkStatusSoknaderSendt.sjekkStatus() }
+            assertThrows<SoknaderFeilStatusException> { sjekkStatusSoknaderSendt.checkIfExistingSoknaderHasWrongStatus() }
         }
 
     @Test
@@ -54,7 +54,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
             createMetadataAndSoknad(LocalDateTime.now().minusDays(14), SoknadStatus.OPPRETTET)
             val idFeilStatus = createMetadataAndSoknad(nowMinusDays(14), SoknadStatus.SENDT, nowMinusDays(10))
 
-            assertThrows<SoknaderFeilStatusException> { sjekkStatusSoknaderSendt.sjekkStatus() }
+            assertThrows<SoknaderFeilStatusException> { sjekkStatusSoknaderSendt.checkIfExistingSoknaderHasWrongStatus() }
 
             soknadRepository.deleteById(idFeilStatus)
 
@@ -72,7 +72,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
                     .anyMatch { it.status == SoknadStatus.OPPRETTET }
             }
 
-            assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
+            assertDoesNotThrow { sjekkStatusSoknaderSendt.checkIfExistingSoknaderHasWrongStatus() }
         }
 
     @Test
@@ -84,7 +84,7 @@ class SjekkStatusEksisterendeSoknaderJobTest : AbstractIntegrationTest() {
                 assertThat(it).hasSize(1).allMatch { it.status == SoknadStatus.SENDT }
             }
 
-            assertDoesNotThrow { sjekkStatusSoknaderSendt.sjekkStatus() }
+            assertDoesNotThrow { sjekkStatusSoknaderSendt.checkIfExistingSoknaderHasWrongStatus() }
         }
 
     private fun createMetadataAndSoknad(
