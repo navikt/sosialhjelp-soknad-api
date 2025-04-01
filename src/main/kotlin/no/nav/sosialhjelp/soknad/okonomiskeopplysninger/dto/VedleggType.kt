@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 
 // TODO Legger til midlertidig mapping "tilbake til" opplysningType. Når skyggeprod er ferdig, kan hele denne fjernes
 // TODO Fordrer at vi bruker samme type både på "okonomi-poster" og vedlegg i ny modell
+// TODO LAG TRELLO OG FØLG OPP MED EKSTERNE
 
 enum class VedleggType(
     @JsonValue val stringName: String,
@@ -44,7 +45,6 @@ enum class VedleggType(
     OppholdstillatelOppholdstillatel("oppholdstillatel|oppholdstillatel", AnnenDokumentasjonType.OPPHOLDSTILLATELSE),
     SalgsoppgjorEiendom("salgsoppgjor|eiendom", InntektType.UTBETALING_SALG),
 
-    // TODO brukes?
     SamvarsavtaleBarn("samvarsavtale|barn", AnnenDokumentasjonType.SAMVARSAVTALE),
     SkattemeldingSkattemelding("skattemelding|skattemelding", AnnenDokumentasjonType.SKATTEMELDING),
     SluttoppgjorArbeid("sluttoppgjor|arbeid", InntektType.SLUTTOPPGJOER),

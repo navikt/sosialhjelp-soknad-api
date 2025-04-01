@@ -82,15 +82,13 @@ class DigisosApiV2Client(
     fun krypterOgLastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
-        // TODO Navngivning? Dette er JsonVedleggSpesifikasjon
-        vedleggJson: String,
-        // TODO Navngivning? Dette er genererte pdf-dokumenter.
-        dokumenter: List<FilOpplasting>,
+        vedleggSpec: String,
+        pdfDokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,
         token: String?,
     ): String {
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
+        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(pdfDokumenter.size))
         val digisosId: String
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
@@ -98,8 +96,8 @@ class DigisosApiV2Client(
                 lastOppFiler(
                     soknadJson,
                     tilleggsinformasjonJson,
-                    vedleggJson,
-                    dokumenter.map { dokument: FilOpplasting ->
+                    vedleggSpec,
+                    pdfDokumenter.map { dokument: FilOpplasting ->
                         FilForOpplasting(
                             filnavn = dokument.metadata.filnavn,
                             metadata = dokument.metadata,

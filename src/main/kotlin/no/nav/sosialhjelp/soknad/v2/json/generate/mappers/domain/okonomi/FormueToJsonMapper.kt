@@ -18,7 +18,6 @@ class FormueToJsonMapper(
         oversikt.formue.addAll(
             formuer.flatMap { it.toJsonFormuer() },
         )
-        // TODO JsonOkonomibeskrivelseAvAnnet er merket som "overflødig" i filformatet
         formuer.find { it.type == FormueType.FORMUE_ANNET }?.let { addBeskrivelseSparing(it.beskrivelse) }
         formuer.find { it.type == FormueType.VERDI_ANNET }?.let { addBeskrivelseVerdi(it.beskrivelse) }
     }

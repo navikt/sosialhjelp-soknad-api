@@ -16,16 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
-// TODO 1. For f.eks. annen boutgift og annen barneutgift - skal frontend oppdatere for hver eneste bokstav/skrivepause...
-// TODO... eller holder det kanskje å gjøre det når skrivefelt mister fokus? - Tore
-
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/okonomiskeOpplysninger")
 class OkonomiskeOpplysningerController(
     private val okonomiskeOpplysningerService: OkonomiskeOpplysningerService,
 ) {
-    // TODO Skal vi fortsette med denne "en kvern for alt"-løsningen, eller skal vi tenkte litt annerledes ?
     @GetMapping
     fun getForventetDokumentasjon(
         @PathVariable("soknadId") soknadId: UUID,
@@ -119,7 +115,6 @@ data class BoliglanInput(
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
-// TODO Navngivning på disse dtos og inputs?
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
     JsonSubTypes.Type(BelopDto::class),

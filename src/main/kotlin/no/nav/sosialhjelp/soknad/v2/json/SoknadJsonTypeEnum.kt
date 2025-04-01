@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.json
 
-// TODO Midlertidig reversed mapping inntil skyggeprod er i prod - etter "gammel kode" fjernes, kan denne fjernes
 enum class SoknadJsonTypeEnum(val verdi: String) {
     BARNEBIDRAG("barnebidrag"),
     BOSTOTTE("bostotte"),

@@ -30,7 +30,6 @@ enum class DokumentasjonStatus {
     LEVERT_TIDLIGERE,
 }
 
-// TODO PS: Denne skal opprettes som forventet dokumentasjon i det en søknad startes
 enum class AnnenDokumentasjonType(
     override val dokumentasjonForventet: Boolean?,
 ) : OpplysningType {

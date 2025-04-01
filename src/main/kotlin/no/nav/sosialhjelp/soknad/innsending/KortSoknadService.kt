@@ -136,7 +136,6 @@ class KortSoknadService(
                 .toLocalDateTime()
         }.getOrElse { LocalDate.parse(this).atStartOfDay() }
 
-    // TODO Håndter transaksjonsscope (ps: skjer eksterne kall i denne)
     fun resolveKortSoknad(
         oldKontakt: Kontakt,
         updatedKontakt: Kontakt,

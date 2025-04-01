@@ -115,10 +115,6 @@ scheduler.disable: ${SCHEDULER_DISABLE}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 
-#Nedetid
-nedetid.start: ${NEDETID_START}
-nedetid.slutt: ${NEDETID_SLUTT}
-
 resilience4j:
   retry:
     instances:

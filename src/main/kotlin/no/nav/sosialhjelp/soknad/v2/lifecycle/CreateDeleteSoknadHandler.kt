@@ -45,13 +45,7 @@ class CreateDeleteSoknadHandler(
     @Transactional
     fun cancelSoknad(soknadId: UUID) {
         soknadService.deleteSoknad(soknadId)
-        // TODO - Hvis en søknad oppretter en FK til metadata med on cascade delete, trengs ikke begge disse kallene
         soknadMetadataService.deleteMetadata(soknadId)
-    }
-
-    @Transactional
-    fun deleteAfterSent(soknadId: UUID) {
-        soknadService.deleteSoknad(soknadId)
     }
 
     @Transactional(propagation = Propagation.NEVER)

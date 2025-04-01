@@ -14,6 +14,8 @@ interface BarneutgiftService {
         soknadId: UUID,
         existingBarneutgifter: Set<UtgiftType>,
     )
+
+    fun getBekreftelse(soknadId: UUID): Boolean?
 }
 
 @Service
@@ -31,6 +33,12 @@ class BarneutgiftServiceImpl(
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_BARNEUTGIFTER, verdi = false)
         barneutgiftTypes.forEach { okonomiService.removeElementFromOkonomi(soknadId, it) }
     }
+
+    override fun getBekreftelse(soknadId: UUID): Boolean? =
+        okonomiService
+            .getBekreftelser(soknadId)
+            .find { it.type == BekreftelseType.BEKREFTELSE_BARNEUTGIFTER }
+            ?.verdi
 
     override fun updateBarneutgifter(
         soknadId: UUID,

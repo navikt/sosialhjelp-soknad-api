@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadActions(
     private val tilgangskontroll: Tilgangskontroll,
-    private val nedetidService: NedetidService,
     private val sendSoknadProxy: SendSoknadProxy,
 ) {
     @PostMapping("/send")
@@ -31,10 +28,6 @@ class SoknadActions(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SendTilUrlFrontend {
-        if (nedetidService.isInnenforNedetid) {
-            throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
-        }
-
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
 
         return sendSoknadProxy.sendSoknad(behandlingsId, token)

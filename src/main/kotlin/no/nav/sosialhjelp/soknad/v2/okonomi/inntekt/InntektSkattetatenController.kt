@@ -82,7 +82,6 @@ private fun Utbetaling.toUtbetalingDto(): UtbetalingFraSkatteetatenDto {
 
 private fun Bekreftelse.toSamtykkeDto() = SamtykkeDto(verdi, samtykkeTidspunkt = tidspunkt.toString())
 
-// TODO Trenger vi / må vi ha denne data-strukturen? Tore
 data class SkattbarInntektDto(
     val inntektSkatteetaten: List<InntektFraOrganisasjonDto>,
     val inntektFraSkatteetatenFeilet: Boolean? = null,

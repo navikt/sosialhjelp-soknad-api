@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
 import java.util.UUID
-
-// TODO Ble mange argumenter til denne klassen - og ganske mye logikk. Refaktor?
 
 @Component
 class SendSoknadHandler(
@@ -55,8 +52,8 @@ class SendSoknadHandler(
                             objectMapper.writeValueAsString(
                                 JsonTilleggsinformasjon(mottaker.enhetsnummer),
                             ),
-                        vedleggJson = json.toVedleggJson(),
-                        dokumenter = getFilOpplastingList(json),
+                        vedleggSpec = json.toVedleggJson(),
+                        pdfDokumenter = getFilOpplastingList(json),
                         kommunenr = json.soknad.mottaker.kommunenummer,
                         navEksternRefId = soknadId.toString(),
                         token = token,
@@ -91,15 +88,6 @@ class SendSoknadHandler(
             isKortSoknad = soknadService.erKortSoknad(soknadId),
             innsendingTidspunkt = innsendingTidspunkt,
         )
-            .also {
-                // TODO Logger ut json så data kan sjekkes
-                if (MiljoUtils.isNonProduction()) {
-                    logger.info(
-                        "Følgende JsonInternalSoknad sendt: \n\n" +
-                            JsonSosialhjelpObjectMapper.createObjectMapper().writeValueAsString(json),
-                    )
-                }
-            }
     }
 
     private fun JsonInternalSoknad.toVedleggJson(): String {

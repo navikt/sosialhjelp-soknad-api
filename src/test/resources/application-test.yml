@@ -78,9 +78,6 @@ unleash_instance_id: ${UNLEASH_INSTANCE_ID:local}
 virusscan_enabled: false
 scheduler.disable: false
 
-nedetid.start: 21.11.2020 14:00:00
-nedetid.slutt: 21.11.2020 15:00:00
-
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS:integrasjonsid_fiks}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}
 

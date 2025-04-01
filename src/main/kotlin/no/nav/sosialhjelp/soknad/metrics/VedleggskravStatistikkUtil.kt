@@ -133,12 +133,7 @@ data class VedleggMetadata(
 )
 
 enum class Vedleggstatus {
-    // TODO Forventet og VedleggKreves er det samme - beholder begge inntil ny datamodell
-    FORVENTET,
     VedleggKreves,
     LastetOpp,
     VedleggAlleredeSendt,
-    ;
-
-    fun er(status: Vedleggstatus): Boolean = this == status
 }

@@ -62,9 +62,6 @@ class BoutgiftServiceImpl(
         }
     }
 
-    // TODO "kopiering" og forsøk på enklere fremstilling av BoutgiftRessurs#getSkalViseInfoVedBekreftelse
-    // TODO denne presiserer hvilke bekreftelser vi er interessert i - og ikke hva som helst som tidligere
-    // TODO Skal backend egentlig eie denne logikken? Tore
     override fun skalViseInfoVedBekreftelse(soknadId: UUID): Boolean {
         return if (fetchBostotteFailedOrMissingSamtykke(soknadId)) {
             getBostotteRelatedBekreftelser(soknadId)

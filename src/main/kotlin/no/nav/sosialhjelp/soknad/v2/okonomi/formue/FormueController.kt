@@ -55,7 +55,6 @@ class FormueController(
     }
 }
 
-// TODO Trenger man både flagg og tekststreng for beskrivelse av annet (sparing) ?
 data class FormueDto(
     val hasBrukskonto: Boolean = false,
     val hasSparekonto: Boolean = false,

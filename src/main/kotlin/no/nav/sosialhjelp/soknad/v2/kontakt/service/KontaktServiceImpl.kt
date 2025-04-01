@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
-// TODO KontaktService? (NavEnhet er jo ikke en adresse per se...)
 interface AdresseService {
     fun findAdresser(soknadId: UUID): Adresser
 

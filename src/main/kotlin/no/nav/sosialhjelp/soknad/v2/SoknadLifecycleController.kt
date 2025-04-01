@@ -1,10 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -26,7 +24,6 @@ import java.util.UUID
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,
-    private val nedetidService: NedetidService,
 ) {
     @PostMapping("/create")
     fun createSoknad(
@@ -43,18 +40,10 @@ class SoknadLifecycleController(
             } else {
                 false
             }
-        // TODO bør ikke dette sjekkes ved alle kall? ergo = Interceptor-mat ?
-        if (nedetidService.isInnenforNedetid) {
-            throw SoknadenHarNedetidException(
-                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}",
-            )
-        }
 
         return soknadLifecycleService
             .startSoknad(isKort)
-            .let { soknadId ->
-                StartSoknadResponseDto(soknadId, false)
-            }
+            .let { soknadId -> StartSoknadResponseDto(soknadId, false) }
     }
 
     @PostMapping("/{soknadId}/send")
@@ -62,9 +51,6 @@ class SoknadLifecycleController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SoknadSendtDto {
-        if (nedetidService.isInnenforNedetid) {
-            throw SoknadenHarNedetidException("Soknaden har planlagt nedetid frem til ${nedetidService.nedetidSluttAsString}")
-        }
         val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
 
         return SoknadSendtDto(digisosId, innsendingstidspunkt)

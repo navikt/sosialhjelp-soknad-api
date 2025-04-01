@@ -72,6 +72,7 @@ private fun DokumentasjonDto.toVedleggFrontend(): VedleggFrontend {
     )
 }
 
+// TODO Forklaring: Hvis det ikke sendes med tomt element - rendres ikke input-feltet
 // TODO Frontend rendrer input-felter basert på hva som returneres for den spesifikke typen
 // TODO Derfor må det sendes med et tomt element for typer som skal ha input...
 // TODO Dette bør gjøres annerledes på frontend

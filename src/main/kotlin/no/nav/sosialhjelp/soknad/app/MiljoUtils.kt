@@ -23,17 +23,8 @@ object MiljoUtils {
     // Omvendt boolean-logikk er ikke pent - håndterer det ett sted istedetfor rundt omkring i koden ellers
     fun isProduction(): Boolean = !isNonProduction()
 
-    // TODO Midlertidig mens fss lever
-    fun isProdFss(): Boolean = System.getenv(SPRING_PROFILES_ACTIVE).contains("prodfss")
-
     fun isMockAltProfil(): Boolean {
         val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
         return value.contains("mock-alt")
-    }
-
-    // For å kunne teste i mock eller dev
-    fun isMockOrDev(): Boolean {
-        val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
-        return value.contains("mock-alt") || value.contains("dev")
     }
 }
