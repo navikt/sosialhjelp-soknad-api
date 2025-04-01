@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
@@ -106,11 +108,24 @@ data class BoliglanInput(
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(BelopDto::class),
     JsonSubTypes.Type(LonnsInntektDto::class),
     JsonSubTypes.Type(AvdragRenterDto::class),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "BelopDto", schema = BelopDto::class),
+        DiscriminatorMapping(value = "LonnsInntektDto", schema = LonnsInntektDto::class),
+        DiscriminatorMapping(value = "AvdragRenterDto", schema = AvdragRenterDto::class),
+    ],
+    subTypes = [
+        BelopDto::class,
+        LonnsInntektDto::class,
+        AvdragRenterDto::class,
+    ],
 )
 sealed interface OkonomiDetaljDto
 
