@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonController
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
 import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
@@ -64,7 +65,7 @@ class OkonomiskeOpplysningerProxy(
             soknadId = UUID.fromString(behandlingsId),
             input =
                 DokumentasjonInput(
-                    type = vedleggFrontend.type.opplysningType ?: error("Manglende mapping for VedleggType -> OpplysningType"),
+                    type = vedleggFrontend.type.opplysningType?.toDto() ?: error("Manglende mapping for VedleggType -> OpplysningType"),
                     hasLevert = vedleggFrontend.alleredeLevert ?: false,
                 ),
         )
@@ -81,7 +82,7 @@ class OkonomiskeOpplysningerProxy(
 }
 
 private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: OkonomiskeOpplysningerDto): VedleggFrontend {
-    val vedleggType = type.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
+    val vedleggType = type.value.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
 
     val detaljer = okonomiskeOpplysningerForTyper.opplysninger.find { it.type == type }?.detaljer
 
@@ -89,7 +90,7 @@ private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: O
         type = vedleggType,
         alleredeLevert = dokumentasjonStatus == DokumentasjonStatus.LEVERT_TIDLIGERE,
         rader = detaljer.resolveRader(vedleggType),
-        gruppe = type.group,
+        gruppe = type.value.group,
         vedleggStatus = dokumentasjonStatus.toVedleggStatus(),
         filer = dokumenter.map { DokumentUpload(it.filnavn, it.dokumentId.toString()) },
     )
