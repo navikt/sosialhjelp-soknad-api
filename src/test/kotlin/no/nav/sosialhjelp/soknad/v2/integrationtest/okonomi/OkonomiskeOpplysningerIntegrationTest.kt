@@ -59,7 +59,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.opplysninger).hasSize(1)
-                assertThat(dto.opplysninger.map { it.type }).containsOnly(FORMUE_BRUKSKONTO)
+                assertThat(dto.opplysninger.map { it.type.value }).containsOnly(FORMUE_BRUKSKONTO)
             }
 
         okonomiService.getFormuer(soknad.id).filter { it.type == FORMUE_BRUKSKONTO }
@@ -91,9 +91,9 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             .also { dto ->
                 assertThat(dto.opplysninger)
                     .hasSize(3)
-                    .allMatch { relevantForOkonomiskeOpplysninger.contains(it.type) }
-                    .noneMatch { ikkeRelevanteOkonomiTyper.contains(it.type) }
-                    .noneMatch { andreDokTyper.contains(it.type) }
+                    .allMatch { relevantForOkonomiskeOpplysninger.contains(it.type.value) }
+                    .noneMatch { ikkeRelevanteOkonomiTyper.contains(it.type.value) }
+                    .noneMatch { andreDokTyper.contains(it.type.value) }
             }
     }
 
@@ -157,7 +157,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere ugyldig type skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                opplysningType = HUSLEIEKONTRAKT,
+                type = HUSLEIEKONTRAKT.toDto(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -187,7 +187,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER.toDto(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enAnnenUtgiftString, belop = ettBelop),
@@ -224,7 +224,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANNET_BO,
+                    type = UtgiftType.UTGIFTER_ANNET_BO.toDto(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBoutgiftString, belop = ettBelop),
@@ -262,7 +262,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANNET_BARN,
+                    type = UtgiftType.UTGIFTER_ANNET_BARN.toDto(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBarneugiftString, belop = ettBelop),
@@ -346,10 +346,12 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Bostotte hentet fra register skal ikke returneres`() {
+        // TODO
     }
 
     @Test
     fun `Informasjon om bostotte fra bruker skal vises`() {
+        // TODO
     }
 
     companion object {
