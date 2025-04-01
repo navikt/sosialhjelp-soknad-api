@@ -1,7 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.v2.createInntekter
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.FormueTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
 import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
