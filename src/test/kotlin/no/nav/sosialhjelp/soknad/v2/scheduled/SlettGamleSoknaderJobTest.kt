@@ -80,7 +80,7 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Skal ikke slette soknader med SENDING_FEILET`() =
+    fun `Skal ikke slette soknader yngre enn 14 + 5 dager med SENDING_FEILET`() =
         runTest(timeout = 5.seconds) {
             val ids =
                 listOf(
