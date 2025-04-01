@@ -170,7 +170,7 @@ private fun VedleggFrontend.toBoliglanInput() =
 
 private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType) =
     GenericOkonomiInput(
-        opplysningType = opplysningType,
+        type = opplysningType.toDto(),
         detaljer =
             if (rader.isNullOrEmpty() || (rader.size == 1 && rader[0].allFieldsNull())) {
                 emptyList()

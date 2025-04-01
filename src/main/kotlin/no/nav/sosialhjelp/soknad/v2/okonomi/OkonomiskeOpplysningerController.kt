@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -55,13 +59,13 @@ data class OkonomiskeOpplysningerDto(
 )
 
 data class OkonomiskOpplysningDto(
-    val type: OpplysningType,
+    val type: OpplysningTypeDto,
     val detaljer: List<OkonomiDetaljDto>?,
 )
 
 private fun OkonomiElement.toOkonomiskOpplysningDto(): OkonomiskOpplysningDto {
     return OkonomiskOpplysningDto(
-        type = type,
+        type = type.toDto(),
         detaljer = this.mapFromOkonomiElement(),
     )
 }
@@ -95,19 +99,19 @@ sealed interface AbstractOkonomiInput
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    val opplysningType: OpplysningType,
+    val type: OpplysningTypeDto,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
 
 // Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
 data class LonnsInput(
-    val inntektType: InntektType = InntektType.JOBB,
+    val type: InntektTypeDto = InntektTypeDto(InntektType.JOBB),
     val detalj: LonnsInntektDto,
 ) : AbstractOkonomiInput
 
 // For boliglån hentes det inn ett eller flere renter og avdrag-par.
 data class BoliglanInput(
-    val utgiftType: UtgiftType = UtgiftType.UTGIFTER_BOLIGLAN,
+    val type: UtgiftTypeDto = UtgiftTypeDto(UtgiftType.UTGIFTER_BOLIGLAN),
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
@@ -151,7 +155,7 @@ data class AvdragRenterDto(
 
 private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
     when (this) {
-        is GenericOkonomiInput -> opplysningType
+        is GenericOkonomiInput -> type.value
         is LonnsInput -> InntektType.JOBB
         is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }
