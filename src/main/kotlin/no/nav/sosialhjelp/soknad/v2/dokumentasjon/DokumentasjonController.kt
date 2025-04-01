@@ -37,7 +37,7 @@ class DokumentasjonController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: DokumentasjonInput,
     ): ForventetDokumentasjonDto {
-        handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type, hasLevert = input.hasLevert)
+        handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type.value, hasLevert = input.hasLevert)
 
         return getForventetDokumentasjon(soknadId)
     }
@@ -81,7 +81,7 @@ data class ForventetDokumentasjonDto(
 )
 
 data class DokumentasjonDto(
-    val type: OpplysningType,
+    val type: OpplysningTypeDto,
     val dokumentasjonStatus: DokumentasjonStatus,
     val dokumenter: List<DokumentDto>,
 )
@@ -93,7 +93,7 @@ data class DokumentDto(
 
 private fun Dokumentasjon.toDokumentasjonDto(): DokumentasjonDto {
     return DokumentasjonDto(
-        type = type,
+        type = type.toDto(),
         dokumentasjonStatus = status,
         dokumenter =
             dokumenter.map { dokument ->
@@ -102,7 +102,17 @@ private fun Dokumentasjon.toDokumentasjonDto(): DokumentasjonDto {
     )
 }
 
+fun OpplysningType.toDto(): OpplysningTypeDto {
+    return when (this) {
+        is InntektType -> InntektTypeDto(this)
+        is UtgiftType -> UtgiftTypeDto(this)
+        is FormueType -> FormueTypeDto(this)
+        is AnnenDokumentasjonType -> AnnenDokumentasjonTypeDto(this)
+        else -> error("Ukjent opplysningType $this")
+    }
+}
+
 data class DokumentasjonInput(
-    val type: OpplysningType,
+    val type: OpplysningTypeDto,
     val hasLevert: Boolean,
 )
