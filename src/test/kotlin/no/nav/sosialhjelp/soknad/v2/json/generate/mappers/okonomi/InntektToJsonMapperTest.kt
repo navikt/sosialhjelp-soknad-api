@@ -1,7 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.v2.createInntekter
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.FormueTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
 import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
@@ -12,8 +19,10 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -197,6 +206,21 @@ class InntektToJsonMapperTest : AbstractOkonomiMapperTest() {
             assertThat(it.netto).isNotNull()
             assertThat(it.belop == null).isTrue()
         }
+    }
+
+    @Test
+    fun whateva() {
+        val typeDto1: OpplysningTypeDto = InntektTypeDto(InntektType.JOBB)
+        val typeDto2: OpplysningTypeDto = UtgiftTypeDto(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+        val typeDto3: OpplysningTypeDto = FormueTypeDto(FormueType.FORMUE_BRUKSKONTO)
+        val typeDto4: OpplysningTypeDto = AnnenDokumentasjonTypeDto(AnnenDokumentasjonType.SKATTEMELDING)
+
+        val writeValueAsString1 = jacksonObjectMapper().writeValueAsString(typeDto1)
+        val writeValueAsString2 = jacksonObjectMapper().writeValueAsString(typeDto2)
+        val writeValueAsString3 = jacksonObjectMapper().writeValueAsString(typeDto3)
+        val writeValueAsString4 = jacksonObjectMapper().writeValueAsString(typeDto4)
+
+        val a = 4
     }
 }
 

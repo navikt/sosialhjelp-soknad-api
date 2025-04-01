@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
-import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
@@ -13,27 +9,6 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type",
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(value = FormueType::class, name = "FormueType"),
-    JsonSubTypes.Type(value = InntektType::class, name = "InntektType"),
-    JsonSubTypes.Type(value = UtgiftType::class, name = "UtgiftType"),
-    JsonSubTypes.Type(value = AnnenDokumentasjonType::class, name = "AnnenDokumentasjonType"),
-)
-@Schema(
-    discriminatorProperty = "type",
-    discriminatorMapping = [
-        DiscriminatorMapping(value = "FormueType", schema = FormueType::class),
-        DiscriminatorMapping(value = "InntektType", schema = InntektType::class),
-        DiscriminatorMapping(value = "UtgiftType", schema = UtgiftType::class),
-        DiscriminatorMapping(value = "AnnenDokumentasjonType", schema = AnnenDokumentasjonType::class),
-    ],
-    subTypes = [InntektType::class, FormueType::class, UtgiftType::class, AnnenDokumentasjonType::class],
-)
 interface OpplysningType {
     // denne må hete `name` for pga enum.name
     val name: String
