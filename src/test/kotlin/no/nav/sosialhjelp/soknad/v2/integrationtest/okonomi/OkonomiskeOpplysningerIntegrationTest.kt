@@ -197,7 +197,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okonoiskOpplysning ->
-                assertThat(okonoiskOpplysning.type).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+                assertThat(okonoiskOpplysning.type.value).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
             }
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
@@ -234,7 +234,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
+                assertThat(okOpplysning.type.value).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
@@ -272,7 +272,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
+                assertThat(okOpplysning.type.value).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
@@ -300,7 +300,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type).isEqualTo(JOBB)
+                assertThat(okOpplysning.type.value).isEqualTo(JOBB)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter
@@ -328,7 +328,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type).isEqualTo(UTGIFTER_BOLIGLAN)
+                assertThat(okOpplysning.type.value).isEqualTo(UTGIFTER_BOLIGLAN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
