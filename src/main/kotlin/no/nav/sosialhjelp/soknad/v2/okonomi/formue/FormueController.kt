@@ -39,20 +39,6 @@ class FormueController(
 
         return getFormue(soknadId)
     }
-
-    @PutMapping("/updateWithoutRemoving")
-    fun updateFormueWithoutRemoving(
-        @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: FormueInput,
-    ): FormueDto {
-        formueService.updateFormuerWithoutRemoving(
-            soknadId = soknadId,
-            existingTypes = input.toTypeSet(),
-            beskrivelse = if (input.hasBeskrivelseSparing) input.beskrivelseSparing else null,
-        )
-
-        return getFormue(soknadId)
-    }
 }
 
 data class FormueDto(

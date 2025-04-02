@@ -15,12 +15,6 @@ interface FormueService {
         beskrivelse: String?,
     )
 
-    fun updateFormuerWithoutRemoving(
-        soknadId: UUID,
-        existingTypes: Set<FormueType>,
-        beskrivelse: String?,
-    )
-
     fun removeFormuer(soknadId: UUID)
 }
 
@@ -53,22 +47,6 @@ class FormueServiceImpl(
             } else {
                 okonomiService.removeElementFromOkonomi(soknadId, type)
             }
-        }
-    }
-
-    override fun updateFormuerWithoutRemoving(
-        soknadId: UUID,
-        existingTypes: Set<FormueType>,
-        beskrivelse: String?,
-    ) {
-        okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_SPARING, verdi = true)
-
-        existingTypes.forEach { type ->
-            okonomiService.addElementToOkonomi(
-                soknadId = soknadId,
-                type = type,
-                beskrivelse = if (type == FormueType.FORMUE_ANNET) beskrivelse else null,
-            )
         }
     }
 

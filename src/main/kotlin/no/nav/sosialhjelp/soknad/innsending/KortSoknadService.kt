@@ -15,6 +15,8 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -34,6 +36,7 @@ class KortSoknadService(
     private val soknadMetadataService: SoknadMetadataService,
     private val unleash: Unleash,
     private val dokumentlagerService: DokumentlagerService,
+    private val okonomiService: OkonomiService,
 ) {
     private val logger by logger()
 
@@ -46,6 +49,9 @@ class KortSoknadService(
         // Hvis en søknad skal transformeres til kort -> fjern forventet dokumentasjon og opprett obligatorisk dokumentasjon
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
         dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+
+        // bruker skal også kunne legge ved okonomiske opplysninger (= beløp) for formue brukskonto
+        okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
 
         soknadService.updateKortSoknad(soknadId, true)
@@ -59,6 +65,8 @@ class KortSoknadService(
         // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og legg til SKATTEMELDING
         dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
         dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+
+        okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
         dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
 
         soknadService.updateKortSoknad(soknadId, false)
