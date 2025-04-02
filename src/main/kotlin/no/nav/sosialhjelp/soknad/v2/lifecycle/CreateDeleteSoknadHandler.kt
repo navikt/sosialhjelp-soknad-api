@@ -75,7 +75,7 @@ class CreateDeleteSoknadHandler(
 
     private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
         listOf(
-            FormueType.FORMUE_BRUKSKONTO,
+            FormueType.FORMUE_BRUKSKONTO, // kontooversikt|brukskonto
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             AnnenDokumentasjonType.BEHOV, // kort|behov
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
@@ -83,7 +83,6 @@ class CreateDeleteSoknadHandler(
             UtgiftType.UTGIFTER_SFO, // faktura|sfo
             InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
             AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
-            FormueType.FORMUE_ANNET, // kontooversikt|annet
             UtgiftType.UTGIFTER_STROM, // faktura|strom
             InntektType.JOBB, // lonnslipp|arbeid
             InntektType.STUDIELAN_INNTEKT, // student|vedtak
