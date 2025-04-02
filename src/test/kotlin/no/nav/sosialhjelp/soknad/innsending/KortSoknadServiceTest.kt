@@ -36,6 +36,7 @@ class KortSoknadServiceTest {
             mockk(),
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
         )
 
     @Test
