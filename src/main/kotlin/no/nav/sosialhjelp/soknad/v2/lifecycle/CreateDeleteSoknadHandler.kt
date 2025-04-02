@@ -83,6 +83,7 @@ class CreateDeleteSoknadHandler(
             UtgiftType.UTGIFTER_SFO, // faktura|sfo
             InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
             AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
+            FormueType.FORMUE_ANNET, // kontooversikt|annet
             UtgiftType.UTGIFTER_STROM, // faktura|strom
             InntektType.JOBB, // lonnslipp|arbeid
             InntektType.STUDIELAN_INNTEKT, // student|vedtak
