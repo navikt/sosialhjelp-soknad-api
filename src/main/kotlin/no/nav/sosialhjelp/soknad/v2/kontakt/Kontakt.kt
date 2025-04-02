@@ -63,6 +63,7 @@ enum class AdresseValg {
 data class NavEnhet(
     val enhetsnavn: String? = null,
     val enhetsnummer: String? = null,
+    // TODO Skal denne være nullable?
     val kommunenummer: String? = null,
     val orgnummer: String? = null,
     val kommunenavn: String? = null,

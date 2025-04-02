@@ -1,10 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.kontakt.service
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -12,24 +7,32 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
-import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 interface AdresseService {
     fun findAdresser(soknadId: UUID): Adresser
 
-    fun updateBrukerAdresse(
-        soknadId: UUID,
-        adresseValg: AdresseValg,
-        brukerAdresse: Adresse?,
-    ): Adresser
-
     fun findMottaker(soknadId: UUID): NavEnhet?
 
-    fun getEnrichment(kommunenummer: String): NavEnhetEnrichment
+    fun updateBrukeradresse(
+        soknadId: UUID,
+        brukerAdresse: Adresse,
+        mottaker: NavEnhet?,
+    )
+
+    fun updateAdresseValg(
+        soknadId: UUID,
+        adresseValg: AdresseValg,
+        mottaker: NavEnhet?,
+    )
+
+    fun updateKommunenavnMottaker(
+        soknadId: UUID,
+        kommunenavn: String,
+    ): String?
 }
 
 interface TelefonService {
@@ -44,15 +47,11 @@ interface TelefonService {
 @Service
 class KontaktServiceImpl(
     private val kontaktRepository: KontaktRepository,
-    private val kortSoknadService: KortSoknadService,
-    private val nyNavEnhetService: NavEnhetService,
-    private val kommuneInfoService: KommuneInfoService,
-    private val kodeverkService: KodeverkService,
 ) : AdresseService, TelefonService {
-    private val logger by logger()
-
+    @Transactional(readOnly = true)
     override fun findTelefonInfo(soknadId: UUID) = kontaktRepository.findByIdOrNull(soknadId)?.telefonnummer
 
+    @Transactional
     override fun updateTelefonnummer(
         soknadId: UUID,
         telefonnummerBruker: String?,
@@ -62,62 +61,42 @@ class KontaktServiceImpl(
             .let { kontaktRepository.save(it) }
             .telefonnummer
 
-    override fun findAdresser(soknadId: UUID) =
-        kontaktRepository.findByIdOrNull(soknadId)?.adresser
-            ?: throw IkkeFunnetException("Fant ikke adresser for soknad")
+    @Transactional(readOnly = true)
+    override fun findAdresser(soknadId: UUID) = findOrCreate(soknadId).adresser
 
-    override fun updateBrukerAdresse(
-        soknadId: UUID,
-        adresseValg: AdresseValg,
-        brukerAdresse: Adresse?,
-    ): Adresser {
-        if (adresseValg == AdresseValg.SOKNAD && brukerAdresse != null) {
-            logger.info("Oppdaterer adresse: $adresseValg")
-        }
-
-        val oldKontakt = findOrCreate(soknadId)
-
-        val mottaker =
-            when (adresseValg) {
-                AdresseValg.FOLKEREGISTRERT -> oldKontakt.adresser.folkeregistrert
-                AdresseValg.MIDLERTIDIG -> oldKontakt.adresser.midlertidig
-                AdresseValg.SOKNAD -> brukerAdresse
-            }
-                ?.let { valgtAdresse -> nyNavEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
-
-        return oldKontakt
-            .run {
-                copy(
-                    adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
-                    mottaker = mottaker,
-                )
-            }
-            .let { kontaktRepository.save(it) }
-            .also { kortSoknadService.resolveKortSoknad(oldKontakt, it) }
-            .adresser
-    }
-
+    @Transactional(readOnly = true)
     override fun findMottaker(soknadId: UUID): NavEnhet? {
         return kontaktRepository.findByIdOrNull(soknadId)?.mottaker
     }
 
-    override fun getEnrichment(kommunenummer: String): NavEnhetEnrichment {
-        val isDigisosKommune = kanMottaSoknader(kommunenummer)
-        val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
-        return NavEnhetEnrichment(kommunenavn, isDigisosKommune)
+    @Transactional
+    override fun updateAdresseAndMottaker(
+        soknadId: UUID,
+        brukerAdresse: Adresse,
+        mottaker: NavEnhet?,
+    ) {
+        findOrCreate(soknadId)
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.SOKNAD, fraBruker = brukerAdresse),
+                    mottaker = mottaker,
+                )
+            }
+            .also { kontaktRepository.save(it) }
     }
 
-    private fun kanMottaSoknader(kommunenummer: String): Boolean {
-        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer)
-        return isNyDigisosApiKommuneMedMottakAktivert
+    override fun updateKommunenavnMottaker(
+        soknadId: UUID,
+        kommunenavn: String,
+    ): String {
+        return kontaktRepository.findByIdOrNull(soknadId)
+            ?.run { copy(mottaker = mottaker?.copy(kommunenavn = kommunenavn)) }
+            ?.let { kontaktRepository.save(it) }
+            ?.mottaker?.kommunenavn
+            ?: error("Kunne ikke oppdatere mottakers kommunenavn")
     }
 
     private fun findOrCreate(soknadId: UUID) =
         kontaktRepository.findByIdOrNull(soknadId)
             ?: kontaktRepository.save(Kontakt(soknadId))
 }
-
-data class NavEnhetEnrichment(
-    val kommunenavn: String?,
-    val isDigisosKommune: Boolean,
-)
