@@ -44,7 +44,7 @@ class AdresseUseCaseHandler(
                 ?.let { valgtAdresse -> navEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
-            .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad() }
+            .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(oldAdresser, oldMottaker, mottaker) }
     }
 
     private fun getKommuneInfo(
