@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toValue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -152,7 +153,7 @@ data class AvdragRenterDto(
 
 private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
     when (this) {
-        is GenericOkonomiInput -> type.value
+        is GenericOkonomiInput -> type.toValue()
         is LonnsInput -> InntektType.JOBB
         is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }

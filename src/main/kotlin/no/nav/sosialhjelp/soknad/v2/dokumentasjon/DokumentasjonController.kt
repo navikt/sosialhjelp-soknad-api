@@ -37,11 +37,19 @@ class DokumentasjonController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: DokumentasjonInput,
     ): ForventetDokumentasjonDto {
-        handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type.value, hasLevert = input.hasLevert)
+        handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type.toValue(), hasLevert = input.hasLevert)
 
         return getForventetDokumentasjon(soknadId)
     }
 }
+
+fun OpplysningTypeDto.toValue(): OpplysningType =
+    when (this) {
+        is InntektTypeDto -> this.value
+        is AnnenDokumentasjonTypeDto -> this.value
+        is FormueTypeDto -> this.value
+        is UtgiftTypeDto -> this.value
+    }
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -64,17 +72,15 @@ class DokumentasjonController(
     ],
     subTypes = [InntektTypeDto::class, FormueTypeDto::class, UtgiftTypeDto::class, AnnenDokumentasjonTypeDto::class],
 )
-sealed interface OpplysningTypeDto {
-    val value: OpplysningType
-}
+sealed interface OpplysningTypeDto
 
-data class InntektTypeDto(override val value: InntektType) : OpplysningTypeDto
+data class InntektTypeDto(val value: InntektType) : OpplysningTypeDto
 
-data class UtgiftTypeDto(override val value: UtgiftType) : OpplysningTypeDto
+data class UtgiftTypeDto(val value: UtgiftType) : OpplysningTypeDto
 
-data class FormueTypeDto(override val value: FormueType) : OpplysningTypeDto
+data class FormueTypeDto(val value: FormueType) : OpplysningTypeDto
 
-data class AnnenDokumentasjonTypeDto(override val value: AnnenDokumentasjonType) : OpplysningTypeDto
+data class AnnenDokumentasjonTypeDto(val value: AnnenDokumentasjonType) : OpplysningTypeDto
 
 data class ForventetDokumentasjonDto(
     val dokumentasjon: List<DokumentasjonDto>,
