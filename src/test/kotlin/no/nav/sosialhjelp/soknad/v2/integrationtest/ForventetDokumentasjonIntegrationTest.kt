@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TID
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toValue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -52,9 +53,9 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(dto.dokumentasjon)
                     .hasSize(3)
                     .allMatch {
-                        it.type.value == InntektType.JOBB ||
-                            it.type.value == UtgiftType.UTGIFTER_BOLIGLAN ||
-                            it.type.value == FormueType.FORMUE_BRUKSKONTO
+                        it.type.toValue() == InntektType.JOBB ||
+                            it.type.toValue() == UtgiftType.UTGIFTER_BOLIGLAN ||
+                            it.type.toValue() == FormueType.FORMUE_BRUKSKONTO
                     }
             }
     }
