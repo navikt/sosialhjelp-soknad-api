@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
@@ -92,6 +93,7 @@ data class ForventetDokumentasjonDto(
 
 data class DokumentasjonDto(
     val type: OpplysningTypeDto,
+    val gruppe: VedleggGruppe = type.toValue().group,
     val dokumentasjonStatus: DokumentasjonStatus,
     val dokumenter: List<DokumentDto>,
 )
