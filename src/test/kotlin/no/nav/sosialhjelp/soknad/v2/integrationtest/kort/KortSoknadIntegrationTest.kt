@@ -324,8 +324,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         dokumentasjonRepository.findAllBySoknadId(soknadId)
             .also { list ->
                 assertThat(list)
-                    .hasSize(2)
-                    .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+                    .hasSize(1)
                     .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
