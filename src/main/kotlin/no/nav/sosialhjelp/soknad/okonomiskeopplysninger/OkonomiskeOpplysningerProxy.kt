@@ -109,6 +109,7 @@ private fun OpplysningTypeDto.getVedleggType(): VedleggType? =
         is UtgiftTypeDto -> this.value.getJsonVerdier().vedleggType
         is FormueTypeDto -> this.value.getJsonVerdier().vedleggType
         is AnnenDokumentasjonTypeDto -> this.value.getJsonVerdier().vedleggType
+        else -> error("Ugyldig OpplysningTypeDto: ${this.javaClass.simpleName}")
     }
 
 private fun OpplysningTypeDto.getVedleggGruppe(): VedleggGruppe =
@@ -117,6 +118,7 @@ private fun OpplysningTypeDto.getVedleggGruppe(): VedleggGruppe =
         is UtgiftTypeDto -> this.value.group
         is FormueTypeDto -> this.value.group
         is AnnenDokumentasjonTypeDto -> this.value.group
+        else -> error("Ugyldig OpplysningTypeDto: ${this.javaClass.simpleName}")
     }
 
 // TODO Forklaring: Hvis det ikke sendes med tomt element - rendres ikke input-feltet
