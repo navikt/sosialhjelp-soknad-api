@@ -90,11 +90,28 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
     }
 }
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type",
+)
 @JsonSubTypes(
     JsonSubTypes.Type(GenericOkonomiInput::class),
     JsonSubTypes.Type(LonnsInput::class),
     JsonSubTypes.Type(BoliglanInput::class),
+)
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "BelopDto", schema = BelopDto::class),
+        DiscriminatorMapping(value = "LonnsInntektDto", schema = LonnsInntektDto::class),
+        DiscriminatorMapping(value = "AvdragRenterDto", schema = AvdragRenterDto::class),
+    ],
+    subTypes = [
+        BelopDto::class,
+        LonnsInntektDto::class,
+        AvdragRenterDto::class,
+    ],
 )
 sealed interface AbstractOkonomiInput
 
