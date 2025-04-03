@@ -29,8 +29,9 @@ class KortSoknadUseCaseHandler(
     private val unleash: Unleash,
 ) {
     fun resolveKortSoknad(
-        oldKontakt: Kontakt,
-        updatedKontakt: Kontakt,
+        oldKontakt: Adresser,
+        updatedKontakt: NavEnhet?,
+        mottaker: NavEnhet?,
     ) {
         // I mock overstyrer man dette med valg på forsiden
         if (MiljoUtils.isMockAltProfil()) return
