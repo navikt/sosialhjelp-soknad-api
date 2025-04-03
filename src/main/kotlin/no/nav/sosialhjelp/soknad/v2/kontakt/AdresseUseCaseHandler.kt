@@ -14,6 +14,7 @@ class AdresseUseCaseHandler(
     private val navEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
     private val kodeverkService: KodeverkService,
+    private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler,
 ) {
     fun getAdresseAndMottakerInfo(soknadId: UUID): AdresserDto {
         val adresser = adresseService.findAdresser(soknadId)
@@ -32,6 +33,7 @@ class AdresseUseCaseHandler(
         brukerAdresse: Adresse?,
     ) {
         val oldAdresser = adresseService.findAdresser(soknadId)
+        val oldMottaker = adresseService.findMottaker(soknadId)
 
         val mottaker =
             when (adresseValg) {
@@ -41,7 +43,8 @@ class AdresseUseCaseHandler(
             }
                 ?.let { valgtAdresse -> navEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
 
-        adresseService.updateBrukeradresse(soknadId, adresseValg, brukerAdresse, mottaker)
+        runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
+            .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad() }
     }
 
     private fun getKommuneInfo(

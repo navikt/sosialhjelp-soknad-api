@@ -19,7 +19,6 @@ import java.util.UUID
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
     private val adresseUseCaseHandler: AdresseUseCaseHandler,
-    private val kortSoknadHandler: KortSoknadUseCaseHandler,
 ) {
     @GetMapping
     fun getAdresser(
@@ -36,7 +35,6 @@ class AdresseController(
             adresseValg = adresserInput.adresseValg,
             brukerAdresse = adresserInput.brukerAdresse?.toDomainAdresse(),
         )
-        kortSoknadHandler.resolveKortSoknad(soknadId)
 
         return getAdresser(soknadId)
     }

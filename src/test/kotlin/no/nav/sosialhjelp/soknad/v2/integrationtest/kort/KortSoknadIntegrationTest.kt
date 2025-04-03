@@ -103,8 +103,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         doUpdateAdresse(soknadId)
 
         verify(exactly = 0) { kortSoknadService.isQualifiedFromFiks(any(), any()) }
-        verify(exactly = 0) { kortSoknadService.transitionToKort(any()) }
-        verify(exactly = 0) { kortSoknadService.transitionToStandard(any()) }
+        verify(exactly = 0) { kortSoknadService.isTransitioningToKort(any()) }
+        verify(exactly = 0) { kortSoknadService.isTransitioningToStandard(any()) }
     }
 
     @Test

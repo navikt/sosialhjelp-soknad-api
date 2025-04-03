@@ -17,15 +17,10 @@ interface AdresseService {
 
     fun findMottaker(soknadId: UUID): NavEnhet?
 
-    fun updateBrukeradresse(
-        soknadId: UUID,
-        brukerAdresse: Adresse,
-        mottaker: NavEnhet?,
-    )
-
-    fun updateAdresseValg(
+    fun updateAdresse(
         soknadId: UUID,
         adresseValg: AdresseValg,
+        brukerAdresse: Adresse?,
         mottaker: NavEnhet?,
     )
 
@@ -70,15 +65,16 @@ class KontaktServiceImpl(
     }
 
     @Transactional
-    override fun updateAdresseAndMottaker(
+    override fun updateAdresse(
         soknadId: UUID,
-        brukerAdresse: Adresse,
+        adresseValg: AdresseValg,
+        brukerAdresse: Adresse?,
         mottaker: NavEnhet?,
     ) {
         findOrCreate(soknadId)
             .run {
                 copy(
-                    adresser = adresser.copy(adressevalg = AdresseValg.SOKNAD, fraBruker = brukerAdresse),
+                    adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
                     mottaker = mottaker,
                 )
             }
