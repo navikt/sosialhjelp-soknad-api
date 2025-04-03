@@ -1,14 +1,20 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonTypeDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonController
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.FormueTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
 import no.nav.sosialhjelp.soknad.v2.json.getJsonVerdier
 import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
@@ -82,7 +88,7 @@ class OkonomiskeOpplysningerProxy(
 }
 
 private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: OkonomiskeOpplysningerDto): VedleggFrontend {
-    val vedleggType = type.value.getJsonVerdier().vedleggType ?: error("Mangler type for mapping til VedleggType")
+    val vedleggType: VedleggType = type.getVedleggType() ?: error("Mangler type for mapping til VedleggType")
 
     val detaljer = okonomiskeOpplysningerForTyper.opplysninger.find { it.type == type }?.detaljer
 
@@ -90,11 +96,27 @@ private fun DokumentasjonDto.toVedleggFrontend(okonomiskeOpplysningerForTyper: O
         type = vedleggType,
         alleredeLevert = dokumentasjonStatus == DokumentasjonStatus.LEVERT_TIDLIGERE,
         rader = detaljer.resolveRader(vedleggType),
-        gruppe = type.value.group,
+        gruppe = type.getVedleggGruppe(),
         vedleggStatus = dokumentasjonStatus.toVedleggStatus(),
         filer = dokumenter.map { DokumentUpload(it.filnavn, it.dokumentId.toString()) },
     )
 }
+
+private fun OpplysningTypeDto.getVedleggType(): VedleggType? =
+    when (this) {
+        is InntektTypeDto -> this.value.getJsonVerdier().vedleggType
+        is UtgiftTypeDto -> this.value.getJsonVerdier().vedleggType
+        is FormueTypeDto -> this.value.getJsonVerdier().vedleggType
+        is AnnenDokumentasjonTypeDto -> this.value.getJsonVerdier().vedleggType
+    }
+
+private fun OpplysningTypeDto.getVedleggGruppe(): VedleggGruppe =
+    when (this) {
+        is InntektTypeDto -> this.value.group
+        is UtgiftTypeDto -> this.value.group
+        is FormueTypeDto -> this.value.group
+        is AnnenDokumentasjonTypeDto -> this.value.group
+    }
 
 // TODO Frontend rendrer input-felter basert på hva som returneres for den spesifikke typen
 // TODO Derfor må det sendes med et tomt element for typer som skal ha input...
