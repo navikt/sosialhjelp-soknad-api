@@ -30,6 +30,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -81,7 +82,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { kortSoknadService.resolveKortSoknad(any(), any()) }
+        verify(exactly = 1) { kortSoknadUseCaseHandler.resolveKortSoknad(any(), any(), any(), any()) }
     }
 
     @Test
@@ -102,7 +103,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
         doUpdateAdresse(soknadId)
 
-        verify(exactly = 0) { kortSoknadService.isQualifiedFromFiks(any(), any()) }
+        verify(exactly = 0) { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) }
         verify(exactly = 0) { kortSoknadService.isTransitioningToKort(any()) }
         verify(exactly = 0) { kortSoknadService.isTransitioningToStandard(any()) }
     }
@@ -207,7 +208,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     fun `Ved transformasjon fra kort til standard, skal dokumenter lastet opp til ANDRE_UTGIFTER overleve`() {
         every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
             createNavEnhet("Annen NAV", "4444", "Annen kommune")
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns true
 
         createEksisterendeSoknad(nowWithMillis().minusDays(10))
         val soknadId = createSoknadWithMetadata()
@@ -248,7 +249,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     .hasSize(3)
             }
 
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns false
         // oppdaterer adresse andre gang -> gir standard soknad
         doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
 
@@ -355,6 +356,9 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     private lateinit var unleash: Unleash
+
+    @SpykBean
+    private lateinit var kortSoknadUseCaseHandler: KortSoknadUseCaseHandler
 
     @SpykBean
     private lateinit var kortSoknadService: KortSoknadService
