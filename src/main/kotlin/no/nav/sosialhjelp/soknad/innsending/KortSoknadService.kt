@@ -62,7 +62,7 @@ class KortSoknadService(
         soknadMetadataService.updateSoknadType(soknadId, SoknadType.STANDARD)
 
         // Hvis en soknad skal transformeres til standard (igjen) -> fjern kun BEHOV og legg til SKATTEMELDING
-        dokumentasjonService.fjernForventetDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
+        dokumentasjonService.resetForventetDokumentasjon(soknadId)
         dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
 
         okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
