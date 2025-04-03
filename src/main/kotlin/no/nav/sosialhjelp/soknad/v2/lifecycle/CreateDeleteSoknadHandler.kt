@@ -1,13 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.lifecycle
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
@@ -64,38 +60,8 @@ class CreateDeleteSoknadHandler(
         soknadId: UUID,
         kortSoknad: Boolean,
     ) {
-        when (kortSoknad) {
-            true -> obligatoriskeDokumentasjonsTyperForKortSoknad
-            false -> obligatoriskeDokumentasjonsTyper
-        }
-            .forEach { opplysningType ->
-                dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = opplysningType)
-            }
+        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, if (kortSoknad) SoknadType.KORT else SoknadType.STANDARD)
     }
-
-    private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
-        listOf(
-            FormueType.FORMUE_BRUKSKONTO, // kontooversikt|brukskonto
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-            AnnenDokumentasjonType.BEHOV, // kort|behov
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
-            UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
-            UtgiftType.UTGIFTER_SFO, // faktura|sfo
-            InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
-            AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
-            FormueType.FORMUE_ANNET, // kontooversikt|annet
-            UtgiftType.UTGIFTER_STROM, // faktura|strom
-            InntektType.JOBB, // lonnslipp|arbeid
-            InntektType.STUDIELAN_INNTEKT, // student|vedtak
-            InntektType.BARNEBIDRAG_MOTTAR,
-            UtgiftType.BARNEBIDRAG_BETALER,
-        )
-
-    private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
-        listOf(
-            AnnenDokumentasjonType.SKATTEMELDING,
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-        )
 
     private fun hasMellomlagredeDokumenter(dto: MellomlagringDto): Boolean {
         dto.mellomlagringMetadataList

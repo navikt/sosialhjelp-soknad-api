@@ -5,7 +5,6 @@ import io.getunleash.UnleashContext
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
@@ -149,7 +148,7 @@ class KortSoknadService(
         updatedKontakt: Kontakt,
     ) {
         // I mock overstyrer man dette med valg på forsiden
-        if (MiljoUtils.isMockAltProfil()) return
+        // if (MiljoUtils.isMockAltProfil()) return
 
         // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
         if (oldKontakt.hasMottakerNotChanged(updatedKontakt.mottaker)) return
