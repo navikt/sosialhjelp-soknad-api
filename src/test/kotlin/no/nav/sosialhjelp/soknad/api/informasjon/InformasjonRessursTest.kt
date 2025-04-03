@@ -8,9 +8,9 @@ import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,7 +22,7 @@ internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
     private val soknadMetadataService: SoknadMetadataService = mockk()
     private val pabegynteSoknaderService: PabegynteSoknaderService = mockk()
-    private val kortSoknadService: KortSoknadService = mockk()
+    private val kortSoknadHandler: KortSoknadUseCaseHandler = mockk()
 
     companion object {
         val PERSON =
@@ -44,9 +44,9 @@ internal class InformasjonRessursTest {
             adresseSokService = mockk(),
             personService = personService,
             pabegynteSoknaderService = pabegynteSoknaderService,
-            kortSoknadService = kortSoknadService,
             maxUploadSize = DataSize.ofTerabytes(10),
             soknadMetadataService = soknadMetadataService,
+            kortSoknadUseCaseHandler = kortSoknadHandler,
         )
 
     @BeforeEach
@@ -55,7 +55,7 @@ internal class InformasjonRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
+        every { kortSoknadHandler.isQualifiedFromFiks(any(), any()) } returns false
         every { personService.hentPerson(any(), any()) } returns PERSON
         every { pabegynteSoknaderService.hentPabegynteSoknaderForBruker(any()) } returns emptyList()
         every { personService.harAdressebeskyttelse(any()) } returns false

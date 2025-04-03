@@ -29,20 +29,21 @@ class KortSoknadUseCaseHandler(
     private val unleash: Unleash,
 ) {
     fun resolveKortSoknad(
-        oldKontakt: Adresser,
-        updatedKontakt: NavEnhet?,
-        mottaker: NavEnhet?,
+        soknadId: UUID,
+        oldAdresser: Adresser,
+        oldMottaker: NavEnhet?,
+        nyMottaker: NavEnhet?,
     ) {
         // I mock overstyrer man dette med valg på forsiden
         if (MiljoUtils.isMockAltProfil()) return
 
         // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
-        if (oldKontakt.hasMottakerNotChanged(updatedKontakt.mottaker)) return
+        if (oldMottaker?.hasMottakerNotChanged(nyMottaker, oldAdresser.adressevalg) == true) return
 
         // Hvis soknad er standard - og det er gjort et adressevalg, så skal den ikke transformeres til kort
-        if (isSoknadTypeStandard(oldKontakt.soknadId) && oldKontakt.adresser.adressevalg != null) return
+        if (isSoknadTypeStandard(soknadId) && oldAdresser.adressevalg != null) return
 
-        val kommunenummer = updatedKontakt.getMottakerKommunenummerOrNull() ?: return
+        val kommunenummer = nyMottaker?.getMottakerKommunenummerOrNull() ?: return
 
         val qualifiesForKort =
             when {
@@ -51,26 +52,29 @@ class KortSoknadUseCaseHandler(
             }
 
         when (qualifiesForKort) {
-            true -> kortSoknadService.isTransitioningToKort(updatedKontakt.soknadId)
-            false -> kortSoknadService.isTransitioningToStandard(updatedKontakt.soknadId)
+            true -> kortSoknadService.isTransitioningToKort(soknadId)
+            false -> kortSoknadService.isTransitioningToStandard(soknadId)
             null -> {
                 logger.warn("Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
                 false
             }
         }.also { hasTransitioned ->
-            if (hasTransitioned) dokumentlagerService.deleteAllDokumenterForSoknad(oldKontakt.soknadId)
+            if (hasTransitioned) dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
         }
     }
 
     private fun isSoknadTypeStandard(soknadId: UUID) =
         metadataService.getSoknadType(soknadId) == SoknadType.STANDARD
 
-    private fun Kontakt.hasMottakerNotChanged(other: NavEnhet?): Boolean {
-        return mottaker?.kommunenummer == other?.kommunenummer && adresser.adressevalg != null
+    private fun NavEnhet.hasMottakerNotChanged(
+        other: NavEnhet?,
+        adresseValg: AdresseValg?,
+    ): Boolean {
+        return kommunenummer == other?.kommunenummer && adresseValg != null
     }
 
-    private fun Kontakt.getMottakerKommunenummerOrNull(): String? {
-        mottaker?.kommunenummer?.let { return it }
+    private fun NavEnhet.getMottakerKommunenummerOrNull(): String? {
+        kommunenummer?.let { return it }
 
         logger.warn("Kommunenummer er null, kan ikke sjekke om bruker har rett på kort søknad")
         return null
