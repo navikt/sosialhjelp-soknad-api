@@ -49,6 +49,7 @@ fun OpplysningTypeDto.toValue(): OpplysningType =
         is AnnenDokumentasjonTypeDto -> this.value
         is FormueTypeDto -> this.value
         is UtgiftTypeDto -> this.value
+        else -> error("Ugyldig OpplysningTypeDto: ${this.javaClass.simpleName}")
     }
 
 @JsonTypeInfo(
@@ -72,15 +73,18 @@ fun OpplysningTypeDto.toValue(): OpplysningType =
     ],
     subTypes = [InntektTypeDto::class, FormueTypeDto::class, UtgiftTypeDto::class, AnnenDokumentasjonTypeDto::class],
 )
-sealed interface OpplysningTypeDto
+abstract class OpplysningTypeDto(
+    @Schema(hidden = true)
+    open val value: OpplysningType,
+)
 
-data class InntektTypeDto(val value: InntektType) : OpplysningTypeDto
+data class InntektTypeDto(override val value: InntektType) : OpplysningTypeDto(value)
 
-data class UtgiftTypeDto(val value: UtgiftType) : OpplysningTypeDto
+data class UtgiftTypeDto(override val value: UtgiftType) : OpplysningTypeDto(value)
 
-data class FormueTypeDto(val value: FormueType) : OpplysningTypeDto
+data class FormueTypeDto(override val value: FormueType) : OpplysningTypeDto(value)
 
-data class AnnenDokumentasjonTypeDto(val value: AnnenDokumentasjonType) : OpplysningTypeDto
+data class AnnenDokumentasjonTypeDto(override val value: AnnenDokumentasjonType) : OpplysningTypeDto(value)
 
 data class ForventetDokumentasjonDto(
     val dokumentasjon: List<DokumentasjonDto>,

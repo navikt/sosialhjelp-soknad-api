@@ -108,6 +108,7 @@ private fun OpplysningTypeDto.getVedleggType(): VedleggType? =
         is UtgiftTypeDto -> this.value.getJsonVerdier().vedleggType
         is FormueTypeDto -> this.value.getJsonVerdier().vedleggType
         is AnnenDokumentasjonTypeDto -> this.value.getJsonVerdier().vedleggType
+        else -> error("Ugyldig OpplysningTypeDto: ${this.javaClass.simpleName}")
     }
 
 private fun OpplysningTypeDto.getVedleggGruppe(): VedleggGruppe =
@@ -116,6 +117,7 @@ private fun OpplysningTypeDto.getVedleggGruppe(): VedleggGruppe =
         is UtgiftTypeDto -> this.value.group
         is FormueTypeDto -> this.value.group
         is AnnenDokumentasjonTypeDto -> this.value.group
+        else -> error("Ugyldig OpplysningTypeDto: ${this.javaClass.simpleName}")
     }
 
 // TODO Frontend rendrer input-felter basert på hva som returneres for den spesifikke typen
