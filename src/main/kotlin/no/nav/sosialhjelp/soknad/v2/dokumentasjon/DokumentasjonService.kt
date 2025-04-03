@@ -142,7 +142,6 @@ class DokumentasjonServiceImpl(
     private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
         listOf(
             FormueType.FORMUE_BRUKSKONTO, // kontooversikt|brukskonto
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
             AnnenDokumentasjonType.BEHOV, // kort|behov
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
             UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage

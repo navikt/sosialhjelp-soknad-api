@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -291,10 +292,20 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         dokumentasjonRepository.findAllBySoknadId(soknadId)
             .also { list ->
                 assertThat(list)
-                    .hasSize(3)
+                    .hasSize(13)
                     .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
                     .anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
+                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
+                    .anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
+                    .anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
+                    .anyMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
+                    .anyMatch { it.type == AnnenDokumentasjonType.HUSLEIEKONTRAKT }
+                    .anyMatch { it.type == FormueType.FORMUE_ANNET }
+                    .anyMatch { it.type == UtgiftType.UTGIFTER_STROM }
+                    .anyMatch { it.type == InntektType.JOBB }
+                    .anyMatch { it.type == InntektType.STUDIELAN_INNTEKT }
+                    .anyMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
+                    .anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
                     .hasSize(3)
