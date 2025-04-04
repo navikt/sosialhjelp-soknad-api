@@ -56,10 +56,10 @@ class KontaktServiceImpl(
             .let { kontaktRepository.save(it) }
             .telefonnummer
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun findAdresser(soknadId: UUID) = findOrCreate(soknadId).adresser
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun findMottaker(soknadId: UUID): NavEnhet? {
         return kontaktRepository.findByIdOrNull(soknadId)?.mottaker
     }
