@@ -25,6 +25,8 @@ interface DokumentasjonService {
 
     fun resetForventetDokumentasjon(soknadId: UUID)
 
+    fun resetForventetDokumentasjonButPreserveUploaded(soknadId: UUID)
+
     fun findDokumentasjonForSoknad(soknadId: UUID): List<Dokumentasjon>
 
     fun hasDokumenterForType(
@@ -99,6 +101,20 @@ class DokumentasjonServiceImpl(
     @Transactional
     override fun resetForventetDokumentasjon(soknadId: UUID) {
         dokumentasjonRepository.deleteAllBySoknadId(soknadId)
+    }
+
+    @Transactional
+    override fun resetForventetDokumentasjonButPreserveUploaded(soknadId: UUID) {
+        val eksisterende = dokumentasjonRepository.findAllBySoknadId(soknadId)
+
+        val medOpplastedeFiler =
+            eksisterende.filter {
+                it.status == DokumentasjonStatus.LASTET_OPP && it.dokumenter.isNotEmpty()
+            }
+
+        dokumentasjonRepository.deleteAllBySoknadId(soknadId)
+
+        medOpplastedeFiler.forEach { dokumentasjonRepository.save(it) }
     }
 
     @Transactional(readOnly = true)
