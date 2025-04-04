@@ -3,8 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType.HUSLEIEKONTRAKT
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType.SKATTEMELDING
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toValue
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -54,7 +53,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto ->
                 assertThat(dto.opplysninger).hasSize(1)
-                assertThat(dto.opplysninger.map { it.type.toValue() }).containsOnly(FORMUE_BRUKSKONTO)
+                assertThat(dto.opplysninger.map { it.type.opplysningType }).containsOnly(FORMUE_BRUKSKONTO)
             }
 
         okonomiService.getFormuer(soknad.id).filter { it.type == FORMUE_BRUKSKONTO }
@@ -86,9 +85,9 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             .also { dto ->
                 assertThat(dto.opplysninger)
                     .hasSize(3)
-                    .allMatch { relevantForOkonomiskeOpplysninger.contains(it.type.toValue()) }
-                    .noneMatch { ikkeRelevanteOkonomiTyper.contains(it.type.toValue()) }
-                    .noneMatch { andreDokTyper.contains(it.type.toValue()) }
+                    .allMatch { relevantForOkonomiskeOpplysninger.contains(it.type.opplysningType) }
+                    .noneMatch { ikkeRelevanteOkonomiTyper.contains(it.type.opplysningType) }
+                    .noneMatch { andreDokTyper.contains(it.type.opplysningType) }
             }
     }
 
@@ -106,7 +105,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = FORMUE_BRUKSKONTO.toDto(),
+                    type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(belop = 2400.0),
@@ -131,7 +130,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere type uten dokumentasjon skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                type = FORMUE_BRUKSKONTO.toDto(),
+                type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -152,7 +151,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere ugyldig type skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                type = HUSLEIEKONTRAKT.toDto(),
+                type = HUSLEIEKONTRAKT.toDokumentasjonType(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -182,7 +181,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER.toDto(),
+                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enAnnenUtgiftString, belop = ettBelop),
@@ -192,7 +191,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okonoiskOpplysning ->
-                assertThat(okonoiskOpplysning.type.toValue()).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+                assertThat(okonoiskOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
             }
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
@@ -219,7 +218,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BO.toDto(),
+                    type = UtgiftType.UTGIFTER_ANNET_BO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBoutgiftString, belop = ettBelop),
@@ -229,7 +228,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.toValue()).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
@@ -257,7 +256,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BARN.toDto(),
+                    type = UtgiftType.UTGIFTER_ANNET_BARN.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBarneugiftString, belop = ettBelop),
@@ -267,7 +266,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.toValue()).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
@@ -295,7 +294,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.toValue()).isEqualTo(JOBB)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(JOBB)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter
@@ -323,7 +322,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.toValue()).isEqualTo(UTGIFTER_BOLIGLAN)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_BOLIGLAN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter

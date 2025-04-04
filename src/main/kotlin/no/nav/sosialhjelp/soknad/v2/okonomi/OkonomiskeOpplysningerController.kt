@@ -5,16 +5,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.OpplysningTypeDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.UtgiftTypeDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toValue
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -48,7 +43,7 @@ class OkonomiskeOpplysningerController(
     ): OkonomiskeOpplysningerDto {
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
-            type = input.getOpplysningType(),
+            type = input.type.opplysningType,
             detaljer = input.mapToOkonomiDetalj(),
         )
         return getOkonomiskeOpplysninger(soknadId)
@@ -60,13 +55,13 @@ data class OkonomiskeOpplysningerDto(
 )
 
 data class OkonomiskOpplysningDto(
-    val type: OpplysningTypeDto,
+    val type: DokumentasjonType,
     val detaljer: List<OkonomiDetaljDto>?,
 )
 
 private fun OkonomiElement.toOkonomiskOpplysningDto(): OkonomiskOpplysningDto {
     return OkonomiskOpplysningDto(
-        type = type.toDto(),
+        type = type.toDokumentasjonType(),
         detaljer = this.mapFromOkonomiElement(),
     )
 }
@@ -113,23 +108,25 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
         AvdragRenterDto::class,
     ],
 )
-sealed interface AbstractOkonomiInput
+sealed interface AbstractOkonomiInput {
+    val type: DokumentasjonType
+}
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    val type: OpplysningTypeDto,
+    override val type: DokumentasjonType,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
 
 // Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
 data class LonnsInput(
-    val type: InntektTypeDto = InntektTypeDto(InntektType.JOBB),
+    override val type: DokumentasjonType = DokumentasjonType.JOBB,
     val detalj: LonnsInntektDto,
 ) : AbstractOkonomiInput
 
 // For boliglån hentes det inn ett eller flere renter og avdrag-par.
 data class BoliglanInput(
-    val type: UtgiftTypeDto = UtgiftTypeDto(UtgiftType.UTGIFTER_BOLIGLAN),
+    override val type: DokumentasjonType = DokumentasjonType.UTGIFTER_BOLIGLAN,
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
@@ -170,13 +167,6 @@ data class AvdragRenterDto(
     val avdrag: Double?,
     val renter: Double?,
 ) : OkonomiDetaljDto
-
-private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
-    when (this) {
-        is GenericOkonomiInput -> type.toValue()
-        is LonnsInput -> InntektType.JOBB
-        is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
-    }
 
 private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj> =
     when (this) {
