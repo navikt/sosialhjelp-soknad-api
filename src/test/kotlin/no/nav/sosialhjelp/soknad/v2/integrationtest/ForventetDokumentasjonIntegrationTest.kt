@@ -9,10 +9,9 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonInput
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LASTET_OPP
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TIDLIGERE
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.InntektTypeDto
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toValue
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
@@ -53,9 +52,9 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(dto.dokumentasjon)
                     .hasSize(3)
                     .allMatch {
-                        it.type.toValue() == InntektType.JOBB ||
-                            it.type.toValue() == UtgiftType.UTGIFTER_BOLIGLAN ||
-                            it.type.toValue() == FormueType.FORMUE_BRUKSKONTO
+                        it.type.opplysningType == InntektType.JOBB ||
+                            it.type.opplysningType == UtgiftType.UTGIFTER_BOLIGLAN ||
+                            it.type.opplysningType == FormueType.FORMUE_BRUKSKONTO
                     }
             }
     }
@@ -64,7 +63,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere dokumentasjon som ikke finnes skal gi feil`() {
         doPutExpectError(
             uri = getUrl(soknadId),
-            requestBody = DokumentasjonInput(InntektTypeDto(InntektType.JOBB), true),
+            requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
             soknadId = soknadId,
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
         )
@@ -76,7 +75,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
         doPut(
             uri = getUrl(soknadId),
-            requestBody = DokumentasjonInput(InntektTypeDto(InntektType.JOBB), true),
+            requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
             responseBodyClass = ForventetDokumentasjonDto::class.java,
             soknadId = soknadId,
         )
@@ -117,7 +116,7 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
         doPut(
             uri = getUrl(soknadId),
-            requestBody = DokumentasjonInput(InntektTypeDto(InntektType.JOBB), true),
+            requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
             responseBodyClass = ForventetDokumentasjonDto::class.java,
             soknadId,
         ).also { dto -> assertThat(dto.dokumentasjon.first().dokumenter).isEmpty() }
