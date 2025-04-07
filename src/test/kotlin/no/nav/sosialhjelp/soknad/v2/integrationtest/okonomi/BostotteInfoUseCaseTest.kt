@@ -78,7 +78,7 @@ class BostotteInfoUseCaseTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        soknad = soknadRepository.save(opprettSoknad())
+        soknad = soknadRepository.save(opprettSoknad(id = soknadId))
     }
 
     private fun assertSkalVise(vise: Boolean) {

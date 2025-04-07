@@ -12,7 +12,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.formue.HarVerdierInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.VerdierDto
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -25,9 +27,15 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var dokumentasjonsRepository: DokumentasjonRepository
 
+    private lateinit var soknad: Soknad
+
+    @BeforeEach
+    fun setup() {
+        soknad = soknadRepository.save(opprettSoknad(id = soknadId))
+    }
+
     @Test
     fun `Hente Formuer skal returnere FormueDto med korrekte flagg`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val okonomi = opprettOkonomi(soknad.id).let { okonomiRepository.save(it) }
 
         doGet(
@@ -39,8 +47,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Ingen formuer skal returnere Dto med alle flagg satt til false`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         doGet(
             uri = getFormueUrl(soknad.id),
             FormueDto::class.java,
@@ -63,8 +69,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere ANNET med tomt object fjerner element`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         val formue =
             Formue(
                 type = FormueType.FORMUE_ANNET,
@@ -96,7 +100,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente formue med beskrivelse skal eksistere i Dto`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val okonomi =
             Formue(
                 type = FormueType.FORMUE_ANNET,
@@ -120,7 +123,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente Verdier skal returnere VerdierDto med korrekte flagg`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val okonomi = opprettOkonomi(soknad.id).let { okonomiRepository.save(it) }
 
         doGet(
@@ -132,7 +134,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente verdi med beskrivelse skal eksistere i Dto`() {
-        val soknad = soknadRepository.save(opprettSoknad())
         val okonomi =
             Formue(
                 type = FormueType.VERDI_ANNET,
@@ -156,8 +157,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere formuer skal generere okonomi-elementer og dokumentasjon`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         val input =
             FormueInput(
                 hasBrukskonto = true,
@@ -188,8 +187,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere verdier skal generere okonomi-elementer, men ikke dokumentasjon`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         val input =
             HarVerdierInput(
                 hasBolig = true,
@@ -215,8 +212,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Sette bekreftelse false skal fjerne alle eksisterende verdi-elementer`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         setOf(
             Formue(type = FormueType.VERDI_BOLIG),
             Formue(type = FormueType.VERDI_ANNET, beskrivelse = "Beskrivelse av Verdi"),
@@ -243,8 +238,6 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere Formue skal generere dokumentasjon, og fjerne skal slette dokumentasjon`() {
-        val soknad = soknadRepository.save(opprettSoknad())
-
         doPut(
             uri = getFormueUrl(soknad.id),
             requestBody = FormueInput(hasBrukskonto = true),

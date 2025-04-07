@@ -58,7 +58,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal slette lagret soknad`() {
-        val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
+        val lagretSoknadId = opprettSoknad(id = soknadId).let { soknadRepository.save(it).id }
 
         doDelete(
             uri = "/soknad/$lagretSoknadId/delete",

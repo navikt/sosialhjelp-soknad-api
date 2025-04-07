@@ -15,8 +15,10 @@ import no.nav.sosialhjelp.soknad.v2.familie.toEktefelle
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
 import no.nav.sosialhjelp.soknad.v2.navn.NavnInput
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -26,9 +28,15 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var familieRepository: FamilieRepository
 
+    private lateinit var storedSoknad: Soknad
+
+    @BeforeEach
+    fun setup() {
+        storedSoknad = soknadRepository.save(opprettSoknad(id = soknadId))
+    }
+
     @Test
     fun `Skal oppdatere familie med forsorger`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
         familieRepository.save(
             createFamilie(
                 storedSoknad.id,
@@ -69,7 +77,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere deltBosted pa eksisterende barn skal lagres`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
         val personIdBarn = opprettFamilieMedBarn(storedSoknad.id)
 
         val barnInput =
@@ -100,7 +107,6 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal oppdatere familie med ektefelle`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
         familieRepository.save(createFamilie(storedSoknad.id, ektefelle = null))
 
         val ektefelle =

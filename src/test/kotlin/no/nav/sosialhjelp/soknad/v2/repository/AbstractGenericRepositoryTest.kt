@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
@@ -60,7 +61,8 @@ abstract class AbstractGenericRepositoryTest {
 
     @BeforeEach
     fun saveSoknad() {
-        soknad = soknadRepository.save(opprettSoknad(id = UUID.randomUUID()))
+        val soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
+        soknad = soknadRepository.save(opprettSoknad(id = soknadId))
     }
 
     /**

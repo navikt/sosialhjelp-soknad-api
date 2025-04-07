@@ -30,11 +30,9 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
     @Test
     fun `Verifisere CRUD-operasjoner for Soknad`() {
         // for "rot"-objektet vil det ikke være constraints som må testes
-        UUID.randomUUID().let {
-            val original = soknadRepository.save(opprettSoknad(it))
-            val updated = soknadRepository.save(opprettSoknad(it).copy(eierPersonId = "NOE ANNET"))
-            assertThat(original).isNotEqualTo(updated)
-        }
+        val original = soknadRepository.save(opprettSoknad(soknad.id))
+        val updated = soknadRepository.save(opprettSoknad(soknad.id).copy(eierPersonId = "NOE ANNET"))
+        assertThat(original).isNotEqualTo(updated)
     }
 
     @Test

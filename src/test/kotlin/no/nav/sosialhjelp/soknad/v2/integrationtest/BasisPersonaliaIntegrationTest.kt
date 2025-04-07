@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class BasisPersonaliaIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Fullt navn skal slå sammen navn`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("Mons", null, "Monsen")))
         val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
         assertThat(result.navn.fulltNavn).isEqualTo("Mons Monsen")
@@ -18,7 +18,7 @@ class BasisPersonaliaIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Fullt navn skal slå sammen navn med mellomnavn`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("Mons", "Johan", "Monsen")))
         val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
         assertThat(result.navn.fulltNavn).isEqualTo("Mons Johan Monsen")
@@ -26,7 +26,7 @@ class BasisPersonaliaIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Fullt navn skal slå sammen navn uten ekstra mellomrom`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         eierRepository.save(Eier(soknad.id, "Norsk", true, Navn("   Mons  ", "        Johan", "Monsen\t")))
         val result = doGet("/soknad/${soknad.id}/personalia/basisPersonalia", PersonaliaDto::class.java)
         assertThat(result.navn.fulltNavn).isEqualTo("Mons Johan Monsen")

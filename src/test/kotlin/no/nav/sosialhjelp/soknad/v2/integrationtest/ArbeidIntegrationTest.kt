@@ -21,7 +21,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente arbeid skal returnere korrekte data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val livssituasjon = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
         val arbeidDto =
@@ -48,7 +48,7 @@ class ArbeidIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere arbeid skal oppdatere databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         livssituasjonRepository.save(Livssituasjon(soknadId = soknad.id))
 
         val input = ArbeidInput("Jeg synes ikke arbeid er så gøy lenger")
