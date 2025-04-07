@@ -283,7 +283,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                         setOf(
                             DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
                             DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
-                            DokumentRef(UUID.randomUUID(), "filnavn3.jpg"),
                         ),
                 )
             }
@@ -308,7 +307,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     .anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(3)
+                    .hasSize(2)
             }
 
         every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
@@ -329,7 +328,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
                     .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
 
                 assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(3)
+                    .hasSize(2)
             }
     }
 
