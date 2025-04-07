@@ -9,8 +9,8 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -34,9 +34,9 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
-    private val kortSoknadService: KortSoknadService,
     private val soknadMetadataService: SoknadMetadataService,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler,
     @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     companion object {
@@ -70,7 +70,7 @@ class InformasjonRessurs(
         val kommunenummer = person?.oppholdsadresse?.vegadresse?.kommunenummer
         val qualifiesForKortSoknad =
             if (kommunenummer != null && token != null) {
-                runCatching { kortSoknadService.isQualifiedFromFiks(token, kommunenummer) }
+                runCatching { kortSoknadUseCaseHandler.isQualifiedFromFiks(token, kommunenummer) }
                     .onFailure { log.warn("Fikk feilmelding fra fiks i informasjon/session", it) }
                     .getOrNull()
             } else {
