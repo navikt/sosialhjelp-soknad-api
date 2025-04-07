@@ -35,11 +35,10 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
     @Test
     fun `Skal slette soknader som er registrert mottatt av fagsystem`() =
         runTest {
-            val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
             val soknadMetadata =
-                opprettSoknadMetadata(lagretSoknadId, status = SoknadStatus.SENDT, innsendtDato = LocalDateTime.now())
-            soknadMetadata
-                .let { soknadMetadataRepository.save(it) }
+                opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = LocalDateTime.now())
+                    .let { soknadMetadataRepository.save(it) }
+            val lagretSoknadId = opprettSoknad(id = soknadMetadata.soknadId).let { soknadRepository.save(it).id }
 
             assertThat(soknadRepository.findByIdOrNull(lagretSoknadId)).isNotNull()
             assertThat(soknadMetadataRepository.findByIdOrNull(lagretSoknadId)).isNotNull()
@@ -56,12 +55,13 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
     @Test
     fun `Skal ikke slette soknader som ikke er registrert mottatt av fagsystem`() =
         runTest {
-            val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
-            opprettSoknadMetadata(
-                lagretSoknadId,
-                status = SoknadStatus.SENDT,
-                innsendtDato = LocalDateTime.now(),
-            ).let { soknadMetadataRepository.save(it) }
+            val metadata =
+                opprettSoknadMetadata(
+                    status = SoknadStatus.SENDT,
+                    innsendtDato = LocalDateTime.now(),
+                )
+                    .let { soknadMetadataRepository.save(it) }
+            val lagretSoknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
 
             assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
             assertThat(soknadMetadataRepository.findById(lagretSoknadId)).isNotEmpty
@@ -77,9 +77,10 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
     @Test
     fun `Skal kun sjekke status hos FIKS for soknader som er sendt`() =
         runTest {
-            val lagretSoknadId = opprettSoknad().let { soknadRepository.save(it).id }
-            opprettSoknadMetadata(lagretSoknadId, status = SoknadStatus.OPPRETTET)
-                .let { soknadMetadataRepository.save(it) }
+            val metadata =
+                opprettSoknadMetadata(status = SoknadStatus.OPPRETTET)
+                    .let { soknadMetadataRepository.save(it) }
+            val lagretSoknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
 
             assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
             assertThat(soknadMetadataRepository.findById(lagretSoknadId)).isNotEmpty

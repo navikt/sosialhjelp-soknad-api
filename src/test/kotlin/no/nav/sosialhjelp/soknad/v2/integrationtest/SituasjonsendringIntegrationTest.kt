@@ -4,7 +4,9 @@ import no.nav.sosialhjelp.soknad.v2.createSituasjonsendring
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.situasjonsendring.SituasjonsendringDto
 import no.nav.sosialhjelp.soknad.v2.situasjonsendring.SituasjonsendringRepository
+import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -13,9 +15,15 @@ class SituasjonsendringIntegrationTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var situasjonsendringRepository: SituasjonsendringRepository
 
+    private lateinit var storedSoknad: Soknad
+
+    @BeforeEach
+    fun setUp() {
+        storedSoknad = soknadRepository.save(opprettSoknad(id = soknadId))
+    }
+
     @Test
     fun `Put på situasjonsendring skal oppdatere situasjonsendring med data fra dto`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
         situasjonsendringRepository.save(
             createSituasjonsendring(storedSoknad.id, null, null),
         )
@@ -31,7 +39,6 @@ class SituasjonsendringIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Get på situasjonsendring skal returnere riktig situasjonsendring`() {
-        val storedSoknad = soknadRepository.save(opprettSoknad())
         situasjonsendringRepository.save(
             createSituasjonsendring(storedSoknad.id, "abc", true),
         )

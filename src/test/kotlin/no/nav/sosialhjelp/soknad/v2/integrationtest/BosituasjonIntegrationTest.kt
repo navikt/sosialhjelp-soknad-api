@@ -22,7 +22,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente Bosituasjon skal returnere korrekte data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val livssituasjon = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
         doGet(
@@ -36,7 +36,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere Bosituasjon skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val bosituasjonInput =
             BosituasjonDto(
@@ -60,7 +60,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Dto med en null-verdi skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         doPut(
             "/soknad/${soknad.id}/bosituasjon",
@@ -78,7 +78,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Botype LEIER skal opprette Dokumentasjon`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         doPut(
             "/soknad/${soknad.id}/bosituasjon",
@@ -94,7 +94,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Botype KOMMUNAL skal opprette Dokumentasjon`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         doPut(
             "/soknad/${soknad.id}/bosituasjon",

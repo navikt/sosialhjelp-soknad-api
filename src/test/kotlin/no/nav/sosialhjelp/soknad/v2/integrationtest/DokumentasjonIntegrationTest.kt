@@ -50,7 +50,7 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        soknad = opprettSoknad().also { soknadRepository.save(it) }
+        soknad = opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
     }
 
     @Test

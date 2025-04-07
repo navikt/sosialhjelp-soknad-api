@@ -10,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Hente begrunnelse skal returnere riktig data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         doGet(
             "/soknad/${soknad.id}/begrunnelse",
@@ -23,7 +23,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere begrunnelse skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val inputBegrunnelse =
             BegrunnelseDto(
@@ -47,7 +47,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Input hvor ett felt er tomt skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val inputBegrunnelse =
             BegrunnelseDto(

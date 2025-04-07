@@ -19,7 +19,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hente utdanning skal returnere riktig data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val brukerdata = livssituasjonRepository.save(opprettLivssituasjon(soknad.id))
 
         doGet(
@@ -33,7 +33,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Sette ikke student skal lagres`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val input = IkkeStudentInput()
 
@@ -53,7 +53,7 @@ class UtdanningIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Sette studentgrad skal lagres`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val input = StudentgradInput(studentgrad = Studentgrad.HELTID)
 
