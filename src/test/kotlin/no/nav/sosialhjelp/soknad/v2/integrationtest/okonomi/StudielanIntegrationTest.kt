@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRepository
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Utdanning
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Okonomi
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.StudielanInput
 import org.assertj.core.api.Assertions.assertThat

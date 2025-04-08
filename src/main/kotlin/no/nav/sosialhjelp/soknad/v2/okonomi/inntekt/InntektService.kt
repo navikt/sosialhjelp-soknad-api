@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Service

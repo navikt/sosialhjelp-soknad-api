@@ -6,9 +6,9 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.JOBB
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.JOBB
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.assertj.core.api.Assertions.assertThat

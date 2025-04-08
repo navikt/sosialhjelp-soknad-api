@@ -6,9 +6,9 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.BOSTOTTE_SAMTYKKE
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID

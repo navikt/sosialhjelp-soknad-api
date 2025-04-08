@@ -3,12 +3,6 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -60,7 +54,6 @@ class OkonomiskeOpplysningerServiceImpl(
                     is Inntekt -> copy(inntektDetaljer = OkonomiDetaljer(detaljer))
                     is Utgift -> copy(utgiftDetaljer = OkonomiDetaljer(detaljer))
                     is Formue -> copy(formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
-                    else -> error("Ikke gyldig Okonomi-element: ${this.javaClass.simpleName}")
                 }
             }
     }

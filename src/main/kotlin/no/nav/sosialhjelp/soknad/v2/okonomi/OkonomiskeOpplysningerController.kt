@@ -6,8 +6,6 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping

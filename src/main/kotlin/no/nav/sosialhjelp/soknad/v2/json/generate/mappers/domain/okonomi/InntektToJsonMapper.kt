@@ -12,14 +12,14 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 
 class InntektToJsonMapper(
     private val inntekter: Set<Inntekt>,

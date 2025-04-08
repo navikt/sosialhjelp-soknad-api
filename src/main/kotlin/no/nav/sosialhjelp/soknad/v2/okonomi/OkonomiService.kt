@@ -2,12 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -142,17 +136,16 @@ class OkonomiService(
                     element.beskrivelse,
                     element.formueDetaljer.detaljer,
                 )
-            else -> error("Ukjent okonomi-element")
         }
 
-        if (element.type.dokumentasjonForventet == true) {
+        if (element.type.dokumentasjonForventet) {
             dokumentasjonService.opprettDokumentasjon(soknadId, element.type)
         }
     }
 
     fun addElementToOkonomi(
         soknadId: UUID,
-        type: OpplysningType,
+        type: OkonomiOpplysningType,
         beskrivelse: String? = null,
         detaljer: List<OkonomiDetalj> = emptyList(),
     ) {
@@ -174,9 +167,8 @@ class OkonomiService(
                     soknadId,
                     Inntekt(type, beskrivelse, OkonomiDetaljer(detaljer)),
                 )
-            else -> error("Ukjent OpplysningType for oppretting")
         }
-        if (type.dokumentasjonForventet == true) dokumentasjonService.opprettDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, type)
     }
 
     private fun <E : OkonomiOpplysning> Set<E>.removeOldAddNew(element: E): Set<E> =
@@ -192,7 +184,6 @@ class OkonomiService(
                     is Inntekt -> updateInntekter(it, element)
                     is Utgift -> updateUtgifter(it, element)
                     is Formue -> updateFormuer(it, element)
-                    else -> error("Ukjent okonomi-element")
                 }
             }
             ?.let { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
@@ -243,7 +234,7 @@ class OkonomiService(
 
     fun removeElementFromOkonomi(
         soknadId: UUID,
-        type: OpplysningType,
+        type: OkonomiOpplysningType,
     ) {
         findOkonomi(soknadId)
             ?.run {
@@ -251,10 +242,9 @@ class OkonomiService(
                     is FormueType -> okonomiElementDbHandler.deleteFormueInDb(soknadId, type)
                     is UtgiftType -> okonomiElementDbHandler.deleteUtgiftInDb(soknadId, type)
                     is InntektType -> okonomiElementDbHandler.deleteInntektInDb(soknadId, type)
-                    else -> error("Ukjent OpplysningType for removal")
                 }
             }
-        if (type.dokumentasjonForventet == true) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
+        if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
 //    fun removeElementFromOkonomi(soknadId: UUID, type: OpplysningType,) {

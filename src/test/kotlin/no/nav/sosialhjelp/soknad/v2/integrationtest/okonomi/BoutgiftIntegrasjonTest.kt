@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BoutgifterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarBoutgifterInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarIkkeBoutgifterInput
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad

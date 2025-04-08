@@ -14,14 +14,14 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import org.springframework.stereotype.Component
 import java.util.UUID

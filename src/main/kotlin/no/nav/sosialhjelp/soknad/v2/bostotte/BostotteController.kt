@@ -4,11 +4,11 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetalj
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

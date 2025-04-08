@@ -6,8 +6,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 
 class BostotteSakToJsonMapper(
     private val saker: List<BostotteSak>,

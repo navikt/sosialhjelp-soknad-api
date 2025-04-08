@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.HarIkkeVerdierInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.HarVerdierInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.VerdierDto

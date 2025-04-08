@@ -6,9 +6,9 @@ import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BarneutgifterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarBarneutgifterInput
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.assertj.core.api.Assertions.assertThat

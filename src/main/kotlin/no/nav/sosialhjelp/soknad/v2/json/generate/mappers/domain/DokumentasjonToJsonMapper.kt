@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTillegginfoString
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.springframework.stereotype.Component
 import java.util.UUID
 

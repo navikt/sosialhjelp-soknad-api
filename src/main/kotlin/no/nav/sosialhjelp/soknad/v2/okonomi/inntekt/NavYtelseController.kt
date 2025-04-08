@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
