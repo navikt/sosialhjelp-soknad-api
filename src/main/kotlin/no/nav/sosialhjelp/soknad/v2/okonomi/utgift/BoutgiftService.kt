@@ -2,8 +2,10 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.springframework.data.repository.findByIdOrNull

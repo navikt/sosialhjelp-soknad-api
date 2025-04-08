@@ -1,23 +1,102 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.data.annotation.Id
 import org.springframework.data.jdbc.repository.query.Modifying
 import org.springframework.data.jdbc.repository.query.Query
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
+
+@Table
+data class Okonomi(
+    @Id val soknadId: UUID,
+    val inntekter: Set<Inntekt> = emptySet(),
+    val utgifter: Set<Utgift> = emptySet(),
+    val formuer: Set<Formue> = emptySet(),
+    val bekreftelser: Set<Bekreftelse> = emptySet(),
+    val bostotteSaker: List<BostotteSak> = emptyList(),
+) : DomainRoot {
+    override fun getDbId() = soknadId
+}
+
+// Inntekt, Utgift, Formue
+sealed interface OkonomiOpplysning {
+    val type: OkonomiOpplysningType
+    val beskrivelse: String?
+}
+
+@Table
+data class Formue(
+    override val type: FormueType,
+    override val beskrivelse: String? = null,
+    @Column("detaljer")
+    val formueDetaljer: OkonomiDetaljer<Belop> = OkonomiDetaljer(),
+) : OkonomiOpplysning
+
+@Table
+data class Inntekt(
+    override val type: InntektType,
+    override val beskrivelse: String? = null,
+    @Column("detaljer")
+    val inntektDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
+) : OkonomiOpplysning
+
+@Table
+data class Utgift(
+    override val type: UtgiftType,
+    override val beskrivelse: String? = null,
+    @Column("detaljer")
+    val utgiftDetaljer: OkonomiDetaljer<OkonomiDetalj> = OkonomiDetaljer(),
+) : OkonomiOpplysning
+
+fun Set<Utgift>.hasType(type: UtgiftType): Boolean = any { it.type == type }
+
+@Table
+data class Bekreftelse(
+    val type: BekreftelseType,
+    val tidspunkt: LocalDateTime = nowWithMillis(),
+    val verdi: Boolean,
+)
+
+@Table
+data class BostotteSak(
+    val dato: LocalDate,
+    val status: BostotteStatus,
+    val beskrivelse: String?,
+    val vedtaksstatus: Vedtaksstatus?,
+)
+
+enum class BekreftelseType {
+    BEKREFTELSE_BARNEUTGIFTER,
+    BEKREFTELSE_BOUTGIFTER,
+    BEKREFTELSE_SPARING,
+    BEKREFTELSE_UTBETALING,
+    BEKREFTELSE_VERDI,
+    STUDIELAN_BEKREFTELSE,
+
+    BOSTOTTE,
+
+    BOSTOTTE_SAMTYKKE,
+    UTBETALING_SKATTEETATEN_SAMTYKKE,
+}
+
+enum class Vedtaksstatus {
+    INNVILGET,
+    AVSLAG,
+    AVVIST,
+}
+
+enum class BostotteStatus {
+    UNDER_BEHANDLING,
+    VEDTATT,
+}
 
 @Repository
 interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID> {
@@ -99,62 +178,4 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
         soknadId: UUID,
         type: UtgiftType,
     )
-}
-
-@Table
-data class Okonomi(
-    @Id val soknadId: UUID,
-    val inntekter: Set<Inntekt> = emptySet(),
-    val utgifter: Set<Utgift> = emptySet(),
-    val formuer: Set<Formue> = emptySet(),
-    val bekreftelser: Set<Bekreftelse> = emptySet(),
-    val bostotteSaker: List<BostotteSak> = emptyList(),
-) : DomainRoot {
-    override fun getDbId() = soknadId
-}
-
-@Table
-data class Bekreftelse(
-    val type: BekreftelseType,
-    val tidspunkt: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-    val verdi: Boolean,
-)
-
-@Table
-data class BostotteSak(
-    val dato: LocalDate,
-    val status: BostotteStatus,
-    val beskrivelse: String?,
-    val vedtaksstatus: Vedtaksstatus?,
-)
-
-enum class BekreftelseType {
-    BEKREFTELSE_BARNEUTGIFTER,
-    BEKREFTELSE_BOUTGIFTER,
-    BEKREFTELSE_SPARING,
-    BEKREFTELSE_UTBETALING,
-    BEKREFTELSE_VERDI,
-    STUDIELAN_BEKREFTELSE,
-
-    BOSTOTTE,
-
-    BOSTOTTE_SAMTYKKE,
-    UTBETALING_SKATTEETATEN_SAMTYKKE,
-}
-
-enum class Vedtaksstatus {
-    INNVILGET,
-    AVSLAG,
-    AVVIST,
-}
-
-enum class BostotteStatus {
-    UNDER_BEHANDLING,
-    VEDTATT,
-}
-
-// Inntekt, Utgift, Formue
-interface OkonomiOpplysning {
-    val type: OpplysningType
-    val beskrivelse: String?
 }

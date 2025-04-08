@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.json
 
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 
 fun OpplysningType.getJsonVerdier(): JsonVerdi =
     when (this) {

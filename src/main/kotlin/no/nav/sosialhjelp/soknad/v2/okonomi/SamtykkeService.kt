@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -25,8 +24,7 @@ class SamtykkeServiceImpl(
     private val okonomiService: OkonomiService,
 ) : SamtykkeService {
     override fun hasSamtykkeBostotte(soknadId: UUID): Boolean {
-        return okonomiService.getBekreftelser(soknadId)
-            ?.find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
+        return okonomiService.getBekreftelser(soknadId).find { it.type == BekreftelseType.BOSTOTTE_SAMTYKKE }?.verdi
             ?: false
     }
 

@@ -184,7 +184,7 @@ class InntektSkatteetatenIntegrationTest : AbstractOkonomiIntegrationTest() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE, true)
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_SKATTEETATEN,
                     inntektDetaljer = OkonomiDetaljer(utbetalinger),

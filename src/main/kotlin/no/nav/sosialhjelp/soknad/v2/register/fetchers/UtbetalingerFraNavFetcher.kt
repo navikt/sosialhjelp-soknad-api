@@ -6,14 +6,14 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component
@@ -56,7 +56,7 @@ class UtbetalingerFraNavFetcher(
                     utbetalinger.map { it.toUtbetalingMedKomponent(orgService.hentOrgNavn(it.orgnummer)) },
                 ),
         )
-            .also { okonomiService.addElementToOkonomi(soknadId = soknadId, element = it) }
+            .also { okonomiService.addElementToOkonomi(soknadId = soknadId, opplysning = it) }
     }
 }
 

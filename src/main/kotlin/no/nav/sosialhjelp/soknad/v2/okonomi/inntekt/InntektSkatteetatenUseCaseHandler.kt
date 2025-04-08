@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPres
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.InntektSkatteetatenFetcher
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.springframework.stereotype.Component

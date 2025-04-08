@@ -6,8 +6,6 @@ import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -63,12 +61,12 @@ data class DokumentDto(
     val filnavn: String,
 )
 
-private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>>.toDokumentasjonDto(): DokumentasjonDto {
+private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>?>.toDokumentasjonDto(): DokumentasjonDto {
     return DokumentasjonDto(
         type = key.type,
         gruppe = key.type.group,
         dokumentasjonStatus = key.status,
-        detaljer = value.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
+        detaljer = value?.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
         dokumenter =
             key.dokumenter.map { dokument ->
                 DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)

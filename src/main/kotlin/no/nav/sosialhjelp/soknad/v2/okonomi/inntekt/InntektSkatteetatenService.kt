@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.inntekt
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.JOBB
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.UTBETALING_SKATTEETATEN
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -44,7 +44,7 @@ class InntektSkatteetatenServiceImpl(
     override fun getInntektSkatt(soknadId: UUID): Inntekt? {
         return getSamtykkeSkatt(soknadId)?.let { samtykke ->
             if (samtykke.verdi) {
-                okonomiService.getInntekter(soknadId).find { it.type == UTBETALING_SKATTEETATEN }
+                okonomiService.getInntekter(soknadId).find { it.type == InntektType.UTBETALING_SKATTEETATEN }
             } else {
                 null
             }
@@ -57,8 +57,8 @@ class InntektSkatteetatenServiceImpl(
         samtykke: Boolean,
     ) {
         // starter på scratch da vi regner med endring ved oppdatering
-        okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
-        okonomiService.removeElementFromOkonomi(soknadId, JOBB)
+        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
+        okonomiService.removeElementFromOkonomi(soknadId, InntektType.JOBB)
 
         okonomiService.updateBekreftelse(soknadId, UTBETALING_SKATTEETATEN_SAMTYKKE, samtykke)
     }
@@ -71,7 +71,7 @@ class InntektSkatteetatenServiceImpl(
         if (utbetalinger.isEmpty()) return
 
         Inntekt(
-            type = UTBETALING_SKATTEETATEN,
+            type = InntektType.UTBETALING_SKATTEETATEN,
             inntektDetaljer =
                 OkonomiDetaljer(
                     detaljer = utbetalinger,
@@ -83,11 +83,11 @@ class InntektSkatteetatenServiceImpl(
     // hvis fetch fra skatt feiler, opprettes en dokumentasjonskrav så bruker kan laste opp selv
     @Transactional
     override fun createJobbElement(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
-        okonomiService.addElementToOkonomi(soknadId, type = JOBB)
+        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
+        okonomiService.addElementToOkonomi(soknadId, type = InntektType.JOBB)
     }
 
     override fun clearInntektSkatt(soknadId: UUID) {
-        okonomiService.removeElementFromOkonomi(soknadId, UTBETALING_SKATTEETATEN)
+        okonomiService.removeElementFromOkonomi(soknadId, InntektType.UTBETALING_SKATTEETATEN)
     }
 }
