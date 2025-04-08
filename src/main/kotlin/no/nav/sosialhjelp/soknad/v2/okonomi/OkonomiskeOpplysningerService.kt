@@ -76,14 +76,9 @@ class OkonomiskeOpplysningerServiceImpl(
             .associateWith { it.type.getDetaljerOrEmptyList(soknadId) }
     }
 
-    private fun OkonomiOpplysningType.getOkonomiskeDetaljerForType(soknadId: UUID): List<OkonomiDetalj> {
-        // kan finnes dokumentasjon som ikke er knyttet til okonomiske
-        return okonomiService.findDetaljerOrNull(soknadId, this) ?: emptyList()
-    }
-
     private fun OpplysningType.getDetaljerOrEmptyList(soknadId: UUID): List<OkonomiDetalj>? {
         return when (this) {
-            is OkonomiOpplysningType -> getDetaljerOrEmptyList(soknadId)
+            is OkonomiOpplysningType -> okonomiService.findDetaljerOrNull(soknadId, this) ?: emptyList()
             else -> null
         }
     }

@@ -46,7 +46,7 @@ class OkonomiService(
         findOrCreateOkonomi(soknadId)
             .run {
                 bekreftelser
-                    .filter { it.type == type }
+                    .filter { it.type != type }
                     .plus(Bekreftelse(type = type, verdi = verdi)).toSet()
                     .let { copy(bekreftelser = it) }
             }
@@ -58,7 +58,7 @@ class OkonomiService(
         type: BekreftelseType,
     ) {
         findOkonomi(soknadId)
-            ?.run { copy(bekreftelser = bekreftelser.filter { it.type == type }.toSet()) }
+            ?.run { copy(bekreftelser = bekreftelser.filter { it.type != type }.toSet()) }
             ?.also { okonomiRepository.save(it) }
     }
 
@@ -154,8 +154,8 @@ class OkonomiService(
 }
 
 private fun <E : OkonomiOpplysning> Set<E>.updateInSet(opplysning: E): Set<E> {
-    if (this.none { it.type != opplysning.type }) error("${opplysning.javaClass.simpleName} finnes ikke")
-    return this.filter { it.type == opplysning.type }.plus(opplysning).toSet()
+    if (this.none { it.type == opplysning.type }) error("${opplysning.javaClass.simpleName} finnes ikke")
+    return this.filter { it.type != opplysning.type }.plus(opplysning).toSet()
 }
 
 private fun <E : OkonomiOpplysning> Set<E>.addToSet(element: E): Set<E> =
