@@ -27,7 +27,7 @@ class FormueToJsonMapper(
             if (detaljer.isEmpty()) {
                 listOf(this.toJsonFormue())
             } else {
-                detaljer.map { this.copy().toJsonFormue(it.belop.toInt()) }
+                detaljer.map { this.copy().toJsonFormue(it.belop?.toInt()) }
             }
         }
     }
