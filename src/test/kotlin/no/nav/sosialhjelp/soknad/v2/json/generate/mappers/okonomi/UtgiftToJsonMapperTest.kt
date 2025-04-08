@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.UtgiftT
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

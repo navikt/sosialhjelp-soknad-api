@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.formue
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -64,7 +66,7 @@ class VerdiServiceImpl(
             }
         }
 
-        return okonomiService.getFormuer(soknadId) ?: error("Kunne ikke oppdatere verdier")
+        return okonomiService.getFormuer(soknadId)
     }
 
     companion object {

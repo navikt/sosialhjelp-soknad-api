@@ -7,10 +7,10 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseForHusbankenClient
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository

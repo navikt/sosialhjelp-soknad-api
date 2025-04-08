@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.springframework.stereotype.Service
 import java.util.UUID
 

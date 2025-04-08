@@ -4,8 +4,8 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromNavUtbetalingerClient
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository

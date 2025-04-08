@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarIkkeUtbetalingerInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.HarUtbetalingerInput
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.UtbetalingerDto
 import no.nav.sosialhjelp.soknad.v2.opprettOkonomi
 import org.assertj.core.api.Assertions.assertThat
