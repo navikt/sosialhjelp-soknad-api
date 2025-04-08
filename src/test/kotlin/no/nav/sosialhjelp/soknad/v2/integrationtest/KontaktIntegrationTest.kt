@@ -94,7 +94,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Skal returnere alle adresser for soknad`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
         doGet(
             uri = "/soknad/${soknad.id}/adresser",

@@ -14,7 +14,7 @@ import java.util.UUID
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Hente kontonummer skal returnere lagrede data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val eier = eierRepository.save(opprettEier(soknad.id, soknad.eierPersonId))
 
         doGet(
@@ -65,7 +65,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
     }
 
     private fun createSoknadOgEier(): UUID {
-        return soknadRepository.save(opprettSoknad(UUID.randomUUID()))
+        return soknadRepository.save(opprettSoknad(soknadId))
             .also { eierRepository.save(opprettEier(it.id, it.eierPersonId)) }
             .id
     }

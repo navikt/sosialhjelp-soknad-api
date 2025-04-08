@@ -12,44 +12,46 @@ import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter.convertToOffsettDateTimeUTCString
+import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.time.Clock
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+import java.time.LocalDateTime
 
 class KortSoknadServiceTest {
     private val digisosApiService: DigisosApiService = mockk()
     private val soknadService: SoknadService = mockk()
-    private val clock: Clock = Clock.fixed(Instant.parse("2023-01-01T00:00:00Z"), ZoneId.of("UTC"))
     private val kortSoknadService: KortSoknadService =
         KortSoknadService(
-            digisosApiService,
-            clock,
             soknadService,
-            mockk(),
-            mockk(),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
+            dokumentasjonService = mockk(relaxed = true),
+            soknadMetadataService = mockk(relaxed = true),
+        )
+    private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler =
+        KortSoknadUseCaseHandler(
+            kortSoknadService = kortSoknadService,
+            dokumentlagerService = mockk(relaxed = true),
+            digisosApiService = digisosApiService,
+            metadataService = mockk(relaxed = true),
+            unleash = mockk(relaxed = true),
         )
 
     @Test
     fun `should not qualify if there is a recent soknad from fiks`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse("2022-10-01T00:00:00Z")))
+        val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse(nowWithMillis().minusDays(2))))
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -57,7 +59,7 @@ class KortSoknadServiceTest {
     @Test
     fun `should not qualify if there are no recent soknad from fiks`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse("2020-10-01T00:00:00Z")))
+        val digisosSoker = createJsonDigisosSoker(listOf(createMottattHendelse(nowWithMillis())))
 
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
@@ -65,7 +67,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -73,14 +75,19 @@ class KortSoknadServiceTest {
     @Test
     fun `should qualify if there is a recent utbetaling`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createPastUtbetaling("2022-10-01T00:00:00Z", "2022-12-24T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createPastUtbetaling(nowWithMillis().minusDays(10), nowWithMillis().minusDays(5)),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
     }
@@ -88,14 +95,22 @@ class KortSoknadServiceTest {
     @Test
     fun `should not qualify if there is no recent utbetaling`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createPastUtbetaling("2022-10-01T00:00:00Z", "2022-08-01T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createPastUtbetaling(
+                        nowWithMillis().minusYears(1),
+                        nowWithMillis().minusMonths(11),
+                    ),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -103,14 +118,22 @@ class KortSoknadServiceTest {
     @Test
     fun `should qualify if there is an upcoming utbetaling`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createUpcomingUtbetaling("2022-10-01T00:00:00Z", "2023-01-10T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createUpcomingUtbetaling(
+                        nowWithMillis().plusDays(5),
+                        nowWithMillis().plusDays(10),
+                    ),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
     }
@@ -118,14 +141,22 @@ class KortSoknadServiceTest {
     @Test
     fun `should not qualify if there is an upcoming utbetaling more than 14 days in the future`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createUpcomingUtbetaling("2022-10-01T00:00:00Z", "2023-02-01T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createUpcomingUtbetaling(
+                        nowWithMillis(),
+                        nowWithMillis().plusDays(20),
+                    ),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -133,14 +164,22 @@ class KortSoknadServiceTest {
     @Test
     fun `should not qualify if there is an upcoming utbetaling before today`() {
         val digisosSak = createDigisosSak()
-        val digisosSoker = createJsonDigisosSoker(listOf(createUpcomingUtbetaling("2022-10-01T00:00:00Z", "2022-06-01T00:00:00Z")))
+        val digisosSoker =
+            createJsonDigisosSoker(
+                listOf(
+                    createUpcomingUtbetaling(
+                        nowWithMillis(),
+                        nowWithMillis().minusDays(1),
+                    ),
+                ),
+            )
         every { digisosApiService.getSoknaderForUser(any()) } returns
             listOf(
                 digisosSak,
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertFalse(result)
     }
@@ -149,7 +188,7 @@ class KortSoknadServiceTest {
     fun `should not qualify if there are no recent soknader or utbetalinger`() {
         every { digisosApiService.getSoknaderForUser(any()) } returns emptyList()
         every { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) } returns mockk()
-        val result = kortSoknadService.isQualifiedFromFiks("12345678901", "token")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("12345678901", "token")
 
         assertFalse(result)
     }
@@ -163,10 +202,10 @@ class KortSoknadServiceTest {
             createJsonDigisosSoker(
                 listOf(
                     createUpcomingUtbetaling(
-                        tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
-                        forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
+                        tidspunkt = nowWithMillis().minusDays(10),
+                        forfallsdato = nowWithMillis().plusDays(10),
                         status = JsonUtbetaling.Status.UTBETALT,
-                        utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
+                        utbetalingsdato = nowWithMillis(),
                     ),
                 ),
             )
@@ -178,7 +217,7 @@ class KortSoknadServiceTest {
             )
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "", "token") } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
         verify(exactly = 1) { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) }
@@ -193,10 +232,10 @@ class KortSoknadServiceTest {
             createJsonDigisosSoker(
                 listOf(
                     createUpcomingUtbetaling(
-                        tidspunkt = "${LocalDate.now().minusDays(10)}T00:00:00Z",
-                        forfallsdato = "${LocalDate.now().plusDays(10)}T00:00:00Z",
+                        tidspunkt = nowWithMillis().minusDays(10),
+                        forfallsdato = nowWithMillis().plusDays(10),
                         status = JsonUtbetaling.Status.UTBETALT,
-                        utbetalingsdato = "${LocalDate.now()}T00:00:00Z",
+                        utbetalingsdato = nowWithMillis(),
                     ),
                 ),
             )
@@ -214,7 +253,7 @@ class KortSoknadServiceTest {
             )
         } returns digisosSoker
 
-        val result = kortSoknadService.isQualifiedFromFiks("token", "0301")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token", "0301")
 
         assertTrue(result)
         verify(exactly = 1) { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) }
@@ -265,34 +304,34 @@ private fun createJsonDigisosSoker(
     hendelser: List<JsonHendelse> = emptyList(),
 ): JsonDigisosSoker = JsonDigisosSoker().withHendelser(hendelser)
 
-private fun createMottattHendelse(tidspunkt: String): JsonHendelse =
+private fun createMottattHendelse(tidspunkt: LocalDateTime): JsonHendelse =
     JsonSoknadsStatus()
         .withType(JsonHendelse.Type.SOKNADS_STATUS)
-        .withHendelsestidspunkt(tidspunkt)
+        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
         .withStatus(JsonSoknadsStatus.Status.MOTTATT)
 
 private fun createPastUtbetaling(
-    tidspunkt: String,
-    utbetalingstidspunkt: String,
+    tidspunkt: LocalDateTime,
+    utbetalingstidspunkt: LocalDateTime,
 ): JsonHendelse =
     JsonUtbetaling()
         .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withUtbetalingsdato(utbetalingstidspunkt)
+        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
+        .withUtbetalingsdato(convertToOffsettDateTimeUTCString(utbetalingstidspunkt))
         .withStatus(JsonUtbetaling.Status.UTBETALT)
 
 private fun createUpcomingUtbetaling(
-    tidspunkt: String,
-    forfallsdato: String,
-    utbetalingsdato: String = "2022-10-01T00:00:00Z",
+    tidspunkt: LocalDateTime = nowWithMillis().minusDays(10),
+    forfallsdato: LocalDateTime = nowWithMillis(),
+    utbetalingsdato: LocalDateTime = nowWithMillis(),
     status: JsonUtbetaling.Status = JsonUtbetaling.Status.PLANLAGT_UTBETALING,
 ): JsonHendelse =
     JsonUtbetaling()
         .withType(JsonHendelse.Type.UTBETALING)
-        .withHendelsestidspunkt(tidspunkt)
-        .withForfallsdato(forfallsdato)
+        .withHendelsestidspunkt(convertToOffsettDateTimeUTCString(tidspunkt))
+        .withForfallsdato(convertToOffsettDateTimeUTCString(forfallsdato))
         .withStatus(status)
-        .withUtbetalingsdato(utbetalingsdato)
+        .withUtbetalingsdato(convertToOffsettDateTimeUTCString(utbetalingsdato))
 
 internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
     val hvaSokesOm =

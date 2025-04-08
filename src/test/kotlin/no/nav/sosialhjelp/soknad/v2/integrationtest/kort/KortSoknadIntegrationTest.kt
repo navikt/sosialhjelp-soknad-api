@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
+import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -78,7 +79,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { kortSoknadService.resolveKortSoknad(any(), any()) }
+        verify(exactly = 1) { kortSoknadUseCaseHandler.resolveKortSoknad(any(), any(), any(), any()) }
     }
 
     @Test
@@ -150,9 +151,9 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
         doUpdateAdresse(soknadId)
 
-        verify(exactly = 0) { kortSoknadService.isQualifiedFromFiks(any(), any()) }
-        verify(exactly = 0) { kortSoknadService.transitionToKort(any()) }
-        verify(exactly = 0) { kortSoknadService.transitionToStandard(any()) }
+        verify(exactly = 0) { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) }
+        verify(exactly = 0) { kortSoknadService.isTransitioningToKort(any()) }
+        verify(exactly = 0) { kortSoknadService.isTransitioningToStandard(any()) }
     }
 
     @Test
@@ -338,6 +339,9 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     private lateinit var unleash: Unleash
+
+    @SpykBean
+    private lateinit var kortSoknadUseCaseHandler: KortSoknadUseCaseHandler
 
     @SpykBean
     private lateinit var kortSoknadService: KortSoknadService

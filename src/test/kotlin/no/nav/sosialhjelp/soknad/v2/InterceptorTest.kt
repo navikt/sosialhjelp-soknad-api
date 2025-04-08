@@ -23,7 +23,7 @@ class InterceptorTest : AbstractIntegrationTest() {
 
     @Test
     fun `PUT til familie skal kaste exception hvis bruker ikke har tilgang`() {
-        val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId, eierPersonId = "69691337420"))
         val token = mockOAuth2Server.issueToken("selvbetjening", "abc", "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
 
         val result =
@@ -47,7 +47,7 @@ class InterceptorTest : AbstractIntegrationTest() {
 
     @Test
     fun `PUT til familie skal ikke kaste exception hvis bruker har tilgang`() {
-        val soknad = soknadRepository.save(opprettSoknad(eierPersonId = "69691337420"))
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId, eierPersonId = "69691337420"))
         val token =
             mockOAuth2Server.issueToken(
                 "selvbetjening",

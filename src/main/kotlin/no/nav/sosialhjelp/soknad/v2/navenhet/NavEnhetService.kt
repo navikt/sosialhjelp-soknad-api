@@ -34,6 +34,7 @@ class NavEnhetService(
         valg: AdresseValg?,
     ): NavEnhet? {
         if (valg == AdresseValg.FOLKEREGISTRERT) {
+            // TODO Test at dette fungerer med fallback til finnNavEnhetFraAdresse
             runCatching { return finnNavEnhetFraGT(eier, getKommunenummer(adresse)) }
                 .onFailure { log.error("Kunne ikke hente NavEnhet fra GT", it) }
         }

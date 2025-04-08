@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus
 class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Hente telefonnummer skal returnere lagret data`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
         val kontakt = kontaktRepository.save(opprettKontakt(soknad.id))
 
         doGet(
@@ -27,7 +27,7 @@ class TelefonnummerIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere telefonnummer for bruker skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
         val telefonnummerInput = TelefonnummerInput(telefonnummerBruker = "32992311")
 

@@ -103,7 +103,7 @@ class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        soknad = soknadRepository.save(opprettSoknad())
+        soknad = soknadRepository.save(opprettSoknad(id = soknadId))
     }
 
     companion object {

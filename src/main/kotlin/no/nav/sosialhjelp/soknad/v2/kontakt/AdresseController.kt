@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
-import no.nav.sosialhjelp.soknad.v2.kontakt.service.NavEnhetEnrichment
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,47 +18,30 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/soknad/{soknadId}/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdresseController(
-    private val adresseService: AdresseService,
+    private val adresseUseCaseHandler: AdresseUseCaseHandler,
 ) {
     @GetMapping
     fun getAdresser(
         @PathVariable("soknadId") soknadId: UUID,
-    ): AdresserDto =
-        createAdresseDto(
-            adresser = adresseService.findAdresser(soknadId),
-            mottaker =
-                adresseService.findMottaker(soknadId)?.let { navEnhet ->
-                    val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
-                    navEnhet.toNavEnhetDto(enrichment)
-                },
-        )
+    ): AdresserDto = adresseUseCaseHandler.getAdresseAndMottakerInfo(soknadId)
 
     @PutMapping
     fun updateAdresser(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) adresserInput: AdresserInput,
-    ): AdresserDto =
-        adresseService
-            .updateBrukerAdresse(
-                soknadId = soknadId,
-                adresseValg = adresserInput.adresseValg,
-                brukerAdresse =
-                    when (adresserInput.brukerAdresse) {
-                        is VegAdresse -> adresserInput.brukerAdresse
-                        is MatrikkelAdresse -> adresserInput.brukerAdresse
-                        else -> null
-                    },
-            ).let { adresse ->
-                createAdresseDto(
-                    adresser = adresse,
-                    mottaker =
-                        adresseService.findMottaker(soknadId)?.let { navEnhet ->
-                            val enrichment = navEnhet.kommunenummer?.let { adresseService.getEnrichment(it) }
-                            navEnhet.toNavEnhetDto(enrichment)
-                        },
-                )
-            }
+    ): AdresserDto {
+        adresseUseCaseHandler.updateBrukerAdresse(
+            soknadId = soknadId,
+            adresseValg = adresserInput.adresseValg,
+            brukerAdresse = adresserInput.brukerAdresse?.toDomainAdresse(),
+        )
+
+        return getAdresser(soknadId)
+    }
 }
+
+private fun AdresseInput.toDomainAdresse(): Adresse? =
+    this.takeIf { it is VegAdresse || it is MatrikkelAdresse } as? Adresse
 
 data class AdresserInput(
     val adresseValg: AdresseValg,
@@ -112,7 +93,7 @@ fun createAdresseDto(
         navenhet = mottaker,
     )
 
-fun NavEnhet.toNavEnhetDto(enrichment: NavEnhetEnrichment?): NavEnhetDto =
+fun NavEnhet.toNavEnhetDto(enrichment: KommuneInfo?): NavEnhetDto =
     NavEnhetDto(
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,

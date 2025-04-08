@@ -22,7 +22,7 @@ class KodeverkService(private val kodeverkClient: KodeverkClient) {
             kodeverkClient.hentKodeverk(kodeverksnavn).toMap()
         }
             .onFailure { logger.error("Kunne ikke hente Kodeverk", it) }
-            .getOrNull() ?: emptyMap()
+            .getOrElse { emptyMap() }
     }
 
     companion object {
