@@ -84,7 +84,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Kort soknad skal opprette OkonomiElement FORMUE_BRUKSKONTO`() {
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns true
 
         val soknadId = createSoknadWithMetadata()
 
@@ -111,7 +111,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Transition to Standard soknad skal fjerne FORMUE_BRUKSKONTO`() {
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns false
 
         val soknadId = createSoknadWithMetadata(createSoknadMetadata(soknadType = SoknadType.KORT))
         okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)

@@ -31,6 +31,7 @@ class KortSoknadServiceTest {
             soknadService,
             dokumentasjonService = mockk(relaxed = true),
             soknadMetadataService = mockk(relaxed = true),
+            okonomiService = mockk(relaxed = true),
         )
     private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler =
         KortSoknadUseCaseHandler(
