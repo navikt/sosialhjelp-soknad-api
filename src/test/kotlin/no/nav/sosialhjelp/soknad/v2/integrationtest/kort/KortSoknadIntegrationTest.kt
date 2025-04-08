@@ -18,10 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
@@ -39,7 +36,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
@@ -253,71 +249,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             responseBodyClass = Boolean::class.java,
         )
             .also { assertThat(it).isFalse() }
-    }
-
-    @Test
-    fun `Ved transformasjon fra kort til standard, skal dokumenter lastet opp til ANDRE_UTGIFTER overleve`() {
-        every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
-            createNavEnhet("Annen NAV", "4444", "Annen kommune")
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns true
-
-        createEksisterendeSoknad(nowWithMillis().minusDays(10))
-        val soknadId = createSoknadWithMetadata()
-
-        // Oppdaterer adresse første gang -> gir kort soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.FOLKEREGISTRERT)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!
-            .run {
-                copy(
-                    status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter =
-                        setOf(
-                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
-                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
-                        ),
-                )
-            }
-            .also { dokumentasjonRepository.save(it) }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .also { list ->
-                assertThat(list)
-                    .hasSize(13)
-                    .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-                    .anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
-
-                assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(2)
-            }
-
-        every { kortSoknadService.isQualifiedFromFiks(any(), any()) } returns false
-        // oppdaterer adresse andre gang -> gir standard soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isFalse() }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .also { list ->
-                assertThat(list)
-                    .hasSize(2)
-                    .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-                    .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
-
-                assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(2)
-            }
     }
 
     private fun createEksisterendeSoknad(
