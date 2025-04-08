@@ -33,7 +33,7 @@ class OkonomiskeOpplysningerServiceImpl(
     ): List<OkonomiElement> {
         return dokumentasjonService.findDokumentasjonForSoknad(soknadId)
             .filter { typesWithOkonomiElement.contains(it.type.javaClass) }
-            .map { findElement(soknadId, it.type) }
+            .mapNotNull { findElementOrNull(soknadId, it.type) }
     }
 
     override fun updateOkonomiskeOpplysninger(
@@ -76,7 +76,7 @@ class OkonomiskeOpplysningerServiceImpl(
             }
     }
 
-    private fun findElement(
+    private fun findElementOrNull(
         soknadId: UUID,
         type: OpplysningType,
     ): OkonomiOpplysning {
@@ -86,16 +86,22 @@ class OkonomiskeOpplysningerServiceImpl(
             is FormueType -> okonomiService.getFormuer(soknadId).find { it.type == type }
             else -> error("Ukjent Okonomi-type")
         }
+
+    private fun findElement(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): OkonomiElement =
+        findElementOrNull(soknadId, type)
             ?: throw OkonomiElementFinnesIkkeException(
                 message = "Okonomi-element finnes ikke: $type",
                 soknadId = soknadId,
             )
-    }
 
     companion object {
         val typesWithOkonomiElement = listOf(InntektType::class.java, UtgiftType::class.java, FormueType::class.java)
     }
 }
+    }
 
 private fun List<OkonomiDetalj>.mapToBelopList(): List<Belop> {
     return this.map { it as Belop }
