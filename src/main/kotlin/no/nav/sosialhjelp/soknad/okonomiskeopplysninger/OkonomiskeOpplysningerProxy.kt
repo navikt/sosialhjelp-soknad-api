@@ -129,7 +129,7 @@ private fun AvdragRenterDto.toVedleggRadFrontend(): VedleggRadFrontend {
 private fun BelopDto.toVedleggRadFrontend(): VedleggRadFrontend {
     return VedleggRadFrontend(
         beskrivelse = beskrivelse,
-        belop = belop.toInt(),
+        belop = belop?.toInt(),
     )
 }
 

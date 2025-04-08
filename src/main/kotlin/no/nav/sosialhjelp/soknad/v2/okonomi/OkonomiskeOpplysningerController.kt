@@ -154,7 +154,7 @@ sealed interface OkonomiDetaljDto
 // Brukes for mesteparten av de opplysningene bruker oppdaterer
 data class BelopDto(
     val beskrivelse: String? = null,
-    val belop: Double,
+    val belop: Double? = null,
 ) : OkonomiDetaljDto
 
 // hvis bruker ikke velger å hente lønn via skatteetaten, kan vedkommende fylle inn selv

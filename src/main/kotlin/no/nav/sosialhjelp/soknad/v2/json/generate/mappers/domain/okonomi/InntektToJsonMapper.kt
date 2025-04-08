@@ -86,7 +86,7 @@ private fun OkonomiDetalj.addDetaljToOversiktForInntekt(
     jsonInntekt: JsonOkonomioversiktInntekt,
 ): JsonOkonomioversiktInntekt {
     return when (this) {
-        is Belop -> jsonInntekt.withBrutto(belop.toInt()).withNetto(belop.toInt())
+        is Belop -> jsonInntekt.withBrutto(belop?.toInt()).withNetto(belop?.toInt())
         is BruttoNetto -> jsonInntekt.withBrutto(brutto?.toInt()).withNetto(netto?.toInt())
         else -> error("Ugyldig OkonomiDetalj-type for Oversikt Inntekt")
     }
@@ -121,7 +121,7 @@ private fun OkonomiDetalj.addDetaljToOpplysningForInntekt(
     jsonUtbetaling: JsonOkonomiOpplysningUtbetaling,
 ): JsonOkonomiOpplysningUtbetaling {
     when (this) {
-        is Belop -> jsonUtbetaling.withBelop(this.belop.toInt())
+        is Belop -> jsonUtbetaling.withBelop(this.belop?.toInt())
         is UtbetalingMedKomponent -> addUtbetalingMedKomponent(jsonUtbetaling)
         is Utbetaling -> addUtbetaling(jsonUtbetaling)
         else -> error("Type: ${jsonUtbetaling.type} - Ugyldig detalj-type for Inntekt: ${this::class.simpleName}")
