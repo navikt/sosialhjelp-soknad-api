@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.BARNEBIDRAG_MOTTAR
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType.BARNEBIDRAG_BETALER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,15 +16,15 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
         forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
-            assertThat(inntekter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_MOTTAR }
-            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
+            assertThat(inntekter.toList()).hasSize(1).allMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
+            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
         }
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also { doklist ->
             assertThat(doklist)
                 .hasSize(2)
-                .anyMatch { it.type == BARNEBIDRAG_MOTTAR }
-                .anyMatch { it.type == BARNEBIDRAG_BETALER }
+                .anyMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
+                .anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
         }
     }
 
@@ -34,19 +32,19 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
     fun `Endre verdi Barnebidrag skal fjerne relevant okonomi-post og vedlegg`() {
         forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
         okonomiRepository.findByIdOrNull(soknad.id)!!
-            .run { assertThat(inntekter).allMatch { it.type == BARNEBIDRAG_MOTTAR } }
+            .run { assertThat(inntekter).allMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR } }
 
         forsorgerService.updateForsorger(soknad.id, Barnebidrag.BETALER, emptyMap())
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.run {
             assertThat(inntekter).isEmpty()
-            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == BARNEBIDRAG_BETALER }
+            assertThat(utgifter.toList()).hasSize(1).allMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
         }
 
         dokumentasjonRepository.findAllBySoknadId(soknad.id).also { doklist ->
             assertThat(doklist)
                 .hasSize(1)
-                .allMatch { it.type == BARNEBIDRAG_BETALER }
+                .allMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
         }
     }
 
@@ -54,7 +52,7 @@ class BarnebidragTest : AbstractOkonomiServiceTest() {
     fun `Barnebidrag lik null skal fjerne alle okonomi-poster og dokumentasjonsforventninger`() {
         forsorgerService.updateForsorger(soknad.id, Barnebidrag.BEGGE, emptyMap())
         okonomiRepository.findByIdOrNull(soknad.id)!!
-            .run { assertThat(inntekter).allMatch { it.type == BARNEBIDRAG_MOTTAR } }
+            .run { assertThat(inntekter).allMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR } }
 
         forsorgerService.updateForsorger(soknad.id, null, emptyMap())
 

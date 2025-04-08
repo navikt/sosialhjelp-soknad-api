@@ -8,12 +8,12 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.SkattbarInntektDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat

@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
@@ -38,8 +37,9 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient

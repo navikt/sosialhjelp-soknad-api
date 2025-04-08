@@ -1,9 +1,6 @@
 
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

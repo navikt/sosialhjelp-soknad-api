@@ -6,9 +6,8 @@ import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektSkatteetatenUseCaseHandler
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.JOBB
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import org.assertj.core.api.Assertions.assertThat
@@ -31,7 +30,7 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.also { okonomi ->
             assertThat(okonomi.inntekter.toList()).hasSize(1)
-                .allMatch { it.type == UTBETALING_SKATTEETATEN }
+                .allMatch { it.type == InntektType.UTBETALING_SKATTEETATEN }
                 .allMatch { it.inntektDetaljer.detaljer.size == 2 }
         }
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isFalse()
@@ -55,8 +54,8 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
             .hasSize(1)
-            .allMatch { it.type == JOBB }
-        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
+            .allMatch { it.type == InntektType.JOBB }
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
         assertThat(integrasjonStatusService.hasFetchInntektSkatteetatenFailed(soknad.id)).isTrue()
     }
 
@@ -68,14 +67,14 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
             .hasSize(1)
-            .allMatch { it.type == UTBETALING_SKATTEETATEN }
+            .allMatch { it.type == InntektType.UTBETALING_SKATTEETATEN }
 
         inntektSkatteetatenUseCaseHandler.updateSamtykke(soknad.id, false)
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.toList())
             .hasSize(1)
-            .allMatch { it.type == JOBB }
+            .allMatch { it.type == InntektType.JOBB }
 
-        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, JOBB)).isNotNull()
+        assertThat(dokumentasjonRepository.findBySoknadIdAndType(soknad.id, InntektType.JOBB)).isNotNull()
     }
 
     private fun createAnswerForSkatteetatenClient() {

@@ -6,14 +6,14 @@ import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.InntektToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.getSoknadJsonTypeString
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Mottaker
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
