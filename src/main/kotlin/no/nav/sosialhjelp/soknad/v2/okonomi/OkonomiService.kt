@@ -51,12 +51,8 @@ class OkonomiService(
         tidspunkt: LocalDateTime = LocalDateTime.now(),
     ) {
         findOrCreateOkonomi(soknadId)
-            .run {
-                copy(
-                    bekreftelser = bekreftelser.filter { it.type != type }.plus(Bekreftelse(type, verdi = verdi)).toSet(),
-                )
-            }
-            .also { okonomiRepository.save(it) }
+        okonomiRepository.deleteBekreftelse(soknadId, type)
+        okonomiRepository.addBekreftelse(soknadId, type, tidspunkt, verdi)
     }
 
     @Transactional
@@ -64,9 +60,7 @@ class OkonomiService(
         soknadId: UUID,
         type: BekreftelseType,
     ) {
-        findOkonomi(soknadId)
-            ?.run { copy(bekreftelser = bekreftelser.filter { it.type != type }.toSet()) }
-            ?.also { okonomiRepository.save(it) }
+        findOkonomi(soknadId)?.also { okonomiRepository.deleteBekreftelse(soknadId, type) }
     }
 
     @Transactional
@@ -115,15 +109,20 @@ class OkonomiService(
         opplysning: OkonomiOpplysning,
     ) {
         findOrCreateOkonomi(soknadId)
-            .run {
-                when (opplysning) {
-                    is Formue -> copy(formuer = formuer.addOpplysning(opplysning))
-                    is Inntekt -> copy(inntekter = inntekter.addOpplysning(opplysning))
-                    is Utgift -> copy(utgifter = utgifter.addOpplysning(opplysning))
-                }
+        when (opplysning) {
+            is Formue -> {
+                okonomiRepository.deleteFormue(soknadId, opplysning.type)
+                okonomiRepository.addFormue(soknadId, opplysning.type, opplysning.beskrivelse, opplysning.formueDetaljer.toJson())
             }
-            .also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
-
+            is Inntekt -> {
+                okonomiRepository.deleteInntekt(soknadId, opplysning.type)
+                okonomiRepository.addInntekt(soknadId, opplysning.type, opplysning.beskrivelse, opplysning.inntektDetaljer.toJson())
+            }
+            is Utgift -> {
+                okonomiRepository.deleteUtgift(soknadId, opplysning.type)
+                okonomiRepository.addUtgift(soknadId, opplysning.type, opplysning.beskrivelse, opplysning.utgiftDetaljer.toJson())
+            }
+        }
         if (opplysning.type.dokumentasjonForventet) dokumentasjonService.opprettDokumentasjon(soknadId, opplysning.type)
     }
 
@@ -135,13 +134,20 @@ class OkonomiService(
         findOkonomi(soknadId)
             ?.run {
                 when (opplysning) {
-                    is Inntekt -> copy(inntekter = inntekter.updateSet(opplysning))
-                    is Utgift -> copy(utgifter = utgifter.updateSet(opplysning))
-                    is Formue -> copy(formuer = formuer.updateSet(opplysning))
+                    is Inntekt -> {
+                        inntekter.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i inntekter")
+                        addElementToOkonomi(soknadId, opplysning)
+                    }
+                    is Utgift -> {
+                        utgifter.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i inntekter")
+                        addElementToOkonomi(soknadId, opplysning)
+                    }
+                    is Formue -> {
+                        formuer.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i inntekter")
+                        addElementToOkonomi(soknadId, opplysning)
+                    }
                 }
             }
-            ?.also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
-            ?: error("Okonomi finnes ikke")
     }
 
     @Transactional
@@ -150,15 +156,13 @@ class OkonomiService(
         type: OkonomiOpplysningType,
     ) {
         findOkonomi(soknadId)
-            ?.run {
+            ?.also {
                 when (type) {
-                    is FormueType -> copy(formuer = formuer.filter { it.type != type }.toSet())
-                    is UtgiftType -> copy(utgifter = utgifter.filter { it.type != type }.toSet())
-                    is InntektType -> copy(inntekter = inntekter.filter { it.type != type }.toSet())
+                    is FormueType -> okonomiRepository.deleteFormue(soknadId, type)
+                    is UtgiftType -> okonomiRepository.deleteUtgift(soknadId, type)
+                    is InntektType -> okonomiRepository.deleteInntekt(soknadId, type)
                 }
             }
-            ?.also { updatedOkonomi -> okonomiRepository.save(updatedOkonomi) }
-
         if (type.dokumentasjonForventet) dokumentasjonService.fjernForventetDokumentasjon(soknadId, type)
     }
 
@@ -167,14 +171,7 @@ class OkonomiService(
     private fun findOkonomi(soknadId: UUID): Okonomi? = okonomiRepository.findByIdOrNull(soknadId)
 }
 
-private fun <E : OkonomiOpplysning> Set<E>.addOpplysning(element: E): Set<E> =
-    filter { it.type != element.type }.plus(element).toSet()
-
-private fun <E : OkonomiOpplysning> Set<E>.updateSet(opplysning: E): Set<E> =
-    when (any { it.type == opplysning.type }) {
-        true -> this.filter { it.type != opplysning.type }.plus(opplysning).toSet()
-        false -> error("Inntekt (${opplysning.type} finnes ikke i Set")
-    }
+private fun <T : OkonomiDetalj> OkonomiDetaljer<T>.toJson() = OkonomiskeDetaljerToStringConverter<T>().convert(this)
 
 data class OkonomiElementFinnesIkkeException(
     override val message: String,
