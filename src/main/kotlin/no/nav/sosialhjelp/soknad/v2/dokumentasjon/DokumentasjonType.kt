@@ -1,9 +1,10 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 
 // OpplysningType inneholder også typer som ikke skal ha dokumentasjon - frontend trenger en eksplisitt liste
 enum class DokumentasjonType(val opplysningType: OpplysningType) {

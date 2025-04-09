@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiOpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.DokumentUpload
 import org.springframework.stereotype.Component
@@ -71,10 +70,12 @@ class OkonomiskeOpplysningerProxy(
                 ),
         )
 
-        okonomiskeOpplysningerController.updateOkonomiskOpplysning(
-            soknadId = UUID.fromString(behandlingsId),
-            input = vedleggFrontend.resolveOkonomiInput(),
-        )
+        if (vedleggFrontend.type.opplysningType is OkonomiOpplysningType) {
+            okonomiskeOpplysningerController.updateOkonomiskOpplysning(
+                soknadId = UUID.fromString(behandlingsId),
+                input = vedleggFrontend.resolveOkonomiInput(),
+            )
+        }
     }
 
     private fun isOpplysningerBekreftet(behandlingsId: String): Boolean {
@@ -150,14 +151,12 @@ private fun DokumentasjonStatus.toVedleggStatus(): VedleggStatus {
 }
 
 private fun VedleggFrontend.resolveOkonomiInput(): AbstractOkonomiInput {
-    val opplysningType: OpplysningType =
-        type.opplysningType
-            ?: throw IllegalArgumentException("VedleggType ${type.name} har ingen mapping til OpplysningType")
+    if (type.opplysningType !is OkonomiOpplysningType) error("VedleggType ${type.name} er ikke OkonomiOpplysningType")
 
-    return when (opplysningType) {
+    return when (type.opplysningType) {
         InntektType.JOBB -> toLonnsInput()
         UtgiftType.UTGIFTER_BOLIGLAN -> toBoliglanInput()
-        else -> toGenericOkonomiInput(opplysningType)
+        else -> toGenericOkonomiInput(type.opplysningType)
     }
 }
 
@@ -173,7 +172,7 @@ private fun VedleggFrontend.toBoliglanInput() =
 
 private fun VedleggFrontend.toGenericOkonomiInput(type: OkonomiOpplysningType) =
     GenericOkonomiInput(
-        type = opplysningType.toDokumentasjonType(),
+        type = type.toDokumentasjonType(),
         detaljer =
             if (rader.isNullOrEmpty() || (rader.size == 1 && rader[0].allFieldsNull())) {
                 emptyList()

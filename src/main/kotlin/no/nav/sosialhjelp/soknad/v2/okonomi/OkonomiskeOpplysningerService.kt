@@ -2,23 +2,17 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 interface OkonomiskeOpplysningerService {
-    fun getOkonomiskeOpplysningerForTyper(
+    fun getOkonomiskeOpplysninger(
         soknadId: UUID,
-    ): List<OkonomiElement>
+    ): List<OkonomiOpplysning>
 
     fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
-        type: OpplysningType,
+        type: OkonomiOpplysningType,
         detaljer: List<OkonomiDetalj>,
     )
 }
@@ -28,17 +22,15 @@ class OkonomiskeOpplysningerServiceImpl(
     private val okonomiService: OkonomiService,
     private val dokumentasjonService: DokumentasjonService,
 ) : OkonomiskeOpplysningerService {
-    override fun getOkonomiskeOpplysningerForTyper(
-        soknadId: UUID,
-    ): List<OkonomiElement> {
+    override fun getOkonomiskeOpplysninger(soknadId: UUID): List<OkonomiOpplysning> {
         return dokumentasjonService.findDokumentasjonForSoknad(soknadId)
-            .filter { typesWithOkonomiElement.contains(it.type.javaClass) }
-            .mapNotNull { findElementOrNull(soknadId, it.type) }
+            .filter { it.type is OkonomiOpplysningType }
+            .mapNotNull { findElementOrNull(soknadId, it.type as OkonomiOpplysningType) }
     }
 
     override fun updateOkonomiskeOpplysninger(
         soknadId: UUID,
-        type: OpplysningType,
+        type: OkonomiOpplysningType,
         detaljer: List<OkonomiDetalj>,
     ) {
         type.validate(soknadId)
@@ -54,8 +46,7 @@ class OkonomiskeOpplysningerServiceImpl(
         addDetaljerToElement(soknadId, type, detaljer).also { okonomiService.updateElement(soknadId, it) }
     }
 
-    private fun OpplysningType.validate(soknadId: UUID) {
-        if (!typesWithOkonomiElement.contains(this.javaClass)) error("${this.name} har ikke økonomiske opplysninger.")
+    private fun OkonomiOpplysningType.validate(soknadId: UUID) {
         if (dokumentasjonService.findDokumentasjonByType(soknadId, this) == null) {
             throw IkkeFunnetException("Finnes ikke dokumentasjon for ${this.name}")
         }
@@ -63,7 +54,7 @@ class OkonomiskeOpplysningerServiceImpl(
 
     private fun addDetaljerToElement(
         soknadId: UUID,
-        type: OpplysningType,
+        type: OkonomiOpplysningType,
         detaljer: List<OkonomiDetalj>,
     ): OkonomiOpplysning {
         return findElement(soknadId, type)
@@ -71,37 +62,32 @@ class OkonomiskeOpplysningerServiceImpl(
                 when (this) {
                     is Inntekt -> copy(inntektDetaljer = OkonomiDetaljer(detaljer))
                     is Utgift -> copy(utgiftDetaljer = OkonomiDetaljer(detaljer))
-                    is Formue -> copy(formueDetaljer = OkonomiDetaljer(detaljer.mapToBelopList()))
+                    is Formue -> copy(formueDetaljer = OkonomiDetaljer(detaljer.map { it as Belop }))
                 }
             }
     }
 
     private fun findElementOrNull(
         soknadId: UUID,
-        type: OpplysningType,
-    ): OkonomiOpplysning {
+        type: OkonomiOpplysningType,
+    ): OkonomiOpplysning? {
         return when (type) {
             is InntektType -> okonomiService.getInntekter(soknadId).find { it.type == type }
             is UtgiftType -> okonomiService.getUtgifter(soknadId).find { it.type == type }
             is FormueType -> okonomiService.getFormuer(soknadId).find { it.type == type }
-            else -> error("Ukjent Okonomi-type")
         }
+    }
 
     private fun findElement(
         soknadId: UUID,
-        type: OpplysningType,
-    ): OkonomiElement =
+        type: OkonomiOpplysningType,
+    ): OkonomiOpplysning =
         findElementOrNull(soknadId, type)
             ?: throw OkonomiElementFinnesIkkeException(
                 message = "Okonomi-element finnes ikke: $type",
                 soknadId = soknadId,
             )
-
-    companion object {
-        val typesWithOkonomiElement = listOf(InntektType::class.java, UtgiftType::class.java, FormueType::class.java)
-    }
 }
-    }
 
 private fun List<OkonomiDetalj>.mapToBelopList(): List<Belop> {
     return this.map { it as Belop }

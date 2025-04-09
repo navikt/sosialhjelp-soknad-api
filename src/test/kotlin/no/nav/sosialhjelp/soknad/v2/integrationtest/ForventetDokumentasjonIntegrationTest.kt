@@ -12,9 +12,9 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TID
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -30,11 +30,9 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var dokumentlagerService: DokumentlagerService
 
-    private lateinit var soknadId: UUID
-
     @BeforeEach
     fun setUp() {
-        soknadId = soknadRepository.save(opprettSoknad()).id
+        opprettSoknad(soknadId).also { soknadRepository.save(it) }
         every { dokumentlagerService.deleteDokument(soknadId, any()) } just runs
     }
 
@@ -62,10 +60,10 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Oppdatere dokumentasjon som ikke finnes skal gi feil`() {
         doPutExpectError(
-            uri = getUrl(soknadId),
+            uri = getUrl(UUID.randomUUID()),
             requestBody = DokumentasjonInput(DokumentasjonType.JOBB, true),
-            soknadId = soknadId,
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+            soknadId = UUID.randomUUID(),
+            httpStatus = HttpStatus.NOT_FOUND,
         )
     }
 

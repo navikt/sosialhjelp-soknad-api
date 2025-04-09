@@ -7,9 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -28,7 +25,7 @@ class OkonomiskeOpplysningerController(
     fun getOkonomiskeOpplysninger(
         @PathVariable("soknadId") soknadId: UUID,
     ): OkonomiskeOpplysningerDto {
-        return okonomiskeOpplysningerService.getOkonomiskeOpplysningerForTyper(soknadId)
+        return okonomiskeOpplysningerService.getOkonomiskeOpplysninger(soknadId)
             .map { it.toOkonomiskOpplysningDto() }
             .let { OkonomiskeOpplysningerDto(it) }
     }
@@ -38,9 +35,11 @@ class OkonomiskeOpplysningerController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: AbstractOkonomiInput,
     ): OkonomiskeOpplysningerDto {
+        input.type.opplysningType.also { if (it !is OkonomiOpplysningType) error("$it er ikke en okonomiType") }
+
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
-            type = input.type.opplysningType,
+            type = input.type.opplysningType as OkonomiOpplysningType,
             detaljer = input.mapToOkonomiDetalj(),
         )
         return getOkonomiskeOpplysninger(soknadId)
@@ -56,14 +55,14 @@ data class OkonomiskOpplysningDto(
     val detaljer: List<OkonomiDetaljDto>?,
 )
 
-private fun OkonomiElement.toOkonomiskOpplysningDto(): OkonomiskOpplysningDto {
+private fun OkonomiOpplysning.toOkonomiskOpplysningDto(): OkonomiskOpplysningDto {
     return OkonomiskOpplysningDto(
         type = type.toDokumentasjonType(),
         detaljer = this.mapFromOkonomiElement(),
     )
 }
 
-private fun OkonomiElement.mapFromOkonomiElement(): List<OkonomiDetaljDto> {
+private fun OkonomiOpplysning.mapFromOkonomiElement(): List<OkonomiDetaljDto> {
     return when (this) {
         is Inntekt -> this.inntektDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
         is Utgift -> this.utgiftDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }

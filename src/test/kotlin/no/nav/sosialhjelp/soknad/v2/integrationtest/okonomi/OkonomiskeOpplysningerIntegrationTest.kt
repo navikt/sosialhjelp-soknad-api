@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType.HUSLEIEKONTRAKT
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType.SKATTEMELDING
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType.HUSLEIEKONTRAKT
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType.SKATTEMELDING
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -11,8 +11,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BelopDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType.FORMUE_BRUKSKONTO
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType.VERDI_BOLIG
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -21,17 +21,12 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerDto
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType.FORMUE_BRUKSKONTO
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType.VERDI_BOLIG
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.Inntekt
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.JOBB
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType.UTGIFTER_BOLIGLAN
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType.UTGIFTER_BOLIGLAN_RENTER
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANDRE_UTGIFTER
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANNET_BARN
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANNET_BO
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_BOLIGLAN
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_BOLIGLAN_RENTER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -69,7 +64,12 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Hente okonomiske opplysninger skal kun returnere relevante data`() {
-        val relevantForOkonomiskeOpplysninger = listOf(FORMUE_BRUKSKONTO, JOBB, UTGIFTER_BOLIGLAN)
+        val relevantForOkonomiskeOpplysninger =
+            listOf(
+                FORMUE_BRUKSKONTO,
+                InntektType.JOBB,
+                UTGIFTER_BOLIGLAN,
+            )
         val ikkeRelevanteOkonomiTyper = listOf(VERDI_BOLIG, UTGIFTER_BOLIGLAN_RENTER)
         val andreDokTyper = listOf(HUSLEIEKONTRAKT, SKATTEMELDING)
 
@@ -179,7 +179,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Andre utgifter med beskrivelse skal lagres pr okonomiske detalj`() {
         Dokumentasjon(
             soknadId = soknad.id,
-            type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+            type = UTGIFTER_ANDRE_UTGIFTER,
         ).also { dokRepository.save(it) }
 
         val enAnnenUtgiftString = "en annen utgift"
@@ -188,7 +188,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
+                    type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enAnnenUtgiftString, belop = ettBelop),
@@ -198,13 +198,13 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okonoiskOpplysning ->
-                assertThat(okonoiskOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+                assertThat(okonoiskOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANDRE_UTGIFTER)
             }
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+                    .allMatch { it.type == UTGIFTER_ANDRE_UTGIFTER }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
@@ -215,7 +215,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Andre boutgifter med beskrivelse skal lagres pr okonomiske detalj`() {
-        Utgift(type = UtgiftType.UTGIFTER_ANNET_BO).also {
+        Utgift(type = UTGIFTER_ANNET_BO).also {
             okonomiService.addElementToOkonomi(soknad.id, it)
         }
 
@@ -225,7 +225,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BO.toDokumentasjonType(),
+                    type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBoutgiftString, belop = ettBelop),
@@ -235,14 +235,14 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANNET_BO)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BO }
+                    .allMatch { it.type == UTGIFTER_ANNET_BO }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
@@ -253,7 +253,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Andre barneutgifter med beskrivelse skal lagres pr okonomiske detalj`() {
-        Utgift(type = UtgiftType.UTGIFTER_ANNET_BARN).also {
+        Utgift(type = UTGIFTER_ANNET_BARN).also {
             okonomiService.addElementToOkonomi(soknad.id, it)
         }
 
@@ -263,7 +263,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    type = UtgiftType.UTGIFTER_ANNET_BARN.toDokumentasjonType(),
+                    type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBarneugiftString, belop = ettBelop),
@@ -273,14 +273,14 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.opplysningType).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANNET_BARN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BARN }
+                    .allMatch { it.type == UTGIFTER_ANNET_BARN }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
@@ -291,7 +291,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Lonnsinntekter skal lagres i db`() {
-        Inntekt(type = JOBB).also { okonomiService.addElementToOkonomi(soknad.id, it) }
+        Inntekt(type = InntektType.JOBB).also { okonomiService.addElementToOkonomi(soknad.id, it) }
 
         doPutInputAndReturnDto(
             input =
@@ -301,14 +301,14 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
             .opplysninger.first().also { okOpplysning ->
-                assertThat(okOpplysning.type.opplysningType).isEqualTo(JOBB)
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(InntektType.JOBB)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == JOBB }
+                    .allMatch { it.type == InntektType.JOBB }
             }
             .first().also { inntekt ->
                 assertThat(inntekt.inntektDetaljer.detaljer)
