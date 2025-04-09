@@ -50,7 +50,7 @@ class KortSoknadService(
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
 
         okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
-        dokumentasjonService.opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
+        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)
 
         soknadService.updateKortSoknad(soknadId, false)
 

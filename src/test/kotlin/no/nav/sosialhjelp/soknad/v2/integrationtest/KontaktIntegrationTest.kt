@@ -406,7 +406,17 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     null,
                 ),
             )
-        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(JsonSoknadsStatus.Status.MOTTATT).withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString())))
+        every {
+            digisosApiV2Client.getInnsynsfil("abc", "metadataid", any())
+        } returns
+            JsonDigisosSoker()
+                .withHendelser(
+                    listOf(
+                        JsonSoknadsStatus()
+                            .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+                            .withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString()),
+                    ),
+                )
 
         dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
             .run {
@@ -441,8 +451,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
         assertThat(dokumentasjon)
-            .hasSize(1)
+            .hasSize(2)
             .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
+            .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
 
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(any()) }
     }
