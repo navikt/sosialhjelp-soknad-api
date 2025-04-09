@@ -4,9 +4,9 @@ import no.nav.sosialhjelp.soknad.v2.createFormuer
 import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.FormueToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
+import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

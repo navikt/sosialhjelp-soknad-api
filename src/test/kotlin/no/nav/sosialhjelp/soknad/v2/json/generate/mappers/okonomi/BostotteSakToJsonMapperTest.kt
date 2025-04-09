@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.createBostotteSaker
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.BostotteSakToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

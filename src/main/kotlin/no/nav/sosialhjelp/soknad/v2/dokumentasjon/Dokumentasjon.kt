@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.dokumentasjon
 
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import org.springframework.data.annotation.Id
@@ -28,18 +27,4 @@ enum class DokumentasjonStatus {
     LASTET_OPP,
     FORVENTET,
     LEVERT_TIDLIGERE,
-}
-
-enum class AnnenDokumentasjonType(
-    override val dokumentasjonForventet: Boolean?,
-) : OpplysningType {
-    SKATTEMELDING(dokumentasjonForventet = true),
-    SAMVARSAVTALE(dokumentasjonForventet = true),
-    OPPHOLDSTILLATELSE(dokumentasjonForventet = true),
-    HUSLEIEKONTRAKT(dokumentasjonForventet = true),
-    HUSLEIEKONTRAKT_KOMMUNAL(dokumentasjonForventet = true),
-    BEHOV(dokumentasjonForventet = true),
-    ;
-
-    override val group: VedleggGruppe get() = VedleggGruppe.GenerelleVedlegg
 }

@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType.BARNEBIDRAG_MOTTAR
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType.BARNEBIDRAG_BETALER
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType.BARNEBIDRAG_MOTTAR
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.BARNEBIDRAG_BETALER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

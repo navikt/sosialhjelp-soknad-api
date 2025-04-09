@@ -8,8 +8,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.DokumentasjonToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.toVedleggStatusString
 import no.nav.sosialhjelp.soknad.v2.json.getVedleggTypeString
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

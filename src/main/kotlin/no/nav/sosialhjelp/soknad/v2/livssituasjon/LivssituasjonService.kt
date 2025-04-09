@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.livssituasjon
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.UUID

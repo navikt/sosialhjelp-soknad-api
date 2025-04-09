@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 
 class FormueToJsonMapper(
     private val formuer: Set<Formue>,

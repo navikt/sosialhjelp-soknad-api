@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.createBostotteSak
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BoutgifterDto
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
@@ -55,14 +54,6 @@ class BostotteInfoUseCaseTest : AbstractIntegrationTest() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = true)
 
         assertSkalVise(true)
-    }
-
-    private fun `Finnes bostottesaker scenario`() {
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE, verdi = true)
-        okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, verdi = true)
-        okonomiService.addBostotteSak(soknad.id, createBostotteSak("Beskrivelse av sak"))
-
-        assertSkalVise(false)
     }
 
     @Test
