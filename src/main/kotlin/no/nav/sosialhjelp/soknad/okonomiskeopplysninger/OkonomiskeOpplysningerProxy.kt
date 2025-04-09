@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.AbstractOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BelopDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
+import no.nav.sosialhjelp.soknad.v2.okonomi.DocumentationInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
@@ -18,6 +19,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiOpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerController
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
@@ -131,7 +133,8 @@ private fun VedleggFrontend.resolveOkonomiInput(): AbstractOkonomiInput {
     return when (opplysningType) {
         InntektType.JOBB -> toLonnsInput()
         UtgiftType.UTGIFTER_BOLIGLAN -> toBoliglanInput()
-        else -> toGenericOkonomiInput(opplysningType)
+        is OkonomiOpplysningType -> toGenericOkonomiInput(opplysningType)
+        else -> DocumentationInput(opplysningType, alleredeLevert ?: false)
     }
 }
 
@@ -147,9 +150,9 @@ private fun VedleggFrontend.toBoliglanInput() =
         detaljer = rader?.map { AvdragRenterDto(it.avdrag?.toDouble(), it.renter?.toDouble()) } ?: emptyList(),
     )
 
-private fun VedleggFrontend.toGenericOkonomiInput(opplysningType: OpplysningType) =
+private fun VedleggFrontend.toGenericOkonomiInput(type: OkonomiOpplysningType) =
     GenericOkonomiInput(
-        opplysningType = opplysningType,
+        okonomiOpplysningType = type,
         dokumentasjonLevert = alleredeLevert ?: false,
         detaljer =
             if (rader.isNullOrEmpty() || (rader.size == 1 && rader[0].allFieldsNull())) {

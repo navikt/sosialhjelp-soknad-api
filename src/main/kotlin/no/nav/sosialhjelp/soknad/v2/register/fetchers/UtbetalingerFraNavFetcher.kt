@@ -56,7 +56,7 @@ class UtbetalingerFraNavFetcher(
                     utbetalinger.map { it.toUtbetalingMedKomponent(orgService.hentOrgNavn(it.orgnummer)) },
                 ),
         )
-            .also { okonomiService.addElementToOkonomi(soknadId = soknadId, element = it) }
+            .also { okonomiService.addElementToOkonomi(soknadId = soknadId, opplysning = it) }
     }
 }
 

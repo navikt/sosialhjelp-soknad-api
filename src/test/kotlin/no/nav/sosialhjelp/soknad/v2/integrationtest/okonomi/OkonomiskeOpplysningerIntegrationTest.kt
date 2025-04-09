@@ -84,7 +84,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = FormueType.FORMUE_BRUKSKONTO,
+                    okonomiOpplysningType = FormueType.FORMUE_BRUKSKONTO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -110,7 +110,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere OpplysningType som ikke finnes skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                opplysningType = FormueType.FORMUE_BRUKSKONTO,
+                okonomiOpplysningType = FormueType.FORMUE_BRUKSKONTO,
                 dokumentasjonLevert = true,
                 detaljer =
                     listOf(
@@ -139,7 +139,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
+                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -193,7 +193,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANNET_BO,
+                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANNET_BO,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
@@ -243,7 +243,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANNET_BARN,
+                    okonomiOpplysningType = UtgiftType.UTGIFTER_ANNET_BARN,
                     dokumentasjonLevert = true,
                     detaljer =
                         listOf(
