@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

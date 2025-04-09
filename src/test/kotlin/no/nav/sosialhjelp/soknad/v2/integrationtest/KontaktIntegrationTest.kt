@@ -38,10 +38,8 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresseInput
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad

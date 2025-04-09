@@ -5,11 +5,9 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.inntekt.InntektType
-import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.UtgiftType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional

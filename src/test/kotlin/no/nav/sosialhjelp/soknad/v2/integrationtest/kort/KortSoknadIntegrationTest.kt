@@ -37,7 +37,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.okonomi.formue.FormueType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
