@@ -61,12 +61,12 @@ data class DokumentDto(
     val filnavn: String,
 )
 
-private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>>.toDokumentasjonDto(): DokumentasjonDto {
+private fun Map.Entry<Dokumentasjon, List<OkonomiDetalj>?>.toDokumentasjonDto(): DokumentasjonDto {
     return DokumentasjonDto(
         type = key.type,
         gruppe = key.type.group,
         dokumentasjonStatus = key.status,
-        detaljer = value.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
+        detaljer = value?.map { dokumentasjon -> dokumentasjon.toOkonomiskDetaljDto() },
         dokumenter =
             key.dokumenter.map { dokument ->
                 DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)
@@ -89,14 +89,20 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
     JsonSubTypes.Type(GenericOkonomiInput::class),
     JsonSubTypes.Type(LonnsInput::class),
     JsonSubTypes.Type(BoliglanInput::class),
+    JsonSubTypes.Type(DocumentationInput::class),
 )
 sealed interface AbstractOkonomiInput {
     val dokumentasjonLevert: Boolean
 }
 
+data class DocumentationInput(
+    val opplysningType: OpplysningType,
+    override val dokumentasjonLevert: Boolean,
+) : AbstractOkonomiInput
+
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    val opplysningType: OpplysningType,
+    val okonomiOpplysningType: OkonomiOpplysningType,
     override val dokumentasjonLevert: Boolean,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
@@ -140,14 +146,16 @@ data class AvdragRenterDto(
 
 private fun AbstractOkonomiInput.getOpplysningType(): OpplysningType =
     when (this) {
-        is GenericOkonomiInput -> opplysningType
+        is DocumentationInput -> opplysningType
+        is GenericOkonomiInput -> okonomiOpplysningType
         is LonnsInput -> InntektType.JOBB
         is BoliglanInput -> UtgiftType.UTGIFTER_BOLIGLAN
     }
 
-private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj> =
+private fun AbstractOkonomiInput.mapToOkonomiDetalj(): List<OkonomiDetalj>? =
     when (this) {
         is GenericOkonomiInput -> detaljer.map { Belop(belop = it.belop, beskrivelse = it.beskrivelse) }
         is LonnsInput -> listOf(BruttoNetto(brutto = detalj.brutto, netto = detalj.netto))
         is BoliglanInput -> detaljer.map { AvdragRenter(it.avdrag, it.renter) }
+        is DocumentationInput -> null
     }

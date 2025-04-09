@@ -11,10 +11,10 @@ interface OkonomiskeOpplysningerService {
         soknadId: UUID,
         type: OpplysningType,
         dokumentasjonLevert: Boolean,
-        detaljer: List<OkonomiDetalj>,
+        detaljer: List<OkonomiDetalj>?,
     )
 
-    fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>>
+    fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>?>
 }
 
 @Service
@@ -26,20 +26,23 @@ class OkonomiskeOpplysningerServiceImpl(
         soknadId: UUID,
         type: OpplysningType,
         dokumentasjonLevert: Boolean,
-        detaljer: List<OkonomiDetalj>,
+        detaljer: List<OkonomiDetalj>?,
     ) {
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
-            if (detaljer.isEmpty()) {
+            if (detaljer.isNullOrEmpty()) {
                 updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
                 return
             }
             okonomiService.addElementToOkonomi(soknadId = soknadId, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
         }
 
-        if (typesWithOkonomiElement.contains(type.javaClass)) {
-            addDetaljerToElement(soknadId, type, detaljer)
-                .let { okonomiService.updateElement(soknadId = soknadId, element = it) }
+        if (type is OkonomiOpplysningType) {
+            detaljer?.also { detaljerNotNull ->
+                addDetaljerToElement(soknadId, type, detaljerNotNull)
+                    .also { okonomiService.updateElement(soknadId = soknadId, opplysning = it) }
+            }
         }
+
         updateDokumentasjonStatus(soknadId, type, dokumentasjonLevert)
     }
 
@@ -74,20 +77,13 @@ class OkonomiskeOpplysningerServiceImpl(
             )
     }
 
-    private fun getOkonomiskeDetaljerForType(
-        soknadId: UUID,
-        type: OpplysningType,
-    ): List<OkonomiDetalj> {
-        // kan finnes dokumentasjon som ikke er knyttet til okonomiske
-        if (!typesWithOkonomiElement.contains(type.javaClass)) return emptyList()
+    override fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>?> =
+        dokumentasjonService.findDokumentasjonForSoknad(soknadId).associateWith {
+            if (it.type is OkonomiOpplysningType) it.type.getOkonomiskeDetaljerForType(soknadId) else null
+        }
 
-        return okonomiService.findDetaljerOrNull(soknadId, type) ?: emptyList()
-    }
-
-    override fun getForventetDokumentasjon(soknadId: UUID): Map<Dokumentasjon, List<OkonomiDetalj>> {
-        return dokumentasjonService.findDokumentasjonForSoknad(soknadId)
-            .associateWith { getOkonomiskeDetaljerForType(soknadId, it.type) }
-    }
+    private fun OkonomiOpplysningType.getOkonomiskeDetaljerForType(soknadId: UUID): List<OkonomiDetalj> =
+        okonomiService.findDetaljerOrNull(soknadId, this) ?: emptyList()
 
     private fun updateDokumentasjonStatus(
         soknadId: UUID,
@@ -102,14 +98,7 @@ class OkonomiskeOpplysningerServiceImpl(
             dokumentasjonService.hasDokumenterForType(soknadId, type) -> DokumentasjonStatus.LASTET_OPP
             else -> DokumentasjonStatus.FORVENTET
         }
-            .let {
-                dokumentasjonService.updateDokumentasjonStatus(soknadId, type, it)
-            }
-    }
-
-    companion object {
-        // kan finnes forventet dokumentasjon som ikke har okonomi-element (skattemelding, annet, etc.)
-        val typesWithOkonomiElement = listOf(InntektType::class.java, UtgiftType::class.java, FormueType::class.java)
+            .let { dokumentasjonService.updateDokumentasjonStatus(soknadId, type, it) }
     }
 }
 

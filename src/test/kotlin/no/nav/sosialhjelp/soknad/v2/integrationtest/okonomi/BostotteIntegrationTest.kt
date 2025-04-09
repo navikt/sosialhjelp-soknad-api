@@ -181,7 +181,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_HUSBANKEN,
                     inntektDetaljer =
@@ -216,7 +216,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Informasjon fra bruker om utbetaling fra Husbanken skal ikke komme i DTO`() {
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_HUSBANKEN,
                     inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
@@ -247,7 +247,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_HUSBANKEN,
                     inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Utbetaling(netto = 12345.0))),
@@ -277,7 +277,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_HUSBANKEN,
                     inntektDetaljer = OkonomiDetaljer(detaljer = listOf(Belop(belop = 12345.0))),
@@ -349,7 +349,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         okonomiService.updateBekreftelse(soknad.id, BekreftelseType.BOSTOTTE_SAMTYKKE, true)
         okonomiService.addElementToOkonomi(
             soknadId = soknad.id,
-            element =
+            opplysning =
                 Inntekt(
                     type = InntektType.UTBETALING_HUSBANKEN,
                     inntektDetaljer =

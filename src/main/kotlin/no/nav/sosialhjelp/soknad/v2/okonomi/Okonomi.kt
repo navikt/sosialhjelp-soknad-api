@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -23,8 +24,9 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     ): Bekreftelse?
 
     @Modifying
+    @Transactional
     @Query("INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) VALUES(:soknadId, :type, :tidspunkt, :verdi)")
-    fun insertBekreftelse(
+    fun addBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
         tidspunkt: LocalDateTime,
@@ -32,15 +34,7 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
-    @Query("UPDATE bekreftelse SET tidspunkt = :tidspunkt, verdi = :verdi WHERE okonomi = :soknadId AND type = :type")
-    fun updateBekreftelse(
-        soknadId: UUID,
-        type: BekreftelseType,
-        tidspunkt: LocalDateTime,
-        verdi: Boolean,
-    )
-
-    @Modifying
+    @Transactional
     @Query("DELETE FROM bekreftelse WHERE okonomi = :soknadId AND type = :type")
     fun deleteBekreftelse(
         soknadId: UUID,
@@ -48,8 +42,9 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("INSERT INTO formue(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
-    fun updateFormue(
+    fun addFormue(
         soknadId: UUID,
         type: FormueType,
         beskrivelse: String?,
@@ -57,6 +52,7 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM formue WHERE okonomi = :soknadId AND type = :type")
     fun deleteFormue(
         soknadId: UUID,
@@ -64,8 +60,9 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("INSERT INTO inntekt(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
-    fun updateInntekt(
+    fun addInntekt(
         soknadId: UUID,
         type: InntektType,
         beskrivelse: String?,
@@ -73,6 +70,7 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM inntekt WHERE okonomi = :soknadId AND type = :type")
     fun deleteInntekt(
         soknadId: UUID,
@@ -80,8 +78,9 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("INSERT INTO utgift(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
-    fun updateUtgift(
+    fun addUtgift(
         soknadId: UUID,
         type: UtgiftType,
         beskrivelse: String?,
@@ -89,6 +88,7 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
     )
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM utgift WHERE okonomi = :soknadId AND type = :type")
     fun deleteUtgift(
         soknadId: UUID,
