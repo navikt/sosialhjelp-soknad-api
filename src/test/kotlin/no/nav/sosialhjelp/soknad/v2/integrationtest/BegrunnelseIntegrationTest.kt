@@ -74,7 +74,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Oppdatere Kategorier skal lagres i databasen`() {
-        val soknad = soknadRepository.save(opprettSoknad())
+        val soknad = soknadRepository.save(opprettSoknad(soknadId))
 
         val definerteKategorier = setOf(Kategori.HUSLEIE, Kategori.LIVSOPPHOLD, Kategori.NODHJELP_IKKE_MAT)
         val annetKategorier = "Trenger også penger til bil"
