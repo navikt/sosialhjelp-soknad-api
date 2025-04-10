@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SlettGamleSoknaderJob
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
