@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -70,15 +72,22 @@ fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
     JsonSubTypes.Type(value = HarHvaSokesOmInput::class, name = "HarHvaSokesOm"),
     JsonSubTypes.Type(value = HarKategorierInput::class, name = "HarKategorier"),
 )
-sealed interface BegrunnelseInput
+@Schema(
+    discriminatorProperty = "type",
+    discriminatorMapping = [
+        DiscriminatorMapping(value = "HarHvaSokesOm", schema = HarHvaSokesOmInput::class),
+        DiscriminatorMapping(value = "HarKategorier", schema = HarKategorierInput::class),
+    ],
+)
+sealed class BegrunnelseInput(val hvorforSoke: String)
 
-data class HarHvaSokesOmInput(
-    val hvorforSoke: String,
+class HarHvaSokesOmInput(
+    hvorforSoke: String,
     val hvaSokesOm: String,
-) : BegrunnelseInput
+) : BegrunnelseInput(hvorforSoke)
 
-data class HarKategorierInput(
-    val hvorforSoke: String,
+class HarKategorierInput(
+    hvorforSoke: String,
     val kategorier: Set<Kategori>,
     val annet: String,
-) : BegrunnelseInput
+) : BegrunnelseInput(hvorforSoke)
