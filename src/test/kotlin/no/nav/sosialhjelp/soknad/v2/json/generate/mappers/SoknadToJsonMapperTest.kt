@@ -38,8 +38,8 @@ class SoknadToJsonMapperTest {
                 begrunnelse =
                     createKategorier(
                         annet = annet,
-                        Kategori.Husleie,
-                        Kategori.Nodhjelp.IkkeBosted,
+                        Kategori.HUSLEIE,
+                        Kategori.NODHJELP_IKKE_BOSTED,
                     ),
             )
         val tidspunkt = Tidspunkt(sendtInn = now)

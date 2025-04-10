@@ -76,7 +76,7 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere Kategorier skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad())
 
-        val definerteKategorier = setOf(Kategori.Husleie, Kategori.Livsopphold, Kategori.Nodhjelp.IkkeMat)
+        val definerteKategorier = setOf(Kategori.HUSLEIE, Kategori.LIVSOPPHOLD, Kategori.NODHJELP_IKKE_MAT)
         val annetKategorier = "Trenger også penger til bil"
 
         val input =
@@ -104,9 +104,9 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
             .also { begrunnelse ->
                 assertThat(begrunnelse.definerte.toList())
                     .hasSize(3)
-                    .anyMatch { it is Kategori.Husleie }
-                    .anyMatch { it is Kategori.Livsopphold }
-                    .anyMatch { it is Kategori.Nodhjelp.IkkeMat }
+                    .anyMatch { it == Kategori.HUSLEIE }
+                    .anyMatch { it == Kategori.LIVSOPPHOLD }
+                    .anyMatch { it == Kategori.NODHJELP_IKKE_MAT }
             }
     }
 }

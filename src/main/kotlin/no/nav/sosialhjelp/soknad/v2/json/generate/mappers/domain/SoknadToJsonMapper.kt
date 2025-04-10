@@ -90,8 +90,8 @@ private fun Begrunnelse.handleKategorier(): String =
 private fun Kategorier.isNotEmpty() = definerte.isNotEmpty() || annet.isNotEmpty()
 
 private class KategorierStringBuilder(kategorier: Kategorier) {
-    private val nodhjelpList: List<Kategori.Nodhjelp> = kategorier.definerte.filterIsInstance<Kategori.Nodhjelp>()
-    private val resten: List<Kategori> = kategorier.definerte.filter { it !is Kategori.Nodhjelp }
+    private val nodhjelpList = kategorier.definerte.filter { it.isNodhjelp() }
+    private val resten: List<Kategori> = kategorier.definerte.filter { !it.isNodhjelp() }
     private val annet: String? = kategorier.annet.let { it.ifEmpty { null } }
 
     fun writeString(): String {
@@ -112,11 +112,11 @@ private class KategorierStringBuilder(kategorier: Kategorier) {
 
 private fun Kategori.mapToString(): String {
     return when (this) {
-        Kategori.Husleie -> "Husleie"
-        Kategori.Livsopphold -> "Livsopphold"
-        Kategori.StromOgOppvarming -> "Strom og oppvarming"
-        Kategori.Nodhjelp.IkkeBosted -> "Har ikke bosted"
-        Kategori.Nodhjelp.IkkeMat -> "Har ikke mat"
-        Kategori.Nodhjelp.IkkeStrom -> "Har ikke strøm"
+        Kategori.HUSLEIE -> "Husleie"
+        Kategori.LIVSOPPHOLD -> "Livsopphold"
+        Kategori.STROM_OPPVARMING -> "Strom og oppvarming"
+        Kategori.NODHJELP_IKKE_BOSTED -> "Har ikke bosted"
+        Kategori.NODHJELP_IKKE_MAT -> "Har ikke mat"
+        Kategori.NODHJELP_IKKE_STROM -> "Har ikke strøm"
     }
 }
