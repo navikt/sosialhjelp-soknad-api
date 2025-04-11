@@ -11,6 +11,16 @@ spring:
       #lifecycle-management: start-and-stop
       #stop:
       #  command=down
+  data:
+    redis:
+      password: ${REDIS_PASSWORD_CACHE:pw}
+      host: ${REDIS_HOST_CACHE:localhost}
+      username: ${REDIS_USERNAME_CACHE:default}
+      port: ${REDIS_PORT_CACHE:6379}
+      ssl:
+        enabled: false
+      connect-timeout: 500
+      timeout: 500
 
 springdoc:
   api-docs:
