@@ -1,0 +1,69 @@
+package no.nav.sosialhjelp.soknad.v2.dokumentasjon
+
+import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggGruppe
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
+
+@RestController
+@ProtectionSelvbetjeningHigh
+@RequestMapping("/soknad/{soknadId}/dokumentasjon/forventet")
+class DokumentasjonController(
+    private val handler: DokumentasjonStatusUseCaseHandler,
+) {
+    @GetMapping
+    fun getForventetDokumentasjon(
+        @PathVariable("soknadId") soknadId: UUID,
+    ): ForventetDokumentasjonDto {
+        return handler.findForventetDokumentasjon(soknadId)
+            .map { it.toDokumentasjonDto() }
+            .let { ForventetDokumentasjonDto(it) }
+    }
+
+    @PutMapping
+    fun updateDokumentasjonStatus(
+        @PathVariable("soknadId") soknadId: UUID,
+        @RequestBody input: DokumentasjonInput,
+    ): ForventetDokumentasjonDto {
+        handler.updateDokumentasjonStatus(soknadId = soknadId, type = input.type.opplysningType, hasLevert = input.hasLevert)
+
+        return getForventetDokumentasjon(soknadId)
+    }
+}
+
+data class ForventetDokumentasjonDto(
+    val dokumentasjon: List<DokumentasjonDto>,
+)
+
+data class DokumentasjonDto(
+    val type: DokumentasjonType,
+    val gruppe: VedleggGruppe = type.opplysningType.group,
+    val dokumentasjonStatus: DokumentasjonStatus,
+    val dokumenter: List<DokumentDto>,
+)
+
+data class DokumentDto(
+    val dokumentId: UUID,
+    val filnavn: String,
+)
+
+private fun Dokumentasjon.toDokumentasjonDto(): DokumentasjonDto {
+    return DokumentasjonDto(
+        type = type.toDokumentasjonType(),
+        dokumentasjonStatus = status,
+        dokumenter =
+            dokumenter.map { dokument ->
+                DokumentDto(dokumentId = dokument.dokumentId, filnavn = dokument.filnavn)
+            },
+    )
+}
+
+data class DokumentasjonInput(
+    val type: DokumentasjonType,
+    val hasLevert: Boolean,
+)

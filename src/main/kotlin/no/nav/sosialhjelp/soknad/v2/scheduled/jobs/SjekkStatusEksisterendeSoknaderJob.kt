@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2.scheduled
+package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -6,6 +6,8 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
+import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
+import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -18,28 +20,28 @@ import java.time.LocalDateTime
 class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-    private val leaderElection: LeaderElection,
-) {
+    leaderElection: LeaderElection,
+) : AbstractJob(jobName = "Sjekk status eksisterende soknader", leaderElection) {
     @Scheduled(cron = HVER_TIME)
-    fun sjekkStatus() {
-        if (leaderElection.isLeader()) {
+    suspend fun sjekkStatus() =
+        doInJob {
             soknadJobService.findAllSoknadIds()
                 .let { ids -> metadataService.findAllMetadatasForIds(ids) }
                 .filter { metadatas -> metadatas.status != OPPRETTET }
                 .also { notOpprettet -> if (notOpprettet.isNotEmpty()) handleGamleSoknader(notOpprettet) }
         }
-    }
 
     private fun handleGamleSoknader(metadatas: List<SoknadMetadata>) {
         val numberOfSoknaderWrongStatus =
-            handleStatusSendt(metadatas.filter { it.status == SENDT }) +
-                handleOther(metadatas.filter { it.status != OPPRETTET })
+//            handleStatusSendt(metadatas.filter { it.status == SENDT }) +
+            handleOther(metadatas.filter { it.status != SENDT })
 
         if (numberOfSoknaderWrongStatus != 0) {
             throw SoknaderFeilStatusException("Det finnes $numberOfSoknaderWrongStatus med feil status")
         }
     }
 
+    // TODO Inntil KS får på plass kvittering, er denne obsolete
     // tar vare på data for sendte soknader en stund da FSL tilsynelatende ikke kvitterer ut med en gang
     private fun handleStatusSendt(metadatas: List<SoknadMetadata>): Int {
         val olderThan = metadatas.filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) ?: false }

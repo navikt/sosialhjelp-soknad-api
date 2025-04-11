@@ -35,7 +35,7 @@ sealed interface OkonomiDetalj
 
 // For UTGIFTER_ANNET_BARN, UTGIFTER_ANNET_BO og "UTGIFTER_ANDRE_UTGIFTER" knyttes beskrivelse til det eksakte beløpet
 data class Belop(
-    val belop: Double,
+    val belop: Double? = null,
     val beskrivelse: String? = null,
 ) : OkonomiDetalj
 
