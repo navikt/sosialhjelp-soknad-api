@@ -13,6 +13,7 @@ class TextHelpers(
         } else if (landForkortelse.equals(PDL_STATSLOS, ignoreCase = true)) {
             return "Statsløs"
         }
+
         return kodeverkService.getLand(landForkortelse)
     }
 

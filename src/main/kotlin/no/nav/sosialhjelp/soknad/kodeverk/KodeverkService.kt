@@ -1,40 +1,34 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
+import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.KOMMUNER
+import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.LANDKODER
+import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.POSTNUMMER
 import org.springframework.stereotype.Service
 
-typealias Kodeverk = Map<String, String?>
-
 @Service
-class KodeverkService(private val kodeverkClient: KodeverkClient) {
-    fun getKommunenavn(kommunenummer: String): String? = doHentKodeverk(Kommuner)[kommunenummer]
+class KodeverkService(private val kodeverkStore: KodeverkStore) {
+    fun getKommunenavn(kommunenummer: String): String? = doHentKodeverk(KOMMUNER)[kommunenummer]
 
     fun gjettKommunenummer(kommunenavn: String): String? =
-        doHentKodeverk(Kommuner).entries.find { it.value == kommunenavn }?.key
+        doHentKodeverk(KOMMUNER).entries.find { it.value == kommunenavn }?.key
 
-    fun getPoststed(postnummer: String): String? = doHentKodeverk(Postnummer)[postnummer]
+    fun getPoststed(postnummer: String): String? = doHentKodeverk(POSTNUMMER)[postnummer]
 
-    fun getLand(landkode: String): String? = doHentKodeverk(Landkoder)[landkode]
+    fun getLand(landkode: String): String? = doHentKodeverk(LANDKODER)[landkode]
 
-    private fun doHentKodeverk(kodeverksnavn: String): Kodeverk {
-        return runCatching {
-            kodeverkClient.hentKodeverk(kodeverksnavn).toMap()
-        }
+    private fun doHentKodeverk(navn: Kodeverksnavn): Map<String, String?> =
+        runCatching { kodeverkStore.hentKodeverk(navn.value) }
             .onFailure { logger.error("Kunne ikke hente Kodeverk", it) }
             .getOrElse { emptyMap() }
-    }
 
     companion object {
         private val logger by logger()
-
-        private val Postnummer = "Postnummer"
-        private val Kommuner = "Kommuner"
-        private val Landkoder = "Landkoder"
     }
 }
 
-private fun KodeverkDto.toMap(): Kodeverk =
-    this.betydninger
-        .map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRÅK_NORSK_BOKMÅL)?.term }
-        .toMap()
+enum class Kodeverksnavn(val value: String) {
+    POSTNUMMER("Postnummer"),
+    KOMMUNER("Kommuner"),
+    LANDKODER("Landkoder"),
+}

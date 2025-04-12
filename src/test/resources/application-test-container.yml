@@ -11,3 +11,13 @@ spring:
     password: password
     hikari:
       maximum-pool-size: 2
+  data:
+    redis:
+      password: pw
+      host: localhost
+      username: default
+      port: 6379
+      ssl:
+        enabled: false
+      connect-timeout: 500
+      timeout: 500

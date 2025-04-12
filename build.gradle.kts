@@ -144,8 +144,8 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.20.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.20.3")
+    testImplementation("org.testcontainers:postgresql:1.20.6")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.6")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
