@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.valkey
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.kodeverk.BeskrivelseDto
+import no.nav.sosialhjelp.soknad.kodeverk.BetydningDto
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkClient
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDto
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn
-import no.nav.sosialhjelp.soknad.kodeverk.dto.BeskrivelseDto
-import no.nav.sosialhjelp.soknad.kodeverk.dto.BetydningDto
-import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

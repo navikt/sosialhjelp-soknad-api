@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.KOMMUNER
 import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.LANDKODER
@@ -18,9 +19,11 @@ class KodeverkService(private val kodeverkStore: KodeverkStore) {
     fun getLand(landkode: String): String? = doHentKodeverk(LANDKODER)[landkode]
 
     private fun doHentKodeverk(navn: Kodeverksnavn): Map<String, String?> {
+        logger.info("Henter kodeverk for ${navn.value}")
         return runCatching { kodeverkStore.hentKodeverk(navn.value) }
             .onFailure { logger.error("Kunne ikke hente Kodeverk", it) }
             .getOrElse { emptyMap() }
+            .also { logger.info("Resultat etter henting av kodeverk: ${jacksonObjectMapper().writeValueAsString(it)}") }
     }
 
     companion object {

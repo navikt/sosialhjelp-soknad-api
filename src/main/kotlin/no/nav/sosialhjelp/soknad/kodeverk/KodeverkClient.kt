@@ -11,26 +11,16 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-
-@Component
-class KodeverkStore(private val client: KodeverkClient) {
-    @Cacheable(cacheNames = ["kodeverk"])
-    fun hentKodeverk(kodeverksnavn: String): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
-}
-
-private fun KodeverkDto.toMap(): Map<String, String?> =
-    betydninger
-        .map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRÅK_NORSK_BOKMÅL)?.term }.toMap()
+import java.io.Serializable
+import java.time.LocalDate
 
 @Component
 class KodeverkClient(
@@ -39,9 +29,7 @@ class KodeverkClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    fun hentKodeverk(
-        kodeverksnavn: String,
-    ): KodeverkDto =
+    fun hentKodeverk(kodeverksnavn: String): KodeverkDto =
         doHentKodeverk(
             kodeverksnavn,
             token = texasService.getToken(IdentityProvider.AZURE_AD, scope),
@@ -51,8 +39,8 @@ class KodeverkClient(
     private fun doHentKodeverk(
         kodeverksnavn: String,
         token: String,
-    ): KodeverkDto {
-        return runCatching {
+    ): KodeverkDto =
+        runCatching {
             webClient
                 .get()
                 .uri { builder ->
@@ -77,7 +65,6 @@ class KodeverkClient(
                 }
             }
             .getOrThrow()
-    }
 
     private val webClient =
         unproxiedWebClientBuilder(webClientBuilder)
@@ -100,3 +87,18 @@ class KodeverkClient(
         const val SPRÅK_NORSK_BOKMÅL = "nb"
     }
 }
+
+data class KodeverkDto(
+    val betydninger: Map<String, List<BetydningDto>>,
+) : Serializable
+
+data class BetydningDto(
+    val gyldigFra: LocalDate,
+    val gyldigTil: LocalDate,
+    val beskrivelser: Map<String, BeskrivelseDto>,
+) : Serializable
+
+data class BeskrivelseDto(
+    val term: String,
+    val tekst: String,
+) : Serializable
