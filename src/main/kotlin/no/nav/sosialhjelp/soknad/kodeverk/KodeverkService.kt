@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.KOMMUNER
@@ -23,11 +24,12 @@ class KodeverkService(private val kodeverkStore: KodeverkStore) {
         return runCatching { kodeverkStore.hentKodeverk(navn.value) }
             .onFailure { logger.error("Kunne ikke hente Kodeverk", it) }
             .getOrElse { emptyMap() }
-            .also { logger.info("Resultat etter henting av kodeverk: ${jacksonObjectMapper().writeValueAsString(it)}") }
+            .also { logger.info("Resultat etter henting av kodeverk: ${mapper.writeValueAsString(it)}") }
     }
 
     companion object {
         private val logger by logger()
+        private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
     }
 }
 
