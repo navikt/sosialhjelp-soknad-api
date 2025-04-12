@@ -24,12 +24,10 @@ class CacheConfig : CachingConfigurer {
         @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
     ): RedisCacheManagerBuilderCustomizer {
         return RedisCacheManagerBuilderCustomizer { builder ->
-            builder
-                .withCacheConfiguration(
-                    "kodeverk",
-                    RedisCacheConfiguration
-                        .defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
-                )
+            builder.withCacheConfiguration(
+                "kodeverk",
+                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
+            )
         }
     }
 
@@ -40,13 +38,13 @@ class CacheConfig : CachingConfigurer {
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
-            .cacheDefaults(
-                RedisCacheConfiguration.defaultCacheConfig(),
-            ).withInitialCacheConfigurations(
+            .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
+            .withInitialCacheConfigurations(
                 mapOf(
                     "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
                 ),
-            ).enableStatistics()
+            )
+            .enableStatistics()
             .build()
 
     override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler()

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.resilience4j.retry.annotation.Retry
-import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
@@ -16,11 +15,22 @@ import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+
+@Component
+class KodeverkStore(private val client: KodeverkClient) {
+    @Cacheable(cacheNames = ["kodeverk"])
+    fun hentKodeverk(kodeverksnavn: String): Map<String, String?> = client.hentKodeverk(kodeverksnavn).toMap()
+}
+
+private fun KodeverkDto.toMap(): Map<String, String?> =
+    betydninger
+        .map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRÅK_NORSK_BOKMÅL)?.term }.toMap()
 
 @Component
 class KodeverkClient(
@@ -29,21 +39,6 @@ class KodeverkClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val webClient =
-        unproxiedWebClientBuilder(webClientBuilder)
-            .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(
-                    Jackson2JsonDecoder(
-                        jacksonObjectMapper()
-                            .registerModule(JavaTimeModule())
-                            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
-                    ),
-                )
-            }
-            .baseUrl(kodeverkUrl)
-            .build()
-
-    @Cacheable("kodeverk")
     fun hentKodeverk(
         kodeverksnavn: String,
     ): KodeverkDto =
@@ -63,23 +58,40 @@ class KodeverkClient(
                 .uri { builder ->
                     builder
                         .path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
-                        .queryParam("ekskluderUgyldige", "true")
                         .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
                         .build(kodeverksnavn)
-                }.header("Authorization", BEARER + token)
-                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-                .header(HEADER_CONSUMER_ID, getConsumerId())
+                }
+                .headers { headers ->
+                    headers.add(HttpHeaders.AUTHORIZATION, "Bearer $token")
+                    headers.add(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+                    headers.add(HEADER_CONSUMER_ID, getConsumerId())
+                }
                 .retrieve()
                 .bodyToMono<KodeverkDto>()
                 .block() ?: error("Kodeverk - ugyldig data")
-        }.onFailure { e ->
-            if (e is WebClientResponseException) {
-                log.warn("Kodeverk - ${e.statusCode}", e)
-            } else {
-                log.error("Kodeverk - noe uventet feilet", e)
+        }
+            .onFailure { e ->
+                when (e) {
+                    is WebClientResponseException -> log.warn("Kodeverk - ${e.statusCode}", e)
+                    else -> log.error("Kodeverk - noe uventet feilet", e)
+                }
             }
-        }.getOrThrow()
+            .getOrThrow()
     }
+
+    private val webClient =
+        unproxiedWebClientBuilder(webClientBuilder)
+            .codecs {
+                it.defaultCodecs().jackson2JsonDecoder(
+                    Jackson2JsonDecoder(
+                        jacksonObjectMapper()
+                            .registerModule(JavaTimeModule())
+                            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
+                    ),
+                )
+            }
+            .baseUrl(kodeverkUrl)
+            .build()
 
     companion object {
         private val log = getLogger(KodeverkClient::class.java)
