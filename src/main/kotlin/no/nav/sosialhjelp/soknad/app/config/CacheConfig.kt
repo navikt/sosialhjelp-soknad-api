@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.serializer.SerializationException
 import java.lang.RuntimeException
 import java.time.Duration
 
@@ -58,6 +59,7 @@ class CustomCacheErrorHandler : CacheErrorHandler {
         cache: Cache,
         key: Any,
     ) {
+        if (exception is SerializationException) cache.evict(key)
         log.warn("Couldn't get cache value for key $key in cache ${cache.name}", exception)
     }
 
