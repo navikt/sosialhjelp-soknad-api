@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.kodeverk.BeskrivelseDto
 import no.nav.sosialhjelp.soknad.kodeverk.BetydningDto
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfiguration
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkClient
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDto
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
@@ -30,13 +31,13 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
         verify(exactly = 1) { kodeverkClient.hentKodeverk(KOMMUNER.value) }
 
-        cacheManager.getCache("kodeverk")!!.get(KOMMUNER.value, Map::class.java)
+        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value, Map::class.java)
             .also { assertThat(it[OSLO]).isEqualTo("Oslo") }
     }
 
     @Test
     fun `Skal ikke hente kodeverk hvis verdi ligger i cache`() {
-        cacheManager.getCache("kodeverk")!!.put("Kommuner", mapOf(OSLO to "Oslo"))
+        cacheManager.getCache(CACHE_NAME)!!.put("Kommuner", mapOf(OSLO to "Oslo"))
 
         kodeverkService.getKommunenavn(OSLO)!!
             .also { assertThat(it).isEqualTo("Oslo") }
@@ -64,17 +65,17 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
         kodeverkService.getKommunenavn(OSLO).also { assertThat(it).isNull() }
 
-        cacheManager.getCache("kodeverk")!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
+        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
     }
 
     @Test
     fun `Feil i cachelag skal hente direkte fra Kodeverk og evicte key i cache`() {
         every { kodeverkClient.hentKodeverk(any()) } returns createKodeverkDtoForKommuner()
-        cacheManager.getCache("kodeverk")!!.put(KOMMUNER.value, "Noe helt på trynet")
+        cacheManager.getCache(CACHE_NAME)!!.put(KOMMUNER.value, "Noe helt på trynet")
 
         kodeverkService.getKommunenavn(OSLO)!!.also { assertThat(it).isEqualTo("Oslo") }
 
-        cacheManager.getCache("kodeverk")!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
+        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
     }
 
     private fun createKodeverkDtoForKommuner() =
@@ -101,5 +102,6 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
     companion object {
         private const val OSLO = "0301"
+        private const val CACHE_NAME = KodeverkCacheConfiguration.CACHE_NAME
     }
 }

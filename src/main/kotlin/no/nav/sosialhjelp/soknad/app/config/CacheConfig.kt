@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.app.config
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CachingConfigurer
@@ -15,36 +14,20 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.serializer.SerializationException
 import java.lang.RuntimeException
-import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
 @EnableCaching
 class CacheConfig : CachingConfigurer {
     @Bean
-    fun valkeyCustomizer(
-        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
-    ): RedisCacheManagerBuilderCustomizer {
-        return RedisCacheManagerBuilderCustomizer { builder ->
-            builder.withCacheConfiguration(
-                "kodeverk",
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
-            )
-        }
-    }
-
-    @Bean
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
+        cacheConfigs: List<SoknadApiCacheConfiguration>,
         @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-            .withInitialCacheConfigurations(
-                mapOf(
-                    "kodeverk" to RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(kodeverkTTL)),
-                ),
-            )
+            .withInitialCacheConfigurations(cacheConfigs.associate { it.getCacheName() to it.getConfig() })
             .enableStatistics()
             .build()
 
@@ -86,4 +69,10 @@ class CustomCacheErrorHandler : CacheErrorHandler {
     ) {
         log.warn("Couldn't clear cache ${cache.name}", exception)
     }
+}
+
+interface SoknadApiCacheConfiguration {
+    fun getCacheName(): String
+
+    fun getConfig(): RedisCacheConfiguration
 }
