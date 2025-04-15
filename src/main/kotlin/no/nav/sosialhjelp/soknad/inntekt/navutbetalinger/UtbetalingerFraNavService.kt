@@ -20,10 +20,9 @@ class UtbetalingerFraNavService(
     fun getUtbetalingerSiste40Dager(personId: String): List<UtbetalingMedKomponent>? {
         return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
             ?.let { dto ->
-                if (dto.feilet || dto.utbetalinger == null) {
-                    null
-                } else {
-                    dto.toUtbetalingMedKomponent(orgService.hentOrgNavn(ORGNR_NAV))
+                when (dto.feilet || dto.utbetalinger == null) {
+                    true -> null
+                    false -> dto.toUtbetalingMedKomponent(orgService.hentOrgNavn(ORGNR_NAV))
                 }
             }
             ?.also { logger.info("Antall navytelser utbetaling: ${it.size}. ${it.komponenterLogg()}") }
@@ -78,7 +77,7 @@ private fun Ytelseskomponent.toKomponent() =
         satsAntall = satsantall,
     )
 
-private fun LocalDate.utbetaltSiste40Dager() = isBefore(LocalDate.now().minusDays(40))
+private fun LocalDate.utbetaltSiste40Dager() = !isBefore(LocalDate.now().minusDays(40))
 
 private fun Ytelse.isUtbetaltBruker(utbetaltTil: String?): Boolean {
     return if (rettighetshaver.navn == null || utbetaltTil == null) {
