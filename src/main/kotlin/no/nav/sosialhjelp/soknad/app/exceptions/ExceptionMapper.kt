@@ -5,6 +5,7 @@ import no.nav.security.token.support.core.exceptions.JwtTokenMissingException
 import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableException
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException

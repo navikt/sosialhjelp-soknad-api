@@ -6,9 +6,9 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION

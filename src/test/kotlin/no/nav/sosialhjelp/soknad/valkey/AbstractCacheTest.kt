@@ -14,6 +14,12 @@ abstract class AbstractCacheTest {
     @Autowired
     protected lateinit var cacheManager: CacheManager
 
+    abstract fun `Verdi skal lagres i cache`()
+
+    abstract fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`()
+
+    abstract fun `Skal ikke hente fra client hvis verdi finnes i cache`()
+
     protected companion object ValkeyContainer : GenericContainer<ValkeyContainer>("valkey/valkey:7.2.8-alpine") {
         init {
             addFixedExposedPort(6379, 6379)

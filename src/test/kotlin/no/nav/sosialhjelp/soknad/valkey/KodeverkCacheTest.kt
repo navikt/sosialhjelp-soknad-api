@@ -22,8 +22,7 @@ class KodeverkCacheTest : AbstractCacheTest() {
     @Autowired
     private lateinit var kodeverkService: KodeverkService
 
-    @Test
-    fun `Hente kodeverk skal lagres i cache`() {
+    override fun `Verdi skal lagres i cache`() {
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
 
         kodeverkService.getKommunenavn(OSLO)
@@ -35,18 +34,7 @@ class KodeverkCacheTest : AbstractCacheTest() {
             .also { assertThat(it[OSLO]).isEqualTo("Oslo") }
     }
 
-    @Test
-    fun `Skal ikke hente kodeverk hvis verdi ligger i cache`() {
-        cacheManager.getCache(CACHE_NAME)!!.put("Kommuner", mapOf(OSLO to "Oslo"))
-
-        kodeverkService.getKommunenavn(OSLO)!!
-            .also { assertThat(it).isEqualTo("Oslo") }
-
-        verify(exactly = 0) { kodeverkClient.hentKodeverk(any()) }
-    }
-
-    @Test
-    fun `Exception i cache-logikk skal ignoreres og vanlig logikk kjores`() {
+    override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         ValkeyContainer.stopContainer()
 
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
@@ -57,6 +45,15 @@ class KodeverkCacheTest : AbstractCacheTest() {
         verify(exactly = 1) { kodeverkClient.hentKodeverk(KOMMUNER.value) }
 
         ValkeyContainer.startContainer()
+    }
+
+    override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
+        cacheManager.getCache(CACHE_NAME)!!.put("Kommuner", mapOf(OSLO to "Oslo"))
+
+        kodeverkService.getKommunenavn(OSLO)!!
+            .also { assertThat(it).isEqualTo("Oslo") }
+
+        verify(exactly = 0) { kodeverkClient.hentKodeverk(any()) }
     }
 
     @Test

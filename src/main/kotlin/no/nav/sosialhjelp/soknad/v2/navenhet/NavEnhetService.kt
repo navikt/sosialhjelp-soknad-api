@@ -5,9 +5,10 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService.Companion.FEATURE_SEND_TIL_NAV_TESTKOMMUNE
+import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
@@ -15,9 +16,9 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component("nyNavEnhetService")
+@Service
 class NavEnhetService(
     private val finnAdresseService: FinnAdresseService,
     private val unleash: Unleash,
@@ -26,15 +27,12 @@ class NavEnhetService(
     private val bydelFordelingService: BydelFordelingService,
     private val kommuneInfoService: KommuneInfoService,
 ) {
-    private val log by logger()
-
     fun getNavEnhet(
         eier: String,
         adresse: Adresse,
         valg: AdresseValg?,
     ): NavEnhet? {
         if (valg == AdresseValg.FOLKEREGISTRERT) {
-            // TODO Test at dette fungerer med fallback til finnNavEnhetFraAdresse
             runCatching { return finnNavEnhetFraGT(eier, getKommunenummer(adresse)) }
                 .onFailure { log.error("Kunne ikke hente NavEnhet fra GT", it) }
         }
@@ -66,30 +64,40 @@ class NavEnhetService(
     ): NavEnhet {
         log.info("Finner Nav-enhet fra GT")
         // gt er 4 sifret kommunenummer eller 6 sifret bydelsnummer
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
-        val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        val navEnhet =
+            geografiskTilknytningService.hentGeografiskTilknytning(ident)
+                ?.let { gt -> norgService.getEnhetForGt(gt) }
+
         val kommunenavn = kommunenummer?.let { kommuneInfoService.getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, kommunenummer, navEnhet?.sosialOrgNr, kommunenavn)
+        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, kommunenummer, navEnhet?.orgnummer, kommunenavn)
     }
 
     private fun finnNavEnhetFraAdresse(
         adresse: Adresse,
     ): NavEnhet? {
         log.info("Finner Nav-enhet fra adresse")
+
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(adresse) ?: return null
-        val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
-        val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+
+        val navEnhet =
+            adresseForslag
+                .getGeografiskTilknytning()
+                ?.let { gt -> norgService.getEnhetForGt(gt) }
+
         val kommunenavn = adresseForslag.kommunenummer?.let { kommuneInfoService.getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.navn, navEnhet?.enhetNr, adresseForslag.kommunenummer, navEnhet?.sosialOrgNr, kommunenavn)
+        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, adresseForslag.kommunenummer, navEnhet?.orgnummer, kommunenavn)
     }
 
-    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? =
-        if (BydelFordelingService.BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
-            bydelFordelingService.getBydelTilForMarka(adresseForslag)
-        } else {
-            // flere special cases her?
-            adresseForslag.geografiskTilknytning
-        }
+    private fun AdresseForslag.getGeografiskTilknytning() =
+        when (BYDEL_MARKA_OSLO == geografiskTilknytning) {
+            true -> bydelFordelingService.getBydelTilForMarka(this)
+            false -> geografiskTilknytning
+        }?.let { GeografiskTilknytning(it) }
+
+    companion object {
+        private val log by logger()
+        const val FEATURE_SEND_TIL_NAV_TESTKOMMUNE = "sosialhjelp.soknad.send-til-nav-testkommune"
+    }
 }

@@ -5,11 +5,11 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
