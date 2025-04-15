@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerClient
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
@@ -61,7 +61,7 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
     }
 
     @MockkBean
-    private lateinit var navUtbetalingerClient: NavUtbetalingerClient
+    private lateinit var navUtbetalingerClient: UtbetalingerFraNavClient
 
     private fun createAnswerForNavUtbetalingerClient() {
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns defaultResponseFromNavUtbetalingerClient()

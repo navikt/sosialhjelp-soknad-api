@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
-interface NavUtbetalingerClient {
+interface UtbetalingerFraNavClient {
     fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto?
 }
 
@@ -27,7 +27,7 @@ class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-) : NavUtbetalingerClient {
+) : UtbetalingerFraNavClient {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     override fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto? {

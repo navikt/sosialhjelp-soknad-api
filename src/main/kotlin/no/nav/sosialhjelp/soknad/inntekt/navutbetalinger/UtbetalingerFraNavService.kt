@@ -14,7 +14,7 @@ import java.time.LocalDate
 
 @Component
 class UtbetalingerFraNavService(
-    private val navUtbetalingerClient: NavUtbetalingerClient,
+    private val navUtbetalingerClient: UtbetalingerFraNavClient,
     private val orgService: OrganisasjonService,
 ) {
     fun getUtbetalingerSiste40Dager(personId: String): List<UtbetalingMedKomponent>? {
