@@ -77,7 +77,7 @@ private fun Ytelseskomponent.toKomponent() =
         satsAntall = satsantall,
     )
 
-private fun LocalDate.utbetaltSiste40Dager() = !isBefore(LocalDate.now().minusDays(40))
+private fun LocalDate.utbetaltSiste40Dager() = isAfter(LocalDate.now().minusDays(40))
 
 private fun Ytelse.isUtbetaltBruker(utbetaltTil: String?): Boolean {
     return if (rettighetshaver.navn == null || utbetaltTil == null) {
