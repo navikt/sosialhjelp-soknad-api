@@ -1,20 +1,14 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
+import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequest
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
-import no.nav.sosialhjelp.soknad.valkey.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.valkey.UTBETALDATA_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
-import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
@@ -24,75 +18,52 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
 interface NavUtbetalingerClient {
-    fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto?
+    fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto?
 }
 
 @Component
 class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
-    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : NavUtbetalingerClient {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
-        hentFraCache(ident)?.let { return it }
-        log.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
+    override fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto? {
+        logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
 
-        val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
-        val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
+        val request = NavUtbetalingerRequest(personId, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
-        try {
-            val response =
-                webClient.post()
-                    .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
-                    .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
-                    .body(BodyInserters.fromValue(request))
-                    .retrieve()
-                    .bodyToMono<List<Utbetaling>>()
-                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                    .block()
-
-            log.info("Hentet ${response?.size} utbetalinger fra utbetaldata tjeneste")
-            val utbetalDataDto = UtbetalDataDto(response, false)
-            lagreTilCache(ident, utbetalDataDto)
-            return utbetalDataDto
-        } catch (e: Exception) {
-            log.error("Utbetalinger - Noe uventet feilet", e)
-            return null
+        return runCatching {
+            webClient.post()
+                .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenX)
+                .body(BodyInserters.fromValue(request))
+                .retrieve()
+                .bodyToMono<List<Utbetaling>>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
         }
+            .onSuccess { logger.info("Hentet ${it?.size} utbetalinger fra utbetaldata tjeneste") }
+            .onFailure { logger.error("Hente utbetalinger fra Nav feilet", it) }
+            .getOrNull()
+            ?.let { UtbetalDataDto(it, false) }
     }
 
-    private fun tokenXtoken(audience: String) =
-        texasService.exchangeToken(IdentityProvider.TOKENX, target = audience)
-
-    private fun hentFraCache(ident: String): UtbetalDataDto? {
-        return valkeyService.get(
-            UTBETALDATA_CACHE_KEY_PREFIX + ident,
-            UtbetalDataDto::class.java,
-        ) as? UtbetalDataDto
-    }
-
-    private fun lagreTilCache(
-        ident: String,
-        utbetalDataDto: UtbetalDataDto,
-    ) {
-        try {
-            valkeyService.setex(
-                UTBETALDATA_CACHE_KEY_PREFIX + ident,
-                valkeyObjectMapper.writeValueAsBytes(utbetalDataDto),
-                CACHE_30_MINUTES_IN_SECONDS,
-            )
-        } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av UtbetalDataDto til valkey", e)
-        }
-    }
+    private val tokenX get() = texasService.exchangeToken(TOKENX, target = utbetalDataAudience)
 
     companion object {
-        private val log by logger()
+        private val logger by logger()
         private const val UTBETALINGSPERIODE = "UTBETALINGSPERIODE"
         private const val RETTIGHETSHAVER = "RETTIGHETSHAVER"
+        private val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
     }
 }
+
+private data class NavUtbetalingerRequest(
+    val ident: String,
+    val rolle: String,
+    val periode: Periode,
+    val periodetype: String,
+)
