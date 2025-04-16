@@ -2,7 +2,11 @@ package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.spyk
+import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
 import no.nav.sosialhjelp.soknad.kodeverk.BeskrivelseDto
 import no.nav.sosialhjelp.soknad.kodeverk.BetydningDto
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfiguration
@@ -13,15 +17,17 @@ import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.KOMMUNER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.Cache
 import java.time.LocalDate
 
-class KodeverkCacheTest : AbstractCacheTest() {
+class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfiguration.CACHE_NAME) {
     @MockkBean
     private lateinit var kodeverkClient: KodeverkClient
 
     @Autowired
     private lateinit var kodeverkService: KodeverkService
 
+    @Test
     override fun `Verdi skal lagres i cache`() {
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
 
@@ -30,25 +36,31 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
         verify(exactly = 1) { kodeverkClient.hentKodeverk(KOMMUNER.value) }
 
-        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value, Map::class.java)
+        cache.get(KOMMUNER.value, Map::class.java)
             .also { assertThat(it[OSLO]).isEqualTo("Oslo") }
     }
 
+    @Test
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
-        ValkeyContainer.stopContainer()
-
+        val cache: Cache = spyk()
+        every { cacheManager.getCache(KodeverkCacheConfiguration.CACHE_NAME) } returns cache
+        every { cache.get(any()) } throws RuntimeException("Something wrong")
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
+        mockkObject(CustomCacheErrorHandler)
 
         kodeverkService.getKommunenavn(OSLO)!!
             .also { assertThat(it).isEqualTo("Oslo") }
 
         verify(exactly = 1) { kodeverkClient.hentKodeverk(KOMMUNER.value) }
+        verify(exactly = 1) { cache.get(any()) }
+        verify(exactly = 1) { CustomCacheErrorHandler.handleCacheGetError(any(), cache, KOMMUNER.value) }
 
-        ValkeyContainer.startContainer()
+        unmockkObject(CustomCacheErrorHandler)
     }
 
+    @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        cacheManager.getCache(CACHE_NAME)!!.put("Kommuner", mapOf(OSLO to "Oslo"))
+        cache.put("Kommuner", mapOf(OSLO to "Oslo"))
 
         kodeverkService.getKommunenavn(OSLO)!!
             .also { assertThat(it).isEqualTo("Oslo") }
@@ -62,17 +74,17 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
         kodeverkService.getKommunenavn(OSLO).also { assertThat(it).isNull() }
 
-        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
+        cache.get(KOMMUNER.value).also { assertThat(it).isNull() }
     }
 
     @Test
     fun `Feil i cachelag skal hente direkte fra Kodeverk og evicte key i cache`() {
         every { kodeverkClient.hentKodeverk(any()) } returns createKodeverkDtoForKommuner()
-        cacheManager.getCache(CACHE_NAME)!!.put(KOMMUNER.value, "Noe helt på trynet")
+        cache.put(KOMMUNER.value, "Noe helt på trynet")
 
         kodeverkService.getKommunenavn(OSLO)!!.also { assertThat(it).isEqualTo("Oslo") }
 
-        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
+        cache.get(KOMMUNER.value).also { assertThat(it).isNull() }
     }
 
     private fun createKodeverkDtoForKommuner() =
@@ -99,6 +111,5 @@ class KodeverkCacheTest : AbstractCacheTest() {
 
     companion object {
         private const val OSLO = "0301"
-        private const val CACHE_NAME = KodeverkCacheConfiguration.CACHE_NAME
     }
 }

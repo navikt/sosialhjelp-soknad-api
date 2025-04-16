@@ -2,7 +2,11 @@ package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.spyk
+import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
 import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.NorgCacheConfiguration
@@ -12,26 +16,16 @@ import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
-import org.springframework.dao.QueryTimeoutException
 
-class NorgCacheTest : AbstractCacheTest() {
+class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
     @MockkBean
     private lateinit var norgClient: NorgClient
 
     @Autowired
     private lateinit var norgService: NorgService
-
-    private lateinit var cache: Cache
-
-    @BeforeEach
-    fun setUp() {
-        cache = cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME)!!
-        cache.clear()
-    }
 
     @Test
     override fun `Verdi skal lagres i cache`() {
@@ -40,7 +34,11 @@ class NorgCacheTest : AbstractCacheTest() {
 
         every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns dto
 
-        norgService.getEnhetForGt(gt)
+        norgService.getEnhetForGt(gt)!!
+            .also {
+                assertThat(it.enhetsnavn).isEqualTo(dto.navn)
+                assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
+            }
 
         cache.get(gt.value, NavEnhet::class.java)!!
             .also {
@@ -74,25 +72,26 @@ class NorgCacheTest : AbstractCacheTest() {
 
     @Test
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
-        ValkeyContainer.stopContainer()
+        val cache: Cache = spyk()
+        val gt = GeografiskTilknytning("0301")
+        every { cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME) } returns cache
+        every { cache.get(gt.value) } throws RuntimeException("Something wrong")
+        every { cache.name } returns NorgCacheConfiguration.CACHE_NAME
+        mockkObject(CustomCacheErrorHandler)
 
         val dto = NavEnhetDto("Navenhet", "12341234")
-        val gt = GeografiskTilknytning("0301")
 
         every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns dto
 
-        norgService.getEnhetForGt(gt)!!
-            .also {
-                assertThat(it.enhetsnavn).isEqualTo(dto.navn)
-                assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
-            }
-
-        assertThatThrownBy { cache.get(gt.value, NavEnhet::class.java) }
-            .isInstanceOf(QueryTimeoutException::class.java)
+        norgService.getEnhetForGt(gt)!!.also {
+            assertThat(it.enhetsnavn).isEqualTo(dto.navn)
+            assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
+        }
 
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
-
-        ValkeyContainer.startContainer()
+        verify(exactly = 1) { cache.get(gt.value) }
+        verify(exactly = 1) { CustomCacheErrorHandler.handleCacheGetError(any(), cache, gt.value) }
+        unmockkObject(CustomCacheErrorHandler)
     }
 
     @Test

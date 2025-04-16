@@ -159,7 +159,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
-        every { geografiskTilknytningService.hentGeografiskTilknytning(userId) } returns GeografiskTilknytning("0313")
+        every { geografiskTilknytningService.hentGeografiskTilknytning(soknadId) } returns GeografiskTilknytning("0313")
         val navEnhet = NavEnhet("Nav Sandvika", "123", null, "123", null)
         every { norgService.getEnhetForGt(GeografiskTilknytning("0313")) } returns navEnhet
 

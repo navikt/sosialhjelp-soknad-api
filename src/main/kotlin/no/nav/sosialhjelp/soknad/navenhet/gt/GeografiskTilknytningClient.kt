@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentGeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -13,10 +13,6 @@ import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
-import no.nav.sosialhjelp.soknad.valkey.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -28,20 +24,15 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val texasService: TexasService,
-    private val valkeyService: ValkeyService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
-    fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
-        hentFraCache(ident)?.let {
-            return it
-        }
-
+    fun hentGeografiskTilknytning(personId: String): GeografiskTilknytningDto? {
         try {
             val response: String =
                 baseRequest
                     .header(HEADER_TEMA, TEMA_KOM)
-                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
+                    .header(AUTHORIZATION, BEARER + tokenXtoken())
+                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(personId)))
                     .retrieve()
                     .bodyToMono<String>()
                     .retryWhen(pdlRetry)
@@ -50,48 +41,19 @@ class GeografiskTilknytningClient(
             val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
             pdlResponse.checkForPdlApiErrors()
             return pdlResponse.data.hentGeografiskTilknytning
-                ?.also {
-                    lagreTilCache(ident, it)
-                }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentGeografiskTilknytning)")
+            logger.error("Kall til PDL feilet (hentGeografiskTilknytning)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 
-    private fun tokenXtoken(ident: String) =
-        texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
-
-    private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
-        return valkeyService.get(
-            GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
-            GeografiskTilknytningDto::class.java,
-        ) as? GeografiskTilknytningDto
-    }
+    private fun tokenXtoken() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 
     private fun variables(ident: String): Map<String, Any> = mapOf("ident" to ident)
 
-    private fun lagreTilCache(
-        ident: String,
-        geografiskTilknytningDto: GeografiskTilknytningDto,
-    ) {
-        try {
-            valkeyService.setex(
-                GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident,
-                pdlMapper.writeValueAsBytes(geografiskTilknytningDto),
-                PDL_CACHE_SECONDS,
-            )
-        } catch (e: JsonProcessingException) {
-            log.error(
-                "Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - ${geografiskTilknytningDto.javaClass.name}",
-                e,
-            )
-        }
-    }
-
     companion object {
-        private val log = getLogger(GeografiskTilknytningClient::class.java)
+        private val logger by logger()
     }
 }

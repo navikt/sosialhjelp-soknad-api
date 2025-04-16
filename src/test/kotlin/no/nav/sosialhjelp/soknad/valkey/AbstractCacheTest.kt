@@ -1,18 +1,30 @@
 package no.nav.sosialhjelp.soknad.valkey
 
+import com.ninjasquad.springmockk.SpykBean
+import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.springframework.beans.factory.annotation.Autowired
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("no-redis", "test", "test-container")
-abstract class AbstractCacheTest {
-    @Autowired
+abstract class AbstractCacheTest(private val cacheName: String) {
+    @SpykBean
     protected lateinit var cacheManager: CacheManager
+
+    protected val cache get() = cacheManager.getCache(cacheName) ?: error("Cache not found: $cacheName")
+
+    @BeforeEach
+    fun setup() {
+        cache.clear()
+        clearAllMocks()
+    }
 
     abstract fun `Verdi skal lagres i cache`()
 

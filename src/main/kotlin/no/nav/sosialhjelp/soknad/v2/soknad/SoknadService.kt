@@ -56,11 +56,15 @@ interface BegrunnelseService {
     ): Begrunnelse
 }
 
+interface PersonIdService {
+    fun findPersonId(soknadId: UUID): String
+}
+
 @Service
 @Transactional
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService, BegrunnelseService, SoknadJobService {
+) : SoknadService, BegrunnelseService, SoknadJobService, PersonIdService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -138,6 +142,8 @@ class SoknadServiceImpl(
             .copy(begrunnelse = begrunnelse)
             .let { soknadRepository.save(it) }
             .begrunnelse
+
+    override fun findPersonId(soknadId: UUID): String = findOrError(soknadId).eierPersonId
 
     companion object {
         private val logger by logger()

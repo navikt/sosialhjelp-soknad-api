@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class NavEnhetService(
@@ -28,12 +29,12 @@ class NavEnhetService(
     private val kommuneInfoService: KommuneInfoService,
 ) {
     fun getNavEnhet(
-        eier: String,
+        soknadId: UUID,
         adresse: Adresse,
         valg: AdresseValg?,
     ): NavEnhet? {
         if (valg == AdresseValg.FOLKEREGISTRERT) {
-            runCatching { return finnNavEnhetFraGT(eier, getKommunenummer(adresse)) }
+            runCatching { return finnNavEnhetFraGT(soknadId, getKommunenummer(adresse)) }
                 .onFailure { log.error("Kunne ikke hente NavEnhet fra GT", it) }
         }
         log.info("Finner Nav-enhet fra adressesøk")
@@ -59,13 +60,13 @@ class NavEnhetService(
         }
 
     private fun finnNavEnhetFraGT(
-        ident: String,
+        soknadId: UUID,
         kommunenummer: String?,
     ): NavEnhet {
         log.info("Finner Nav-enhet fra GT")
         // gt er 4 sifret kommunenummer eller 6 sifret bydelsnummer
         val navEnhet =
-            geografiskTilknytningService.hentGeografiskTilknytning(ident)
+            geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
                 ?.let { gt -> norgService.getEnhetForGt(gt) }
 
         val kommunenavn = kommunenummer?.let { kommuneInfoService.getBehandlingskommune(it) }

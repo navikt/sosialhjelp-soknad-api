@@ -12,7 +12,7 @@ import java.time.Duration
 
 @Component
 class NorgService(private val norgClient: NorgClient) {
-    @Cacheable(NorgCacheConfiguration.CACHE_NAME)
+    @Cacheable(NorgCacheConfiguration.CACHE_NAME, unless = "#result == null")
     fun getEnhetForGt(gt: GeografiskTilknytning): NavEnhet? {
         return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
             .onSuccess { dto -> if (dto != null) logger.info("Bruker NavEnhet fra Norg: $dto") }
@@ -38,12 +38,11 @@ value class GeografiskTilknytning(val value: String) {
 class NorgCacheConfiguration : SoknadApiCacheConfiguration {
     override fun getCacheName() = CACHE_NAME
 
-    override fun getConfig(): RedisCacheConfiguration {
-        return RedisCacheConfiguration
+    override fun getConfig(): RedisCacheConfiguration =
+        RedisCacheConfiguration
             .defaultCacheConfig()
             .entryTtl(Duration.ofSeconds(ETT_DOGN))
             .disableCachingNullValues()
-    }
 
     companion object {
         const val CACHE_NAME = "norg"
