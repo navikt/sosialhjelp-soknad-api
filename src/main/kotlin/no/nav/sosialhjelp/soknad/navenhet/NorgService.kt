@@ -13,8 +13,8 @@ import java.time.Duration
 @Component
 class NorgService(private val norgClient: NorgClient) {
     @Cacheable(NorgCacheConfiguration.CACHE_NAME, unless = "#result == null")
-    fun getEnhetForGt(gt: GeografiskTilknytning): NavEnhet? {
-        return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
+    fun getEnhetForGt(gt: String): NavEnhet? {
+        return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
             .onSuccess { dto -> if (dto != null) logger.info("Bruker NavEnhet fra Norg: $dto") }
             .getOrThrow()
             ?.toNavEnhet(gt)
@@ -50,7 +50,7 @@ class NorgCacheConfiguration : SoknadApiCacheConfiguration {
     }
 }
 
-fun NavEnhetDto.toNavEnhet(gt: GeografiskTilknytning): NavEnhet {
+fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
     return NavEnhet(
         enhetsnummer = enhetNr,
         enhetsnavn = navn,
@@ -61,10 +61,10 @@ fun NavEnhetDto.toNavEnhet(gt: GeografiskTilknytning): NavEnhet {
 
 private fun getSosialOrgNr(
     enhetNr: String?,
-    gt: GeografiskTilknytning,
+    gt: String,
 ): String? {
     return when {
-        enhetNr == "0513" && gt.value == "3434" -> {
+        enhetNr == "0513" && gt == "3434" -> {
             /*
                 Jira sak 1200
 
@@ -73,8 +73,8 @@ private fun getSosialOrgNr(
              */
             "974592274"
         }
-        enhetNr == "0511" && gt.value == "3432" -> "964949204"
-        enhetNr == "1620" && gt.value == "5014" -> "913071751"
+        enhetNr == "0511" && gt == "3432" -> "964949204"
+        enhetNr == "1620" && gt == "5014" -> "913071751"
         else -> getOrganisasjonsnummer(enhetNr)
     }
 }

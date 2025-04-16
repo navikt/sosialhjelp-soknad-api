@@ -5,14 +5,12 @@ import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("no-redis", "test", "test-container")
 abstract class AbstractCacheTest(private val cacheName: String) {
     @SpykBean

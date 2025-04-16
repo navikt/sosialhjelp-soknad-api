@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.navenhet.gt
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
-import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
@@ -18,11 +17,11 @@ class GeografiskTilknytningService(
     private val personIdService: PersonIdService,
 ) {
     @Cacheable(GTCacheConfiguration.CACHE_NAME, unless = "#result == null")
-    fun hentGeografiskTilknytning(soknadId: UUID): GeografiskTilknytning? {
+    fun hentGeografiskTilknytning(soknadId: UUID): String? {
         return personIdService.findPersonId(soknadId)
             .let { personId -> geografiskTilknytningClient.hentGeografiskTilknytning(personId) }
             .let { dto -> bydelsnummerEllerKommunenummer(dto) }
-            ?.let { gt -> GeografiskTilknytning(gt) }
+            ?.let { gt -> gt }
     }
 
     private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? =

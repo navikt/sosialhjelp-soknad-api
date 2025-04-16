@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
-import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
@@ -54,7 +54,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet as NyNavEnhet
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
     @Autowired
@@ -80,6 +79,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean(relaxed = true)
     private lateinit var texasService: TexasService
+
+    @MockkBean(relaxed = true)
+    private lateinit var kodeverkService: KodeverkService
 
     @MockkBean
     private lateinit var kommuneInfoService: KommuneInfoService
@@ -124,7 +126,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", null)
-        every { norgService.getEnhetForGt(GeografiskTilknytning("1234")) } returns navEnhet
+        every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
@@ -159,9 +161,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse("1234", "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
-        every { geografiskTilknytningService.hentGeografiskTilknytning(soknadId) } returns GeografiskTilknytning("0313")
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns "0313"
         val navEnhet = NavEnhet("Nav Sandvika", "123", null, "123", null)
-        every { norgService.getEnhetForGt(GeografiskTilknytning("0313")) } returns navEnhet
+        every { norgService.getEnhetForGt("0313") } returns navEnhet
 
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
@@ -182,7 +184,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NyNavEnhet("NAV Sandvika", "123", "1234", "123", "Sandvika"))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Nav Sandvika", "123", "1234", "123", "Sandvika"))
         }
     }
 
@@ -200,7 +202,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", null)
-        every { norgService.getEnhetForGt(GeografiskTilknytning("1234")) } returns navEnhet
+        every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
@@ -218,7 +220,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NyNavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
         }
     }
 
@@ -263,7 +265,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 1,
             )
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", "Sandvika")
-        every { norgService.getEnhetForGt(GeografiskTilknytning("1234")) } returns navEnhet
+        every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns
             MellomlagringDto(
                 lagretSoknad.id.toString(),
@@ -318,7 +320,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NyNavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
         }
 
         val soknadPostUpdate = soknadRepository.findByIdOrNull(lagretSoknad.id)
@@ -376,7 +378,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val vegadresse = VegadresseDto("3883", 1, null, "Testveien", "Nav kommune", "1234", "123", "Navstad", null)
         every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(listOf(AdressesokHitDto(vegadresse, 1F)), 1, 1, 1)
         val navEnhet = NavEnhet("Sandvika Nav-senter", "1212", null, "123", "Sandvika")
-        every { norgService.getEnhetForGt(GeografiskTilknytning("1234")) } returns navEnhet
+        every { norgService.getEnhetForGt("1234") } returns navEnhet
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), listOf(MellomlagringDokumentInfo("filnavn", "filid", 10L, ".pdf")))
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.slettDokument(any(), any()) } just runs
@@ -421,7 +423,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NyNavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
+            assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", "1234", "123", "Sandvika"))
         }
 
         val soknadPostUpdate = soknadRepository.findByIdOrNull(lagretSoknad.id)

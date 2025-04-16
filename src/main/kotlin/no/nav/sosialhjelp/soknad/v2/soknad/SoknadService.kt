@@ -9,6 +9,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
+interface PersonIdService {
+    fun findPersonId(soknadId: UUID): String
+}
+
 interface SoknadService {
     fun findOrError(soknadId: UUID): Soknad
 
@@ -56,12 +60,8 @@ interface BegrunnelseService {
     ): Begrunnelse
 }
 
-interface PersonIdService {
-    fun findPersonId(soknadId: UUID): String
-}
-
-@Service
 @Transactional
+@Service
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
 ) : SoknadService, BegrunnelseService, SoknadJobService, PersonIdService {

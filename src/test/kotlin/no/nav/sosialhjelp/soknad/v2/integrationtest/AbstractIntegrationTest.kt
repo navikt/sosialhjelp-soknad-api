@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
-import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
@@ -49,7 +49,7 @@ abstract class AbstractIntegrationTest {
     @Autowired
     protected lateinit var jdbcTemplate: JdbcTemplate
 
-    @MockkBean
+    @SpykBean
     protected lateinit var personIdService: PersonIdService
 
     protected lateinit var token: SignedJWT

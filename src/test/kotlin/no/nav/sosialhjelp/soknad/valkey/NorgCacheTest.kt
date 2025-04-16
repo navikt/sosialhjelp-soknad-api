@@ -30,9 +30,9 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
     @Test
     override fun `Verdi skal lagres i cache`() {
         val dto = NavEnhetDto("Navenhet", "12341234")
-        val gt = GeografiskTilknytning("0301")
+        val gt = "0301"
 
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns dto
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns dto
 
         norgService.getEnhetForGt(gt)!!
             .also {
@@ -40,70 +40,71 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
                 assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
             }
 
-        cache.get(gt.value, NavEnhet::class.java)!!
+        cache.get(gt, NavEnhet::class.java)!!
             .also {
                 assertThat(it.enhetsnavn).isEqualTo(dto.navn)
                 assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
             }
 
-        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
 
     @Test
     fun `Returneres null fra client skal ingenting lagres i cache`() {
-        val gt = GeografiskTilknytning("0301")
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns null
+        val gt = "0301"
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns null
 
         norgService.getEnhetForGt(gt).also { assertThat(it).isNull() }
 
-        cache.get(gt.value).also { assertThat(it).isNull() }
+        cache.get(gt).also { assertThat(it).isNull() }
     }
 
     @Test
     fun `Ved TjenesteUtilgejngeligException skal ingenting lagres i cache`() {
-        val gt = GeografiskTilknytning("0301")
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } throws TjenesteUtilgjengeligException("Utilgjengelig", RuntimeException())
+        val gt = "0301"
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } throws
+            TjenesteUtilgjengeligException("Utilgjengelig", RuntimeException())
 
         assertThatThrownBy { norgService.getEnhetForGt(gt) }
             .isInstanceOf(TjenesteUtilgjengeligException::class.java)
 
-        cache.get(gt.value).also { assertThat(it).isNull() }
+        cache.get(gt).also { assertThat(it).isNull() }
     }
 
     @Test
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         val cache: Cache = spyk()
-        val gt = GeografiskTilknytning("0301")
+        val gt = "0301"
         every { cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME) } returns cache
-        every { cache.get(gt.value) } throws RuntimeException("Something wrong")
+        every { cache.get(gt) } throws RuntimeException("Something wrong")
         every { cache.name } returns NorgCacheConfiguration.CACHE_NAME
         mockkObject(CustomCacheErrorHandler)
 
         val dto = NavEnhetDto("Navenhet", "12341234")
 
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(gt) } returns dto
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns dto
 
         norgService.getEnhetForGt(gt)!!.also {
             assertThat(it.enhetsnavn).isEqualTo(dto.navn)
             assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
         }
 
-        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
-        verify(exactly = 1) { cache.get(gt.value) }
-        verify(exactly = 1) { CustomCacheErrorHandler.handleCacheGetError(any(), cache, gt.value) }
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+        verify(exactly = 1) { cache.get(gt) }
+        verify(exactly = 1) { CustomCacheErrorHandler.handleCacheGetError(any(), cache, gt) }
         unmockkObject(CustomCacheErrorHandler)
     }
 
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        val gt = GeografiskTilknytning("0301")
+        val gt = "0301"
 
         val cachetNavEnhet =
             NavEnhet("Sandvika Nav-senter", "123456", "0301", "12345678", "Sandvika")
-                .also { cache.put(gt.value, it) }
+                .also { cache.put(gt, it) }
 
         norgService.getEnhetForGt(gt).also { assertThat(it).isEqualTo(cachetNavEnhet) }
 
-        verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(gt) }
+        verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
 }

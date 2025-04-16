@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
@@ -95,7 +94,7 @@ class NavEnhetService(
         when (BYDEL_MARKA_OSLO == geografiskTilknytning) {
             true -> bydelFordelingService.getBydelTilForMarka(this)
             false -> geografiskTilknytning
-        }?.let { GeografiskTilknytning(it) }
+        }
 
     companion object {
         private val log by logger()

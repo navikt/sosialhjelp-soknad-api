@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -18,6 +19,7 @@ import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadServiceImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,6 +42,11 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
         every { soknadServiceImpl.findPersonId(any()) } returns "12345612345"
     }
 
+    @AfterEach
+    fun tearDown() {
+        clearMocks(soknadServiceImpl)
+    }
+
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
         val soknadId = UUID.randomUUID()
@@ -54,7 +61,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
             .getOrNull()
 
         gtService.hentGeografiskTilknytning(soknadId)!!
-            .also { assertThat(it.value).isEqualTo(kommunenummer) }
+            .also { assertThat(it).isEqualTo(kommunenummer) }
 
         verify(exactly = 0) { gtClient.hentGeografiskTilknytning(any()) }
     }
@@ -73,7 +80,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
             )
 
         gtService.hentGeografiskTilknytning(soknadId)!!
-            .also { assertThat(it.value).isEqualTo(kommunenummer) }
+            .also { assertThat(it).isEqualTo(kommunenummer) }
 
         cache.get(soknadId, String::class.java)
             .also { assertThat(it).isEqualTo(kommunenummer) }
@@ -100,7 +107,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
 
         val soknadId = UUID.randomUUID()
         gtService.hentGeografiskTilknytning(soknadId)!!
-            .also { assertThat(it.value).isEqualTo(kommunenummer) }
+            .also { assertThat(it).isEqualTo(kommunenummer) }
 
         verify(exactly = 1) { gtClient.hentGeografiskTilknytning(any()) }
         verify(exactly = 1) { cache.get(any()) }

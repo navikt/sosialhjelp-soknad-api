@@ -8,7 +8,6 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
 import org.springframework.stereotype.Repository
-import java.io.Serializable
 import java.util.UUID
 
 @Repository
@@ -68,4 +67,4 @@ data class NavEnhet(
     val kommunenummer: String? = null,
     val orgnummer: String? = null,
     val kommunenavn: String? = null,
-) : Serializable
+)
