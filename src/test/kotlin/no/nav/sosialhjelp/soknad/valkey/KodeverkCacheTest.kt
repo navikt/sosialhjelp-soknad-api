@@ -69,6 +69,20 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfiguration.CACHE_NAM
     }
 
     @Test
+    override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
+        mockkObject(CustomCacheErrorHandler)
+        val cache: Cache = spyk()
+        every { cacheManager.getCache(KodeverkCacheConfiguration.CACHE_NAME) } returns cache
+        every { cache.put(KOMMUNER.value, any<Map<String, String?>>()) } throws RuntimeException("Something wrong")
+        every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
+
+        kodeverkService.getKommunenavn(OSLO).also { assertThat(it).isEqualTo("Oslo") }
+
+        verify { kodeverkClient.hentKodeverk(KOMMUNER.value) }
+        verify(exactly = 1) { CustomCacheErrorHandler.handleCachePutError(any(), cache, KOMMUNER.value, any<Map<String, String?>>()) }
+    }
+
+    @Test
     fun `Error eller null i client skal ikke lagre noe i cache`() {
         every { kodeverkClient.hentKodeverk(any()) } throws RuntimeException()
 

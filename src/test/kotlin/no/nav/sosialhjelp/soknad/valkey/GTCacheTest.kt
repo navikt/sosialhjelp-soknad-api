@@ -36,10 +36,12 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
     @MockkBean
     private lateinit var soknadServiceImpl: SoknadServiceImpl
 
+    private val personId: String = "12345612345"
+
     @BeforeEach
     override fun setup() {
         super.setup()
-        every { soknadServiceImpl.findPersonId(any()) } returns "12345612345"
+        every { soknadServiceImpl.findPersonId(any()) } returns personId
     }
 
     @AfterEach
@@ -153,6 +155,31 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
         cache.get(soknadId).also { assertThat(it).isNull() }
 
         verify(exactly = 1) { gtClient.hentGeografiskTilknytning(any()) }
+    }
+
+    @Test
+    override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
+        mockkObject(CustomCacheErrorHandler)
+        val soknadId = UUID.randomUUID()
+        val cache: Cache = spyk()
+        every { cacheManager.getCache(GTCacheConfiguration.CACHE_NAME) } returns cache
+        every { cache.put(soknadId, any<GeografiskTilknytningDto>()) } throws RuntimeException("Something wrong")
+
+        val kommunenummer = "0301"
+
+        every { gtClient.hentGeografiskTilknytning(personId) } returns
+            GeografiskTilknytningDto(
+                GtType.KOMMUNE,
+                kommunenummer,
+                null,
+                "NOR",
+            )
+
+        gtService.hentGeografiskTilknytning(soknadId)!!.also { assertThat(it).isEqualTo(kommunenummer) }
+        cache.get(soknadId, String::class.java).also { assertThat(it).isNull() }
+
+        verify(exactly = 1) { gtClient.hentGeografiskTilknytning(any()) }
+        verify { CustomCacheErrorHandler.handleCachePutError(any(), cache, soknadId, any<String>()) }
     }
 
     companion object {

@@ -107,4 +107,29 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
 
         verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
+
+    @Test
+    override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
+        val dto = NavEnhetDto("Navenhet", "12341234")
+        val gt = "0301"
+
+        mockkObject(CustomCacheErrorHandler)
+        val cache: Cache = spyk()
+        every { cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME) } returns cache
+        every { cache.put(any(), any()) } throws RuntimeException("Something wrong")
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns dto
+
+        norgService.getEnhetForGt(gt)!!
+            .also {
+                assertThat(it.enhetsnavn).isEqualTo(dto.navn)
+                assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
+            }
+
+        cache.get(gt, NavEnhet::class.java).also { assertThat(it).isNull() }
+
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+        verify(exactly = 1) { CustomCacheErrorHandler.handleCachePutError(any(), cache, gt, any<NavEnhet>()) }
+
+        unmockkObject(CustomCacheErrorHandler)
+    }
 }

@@ -30,9 +30,12 @@ abstract class AbstractCacheTest(private val cacheName: String) {
 
     abstract fun `Skal ikke hente fra client hvis verdi finnes i cache`()
 
+    abstract fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`()
+
     protected companion object ValkeyContainer : GenericContainer<ValkeyContainer>("valkey/valkey:7.2.8-alpine") {
         init {
-            addFixedExposedPort(6379, 6379)
+            withExposedPorts(6379)
+//            addFixedExposedPort(6379, 6379)
             withReuse(true)
         }
 
@@ -40,6 +43,7 @@ abstract class AbstractCacheTest(private val cacheName: String) {
         @JvmStatic
         fun startContainer() {
             start()
+            System.setProperty("spring.data.redis.port", this.getMappedPort(6379).toString())
         }
 
         @AfterAll
