@@ -54,7 +54,7 @@ data class Soknad(
 }
 
 data class Begrunnelse(
-    val hvorforSoke: String = "",
+    val hvorforSoke: String? = "",
     val hvaSokesOm: String = "",
     val kategorier: Kategorier = Kategorier(),
 )

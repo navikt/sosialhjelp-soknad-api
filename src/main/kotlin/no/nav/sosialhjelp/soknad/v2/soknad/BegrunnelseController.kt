@@ -35,14 +35,14 @@ class BegrunnelseController(
         // TODO Trengs forskjellig håndtering av disse?
         return when (input) {
             is HarHvaSokesOmInput -> service.updateHvaSokesOm(soknadId, input.hvorforSoke, input.hvaSokesOm)
-            is HarKategorierInput -> service.updateKategorier(soknadId, input.hvorforSoke, input.kategorier, input.annet)
+            is HarKategorierInput -> service.updateKategorier(soknadId, input.kategorier, input.annet)
         }.toBegrunnelseDto()
     }
 }
 
 data class BegrunnelseDto(
     val hvaSokesOm: String = "",
-    val hvorforSoke: String = "",
+    val hvorforSoke: String? = "",
     val kategorier: KategorierDto = KategorierDto(),
 )
 
@@ -79,15 +79,14 @@ fun Begrunnelse.toBegrunnelseDto(): BegrunnelseDto {
         DiscriminatorMapping(value = "HarKategorier", schema = HarKategorierInput::class),
     ],
 )
-sealed class BegrunnelseInput(val hvorforSoke: String)
+sealed class BegrunnelseInput()
 
 class HarHvaSokesOmInput(
-    hvorforSoke: String,
+    val hvorforSoke: String?,
     val hvaSokesOm: String,
-) : BegrunnelseInput(hvorforSoke)
+) : BegrunnelseInput()
 
 class HarKategorierInput(
-    hvorforSoke: String,
     val kategorier: Set<Kategori>,
     val annet: String,
-) : BegrunnelseInput(hvorforSoke)
+) : BegrunnelseInput()

@@ -52,13 +52,12 @@ interface BegrunnelseService {
 
     fun updateHvaSokesOm(
         soknadId: UUID,
-        hvorforSoke: String,
+        hvorforSoke: String?,
         hvaSokesOm: String,
     ): Begrunnelse
 
     fun updateKategorier(
         soknadId: UUID,
-        hvorforSoke: String,
         kategorier: Set<Kategori>,
         annet: String,
     ): Begrunnelse
@@ -141,7 +140,7 @@ class SoknadServiceImpl(
     @Transactional
     override fun updateHvaSokesOm(
         soknadId: UUID,
-        hvorforSoke: String,
+        hvorforSoke: String?,
         hvaSokesOm: String,
     ): Begrunnelse =
         findOrError(soknadId)
@@ -152,7 +151,6 @@ class SoknadServiceImpl(
     @Transactional
     override fun updateKategorier(
         soknadId: UUID,
-        hvorforSoke: String,
         kategorier: Set<Kategori>,
         annet: String,
     ): Begrunnelse =
@@ -160,7 +158,6 @@ class SoknadServiceImpl(
             .copy(
                 begrunnelse =
                     Begrunnelse(
-                        hvorforSoke = hvorforSoke,
                         kategorier =
                             Kategorier(
                                 definerte = kategorier,
