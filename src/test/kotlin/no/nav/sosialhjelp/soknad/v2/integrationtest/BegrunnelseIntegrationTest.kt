@@ -81,7 +81,6 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
 
         val input =
             HarKategorierInput(
-                hvorforSoke = "Fordi jeg ikke har penger vel",
                 kategorier = definerteKategorier,
                 annet = annetKategorier,
             )
