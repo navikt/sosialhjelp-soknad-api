@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.valkey
 
+import com.ninjasquad.springmockk.SpykBean
+import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.springframework.beans.factory.annotation.Autowired
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
@@ -10,13 +12,30 @@ import org.testcontainers.containers.GenericContainer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
-abstract class AbstractCacheTest {
-    @Autowired
+abstract class AbstractCacheTest(private val cacheName: String) {
+    @SpykBean
     protected lateinit var cacheManager: CacheManager
+
+    protected val cache get() = cacheManager.getCache(cacheName) ?: error("Cache not found: $cacheName")
+
+    @BeforeEach
+    fun setup() {
+        cache.clear()
+        clearAllMocks()
+    }
+
+    abstract fun `Verdi skal lagres i cache`()
+
+    abstract fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`()
+
+    abstract fun `Skal ikke hente fra client hvis verdi finnes i cache`()
+
+    abstract fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`()
 
     protected companion object ValkeyContainer : GenericContainer<ValkeyContainer>("valkey/valkey:7.2.8-alpine") {
         init {
-            addFixedExposedPort(6379, 6379)
+            withExposedPorts(6379)
+//            addFixedExposedPort(6379, 6379)
             withReuse(true)
         }
 
@@ -24,6 +43,7 @@ abstract class AbstractCacheTest {
         @JvmStatic
         fun startContainer() {
             start()
+            System.setProperty("spring.data.redis.port", this.getMappedPort(6379).toString())
         }
 
         @AfterAll

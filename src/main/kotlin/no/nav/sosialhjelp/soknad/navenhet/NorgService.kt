@@ -1,79 +1,80 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
-import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
-import no.nav.sosialhjelp.soknad.navenhet.dto.toNavEnhet
-import no.nav.sosialhjelp.soknad.valkey.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.Duration
 
 @Component
-class NorgService(
-    private val norgClient: NorgClient,
-    private val valkeyService: ValkeyService,
-) {
-    fun getEnhetForGt(gt: String?): NavEnhet? {
-        if (gt == null || !gt.matches(Regex("^[0-9]+$"))) {
-            throw IllegalArgumentException("GT ikke på gyldig format: $gt")
-        }
-
-        val navEnhetDto = hentFraCacheEllerConsumer(gt)
-        if (navEnhetDto == null) {
-            log.warn("Kunne ikke finne NorgEnhet for gt: $gt")
-            return null
-        }
-        return navEnhetDto.toNavEnhet(gt)
-    }
-
-    private fun hentFraCacheEllerConsumer(gt: String): NavEnhetDto? {
-        if (skalBrukeCache(gt)) {
-            val cached = hentFraCache(gt)
-            if (cached != null) {
-                log.info("Bruker norg-enhet fra cache: $cached")
-                return cached
-            }
-        }
-        return hentFraConsumerMedCacheSomFallback(gt)
-    }
-
-    private fun skalBrukeCache(gt: String): Boolean {
-        val timeString = valkeyService.getString(GT_LAST_POLL_TIME_PREFIX + gt) ?: return false
-        val lastPollTime = LocalDateTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now())
-    }
-
-    private fun hentFraCache(gt: String): NavEnhetDto? {
-        return valkeyService.get(GT_CACHE_KEY_PREFIX + gt, NavEnhetDto::class.java) as? NavEnhetDto
-    }
-
-    private fun hentFraConsumerMedCacheSomFallback(gt: String): NavEnhetDto? {
-        try {
-            val navEnhetDto = norgClient.hentNavEnhetForGeografiskTilknytning(gt)
-            if (navEnhetDto != null) {
-                log.info("Bruker NavEnhet fra Norg: $navEnhetDto")
-                return navEnhetDto
-            }
-        } catch (e: TjenesteUtilgjengeligException) {
-            // Norg feiler -> prøv å hent tidligere cached verdi
-            val cached = hentFraCache(gt)
-            if (cached != null) {
-                log.info("Norg-client feilet, men bruker tidligere cachet response fra Norg")
-                return cached
-            }
-            log.warn("Norg-client feilet og cache for gt=$gt er tom")
-            throw e
-        }
-        return null
+class NorgService(private val norgClient: NorgClient) {
+    @Cacheable(NorgCacheConfiguration.CACHE_NAME, unless = "#result == null")
+    fun getEnhetForGt(gt: String): NavEnhet? {
+        return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+            .onSuccess { dto -> if (dto != null) logger.info("Bruker NavEnhet fra Norg: $dto") }
+            .getOrThrow()
+            ?.toNavEnhet(gt)
     }
 
     companion object {
-        private val log by logger()
+        private val logger by logger()
+    }
+}
 
-        private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 60
+@JvmInline
+value class GeografiskTilknytning(val value: String) {
+    init {
+        if (!value.matches(Regex("^[0-9]+$"))) {
+            throw IllegalArgumentException("GT ikke på gyldig format: $value")
+        }
+    }
+}
+
+@Configuration
+class NorgCacheConfiguration : SoknadApiCacheConfiguration {
+    override fun getCacheName() = CACHE_NAME
+
+    override fun getConfig(): RedisCacheConfiguration =
+        RedisCacheConfiguration
+            .defaultCacheConfig()
+            .entryTtl(Duration.ofSeconds(ETT_DOGN))
+            .disableCachingNullValues()
+
+    companion object {
+        const val CACHE_NAME = "norg"
+        private const val ETT_DOGN = 60 * 60L * 24
+    }
+}
+
+fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
+    return NavEnhet(
+        enhetsnummer = enhetNr,
+        enhetsnavn = navn,
+        kommunenavn = null,
+        orgnummer = getSosialOrgNr(enhetNr, gt),
+    )
+}
+
+private fun getSosialOrgNr(
+    enhetNr: String?,
+    gt: String,
+): String? {
+    return when {
+        enhetNr == "0513" && gt == "3434" -> {
+            /*
+                Jira sak 1200
+
+                Lom og Skjåk har samme enhetsnummer. Derfor vil alle søknader bli sendt til Skjåk når vi henter organisajonsnummer basert på enhetNr.
+                Dette er en midlertidig fix for å få denne casen til å fungere.
+             */
+            "974592274"
+        }
+        enhetNr == "0511" && gt == "3432" -> "964949204"
+        enhetNr == "1620" && gt == "5014" -> "913071751"
+        else -> getOrganisasjonsnummer(enhetNr)
     }
 }

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CachingConfigurer
@@ -22,7 +21,6 @@ class CacheConfig : CachingConfigurer {
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
         cacheConfigs: List<SoknadApiCacheConfiguration>,
-        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
@@ -31,10 +29,10 @@ class CacheConfig : CachingConfigurer {
             .enableStatistics()
             .build()
 
-    override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler()
+    override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler
 }
 
-class CustomCacheErrorHandler : CacheErrorHandler {
+object CustomCacheErrorHandler : CacheErrorHandler {
     private val log by logger()
 
     override fun handleCacheGetError(

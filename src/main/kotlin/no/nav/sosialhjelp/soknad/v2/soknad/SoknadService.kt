@@ -9,6 +9,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
+interface PersonIdService {
+    fun findPersonId(soknadId: UUID): String
+}
+
 interface SoknadService {
     fun findOrError(soknadId: UUID): Soknad
 
@@ -56,11 +60,11 @@ interface BegrunnelseService {
     ): Begrunnelse
 }
 
-@Service
 @Transactional
+@Service
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
-) : SoknadService, BegrunnelseService, SoknadJobService {
+) : SoknadService, BegrunnelseService, SoknadJobService, PersonIdService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
         soknadRepository.findByIdOrNull(soknadId)
@@ -138,6 +142,8 @@ class SoknadServiceImpl(
             .copy(begrunnelse = begrunnelse)
             .let { soknadRepository.save(it) }
             .begrunnelse
+
+    override fun findPersonId(soknadId: UUID): String = findOrError(soknadId).eierPersonId
 
     companion object {
         private val logger by logger()

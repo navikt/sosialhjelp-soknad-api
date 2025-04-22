@@ -4,24 +4,34 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
+import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 internal class GeografiskTilknytningServiceTest {
     private val geografiskTilknytningClient: GeografiskTilknytningClient = mockk()
-    private val geografiskTilknytningService = GeografiskTilknytningService(geografiskTilknytningClient)
+    private val personIdService: PersonIdService = mockk()
+    private val geografiskTilknytningService = GeografiskTilknytningService(geografiskTilknytningClient, personIdService)
 
-    private val ident = "ident"
+    private val soknadId = UUID.randomUUID()
+    private val personId = "12345612345"
     private val gt = "gt"
+
+    @BeforeEach
+    fun setup() {
+        every { personIdService.findPersonId(soknadId) } returns personId
+    }
 
     @Test
     fun skalReturnereBydelsnummer() {
         every {
             geografiskTilknytningClient.hentGeografiskTilknytning(
-                ident,
+                personId,
             )
         } returns GeografiskTilknytningDto(GtType.BYDEL, null, gt, null)
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
         assertThat(geografiskTilknytning).isEqualTo(gt)
     }
 
@@ -29,10 +39,10 @@ internal class GeografiskTilknytningServiceTest {
     fun skalReturnereKommunenummer() {
         every {
             geografiskTilknytningClient.hentGeografiskTilknytning(
-                ident,
+                personId,
             )
         } returns GeografiskTilknytningDto(GtType.KOMMUNE, gt, null, null)
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
         assertThat(geografiskTilknytning).isEqualTo(gt)
     }
 
@@ -40,10 +50,10 @@ internal class GeografiskTilknytningServiceTest {
     fun skalReturnereNullHvisUtland() {
         every {
             geografiskTilknytningClient.hentGeografiskTilknytning(
-                ident,
+                personId,
             )
         } returns GeografiskTilknytningDto(GtType.UTLAND, null, null, gt)
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
         assertThat(geografiskTilknytning).isNull()
     }
 
@@ -51,17 +61,17 @@ internal class GeografiskTilknytningServiceTest {
     fun skalReturnereNullHvisUdefinert() {
         every {
             geografiskTilknytningClient.hentGeografiskTilknytning(
-                ident,
+                personId,
             )
         } returns GeografiskTilknytningDto(GtType.UDEFINERT, null, null, null)
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
         assertThat(geografiskTilknytning).isNull()
     }
 
     @Test
     fun skalReturnereNullHvisConsumerGirNull() {
-        every { geografiskTilknytningClient.hentGeografiskTilknytning(ident) } returns null
-        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        every { geografiskTilknytningClient.hentGeografiskTilknytning(any()) } returns null
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(soknadId)
         assertThat(geografiskTilknytning).isNull()
     }
 }

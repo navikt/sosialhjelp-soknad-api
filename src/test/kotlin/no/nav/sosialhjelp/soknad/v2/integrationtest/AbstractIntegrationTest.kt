@@ -1,12 +1,15 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
+import com.ninjasquad.springmockk.SpykBean
+import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,6 +49,9 @@ abstract class AbstractIntegrationTest {
     @Autowired
     protected lateinit var jdbcTemplate: JdbcTemplate
 
+    @SpykBean
+    protected lateinit var personIdService: PersonIdService
+
     protected lateinit var token: SignedJWT
 
     protected lateinit var soknadId: UUID
@@ -54,6 +60,7 @@ abstract class AbstractIntegrationTest {
     fun before() {
         soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        every { personIdService.findPersonId(soknadId) } returns userId
     }
 
     protected fun <T> doGet(
