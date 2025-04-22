@@ -21,7 +21,6 @@ class GeografiskTilknytningService(
         return personIdService.findPersonId(soknadId)
             .let { personId -> geografiskTilknytningClient.hentGeografiskTilknytning(personId) }
             .let { dto -> bydelsnummerEllerKommunenummer(dto) }
-            ?.let { gt -> gt }
     }
 
     private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? =
