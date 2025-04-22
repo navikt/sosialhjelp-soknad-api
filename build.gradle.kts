@@ -101,8 +101,8 @@ dependencies {
     // flyway / db
     implementation(libs.flyway.core)
     implementation(libs.vault.jdbc)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.21.0")
-    runtimeOnly("org.postgresql:postgresql:42.7.4")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.7.2")
+    runtimeOnly("org.postgresql:postgresql:42.7.5")
 
     // redis
     implementation(libs.lettuce.core)
