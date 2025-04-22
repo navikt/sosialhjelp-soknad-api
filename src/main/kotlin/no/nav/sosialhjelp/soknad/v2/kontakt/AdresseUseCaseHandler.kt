@@ -52,10 +52,14 @@ class AdresseUseCaseHandler(
     ): KommuneInfo {
         return navEnhet.kommunenummer?.let {
             KommuneInfo(
-                isDigisosKommune = kommuneInfoService.kanMottaSoknader(it),
+                isDigisosKommune = kanMottaSoknader(it),
                 kommunenavn = getKommunenavn(soknadId, navEnhet.kommunenavn, it),
             )
         } ?: error("NavEnhet ${navEnhet.enhetsnavn} mangler kommunenummer")
+    }
+
+    private fun kanMottaSoknader(kommunenummer: String): Boolean {
+        return kommuneInfoService.hentAlleKommuneInfo()?.get(kommunenummer)?.kanMottaSoknader ?: return false
     }
 
     private fun getKommunenavn(
