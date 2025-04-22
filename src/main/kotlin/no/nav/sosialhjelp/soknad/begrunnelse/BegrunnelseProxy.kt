@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.begrunnelse
 
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseController
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
+import no.nav.sosialhjelp.soknad.v2.soknad.HarHvaSokesOmInput
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -20,8 +21,8 @@ class BegrunnelseProxy(
     ) {
         begrunnelseController.updateBegrunnelse(
             soknadId = UUID.fromString(soknadId),
-            begrunnelseDto =
-                BegrunnelseDto(
+            input =
+                HarHvaSokesOmInput(
                     hvaSokesOm = begrunnelseFrontend.hvaSokesOm ?: "",
                     hvorforSoke = begrunnelseFrontend.hvorforSoke ?: "",
                 ),

@@ -54,9 +54,16 @@ interface SoknadJobService {
 interface BegrunnelseService {
     fun findBegrunnelse(soknadId: UUID): Begrunnelse
 
-    fun updateBegrunnelse(
+    fun updateHvaSokesOm(
         soknadId: UUID,
-        begrunnelse: Begrunnelse,
+        hvorforSoke: String?,
+        hvaSokesOm: String,
+    ): Begrunnelse
+
+    fun updateKategorier(
+        soknadId: UUID,
+        kategorier: Set<Kategori>,
+        annet: String,
     ): Begrunnelse
 }
 
@@ -134,12 +141,34 @@ class SoknadServiceImpl(
     @Transactional(readOnly = true)
     override fun findBegrunnelse(soknadId: UUID) = findOrError(soknadId).begrunnelse
 
-    override fun updateBegrunnelse(
+    @Transactional
+    override fun updateHvaSokesOm(
         soknadId: UUID,
-        begrunnelse: Begrunnelse,
+        hvorforSoke: String?,
+        hvaSokesOm: String,
     ): Begrunnelse =
         findOrError(soknadId)
-            .copy(begrunnelse = begrunnelse)
+            .copy(begrunnelse = Begrunnelse(hvorforSoke = hvorforSoke, hvaSokesOm = hvaSokesOm))
+            .let { soknadRepository.save(it) }
+            .begrunnelse
+
+    @Transactional
+    override fun updateKategorier(
+        soknadId: UUID,
+        kategorier: Set<Kategori>,
+        annet: String,
+    ): Begrunnelse =
+        findOrError(soknadId)
+            .copy(
+                begrunnelse =
+                    Begrunnelse(
+                        kategorier =
+                            Kategorier(
+                                definerte = kategorier,
+                                annet = annet,
+                            ),
+                    ),
+            )
             .let { soknadRepository.save(it) }
             .begrunnelse
 

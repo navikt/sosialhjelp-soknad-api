@@ -2,6 +2,9 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.BegrunnelseDto
+import no.nav.sosialhjelp.soknad.v2.soknad.HarHvaSokesOmInput
+import no.nav.sosialhjelp.soknad.v2.soknad.HarKategorierInput
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategori
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -25,22 +28,22 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere begrunnelse skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
-        val inputBegrunnelse =
-            BegrunnelseDto(
+        val input =
+            HarHvaSokesOmInput(
                 hvaSokesOm = "Jeg bare må ha penger",
                 hvorforSoke = "Fordi jeg ikke har penger vel",
             )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
-            inputBegrunnelse,
+            input,
             BegrunnelseDto::class.java,
             soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
-            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(inputBegrunnelse.hvaSokesOm)
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvaSokesOm).isEqualTo(input.hvaSokesOm)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(input.hvorforSoke)
         }
             ?: fail("Feil i test")
     }
@@ -49,23 +52,60 @@ class BegrunnelseIntegrationTest : AbstractIntegrationTest() {
     fun `Input hvor ett felt er tomt skal lagres i databasen`() {
         val soknad = soknadRepository.save(opprettSoknad(id = soknadId))
 
-        val inputBegrunnelse =
-            BegrunnelseDto(
+        val input =
+            HarHvaSokesOmInput(
                 hvaSokesOm = "",
                 hvorforSoke = "Fordi jeg ikke har penger vel",
             )
 
         doPut(
             "/soknad/${soknad.id}/begrunnelse",
-            inputBegrunnelse,
+            input,
             BegrunnelseDto::class.java,
             soknad.id,
         )
 
         soknadRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.begrunnelse.hvaSokesOm).isEqualTo("")
-            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(inputBegrunnelse.hvorforSoke)
+            assertThat(it.begrunnelse.hvorforSoke).isEqualTo(input.hvorforSoke)
         }
             ?: fail("Feil i test")
+    }
+
+    @Test
+    fun `Oppdatere Kategorier skal lagres i databasen`() {
+        val soknad = soknadRepository.save(opprettSoknad(soknadId))
+
+        val definerteKategorier = setOf(Kategori.HUSLEIE, Kategori.LIVSOPPHOLD, Kategori.NODHJELP_IKKE_MAT)
+        val annetKategorier = "Trenger også penger til bil"
+
+        val input =
+            HarKategorierInput(
+                kategorier = definerteKategorier,
+                annet = annetKategorier,
+            )
+
+        doPut(
+            "/soknad/${soknad.id}/begrunnelse",
+            input,
+            BegrunnelseDto::class.java,
+            soknad.id,
+        )
+            .also { dto ->
+                assertThat(dto.kategorier.definerte.toList())
+                    .hasSize(3)
+                    .allMatch { definerteKategorier.contains(it) }
+
+                assertThat(dto.kategorier.annet).isEqualTo(annetKategorier)
+            }
+
+        soknadRepository.findByIdOrNull(soknad.id)!!.begrunnelse.kategorier
+            .also { begrunnelse ->
+                assertThat(begrunnelse.definerte.toList())
+                    .hasSize(3)
+                    .anyMatch { it == Kategori.HUSLEIE }
+                    .anyMatch { it == Kategori.LIVSOPPHOLD }
+                    .anyMatch { it == Kategori.NODHJELP_IKKE_MAT }
+            }
     }
 }

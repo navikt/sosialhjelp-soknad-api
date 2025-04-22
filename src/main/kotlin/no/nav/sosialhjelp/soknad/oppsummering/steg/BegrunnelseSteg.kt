@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.oppsummering.steg
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
-import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -16,7 +15,11 @@ class BegrunnelseSteg {
         jsonInternalSoknad: JsonInternalSoknad,
     ): Steg {
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
+
+//        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
+
+        val harUtfyltHvaSokesOm = !begrunnelse.hvaSokesOm.isNullOrEmpty()
+
         val harUtfyltHvorforSoke = begrunnelse.hvorforSoke != null && begrunnelse.hvorforSoke.isNotEmpty()
         return Steg(
             stegNr = 2,
@@ -30,7 +33,8 @@ class BegrunnelseSteg {
                                 Sporsmal(
                                     tittel = "begrunnelse.hva.sporsmal",
                                     erUtfylt = harUtfyltHvaSokesOm,
-                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
+//                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
+                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse.hvaSokesOm) else null,
                                 ),
                                 Sporsmal(
                                     tittel = "begrunnelse.hvorfor.sporsmal",

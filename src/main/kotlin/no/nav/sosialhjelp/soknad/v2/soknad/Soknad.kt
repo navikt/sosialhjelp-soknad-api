@@ -1,9 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.v2.config.repository.DomainRoot
 import no.nav.sosialhjelp.soknad.v2.config.repository.UpsertRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import org.springframework.core.convert.converter.Converter
 import org.springframework.data.annotation.Id
+import org.springframework.data.convert.ReadingConverter
+import org.springframework.data.convert.WritingConverter
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
@@ -48,14 +53,39 @@ data class Soknad(
     override fun getDbId() = id
 }
 
-data class Tidspunkt(
-    val opprettet: LocalDateTime,
-    // TODO Hvordan skal diverse PUT / POSTS / REGISTER-OPPDATERINGER oppdatere denne? Skal den brukes til noe?
-    var sistEndret: LocalDateTime? = null,
-    var sendtInn: LocalDateTime? = null,
+data class Begrunnelse(
+    val hvorforSoke: String? = "",
+    val hvaSokesOm: String = "",
+    val kategorier: Kategorier = Kategorier(),
 )
 
-data class Begrunnelse(
-    val hvorforSoke: String = "",
-    val hvaSokesOm: String = "",
+data class Kategorier(
+    val definerte: Set<Kategori> = emptySet(),
+    val annet: String = "",
 )
+
+enum class Kategori {
+    LIVSOPPHOLD,
+    HUSLEIE,
+    STROM_OPPVARMING,
+    NODHJELP_IKKE_MAT,
+    NODHJELP_IKKE_BOSTED,
+    NODHJELP_IKKE_STROM,
+    ;
+
+    fun isNodhjelp(): Boolean = nodhjelpList.contains(this)
+
+    companion object {
+        private val nodhjelpList get() = setOf(NODHJELP_IKKE_BOSTED, NODHJELP_IKKE_MAT, NODHJELP_IKKE_STROM)
+    }
+}
+
+@WritingConverter
+object KategorierToJsonConverter : Converter<Kategorier, String> {
+    override fun convert(source: Kategorier): String = jacksonObjectMapper().writeValueAsString(source)
+}
+
+@ReadingConverter
+object JsonToKategorierConverter : Converter<String, Kategorier> {
+    override fun convert(source: String): Kategorier = jacksonObjectMapper().readValue(source)
+}
