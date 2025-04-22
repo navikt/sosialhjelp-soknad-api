@@ -25,7 +25,8 @@ class NorgClient(
 
     fun hentNavEnhetForGeografiskTilknytning(gt: GeografiskTilknytning): NavEnhetDto? {
         log.info("Henter NavEnhet fra norg for gt: $gt")
-        return try {
+
+        return runCatching {
             webClient.get()
                 .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", gt)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
@@ -34,16 +35,43 @@ class NorgClient(
                 .bodyToMono<NavEnhetDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
-        } catch (e: NotFound) {
-            log.warn("Fant ikke norgenhet for gt $gt")
-            null
-        } catch (e: WebClientResponseException) {
-            log.warn("Feil statuskode ved kall mot NORG/gt: ${e.statusCode}, respons: ${e.responseBodyAsString}")
-            return null
-        } catch (e: Exception) {
-            log.warn("Noe uventet feilet ved kall til NORG/gt", e)
-            throw TjenesteUtilgjengeligException("NORG", e)
         }
+            .getOrElse { e ->
+                when (e) {
+                    is NotFound -> {
+                        log.warn("Fant ikke norgenhet for gt $gt", e)
+                        null
+                    }
+                    is WebClientResponseException -> {
+                        log.warn("Feil statuskode ved kall mot NORG/gt: ${e.statusCode}, respons: ${e.responseBodyAsString}", e)
+                        null
+                    }
+                    else -> {
+                        log.warn("Noe uventet feilet ved kall til NORG/gt", e)
+                        throw TjenesteUtilgjengeligException("NORG", e)
+                    }
+                }
+            }
+
+//        return try {
+//            webClient.get()
+//                .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", gt)
+//                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
+//                .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+//                .retrieve()
+//                .bodyToMono<NavEnhetDto>()
+//                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+//                .block()
+//        } catch (e: NotFound) {
+//            log.warn("Fant ikke norgenhet for gt $gt", e)
+//            null
+//        } catch (e: WebClientResponseException) {
+//            log.warn("Feil statuskode ved kall mot NORG/gt: ${e.statusCode}, respons: ${e.responseBodyAsString}", e)
+//            return null
+//        } catch (e: Exception) {
+//            log.warn("Noe uventet feilet ved kall til NORG/gt", e)
+//            throw TjenesteUtilgjengeligException("NORG", e)
+//        }
     }
 
     companion object {
