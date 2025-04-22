@@ -2,14 +2,16 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerClient
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseFromNavUtbetalingerClient
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -20,6 +22,18 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Autowired
     private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
+
+    @MockkBean
+    private lateinit var navUtbetalingerClient: UtbetalingerFraNavClient
+
+    @MockkBean
+    private lateinit var orgService: OrganisasjonService
+
+    @BeforeEach
+    override fun setup() {
+        super.setup()
+        every { orgService.hentOrgNavn(any()) } returns "Nav"
+    }
 
     @Test
     fun `Utbetalinger fra NAV skal lagres i db`() {
@@ -59,9 +73,6 @@ class UtbetalingerFraNavFetcherTest : AbstractOkonomiRegisterDataTest() {
 
         assertThat(integrasjonstatusRepository.findByIdOrNull(soknad.id)!!.feilUtbetalingerNav).isTrue()
     }
-
-    @MockkBean
-    private lateinit var navUtbetalingerClient: NavUtbetalingerClient
 
     private fun createAnswerForNavUtbetalingerClient() {
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns defaultResponseFromNavUtbetalingerClient()

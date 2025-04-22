@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.v2.okonomi.DokumentDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.springframework.http.HttpHeaders

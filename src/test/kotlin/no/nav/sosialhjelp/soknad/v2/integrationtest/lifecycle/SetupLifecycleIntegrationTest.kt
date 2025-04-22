@@ -10,9 +10,7 @@ import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavKomponent
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -39,6 +37,9 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleFoedselDato
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.ektefelleId
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.orgnr
+import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
+import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
@@ -61,7 +62,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var mobiltelefonService: MobiltelefonService
 
     @MockkBean
-    protected lateinit var navUtbetalingerService: NavUtbetalingerService
+    protected lateinit var navUtbetalingerService: UtbetalingerFraNavService
 
     @MockkBean
     protected lateinit var kontonummerService: KontonummerService
@@ -214,27 +215,29 @@ fun createSkattbarInntektAnswer(): List<Utbetaling> {
     )
 }
 
-fun createNavUtbetaling(): List<NavUtbetaling> {
+fun createNavUtbetaling(): List<UtbetalingMedKomponent> {
     return listOf(
-        NavUtbetaling(
-            type = "Navutbetaling",
-            netto = 15000.0,
-            brutto = 19000.0,
-            skattetrekk = 4000.0,
-            andreTrekk = null,
-            utbetalingsdato = LocalDate.now().minusWeeks(1),
-            bilagsnummer = "999999",
-            periodeFom = LocalDate.now().minusMonths(1),
-            periodeTom = LocalDate.now(),
-            tittel = "Støtte",
-            orgnummer = orgnr,
+        UtbetalingMedKomponent(
+            utbetaling =
+                no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling(
+                    tittel = "Navutbetaling",
+                    netto = 15000.0,
+                    brutto = 19000.0,
+                    skattetrekk = 4000.0,
+                    andreTrekk = null,
+                    utbetalingsdato = LocalDate.now().minusWeeks(1),
+                    periodeFom = LocalDate.now().minusMonths(1),
+                    periodeTom = LocalDate.now(),
+                    organisasjon = Organisasjon("Nav-org", orgnr),
+                ),
             komponenter = createKomponenter(),
+            tittel = "Navutbetaling",
         ),
     )
 }
 
-fun createKomponenter(): List<NavKomponent> {
+fun createKomponenter(): List<Komponent> {
     return listOf(
-        NavKomponent(type = "Komponent 1", belop = 19000.0, satsType = "Støtte sats", satsBelop = 19000.0, satsAntall = 1.0),
+        Komponent(type = "Komponent 1", belop = 19000.0, satsType = "Støtte sats", satsBelop = 19000.0, satsAntall = 1.0),
     )
 }

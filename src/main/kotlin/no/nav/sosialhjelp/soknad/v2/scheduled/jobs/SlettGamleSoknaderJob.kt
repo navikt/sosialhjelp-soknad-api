@@ -1,37 +1,29 @@
-package no.nav.sosialhjelp.soknad.v2.scheduled
+package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
-import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
+import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
+import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.time.Duration.Companion.seconds
 
 @Component
 class SlettGamleSoknaderJob(
-    private val leaderElection: LeaderElection,
+    leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) {
+) : AbstractJob(jobName = "Sletter gamle soknader som ikke er sendt inn", leaderElection) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
-    suspend fun slettGamleSoknader() {
-        // TODO Skal gamle soknader beholde status OPPRETTET etter sletting - eller ha en annen status? (Eller fjernes)
-        runCatching {
-            if (leaderElection.isLeader()) {
-                withTimeoutOrNull(60.seconds) {
-                    val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
-                    if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
-                }
-                    ?: logger.error("Kunne ikke slette gamle søknader, tok for lang tid")
-            }
+    suspend fun slettGamleSoknader() =
+        doInJob {
+            soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+                .also { ids -> if (ids.isNotEmpty()) handleOldSoknadIds(ids) }
         }
-            .onFailure { logger.error("Feil ved sletting av gamle søknader", it) }
-    }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
         var deleted = 0

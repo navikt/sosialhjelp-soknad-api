@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 import kotlinx.coroutines.test.runTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SlettGammelMetadataJob
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

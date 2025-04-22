@@ -1,6 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.toDokumentasjonType
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType.HUSLEIEKONTRAKT
+import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType.SKATTEMELDING
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenter
 import no.nav.sosialhjelp.soknad.v2.okonomi.AvdragRenterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Belop
@@ -8,8 +11,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.BelopDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BoliglanInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.BruttoNetto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
-import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.ForventetDokumentasjonDto
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType.FORMUE_BRUKSKONTO
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType.VERDI_BOLIG
 import no.nav.sosialhjelp.soknad.v2.okonomi.GenericOkonomiInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -17,8 +20,13 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInntektDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.LonnsInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiskeOpplysningerDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
-import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANDRE_UTGIFTER
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANNET_BARN
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_ANNET_BO
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_BOLIGLAN
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType.UTGIFTER_BOLIGLAN_RENTER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +41,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Test
     fun `Hente okonomiske opplysninger skal returnere eksisterende data`() {
         Formue(
-            type = FormueType.FORMUE_BRUKSKONTO,
+            type = FORMUE_BRUKSKONTO,
             formueDetaljer =
                 OkonomiDetaljer(
                     listOf(Belop(belop = 2400.0)),
@@ -43,36 +51,56 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         doGet(
             uri = getUrl(soknad.id),
-            responseBodyClass = ForventetDokumentasjonDto::class.java,
+            responseBodyClass = OkonomiskeOpplysningerDto::class.java,
         )
             .also { dto ->
-                assertThat(dto.forventetDokumentasjon).hasSize(1)
-                assertThat(dto.forventetDokumentasjon.map { it.type }).containsOnly(FormueType.FORMUE_BRUKSKONTO)
+                assertThat(dto.opplysninger).hasSize(1)
+                assertThat(dto.opplysninger.map { it.type.opplysningType }).containsOnly(FORMUE_BRUKSKONTO)
+            }
+
+        okonomiService.getFormuer(soknad.id).filter { it.type == FORMUE_BRUKSKONTO }
+            .also { formuer -> assertThat(formuer).hasSize(1) }
+    }
+
+    @Test
+    fun `Hente okonomiske opplysninger skal kun returnere relevante data`() {
+        val relevantForOkonomiskeOpplysninger =
+            listOf(
+                FORMUE_BRUKSKONTO,
+                InntektType.JOBB,
+                UTGIFTER_BOLIGLAN,
+            )
+        val ikkeRelevanteOkonomiTyper = listOf(VERDI_BOLIG, UTGIFTER_BOLIGLAN_RENTER)
+        val andreDokTyper = listOf(HUSLEIEKONTRAKT, SKATTEMELDING)
+
+        relevantForOkonomiskeOpplysninger.forEach { okonomiService.addElementToOkonomi(soknad.id, it) }
+        ikkeRelevanteOkonomiTyper.forEach { okonomiService.addElementToOkonomi(soknad.id, it) }
+        andreDokTyper.forEach { dokRepository.save(Dokumentasjon(soknadId = soknad.id, type = it)) }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!
+            .also {
+                assertThat(it.formuer).hasSize(2)
+                assertThat(it.inntekter).hasSize(1)
+                assertThat(it.utgifter).hasSize(2)
+            }
+        dokRepository.findAllBySoknadId(soknad.id).also { assertThat(it).hasSize(5) }
+
+        doGet(
+            uri = getUrl(soknad.id),
+            responseBodyClass = OkonomiskeOpplysningerDto::class.java,
+        )
+            .also { dto ->
+                assertThat(dto.opplysninger)
+                    .hasSize(3)
+                    .allMatch { relevantForOkonomiskeOpplysninger.contains(it.type.opplysningType) }
+                    .noneMatch { ikkeRelevanteOkonomiTyper.contains(it.type.opplysningType) }
+                    .noneMatch { andreDokTyper.contains(it.type.opplysningType) }
             }
     }
 
     @Test
-    fun `FormueType uten forventet dokumentasjon genererer ikke forventet dokumentasjon`() {
-        Formue(
-            type = FormueType.VERDI_BOLIG,
-            formueDetaljer =
-                OkonomiDetaljer(
-                    listOf(Belop(belop = 2400.0)),
-                ),
-        )
-            .let { formue -> okonomi.copy(formuer = setOf(formue)) }
-            .let { okonomi -> okonomiRepository.save(okonomi) }
-
-        doGet(
-            uri = getUrl(soknad.id),
-            responseBodyClass = ForventetDokumentasjonDto::class.java,
-        )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).isEmpty() }
-    }
-
-    @Test
     fun `Oppdatere data skal lagres i databasen`() {
-        Formue(type = FormueType.FORMUE_BRUKSKONTO)
+        Formue(type = FORMUE_BRUKSKONTO)
             .also { formue -> okonomiService.addElementToOkonomi(soknad.id, formue) }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!
@@ -84,8 +112,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = FormueType.FORMUE_BRUKSKONTO,
-                    dokumentasjonLevert = true,
+                    type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(belop = 2400.0),
@@ -107,11 +134,10 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     }
 
     @Test
-    fun `Oppdatere OpplysningType som ikke finnes skal gi feil`() {
+    fun `Oppdatere type uten dokumentasjon skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                opplysningType = FormueType.FORMUE_BRUKSKONTO,
-                dokumentasjonLevert = true,
+                type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -126,21 +152,43 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             httpStatus = HttpStatus.NOT_FOUND,
             soknadId = soknad.id,
         )
-            .also { feilmelding ->
-                assertThat(feilmelding.id).isEqualTo(soknad.id.toString())
-            }
+    }
+
+    @Test
+    fun `Oppdatere ugyldig type skal gi feil`() {
+        val input =
+            GenericOkonomiInput(
+                type = HUSLEIEKONTRAKT.toDokumentasjonType(),
+                detaljer =
+                    listOf(
+                        BelopDto(belop = 2400.0),
+                        BelopDto(belop = 3000.0),
+                        BelopDto(belop = 1800.0),
+                    ),
+            )
+
+        doPutExpectError(
+            uri = getUrl(soknad.id),
+            requestBody = input,
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+            soknadId = soknad.id,
+        )
     }
 
     @Test
     fun `Andre utgifter med beskrivelse skal lagres pr okonomiske detalj`() {
+        Dokumentasjon(
+            soknadId = soknad.id,
+            type = UTGIFTER_ANDRE_UTGIFTER,
+        ).also { dokRepository.save(it) }
+
         val enAnnenUtgiftString = "en annen utgift"
         val enTredjeUtgiftString = "en tredje utgift"
 
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-                    dokumentasjonLevert = true,
+                    type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enAnnenUtgiftString, belop = ettBelop),
@@ -148,42 +196,26 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
                         ),
                 ),
         )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).hasSize(1) }
-            .forventetDokumentasjon.first().also { dokDto ->
-                assertThat(dokDto.type).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
-                assertThat(dokDto.dokumentasjonStatus).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-                assertThat(dokDto.detaljer)
-                    .hasSize(2)
-                    .anyMatch {
-                        (it as BelopDto).beskrivelse == enAnnenUtgiftString && it.belop == ettBelop
-                    }
-                    .anyMatch {
-                        (it as BelopDto).beskrivelse == enTredjeUtgiftString && it.belop == annetBelop
-                    }
+            .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
+            .opplysninger.first().also { okonoiskOpplysning ->
+                assertThat(okonoiskOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANDRE_UTGIFTER)
             }
-
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+                    .allMatch { it.type == UTGIFTER_ANDRE_UTGIFTER }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
                     .anyMatch { (it as Belop).beskrivelse == enAnnenUtgiftString && it.belop == ettBelop }
                     .anyMatch { (it as Belop).beskrivelse == enTredjeUtgiftString && it.belop == annetBelop }
             }
-
-        dokRepository.findAllBySoknadId(soknad.id).let { dokList ->
-            assertThat(dokList).hasSize(1)
-            assertThat(dokList.first().status).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-            assertThat(dokList.first().type).isEqualTo(UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
-        }
     }
 
     @Test
     fun `Andre boutgifter med beskrivelse skal lagres pr okonomiske detalj`() {
-        Utgift(type = UtgiftType.UTGIFTER_ANNET_BO).also {
+        Utgift(type = UTGIFTER_ANNET_BO).also {
             okonomiService.addElementToOkonomi(soknad.id, it)
         }
 
@@ -193,8 +225,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANNET_BO,
-                    dokumentasjonLevert = true,
+                    type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBoutgiftString, belop = ettBelop),
@@ -202,38 +233,27 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
                         ),
                 ),
         )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).hasSize(1) }
-            .forventetDokumentasjon.first().also { dokDto ->
-                assertThat(dokDto.dokumentasjonStatus).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-                assertThat(dokDto.type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
-                assertThat(dokDto.detaljer)
-                    .hasSize(2)
-                    .anyMatch { (it as BelopDto).beskrivelse == enBoutgiftString }
-                    .anyMatch { (it as BelopDto).beskrivelse == endaEnboutgiftString }
+            .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
+            .opplysninger.first().also { okOpplysning ->
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANNET_BO)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BO }
+                    .allMatch { it.type == UTGIFTER_ANNET_BO }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
                     .anyMatch { (it as Belop).beskrivelse == enBoutgiftString && it.belop == ettBelop }
                     .anyMatch { (it as Belop).beskrivelse == endaEnboutgiftString && it.belop == annetBelop }
             }
-
-        dokRepository.findAllBySoknadId(soknad.id).let { dokList ->
-            assertThat(dokList).hasSize(1)
-            assertThat(dokList.first().status).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-            assertThat(dokList.first().type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BO)
-        }
     }
 
     @Test
     fun `Andre barneutgifter med beskrivelse skal lagres pr okonomiske detalj`() {
-        Utgift(type = UtgiftType.UTGIFTER_ANNET_BARN).also {
+        Utgift(type = UTGIFTER_ANNET_BARN).also {
             okonomiService.addElementToOkonomi(soknad.id, it)
         }
 
@@ -243,8 +263,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 GenericOkonomiInput(
-                    opplysningType = UtgiftType.UTGIFTER_ANNET_BARN,
-                    dokumentasjonLevert = true,
+                    type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(beskrivelse = enBarneugiftString, belop = ettBelop),
@@ -252,33 +271,22 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
                         ),
                 ),
         )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).hasSize(1) }
-            .forventetDokumentasjon.first().also { dokDto ->
-                assertThat(dokDto.dokumentasjonStatus).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-                assertThat(dokDto.type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
-                assertThat(dokDto.detaljer)
-                    .hasSize(2)
-                    .anyMatch { (it as BelopDto).beskrivelse == enBarneugiftString }
-                    .anyMatch { (it as BelopDto).beskrivelse == endaEnBarneutgiftString }
+            .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
+            .opplysninger.first().also { okOpplysning ->
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_ANNET_BARN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_ANNET_BARN }
+                    .allMatch { it.type == UTGIFTER_ANNET_BARN }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
                     .anyMatch { (it as Belop).beskrivelse == enBarneugiftString && it.belop == ettBelop }
                     .anyMatch { (it as Belop).beskrivelse == endaEnBarneutgiftString && it.belop == annetBelop }
             }
-
-        dokRepository.findAllBySoknadId(soknad.id).let { dokList ->
-            assertThat(dokList).hasSize(1)
-            assertThat(dokList.first().status).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-            assertThat(dokList.first().type).isEqualTo(UtgiftType.UTGIFTER_ANNET_BARN)
-        }
     }
 
     @Test
@@ -288,18 +296,12 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         doPutInputAndReturnDto(
             input =
                 LonnsInput(
-                    dokumentasjonLevert = true,
                     detalj = LonnsInntektDto(brutto = ettBelop, netto = annetBelop),
                 ),
         )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).hasSize(1) }
-            .forventetDokumentasjon.first().also { dokDto ->
-                assertThat(dokDto.dokumentasjonStatus).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-                assertThat(dokDto.type).isEqualTo(InntektType.JOBB)
-                assertThat(dokDto.detaljer)
-                    .hasSize(1)
-                    .anyMatch { (it as LonnsInntektDto).brutto == ettBelop }
-                    .anyMatch { (it as LonnsInntektDto).netto == annetBelop }
+            .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
+            .opplysninger.first().also { okOpplysning ->
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(InntektType.JOBB)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter
@@ -313,60 +315,44 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
                     .anyMatch { (it as BruttoNetto).brutto == ettBelop }
                     .anyMatch { (it as BruttoNetto).netto == annetBelop }
             }
-
-        dokRepository.findAllBySoknadId(soknad.id).let { dokList ->
-            assertThat(dokList).hasSize(1)
-            assertThat(dokList.first().status).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-            assertThat(dokList.first().type).isEqualTo(InntektType.JOBB)
-        }
     }
 
     @Test
     fun `Boliglan skal lagres i db`() {
-        Utgift(type = UtgiftType.UTGIFTER_BOLIGLAN).also { okonomiService.addElementToOkonomi(soknad.id, it) }
+        Utgift(type = UTGIFTER_BOLIGLAN).also { okonomiService.addElementToOkonomi(soknad.id, it) }
 
         doPutInputAndReturnDto(
             input =
                 BoliglanInput(
-                    dokumentasjonLevert = true,
                     detaljer = listOf(AvdragRenterDto(avdrag = ettBelop, renter = annetBelop)),
                 ),
         )
-            .also { dto -> assertThat(dto.forventetDokumentasjon).hasSize(1) }
-            .forventetDokumentasjon.first().also { dokDto ->
-                assertThat(dokDto.dokumentasjonStatus).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-                assertThat(dokDto.type).isEqualTo(UtgiftType.UTGIFTER_BOLIGLAN)
-                assertThat(dokDto.detaljer)
-                    .hasSize(1)
-                    .anyMatch { (it as AvdragRenterDto).avdrag == ettBelop }
-                    .anyMatch { (it as AvdragRenterDto).renter == annetBelop }
+            .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
+            .opplysninger.first().also { okOpplysning ->
+                assertThat(okOpplysning.type.opplysningType).isEqualTo(UTGIFTER_BOLIGLAN)
             }
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter
             .also { utgifter ->
                 assertThat(utgifter.toList())
                     .hasSize(1)
-                    .allMatch { it.type == UtgiftType.UTGIFTER_BOLIGLAN }
+                    .allMatch { it.type == UTGIFTER_BOLIGLAN }
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
                     .anyMatch { (it as AvdragRenter).avdrag == ettBelop }
                     .anyMatch { (it as AvdragRenter).renter == annetBelop }
             }
-
-        dokRepository.findAllBySoknadId(soknad.id).let { dokList ->
-            assertThat(dokList).hasSize(1)
-            assertThat(dokList.first().status).isEqualTo(DokumentasjonStatus.LEVERT_TIDLIGERE)
-            assertThat(dokList.first().type).isEqualTo(UtgiftType.UTGIFTER_BOLIGLAN)
-        }
     }
 
     @Test
     fun `Bostotte hentet fra register skal ikke returneres`() {
+        // TODO
     }
 
     @Test
     fun `Informasjon om bostotte fra bruker skal vises`() {
+        // TODO
     }
 
     companion object {

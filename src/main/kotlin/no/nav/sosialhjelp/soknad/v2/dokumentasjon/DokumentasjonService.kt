@@ -17,7 +17,7 @@ interface DokumentasjonService {
     fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-    )
+    ): Dokumentasjon
 
     fun fjernForventetDokumentasjon(
         soknadId: UUID,
@@ -33,16 +33,17 @@ interface DokumentasjonService {
         type: OpplysningType,
     ): Boolean
 
-    fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        opplysningType: OpplysningType,
-        status: DokumentasjonStatus,
-    )
+    fun updateDokumentasjon(dokumentasjon: Dokumentasjon)
 
     fun opprettObligatoriskDokumentasjon(
         soknadId: UUID,
         soknadType: SoknadType,
     )
+
+    fun findDokumentasjonByType(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): Dokumentasjon?
 }
 
 interface DokumentRefService {
@@ -81,8 +82,8 @@ class DokumentasjonServiceImpl(
     override fun opprettDokumentasjon(
         soknadId: UUID,
         opplysningType: OpplysningType,
-    ) {
-        dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
+    ): Dokumentasjon {
+        return dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
             ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
 
@@ -112,16 +113,10 @@ class DokumentasjonServiceImpl(
     ): Boolean = findDokumentasjonForSoknad(soknadId).find { it.type == type }?.dokumenter?.isNotEmpty() ?: false
 
     @Transactional
-    override fun updateDokumentasjonStatus(
-        soknadId: UUID,
-        opplysningType: OpplysningType,
-        status: DokumentasjonStatus,
-    ) {
-        dokumentasjonRepository.findBySoknadIdAndType(soknadId, opplysningType)?.run {
-            if (this.status != status) {
-                copy(status = status).also { dokumentasjonRepository.save(it) }
-            }
-        } ?: error("Dokument finnes ikke")
+    override fun updateDokumentasjon(dokumentasjon: Dokumentasjon) {
+        dokumentasjonRepository.findBySoknadIdAndType(dokumentasjon.soknadId, dokumentasjon.type)
+            ?.also { dokumentasjonRepository.save(dokumentasjon) }
+            ?: error("Dokumentasjon finnes ikke")
     }
 
     @Transactional
@@ -139,6 +134,12 @@ class DokumentasjonServiceImpl(
             }
         }
     }
+
+    override fun findDokumentasjonByType(
+        soknadId: UUID,
+        type: OpplysningType,
+    ): Dokumentasjon? =
+        dokumentasjonRepository.findBySoknadIdAndType(soknadId, type)
 
     private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
         listOf(
