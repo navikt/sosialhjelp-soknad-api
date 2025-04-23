@@ -33,7 +33,7 @@ class KommuneInfoClient(
         return kommuneInfoWebClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
+            .header(AUTHORIZATION, BEARER + m2mToken)
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
@@ -42,18 +42,7 @@ class KommuneInfoClient(
             ?: emptyList()
     }
 
-    fun ping() {
-        kommuneInfoWebClient.options()
-            .uri(PATH_ALLE_KOMMUNEINFO)
-            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
-            .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-            .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-            .retrieve()
-            .bodyToMono<String>()
-            .block()
-    }
-
-    private fun getMaskinportenToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
+    private val m2mToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
     companion object {
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"

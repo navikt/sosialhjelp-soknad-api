@@ -11,19 +11,14 @@ import java.time.Duration
 
 @Component
 class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
-    @Cacheable(KommuneInfoCacheConfiguration.CACHE_NAME)
+    @Cacheable(KommuneInfoCacheConfiguration.CACHE_NAME, unless = "#result == null || #result.isEmpty()")
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
-        return hentKommuneInfoFraFiks()
+        return kommuneInfoClient.getAll()
             .associateBy { it.kommunenummer }
             .ifEmpty {
                 logger.error("hentAlleKommuneInfo - feiler mot Fiks og cache er tom.")
                 null
             }
-    }
-
-    private fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
-        return kommuneInfoClient.getAll()
-            .also { logger.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
     }
 
     companion object {
