@@ -17,11 +17,10 @@ class GeografiskTilknytningService(
     private val personIdService: PersonIdService,
 ) {
     @Cacheable(GTCacheConfiguration.CACHE_NAME, unless = "#result == null")
-    fun hentGeografiskTilknytning(soknadId: UUID): String? {
-        return personIdService.findPersonId(soknadId)
+    fun hentGeografiskTilknytning(soknadId: UUID): String? =
+        personIdService.findPersonId(soknadId)
             .let { personId -> geografiskTilknytningClient.hentGeografiskTilknytning(personId) }
             .let { dto -> bydelsnummerEllerKommunenummer(dto) }
-    }
 
     private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? =
         dto?.let {
