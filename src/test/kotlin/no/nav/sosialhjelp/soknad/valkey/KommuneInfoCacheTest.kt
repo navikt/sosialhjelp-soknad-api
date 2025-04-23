@@ -65,13 +65,15 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
         unmockkObject(CustomCacheErrorHandler)
     }
 
+    @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        cache.put(SimpleKey.EMPTY, createListOfKommuneInfo())
+        cache.put(SimpleKey.EMPTY, createListOfKommuneInfo().associateBy { it.kommunenummer })
 
         kommuneInfoService.hentAlleKommuneInfo()!!
+            .let { infoMap -> infoMap.values }
             .also { infos ->
                 assertThat(infos).hasSize(2)
-                assertThat(infos.values).anyMatch { it.kommunenummer == "0301" || it.kommunenummer == "9999" }
+                assertThat(infos).anyMatch { it.kommunenummer == "0301" || it.kommunenummer == "9999" }
             }
 
         cache.get(SimpleKey.EMPTY, Map::class.java)
@@ -83,6 +85,7 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
         verify(exactly = 0) { kommuneInfoClient.getAll() }
     }
 
+    @Test
     override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
@@ -102,6 +105,19 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
         verify(exactly = 1) { CustomCacheErrorHandler.handleCachePutError(any(), cache, SimpleKey.EMPTY, any()) }
         verify(exactly = 1) { cache.put(SimpleKey.EMPTY, any()) }
         unmockkObject(CustomCacheErrorHandler)
+    }
+
+    @Test
+    fun `Skal ikke lagre tom liste i cache`() {
+        every { kommuneInfoClient.getAll() } returns emptyList()
+
+        kommuneInfoService.hentAlleKommuneInfo()
+            .also { infos -> assertThat(infos).isNull() }
+
+        cache.get(SimpleKey.EMPTY, Map::class.java)
+            .also { infos -> assertThat(infos).isNull() }
+
+        verify(exactly = 1) { kommuneInfoClient.getAll() }
     }
 }
 
