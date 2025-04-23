@@ -26,28 +26,35 @@ class GeografiskTilknytningClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {
-    fun hentGeografiskTilknytning(personId: String): GeografiskTilknytningDto? {
-        try {
-            val response: String =
-                baseRequest
-                    .header(HEADER_TEMA, TEMA_KOM)
-                    .header(AUTHORIZATION, BEARER + tokenXtoken())
-                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(personId)))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
-                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentGeografiskTilknytning - response null?")
+    fun hentGeografiskTilknytning(personId: String): GeografiskTilknytningDto? =
+        runCatching {
+            logger.info("Henter Geografisk Tilknytning fra PDL")
 
-            val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
-            pdlResponse.checkForPdlApiErrors()
-            return pdlResponse.data.hentGeografiskTilknytning
-        } catch (e: PdlApiException) {
-            throw e
-        } catch (e: Exception) {
-            logger.error("Kall til PDL feilet (hentGeografiskTilknytning)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            doRequest(personId)
+                ?.let { response -> parse<HentGeografiskTilknytningDto>(response) }
+                ?.also { pdlResponse -> pdlResponse.checkForPdlApiErrors() }
+                ?.data?.hentGeografiskTilknytning
+                ?: throw PdlApiException("Noe feilet mot PDL - hentGeografiskTilknytning - response null?")
         }
-    }
+            .getOrElse { e ->
+                when (e) {
+                    is PdlApiException -> throw e
+                    else -> {
+                        logger.error("Kall til PDL feilet (hentGeografiskTilknytning)")
+                        throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+                    }
+                }
+            }
+
+    private fun doRequest(personId: String) =
+        baseRequest
+            .header(HEADER_TEMA, TEMA_KOM)
+            .header(AUTHORIZATION, BEARER + tokenXtoken())
+            .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(personId)))
+            .retrieve()
+            .bodyToMono<String>()
+            .retryWhen(pdlRetry)
+            .block()
 
     private fun tokenXtoken() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 

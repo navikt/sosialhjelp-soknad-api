@@ -21,7 +21,7 @@ class KodeverkStore(private val client: KodeverkClient) {
 
 private fun KodeverkDto.toMap(): Map<String, String?> =
     betydninger
-        .map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRÅK_NORSK_BOKMÅL)?.term }
+        .map { it.key to it.value.firstOrNull()?.beskrivelser?.get(KodeverkClient.SPRAK_NORSK_BOKMAL)?.term }
         .toMap()
 
 @Configuration
