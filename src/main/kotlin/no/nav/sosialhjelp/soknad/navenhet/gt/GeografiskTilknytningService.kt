@@ -1,14 +1,14 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
+import java.time.Duration
 import java.util.UUID
 
 @Component
@@ -16,7 +16,7 @@ class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient,
     private val personIdService: PersonIdService,
 ) {
-    @Cacheable(GTCacheConfiguration.CACHE_NAME, unless = "#result == null")
+    @Cacheable(GTCacheConfig.CACHE_NAME, unless = "#result == null")
     fun hentGeografiskTilknytning(soknadId: UUID): String? =
         personIdService.findPersonId(soknadId)
             .let { personId -> geografiskTilknytningClient.hentGeografiskTilknytning(personId) }
@@ -38,17 +38,9 @@ class GeografiskTilknytningService(
 }
 
 @Configuration
-class GTCacheConfiguration : SoknadApiCacheConfiguration {
-    override fun getCacheName() = CACHE_NAME
-
-    override fun getConfig(): RedisCacheConfiguration =
-        RedisCacheConfiguration
-            .defaultCacheConfig()
-            .entryTtl(java.time.Duration.ofHours(EN_TIME))
-            .disableCachingNullValues()
-
+class GTCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_TIME) {
     companion object {
         const val CACHE_NAME = "geografisk-tilknytning"
-        const val EN_TIME = 1L
+        private val EN_TIME = Duration.ofHours(1)
     }
 }

@@ -2,16 +2,15 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
 class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
-    @Cacheable(KommuneInfoCacheConfiguration.CACHE_NAME, unless = "#result == null || #result.isEmpty()")
+    @Cacheable(KommuneInfoCacheConfig.CACHE_NAME, unless = "#result == null || #result.isEmpty()")
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
         return kommuneInfoClient.getAll()
             .associateBy { it.kommunenummer }
@@ -27,17 +26,9 @@ class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
 }
 
 @Configuration
-class KommuneInfoCacheConfiguration : SoknadApiCacheConfiguration {
-    override fun getCacheName() = CACHE_NAME
-
-    override fun getConfig(): RedisCacheConfiguration =
-        RedisCacheConfiguration
-            .defaultCacheConfig()
-            .entryTtl(Duration.ofDays(EN_DAG))
-            .disableCachingNullValues()
-
+class KommuneInfoCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_DAG) {
     companion object {
         const val CACHE_NAME = "kommuneinfo"
-        const val EN_DAG = 1L
+        private val EN_DAG = Duration.ofDays(1)
     }
 }

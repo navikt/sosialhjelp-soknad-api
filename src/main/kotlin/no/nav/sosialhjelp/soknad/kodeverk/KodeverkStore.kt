@@ -1,12 +1,11 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfiguration.Companion.CACHE_NAME
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig.Companion.CACHE_NAME
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
 import java.time.Duration
 
@@ -25,18 +24,9 @@ private fun KodeverkDto.toMap(): Map<String, String?> =
         .toMap()
 
 @Configuration
-class KodeverkCacheConfiguration(
+class KodeverkCacheConfig(
     @Value("\${digisos.cache.kodeverk.time-to-live}") private val kodeverkTTL: Long,
-) : SoknadApiCacheConfiguration {
-    override fun getCacheName() = CACHE_NAME
-
-    override fun getConfig(): RedisCacheConfiguration {
-        return RedisCacheConfiguration
-            .defaultCacheConfig()
-            .entryTtl(Duration.ofSeconds(kodeverkTTL))
-            .disableCachingNullValues()
-    }
-
+) : SoknadApiCacheConfig(CACHE_NAME, Duration.ofSeconds(kodeverkTTL)) {
     companion object {
         const val CACHE_NAME: String = "kodeverk"
     }

@@ -13,6 +13,7 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.serializer.SerializationException
 import java.lang.RuntimeException
+import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
 @EnableCaching
@@ -20,12 +21,12 @@ class CacheConfig : CachingConfigurer {
     @Bean
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
-        cacheConfigs: List<SoknadApiCacheConfiguration>,
+        cacheConfigs: List<SoknadApiCacheConfig>,
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-            .withInitialCacheConfigurations(cacheConfigs.associate { it.getCacheName() to it.getConfig() })
+            .withInitialCacheConfigurations(cacheConfigs.associate { it.cacheName to it.getConfig() })
             .enableStatistics()
             .build()
 
@@ -69,8 +70,13 @@ object CustomCacheErrorHandler : CacheErrorHandler {
     }
 }
 
-interface SoknadApiCacheConfiguration {
-    fun getCacheName(): String
-
-    fun getConfig(): RedisCacheConfiguration
+abstract class SoknadApiCacheConfig(
+    val cacheName: String,
+    private val timeToLive: Duration = Duration.ofHours(1),
+) {
+    open fun getConfig(): RedisCacheConfiguration =
+        RedisCacheConfiguration
+            .defaultCacheConfig()
+            .disableCachingNullValues()
+            .entryTtl(timeToLive)
 }

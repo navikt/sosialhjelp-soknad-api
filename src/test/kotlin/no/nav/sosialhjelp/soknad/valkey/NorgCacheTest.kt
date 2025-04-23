@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
 import no.nav.sosialhjelp.soknad.navenhet.GeografiskTilknytning
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetDto
-import no.nav.sosialhjelp.soknad.navenhet.NorgCacheConfiguration
+import no.nav.sosialhjelp.soknad.navenhet.NorgCacheConfig
 import no.nav.sosialhjelp.soknad.navenhet.NorgClient
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
 
-class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
+class NorgCacheTest : AbstractCacheTest(NorgCacheConfig.CACHE_NAME) {
     @MockkBean
     private lateinit var norgClient: NorgClient
 
@@ -75,9 +75,9 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         val cache: Cache = spyk()
         val gt = "0301"
-        every { cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(NorgCacheConfig.CACHE_NAME) } returns cache
         every { cache.get(gt) } throws RuntimeException("Something wrong")
-        every { cache.name } returns NorgCacheConfiguration.CACHE_NAME
+        every { cache.name } returns NorgCacheConfig.CACHE_NAME
         mockkObject(CustomCacheErrorHandler)
 
         val dto = NavEnhetDto("Navenhet", "12341234")
@@ -115,7 +115,7 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfiguration.CACHE_NAME) {
 
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
-        every { cacheManager.getCache(NorgCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(NorgCacheConfig.CACHE_NAME) } returns cache
         every { cache.put(any(), any()) } throws RuntimeException("Something wrong")
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns dto
 

@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoCacheConfiguration
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoCacheConfig
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
 import org.springframework.cache.interceptor.SimpleKey
 
-class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CACHE_NAME) {
+class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfig.CACHE_NAME) {
     @Autowired
     private lateinit var kommuneInfoService: KommuneInfoService
 
@@ -48,7 +48,7 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
-        every { cacheManager.getCache(KommuneInfoCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(KommuneInfoCacheConfig.CACHE_NAME) } returns cache
         every { cache.get(SimpleKey.EMPTY) } throws RuntimeException("Noe feilet")
         every { kommuneInfoClient.getAll() } returns createListOfKommuneInfo()
 
@@ -69,8 +69,7 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
         cache.put(SimpleKey.EMPTY, createListOfKommuneInfo().associateBy { it.kommunenummer })
 
-        kommuneInfoService.hentAlleKommuneInfo()!!
-            .let { infoMap -> infoMap.values }
+        kommuneInfoService.hentAlleKommuneInfo()!!.values
             .also { infos ->
                 assertThat(infos).hasSize(2)
                 assertThat(infos).anyMatch { it.kommunenummer == "0301" || it.kommunenummer == "9999" }
@@ -89,7 +88,7 @@ class KommuneInfoCacheTest : AbstractCacheTest(KommuneInfoCacheConfiguration.CAC
     override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
-        every { cacheManager.getCache(KommuneInfoCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(KommuneInfoCacheConfig.CACHE_NAME) } returns cache
         every { cache.put(SimpleKey.EMPTY, any()) } throws RuntimeException("Noe feilet")
         every { kommuneInfoClient.getAll() } returns createListOfKommuneInfo()
 
