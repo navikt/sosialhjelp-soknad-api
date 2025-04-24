@@ -71,6 +71,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import no.nav.sosialhjelp.soknad.v2.situasjonsendring.Situasjonsendring
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Integrasjonstatus
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategori
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategorier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -383,7 +385,13 @@ fun opprettUtdanning(
 fun opprettBegrunnelse(
     hvorforSoke: String = "Trenger penger",
     hvaSokesOm: String = "Jeg søker om penger",
-): Begrunnelse = Begrunnelse(hvorforSoke, hvaSokesOm)
+    kategorier: Set<Kategori> = emptySet(),
+): Begrunnelse =
+    Begrunnelse(
+        hvorforSoke = hvorforSoke,
+        hvaSokesOm = hvaSokesOm,
+        kategorier = Kategorier(definerte = kategorier),
+    )
 
 fun opprettBosituasjon(
     botype: Botype = Botype.EIER,

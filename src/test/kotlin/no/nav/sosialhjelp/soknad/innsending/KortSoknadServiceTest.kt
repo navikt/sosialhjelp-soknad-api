@@ -7,17 +7,13 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonHendelse
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonSoknadsStatus
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
-import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter.convertToOffsettDateTimeUTCString
 import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -259,29 +255,6 @@ class KortSoknadServiceTest {
         assertTrue(result)
         verify(exactly = 1) { digisosApiService.getInnsynsfilForSoknad(any(), any(), any()) }
     }
-
-    @Test
-    fun `Humanify skal returnere tom streng hvis ingen kategorier`() {
-        val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("12345678901", true)
-                .apply { soknad.data.begrunnelse.hvaSokesOm = "[]" }
-
-        jsonInternalSoknad.humanifyHvaSokesOm()
-
-        assertThat(jsonInternalSoknad.soknad.data.begrunnelse.hvaSokesOm).isEqualTo("")
-    }
-
-    @Test
-    fun `Hva sokes om er vanlig tekst`() {
-        val tekstStreng = "jeg soker noe"
-        val jsonInternalSoknad =
-            createEmptyJsonInternalSoknad("12345678901", true)
-                .apply { soknad.data.begrunnelse.hvaSokesOm = tekstStreng }
-
-        jsonInternalSoknad.humanifyHvaSokesOm()
-
-        assertThat(jsonInternalSoknad.soknad.data.begrunnelse.hvaSokesOm).isEqualTo(tekstStreng)
-    }
 }
 
 private fun createDigisosSak(
@@ -333,29 +306,3 @@ private fun createUpcomingUtbetaling(
         .withForfallsdato(convertToOffsettDateTimeUTCString(forfallsdato))
         .withStatus(status)
         .withUtbetalingsdato(convertToOffsettDateTimeUTCString(utbetalingsdato))
-
-internal fun JsonInternalSoknad.humanifyHvaSokesOm() {
-    val hvaSokesOm =
-        soknad
-            ?.data
-            ?.begrunnelse
-            ?.hvaSokesOm
-
-    val humanifiedText = hvaSokesOm?.let { BegrunnelseUtils.jsonToHvaSokesOm(it) }
-
-    val result =
-        when {
-            hvaSokesOm == null -> ""
-            // Hvis ingen kategorier er valgt
-            hvaSokesOm == "[]" -> ""
-            // Hvis det er "vanlig" tekst i feltet
-            humanifiedText == null -> hvaSokesOm
-            // Hvis det er json-tekst
-            else -> humanifiedText
-        }
-
-    soknad
-        ?.data
-        ?.begrunnelse
-        ?.hvaSokesOm = result
-}

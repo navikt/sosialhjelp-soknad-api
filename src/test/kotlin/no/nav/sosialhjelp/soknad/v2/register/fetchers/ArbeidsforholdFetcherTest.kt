@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.arbeid.AaregClient
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonClient
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository

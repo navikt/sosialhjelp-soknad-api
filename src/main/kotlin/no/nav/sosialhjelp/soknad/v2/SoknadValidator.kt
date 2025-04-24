@@ -12,6 +12,8 @@ class SoknadValidator(
 ) {
     fun validateAndReturnMottaker(soknadId: UUID): NavEnhet {
         return adresseService.findMottaker(soknadId)
+            // TODO Skal det også kreves flere felter på dette tidspunktet?
+            // ... hvis Oslo ikke får mer info, feiler det i mottaket
             ?.also {
                 logger.info(
                     "Skal sendes til kommune ${it.kommunenummer}) med " +

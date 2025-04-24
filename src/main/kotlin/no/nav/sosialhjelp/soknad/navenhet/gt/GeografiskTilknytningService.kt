@@ -1,31 +1,46 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
-import org.slf4j.LoggerFactory.getLogger
+import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import java.time.Duration
+import java.util.UUID
 
 @Component
 class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient,
+    private val personIdService: PersonIdService,
 ) {
-    fun hentGeografiskTilknytning(ident: String): String? {
-        val geografiskTilknytningDto = geografiskTilknytningClient.hentGeografiskTilknytning(ident)
-        return bydelsnummerEllerKommunenummer(geografiskTilknytningDto)
-    }
+    @Cacheable(GTCacheConfig.CACHE_NAME, unless = "#result == null")
+    fun hentGeografiskTilknytning(soknadId: UUID): String? =
+        personIdService.findPersonId(soknadId)
+            .let { personId -> geografiskTilknytningClient.hentGeografiskTilknytning(personId) }
+            .let { dto -> bydelsnummerEllerKommunenummer(dto) }
 
-    private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? {
-        if (dto != null && GtType.BYDEL == dto.gtType) {
-            return dto.gtBydel
+    private fun bydelsnummerEllerKommunenummer(dto: GeografiskTilknytningDto?): String? =
+        dto?.let {
+            when (it.gtType) {
+                GtType.BYDEL -> dto.gtBydel
+                GtType.KOMMUNE -> dto.gtKommune
+                else -> null
+            }
         }
-        if (dto != null && GtType.KOMMUNE == dto.gtType) {
-            return dto.gtKommune
-        }
-        log.warn("GeografiskTilknytningDto er ikke av type Bydel eller Kommune -> returnerer null")
-        return null
-    }
+            .also { if (it == null) logger.warn("GeografiskTilknytningDto er ikke Bydel eller Kommune.") }
 
     companion object {
-        private val log = getLogger(GeografiskTilknytningService::class.java)
+        private val logger by logger()
+    }
+}
+
+@Configuration
+class GTCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_TIME) {
+    companion object {
+        const val CACHE_NAME = "geografisk-tilknytning"
+        private val EN_TIME = Duration.ofHours(1)
     }
 }

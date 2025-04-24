@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
@@ -24,16 +25,13 @@ class KommuneInfoClient(
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {
-    private val kommuneInfoWebClient: WebClient =
-        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-            .baseUrl(digisosApiEndpoint)
-            .build()
-
     fun getAll(): List<KommuneInfo> {
+        logger.info("Henter KommuneInfo fra FIKS")
+
         return kommuneInfoWebClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
+            .header(AUTHORIZATION, BEARER + m2mToken)
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
@@ -42,20 +40,15 @@ class KommuneInfoClient(
             ?: emptyList()
     }
 
-    fun ping() {
-        kommuneInfoWebClient.options()
-            .uri(PATH_ALLE_KOMMUNEINFO)
-            .header(AUTHORIZATION, BEARER + getMaskinportenToken())
-            .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-            .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-            .retrieve()
-            .bodyToMono<String>()
-            .block()
-    }
+    private val kommuneInfoWebClient: WebClient =
+        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+            .baseUrl(digisosApiEndpoint)
+            .build()
 
-    private fun getMaskinportenToken(): String = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
+    private val m2mToken get() = texasService.getToken(IdentityProvider.M2M, "ks:fiks")
 
     companion object {
+        private val logger by logger()
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"
     }
 }

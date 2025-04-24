@@ -6,12 +6,12 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.resilience4j.retry.annotation.Retry
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.json.Jackson2JsonDecoder
@@ -41,12 +41,14 @@ class KodeverkClient(
         token: String,
     ): KodeverkDto =
         runCatching {
+            logger.info("Henter Kodeverk fra Kodeverk-Api")
+
             webClient
                 .get()
                 .uri { builder ->
                     builder
                         .path("/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger")
-                        .queryParam("spraak", SPRÅK_NORSK_BOKMÅL)
+                        .queryParam("spraak", SPRAK_NORSK_BOKMAL)
                         .build(kodeverksnavn)
                 }
                 .headers { headers ->
@@ -60,8 +62,8 @@ class KodeverkClient(
         }
             .onFailure { e ->
                 when (e) {
-                    is WebClientResponseException -> log.warn("Kodeverk - ${e.statusCode}", e)
-                    else -> log.error("Kodeverk - noe uventet feilet", e)
+                    is WebClientResponseException -> logger.warn("Kodeverk - ${e.statusCode}", e)
+                    else -> logger.error("Kodeverk - noe uventet feilet", e)
                 }
             }
             .getOrThrow()
@@ -81,10 +83,10 @@ class KodeverkClient(
             .build()
 
     companion object {
-        private val log = getLogger(KodeverkClient::class.java)
+        private val logger by logger()
 
         // Per 2024-03-18 var det ingen verdier for andre språk enn norsk bokmål i kodeverkene vi bruker
-        const val SPRÅK_NORSK_BOKMÅL = "nb"
+        const val SPRAK_NORSK_BOKMAL = "nb"
     }
 }
 

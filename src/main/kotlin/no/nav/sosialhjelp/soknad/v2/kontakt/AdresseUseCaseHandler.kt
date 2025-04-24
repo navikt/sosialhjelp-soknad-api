@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
 import org.springframework.stereotype.Component
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class AdresseUseCaseHandler(
@@ -41,7 +40,7 @@ class AdresseUseCaseHandler(
                 AdresseValg.MIDLERTIDIG -> oldAdresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-                ?.let { valgtAdresse -> navEnhetService.getNavEnhet(personId(), valgtAdresse, adresseValg) }
+                ?.let { valgtAdresse -> navEnhetService.getNavEnhet(soknadId, valgtAdresse, adresseValg) }
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, oldAdresser, oldMottaker, mottaker) }
@@ -53,10 +52,14 @@ class AdresseUseCaseHandler(
     ): KommuneInfo {
         return navEnhet.kommunenummer?.let {
             KommuneInfo(
-                isDigisosKommune = kommuneInfoService.kanMottaSoknader(it),
+                isDigisosKommune = kanMottaSoknader(it),
                 kommunenavn = getKommunenavn(soknadId, navEnhet.kommunenavn, it),
             )
         } ?: error("NavEnhet ${navEnhet.enhetsnavn} mangler kommunenummer")
+    }
+
+    private fun kanMottaSoknader(kommunenummer: String): Boolean {
+        return kommuneInfoService.hentAlleKommuneInfo()?.get(kommunenummer)?.kanMottaSoknader ?: return false
     }
 
     private fun getKommunenavn(

@@ -1,157 +1,34 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MED_MANGLER
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_VIA_FDA
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.valkey.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
-import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
-import org.slf4j.LoggerFactory.getLogger
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
-import java.nio.charset.StandardCharsets.UTF_8
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
+import java.time.Duration
 
 @Component
-class KommuneInfoService(
-    private val kommuneInfoClient: KommuneInfoClient,
-    private val valkeyService: ValkeyService,
-    private val kodeverkService: KodeverkService,
-) {
-    fun kanMottaSoknader(kommunenummer: String): Boolean {
-        return hentFraCacheEllerServer(kommunenummer)?.kanMottaSoknader ?: false
-    }
-
-    fun harMidlertidigDeaktivertMottak(kommunenummer: String): Boolean {
-        return hentFraCacheEllerServer(kommunenummer)?.harMidlertidigDeaktivertMottak ?: false
-    }
-
-    fun getBehandlingskommune(
-        kommunenummer: String,
-        kommunenavnFraAdresseforslag: String?,
-    ): String? {
-        return hentFraCacheEllerServer(kommunenummer)?.behandlingsansvarlig
-            ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
-            ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, kommunenavnFraAdresseforslag)
-    }
-
-    fun getBehandlingskommune(kommunenummer: String): String? {
-        return getBehandlingskommune(
-            kommunenummer,
-            kommunenavnFraAdresseforslag = kodeverkService.getKommunenavn(kommunenummer),
-        )
-    }
-
+class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
+    @Cacheable(KommuneInfoCacheConfig.CACHE_NAME, unless = "#result == null || #result.isEmpty()")
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
-        if (skalBrukeCache()) {
-            val cachedMap = valkeyService.getKommuneInfos()
-            if (!cachedMap.isNullOrEmpty()) {
-                return cachedMap
-            }
-            log.info("hentAlleKommuneInfo - cache er tom.")
-        }
-        val kommuneInfoList = hentKommuneInfoFraFiks()
-        oppdaterCache(kommuneInfoList)
-
-        val kommuneInfoMap = kommuneInfoList.associateBy { it.kommunenummer }
-
-        if (kommuneInfoMap.isEmpty()) {
-            val cachedMap = valkeyService.getKommuneInfos()
-            if (!cachedMap.isNullOrEmpty()) {
-                log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.")
-                return cachedMap
-            }
-            log.error("hentAlleKommuneInfo - feiler mot Fiks og cache er tom.")
-            return null
-        }
-        return kommuneInfoMap
-    }
-
-    private fun hentFraCacheEllerServer(kommunenummer: String): KommuneInfo? {
-        return hentAlleKommuneInfo()?.get(kommunenummer)
-    }
-
-    private fun skalBrukeCache(): Boolean {
-        return valkeyService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)
-            ?.let { LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME).plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now()) }
-            ?: false
-    }
-
-    // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    fun getKommuneStatus(
-        kommunenummer: String,
-        withLogging: Boolean = false,
-    ): KommuneStatus {
-        val kommuneInfoMap = hentAlleKommuneInfo()
-        val kommuneInfo = hentFraCacheEllerServer(kommunenummer)
-        if (withLogging) {
-            kommuneInfo?.let {
-                log.info(
-                    "Kommuneinfo for $kommunenummer: " +
-                        ", kanMottaSoknader: ${it.kanMottaSoknader} " +
-                        ", kanOppdatereStatus: ${it.kanOppdatereStatus} " +
-                        ", harMidlertidigDeaktivertMottak: ${it.harMidlertidigDeaktivertMottak} " +
-                        ", harMidlertidigDeaktivertOppdateringer: ${it.harMidlertidigDeaktivertOppdateringer}  " +
-                        ", behandlingsansvarlig: ${it.behandlingsansvarlig} " +
-                        ", harNksTilgang: ${it.harNksTilgang} " +
-                        ", kommunenummer: ${it.kommunenummer} ",
-                )
-            }
-        }
-        return when {
-            kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
-            kommuneInfo == null -> MANGLER_KONFIGURASJON
-            !kommuneInfo.kanMottaSoknader -> HAR_KONFIGURASJON_MED_MANGLER
-            kommuneInfo.harMidlertidigDeaktivertMottak -> SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD
-            else -> SKAL_SENDE_SOKNADER_VIA_FDA
-        }
-    }
-
-    private fun oppdaterCache(kommuneInfoList: List<KommuneInfo>?) {
-        try {
-            if (!kommuneInfoList.isNullOrEmpty()) {
-                valkeyService.setex(
-                    KOMMUNEINFO_CACHE_KEY,
-                    valkeyObjectMapper.writeValueAsBytes(kommuneInfoList),
-                    KOMMUNEINFO_CACHE_SECONDS,
-                )
-                valkeyService.set(
-                    KOMMUNEINFO_LAST_POLL_TIME_KEY,
-                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(UTF_8),
-                )
-            }
-        } catch (e: JsonProcessingException) {
-            log.warn("Noe galt skjedde ved mapping av kommuneinfolist for caching i valkey", e)
-        }
-    }
-
-    private fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
         return kommuneInfoClient.getAll()
-            .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
+            .associateBy { it.kommunenummer }
+            .ifEmpty {
+                logger.error("hentAlleKommuneInfo - feiler mot Fiks og cache er tom.")
+                null
+            }
     }
 
     companion object {
-        private val log = getLogger(KommuneInfoService::class.java)
-        private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 10
+        private val logger by logger()
+    }
+}
 
-        private val DEFAULT_KOMMUNEINFO =
-            KommuneInfo(
-                kommunenummer = "",
-                kanMottaSoknader = false,
-                kanOppdatereStatus = false,
-                harMidlertidigDeaktivertMottak = false,
-                harMidlertidigDeaktivertOppdateringer = false,
-                kontaktpersoner = null,
-                harNksTilgang = false,
-                behandlingsansvarlig = null,
-            )
+@Configuration
+class KommuneInfoCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_DAG) {
+    companion object {
+        const val CACHE_NAME = "kommuneinfo"
+        private val EN_DAG = Duration.ofDays(1)
     }
 }

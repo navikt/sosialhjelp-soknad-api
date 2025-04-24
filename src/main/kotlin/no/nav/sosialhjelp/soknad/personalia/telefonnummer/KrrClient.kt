@@ -5,73 +5,68 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
+import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.Forbidden
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
+import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class KrrClient(
     @Value("\${krr_url}") private val krrUrl: String,
     @Value("\${krr_audience}") private val krrAudience: String,
-    @Value("\${krr_scope}") private val krrScope: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
 
+    fun getDigitalKontaktinformasjon(personId: String): DigitalKontaktinformasjon? =
+        runCatching {
+            logger.info("Henter Digital kontaktinformasjon fra KRR")
+            doRequest(personId)
+        }
+            .getOrElse { e ->
+                when (e) {
+                    is Unauthorized -> {
+                        logger.warn("Krr - 401 Unauthorized - ${e.message}")
+                        throw e
+                    }
+                    is Forbidden -> {
+                        logger.warn("Krr - 403 Forbidden - ${e.message}")
+                        throw e
+                    }
+                    is NotFound -> {
+                        logger.info("Krr - 404 Not Found")
+                        null
+                    }
+                    else -> throw TjenesteUtilgjengeligException("Krr - Noe uventet feilet", e)
+                }
+            }
+
+    private fun doRequest(personId: String): DigitalKontaktinformasjon? =
+        webClient
+            .get()
+            .uri("/rest/v1/person")
+            .header(AUTHORIZATION, BEARER + tokenxToken)
+            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+            .header(HEADER_NAV_PERSONIDENT, personId)
+            .retrieve()
+            .bodyToMono<DigitalKontaktinformasjon>()
+            .block()
+
     private val tokenxToken: String
         get() = texasService.exchangeToken(IdentityProvider.TOKENX, target = krrAudience)
 
-    fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? =
-        try {
-            webClient
-                .get()
-                .uri("/rest/v1/person")
-                .header(AUTHORIZATION, BEARER + tokenxToken)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                .header(HEADER_NAV_PERSONIDENT, ident)
-                .retrieve()
-                .bodyToMono<DigitalKontaktinformasjon>()
-                .block()
-        } catch (e: WebClientResponseException.Unauthorized) {
-            log.warn("Krr - 401 Unauthorized - ${e.message}")
-            null
-        } catch (e: WebClientResponseException.Forbidden) {
-            log.warn("Krr - 403 Forbidden - ${e.message}")
-            null
-        } catch (e: WebClientResponseException.NotFound) {
-            log.info("Krr - 404 Not Found")
-            null
-        } catch (e: Exception) {
-            log.error("Krr - Noe uventet feilet", e)
-            throw TjenesteUtilgjengeligException("Krr", e)
-        }
-
-    fun ping() {
-        webClient
-            .get()
-            .uri("/rest/ping")
-            .accept(APPLICATION_JSON)
-            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-            .header(AUTHORIZATION, BEARER + azureAdToken)
-            .retrieve()
-            .bodyToMono<Any>()
-            .block()
-    }
-
-    private val azureAdToken get() = texasService.getToken(IdentityProvider.AZURE_AD, krrScope)
-
     companion object {
-        private val log by logger()
+        private val logger by logger()
     }
 }

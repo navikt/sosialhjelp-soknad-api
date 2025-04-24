@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.integrationtest.KontaktIntegrationTest.Companion.createKommuneInfos
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
@@ -61,7 +62,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
         every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
-        every { kommuneInfoService.kanMottaSoknader(any()) } returns true
+        every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
         every { digisosService.getSoknaderForUser(any()) } returns emptyList()

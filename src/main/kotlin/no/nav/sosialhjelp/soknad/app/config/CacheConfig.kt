@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CachingConfigurer
@@ -14,6 +13,7 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.serializer.SerializationException
 import java.lang.RuntimeException
+import java.time.Duration
 
 @Configuration(proxyBeanMethods = false)
 @EnableCaching
@@ -21,20 +21,19 @@ class CacheConfig : CachingConfigurer {
     @Bean
     fun cacheManager(
         redisConnectionFactory: RedisConnectionFactory,
-        cacheConfigs: List<SoknadApiCacheConfiguration>,
-        @Value("\${digisos.cache.kodeverk.time-to-live}") kodeverkTTL: Long,
+        cacheConfigs: List<SoknadApiCacheConfig>,
     ): CacheManager =
         RedisCacheManager
             .builder(redisConnectionFactory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
-            .withInitialCacheConfigurations(cacheConfigs.associate { it.getCacheName() to it.getConfig() })
+            .withInitialCacheConfigurations(cacheConfigs.associate { it.cacheName to it.getConfig() })
             .enableStatistics()
             .build()
 
-    override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler()
+    override fun errorHandler(): CacheErrorHandler = CustomCacheErrorHandler
 }
 
-class CustomCacheErrorHandler : CacheErrorHandler {
+object CustomCacheErrorHandler : CacheErrorHandler {
     private val log by logger()
 
     override fun handleCacheGetError(
@@ -71,8 +70,13 @@ class CustomCacheErrorHandler : CacheErrorHandler {
     }
 }
 
-interface SoknadApiCacheConfiguration {
-    fun getCacheName(): String
-
-    fun getConfig(): RedisCacheConfiguration
+abstract class SoknadApiCacheConfig(
+    val cacheName: String,
+    private val timeToLive: Duration = Duration.ofHours(1),
+) {
+    open fun getConfig(): RedisCacheConfiguration =
+        RedisCacheConfiguration
+            .defaultCacheConfig()
+            .disableCachingNullValues()
+            .entryTtl(timeToLive)
 }

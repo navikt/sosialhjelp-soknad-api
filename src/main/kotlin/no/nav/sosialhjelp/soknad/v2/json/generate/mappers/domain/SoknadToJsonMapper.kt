@@ -12,6 +12,8 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategori
+import no.nav.sosialhjelp.soknad.v2.soknad.Kategorier
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.springframework.core.Ordered
@@ -70,7 +72,7 @@ class SoknadToJsonMapper(
 
         private fun Begrunnelse.toJsonBegrunnelse(): JsonBegrunnelse =
             JsonBegrunnelse()
-                .withHvaSokesOm(hvaSokesOm)
+                .withHvaSokesOm(handleKategorier())
                 .withHvorforSoke(hvorforSoke)
                 .withKilde(JsonKildeBruker.BRUKER)
     }
@@ -81,3 +83,40 @@ private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
         true -> JsonData.Soknadstype.KORT
         false -> JsonData.Soknadstype.STANDARD
     }
+
+private fun Begrunnelse.handleKategorier(): String =
+    if (kategorier.isNotEmpty()) KategorierStringBuilder(kategorier).writeString() else hvaSokesOm
+
+private fun Kategorier.isNotEmpty() = definerte.isNotEmpty() || annet.isNotEmpty()
+
+private class KategorierStringBuilder(kategorier: Kategorier) {
+    private val nodhjelpList = kategorier.definerte.filter { it.isNodhjelp() }
+    private val resten: List<Kategori> = kategorier.definerte.filter { !it.isNodhjelp() }
+    private val annet: String? = kategorier.annet.let { it.ifEmpty { null } }
+
+    fun writeString(): String {
+        return """
+            |${if (nodhjelpList.isNotEmpty()) writeList("Nødhjelp", nodhjelpList) else "" }
+            |${if (resten.isNotEmpty()) writeList("Jeg søker om penger til", resten) else "" }
+            |${annet?.let { "Annet:\n $annet " } ?: "" }
+            """.trimMargin()
+    }
+
+    private fun writeList(
+        type: String,
+        list: List<Kategori>,
+    ): String {
+        return "$type: ${list.joinToString(", ") { it.mapToString() }}"
+    }
+}
+
+private fun Kategori.mapToString(): String {
+    return when (this) {
+        Kategori.HUSLEIE -> "Husleie"
+        Kategori.LIVSOPPHOLD -> "Livsopphold"
+        Kategori.STROM_OPPVARMING -> "Strom og oppvarming"
+        Kategori.NODHJELP_IKKE_BOSTED -> "Har ikke bosted"
+        Kategori.NODHJELP_IKKE_MAT -> "Har ikke mat"
+        Kategori.NODHJELP_IKKE_STROM -> "Har ikke strøm"
+    }
+}

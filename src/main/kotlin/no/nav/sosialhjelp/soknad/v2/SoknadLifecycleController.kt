@@ -3,9 +3,12 @@ package no.nav.sosialhjelp.soknad.v2
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -24,6 +27,7 @@ import java.util.UUID
 @RequestMapping("/soknad", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoknadLifecycleController(
     private val soknadLifecycleService: SoknadLifecycleUseCaseHandler,
+    private val soknadMetadataService: SoknadMetadataService,
 ) {
     @PostMapping("/create")
     fun createSoknad(
@@ -63,6 +67,11 @@ class SoknadLifecycleController(
     ) {
         soknadLifecycleService.cancelSoknad(soknadId = soknadId, referer)
     }
+
+    @GetMapping("/{soknadId}/isKort")
+    fun isKortSoknad(
+        @PathVariable soknadId: String,
+    ): Boolean = soknadMetadataService.getSoknadType(UUID.fromString(soknadId)) == SoknadType.KORT
 }
 
 data class StartSoknadResponseDto(
