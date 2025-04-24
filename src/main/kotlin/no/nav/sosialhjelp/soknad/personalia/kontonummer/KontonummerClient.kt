@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
@@ -11,10 +9,6 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
-import no.nav.sosialhjelp.soknad.valkey.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.valkey.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
-import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -32,25 +26,21 @@ interface KontonummerClient {
 class KontonummerClientImpl(
     @Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
     @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
-    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     override fun getKontonummer(ident: String): KontoDto? {
-        hentKontonummerFraCache(ident)?.let { return it }
-
         return try {
             webClient.get()
                 .uri(kontoregisterUrl + "/api/borger/v1/hent-aktiv-konto")
-                .header(AUTHORIZATION, BEARER + tokenXtoken(kontoregisterAudience))
+                .header(AUTHORIZATION, BEARER + tokenX)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
-                ?.also { lagreKontonummerTilCache(ident, it) }
         } catch (e: Unauthorized) {
             log.warn("Kontoregister konto  - 401 Unauthorized - ${e.message}")
             null
@@ -63,30 +53,7 @@ class KontonummerClientImpl(
         }
     }
 
-    private fun tokenXtoken(audience: String): String {
-        return runBlocking {
-            texasService.exchangeToken(IdentityProvider.TOKENX, target = audience)
-        }
-    }
-
-    private fun hentKontonummerFraCache(ident: String): KontoDto? {
-        return valkeyService.get(KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident, KontoDto::class.java) as? KontoDto
-    }
-
-    private fun lagreKontonummerTilCache(
-        ident: String,
-        kontoDto: KontoDto,
-    ) {
-        try {
-            valkeyService.setex(
-                KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident,
-                valkeyObjectMapper.writeValueAsBytes(kontoDto),
-                CACHE_30_MINUTES_IN_SECONDS,
-            )
-        } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av kontoDto til valkey", e)
-        }
-    }
+    private val tokenX get() = texasService.exchangeToken(IdentityProvider.TOKENX, kontoregisterAudience)
 
     companion object {
         private val log = getLogger(KontonummerClientImpl::class.java)
