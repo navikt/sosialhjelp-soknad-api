@@ -1,18 +1,17 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfiguration
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
 class NorgService(private val norgClient: NorgClient) {
-    @Cacheable(NorgCacheConfiguration.CACHE_NAME, unless = "#result == null")
+    @Cacheable(NorgCacheConfig.CACHE_NAME, unless = "#result == null")
     fun getEnhetForGt(gt: String): NavEnhet? {
         return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
             .onSuccess { dto -> if (dto != null) logger.info("Hentet NavEnhet fra Norg: $dto") }
@@ -35,18 +34,10 @@ value class GeografiskTilknytning(val value: String) {
 }
 
 @Configuration
-class NorgCacheConfiguration : SoknadApiCacheConfiguration {
-    override fun getCacheName() = CACHE_NAME
-
-    override fun getConfig(): RedisCacheConfiguration =
-        RedisCacheConfiguration
-            .defaultCacheConfig()
-            .entryTtl(Duration.ofSeconds(ETT_DOGN))
-            .disableCachingNullValues()
-
+class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_DOGN) {
     companion object {
         const val CACHE_NAME = "norg"
-        private const val ETT_DOGN = 60 * 60L * 24
+        private val ETT_DOGN = Duration.ofDays(1)
     }
 }
 

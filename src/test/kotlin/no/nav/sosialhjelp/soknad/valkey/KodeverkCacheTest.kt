@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
 import no.nav.sosialhjelp.soknad.kodeverk.BeskrivelseDto
 import no.nav.sosialhjelp.soknad.kodeverk.BetydningDto
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfiguration
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkCacheConfig
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkClient
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkDto
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
 import java.time.LocalDate
 
-class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfiguration.CACHE_NAME) {
+class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfig.CACHE_NAME) {
     @MockkBean
     private lateinit var kodeverkClient: KodeverkClient
 
@@ -43,7 +43,7 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfiguration.CACHE_NAM
     @Test
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         val cache: Cache = spyk()
-        every { cacheManager.getCache(KodeverkCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(KodeverkCacheConfig.CACHE_NAME) } returns cache
         every { cache.get(any()) } throws RuntimeException("Something wrong")
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
         mockkObject(CustomCacheErrorHandler)
@@ -72,7 +72,7 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfiguration.CACHE_NAM
     override fun `Hvis put til cache feiler skal fortsatt innhentet verdi returneres`() {
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
-        every { cacheManager.getCache(KodeverkCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(KodeverkCacheConfig.CACHE_NAME) } returns cache
         every { cache.put(KOMMUNER.value, any<Map<String, String?>>()) } throws RuntimeException("Something wrong")
         every { kodeverkClient.hentKodeverk(KOMMUNER.value) } returns createKodeverkDtoForKommuner()
 

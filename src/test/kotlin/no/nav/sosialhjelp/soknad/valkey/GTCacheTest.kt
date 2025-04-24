@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.CustomCacheErrorHandler
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.navenhet.gt.GTCacheConfiguration
+import no.nav.sosialhjelp.soknad.navenhet.gt.GTCacheConfig
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
 import java.util.UUID
 
-class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
+class GTCacheTest : AbstractCacheTest(GTCacheConfig.CACHE_NAME) {
     @Autowired
     private lateinit var gtService: GeografiskTilknytningService
 
@@ -55,7 +55,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
         val kommunenummer = "0301"
 
         runCatching {
-            cacheManager.getCache(GTCacheConfiguration.CACHE_NAME)!!.put(soknadId, kommunenummer)
+            cacheManager.getCache(GTCacheConfig.CACHE_NAME)!!.put(soknadId, kommunenummer)
         }
             .onFailure {
                 logger.error("Feil ved test", it)
@@ -94,7 +94,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
     override fun `Skal hente fra client hvis cache er utilgjengelig eller feiler`() {
         mockkObject(CustomCacheErrorHandler)
         val cache: Cache = spyk()
-        every { cacheManager.getCache(GTCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(GTCacheConfig.CACHE_NAME) } returns cache
         every { cache.get(any()) } throws RuntimeException("Something wrong")
 
         val kommunenummer = "0301"
@@ -162,7 +162,7 @@ class GTCacheTest : AbstractCacheTest(GTCacheConfiguration.CACHE_NAME) {
         mockkObject(CustomCacheErrorHandler)
         val soknadId = UUID.randomUUID()
         val cache: Cache = spyk()
-        every { cacheManager.getCache(GTCacheConfiguration.CACHE_NAME) } returns cache
+        every { cacheManager.getCache(GTCacheConfig.CACHE_NAME) } returns cache
         every { cache.put(soknadId, any<GeografiskTilknytningDto>()) } throws RuntimeException("Something wrong")
 
         val kommunenummer = "0301"

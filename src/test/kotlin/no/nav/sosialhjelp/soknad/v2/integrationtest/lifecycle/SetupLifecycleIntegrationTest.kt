@@ -22,7 +22,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService
+import no.nav.sosialhjelp.soknad.personalia.telefonnummer.KrrService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.dokumenterSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.kommunenummerSlot
@@ -59,7 +59,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     protected lateinit var organisasjonService: OrganisasjonService
 
     @MockkBean
-    protected lateinit var mobiltelefonService: MobiltelefonService
+    protected lateinit var krrService: KrrService
 
     @MockkBean
     protected lateinit var navUtbetalingerService: UtbetalingerFraNavService
@@ -94,7 +94,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns createArbeidsforholdAnswer()
         every { skattbarInntektService.hentUtbetalinger(any()) } returns createSkattbarInntektAnswer()
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
-        every { mobiltelefonService.hent(any()) } returns "44553366"
+        every { krrService.getMobilnummer(any()) } returns "44553366"
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
         every {
             digisosApiV2Client.krypterOgLastOppFiler(
