@@ -24,8 +24,6 @@ class SendingTilKommuneUtilgjengeligException(message: String?) : SosialhjelpSok
 
 class SoknadenHarNedetidException(message: String?) : SosialhjelpSoknadApiException(message)
 
-class SoknadLaastException(message: String?) : RuntimeException(message)
-
 class SoknadUnderArbeidIkkeFunnetException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class AuthorizationException(message: String?) : SosialhjelpSoknadApiException(message)

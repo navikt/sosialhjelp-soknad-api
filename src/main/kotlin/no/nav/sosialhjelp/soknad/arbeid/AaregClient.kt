@@ -87,15 +87,6 @@ class AaregClient(
         }
     }
 
-    fun ping() {
-        webClient.options()
-            .uri("/ping")
-            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-            .retrieve()
-            .bodyToMono<Any>()
-            .block()
-    }
-
     companion object {
         private val log by logger()
         private const val A_ORDNINGEN = "A_ORDNINGEN"

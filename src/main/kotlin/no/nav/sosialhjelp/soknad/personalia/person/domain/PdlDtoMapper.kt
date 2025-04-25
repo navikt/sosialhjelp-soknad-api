@@ -252,7 +252,7 @@ class PdlDtoMapper(
                     it.vegadresse?.let { adr -> mapToVegadresse(adr) },
                     it.matrikkeladresse?.let { adr -> mapToMatrikkeladresse(adr) },
                 )
-            } ?: return null
+            }
     }
 
     private fun mapToOppholdssadresse(

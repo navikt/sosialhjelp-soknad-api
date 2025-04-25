@@ -70,6 +70,4 @@ data class Periode(
 
 enum class Aktoertype {
     PERSON,
-    ORGANISASJON,
-    SAMHANDLER,
 }

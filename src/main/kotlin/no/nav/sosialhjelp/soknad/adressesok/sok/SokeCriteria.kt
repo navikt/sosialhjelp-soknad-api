@@ -26,8 +26,6 @@ enum class SearchRule(
 ) {
     EQUALS("equals"),
     CONTAINS("contains"),
-    FUZZY("fuzzy"),
-    FROM("from"),
     WILDCARD("wildcard"),
 }
 
@@ -44,5 +42,4 @@ data class SortBy(
 
 enum class Direction {
     ASC,
-    DESC,
 }

@@ -65,7 +65,7 @@ class SoknadLifecycleHandlerImpl(
 
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId, token) }
             .onSuccess {
-                prometheusMetricsService.reportSendt(it.isKortSoknad, it.navEnhet.kommunenavn)
+                prometheusMetricsService.reportSendt(it.isKortSoknad)
 
                 prometheusMetricsService.reportSoknadMottaker(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),

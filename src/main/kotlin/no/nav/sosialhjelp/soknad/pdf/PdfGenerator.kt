@@ -36,10 +36,6 @@ class PdfGenerator {
         ClassPathResource(BOLD).inputStream.use {
             PDType0Font.load(document, it)
         } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
-    private val fontKursiv: PDFont =
-        ClassPathResource(KURSIV).inputStream.use {
-            PDType0Font.load(document, it)
-        } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
 
     private val xmp = XMPMetadata()
     private val pdfaid = XMPSchemaPDFAId(xmp)
@@ -106,10 +102,6 @@ class PdfGenerator {
         addParagraph(text, fontRegular, FONT_PLAIN_SIZE.toFloat(), MARGIN)
     }
 
-    fun skrivTekstKursiv(text: String?) {
-        addParagraph(text, fontKursiv, FONT_PLAIN_SIZE.toFloat(), MARGIN)
-    }
-
     fun skrivTekstMedInnrykk(
         text: String?,
         innrykk: Int,
@@ -119,34 +111,6 @@ class PdfGenerator {
 
     fun skrivTekstBold(tekst: String?) {
         addParagraph(tekst, fontBold, FONT_PLAIN_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH1(tekst: String?) {
-        addParagraph(tekst, fontRegular, FONT_H1_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH1Bold(tekst: String?) {
-        addParagraph(tekst, fontBold, FONT_H1_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH2(tekst: String?) {
-        addParagraph(tekst, fontRegular, FONT_H2_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH2Bold(tekst: String?) {
-        addParagraph(tekst, fontBold, FONT_H2_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH3(tekst: String?) {
-        addParagraph(tekst, fontRegular, FONT_H3_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH3Bold(tekst: String?) {
-        addParagraph(tekst, fontBold, FONT_H3_SIZE.toFloat(), MARGIN)
-    }
-
-    fun skrivH4(tekst: String?) {
-        addParagraph(tekst, fontRegular, FONT_H4_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH4Bold(tekst: String?) {
@@ -233,7 +197,7 @@ class PdfGenerator {
         font: PDFont,
         fontSize: Float,
     ): List<String> {
-        var text = inputText
+        val text = inputText
         val lines: MutableList<String> = ArrayList()
         if (text == null) {
             return lines
@@ -312,27 +276,20 @@ class PdfGenerator {
 
     companion object {
         const val MARGIN = 40
-        const val INNRYKK_1 = 50
         const val INNRYKK_2 = 60
-        const val INNRYKK_3 = 70
         const val INNRYKK_4 = 80
 
         private const val REGULAR = "/fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf"
-        private const val KURSIV = "/fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf"
         private const val BOLD = "/fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf"
 
         const val FONT_PLAIN_SIZE = 12
         const val FONT_H1_SIZE = 20
-        const val FONT_H2_SIZE = 18
-        const val FONT_H3_SIZE = 16
         const val FONT_H4_SIZE = 14
 
         val MEDIA_BOX: PDRectangle = PDPage(PDRectangle.A4).mediaBox
         val WIDTH_OF_CONTENT_COLUMN: Float = PDPage(PDRectangle.A4).mediaBox.width - MARGIN * 2
 
         private const val DEFAULT_USER_SPACE_UNIT_DPI = 72
-        private const val MM_TO_UNITS = 1 / (10 * 2.54f) * DEFAULT_USER_SPACE_UNIT_DPI
-        const val PAGE_WIDTH = 210 * MM_TO_UNITS
         const val LEADING_PERCENTAGE = 1.5f
 
         const val BASIC_LATIN_START = 0x0020

@@ -53,7 +53,6 @@ enum class Barnebidrag {
     BETALER,
     MOTTAR,
     BEGGE,
-    INGEN,
 }
 
 enum class Sivilstatus {

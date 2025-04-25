@@ -277,18 +277,6 @@ fun opprettKontakt(
     navEnhet: NavEnhet = opprettNavEnhet(),
 ): Kontakt = Kontakt(soknadId, telefonnummer, adresser, navEnhet)
 
-fun opprettAdresser(
-    midlertidigAdresse: Adresse = opprettMidlertidigAdresse(),
-    folkeregistrertAdresse: Adresse = opprettFolkeregistrertAdresse(),
-    brukerAdresse: Adresse = opprettMatrikkelAdresse(),
-): Adresser =
-    Adresser(
-        adressevalg = AdresseValg.FOLKEREGISTRERT,
-        midlertidig = midlertidigAdresse,
-        folkeregistrert = folkeregistrertAdresse,
-        fraBruker = brukerAdresse,
-    )
-
 fun opprettMatrikkelAdresse(
     kommunenummer: String = "5432",
     gaardsnummer: String = "231",
@@ -519,11 +507,3 @@ fun opprettDokumenter(dokumentIds: List<UUID>): Set<DokumentRef> =
             )
         }
         .toSet()
-
-fun createBostotteSak(beskrivelse: String? = null) =
-    BostotteSak(
-        dato = LocalDate.now(),
-        status = BostotteStatus.UNDER_BEHANDLING,
-        beskrivelse = beskrivelse,
-        vedtaksstatus = null,
-    )

@@ -17,12 +17,6 @@ import java.util.UUID
 
 @Repository
 interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID> {
-    @Query("SELECT * FROM bekreftelse WHERE okonomi = :soknadId AND type = :type")
-    fun findBekreftelse(
-        soknadId: UUID,
-        type: BekreftelseType,
-    ): Bekreftelse?
-
     @Modifying
     @Transactional
     @Query("INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) VALUES(:soknadId, :type, :tidspunkt, :verdi)")

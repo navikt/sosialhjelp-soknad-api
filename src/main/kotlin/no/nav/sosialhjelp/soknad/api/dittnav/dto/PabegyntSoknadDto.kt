@@ -14,8 +14,3 @@ class PabegyntSoknadDto(
     val sistOppdatert: String,
     val isAktiv: Boolean,
 )
-
-data class MarkerPabegyntSoknadSomLestDto(
-    val eventId: String,
-    val grupperingsId: String,
-)

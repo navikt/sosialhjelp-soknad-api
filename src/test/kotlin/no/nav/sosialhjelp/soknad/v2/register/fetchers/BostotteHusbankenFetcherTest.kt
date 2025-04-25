@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.SamtykkeService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.register.AbstractOkonomiRegisterDataTest
 import no.nav.sosialhjelp.soknad.v2.register.defaultResponseForHusbankenClient
-import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,9 +21,6 @@ import org.springframework.data.repository.findByIdOrNull
 class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     @Autowired
     private lateinit var fetcher: BostotteHusbankenFetcher
-
-    @Autowired
-    private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
     @Autowired
     private lateinit var samtykkeService: SamtykkeService

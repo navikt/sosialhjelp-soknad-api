@@ -27,9 +27,6 @@ abstract class AbstractPersonDataFetcherTest : AbstractRegisterDataTest() {
     @Autowired
     protected lateinit var fetchPerson: PersonDataFetcher
 
-    @Autowired
-    protected lateinit var kontoFetcher: KontonummerFetcher
-
     @MockkBean
     protected lateinit var hentPersonClient: HentPersonClient
 

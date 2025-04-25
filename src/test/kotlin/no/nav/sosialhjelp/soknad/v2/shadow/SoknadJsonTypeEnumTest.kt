@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.shadow
 
-import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
-import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.okonomi.Formue
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -12,14 +10,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.junit.jupiter.api.Test
 
 class SoknadJsonTypeEnumTest {
-    @Test
-    fun `SoknadJsonTyper fra filformat skal gi SoknadJsonType`() {
-        val type1 = SoknadJsonTypeEnum.getSoknadJsonType(SoknadJsonTyper.VERDI_ANNET)
-        val type2 = SoknadJsonTypeEnum.getSoknadJsonType(SoknadJsonTyper.FORMUE_LIVSFORSIKRING)
-
-        val a = 4
-    }
-
     val listOfInntekter: MutableList<Inntekt> = mutableListOf()
     val listOfUtgift: MutableList<Utgift> = mutableListOf()
     val listOfFormue: MutableList<Formue> = mutableListOf()
@@ -39,7 +29,6 @@ class SoknadJsonTypeEnumTest {
                 }
             }
         }
-        val a = 4
     }
 
     private fun createInntekt(opplysningType: InntektType) {
