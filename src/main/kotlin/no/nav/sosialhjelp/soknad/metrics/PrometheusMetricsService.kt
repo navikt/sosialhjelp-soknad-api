@@ -2,9 +2,7 @@ package no.nav.sosialhjelp.soknad.metrics
 
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.Timer
 import org.springframework.stereotype.Component
-import java.util.concurrent.TimeUnit
 
 @Component
 class PrometheusMetricsService(
@@ -19,16 +17,6 @@ class PrometheusMetricsService(
     private val sendtSoknadDigisosApiCounter = Counter.builder("sendt_soknad_digisosapi_counter")
 
     private val feiletSendingMedDigisosApiCounter = Counter.builder("feilet_sending_digisosapi_counter")
-
-    private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
-
-    private val innsendtVedleggMetric = Counter.builder("vedlegg_sendt_med_soknad_counter")
-
-    fun reportInnsendingTid(antallSekunder: Long) {
-        soknadInnsendingTidTimer
-            .register(meterRegistry)
-            .record(antallSekunder, TimeUnit.SECONDS)
-    }
 
     fun reportStartSoknad() {
         startSoknadCounter
@@ -45,7 +33,6 @@ class PrometheusMetricsService(
 
     fun reportSendt(
         kort: Boolean,
-        kommunenavn: String?,
     ) {
         sendtSoknadDigisosApiCounter
             .tag("kortSoknad", kort.toString())
@@ -65,16 +52,6 @@ class PrometheusMetricsService(
             .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
-    }
-
-    fun reportAntallVedleggSendtInn(
-        fiksDigisosId: String,
-        antallVedlegg: Int,
-    ) {
-        innsendtVedleggMetric
-            .tag("fiksDigisosId", fiksDigisosId)
-            .register(meterRegistry)
-            .increment(antallVedlegg.toDouble())
     }
 
     companion object {

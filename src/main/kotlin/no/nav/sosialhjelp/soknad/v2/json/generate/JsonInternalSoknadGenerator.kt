@@ -8,8 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -36,8 +34,6 @@ class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
     private val soknadService: SoknadService,
 ) {
-    private val logger: Logger = LoggerFactory.getLogger(JsonInternalSoknadGenerator::class.java)
-
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
         val soknad = soknadService.findOrError(soknadId)
         return JsonInternalSoknad()
@@ -56,29 +52,10 @@ class JsonInternalSoknadGenerator(
             }.also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
-    fun copyAndMerge(
-        soknadId: String,
-        original: JsonInternalSoknad,
-    ): JsonInternalSoknad =
-        copyJsonInternalSoknad(original)
-            .apply {
-                mappers.forEach { it.mapToJson(UUID.fromString(soknadId), this) }
-            }.also {
-                runCatching {
-                    JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it))
-                }.onFailure {
-                    logger.warn("Feil i validering av json", it)
-                }
-            }
-
-    private fun copyJsonInternalSoknad(jsonSoknad: JsonInternalSoknad) = toObject(toJson(jsonSoknad))
-
     private companion object {
         private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
         private fun toJson(jsonInternalSoknad: JsonInternalSoknad) = objectMapper.writeValueAsString(jsonInternalSoknad)
-
-        private fun toObject(json: String) = objectMapper.readValue(json, JsonInternalSoknad::class.java)
     }
 }
 

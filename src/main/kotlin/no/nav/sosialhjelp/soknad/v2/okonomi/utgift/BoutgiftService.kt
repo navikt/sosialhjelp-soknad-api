@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
-import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonStatusService
 import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -28,7 +27,6 @@ interface BoutgiftService {
 @Service
 class BoutgiftServiceImpl(
     private val okonomiService: OkonomiService,
-    private val integrasjonService: IntegrasjonStatusService,
     private val integrasjonstatusRepository: IntegrasjonstatusRepository,
 ) : BoutgiftService {
     override fun getBoutgifter(soknadId: UUID): Set<Utgift>? {

@@ -9,15 +9,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
 import reactor.util.retry.RetryBackoffSpec
 import java.time.Duration
@@ -26,8 +22,6 @@ abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
     private val baseurl: String,
 ) {
-    private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
-
     protected val pdlMapper: ObjectMapper =
         jacksonObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -44,18 +38,6 @@ abstract class PdlClient(
 
     protected val pdlRetry: RetryBackoffSpec =
         Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
-
-    fun ping() {
-        pdlWebClient.options()
-            .uri(baseurl)
-            .header(HEADER_CALL_ID, callId)
-            .retrieve()
-            .onStatus({ it.value() != 200 }) {
-                Mono.error(RuntimeException("PDL - ping feiler: ${it.statusCode()}"))
-            }
-            .bodyToMono<String>()
-            .block()
-    }
 
     protected val baseRequest: WebClient.RequestBodySpec
         get() =

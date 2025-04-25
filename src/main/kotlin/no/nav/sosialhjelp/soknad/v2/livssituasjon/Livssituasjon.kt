@@ -59,19 +59,11 @@ fun LocalDate.toIsoString(): String = this.format(DateTimeFormatter.ISO_LOCAL_DA
 
 enum class Studentgrad {
     HELTID,
-    DELTID,
 }
 
 enum class Botype {
     EIER,
     LEIER,
     KOMMUNAL,
-    INGEN,
-    INSTITUSJON,
-    KRISESENTER,
-    FENGSEL,
-    VENNER,
-    FORELDRE,
-    FAMILIE,
     ANNET,
 }

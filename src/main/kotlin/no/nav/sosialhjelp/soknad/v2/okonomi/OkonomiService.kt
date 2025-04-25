@@ -31,18 +31,6 @@ class OkonomiService(
     @Transactional(readOnly = true)
     fun getBostotteSaker(soknadId: UUID): List<BostotteSak> = findOkonomi(soknadId)?.bostotteSaker ?: emptyList()
 
-    @Transactional(readOnly = true)
-    fun findDetaljerOrNull(
-        soknadId: UUID,
-        type: OkonomiOpplysningType,
-    ): List<OkonomiDetalj>? {
-        return when (type) {
-            is InntektType -> getInntekter(soknadId).find { it.type == type }?.inntektDetaljer?.detaljer
-            is UtgiftType -> getUtgifter(soknadId).find { it.type == type }?.utgiftDetaljer?.detaljer
-            is FormueType -> getFormuer(soknadId).find { it.type == type }?.formueDetaljer?.detaljer
-        }
-    }
-
     @Transactional
     fun updateBekreftelse(
         soknadId: UUID,

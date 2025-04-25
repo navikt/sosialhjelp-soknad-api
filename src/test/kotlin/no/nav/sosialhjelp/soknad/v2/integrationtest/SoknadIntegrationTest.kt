@@ -82,7 +82,5 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     companion object {
         private fun createUrl() = "/soknad/create"
-
-        private fun sendUrl(soknadId: UUID) = "/soknad/$soknadId/send"
     }
 }

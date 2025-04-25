@@ -48,7 +48,6 @@ class ValkeyConfig(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(ValkeyConfig::class.java)
         private const val TIMEOUT_SECONDS: Long = 1
     }
 }

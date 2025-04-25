@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 
 @Component
 class MineSakerProxy(private val metadataService: SoknadMetadataService) {
@@ -19,11 +17,6 @@ class MineSakerProxy(private val metadataService: SoknadMetadataService) {
                     sistEndret = it.tidspunkt.sendtInn?.toString() ?: "",
                 )
             }
-    }
-
-    private fun LocalDateTime?.toTimestamp(): String {
-        return this?.let { TimestampConverter.convertToOffsettDateTimeUTCString(this) }
-            ?: error("Tidspunkt er null")
     }
 
     companion object {

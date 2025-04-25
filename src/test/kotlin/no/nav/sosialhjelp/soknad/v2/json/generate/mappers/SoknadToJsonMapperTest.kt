@@ -69,9 +69,6 @@ private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {
 private fun JsonInternalSoknad.assertKategorier(kategorier: Kategorier) {
     assertThat(soknad.data.begrunnelse).isNotNull
     assertThat(soknad.data.begrunnelse.hvaSokesOm).isNotNull()
-    soknad.data.begrunnelse.hvaSokesOm.also { hvaSokesOm ->
-//        kategorier.sett.forEach { kategori -> assertThat(hvaSokesOm).contains(kategori.key) }
-    }
 }
 
 private fun createKategorier(

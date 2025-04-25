@@ -82,13 +82,4 @@ class StaticSubjectHandlerImpl : SubjectHandler {
     fun setUser(user: String) {
         this.user = user
     }
-
-    fun setFakeToken(fakeToken: String) {
-        this.token = fakeToken
-    }
-
-    fun reset() {
-        this.user = DEFAULT_USER
-        this.token = DEFAULT_TOKEN
-    }
 }

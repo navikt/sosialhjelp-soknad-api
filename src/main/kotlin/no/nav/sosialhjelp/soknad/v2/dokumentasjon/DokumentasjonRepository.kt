@@ -33,13 +33,6 @@ fun DokumentasjonRepository.removeDokumentFromDokumentasjon(
         ?.updateDokumentasjon()
         ?.let { dokumentasjon -> save(dokumentasjon) }
 
-private fun DokumentasjonRepository.findDokumentasjonForDokument(
-    soknadId: UUID,
-    dokumentId: UUID,
-): Dokumentasjon =
-    findAllBySoknadId(soknadId).find { dokumentasjon -> dokumentasjon.hasDokument(dokumentId) }
-        ?: error("Dokument finnes ikke på noe Dokumentasjon")
-
 private fun DokumentasjonRepository.findDokumentasjonForDokumentOrNull(
     soknadId: UUID,
     dokumentId: UUID,

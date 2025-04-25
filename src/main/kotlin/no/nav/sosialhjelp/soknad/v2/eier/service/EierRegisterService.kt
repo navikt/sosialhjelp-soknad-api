@@ -53,7 +53,7 @@ class EierRegisterService(
     }
 
     private fun resolveOppholdstillatelse(eier: Eier) {
-        if (eier.nordiskBorger == null || eier.nordiskBorger == false) {
+        if (eier.nordiskBorger == null || !eier.nordiskBorger) {
             dokumentasjonService.opprettDokumentasjon(
                 soknadId = eier.soknadId,
                 opplysningType = AnnenDokumentasjonType.OPPHOLDSTILLATELSE,

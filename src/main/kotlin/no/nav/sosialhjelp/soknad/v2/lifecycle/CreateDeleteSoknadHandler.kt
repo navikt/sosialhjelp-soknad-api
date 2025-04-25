@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -84,12 +83,6 @@ class CreateDeleteSoknadHandler(
             AnnenDokumentasjonType.SKATTEMELDING,
             UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
         )
-
-    private fun hasMellomlagredeDokumenter(dto: MellomlagringDto): Boolean {
-        dto.mellomlagringMetadataList
-            ?.let { if (it.isNotEmpty()) return true }
-        return false
-    }
 
     companion object {
         private val logger by logger()
