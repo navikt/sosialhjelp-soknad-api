@@ -59,6 +59,7 @@ fun LocalDate.toIsoString(): String = this.format(DateTimeFormatter.ISO_LOCAL_DA
 
 enum class Studentgrad {
     HELTID,
+    DELTID,
 }
 
 enum class Botype {
