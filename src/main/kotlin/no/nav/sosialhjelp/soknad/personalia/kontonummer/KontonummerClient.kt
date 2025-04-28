@@ -34,7 +34,7 @@ class KontonummerClientImpl(
     override fun getKontonummer(ident: String): KontoDto? {
         return try {
             webClient.get()
-                .uri(kontoregisterUrl + "/api/borger/v1/hent-aktiv-konto")
+                .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + tokenX)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .retrieve()

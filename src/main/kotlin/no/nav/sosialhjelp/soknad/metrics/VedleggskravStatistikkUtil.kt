@@ -46,13 +46,6 @@ object VedleggskravStatistikkUtil {
         }
     }
 
-    fun genererOgLoggVedleggskravStatistikk(
-        vedleggList: List<VedleggMetadata>,
-    ) {
-        val vedleggStatistikk = genererVedleggskravStatistikk(vedleggList)
-        log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
-    }
-
     fun genererVedleggskravStatistikk(
         vedleggList: List<VedleggMetadata>,
     ): VedleggskravStatistikk {

@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.BoutgifterDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarBoutgifterInput
 import no.nav.sosialhjelp.soknad.v2.okonomi.utgift.HarIkkeBoutgifterInput
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.IntegrasjonstatusRepository
 import no.nav.sosialhjelp.soknad.v2.soknad.Soknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -19,9 +18,6 @@ import java.util.UUID
 class BoutgiftIntegrasjonTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var okonomiService: OkonomiService
-
-    @Autowired
-    private lateinit var integrasjonstatusRepository: IntegrasjonstatusRepository
 
     @Test
     fun `Hente boutgifter skal returnere lagrede data`() {

@@ -1,6 +1,7 @@
 
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
@@ -160,7 +161,7 @@ version = "18.1.0-SNAPSHOT"
 description = "sosialhjelp-soknad-api"
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "21"
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
 }
 
 testing {

@@ -46,11 +46,7 @@ class InntektSkattetatenController(
 private fun Inntekt.toInntektFraOrganisasjonDtos(): List<InntektFraOrganisasjonDto> {
     return inntektDetaljer.detaljer
         .map {
-            if (it is Utbetaling) {
-                it
-            } else {
-                throw IllegalStateException("Feil Detaljtype for inntektDetaljer: ${it::class}")
-            }
+            it as? Utbetaling ?: throw IllegalStateException("Feil Detaljtype for inntektDetaljer: ${it::class}")
         }
         .sortedByDescending { it.periodeFom }
         .groupBy { it.periodeFom }

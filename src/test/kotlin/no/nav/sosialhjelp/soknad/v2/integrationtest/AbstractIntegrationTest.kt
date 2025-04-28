@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
@@ -45,9 +44,6 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
-
-    @Autowired
-    protected lateinit var jdbcTemplate: JdbcTemplate
 
     @SpykBean
     protected lateinit var personIdService: PersonIdService

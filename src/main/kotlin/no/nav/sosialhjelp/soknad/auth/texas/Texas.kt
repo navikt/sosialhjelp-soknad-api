@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull as userTokenOrNull
 
 interface TexasService {
@@ -40,10 +39,6 @@ class TexasServiceImpl(
                     throw IllegalStateException("Failed to exchange token from Texas: $tokenResponse")
             }
         } ?: throw IllegalStateException("User token not found")
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }
 

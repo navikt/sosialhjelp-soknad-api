@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.app.filter
 
 import jakarta.servlet.Filter
 import jakarta.servlet.FilterChain
-import jakarta.servlet.FilterConfig
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class CORSFilter : Filter {
-    override fun init(filterConfig: FilterConfig?) {
-        super.init(filterConfig)
-    }
-
     override fun doFilter(
         request: ServletRequest,
         response: ServletResponse,

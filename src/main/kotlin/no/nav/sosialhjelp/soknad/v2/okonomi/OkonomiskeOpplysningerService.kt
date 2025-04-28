@@ -88,7 +88,3 @@ class OkonomiskeOpplysningerServiceImpl(
                 soknadId = soknadId,
             )
 }
-
-private fun List<OkonomiDetalj>.mapToBelopList(): List<Belop> {
-    return this.map { it as Belop }
-}

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.nowWithMillis
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -30,11 +29,6 @@ class SoknadMetadataService(
     }
 
     fun getMetadatasForIds(soknadIds: List<UUID>): List<SoknadMetadata> = metadataRepository.findAllById(soknadIds)
-
-    fun getAllSoknaderMetadataForBrukerBySoknadId(soknadId: UUID): List<SoknadMetadata>? {
-        return metadataRepository.findByIdOrNull(soknadId)
-            ?.let { metadata -> metadataRepository.findByPersonId(metadata.personId) }
-    }
 
     fun getAllMetadataForPerson(personId: String): List<SoknadMetadata> {
         return metadataRepository.findByPersonId(personId)
@@ -103,14 +97,6 @@ class SoknadMetadataService(
             ?.run { copy(soknadType = soknadType) }
             ?.also { metadataRepository.save(it) }
             ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
-    }
-
-    fun updateLastChanged(soknadId: UUID) {
-        metadataRepository.findByIdOrNull(soknadId)
-            ?.run {
-                this.copy(tidspunkt = tidspunkt.copy(sistEndret = nowWithMillis()))
-            }
-            ?: error("Soknad finnes ikke, kan ikke oppdatere sist endret")
     }
 
     fun updateSoknadStatus(

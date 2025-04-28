@@ -3,10 +3,8 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -60,13 +58,13 @@ class CreateDeleteSoknadHandler(
         soknadId: UUID,
         kortSoknad: Boolean,
     ) {
-        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, if (kortSoknad) SoknadType.KORT else SoknadType.STANDARD)
-    }
-
-    private fun hasMellomlagredeDokumenter(dto: MellomlagringDto): Boolean {
-        dto.mellomlagringMetadataList
-            ?.let { if (it.isNotEmpty()) return true }
-        return false
+        when (kortSoknad) {
+            true -> obligatoriskeDokumentasjonsTyperForKortSoknad
+            false -> obligatoriskeDokumentasjonsTyper
+        }
+            .forEach { opplysningType ->
+                dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = opplysningType)
+            }
     }
 
     companion object {

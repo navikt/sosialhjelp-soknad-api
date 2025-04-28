@@ -76,7 +76,7 @@ object Familie {
 
         // Mottar eller betaler du barnebidrag for ett eller flere av barna?
         pdf.skrivTekstBold(pdfUtils.getTekst("familie.barn.true.barnebidrag.sporsmal"))
-        if (listeOverAnsvar.size > 0) {
+        if (listeOverAnsvar.isNotEmpty()) {
             val barnebidrag = forsorgerplikt.barnebidrag
             if (barnebidrag != null && barnebidrag.verdi != null) {
                 barnebidrag.verdi

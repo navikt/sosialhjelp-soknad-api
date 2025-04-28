@@ -22,21 +22,18 @@ import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.core.env.Environment
 import java.time.LocalDateTime
 import java.util.UUID
 
 internal class TilgangskontrollTest {
     private val soknadService: SoknadService = mockk(relaxed = true)
     private val personService: PersonService = mockk()
-    private val environment: Environment = mockk()
     private val soknadMetadataService: SoknadMetadataService = mockk()
 
     private val tilgangskontroll =
         Tilgangskontroll(
             soknadService,
             personService,
-            environment,
             soknadMetadataService,
         )
 

@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
-import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -15,13 +14,8 @@ import java.util.UUID
 class Tilgangskontroll(
     private val soknadService: SoknadService,
     private val personService: PersonService,
-    private val environment: Environment,
     private val soknadMetadataService: SoknadMetadataService,
 ) {
-    fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
-        verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-    }
-
     fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
         val personId = getUserIdFromToken()
 

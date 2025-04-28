@@ -350,7 +350,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     companion object {
         private fun updateAdresseUrl(soknadId: UUID) = "/soknad/$soknadId/adresser"
 
-        private fun isKortUrl(soknadId: UUID) = "/soknader/$soknadId/isKort"
+        private fun isKortUrl(soknadId: UUID) = "/soknad/$soknadId/isKort"
     }
 }
 

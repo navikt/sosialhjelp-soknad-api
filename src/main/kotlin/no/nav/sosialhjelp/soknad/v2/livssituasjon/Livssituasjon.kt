@@ -66,6 +66,7 @@ enum class Botype {
     EIER,
     LEIER,
     KOMMUNAL,
+    ANNET,
     INGEN,
     INSTITUSJON,
     KRISESENTER,
@@ -73,5 +74,4 @@ enum class Botype {
     VENNER,
     FORELDRE,
     FAMILIE,
-    ANNET,
 }

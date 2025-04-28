@@ -1,11 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg.kort
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Steg
-import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
-import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.BostotteHusbanken
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.NavUtbetalinger
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SaldoBrukskonto
@@ -18,8 +14,6 @@ class SituasjonsendringSteg {
     private val saldoBrukskonto = SaldoBrukskonto()
 
     fun get(json: JsonInternalSoknad): Steg {
-        val situasjonsendring = json.soknad.data.situasjonendring
-
         return Steg(
             stegNr = 4,
             tittel = "situasjon.kort.tittel",
@@ -32,34 +26,4 @@ class SituasjonsendringSteg {
                 ),
         )
     }
-
-    private fun Boolean?.toFelt() =
-        this?.let {
-            listOf(
-                Felt(
-                    type = Type.CHECKBOX,
-                    svar =
-                        createSvar(
-                            it.toLocaleTekst(),
-                            SvarType.LOCALE_TEKST,
-                        ),
-                ),
-            )
-        }
-
-    private fun String?.toFelt() =
-        this?.let {
-            listOf(
-                Felt(
-                    type = Type.TEKST,
-                    svar =
-                        createSvar(
-                            it,
-                            SvarType.TEKST,
-                        ),
-                ),
-            )
-        }
-
-    private fun Boolean.toLocaleTekst() = if (this) "avbryt.ja" else "avbryt.nei"
 }
