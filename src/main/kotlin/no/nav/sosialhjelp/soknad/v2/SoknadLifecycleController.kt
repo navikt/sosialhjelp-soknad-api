@@ -55,9 +55,11 @@ class SoknadLifecycleController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SoknadSendtDto {
-        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
+        throw RuntimeException("Noe feilet")
 
-        return SoknadSendtDto(digisosId, innsendingstidspunkt)
+//        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
+//
+//        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
     @DeleteMapping("/{soknadId}/delete")
