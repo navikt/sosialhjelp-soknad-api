@@ -35,7 +35,7 @@ internal class NavMessageSourceTest {
                                 keyValueString.split("=").toTypedArray()[1]
                         }
                     }
-                    return PropertiesHolder(mockedProperties, 0)
+                    return PropertiesHolder(mockedProperties!!, 0)
                 }
             }
         messageSource.setBasenames(Bundle("sendsoknad", "classpath:sendsoknad"))
