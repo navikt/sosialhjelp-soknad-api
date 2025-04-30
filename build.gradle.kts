@@ -101,7 +101,6 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    implementation(libs.vault.jdbc)
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.8.0")
     runtimeOnly("org.postgresql:postgresql:42.7.5")
 
