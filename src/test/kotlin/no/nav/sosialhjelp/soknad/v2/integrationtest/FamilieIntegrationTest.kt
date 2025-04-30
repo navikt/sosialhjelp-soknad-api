@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.Familie
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.ForsorgerInput
+import no.nav.sosialhjelp.soknad.v2.familie.SivilstandDto
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.toEktefelle
@@ -60,7 +61,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
-            Unit::class.java,
+            SivilstandDto::class.java,
             storedSoknad.id,
         )
 
@@ -90,7 +91,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/forsorgerplikt",
             forsorgerInput,
-            Unit::class.java,
+            SivilstandDto::class.java,
             storedSoknad.id,
         )
 
@@ -121,7 +122,7 @@ class FamilieIntegrationTest : AbstractIntegrationTest() {
         doPut(
             uri = "/soknad/${storedSoknad.id}/familie/sivilstatus",
             sivilstandInput,
-            Unit::class.java,
+            SivilstandDto::class.java,
             storedSoknad.id,
         )
 

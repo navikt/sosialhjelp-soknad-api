@@ -23,13 +23,18 @@ class SituasjonsendringIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Put på situasjonsendring skal oppdatere situasjonsendring med data fra dto`() {
+    fun `Put pa situasjonsendring skal oppdatere situasjonsendring med data fra dto`() {
         situasjonsendringRepository.save(
             createSituasjonsendring(storedSoknad.id, null, null),
         )
 
         val situasjonsendringDto = SituasjonsendringDto("Noe har endret seg", true)
-        doPut("/soknad/${storedSoknad.id}/situasjonsendring", situasjonsendringDto, Unit::class.java, storedSoknad.id)
+        doPut(
+            uri = "/soknad/${storedSoknad.id}/situasjonsendring",
+            requestBody = situasjonsendringDto,
+            responseBodyClass = SituasjonsendringDto::class.java,
+            soknadId = storedSoknad.id,
+        )
 
         situasjonsendringRepository.findByIdOrNull(storedSoknad.id)?.let {
             assertThat(it.hvaErEndret).isEqualTo("Noe har endret seg")
@@ -38,7 +43,7 @@ class SituasjonsendringIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Get på situasjonsendring skal returnere riktig situasjonsendring`() {
+    fun `Get pa situasjonsendring skal returnere riktig situasjonsendring`() {
         situasjonsendringRepository.save(
             createSituasjonsendring(storedSoknad.id, "abc", true),
         )
