@@ -1,18 +1,15 @@
 [versions]
 kotlin = "2.1.20"
-spring-boot = "3.3.5"
+spring-boot = "3.4.5"
 coroutines = "1.10.2"
 filformat = "1.2025.01.20-12.05-901742ed6fe0"
 sosialhjelp_common = "1.20231205.0930-5ce172f"
-fiks_svar_ut = "4.0.0"
 fiks_kryptering = "2.0.7"
 springdoc = "2.6.0"
 flyway_plugin = "11.8.0"
 flyway = "11.8.0"
-ojdbc_10 = "19.26.0.0"
-hsqldb = "2.7.2"
 lettuce = "6.5.5.RELEASE"
-token_validation = "4.0.3"
+token_validation = "5.0.25"
 java_jwt = "4.5.0"
 prometheus = "0.16.0"
 micrometer = "1.14.6"
@@ -58,7 +55,6 @@ soknadsosialhjelp-filformat = { module = "no.nav.sbl.dialogarena:soknadsosialhje
 
 sosialhjelp-common-api = { module = "no.nav.sosialhjelp:sosialhjelp-common-api", version.ref = "sosialhjelp_common" }
 sosialhjelp-common-selftest = { module = "no.nav.sosialhjelp:sosialhjelp-common-selftest", version.ref = "sosialhjelp_common" }
-#sosialhjelp-common-kotlin-utils = { module = "no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils", version.ref = "sosialhjelp_common" }
 
 vault-jdbc = { module = "no.nav:vault-jdbc", version.ref = "vault_jdbc" }
 
@@ -80,8 +76,8 @@ logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-enc
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta_servlet" }
 unleash-client-java = { module = "io.getunleash:unleash-client-java", version.ref = "unleash_client" }
 tika-core = { module = "org.apache.tika:tika-core", version.ref = "tika" }
+# vises som unused, men er nødvendig (se build.gradle)
 tika-parsers-standard-package = { module = "org.apache.tika:tika-parsers-standard-package", version.ref = "tika_parsers" }
-ojdbc10 = { module = "com.oracle.database.jdbc:ojdbc10", version.ref = "ojdbc_10" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons_text" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 preflight = { module = "org.apache.pdfbox:preflight", version.ref = "pdfbox" }
@@ -119,11 +115,6 @@ coroutines = [
     "kotlinx-coroutines-test",
 ]
 
-springdoc = [
-    "springdoc-openapi-starter-common",
-    "springdoc-openapi-starter-webmvc-ui",
-]
-
 pdfbox = [
     "pdfbox",
     "pdfbox-io",
@@ -133,7 +124,6 @@ pdfbox = [
 sosialhjelp-common = [
     "sosialhjelp-common-selftest",
     "sosialhjelp-common-api",
-    #    "sosialhjelp-common-kotlin-utils",
 ]
 
 
