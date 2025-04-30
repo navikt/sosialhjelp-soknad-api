@@ -14,7 +14,7 @@ services:
   sosialhjelp-mock-alt:
     profiles: [ full ]
     container_name: sosialhjelp-mock-alt
-    image: ghcr.io/navikt/sosialhjelp-mock-alt/sosialhjelp-mock-alt:latest
+    image: europe-north1-docker.pkg.dev/nais-management-233d/teamdigisos/sosialhjelp-mock-alt:latest
     restart: always
     ports:
       - "3008:3008"
@@ -43,7 +43,7 @@ services:
 
   cache:
     container_name: valkey
-    image: valkey/valkey:7.2.8-alpine
+    image: valkey/valkey:7.2.9-alpine
     restart: always
     ports:
       - "6379:6379"

@@ -53,6 +53,8 @@ private fun generateErrorMessage(
 
     var rootException: Throwable? = null
 
+    // TODO dette bør være midlertidig...
+    // vi opplever en feil hvor potensielt data fra bruker havner i console loggen - dette maskerer selve error message
     var currentCause: Throwable? = throwable
     while (currentCause != null) {
         if (currentCause is PSQLException) {
