@@ -29,8 +29,8 @@ object MiljoUtils {
     }
 
     // For å kunne teste i mock eller dev
-    fun isMockOrDev(): Boolean {
+    fun isMockOrDevOrPreProd(): Boolean {
         val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
-        return value.contains("mock-alt") || value.contains("dev")
+        return value.contains("mock-alt") || value.contains("dev") || value.contains("preprod")
     }
 }
