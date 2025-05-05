@@ -1,4 +1,4 @@
-name: Deploy to stable environments
+name: Deploy to stable environments v2
 on:
   workflow_dispatch:
   workflow_run:
