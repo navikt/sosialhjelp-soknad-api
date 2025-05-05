@@ -24,10 +24,11 @@ class UtbetalingerFraNavFetcher(
     override fun fetchAndSave(soknadId: UUID) {
         okonomiService.removeElementFromOkonomi(soknadId, type = InntektType.UTBETALING_NAVYTELSE)
 
-        navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())?.also {
-            saveUtbetalingerFraNav(soknadId, it)
-            integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
-        }
+        navUtbetalingerService.getUtbetalingerSiste40Dager(getUserIdFromToken())
+            ?.also {
+                saveUtbetalingerFraNav(soknadId, it)
+                integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = false)
+            }
             ?: integrasjonStatusService.setUtbetalingerFraNavStatus(soknadId, feilet = true)
     }
 

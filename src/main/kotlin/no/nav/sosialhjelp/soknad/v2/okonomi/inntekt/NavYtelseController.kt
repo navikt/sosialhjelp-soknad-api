@@ -32,6 +32,7 @@ private fun Inntekt.toUtbetalingerDto(): List<NavUtbetalingerDto> {
         .map {
             NavUtbetalingerDto(
                 type = type,
+                ytelsestype = it.tittel,
                 utbetalingsdato = it.utbetaling.utbetalingsdato?.toString(),
                 belop = it.utbetaling.belop,
             )
@@ -45,6 +46,7 @@ data class NavYtelseDto(
 
 data class NavUtbetalingerDto(
     val type: InntektType? = null,
+    val ytelsestype: String? = null,
     val utbetalingsdato: String? = null,
     val belop: Double? = null,
 )
