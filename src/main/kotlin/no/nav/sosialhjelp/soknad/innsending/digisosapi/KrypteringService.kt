@@ -36,7 +36,7 @@ class KrypteringService {
             val krypteringFuture =
                 executor.submit {
                     try {
-                        if (MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil() && MiljoUtils.isMockOrDev()) {
+                        if (MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil() && MiljoUtils.isMockOrDevOrPreProd()) {
                             IOUtils.copy(dokumentStream, pipedOutputStream)
                         } else {
                             kryptering.krypterData(
