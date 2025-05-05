@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.v2.okonomi.Komponent
 import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
+import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -19,14 +20,11 @@ class UtbetalingerFraNavService(
 ) {
     fun getUtbetalingerSiste40Dager(personId: String): List<UtbetalingMedKomponent>? {
         return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
-            ?.let { dto ->
-                when (dto.feilet || dto.utbetalinger == null) {
-                    true -> null
-                    false -> dto.toUtbetalingMedKomponent(orgService.hentOrgNavn(ORGNR_NAV))
-                }
-            }
+            ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { logger.info("Antall navytelser utbetaling: ${it.size}. ${it.komponenterLogg()}") }
     }
+
+    private val orgNavn get() = orgService.hentOrgNavn(ORGNR_NAV)
 
     companion object {
         private val logger by logger()
@@ -35,7 +33,7 @@ class UtbetalingerFraNavService(
 }
 
 private fun UtbetalDataDto.toUtbetalingMedKomponent(orgNavn: String): List<UtbetalingMedKomponent>? {
-    if (utbetalinger == null) return null
+    if (feilet || utbetalinger == null) return null
 
     return utbetalinger
         .filter { it.utbetalingsdato != null }
@@ -54,7 +52,8 @@ private fun Ytelse.toUtbetalingMedKomponent(
     UtbetalingMedKomponent(
         tittel = ytelsestype ?: "",
         utbetaling =
-            no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling(
+            Utbetaling(
+                belop = ytelseNettobeloep.toDouble(),
                 brutto = ytelseskomponentersum.toDouble(),
                 netto = ytelseNettobeloep.toDouble(),
                 skattetrekk = skattsum.toDouble(),
