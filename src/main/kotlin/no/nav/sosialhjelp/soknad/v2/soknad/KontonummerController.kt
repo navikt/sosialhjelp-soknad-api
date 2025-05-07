@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -33,9 +34,8 @@ class KontonummerController(
         eierService
             .run {
                 when (input) {
-                    is HarIkkeKontoInput -> updateKontonummer(soknadId = soknadId, harIkkeKonto = true)
-                    is KontonummerBrukerInput ->
-                        updateKontonummer(soknadId = soknadId, kontonummerBruker = input.kontonummer)
+                    is HarIkkeKontoInput -> updateKontonummer(soknadId, harIkkeKonto = true)
+                    is KontonummerBrukerInput -> updateKontonummer(soknadId, kontonummerBruker = input.kontonummerBruker)
                 }
             }.toKontoInformasjonDto()
 }
@@ -61,4 +61,4 @@ sealed interface KontoInput
 
 data class HarIkkeKontoInput(val harIkkeKonto: Boolean) : KontoInput
 
-data class KontonummerBrukerInput(val kontonummer: String?) : KontoInput
+data class KontonummerBrukerInput(@JsonAlias("kontonummer") val kontonummerBruker: String?) : KontoInput

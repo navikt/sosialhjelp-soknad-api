@@ -31,7 +31,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere brukers kontonummer skal lagres i db`() {
         val soknadId = createSoknadOgEier()
 
-        val input = KontonummerBrukerInput(kontonummer = "12345312345")
+        val input = KontonummerBrukerInput(kontonummerBruker = "12345312345")
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             input,
@@ -41,7 +41,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         eierRepository.findByIdOrNull(soknadId)?.let {
             assertThat(it.kontonummer.harIkkeKonto).isNull()
-            assertThat(it.kontonummer.fraBruker).isEqualTo(input.kontonummer)
+            assertThat(it.kontonummer.fraBruker).isEqualTo(input.kontonummerBruker)
         }
             ?: fail("Fant ikke brukerdata")
     }
