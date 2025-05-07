@@ -50,6 +50,7 @@ enum class InntektType(
 
     // register - arbeidsforhold
     JOBB(dokumentasjonForventet = true),
+    LONNSLIPP(dokumentasjonForventet = true),
 
     // * * * JsonOkonomiopplysningUtbetaling * * *
     // Andre inntekter

@@ -152,6 +152,7 @@ class DokumentasjonServiceImpl(
             AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
             FormueType.FORMUE_ANNET, // kontooversikt|annet
             UtgiftType.UTGIFTER_STROM, // faktura|strom
+            InntektType.LONNSLIPP, // lonnslipp|arbeid
             InntektType.JOBB, // lonnslipp|arbeid
             InntektType.STUDIELAN_INNTEKT, // student|vedtak
             InntektType.BARNEBIDRAG_MOTTAR,

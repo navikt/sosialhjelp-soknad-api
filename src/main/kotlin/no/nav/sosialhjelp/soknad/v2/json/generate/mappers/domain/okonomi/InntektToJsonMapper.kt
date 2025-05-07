@@ -167,6 +167,7 @@ private fun Inntekt.toTittel(): String {
     return when (type) {
         InntektType.BARNEBIDRAG_MOTTAR -> "Mottar Barnebidrag"
         InntektType.JOBB -> "Lønnsinntekt"
+        InntektType.LONNSLIPP -> "Lønnsinntekt"
         InntektType.STUDIELAN_INNTEKT -> "Studielån og -stipend"
         InntektType.UTBETALING_FORSIKRING -> "Forsikringsutbetaling"
         InntektType.UTBETALING_ANNET -> "Annen utbetaling"

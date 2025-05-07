@@ -49,6 +49,7 @@ object OpplysningTypeMapper {
             // JsonOversiktInntekt
             InntektType.BARNEBIDRAG_MOTTAR -> JsonVerdi(SoknadJsonTypeEnum.BARNEBIDRAG, VedleggType.BarnebidragMottar)
             InntektType.JOBB -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
+            InntektType.LONNSLIPP -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
             InntektType.STUDIELAN_INNTEKT -> JsonVerdi(SoknadJsonTypeEnum.STUDIELAN, VedleggType.StudentVedtak)
             // JsonOpplysningUtbetaling
             InntektType.UTBETALING_FORSIKRING -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_FORSIKRING, VedleggType.DokumentasjonForsikringsutbetaling)
