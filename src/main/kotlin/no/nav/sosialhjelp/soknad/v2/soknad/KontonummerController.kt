@@ -1,9 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.soknad
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
-import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierService
@@ -54,32 +53,12 @@ data class KontoInformasjonDto(
     val kontonummerBruker: String? = null,
 )
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type",
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(HarIkkeKontoInput::class, name = "HarIkkeKonto"),
-    JsonSubTypes.Type(KontonummerBrukerInput::class, name = "KontonummerBruker"),
-)
-@Schema(
-    discriminatorProperty = "type",
-    discriminatorMapping = [
-        DiscriminatorMapping(value = "HarIkkeKonto", schema = HarIkkeKontoInput::class),
-        DiscriminatorMapping(value = "KontonummerBruker", schema = KontonummerBrukerInput::class),
-    ],
-    subTypes = [
-        HarIkkeKontoInput::class,
-        KontonummerBrukerInput::class,
-    ],
-)
+// JsonIgnoreProperties kan fjernes når klient ikke lenger sender denne.
+@JsonIgnoreProperties("type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes(JsonSubTypes.Type(HarIkkeKontoInput::class), JsonSubTypes.Type(KontonummerBrukerInput::class))
 sealed interface KontoInput
 
-data class HarIkkeKontoInput(
-    val harIkkeKonto: Boolean,
-) : KontoInput
+data class HarIkkeKontoInput(val harIkkeKonto: Boolean) : KontoInput
 
-data class KontonummerBrukerInput(
-    val kontonummer: String?,
-) : KontoInput
+data class KontonummerBrukerInput(val kontonummer: String?) : KontoInput
