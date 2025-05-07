@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
-import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierService
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,8 +37,6 @@ class KontonummerController(
                     is HarIkkeKontoInput -> updateKontonummer(soknadId = soknadId, harIkkeKonto = true)
                     is KontonummerBrukerInput ->
                         updateKontonummer(soknadId = soknadId, kontonummerBruker = input.kontonummer)
-
-                    else -> throw IkkeFunnetException("Ukjent KontoInput-type")
                 }
             }.toKontoInformasjonDto()
 }
@@ -77,7 +74,7 @@ data class KontoInformasjonDto(
         KontonummerBrukerInput::class,
     ],
 )
-interface KontoInput
+sealed interface KontoInput
 
 data class HarIkkeKontoInput(
     val harIkkeKonto: Boolean,
