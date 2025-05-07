@@ -53,7 +53,7 @@ data class KontoInformasjonDto(
     val kontonummerBruker: String? = null,
 )
 
-// JsonIgnoreProperties kan fjernes når klient ikke lenger sender denne.
+// JsonIgnoreProperties kan fjernes når frontend er oppgradert
 @JsonIgnoreProperties("type")
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION, defaultImpl = KontonummerBrukerInput::class)
 @JsonSubTypes(JsonSubTypes.Type(HarIkkeKontoInput::class), JsonSubTypes.Type(KontonummerBrukerInput::class))
@@ -61,6 +61,7 @@ sealed interface KontoInput
 
 data class HarIkkeKontoInput(val harIkkeKonto: Boolean) : KontoInput
 
+// JsonAlias kan fjernes når frontend er oppgradert
 data class KontonummerBrukerInput(
     @JsonAlias("kontonummer") val kontonummerBruker: String?,
 ) : KontoInput
