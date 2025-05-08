@@ -54,7 +54,10 @@ class HentPersonClientImpl(
         query: String,
         typeRequest: String,
     ): T? =
-        runCatching { doRequest(PdlRequest(query, variables(ident)), typeRequest) }
+        runCatching {
+            doRequest(PdlRequest(query, variables(ident)))
+                ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
+        }
             .onFailure {
                 when (it) {
                     is PdlApiException -> throw it
@@ -69,17 +72,14 @@ class HentPersonClientImpl(
             .also { it.checkForPdlApiErrors() }
             .data.hentPerson
 
-    private fun doRequest(
-        pdlRequest: PdlRequest,
-        typeRequest: String,
-    ): String =
+    private fun doRequest(pdlRequest: PdlRequest): String? =
         hentPersonRequest
             .header(AUTHORIZATION, BEARER + tokenX)
             .bodyValue(pdlRequest)
             .retrieve()
             .bodyToMono<String>()
             .retryWhen(pdlRetry)
-            .block() ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
+            .block()
 
     @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
     override fun hentEktefelle(ident: String): EktefelleDto? =
