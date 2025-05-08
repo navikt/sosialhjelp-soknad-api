@@ -32,7 +32,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @RestController
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/informasjon")
-class InformasjonController(
+class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val personService: PersonService,
     private val metadataService: SoknadMetadataService,

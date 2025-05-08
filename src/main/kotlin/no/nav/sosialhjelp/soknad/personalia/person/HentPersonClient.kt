@@ -43,26 +43,31 @@ class HentPersonClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
-    override fun hentPerson(ident: String): PersonDto? = doPdlRequest(ident, HENT_PERSON, "hentPerson")
+    override fun hentPerson(ident: String): PersonDto? =
+        doPdlRequest(ident, HENT_PERSON, "hentPerson")
 
     override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? =
         doPdlRequest(ident, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
 
-    private fun <T> doPdlRequest(
+    private inline fun <reified T> doPdlRequest(
         ident: String,
         query: String,
         typeRequest: String,
     ): T? =
-        runCatching {
-            doRequest(PdlRequest(query, variables(ident)), typeRequest)
-                .let { response -> parse<HentPersonDto<T>>(response).also { it.checkForPdlApiErrors() }.data.hentPerson }
-        }
-            .getOrElse {
+        runCatching { doRequest(PdlRequest(query, variables(ident)), typeRequest) }
+            .onFailure {
                 when (it) {
                     is PdlApiException -> throw it
                     else -> throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", it)
                 }
             }
+            .getOrThrow()
+            .let { response -> parseResponse(response) }
+
+    private inline fun <reified T> parseResponse(response: String): T? =
+        parse<HentPersonDto<T>>(response)
+            .also { it.checkForPdlApiErrors() }
+            .data.hentPerson
 
     private fun doRequest(
         pdlRequest: PdlRequest,
