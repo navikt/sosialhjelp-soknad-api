@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
@@ -19,12 +18,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
-import no.nav.sosialhjelp.soknad.valkey.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.BARN_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.EKTEFELLE_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.valkey.PERSON_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.valkey.ValkeyService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -47,41 +40,44 @@ class HentPersonClientImpl(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
-    private val valkeyService: ValkeyService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-) : PdlClient(webClientBuilder, baseurl),
-    HentPersonClient {
-    override fun hentPerson(ident: String): PersonDto? = hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
+) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
+    override fun hentPerson(ident: String): PersonDto? = doPdlRequest(ident, HENT_PERSON, "hentPerson")
 
-    private fun hentPersonFraCache(ident: String): PersonDto? = valkeyService.get(PERSON_CACHE_KEY_PREFIX + ident, PersonDto::class.java) as? PersonDto
+    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? =
+        doPdlRequest(ident, HENT_ADRESSEBESKYTTELSE, "adressebeskyttelse")
 
-    private fun hentPersonFraPdl(ident: String): PersonDto? =
-        try {
-            val response =
-                hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                    .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
-                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentPerson - response null?")
-            val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
-            pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, it) }
-        } catch (e: PdlApiException) {
-            throw e
-        } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentPerson)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+    private fun <T> doPdlRequest(
+        ident: String,
+        query: String,
+        typeRequest: String,
+    ): T? =
+        runCatching {
+            doRequest(PdlRequest(query, variables(ident)), typeRequest)
+                .let { response -> parse<HentPersonDto<T>>(response).also { it.checkForPdlApiErrors() }.data.hentPerson }
         }
+            .getOrElse {
+                when (it) {
+                    is PdlApiException -> throw it
+                    else -> throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", it)
+                }
+            }
 
-    override fun hentEktefelle(ident: String): EktefelleDto? = hentEktefelleFraCache(ident) ?: hentEktefelleFraPdl(ident)
+    private fun doRequest(
+        pdlRequest: PdlRequest,
+        typeRequest: String,
+    ): String =
+        hentPersonRequest
+            .header(AUTHORIZATION, BEARER + tokenX)
+            .bodyValue(pdlRequest)
+            .retrieve()
+            .bodyToMono<String>()
+            .retryWhen(pdlRetry)
+            .block() ?: throw PdlApiException("Noe feilet mot PDL - $typeRequest - response null?")
 
-    private fun hentEktefelleFraCache(ident: String): EktefelleDto? = valkeyService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, EktefelleDto::class.java) as EktefelleDto?
-
-    private fun hentEktefelleFraPdl(ident: String): EktefelleDto? =
+    @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
+    override fun hentEktefelle(ident: String): EktefelleDto? =
         try {
             val response =
                 hentPersonRequest
@@ -94,19 +90,15 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentEktefelle)")
+            logger.error("Kall til PDL feilet (hentEktefelle)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    override fun hentBarn(ident: String): BarnDto? = hentBarnFraCache(ident) ?: hentBarnFraPdl(ident)
-
-    private fun hentBarnFraCache(ident: String): BarnDto? = valkeyService.get(BARN_CACHE_KEY_PREFIX + ident, BarnDto::class.java) as? BarnDto
-
-    private fun hentBarnFraPdl(ident: String): BarnDto? =
+    @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
+    override fun hentBarn(ident: String): BarnDto? =
         try {
             val response: String =
                 hentPersonRequest
@@ -119,64 +111,23 @@ class HentPersonClientImpl(
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentBarn)")
+            logger.error("Kall til PDL feilet (hentBarn)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    override fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto? = hentAdressebeskyttelseFraCache(ident) ?: hentAdressebeskyttelseFraPdl(ident)
+    private val tokenX get() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
 
-    private fun hentAdressebeskyttelseFraCache(ident: String): PersonAdressebeskyttelseDto? =
-        valkeyService.get(
-            ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident,
-            PersonAdressebeskyttelseDto::class.java,
-        ) as? PersonAdressebeskyttelseDto
-
-    private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? =
-        try {
-            val body: String =
-                hentPersonRequest
-                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                    .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
-                    .retrieve()
-                    .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
-                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdressebeskyttelse - response null?")
-            val pdlResponse = parse<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
-            pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data.hentPerson
-                ?.also { lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, it) }
-        } catch (e: PdlApiException) {
-            throw e
-        } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentPersonAdressebeskyttelse)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
-        }
-
-    private fun tokenXtoken(ident: String) = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)
-
+    @Deprecated("Skal ikke benytte system-token for uthenting av persondata")
     private fun azureAdToken() = texasService.getToken(IdentityProvider.AZURE_AD, pdlScope)
 
     private fun variables(ident: String): Map<String, Any> = mapOf("historikk" to false, "ident" to ident)
 
     private val hentPersonRequest get() = baseRequest.header(HEADER_TEMA, TEMA_KOM)
 
-    private fun lagreTilCache(
-        prefix: String,
-        ident: String,
-        pdlResponse: Any,
-    ) {
-        try {
-            valkeyService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
-        } catch (e: JsonProcessingException) {
-            log.error("Noe feilet ved serialisering av response fra Pdl - ${pdlResponse.javaClass.name}", e)
-        }
-    }
-
     companion object {
-        private val log = getLogger(HentPersonClient::class.java)
+        private val logger = getLogger(HentPersonClient::class.java)
     }
 }
