@@ -97,7 +97,7 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
-    @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
+    @Deprecated("Skal ikke hente informasjon om barn uten samtykke")
     override fun hentBarn(ident: String): BarnDto? =
         try {
             val response: String =
