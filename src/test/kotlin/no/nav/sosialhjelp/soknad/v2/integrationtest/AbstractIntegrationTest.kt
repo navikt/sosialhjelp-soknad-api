@@ -52,11 +52,15 @@ abstract class AbstractIntegrationTest {
 
     protected lateinit var soknadId: UUID
 
+    protected var opprettSoknadBeforeEach = true
+
     @BeforeEach
     fun before() {
-        soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
+        if (opprettSoknadBeforeEach) {
+            soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
+            every { personIdService.findPersonId(soknadId) } returns userId
+        }
         token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
-        every { personIdService.findPersonId(soknadId) } returns userId
     }
 
     protected fun <T> doGet(
