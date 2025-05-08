@@ -326,7 +326,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).hasSize(13)
+        assertThat(dokumentasjon).hasSize(14)
         assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
         assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
@@ -337,6 +337,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_ANNET }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_STROM }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.JOBB }
+        assertThat(dokumentasjon).anyMatch { it.type == InntektType.LONNSLIPP }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.STUDIELAN_INNTEKT }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
