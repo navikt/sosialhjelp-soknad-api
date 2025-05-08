@@ -33,6 +33,7 @@ class KortSoknadService(
 
         // bruker skal også kunne legge ved okonomiske opplysninger (= beløp) for formue brukskonto
         okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
+        okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_ANNET)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
 
         soknadService.updateKortSoknad(soknadId, true)
@@ -50,6 +51,7 @@ class KortSoknadService(
         dokumentasjonService.resetForventetDokumentasjon(soknadId)
 
         okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
+        okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_ANNET)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)
 
         soknadService.updateKortSoknad(soknadId, false)

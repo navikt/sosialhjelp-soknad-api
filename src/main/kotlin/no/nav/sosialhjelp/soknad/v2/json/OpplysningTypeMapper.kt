@@ -60,7 +60,7 @@ object OpplysningTypeMapper {
             InntektType.UTBETALING_SKATTEETATEN -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_SKATTEETATEN, null)
             InntektType.UTBETALING_NAVYTELSE -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_NAVYTELSE, null)
             // Dette er akkurat det samme som JOBB, men brukes kun for kategori valg for opplastet dokument i kort søknad.
-            // Grunnen for dette er at JOBB blir slettet pga skatteetatenSamtykke, og får å beholde det i frontend så må vi ha en egen
+            // Grunnen for dette er at JOBB blir slettet pga skatteetatenSamtykke, og for å beholde det i frontend så må vi ha en egen
             // type for det som vi kan brukke litt som et mellomledd.
             InntektType.LONNSLIPP -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
         }
