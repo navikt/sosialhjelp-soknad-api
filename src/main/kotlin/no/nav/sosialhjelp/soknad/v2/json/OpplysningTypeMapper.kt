@@ -49,7 +49,6 @@ object OpplysningTypeMapper {
             // JsonOversiktInntekt
             InntektType.BARNEBIDRAG_MOTTAR -> JsonVerdi(SoknadJsonTypeEnum.BARNEBIDRAG, VedleggType.BarnebidragMottar)
             InntektType.JOBB -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
-            InntektType.LONNSLIPP -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
             InntektType.STUDIELAN_INNTEKT -> JsonVerdi(SoknadJsonTypeEnum.STUDIELAN, VedleggType.StudentVedtak)
             // JsonOpplysningUtbetaling
             InntektType.UTBETALING_FORSIKRING -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_FORSIKRING, VedleggType.DokumentasjonForsikringsutbetaling)
@@ -60,6 +59,10 @@ object OpplysningTypeMapper {
             InntektType.UTBETALING_HUSBANKEN -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_HUSBANKEN, VedleggType.HusbankenVedtak)
             InntektType.UTBETALING_SKATTEETATEN -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_SKATTEETATEN, null)
             InntektType.UTBETALING_NAVYTELSE -> JsonVerdi(SoknadJsonTypeEnum.UTBETALING_NAVYTELSE, null)
+            // Dette er akkurat det samme som JOBB, men brukes kun for kategori valg for opplastet dokument i kort søknad.
+            // Grunnen for dette er at JOBB blir slettet pga skatteetatenSamtykke, og får å beholde det i frontend så må vi ha en egen
+            // type for det som vi kan brukke litt som et mellomledd.
+            InntektType.LONNSLIPP -> JsonVerdi(SoknadJsonTypeEnum.JOBB, VedleggType.LonnslippArbeid)
         }
 
     fun getJsonVerdier(formueType: FormueType): JsonVerdi =
