@@ -153,7 +153,6 @@ class DokumentasjonServiceImpl(
             FormueType.FORMUE_ANNET, // kontooversikt|annet
             UtgiftType.UTGIFTER_STROM, // faktura|strom
             InntektType.LONNSLIPP, // lonnslipp|arbeid
-            InntektType.JOBB, // lonnslipp|arbeid
             InntektType.STUDIELAN_INNTEKT, // student|vedtak
             InntektType.BARNEBIDRAG_MOTTAR,
             UtgiftType.BARNEBIDRAG_BETALER,
