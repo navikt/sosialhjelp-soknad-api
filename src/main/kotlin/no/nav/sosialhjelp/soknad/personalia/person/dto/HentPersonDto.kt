@@ -7,8 +7,14 @@ data class HentPersonDataDto<T>(
     val hentPerson: T?,
 )
 
+sealed interface PdlDto
+
 data class PersonAdressebeskyttelseDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
+) : PdlDto
+
+data class AdressebeskyttelseDto(
+    val gradering: Gradering?,
 )
 
 data class PersonDto(
@@ -18,7 +24,7 @@ data class PersonDto(
     val navn: List<NavnDto>?,
     val sivilstand: List<SivilstandDto>?,
     val statsborgerskap: List<StatsborgerskapDto>?,
-)
+) : PdlDto
 
 data class EktefelleDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
@@ -33,10 +39,6 @@ data class BarnDto(
     val folkeregisterpersonstatus: List<FolkeregisterpersonstatusDto>?,
     val foedsel: List<FoedselDto>?,
     val navn: List<NavnDto>?,
-)
-
-data class AdressebeskyttelseDto(
-    val gradering: Gradering?,
 )
 
 enum class Gradering {
