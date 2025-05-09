@@ -212,9 +212,9 @@ internal class PersonServiceTest {
         every { hentPersonClient.hentAdressebeskyttelse(any()) } returns adressebeskyttelse
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
 
-        val result = personService.hentAdressebeskyttelse("ident")
+        val result = personService.hasAdressebeskyttelse("ident")
         assertThat(result).isNotNull
-        assertThat(result).isEqualTo(Gradering.UGRADERT)
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
@@ -224,18 +224,18 @@ internal class PersonServiceTest {
         // Ihht. https://pdl-docs.intern.nav.no/ekstern/index.html#_adressebeskyttelse er det som oftest null,
         // hvilket betyr ingen addressebeskyttelse.
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns null
-        assertThat(personService.harAdressebeskyttelse("ident")).isFalse()
+        assertThat(personService.hasAdressebeskyttelse("ident")).isFalse()
 
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.UGRADERT
-        assertThat(personService.harAdressebeskyttelse("ident")).isFalse()
+        assertThat(personService.hasAdressebeskyttelse("ident")).isFalse()
 
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.FORTROLIG
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
+        assertThat(personService.hasAdressebeskyttelse("ident")).isTrue()
 
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.STRENGT_FORTROLIG
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
+        assertThat(personService.hasAdressebeskyttelse("ident")).isTrue()
 
         every { mapper.personAdressebeskyttelseDtoToGradering(any()) } returns Gradering.STRENGT_FORTROLIG_UTLAND
-        assertThat(personService.harAdressebeskyttelse("ident")).isTrue()
+        assertThat(personService.hasAdressebeskyttelse("ident")).isTrue()
     }
 }

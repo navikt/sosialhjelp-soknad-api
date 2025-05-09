@@ -46,6 +46,11 @@ enum class Gradering {
     STRENGT_FORTROLIG, // kode 6
     FORTROLIG, // kode 7
     UGRADERT,
+    ;
+
+    companion object {
+        fun isGradert(gradering: Gradering?) = gradering in listOf(STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND, FORTROLIG)
+    }
 }
 
 data class MetadataDto(
