@@ -27,7 +27,7 @@ class KontonummerController(
     @PutMapping
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody(required = true) input: KontoinformasjonRequest,
+        @RequestBody input: KontoinformasjonRequest,
     ): KontoinformasjonResponse = eierService.updateKontonummer(soknadId, input.kontonummerBruker, input.harIkkeKonto).toResponse()
 
     private fun Kontonummer.toResponse(): KontoinformasjonResponse = KontoinformasjonResponse(harIkkeKonto, fraRegister, fraBruker)
