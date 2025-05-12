@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonRequest
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonResponse
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonDTO
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -19,7 +19,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoinformasjonResponse::class.java,
+            KontoinformasjonDTO::class.java,
         ).also {
             assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer.fraBruker)
             assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer.fraRegister)
@@ -31,11 +31,11 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere brukers kontonummer skal lagres i db`() {
         val soknadId = createSoknadOgEier()
 
-        val input = KontoinformasjonRequest(kontonummerBruker = "12345312345")
+        val input = KontoinformasjonInput(kontonummerBruker = "12345312345")
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             input,
-            KontoinformasjonResponse::class.java,
+            KontoinformasjonDTO::class.java,
             soknadId,
         )
 
@@ -52,8 +52,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
-            KontoinformasjonRequest(harIkkeKonto = true),
-            KontoinformasjonResponse::class.java,
+            KontoinformasjonInput(harIkkeKonto = true),
+            KontoinformasjonDTO::class.java,
             soknadId,
         )
 

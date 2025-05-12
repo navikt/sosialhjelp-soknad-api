@@ -22,18 +22,18 @@ class KontonummerController(
     @GetMapping
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID,
-    ): KontoinformasjonResponse = eierService.findOrError(soknadId).kontonummer.toResponse()
+    ): KontoinformasjonDTO = eierService.findOrError(soknadId).kontonummer.toDTO()
 
     @PutMapping
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestBody input: KontoinformasjonRequest,
-    ): KontoinformasjonResponse = eierService.updateKontonummer(soknadId, input.kontonummerBruker, input.harIkkeKonto).toResponse()
+        @RequestBody input: KontoinformasjonInput,
+    ): KontoinformasjonDTO = eierService.updateKontonummer(soknadId, input.kontonummerBruker, input.harIkkeKonto).toDTO()
 
-    private fun Kontonummer.toResponse(): KontoinformasjonResponse = KontoinformasjonResponse(harIkkeKonto, fraRegister, fraBruker)
+    private fun Kontonummer.toDTO(): KontoinformasjonDTO = KontoinformasjonDTO(harIkkeKonto, fraRegister, fraBruker)
 }
 
-data class KontoinformasjonResponse(
+data class KontoinformasjonDTO(
     val harIkkeKonto: Boolean? = null,
     val kontonummerRegister: String? = null,
     val kontonummerBruker: String? = null,
@@ -41,7 +41,7 @@ data class KontoinformasjonResponse(
 
 // JsonIgnoreProperties er her for bakoverkompat og kan fjernes når frontend er oppdatert
 @JsonIgnoreProperties("type")
-data class KontoinformasjonRequest(
+data class KontoinformasjonInput(
     val harIkkeKonto: Boolean? = null,
     // JsonAlias er her for bakoverkompat og kan fjernes når frontend er oppdatert
     @JsonAlias("kontonummer")
