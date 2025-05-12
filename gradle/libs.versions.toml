@@ -12,7 +12,7 @@ lettuce = "6.6.0.RELEASE"
 token_validation = "5.0.25"
 java_jwt = "4.5.0"
 prometheus = "0.16.0"
-micrometer = "1.14.6"
+micrometer = "1.14.7"
 jackson = "2.19.0"
 logback = "1.5.18"
 logstash = "8.1"
@@ -27,7 +27,7 @@ mockk = "1.14.2"
 versions = "0.52.0"
 resilience4j = "2.3.0"
 spotless = "7.0.3"
-opentelemetry = "1.49.0"
+opentelemetry = "1.50.0"
 
 [libraries]
 spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
