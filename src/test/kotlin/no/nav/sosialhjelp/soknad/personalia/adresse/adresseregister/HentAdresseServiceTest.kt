@@ -67,7 +67,7 @@ internal class HentAdresseServiceTest {
     @Test
     internal fun `hent adresse for innlogget bruker`() {
         val mockPerson: Person = mockk()
-        every { personService.hentPerson(any()) } returns mockPerson
+        every { personService.hentPerson(any(), false) } returns mockPerson
         every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
         every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns defaultMatrikkelAdresse
         val dto = hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
@@ -77,14 +77,14 @@ internal class HentAdresseServiceTest {
 
     @Test
     internal fun `hent adresse for innlogget bruker - returnerer null hvis person personService gir null`() {
-        every { personService.hentPerson(any()) } returns null
+        every { personService.hentPerson(any(), false) } returns null
         val dto = hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
         assertThat(dto).isNull()
     }
 
     @Test
     internal fun `hent adresse for innlogget bruker - kast feil hvis person personService feiler`() {
-        every { personService.hentPerson(any()) } throws PdlApiException("pdl feil")
+        every { personService.hentPerson(any(), false) } throws PdlApiException("pdl feil")
         assertThatExceptionOfType(PdlApiException::class.java).isThrownBy {
             hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
         }

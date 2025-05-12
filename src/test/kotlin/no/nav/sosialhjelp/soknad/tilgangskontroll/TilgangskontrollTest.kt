@@ -65,7 +65,7 @@ internal class TilgangskontrollTest {
                 status = SoknadStatus.OPPRETTET,
                 tidspunkt = Tidspunkt(),
             )
-        every { personService.harAdressebeskyttelse(userId) } returns false
+        every { personService.hasAdressebeskyttelse(userId) } returns false
 
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(soknadId.toString()) }
@@ -109,7 +109,7 @@ internal class TilgangskontrollTest {
     @Test
     fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        every { personService.harAdressebeskyttelse(userId) } returns true
+        every { personService.hasAdressebeskyttelse(userId) } returns true
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }
     }

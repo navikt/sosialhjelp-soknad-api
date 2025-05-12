@@ -42,6 +42,6 @@ class Tilgangskontroll(
     fun verifiserAtBrukerHarTilgang() = verifiserAtBrukerIkkeHarAdressebeskyttelse(getUserIdFromToken())
 
     private fun verifiserAtBrukerIkkeHarAdressebeskyttelse(ident: String) {
-        if (personService.harAdressebeskyttelse(ident)) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+        if (personService.hasAdressebeskyttelse(ident)) throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
     }
 }

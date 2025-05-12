@@ -58,7 +58,7 @@ class InformasjonRessurs(
         val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
-        return personService.harAdressebeskyttelse(eier)
+        return personService.hasAdressebeskyttelse(eier)
             .also { if (it) handleHasAdressebeskyttelse() }
             .let {
                 SessionResponse(
