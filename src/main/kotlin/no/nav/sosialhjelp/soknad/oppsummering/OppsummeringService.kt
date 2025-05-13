@@ -39,22 +39,22 @@ class OppsummeringService(
 
     fun hentOppsummering(
         fnr: String,
-        behandlingsId: String,
+        soknadId: UUID,
     ): Oppsummering {
-        return useActiveJsonInternalSoknad(behandlingsId).let {
+        return useActiveJsonInternalSoknad(soknadId).let {
             when (it.soknad.data.soknadstype) {
                 JsonData.Soknadstype.KORT -> kortSoknadOppsummering(it)
-                else -> soknadOppsummering(it, getVedleggInfo(behandlingsId))
+                else -> soknadOppsummering(it, getVedleggInfo(soknadId))
             }
         }
     }
 
-    private fun useActiveJsonInternalSoknad(behandlingsId: String): JsonInternalSoknad {
-        return jsonGenerator.createJsonInternalSoknad(UUID.fromString(behandlingsId))
+    private fun useActiveJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
+        return jsonGenerator.createJsonInternalSoknad(soknadId)
     }
 
-    private fun getVedleggInfo(behandlingsId: String) =
-        dokumentlagerService.getAllDokumenterMetadata(UUID.fromString(behandlingsId)).map {
+    private fun getVedleggInfo(soknadId: UUID) =
+        dokumentlagerService.getAllDokumenterMetadata(soknadId).map {
             OppsummeringVedleggInfo(it.filnavn, it.filId)
         }
 
