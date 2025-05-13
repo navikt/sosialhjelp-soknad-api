@@ -1,17 +1,17 @@
-package no.nav.sosialhjelp.soknad.tracing
+package no.nav.sosialhjelp.soknad.v2.interceptor
 
 import io.opentelemetry.api.trace.Span
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.getBehandlingsId
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
 @Profile("!local")
-class TracingInterceptor : HandlerInterceptor {
+class TracingInterceptor : SoknadApiHandlerInterceptor {
     private val log by logger()
 
     override fun preHandle(
@@ -28,7 +28,6 @@ class TracingInterceptor : HandlerInterceptor {
             }
             currentSpan.setAttribute("behandlingsid", behandlingsId)
         }
-
         return true
     }
 }

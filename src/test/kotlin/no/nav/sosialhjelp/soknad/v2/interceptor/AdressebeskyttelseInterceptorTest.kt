@@ -40,7 +40,7 @@ import java.util.UUID
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
-class SoknadAccessInterceptorTest {
+class AdressebeskyttelseInterceptorTest {
     @Autowired
     private lateinit var soknadService: SoknadService
 
@@ -60,7 +60,7 @@ class SoknadAccessInterceptorTest {
     private lateinit var hentPersonClient: HentPersonClient
 
     @SpykBean
-    private lateinit var soknadAccessInterceptor: SoknadAccessInterceptor
+    private lateinit var adressebeskyttelseInterceptor: AdressebeskyttelseInterceptor
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
@@ -77,7 +77,7 @@ class SoknadAccessInterceptorTest {
 
     @AfterEach
     fun teardown() {
-        verify(exactly = 1) { soknadAccessInterceptor.preHandle(any(), any(), any()) }
+        verify(exactly = 1) { adressebeskyttelseInterceptor.preHandle(any(), any(), any()) }
         clearAllMocks()
     }
 
