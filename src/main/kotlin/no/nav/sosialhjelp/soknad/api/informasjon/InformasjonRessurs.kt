@@ -54,7 +54,7 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/session")
-    fun getSessionInfo(): SessionDto {
+    fun getSessionInfo(): SessionResponse {
         val eier = personId()
         log.debug("Henter søknadsinfo for bruker")
 
@@ -119,7 +119,13 @@ data class SessionResponse(
 
 private fun SoknadMetadata.toPabegyntSoknad() =
     PabegyntSoknad(
-        behandlingsId = soknadId.toString(),
+        soknadId = soknadId,
         sistOppdatert = tidspunkt.sistEndret,
         isKort = soknadType == SoknadType.KORT,
     )
+
+data class PabegyntSoknad(
+    val sistOppdatert: LocalDateTime,
+    val soknadId: UUID,
+    val isKort: Boolean,
+)
