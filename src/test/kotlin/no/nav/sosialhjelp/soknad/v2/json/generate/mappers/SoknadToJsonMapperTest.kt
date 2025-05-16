@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuperObjects
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SoknadToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
@@ -52,7 +52,7 @@ class SoknadToJsonMapperTest {
 }
 
 private fun JsonInternalSoknad.assertInnsendingstidspunkt(tidspunkt: LocalDateTime) {
-    TimestampConverter.convertToOffsettDateTimeUTCString(tidspunkt).also {
+    TimestampUtil.convertToOffsettDateTimeUTCString(tidspunkt).also {
         assertThat(soknad.innsendingstidspunkt).isEqualTo(it)
     }
 }

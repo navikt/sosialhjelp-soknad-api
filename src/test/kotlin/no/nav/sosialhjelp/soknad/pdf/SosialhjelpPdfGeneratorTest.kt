@@ -26,11 +26,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
 import no.nav.sosialhjelp.soknad.v2.json.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import org.apache.commons.io.FileUtils
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException
@@ -136,7 +136,7 @@ internal class SosialhjelpPdfGeneratorTest {
     }
 
     private fun JsonInternalSoknad.setInnsendingstidspunkt() {
-        this.soknad.innsendingstidspunkt = TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis())
+        this.soknad.innsendingstidspunkt = TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis())
     }
 
     private val jsonInternalSoknadWithMandatoryFields: JsonInternalSoknad

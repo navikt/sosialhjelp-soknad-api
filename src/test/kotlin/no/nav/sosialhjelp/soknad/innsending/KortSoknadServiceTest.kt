@@ -10,8 +10,8 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.api.fiks.DigisosSak
 import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
-import no.nav.sosialhjelp.soknad.nowWithMillis
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter.convertToOffsettDateTimeUTCString
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.convertToOffsettDateTimeUTCString
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.junit.jupiter.api.Assertions.assertFalse

@@ -14,6 +14,7 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -59,10 +60,13 @@ class JsonInternalSoknadGenerator(
     }
 }
 
-object TimestampConverter {
+object TimestampUtil {
     private const val ZONE_STRING = "Europe/Oslo"
     private const val TIMESTAMP_REGEX = "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9]*Z$"
     private const val MILLISECOND = 1000000L
+
+    fun nowWithMillis(): LocalDateTime =
+        ZonedDateTime.now(ZoneId.of(ZONE_STRING)).toLocalDateTime().truncatedTo(ChronoUnit.MILLIS)
 
     fun convertToOffsettDateTimeUTCString(localDateTime: LocalDateTime) = localDateTime.toUTCTimestampStringWithMillis()
 

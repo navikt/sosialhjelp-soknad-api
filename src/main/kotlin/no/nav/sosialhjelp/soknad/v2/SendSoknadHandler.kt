@@ -11,9 +11,9 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
-import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
