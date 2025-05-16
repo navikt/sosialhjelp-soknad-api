@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.metadata
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.data.repository.findByIdOrNull
@@ -38,6 +39,7 @@ class SoknadMetadataService(
         soknadId: UUID,
         sendtInn: LocalDateTime,
     ): LocalDateTime {
+        logger.info("Setter innsendingstidspunkt: $sendtInn")
         return metadataRepository.findByIdOrNull(soknadId)
             ?.run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
             ?.also { metadataRepository.save(it) }
@@ -119,5 +121,9 @@ class SoknadMetadataService(
 
     fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
         return metadataRepository.findAllById(allSoknadIds)
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }

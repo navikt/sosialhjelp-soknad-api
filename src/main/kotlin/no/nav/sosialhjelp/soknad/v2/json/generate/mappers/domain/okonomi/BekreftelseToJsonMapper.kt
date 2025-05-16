@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sosialhjelp.soknad.v2.json.OpplysningTypeMapper
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 
@@ -30,7 +30,7 @@ class BekreftelseToJsonMapper(
                         .withKilde(JsonKilde.BRUKER)
                         .withType(BekreftelseType.BOSTOTTE_SAMTYKKE.toSoknadJsonTypeString())
                         .withTittel(BekreftelseType.BOSTOTTE_SAMTYKKE.toTittel())
-                        .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(bostotte.tidspunkt))
+                        .withBekreftelsesDato(TimestampUtil.convertToOffsettDateTimeUTCString(bostotte.tidspunkt))
                         .withVerdi(false),
                 )
             }
@@ -43,7 +43,7 @@ private fun Bekreftelse.toJsonBekreftelse(): JsonOkonomibekreftelse {
         .withType(type.toSoknadJsonTypeString())
         .withVerdi(verdi)
         .withTittel(type.toTittel())
-        .withBekreftelsesDato(TimestampConverter.convertToOffsettDateTimeUTCString(tidspunkt))
+        .withBekreftelsesDato(TimestampUtil.convertToOffsettDateTimeUTCString(tidspunkt))
 }
 
 internal fun BekreftelseType.toTittel(): String {

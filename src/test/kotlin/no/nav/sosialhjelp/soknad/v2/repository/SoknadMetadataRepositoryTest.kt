@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.repository
 
-import no.nav.sosialhjelp.soknad.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
