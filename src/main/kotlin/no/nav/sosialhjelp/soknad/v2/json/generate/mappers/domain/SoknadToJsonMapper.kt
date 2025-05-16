@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
@@ -53,7 +53,7 @@ class SoknadToJsonMapper(
                 soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
                 soknad.innsendingstidspunkt =
                     tidspunkt.sendtInn?.let {
-                        TimestampConverter.convertToOffsettDateTimeUTCString(it)
+                        TimestampUtil.convertToOffsettDateTimeUTCString(it)
                     }
                 soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
                 soknad.data.soknadstype = domainSoknad.toJsonSoknadType()

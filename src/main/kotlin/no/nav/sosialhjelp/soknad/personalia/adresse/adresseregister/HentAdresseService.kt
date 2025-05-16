@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister
 
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.springframework.stereotype.Component
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
 class HentAdresseService(
@@ -26,7 +26,7 @@ class HentAdresseService(
     }
 
     fun hentKartverketMatrikkelAdresseForInnloggetBruker(): KartverketMatrikkelAdresse? {
-        val person = personService.hentPerson(SubjectHandlerUtils.getUserIdFromToken())
+        val person = personService.hentPerson(personId(), hentEktefelle = false)
         return person?.bostedsadresse?.matrikkeladresse?.matrikkelId?.let { hentKartverketMatrikkelAdresse(it) }
     }
 }

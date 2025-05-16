@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection

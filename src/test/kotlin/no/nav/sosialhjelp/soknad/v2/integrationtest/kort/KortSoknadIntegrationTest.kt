@@ -21,7 +21,8 @@ import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.KontaktIntegrationTest.Companion.createKommuneInfos
-import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseInput
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
@@ -191,11 +192,11 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Funn av gammel soknad eldre enn 120 dager hos FIKS skal ikke gi kort soknad`() {
         every { digisosService.getSoknaderForUser(any()) } returns
-            listOf(createDigisosSak(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))))
+            listOf(createDigisosSak(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))))
         every { digisosService.getInnsynsfilForSoknad(any(), any(), any()) } returns
             createJsonDigisosSoker(
                 listOf(
-                    createMottattHendelse(TimestampConverter.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))),
+                    createMottattHendelse(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))),
                 ),
             )
         val soknadId = createSoknadWithMetadata()

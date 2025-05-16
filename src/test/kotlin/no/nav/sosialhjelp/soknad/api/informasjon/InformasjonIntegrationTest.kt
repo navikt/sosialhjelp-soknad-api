@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
@@ -20,7 +20,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
     @BeforeEach
     override fun before() {
-        every { personService.harAdressebeskyttelse(any()) } returns false
+        every { personService.hasAdressebeskyttelse(any()) } returns false
 
         opprettSoknadBeforeEach = false
         super.before()
@@ -47,7 +47,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Hvis person har adressebeskyttelse, skal alle soknader slettes`() {
-        every { personService.harAdressebeskyttelse(any()) } returns true
+        every { personService.hasAdressebeskyttelse(any()) } returns true
 
         val soknadIds =
             listOf(
@@ -87,7 +87,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `X antall sendte soknader skal vise 0 ved adressebeskyttelse`() {
-        every { personService.harAdressebeskyttelse(any()) } returns true
+        every { personService.hasAdressebeskyttelse(any()) } returns true
 
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(5))
             .also { soknadMetadataRepository.save(it) }

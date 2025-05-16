@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
@@ -9,7 +10,11 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import java.time.Duration
 
 @Component
 class PersonService(
@@ -28,6 +33,18 @@ class PersonService(
         }
         return person
     }
+
+    @Cacheable(AdressebeskyttelseCacheConfig.CACHE_NAME, unless = "#result == true")
+    fun hasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
+
+    @CacheEvict(AdressebeskyttelseCacheConfig.CACHE_NAME, key = "#ident")
+    fun onSendSoknadHasAdressebeskyttelse(ident: String): Boolean = hasGradering(ident)
+
+    private fun hasGradering(ident: String): Boolean =
+        hentPersonClient
+            .hentAdressebeskyttelse(ident)
+            .let { dto -> mapper.personAdressebeskyttelseDtoToGradering(dto) }
+            .isGradert()
 
     @Deprecated("Skal ikke hente informasjon om barn uten samtykke")
     fun hentBarnForPerson(ident: String): List<Barn>? {
@@ -75,14 +92,6 @@ class PersonService(
         return null
     }
 
-    fun hentAdressebeskyttelse(ident: String): Gradering? {
-        val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident)
-        return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
-    }
-
-    fun harAdressebeskyttelse(ident: String): Boolean =
-        hentAdressebeskyttelse(ident) in listOf(Gradering.FORTROLIG, Gradering.STRENGT_FORTROLIG, Gradering.STRENGT_FORTROLIG_UTLAND)
-
     private fun erFDAT(ident: String): Boolean {
         return ident.length == 11 && ident.substring(6).equals("00000", ignoreCase = true)
     }
@@ -106,5 +115,15 @@ class PersonService(
         private val log = getLogger(PersonService::class.java)
 
         private const val BARN = "BARN"
+    }
+}
+
+private fun Gradering?.isGradert() = this?.let { Gradering.isGradert(it) } ?: false
+
+@Configuration
+class AdressebeskyttelseCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_HALVTIME) {
+    companion object {
+        const val CACHE_NAME = "adressebeskyttelse"
+        private val EN_HALVTIME = Duration.ofMinutes(30)
     }
 }
