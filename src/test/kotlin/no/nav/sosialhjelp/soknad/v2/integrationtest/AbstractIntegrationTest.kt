@@ -1,11 +1,14 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
+import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.integrationtest.HentPersonClientMock
+import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
@@ -50,6 +53,9 @@ abstract class AbstractIntegrationTest {
     @SpykBean
     protected lateinit var personIdService: PersonIdService
 
+    @MockkBean
+    protected lateinit var hentPersonClient: HentPersonClient
+
     protected lateinit var token: SignedJWT
 
     protected lateinit var soknadId: UUID
@@ -65,6 +71,9 @@ abstract class AbstractIntegrationTest {
             opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
             every { personIdService.findPersonId(soknadId) } returns userId
         }
+
+        setupPdlAnswers()
+
         token =
             when (useTokenX) {
                 true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
@@ -77,6 +86,13 @@ abstract class AbstractIntegrationTest {
                     claims = mapOf("acr" to "idporten-loa-high"),
                 )
             }
+    }
+
+    protected fun setupPdlAnswers() {
+        every { hentPersonClient.hentPerson(any()) } returns HentPersonClientMock().hentPerson("ident")
+        every { hentPersonClient.hentAdressebeskyttelse(any()) } returns HentPersonClientMock().hentAdressebeskyttelse("ident")
+        every { hentPersonClient.hentEktefelle(any()) } returns HentPersonClientMock().hentEktefelle("ident")
+        every { hentPersonClient.hentBarn(any()) } returns HentPersonClientMock().hentBarn("ident")
     }
 
     protected fun <T> doGet(

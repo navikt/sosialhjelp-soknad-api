@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.nowWithMillis
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
@@ -11,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -55,15 +58,11 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
                 createAndSaveSoknad(opprettet = nowWithMillis().minusDays(2)),
             )
 
-        doGet(
-            uri = SESSION_URL,
-            responseBodyClass = SessionResponse::class.java,
-        )
-            .also { response ->
-                assertThat(response.userBlocked).isTrue()
-                assertThat(response.open).hasSize(0)
-                assertThat(response.numRecentlySent).isEqualTo(0)
-            }
+        doGetFullResponse(uri = SESSION_URL)
+            .expectStatus().isForbidden
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also { apiError -> assertThat(apiError?.error?.name).isEqualTo(HttpStatus.FORBIDDEN.reasonPhrase) }
 
         assertThat(metadataRepository.findAllById(soknadIds)).isEmpty()
     }

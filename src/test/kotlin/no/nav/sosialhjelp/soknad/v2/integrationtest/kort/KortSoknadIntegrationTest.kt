@@ -69,6 +69,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
         every { digisosService.getSoknaderForUser(any()) } returns emptyList()
+
+        setupPdlAnswers()
     }
 
     @Test

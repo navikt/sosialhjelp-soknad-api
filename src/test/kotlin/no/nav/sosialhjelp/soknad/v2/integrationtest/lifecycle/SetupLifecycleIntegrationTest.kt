@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.slot
@@ -46,7 +47,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
-    @MockkBean
+    @SpykBean
     protected lateinit var personService: PersonService
 
     @MockkBean
@@ -79,6 +80,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     protected fun setup() {
         setupMocks()
+        setupPdlAnswers()
         // @Transactional fungerer ikke helt som ønsket når man manipulerer data og gjør http-kall i samme test
         soknadRepository.deleteAll()
     }

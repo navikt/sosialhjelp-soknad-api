@@ -25,7 +25,7 @@ spotless {
         target("*.md", ".gitignore", "Dockerfile")
 
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
     kotlin { ktlint(libs.versions.ktlint.get()) }
