@@ -4,6 +4,8 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 @SpringBootApplication
@@ -23,4 +25,5 @@ private fun configureApplication(builder: SpringApplicationBuilder): SpringAppli
         .sources(Application::class.java)
 }
 
-fun nowWithMillis() = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+fun nowWithMillis(): LocalDateTime =
+    ZonedDateTime.now(ZoneId.of("Europe/Oslo")).toLocalDateTime().truncatedTo(ChronoUnit.MILLIS)
