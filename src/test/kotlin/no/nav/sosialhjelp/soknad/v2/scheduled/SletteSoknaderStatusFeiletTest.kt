@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SletteSoknaderStatusFeiletJob
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

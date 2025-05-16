@@ -29,6 +29,8 @@ class DittNavIntegrationTest : AbstractIntegrationTest() {
     override fun before() {
         useTokenX = true
         super.before()
+
+        metadataRepository.deleteAll()
     }
 
     @Test

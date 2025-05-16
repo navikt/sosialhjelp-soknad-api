@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
-import no.nav.sosialhjelp.soknad.nowWithMillis
+import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt

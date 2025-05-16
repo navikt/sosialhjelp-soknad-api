@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
@@ -16,6 +17,11 @@ import java.util.UUID
 class SoknadJobServiceTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var soknadJobService: SoknadJobService
+
+    @BeforeEach
+    fun setUp() {
+        metadataRepository.deleteAll()
+    }
 
     @Test
     fun `Finder skal kun returnere Ids fra eksisterende soknader`() {

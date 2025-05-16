@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
-import no.nav.sosialhjelp.soknad.api.informasjon.SessionDto
+import no.nav.sosialhjelp.soknad.api.informasjon.SessionResponse
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
@@ -8,12 +8,18 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.scheduled.createMetadata
 import no.nav.sosialhjelp.soknad.v2.scheduled.nowMinusDays
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.UUID
 
 class InformasjonIntegrationTest : AbstractIntegrationTest() {
+    @BeforeEach
+    fun setUp() {
+        metadataRepository.deleteAll()
+    }
+
     @Test
     fun `Skal returnere riktige open soknader`() {
         createMetadataAndSoknad(nowMinusDays(10), SoknadStatus.SENDT, personId = userId)
@@ -24,7 +30,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         val pabegyntSoknadDtos =
             doGet(
                 uri = url,
-                responseBodyClass = SessionDto::class.java,
+                responseBodyClass = SessionResponse::class.java,
             )
                 .let { dto ->
                     assertThat(dto.open).hasSize(2)
