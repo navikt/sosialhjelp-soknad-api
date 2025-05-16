@@ -333,7 +333,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
-        assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.HUSLEIEKONTRAKT }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE }
         assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_ANNET }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_STROM }
         assertThat(dokumentasjon).anyMatch { it.type == InntektType.LONNSLIPP }

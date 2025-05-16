@@ -149,7 +149,6 @@ class DokumentasjonServiceImpl(
             UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
             UtgiftType.UTGIFTER_SFO, // faktura|sfo
             InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
-            AnnenDokumentasjonType.HUSLEIEKONTRAKT, // husleiekontrakt|husleiekontrakt
             UtgiftType.UTGIFTER_HUSLEIE, // faktura|husleie
             FormueType.FORMUE_ANNET, // kontooversikt|annet
             UtgiftType.UTGIFTER_STROM, // faktura|strom
