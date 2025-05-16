@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampConverter
@@ -42,6 +43,8 @@ class SoknadToJsonMapper(
     }
 
     internal companion object Mapper {
+        private val logger by logger()
+
         fun doMapping(
             domainSoknad: Soknad,
             tidspunkt: Tidspunkt,
@@ -55,6 +58,8 @@ class SoknadToJsonMapper(
                     tidspunkt.sendtInn?.let {
                         TimestampConverter.convertToOffsettDateTimeUTCString(it)
                     }
+                logger.info("Innsendingstidspunkt soknad: ${tidspunkt.sendtInn?.toString()}")
+                logger.info("Innsendingstidspunkt json: ${soknad.innsendingstidspunkt}")
                 soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
                 soknad.data.soknadstype = domainSoknad.toJsonSoknadType()
             }
