@@ -22,18 +22,18 @@ class KontonummerController(
     @GetMapping
     fun getKontonummer(
         @PathVariable("soknadId") soknadId: UUID,
-    ): KontoinformasjonDto = eierService.findOrError(soknadId).kontonummer.toDTO()
+    ): KontoinformasjonDTO = eierService.findOrError(soknadId).kontonummer.toDTO()
 
     @PutMapping
     fun updateKontoInformasjonBruker(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: KontoinformasjonInput,
-    ): KontoinformasjonDto = eierService.updateKontonummer(soknadId, input.kontonummerBruker, input.harIkkeKonto).toDTO()
+    ): KontoinformasjonDTO = eierService.updateKontonummer(soknadId, input.kontonummerBruker, input.harIkkeKonto).toDTO()
 
-    private fun Kontonummer.toDTO(): KontoinformasjonDto = KontoinformasjonDto(harIkkeKonto, fraRegister, fraBruker)
+    private fun Kontonummer.toDTO(): KontoinformasjonDTO = KontoinformasjonDTO(harIkkeKonto, fraRegister, fraBruker)
 }
 
-data class KontoinformasjonDto(
+data class KontoinformasjonDTO(
     val harIkkeKonto: Boolean? = null,
     val kontonummerRegister: String? = null,
     val kontonummerBruker: String? = null,

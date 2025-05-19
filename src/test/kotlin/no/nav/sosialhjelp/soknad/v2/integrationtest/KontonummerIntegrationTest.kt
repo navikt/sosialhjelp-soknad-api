@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonDto
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonDTO
 import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoinformasjonDto::class.java,
+            KontoinformasjonDTO::class.java,
         ).also {
             assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer.fraBruker)
             assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer.fraRegister)
@@ -35,7 +35,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             input,
-            KontoinformasjonDto::class.java,
+            KontoinformasjonDTO::class.java,
             soknadId,
         )
 
@@ -53,7 +53,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             KontoinformasjonInput(harIkkeKonto = true),
-            KontoinformasjonDto::class.java,
+            KontoinformasjonDTO::class.java,
             soknadId,
         )
 
