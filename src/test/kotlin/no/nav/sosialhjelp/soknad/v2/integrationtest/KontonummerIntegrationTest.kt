@@ -2,14 +2,14 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonDTO
-import no.nav.sosialhjelp.soknad.v2.soknad.KontoinformasjonInput
+import no.nav.sosialhjelp.soknad.v2.soknad.HarIkkeKontoInput
+import no.nav.sosialhjelp.soknad.v2.soknad.KontoInformasjonDto
+import no.nav.sosialhjelp.soknad.v2.soknad.KontonummerBrukerInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
-import kotlin.jvm.java
 
 class KontonummerIntegrationTest : AbstractIntegrationTest() {
     @Test
@@ -19,7 +19,7 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doGet(
             "/soknad/${soknad.id}/personalia/kontonummer",
-            KontoinformasjonDTO::class.java,
+            KontoInformasjonDto::class.java,
         ).also {
             assertThat(it.kontonummerBruker).isEqualTo(eier.kontonummer.fraBruker)
             assertThat(it.kontonummerRegister).isEqualTo(eier.kontonummer.fraRegister)
@@ -31,17 +31,17 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
     fun `Oppdatere brukers kontonummer skal lagres i db`() {
         val soknadId = createSoknadOgEier()
 
-        val input = KontoinformasjonInput(kontonummerBruker = "12345312345")
+        val input = KontonummerBrukerInput(kontonummer = "12345312345")
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
             input,
-            KontoinformasjonDTO::class.java,
+            KontoInformasjonDto::class.java,
             soknadId,
         )
 
         eierRepository.findByIdOrNull(soknadId)?.let {
             assertThat(it.kontonummer.harIkkeKonto).isNull()
-            assertThat(it.kontonummer.fraBruker).isEqualTo(input.kontonummerBruker)
+            assertThat(it.kontonummer.fraBruker).isEqualTo(input.kontonummer)
         }
             ?: fail("Fant ikke brukerdata")
     }
@@ -52,8 +52,8 @@ class KontonummerIntegrationTest : AbstractIntegrationTest() {
 
         doPut(
             "/soknad/$soknadId/personalia/kontonummer",
-            KontoinformasjonInput(harIkkeKonto = true),
-            KontoinformasjonDTO::class.java,
+            HarIkkeKontoInput(true),
+            KontoInformasjonDto::class.java,
             soknadId,
         )
 
