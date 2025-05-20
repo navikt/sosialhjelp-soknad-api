@@ -22,7 +22,6 @@ class UtbetalingerFraNavService(
         return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
             ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { utbetalinger ->
-                1
 
                 val duplicates =
                     utbetalinger.groupBy {
