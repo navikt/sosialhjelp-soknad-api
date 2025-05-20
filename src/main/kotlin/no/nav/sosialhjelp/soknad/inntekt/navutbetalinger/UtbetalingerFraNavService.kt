@@ -22,10 +22,11 @@ class UtbetalingerFraNavService(
         return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
             ?.toUtbetalingMedKomponent(orgNavn)
             ?.also { utbetalinger ->
+                1
 
                 val duplicates =
                     utbetalinger.groupBy {
-                        listOf(it.utbetaling.tittel, it.utbetaling.belop, it.utbetaling.utbetalingsdato)
+                        listOf(it.utbetaling.tittel, it.utbetaling.netto, it.utbetaling.brutto, it.utbetaling.utbetalingsdato)
                     }.filter { it.value.size > 1 }
                         .map { it.key to it.value.size }
 
