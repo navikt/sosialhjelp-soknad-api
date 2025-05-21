@@ -4,6 +4,7 @@ import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
@@ -222,7 +223,7 @@ abstract class AbstractIntegrationTest {
         requestBody: Any,
         httpStatus: HttpStatus,
         soknadId: UUID? = null,
-    ): SoknadApiError {
+    ): InnsendingFeiletError {
         return webTestClient.post()
             .uri(uri)
             .header("Authorization", "Bearer ${token.serialize()}")
@@ -230,7 +231,7 @@ abstract class AbstractIntegrationTest {
             .body(BodyInserters.fromValue(requestBody))
             .exchange()
             .expectStatus().isEqualTo(httpStatus)
-            .expectBody(SoknadApiError::class.java)
+            .expectBody(InnsendingFeiletError::class.java)
             .returnResult()
             .responseBody!!
     }
