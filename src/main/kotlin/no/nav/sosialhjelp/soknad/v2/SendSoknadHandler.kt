@@ -78,6 +78,17 @@ class SendSoknadHandler(
                 }
                 .getOrThrow()
 
+        val duplicates =
+            json.soknad.data.okonomi.opplysninger.utbetaling.groupBy {
+                listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto)
+            }.filter { it.value.size > 1 }
+
+        val totalDuplicatesCount = duplicates.values.sumOf { it.size }
+
+        if (totalDuplicatesCount > 0) {
+            logger.info("Søknad sendt, ut av ${json.soknad.data.okonomi.opplysninger.utbetaling.size} utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)")
+        }
+
         logger.info("Sendt ${json.soknad.data.soknadstype.value()} søknad til FIKS med DigisosId: $digisosId")
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
