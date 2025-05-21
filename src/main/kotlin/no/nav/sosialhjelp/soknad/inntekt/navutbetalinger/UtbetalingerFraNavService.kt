@@ -21,7 +21,20 @@ class UtbetalingerFraNavService(
     fun getUtbetalingerSiste40Dager(personId: String): List<UtbetalingMedKomponent>? {
         return navUtbetalingerClient.getUtbetalingerSiste40Dager(personId)
             ?.toUtbetalingMedKomponent(orgNavn)
-            ?.also { logger.info("Antall navytelser utbetaling: ${it.size}. ${it.komponenterLogg()}") }
+            ?.also { utbetalinger ->
+
+                val duplicates =
+                    utbetalinger.groupBy {
+                        listOf(it.utbetaling.tittel, it.utbetaling.netto, it.utbetaling.brutto, it.utbetaling.utbetalingsdato)
+                    }.filter { it.value.size > 1 }
+                        .map { it.key to it.value.size }
+
+                if (duplicates.isNotEmpty()) {
+                    logger.warn("Ut av ${utbetalinger.size} utbetaling(er) så er det ${duplicates.size + 1} som er identiske utbetaling(er)")
+                }
+
+                logger.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${utbetalinger.komponenterLogg()}")
+            }
     }
 
     private val orgNavn get() = orgService.hentOrgNavn(ORGNR_NAV)
