@@ -6,6 +6,7 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
@@ -135,6 +137,41 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         metadataRepository.findByIdOrNull(soknadId)!!
             .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
+    }
+
+    @Test
+    fun `Feil ved innsending skal returnere objekt med riktig slettedato`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
+            RuntimeException("Something failed")
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        val innsendingFeiletError =
+            doPostFullResponse(uri = sendUri(soknadId))
+                .expectStatus().is5xxServerError
+                .expectBody(InnsendingFeiletError::class.java)
+                .returnResult().responseBody
+
+        val deletionDate =
+            metadataRepository.findByIdOrNull(soknadId)!!
+                .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
+                .tidspunkt
+                .opprettet
+                .toLocalDate()
+                .plusDays(19)
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+        assertThat(deletionDate).isEqualTo(innsendingFeiletError!!.deletionDate)
     }
 
     private fun createNewSoknad(): UUID {

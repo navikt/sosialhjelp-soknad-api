@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
@@ -55,9 +56,11 @@ class SoknadLifecycleController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SoknadSendtDto {
-        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
+        throw InnsendingFeiletException(LocalDateTime.now(), "Noe feilet", null, soknadId)
 
-        return SoknadSendtDto(digisosId, innsendingstidspunkt)
+//        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
+//
+//        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
     @DeleteMapping("/{soknadId}/delete")
