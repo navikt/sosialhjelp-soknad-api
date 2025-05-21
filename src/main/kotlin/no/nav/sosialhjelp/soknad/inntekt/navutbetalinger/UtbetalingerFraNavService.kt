@@ -27,10 +27,11 @@ class UtbetalingerFraNavService(
                     utbetalinger.groupBy {
                         listOf(it.utbetaling.tittel, it.utbetaling.netto, it.utbetaling.brutto, it.utbetaling.utbetalingsdato)
                     }.filter { it.value.size > 1 }
-                        .map { it.key to it.value.size }
 
-                if (duplicates.isNotEmpty()) {
-                    logger.warn("Ut av ${utbetalinger.size} utbetaling(er) så er det ${duplicates.size + 1} som er identiske utbetaling(er)")
+                val totalDuplicatesCount = duplicates.values.sumOf { it.size }
+
+                if (totalDuplicatesCount > 0) {
+                    logger.info("Ut av ${utbetalinger.size} utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)")
                 }
 
                 logger.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${utbetalinger.komponenterLogg()}")
