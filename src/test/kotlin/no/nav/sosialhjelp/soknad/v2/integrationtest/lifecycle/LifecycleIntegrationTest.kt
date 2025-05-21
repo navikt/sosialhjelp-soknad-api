@@ -134,6 +134,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
             soknadId = soknadId,
         )
+            .also { assertThat(it.deletionDate).isNotNull() }
 
         metadataRepository.findByIdOrNull(soknadId)!!
             .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
