@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.http.HttpHeaders
@@ -57,7 +58,9 @@ class SoknadLifecycleController(
     ): SoknadSendtDto {
         val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
 
-        return SoknadSendtDto(digisosId, innsendingstidspunkt)
+        throw AuthorizationException("Ikke tilgang")
+
+//        return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }
 
     @DeleteMapping("/{soknadId}/delete")
