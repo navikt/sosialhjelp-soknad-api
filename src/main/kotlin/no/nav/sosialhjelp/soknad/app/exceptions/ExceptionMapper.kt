@@ -30,6 +30,8 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @ControllerAdvice
 class ExceptionMapper(
@@ -213,6 +215,13 @@ class ExceptionMapper(
         return buildError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, SoknadApiError(SoknadApiErrorType.DokumentUploadPossibleVirus))
     }
 
+    @ExceptionHandler(InnsendingFeiletException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleInnsendingFeiletException(e: InnsendingFeiletException): ResponseEntity<InnsendingFeiletError> {
+        log.error("Innsending feilet", e)
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, InnsendingFeiletError(e.deletionDate.toDateString()))
+    }
+
     override fun handleMaxUploadSizeExceededException(
         ex: MaxUploadSizeExceededException,
         headers: HttpHeaders,
@@ -225,14 +234,17 @@ class ExceptionMapper(
 
     companion object {
         private val log by logger()
-
-        private fun <T> buildError(
-            status: HttpStatusCode,
-            body: T? = null,
-        ): ResponseEntity<T> =
-            ResponseEntity
-                .status(status)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(body)
     }
 }
+
+private fun <T> buildError(
+    status: HttpStatusCode,
+    body: T? = null,
+): ResponseEntity<T> =
+    ResponseEntity
+        .status(status)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(body)
+
+private fun LocalDateTime.toDateString(): String =
+    toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))

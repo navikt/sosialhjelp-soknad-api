@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
@@ -71,9 +72,14 @@ class SoknadLifecycleHandlerImpl(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
                 )
             }
-            .onFailure {
+            .onFailure { ex ->
                 prometheusMetricsService.reportFeilet()
-                throw SoknadLifecycleException("Feil ved innsending av søknad.", it, soknadId)
+                throw InnsendingFeiletException(
+                    deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
+                    message = "Feil ved innsending av søknad.",
+                    throwable = ex,
+                    id = soknadId,
+                )
             }
             .getOrThrow()
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }

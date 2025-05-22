@@ -4,10 +4,12 @@ import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.eier.EierRepository
 import no.nav.sosialhjelp.soknad.v2.kontakt.KontaktRepository
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
@@ -40,7 +42,7 @@ abstract class AbstractIntegrationTest {
     protected lateinit var kontaktRepository: KontaktRepository
 
     @Autowired
-    protected lateinit var soknadMetadataRepository: SoknadMetadataRepository
+    protected lateinit var metadataRepository: SoknadMetadataRepository
 
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
@@ -54,13 +56,27 @@ abstract class AbstractIntegrationTest {
 
     protected var opprettSoknadBeforeEach = true
 
+    protected var useTokenX = false
+
     @BeforeEach
     fun before() {
         if (opprettSoknadBeforeEach) {
-            soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
+            soknadId = metadataRepository.save(opprettSoknadMetadata()).soknadId
+            opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
             every { personIdService.findPersonId(soknadId) } returns userId
         }
-        token = mockOAuth2Server.issueToken("selvbetjening", userId, "someaudience", claims = mapOf("acr" to "idporten-loa-high"))
+        token =
+            when (useTokenX) {
+                true -> Pair("tokenx", "localhost:teamdigisos:sosialhjelp-soknad-api")
+                false -> Pair("selvbetjening", "someaudience")
+            }.let { (issuer, audience) ->
+                mockOAuth2Server.issueToken(
+                    issuerId = issuer,
+                    subject = userId,
+                    audience = audience,
+                    claims = mapOf("acr" to "idporten-loa-high"),
+                )
+            }
     }
 
     protected fun <T> doGet(
@@ -198,6 +214,24 @@ abstract class AbstractIntegrationTest {
             .exchange()
             .expectStatus().isEqualTo(httpStatus)
             .expectBody(SoknadApiError::class.java)
+            .returnResult()
+            .responseBody!!
+    }
+
+    protected fun doPostExpectError(
+        uri: String,
+        requestBody: Any,
+        httpStatus: HttpStatus,
+        soknadId: UUID? = null,
+    ): InnsendingFeiletError {
+        return webTestClient.post()
+            .uri(uri)
+            .header("Authorization", "Bearer ${token.serialize()}")
+            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(requestBody))
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus)
+            .expectBody(InnsendingFeiletError::class.java)
             .returnResult()
             .responseBody!!
     }

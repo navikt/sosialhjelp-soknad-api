@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -17,12 +16,12 @@ class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(jobName = "Sletter gamle soknader som ikke er sendt inn", leaderElection) {
+) : AbstractJob(leaderElection, "Slette soknader") {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() =
         doInJob {
-            soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
-                .also { ids -> if (ids.isNotEmpty()) handleOldSoknadIds(ids) }
+            val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+            if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
         }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
@@ -32,7 +31,8 @@ class SlettGamleSoknaderJob(
             runCatching { soknadJobService.deleteSoknadById(soknadId) }
                 .onSuccess {
                     deleted++
-                    metadataService.updateSoknadStatus(soknadId, AVBRUTT)
+                    // TODO Hvis man har FK i databasen fra soknad -> metadata slipper man denne doble slettingen
+                    metadataService.deleteMetadata(soknadId)
                 }
                 .onFailure { logger.error("Kunne ikke slette soknad", it) }
                 .getOrNull()
