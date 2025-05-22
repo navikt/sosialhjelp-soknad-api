@@ -16,4 +16,5 @@ class WebConfig(
     }
 }
 
+// alle klasser som arver dette vil automatisk bli lagt til i registry
 interface SoknadApiHandlerInterceptor : HandlerInterceptor
