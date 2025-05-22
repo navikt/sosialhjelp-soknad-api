@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
@@ -31,7 +30,7 @@ class SendSoknadHandler(
     private val jsonGenerator: JsonInternalSoknadGenerator,
     private val soknadValidator: SoknadValidator,
     private val soknadService: SoknadService,
-    private val metadataService: SoknadMetadataService,
+    private val soknadMetadataService: SoknadMetadataService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -39,7 +38,7 @@ class SendSoknadHandler(
         soknadId: UUID,
         token: String?,
     ): SoknadSendtInfo {
-        val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
+        val innsendingTidspunkt = soknadMetadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
 
         val json = jsonGenerator.createJsonInternalSoknad(soknadId)
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
@@ -64,7 +63,7 @@ class SendSoknadHandler(
                 .onSuccess { digisosId ->
                     mottaker.kommunenummer
                         ?.also {
-                            metadataService.updateSoknadSendt(
+                            soknadMetadataService.updateSoknadSendt(
                                 soknadId = soknadId,
                                 kommunenummer = mottaker.kommunenummer,
                                 digisosId = digisosId,
@@ -73,7 +72,7 @@ class SendSoknadHandler(
                         ?: error("NavMottaker mangler kommunenummer")
                 }
                 .onFailure {
-                    metadataService.updateSendingFeilet(soknadId)
+                    soknadMetadataService.updateSendingFeilet(soknadId)
                     logger.error("Feil ved sending av soknad til FIKS", it)
                     throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
                 }
@@ -100,16 +99,6 @@ class SendSoknadHandler(
             isKortSoknad = soknadService.erKortSoknad(soknadId),
             innsendingTidspunkt = innsendingTidspunkt,
         )
-    }
-
-    fun getDeletionDate(soknadId: UUID): LocalDateTime {
-        return metadataService.getMetadataForSoknad(soknadId)
-            .run {
-                when (status) {
-                    SoknadStatus.INNSENDING_FEILET -> tidspunkt.opprettet.plusDays(19)
-                    else -> tidspunkt.opprettet.plusDays(14)
-                }
-            }
     }
 
     private fun JsonInternalSoknad.toVedleggJson(): String {

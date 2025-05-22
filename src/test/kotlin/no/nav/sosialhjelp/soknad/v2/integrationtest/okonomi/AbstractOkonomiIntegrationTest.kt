@@ -32,7 +32,7 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     protected fun setup() {
         metadata =
-            metadataRepository.save(
+            soknadMetadataRepository.save(
                 SoknadMetadata(
                     soknadId = UUID.randomUUID(),
                     personId = "12345612345",

@@ -20,7 +20,7 @@ class SlettGamleSoknaderMedStatusSendtJobTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         soknadRepository.deleteAll()
-        metadataRepository.deleteAll()
+        soknadMetadataRepository.deleteAll()
     }
 
     @Test
@@ -59,7 +59,7 @@ class SlettGamleSoknaderMedStatusSendtJobTest : AbstractIntegrationTest() {
         opprettet: LocalDateTime,
         status: SoknadStatus = SoknadStatus.SENDT,
     ): UUID {
-        val soknadId = metadataRepository.createMetadata(opprettet, status)
+        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId

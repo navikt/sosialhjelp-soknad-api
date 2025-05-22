@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class SlettGammelMetadataJob(
     leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection) {
+) : AbstractJob(jobName = "Slette gamle metadata", leaderElection) {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGammelMetadata() =
         doInJob {

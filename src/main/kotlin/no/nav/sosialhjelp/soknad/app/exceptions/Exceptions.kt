@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import java.time.LocalDateTime
 import java.util.UUID
 
 open class SosialhjelpSoknadApiException : RuntimeException {
@@ -14,9 +13,6 @@ open class SosialhjelpSoknadApiException : RuntimeException {
         this.id = id
     }
 }
-
-class IkkeFunnetException(melding: String?, e: Exception? = null) :
-    SosialhjelpSoknadApiException(melding, e)
 
 class SamtidigOppdateringException(message: String?) : RuntimeException(message)
 
@@ -40,15 +36,8 @@ class FeilVedSendingTilFiksException(
     id: String?,
 ) : SosialhjelpSoknadApiException(message, t, id)
 
-open class SoknadLifecycleException(
+class SoknadLifecycleException(
     message: String?,
     t: Throwable?,
     id: UUID?,
 ) : SosialhjelpSoknadApiException(message, t, id.toString())
-
-class InnsendingFeiletException(
-    val deletionDate: LocalDateTime,
-    message: String?,
-    throwable: Throwable?,
-    id: UUID?,
-) : SoknadLifecycleException(message, throwable, id)

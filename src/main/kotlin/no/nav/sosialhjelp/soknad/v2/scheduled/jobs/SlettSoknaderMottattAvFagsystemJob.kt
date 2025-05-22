@@ -19,17 +19,16 @@ class SlettSoknaderMottattAvFagsystemJob(
     private val metadataService: SoknadMetadataService,
     private val soknadJobService: SoknadJobService,
     private val digisosApiService: DigisosApiService,
-) : AbstractJob(leaderElection, "Slette mottatte soknader") {
+) : AbstractJob(jobName = "Slette mottatte soknader", leaderElection) {
     @Scheduled(cron = HVERT_MINUTT)
-    suspend fun slettSoknaderSomErMottattAvFagsystem() =
-        doInJob {
-            val metadatas = getExistingMetadatasStatusSendt()
-            metadatas
-                .mapNotNull { metadata -> metadata.getDigisosId() }
-                .let { digisosIdsSendt -> digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt) }
-                .let { digisosIdsMottatt -> metadatas.filterSoknadIdsStatusMottat(digisosIdsMottatt) }
-                .also { soknadIdsMottatt -> handleMottatteIds(soknadIdsMottatt) }
-        }
+    suspend fun slettSoknaderSomErMottattAvFagsystem() {
+        val metadatas = getExistingMetadatasStatusSendt()
+        metadatas
+            .mapNotNull { metadata -> metadata.getDigisosId() }
+            .let { digisosIdsSendt -> digisosApiService.getDigisosIdsStatusMottatt(digisosIdsSendt) }
+            .let { digisosIdsMottatt -> metadatas.filterSoknadIdsStatusMottat(digisosIdsMottatt) }
+            .also { soknadIdsMottatt -> handleMottatteIds(soknadIdsMottatt) }
+    }
 
     private fun getExistingMetadatasStatusSendt(): List<SoknadMetadata> =
         soknadJobService.findSoknadIdsWithStatus(SENDT).let { metadataService.getMetadatasForIds(it) }

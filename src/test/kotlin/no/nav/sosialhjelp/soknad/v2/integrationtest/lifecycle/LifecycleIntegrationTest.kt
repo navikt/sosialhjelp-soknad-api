@@ -6,7 +6,6 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -22,9 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
@@ -37,7 +34,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .also { soknadId -> assertThat(soknadId).isInstanceOf(UUID::class.java) }
             .also { soknadId ->
                 assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull
-                assertThat(metadataRepository.findByIdOrNull(soknadId)).isNotNull
+                assertThat(soknadMetadataRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(eierRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(kontaktRepository.findByIdOrNull(soknadId)).isNotNull
                 assertThat(familieRepository.findByIdOrNull(soknadId)).isNotNull
@@ -85,7 +82,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             }
 
         assertCapturedValues()
-        metadataRepository.findByIdOrNull(soknadId)!!
+        soknadMetadataRepository.findByIdOrNull(soknadId)!!
             .let { assertThat(it.status).isEqualTo(SoknadStatus.SENDT) }
     }
 
@@ -108,71 +105,6 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
-    }
-
-    @Test
-    fun `Feil ved sending til FIKS skal sette status FEILET`() {
-        val soknadId = createNewSoknad()
-
-        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
-            MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Noe feilet")
-
-        kontaktRepository.findByIdOrNull(soknadId)!!
-            .run {
-                copy(
-                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
-                    mottaker = createNavEnhet(),
-                )
-            }
-            .also { kontaktRepository.save(it) }
-
-        doPostExpectError(
-            uri = sendUri(soknadId),
-            requestBody = "",
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
-            soknadId = soknadId,
-        )
-            .also { assertThat(it.deletionDate).isNotNull() }
-
-        metadataRepository.findByIdOrNull(soknadId)!!
-            .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
-    }
-
-    @Test
-    fun `Feil ved innsending skal returnere objekt med riktig slettedato`() {
-        val soknadId = createNewSoknad()
-
-        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
-            RuntimeException("Something failed")
-
-        kontaktRepository.findByIdOrNull(soknadId)!!
-            .run {
-                copy(
-                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
-                    mottaker = createNavEnhet(),
-                )
-            }
-            .also { kontaktRepository.save(it) }
-
-        val innsendingFeiletError =
-            doPostFullResponse(uri = sendUri(soknadId))
-                .expectStatus().is5xxServerError
-                .expectBody(InnsendingFeiletError::class.java)
-                .returnResult().responseBody
-
-        val deletionDate =
-            metadataRepository.findByIdOrNull(soknadId)!!
-                .also { assertThat(it.status).isEqualTo(SoknadStatus.INNSENDING_FEILET) }
-                .tidspunkt
-                .opprettet
-                .toLocalDate()
-                .plusDays(19)
-                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-
-        assertThat(deletionDate).isEqualTo(innsendingFeiletError!!.deletionDate)
     }
 
     private fun createNewSoknad(): UUID {

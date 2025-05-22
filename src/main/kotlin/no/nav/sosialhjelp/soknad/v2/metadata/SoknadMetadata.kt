@@ -18,21 +18,6 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
     fun findSoknadIdsOlderThan(timestamp: LocalDateTime): List<UUID>
 
     fun findByPersonId(personId: String): List<SoknadMetadata>
-
-    @Query("SELECT * FROM soknad_metadata WHERE person_id = :personId AND status IN ('SENDT', 'MOTTATT_FSL')")
-    fun findSendteSoknaderForPerson(personId: String): List<SoknadMetadata>
-
-    @Query("SELECT * FROM soknad_metadata WHERE soknad_id IN (:soknadIds) AND opprettet < :timestamp")
-    fun findOlderThan(
-        soknadIds: List<UUID>,
-        timestamp: LocalDateTime,
-    ): List<SoknadMetadata>
-
-    @Query("SELECT soknad_id FROM soknad_metadata WHERE opprettet < :timestamp AND status = :status")
-    fun findOlderThanWithStatus(
-        timestamp: LocalDateTime,
-        status: SoknadStatus,
-    ): List<UUID>
 }
 
 @Table
@@ -66,7 +51,12 @@ data class Tidspunkt(
 
 enum class SoknadStatus {
     OPPRETTET,
-    INNSENDING_FEILET,
+
+    // TODO Skal vi ta vare på metadata for avbrutte soknader? Til hva ?
+    AVBRUTT,
+
+    // TODO Skal vi ta vare på metadata for ikke innsendte soknader over 14 dager? Isåfall må status endres
+    UTGATT,
     SENDT,
     MOTTATT_FSL,
 }

@@ -1,11 +1,13 @@
-package no.nav.sosialhjelp.soknad.v2.scheduled
+package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
+import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
+import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -19,30 +21,29 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
     leaderElection: LeaderElection,
-) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader") {
+) : AbstractJob(jobName = "Sjekk status eksisterende soknader", leaderElection) {
     @Scheduled(cron = HVER_TIME)
-    suspend fun checkIfExistingSoknaderHasWrongStatus() =
+    suspend fun sjekkStatus() =
         doInJob {
             soknadJobService.findAllSoknadIds()
                 .let { ids -> metadataService.findAllMetadatasForIds(ids) }
-                .filter { metadata -> filterRelevantStatus(metadata) }
-                .also { relevantSoknader -> if (relevantSoknader.isNotEmpty()) handleGamleSoknader(relevantSoknader) }
+                .filter { metadatas -> metadatas.status != OPPRETTET }
+                .also { notOpprettet -> if (notOpprettet.isNotEmpty()) handleGamleSoknader(notOpprettet) }
         }
 
-    private fun filterRelevantStatus(metadatas: SoknadMetadata) =
-        metadatas.status == SENDT || metadatas.status == MOTTATT_FSL
-
     private fun handleGamleSoknader(metadatas: List<SoknadMetadata>) {
-        val nrOfSendt = checkStatusSendt(metadatas.filter { it.status == SENDT })
-        val nrOfMottatt = checkStatusMottatt(metadatas.filter { it.status == MOTTATT_FSL })
+        val numberOfSoknaderWrongStatus =
+//            handleStatusSendt(metadatas.filter { it.status == SENDT }) +
+            handleOther(metadatas.filter { it.status != SENDT })
 
-        if (nrOfSendt + nrOfMottatt > 0) {
-            throw SoknaderFeilStatusException("Det finnes eksisterende soknader med feil status")
+        if (numberOfSoknaderWrongStatus != 0) {
+            throw SoknaderFeilStatusException("Det finnes $numberOfSoknaderWrongStatus med feil status")
         }
     }
 
-    private fun checkStatusSendt(metadatas: List<SoknadMetadata>): Int {
-        // gir kommunen noen dager på å kvittere ut
+    // TODO Inntil KS får på plass kvittering, er denne obsolete
+    // tar vare på data for sendte soknader en stund da FSL tilsynelatende ikke kvitterer ut med en gang
+    private fun handleStatusSendt(metadatas: List<SoknadMetadata>): Int {
         val olderThan = metadatas.filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) ?: false }
 
         if (olderThan.isNotEmpty()) {
@@ -58,8 +59,8 @@ class SjekkStatusEksisterendeSoknaderJob(
         return olderThan.size
     }
 
-    // skal ikke finnes eksisterende soknader med status mottatt
-    private fun checkStatusMottatt(metadatas: List<SoknadMetadata>): Int {
+    // skal ikke finnes eksisterende soknader for andre statuser
+    private fun handleOther(metadatas: List<SoknadMetadata>): Int {
         if (metadatas.isNotEmpty()) {
             metadatas
                 .map { Pair(it.soknadId, it.status) }

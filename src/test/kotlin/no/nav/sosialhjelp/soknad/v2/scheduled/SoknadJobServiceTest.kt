@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
@@ -17,11 +16,6 @@ import java.util.UUID
 class SoknadJobServiceTest : AbstractIntegrationTest() {
     @Autowired
     private lateinit var soknadJobService: SoknadJobService
-
-    @BeforeEach
-    fun setUp() {
-        metadataRepository.deleteAll()
-    }
 
     @Test
     fun `Finder skal kun returnere Ids fra eksisterende soknader`() {
@@ -35,7 +29,7 @@ class SoknadJobServiceTest : AbstractIntegrationTest() {
                 personId = "12345612345",
                 tidspunkt = Tidspunkt(opprettet = LocalDateTime.now().minusDays(18)),
                 status = SoknadStatus.OPPRETTET,
-            ).also { metadataRepository.save(it) }
+            ).also { soknadMetadataRepository.save(it) }
 
         soknadJobService.findSoknadIdsOlderThanWithStatus(nowWithMillis().minusDays(14), SoknadStatus.OPPRETTET)
             .also { ids ->
@@ -49,7 +43,7 @@ class SoknadJobServiceTest : AbstractIntegrationTest() {
         opprettet: LocalDateTime,
         status: SoknadStatus,
     ): UUID {
-        val soknadId = metadataRepository.createMetadata(opprettet, status)
+        val soknadId = soknadMetadataRepository.createMetadata(opprettet, status)
         opprettSoknad(id = soknadId).also { soknadRepository.save(it) }
 
         return soknadId
