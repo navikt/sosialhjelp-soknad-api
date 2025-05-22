@@ -97,7 +97,7 @@ class AdressebeskyttelseInterceptorTest {
     }
 
     @Test
-    fun `Kall til et annet endepunkt med adressebeskyttelse skal kaste exception`() {
+    fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
         webClient.doPostFullResponse(
             uri = "/soknad/create",
             token = token,
