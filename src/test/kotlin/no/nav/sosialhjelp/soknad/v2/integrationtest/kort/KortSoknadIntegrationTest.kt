@@ -60,7 +60,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
         clearAllMocks()
 
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
         soknadRepository.deleteAll()
 
         every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
@@ -287,7 +287,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     private fun saveSoknadAndMetadata(soknadMetadata: SoknadMetadata): UUID {
         return soknadMetadata
-            .let { soknadMetadataRepository.save(it) }
+            .let { metadataRepository.save(it) }
             .let { opprettSoknad(id = it.soknadId) }
             .let { soknadRepository.save(it) }
             .also { kontaktRepository.save(createKontakt(it.id)) }

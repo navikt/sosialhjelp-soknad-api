@@ -41,7 +41,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             .also { response ->
                 assertThat(response.open)
                     .hasSize(2)
-                    .allMatch { pabegynt -> savedIds.find { it.toString() == pabegynt.behandlingsId } != null }
+                    .allMatch { pabegynt -> savedIds.find { it == pabegynt.soknadId } != null }
             }
     }
 
@@ -65,15 +65,15 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
                 assertThat(response.numRecentlySent).isEqualTo(0)
             }
 
-        assertThat(soknadMetadataRepository.findAllById(soknadIds)).isEmpty()
+        assertThat(metadataRepository.findAllById(soknadIds)).isEmpty()
     }
 
     @Test
     fun `X antall sendte soknader skal vises`() {
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(5))
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(7))
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
 
         doGet(
             uri = SESSION_URL,
@@ -90,9 +90,9 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         every { personService.hasAdressebeskyttelse(any()) } returns true
 
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(5))
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(7))
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
 
         doGet(
             uri = SESSION_URL,
@@ -111,7 +111,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         opprettet: LocalDateTime = nowWithMillis(),
     ): UUID {
         return opprettSoknadMetadata(status = status, opprettetDato = opprettet)
-            .also { soknadMetadataRepository.save(it) }
+            .also { metadataRepository.save(it) }
             .also { soknadRepository.save(opprettSoknad(id = it.soknadId)) }
             .soknadId
     }

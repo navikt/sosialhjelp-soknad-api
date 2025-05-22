@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
+import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.v2.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.SoknadLifecycleHandlerImpl
@@ -11,6 +12,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.UUID
 
 class LifecycleServiceTest {
@@ -30,11 +32,12 @@ class LifecycleServiceTest {
     fun `Feil ved innsending av soknad kaster SoknadLifecycleException`() {
         every { sendSoknadHandler.doSendAndReturnInfo(any(), any()) } throws
             FiksException("Noe klikka ved innsending til Fiks av data fra register.", null)
+        every { sendSoknadHandler.getDeletionDate(any()) } returns LocalDateTime.now().plusDays(19)
 
         assertThatThrownBy {
             lifecycleService.sendSoknad(UUID.randomUUID(), null)
         }
-            .isInstanceOf(SoknadLifecycleException::class.java)
+            .isInstanceOf(InnsendingFeiletException::class.java)
             .hasCauseInstanceOf(FiksException::class.java)
     }
 

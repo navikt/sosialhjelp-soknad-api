@@ -29,7 +29,7 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setUp() {
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
         soknadRepository.deleteAll()
     }
 
@@ -37,20 +37,20 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
     fun `Skal slette soknader som er registrert mottatt av fagsystem`() =
         runTest {
             val soknadMetadata =
-                opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = LocalDateTime.now())
-                    .let { soknadMetadataRepository.save(it) }
-            val lagretSoknadId = opprettSoknad(id = soknadMetadata.soknadId).let { soknadRepository.save(it).id }
+                opprettSoknadMetadata(soknadId, status = SoknadStatus.SENDT, innsendtDato = LocalDateTime.now())
+                    .also { metadataRepository.save(it) }
+                    .also { opprettSoknad(id = it.soknadId).also { soknadRepository.save(it) } }
 
-            assertThat(soknadRepository.findByIdOrNull(lagretSoknadId)).isNotNull()
-            assertThat(soknadMetadataRepository.findByIdOrNull(lagretSoknadId)).isNotNull()
+            assertThat(soknadRepository.findByIdOrNull(soknadId)).isNotNull()
+            assertThat(metadataRepository.findByIdOrNull(soknadId)).isNotNull()
 
             every { digisosApiV2Client.getStatusForSoknader(any()) } returns
                 createFiksSoknadStatusListe(soknadMetadata.digisosId!!)
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
 
-            assertThat(soknadRepository.findByIdOrNull(lagretSoknadId)).isNull()
-            assertThat(soknadMetadataRepository.findByIdOrNull(lagretSoknadId)!!.status).isEqualTo(SoknadStatus.MOTTATT_FSL)
+            assertThat(soknadRepository.findByIdOrNull(soknadId)).isNull()
+            assertThat(metadataRepository.findByIdOrNull(soknadId)!!.status).isEqualTo(SoknadStatus.MOTTATT_FSL)
         }
 
     @Test
@@ -61,18 +61,18 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
                     status = SoknadStatus.SENDT,
                     innsendtDato = LocalDateTime.now(),
                 )
-                    .let { soknadMetadataRepository.save(it) }
-            val lagretSoknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
+                    .let { metadataRepository.save(it) }
+            val soknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
 
-            assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
-            assertThat(soknadMetadataRepository.findById(lagretSoknadId)).isNotEmpty
+            assertThat(soknadRepository.findById(soknadId)).isNotEmpty
+            assertThat(metadataRepository.findById(soknadId)).isNotEmpty
 
             every { digisosApiV2Client.getStatusForSoknader(any()) } returns createEmptyFiksSoknadStatusListe()
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
 
-            assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
-            assertThat(soknadMetadataRepository.findById(lagretSoknadId).get().status).isEqualTo(SoknadStatus.SENDT)
+            assertThat(soknadRepository.findById(soknadId)).isNotEmpty
+            assertThat(metadataRepository.findById(soknadId).get().status).isEqualTo(SoknadStatus.SENDT)
         }
 
     @Test
@@ -80,18 +80,18 @@ class SlettSoknaderMottattAvFagsystemJobTest : AbstractIntegrationTest() {
         runTest {
             val metadata =
                 opprettSoknadMetadata(status = SoknadStatus.OPPRETTET)
-                    .let { soknadMetadataRepository.save(it) }
-            val lagretSoknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
+                    .let { metadataRepository.save(it) }
+            val soknadId = opprettSoknad(id = metadata.soknadId).let { soknadRepository.save(it).id }
 
-            assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
-            assertThat(soknadMetadataRepository.findById(lagretSoknadId)).isNotEmpty
+            assertThat(soknadRepository.findById(soknadId)).isNotEmpty
+            assertThat(metadataRepository.findById(soknadId)).isNotEmpty
 
             slettMottatteSoknaderJob.slettSoknaderSomErMottattAvFagsystem()
 
             verify(exactly = 0) { digisosApiV2Client.getStatusForSoknader(any()) }
 
-            assertThat(soknadRepository.findById(lagretSoknadId)).isNotEmpty
-            assertThat(soknadMetadataRepository.findById(lagretSoknadId).get().status).isEqualTo(SoknadStatus.OPPRETTET)
+            assertThat(soknadRepository.findById(soknadId)).isNotEmpty
+            assertThat(metadataRepository.findById(soknadId).get().status).isEqualTo(SoknadStatus.OPPRETTET)
         }
 
     private fun createFiksSoknadStatusListe(digisosId: UUID): FiksSoknadStatusListe =

@@ -32,7 +32,7 @@ interface SoknadRepository : UpsertRepository<Soknad>, ListCrudRepository<Soknad
     @Query(
         "SELECT id FROM soknad WHERE id IN " +
             "(SELECT soknad_id FROM soknad_metadata " +
-            "WHERE person_id = :fnr AND status = 'OPPRETTET')",
+            "WHERE person_id = :fnr AND (status = 'OPPRETTET' OR status= 'INNSENDING_FEILET'))",
     )
     fun findOpenSoknadIds(fnr: String): List<UUID>
 

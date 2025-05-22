@@ -22,7 +22,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     @Test
     fun `Skal opprette metadata ved start av soknad`() {
         opprettSoknadMedEierOgKontaktForInnsending()
-            .let { soknadMetadataRepository.findByIdOrNull(it) }
+            .let { metadataRepository.findByIdOrNull(it) }
             .also { assertThat(it).isNotNull() }
     }
 
@@ -39,7 +39,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
             soknadId = uuid,
         )
 
-        soknadMetadataRepository.findByIdOrNull(uuid)!!
+        metadataRepository.findByIdOrNull(uuid)!!
             .also {
                 assertThat(it.tidspunkt.sendtInn!!.toLocalDate()).isEqualTo(LocalDate.now())
                 assertThat(it.mottakerKommunenummer).isEqualTo(opprettNavEnhet().kommunenummer)
@@ -60,7 +60,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
             soknadId = uuid,
         )
 
-        assertThat(soknadMetadataRepository.findByIdOrNull(uuid)).isNull()
+        assertThat(metadataRepository.findByIdOrNull(uuid)).isNull()
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(uuid.toString()) }
     }
 
