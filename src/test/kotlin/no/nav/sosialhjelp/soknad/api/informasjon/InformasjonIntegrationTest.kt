@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
-import no.nav.sosialhjelp.soknad.nowWithMillis
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
@@ -93,13 +93,14 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(7))
             .also { metadataRepository.save(it) }
 
-        doGet(
+        doGetFullResponse(
             uri = SESSION_URL,
-            responseBodyClass = SessionResponse::class.java,
         )
+            .expectStatus().isForbidden
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
             .also { response ->
-                assertThat(response.userBlocked).isTrue()
-                assertThat(response.numRecentlySent).isEqualTo(0)
+                assertThat(response.error).isEqualTo(SoknadApiErrorType.Forbidden)
             }
     }
 
