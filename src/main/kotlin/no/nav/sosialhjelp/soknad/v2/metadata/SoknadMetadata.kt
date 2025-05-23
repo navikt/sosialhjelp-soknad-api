@@ -57,9 +57,6 @@ enum class SoknadStatus {
     INNSENDING_FEILET,
     SENDT,
     MOTTATT_FSL,
-
-    @Deprecated("Tar ikke vare på avbrutte søknader lenger")
-    AVBRUTT,
 }
 
 private fun SoknadStatus.validate(metadata: SoknadMetadata) {
