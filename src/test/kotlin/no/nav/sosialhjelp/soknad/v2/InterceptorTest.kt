@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.v2.familie.EktefelleInput
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
 import no.nav.sosialhjelp.soknad.v2.familie.SivilstandInput
@@ -38,7 +38,7 @@ class InterceptorTest : AbstractIntegrationTest() {
                 )
                 .exchange()
                 .expectStatus().isForbidden
-                .expectBody(AuthorizationException::class.java)
+                .expectBody(SoknadApiError::class.java)
                 .returnResult()
                 .responseBody!!
 

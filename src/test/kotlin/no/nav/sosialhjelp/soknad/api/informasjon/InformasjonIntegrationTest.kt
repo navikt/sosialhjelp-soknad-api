@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -62,7 +61,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             .expectStatus().isForbidden
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
-            .also { apiError -> assertThat(apiError?.error?.name).isEqualTo(HttpStatus.FORBIDDEN.reasonPhrase) }
+            .also { apiError -> assertThat(apiError?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name) }
 
         assertThat(metadataRepository.findAllById(soknadIds)).isEmpty()
     }
@@ -100,7 +99,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { response ->
-                assertThat(response.error).isEqualTo(SoknadApiErrorType.Forbidden)
+                assertThat(response.error).isEqualTo(SoknadApiErrorType.NoAccess)
             }
     }
 
