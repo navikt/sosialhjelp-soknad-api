@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -51,7 +52,10 @@ class AdressebeskyttelseInterceptor(
             .takeIf { it.isNotEmpty() }
             ?.also { metadataService.deleteAll(it) }
 
-        throw AuthorizationException("Bruker har ikke tilgang")
+        throw AuthorizationException(
+            "Bruker har ikke tilgang",
+            errorType = SoknadApiErrorType.NoAccess,
+        )
     }
 
     companion object {

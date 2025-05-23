@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerMapping
@@ -35,7 +36,10 @@ class SoknadAccessInterceptor(
         val eier = soknadService.findOrError(soknadId).eierPersonId
 
         if (method in listOf("GET", "POST", "PUT", "DELETE") && eier != personId()) {
-            throw AuthorizationException("Bruker har ikke tilgang til søknaden")
+            throw AuthorizationException(
+                "Bruker har ikke tilgang til søknaden",
+                errorType = SoknadApiErrorType.Forbidden,
+            )
         }
     }
 }
