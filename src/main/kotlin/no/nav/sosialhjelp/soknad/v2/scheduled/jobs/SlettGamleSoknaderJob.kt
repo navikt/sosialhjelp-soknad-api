@@ -17,12 +17,12 @@ class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(jobName = "Sletter gamle soknader som ikke er sendt inn", leaderElection) {
+) : AbstractJob(leaderElection, "Slette soknader") {
     @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
     suspend fun slettGamleSoknader() =
         doInJob {
-            soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
-                .also { ids -> if (ids.isNotEmpty()) handleOldSoknadIds(ids) }
+            val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+            if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
         }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
@@ -32,7 +32,7 @@ class SlettGamleSoknaderJob(
             runCatching { soknadJobService.deleteSoknadById(soknadId) }
                 .onSuccess {
                     deleted++
-                    metadataService.updateSoknadStatus(soknadId, AVBRUTT)
+                    metadataService.deleteMetadata(soknadId)
                 }
                 .onFailure { logger.error("Kunne ikke slette soknad", it) }
                 .getOrNull()
@@ -40,10 +40,27 @@ class SlettGamleSoknaderJob(
         logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
     }
 
+    // TODO Fjern når den har kjørt/ryddet opp
+    @Deprecated("Fjern når soknader/metadata med status AVBRUTT er fjernet")
+    @Scheduled(cron = HVER_TIME)
+    suspend fun ryddeOppStatusAvbrutt() =
+        doInJob {
+            logger.info("Rydder opp søknader med status AVBRUTT.")
+
+            val idsWithStatusAvbrutt = soknadJobService.findSoknadIdsWithStatus(AVBRUTT)
+            logger.info("${idsWithStatusAvbrutt.size} søknader/metadata med status AVBRUTT. Sletter.")
+            metadataService.deleteAll(idsWithStatusAvbrutt)
+            logger.info("Slettet ${idsWithStatusAvbrutt.size} søknader med status AVBRUTT")
+        }
+
     companion object {
+        private val logger by logger()
+
         private const val NUMBER_OF_DAYS = 14L
         private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
-        private val logger by logger()
+
+        // midlertidig
+        private const val HVER_TIME = "0 0 * * * *"
 
         private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
     }

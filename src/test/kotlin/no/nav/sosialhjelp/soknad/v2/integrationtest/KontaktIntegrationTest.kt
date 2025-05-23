@@ -118,7 +118,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `Skal oppdatere brukeradresse i soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata()
-                .let { soknadMetadataRepository.save(it) }
+                .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
@@ -153,7 +153,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `Skal oppdatere navenhet for valgt folkeregistrert adresse`() {
         val lagretSoknad =
             opprettSoknadMetadata()
-                .let { soknadMetadataRepository.save(it) }
+                .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
@@ -191,7 +191,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `Skal oppdatere navenhet for manuelt innskrevet adresse`() {
         val lagretSoknad =
             opprettSoknadMetadata()
-                .let { soknadMetadataRepository.save(it) }
+                .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
@@ -230,7 +230,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `skal slette dokumentasjon og dokumenter ved overgang til kort soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata()
-                .let { soknadMetadataRepository.save(it) }
+                .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
@@ -360,7 +360,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun `skal slette dokumentasjon og dokumenter ved overgang til standard soknad`() {
         val lagretSoknad =
             opprettSoknadMetadata(kort = true)
-                .let { soknadMetadataRepository.save(it) }
+                .let { metadataRepository.save(it) }
                 .let { opprettSoknad(id = it.soknadId, kort = true) }
                 .let { soknadRepository.save(it) }
 

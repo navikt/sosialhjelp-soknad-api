@@ -17,26 +17,26 @@ class SlettGammelMetadataJobTest : AbstractIntegrationTest() {
 
     @BeforeEach
     fun setup() {
-        soknadMetadataRepository.deleteAll()
+        metadataRepository.deleteAll()
     }
 
     @Test
     fun `planlagt jobb skal slette soknader eldre enn 200 dager`() =
         runTest(timeout = 5.seconds) {
-            soknadMetadataRepository.save(opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(201)))
+            metadataRepository.save(opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(201)))
 
             slettGammelMetadataJob.slettGammelMetadata()
 
-            assertThat(soknadMetadataRepository.findAll()).isEmpty()
+            assertThat(metadataRepository.findAll()).isEmpty()
         }
 
     @Test
     fun `Planlagt jobb skal ikke slette soknader nyere enn 200 dager`() =
         runTest(timeout = 5.seconds) {
-            soknadMetadataRepository.save(opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(199)))
+            metadataRepository.save(opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(199)))
 
             slettGammelMetadataJob.slettGammelMetadata()
 
-            assertThat(soknadMetadataRepository.findAll()).isNotEmpty()
+            assertThat(metadataRepository.findAll()).isNotEmpty()
         }
 }
