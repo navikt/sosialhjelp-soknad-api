@@ -12,6 +12,9 @@ import java.util.UUID
 class SoknadMetadataService(
     private val metadataRepository: SoknadMetadataRepository,
 ) {
+    // TODO Midlertidig til relevante metadata er slettet
+    fun findSoknadIdsStatusAvbrutt(): List<UUID> = metadataRepository.findMetadataWithStatusAvbrutt()
+
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,

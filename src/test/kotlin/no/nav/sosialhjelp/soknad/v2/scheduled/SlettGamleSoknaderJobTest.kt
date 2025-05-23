@@ -101,6 +101,21 @@ class SlettGamleSoknaderJobTest : AbstractIntegrationTest() {
                 }
         }
 
+    @Deprecated("Midlertidig test av midlertidig logikk")
+    @Test
+    fun whatever() =
+        runTest {
+            metadataRepository.save(
+                SoknadMetadata(
+                    soknadId = UUID.randomUUID(),
+                    personId = "12345612345",
+                    status = SoknadStatus.AVBRUTT,
+                ),
+            )
+
+            slettGamleSoknaderJob.ryddeOppStatusAvbrutt()
+        }
+
     private fun createMetadataAndSoknad(
         opprettet: LocalDateTime,
         status: SoknadStatus,

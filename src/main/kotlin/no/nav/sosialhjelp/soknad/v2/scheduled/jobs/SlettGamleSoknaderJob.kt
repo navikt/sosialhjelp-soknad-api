@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -47,7 +46,7 @@ class SlettGamleSoknaderJob(
         doInJob {
             logger.info("Rydder opp søknader med status AVBRUTT.")
 
-            val idsWithStatusAvbrutt = soknadJobService.findSoknadIdsWithStatus(AVBRUTT)
+            val idsWithStatusAvbrutt = metadataService.findSoknadIdsStatusAvbrutt()
             logger.info("${idsWithStatusAvbrutt.size} søknader/metadata med status AVBRUTT. Sletter.")
             metadataService.deleteAll(idsWithStatusAvbrutt)
             logger.info("Slettet ${idsWithStatusAvbrutt.size} søknader med status AVBRUTT")
