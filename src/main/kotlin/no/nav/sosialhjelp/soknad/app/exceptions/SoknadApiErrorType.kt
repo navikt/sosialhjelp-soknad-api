@@ -35,6 +35,9 @@ enum class SoknadApiErrorType {
     // Ikke tilgang til ressurs
     Forbidden,
 
+    // Ikke tilgang til soknaden
+    NoAccess,
+
     // Søknad er allerede sendt inn
     SoknadAlleredeSendt,
 
