@@ -30,10 +30,7 @@ class SoknadenHarNedetidException(message: String?) : SosialhjelpSoknadApiExcept
 
 class SoknadUnderArbeidIkkeFunnetException(message: String?) : SosialhjelpSoknadApiException(message)
 
-class AuthorizationException(
-    message: String?,
-    val errorType: SoknadApiErrorType,
-) : SosialhjelpSoknadApiException(message)
+class AuthorizationException(message: String?) : SosialhjelpSoknadApiException(message)
 
 class SoknadAlleredeSendtException(message: String?) : SosialhjelpSoknadApiException(message)
 

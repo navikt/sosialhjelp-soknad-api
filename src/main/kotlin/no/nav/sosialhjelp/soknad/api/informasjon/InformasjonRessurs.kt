@@ -106,7 +106,6 @@ class InformasjonRessurs(
 @Schema(description = "Informasjon om brukerøkt")
 data class SessionResponse(
     @Schema(description = "Bruker har adressebeskyttelse og kan ikke bruke digital søknad")
-    @Deprecated("Erstattes av annen logikk")
     val userBlocked: Boolean,
     @Schema(description = "Antall dager før søknader slettes")
     val daysBeforeDeletion: Long,

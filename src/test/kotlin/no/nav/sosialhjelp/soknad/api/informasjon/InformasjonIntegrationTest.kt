@@ -61,7 +61,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             .expectStatus().isForbidden
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
-            .also { apiError -> assertThat(apiError?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name) }
+            .also { apiError -> assertThat(apiError?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name) }
 
         assertThat(metadataRepository.findAllById(soknadIds)).isEmpty()
     }
@@ -99,7 +99,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { response ->
-                assertThat(response.error).isEqualTo(SoknadApiErrorType.NoAccess)
+                assertThat(response.error).isEqualTo(SoknadApiErrorType.Forbidden)
             }
     }
 
