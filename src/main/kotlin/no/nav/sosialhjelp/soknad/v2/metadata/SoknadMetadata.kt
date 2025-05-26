@@ -18,6 +18,9 @@ interface SoknadMetadataRepository : UpsertRepository<SoknadMetadata>, ListCrudR
     fun findSoknadIdsOlderThan(timestamp: LocalDateTime): List<UUID>
 
     fun findByPersonId(personId: String): List<SoknadMetadata>
+
+    @Query("select soknad_id from soknad_metadata where status = 'AVBRUTT'")
+    fun findMetadataWithStatusAvbrutt(): List<UUID>
 }
 
 @Table
@@ -54,9 +57,6 @@ enum class SoknadStatus {
     INNSENDING_FEILET,
     SENDT,
     MOTTATT_FSL,
-
-    @Deprecated("Tar ikke vare på avbrutte søknader lenger")
-    AVBRUTT,
 }
 
 private fun SoknadStatus.validate(metadata: SoknadMetadata) {

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.v2.scheduled.jobs
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.AVBRUTT
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
@@ -40,27 +39,11 @@ class SlettGamleSoknaderJob(
         logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
     }
 
-    // TODO Fjern når den har kjørt/ryddet opp
-    @Deprecated("Fjern når soknader/metadata med status AVBRUTT er fjernet")
-    @Scheduled(cron = HVER_TIME)
-    suspend fun ryddeOppStatusAvbrutt() =
-        doInJob {
-            logger.info("Rydder opp søknader med status AVBRUTT.")
-
-            val idsWithStatusAvbrutt = soknadJobService.findSoknadIdsWithStatus(AVBRUTT)
-            logger.info("${idsWithStatusAvbrutt.size} søknader/metadata med status AVBRUTT. Sletter.")
-            metadataService.deleteAll(idsWithStatusAvbrutt)
-            logger.info("Slettet ${idsWithStatusAvbrutt.size} søknader med status AVBRUTT")
-        }
-
     companion object {
         private val logger by logger()
 
         private const val NUMBER_OF_DAYS = 14L
         private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
-
-        // midlertidig
-        private const val HVER_TIME = "0 0 * * * *"
 
         private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
     }

@@ -101,7 +101,7 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.8.1")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.8.2")
     // denne kan være runtimeOnly - men pga. UpsertRepositorys midlertidige feilhåndtering må den være implementation
     implementation("org.postgresql:postgresql:42.7.5")
 
