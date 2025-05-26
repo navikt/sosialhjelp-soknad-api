@@ -92,7 +92,7 @@ class AdressebeskyttelseInterceptorTest {
             .expectStatus().isForbidden
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
-            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name) }
+            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name) }
 
         verify(exactly = 0) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
         verify(exactly = 1) { personService.hasAdressebeskyttelse(any()) }
@@ -111,7 +111,7 @@ class AdressebeskyttelseInterceptorTest {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { soknadApiError ->
-                assertThat(soknadApiError?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name)
+                assertThat(soknadApiError?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name)
             }
 
         verify(exactly = 0) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
@@ -131,7 +131,7 @@ class AdressebeskyttelseInterceptorTest {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { soknadApiError ->
-                assertThat(soknadApiError?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name)
+                assertThat(soknadApiError?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name)
             }
 
         verify(exactly = 1) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
@@ -159,7 +159,7 @@ class AdressebeskyttelseInterceptorTest {
             .expectStatus().isForbidden
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
-            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.NoAccess.name) }
+            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name) }
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).isEmpty() }
         soknadMetadataRepository.findAll().also { assertThat(it).isEmpty() }

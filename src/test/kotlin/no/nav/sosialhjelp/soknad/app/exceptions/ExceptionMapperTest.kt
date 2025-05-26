@@ -36,7 +36,7 @@ class ExceptionMapperTest {
     fun `skal gi 403 Forbidden ved AuthorizationException`() {
         val responseEntity =
             exceptionMapper.handleAuthorizationException(
-                AuthorizationException("feil", SoknadApiErrorType.Forbidden),
+                AuthorizationException("feil"),
             )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
     }

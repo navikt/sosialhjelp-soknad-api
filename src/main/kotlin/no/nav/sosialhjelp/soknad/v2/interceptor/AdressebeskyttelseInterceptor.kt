@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiHandlerInterceptor
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -27,20 +26,20 @@ class AdressebeskyttelseInterceptor(
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
-        if (isUriUnprotected(request.requestURI)) return true
+        if (isUriFiltered(request.requestURI)) return true
         // finnes det ingen auth header, får vi heller ikke sjekket adressebeskyttelse
         authorization()?.also { if (hasAdressebeskyttelse(request.requestURI)) handleHasAdressebeskyttelse() }
         return true
     }
 
-    private fun isUriUnprotected(requestURI: String): Boolean = FILTERED_URIS.any { requestURI.contains(it) }
+    private fun isUriFiltered(requestURI: String): Boolean = FILTERED_URIS.any { requestURI.contains(it) }
 
     private fun authorization() =
         runCatching { SubjectHandlerUtils.getTokenOrNull() }
             .onFailure { logger.warn("Feil ved henting av token", it) }
             .getOrNull()
 
-    // hente ikke fra potensiell cache ved sending av soknad
+    // henter ikke fra potensiell cache ved sending av soknad
     private fun hasAdressebeskyttelse(uri: String): Boolean =
         when (uri.contains("/send")) {
             true -> personService.onSendSoknadHasAdressebeskyttelse(getUserIdFromToken())
@@ -52,17 +51,19 @@ class AdressebeskyttelseInterceptor(
             .takeIf { it.isNotEmpty() }
             ?.also { metadataService.deleteAll(it) }
 
-        throw AuthorizationException(
-            "Bruker har ikke tilgang",
-            errorType = SoknadApiErrorType.NoAccess,
-        )
+        throw AuthorizationException("Ikke tilgang til søknad")
     }
 
     companion object {
         private val logger by logger()
+
+        // TODO Flere?
         private val FILTERED_URIS =
             listOf(
                 "/vedlegg/konverter",
+                "/informasjon/session",
+                "/v3/api-docs/",
+                "/feature-toggle",
             )
     }
 }
