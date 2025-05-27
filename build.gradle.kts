@@ -144,6 +144,8 @@ dependencies {
     // pdf
     implementation(libs.bundles.pdfbox)
 
+    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+
     // testcontainers
     testImplementation("org.testcontainers:postgresql:1.21.0")
     testImplementation("org.testcontainers:junit-jupiter:1.21.0")

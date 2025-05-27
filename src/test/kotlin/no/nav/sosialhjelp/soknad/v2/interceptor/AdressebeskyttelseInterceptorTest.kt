@@ -9,6 +9,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.sosialhjelp.soknad.api.informasjon.SessionResponse
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -89,10 +90,13 @@ class AdressebeskyttelseInterceptorTest {
             uri = "/informasjon/session",
             token = token,
         )
-            .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectStatus().isOk
+            .expectBody(SessionResponse::class.java)
             .returnResult().responseBody
-            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name) }
+            .also {
+                assertThat(it?.open).isEmpty()
+                assertThat(it?.userBlocked).isTrue()
+            }
 
         verify(exactly = 0) { personService.onSendSoknadHasAdressebeskyttelse(any()) }
         verify(exactly = 1) { personService.hasAdressebeskyttelse(any()) }
@@ -156,10 +160,13 @@ class AdressebeskyttelseInterceptorTest {
             uri = "/informasjon/session",
             token = token,
         )
-            .expectStatus().isForbidden
-            .expectBody(SoknadApiError::class.java)
+            .expectStatus().isOk
+            .expectBody(SessionResponse::class.java)
             .returnResult().responseBody
-            .also { assertThat(it?.error?.name).isEqualTo(SoknadApiErrorType.Forbidden.name) }
+            .also {
+                assertThat(it?.open).isEmpty()
+                assertThat(it?.userBlocked).isTrue()
+            }
 
         soknadService.findOpenSoknadIds(metadata.eierPersonId).also { assertThat(it).isEmpty() }
         soknadMetadataRepository.findAll().also { assertThat(it).isEmpty() }
