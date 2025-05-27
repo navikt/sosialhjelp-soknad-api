@@ -35,7 +35,6 @@ class KortSoknadUseCaseHandler(
         nyMottaker: NavEnhet?,
     ) {
         // I mock overstyrer man dette med valg på forsiden
-        // *******Foreløpig endret for testing********
         if (MiljoUtils.isMockAltProfil()) return
 
         // Ingen endring i kommunenummer og bruker har tatt stilling til det før, trenger ikke vurdere kort søknad
