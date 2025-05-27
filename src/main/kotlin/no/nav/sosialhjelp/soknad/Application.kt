@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
 }
 
 private fun configureApplication(builder: SpringApplicationBuilder): SpringApplicationBuilder {
-    if (!MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil() && MiljoUtils.isMockOrDevOrPreProd()) {
+    if (!MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
         throw Error("Spring profile `mock-alt` har blitt satt i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
     }
     return builder
