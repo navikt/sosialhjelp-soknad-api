@@ -3,10 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.lifecycle
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
-import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
-import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
@@ -62,27 +59,8 @@ class CreateDeleteSoknadHandler(
         soknadId: UUID,
         kortSoknad: Boolean,
     ) {
-        when (kortSoknad) {
-            true -> obligatoriskeDokumentasjonsTyperForKortSoknad
-            false -> obligatoriskeDokumentasjonsTyper
-        }
-            .forEach { opplysningType ->
-                dokumentasjonService.opprettDokumentasjon(soknadId = soknadId, opplysningType = opplysningType)
-            }
+        dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, if (kortSoknad) SoknadType.KORT else SoknadType.STANDARD)
     }
-
-    private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
-        listOf(
-            FormueType.FORMUE_BRUKSKONTO,
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-            AnnenDokumentasjonType.BEHOV,
-        )
-
-    private val obligatoriskeDokumentasjonsTyper: List<OpplysningType> =
-        listOf(
-            AnnenDokumentasjonType.SKATTEMELDING,
-            UtgiftType.UTGIFTER_ANDRE_UTGIFTER,
-        )
 
     companion object {
         private val logger by logger()

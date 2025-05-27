@@ -17,9 +17,7 @@ import no.nav.sosialhjelp.api.fiks.DigisosSoker
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.integrationtest.KontaktIntegrationTest.Companion.createKommuneInfos
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
@@ -38,9 +36,8 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.navenhet.NavEnhetService
-import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
-import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
+import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresse
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
@@ -84,6 +81,57 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             .also { assertThat(it).isFalse() }
 
         verify(exactly = 1) { kortSoknadUseCaseHandler.resolveKortSoknad(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Kort soknad skal opprette OkonomiElement FORMUE_BRUKSKONTO`() {
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns true
+
+        val soknadId = createSoknadWithMetadata()
+
+        doUpdateAdresse(
+            soknadId = soknadId,
+            adresseValg = AdresseValg.SOKNAD,
+            brukerAdresse =
+                VegAdresse(
+                    kommunenummer = "0301",
+                    gatenavn = "Sosialgata",
+                ),
+        )
+
+        doGet(uri = isKortUrl(soknadId), responseBodyClass = Boolean::class.java)
+            .also { assertThat(it).isTrue() }
+
+        okonomiService.getFormuer(soknadId)
+            .also { formuer ->
+                assertThat(formuer.toList())
+                    .hasSize(1)
+                    .allMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
+            }
+    }
+
+    @Test
+    fun `Transition to Standard soknad skal fjerne FORMUE_BRUKSKONTO`() {
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns false
+
+        val soknadId = createSoknadWithMetadata(createSoknadMetadata(soknadType = SoknadType.KORT))
+        okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
+
+        doUpdateAdresse(
+            soknadId = soknadId,
+            adresseValg = AdresseValg.SOKNAD,
+            brukerAdresse =
+                VegAdresse(
+                    kommunenummer = "0301",
+                    gatenavn = "Sosialgata",
+                ),
+        )
+
+        doGet(uri = isKortUrl(soknadId), responseBodyClass = Boolean::class.java)
+            .also { assertThat(it).isFalse() }
+
+        okonomiService.getFormuer(soknadId).also { assertThat(it).isEmpty() }
+        dokumentasjonRepository.findAll().also { assertThat(it).noneMatch { dok -> dok.type == FormueType.FORMUE_BRUKSKONTO } }
     }
 
     @Test
@@ -205,74 +253,6 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
             .also { assertThat(it).isFalse() }
     }
 
-    @Test
-    fun `Ved transformasjon fra kort til standard, skal dokumenter lastet opp til ANDRE_UTGIFTER overleve`() {
-        every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
-            createNavEnhet("Annen NAV", "4444", "Annen kommune")
-        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns true
-
-        createEksisterendeSoknad(nowWithMillis().minusDays(10))
-        val soknadId = createSoknadWithMetadata()
-
-        // Oppdaterer adresse første gang -> gir kort soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.FOLKEREGISTRERT)
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isTrue() }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!
-            .run {
-                copy(
-                    status = DokumentasjonStatus.LASTET_OPP,
-                    dokumenter =
-                        setOf(
-                            DokumentRef(UUID.randomUUID(), "filnavn1.jpg"),
-                            DokumentRef(UUID.randomUUID(), "filnavn2.jpg"),
-                            DokumentRef(UUID.randomUUID(), "filnavn3.jpg"),
-                        ),
-                )
-            }
-            .also { dokumentasjonRepository.save(it) }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .also { list ->
-                assertThat(list)
-                    .hasSize(3)
-                    .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
-                    .anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
-
-                assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(3)
-            }
-
-        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns false
-        // oppdaterer adresse andre gang -> gir standard soknad
-        doUpdateAdresse(soknadId, adresseValg = AdresseValg.SOKNAD, brukerAdresse = createBrukerAdresseInput())
-
-        doGet(
-            uri = isKortUrl(soknadId),
-            responseBodyClass = Boolean::class.java,
-        )
-            .also { assertThat(it).isFalse() }
-
-        dokumentasjonRepository.findAllBySoknadId(soknadId)
-            .also { list ->
-                assertThat(list)
-                    .hasSize(3)
-                    .anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
-                    .anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
-                    .anyMatch { it.type == AnnenDokumentasjonType.SKATTEMELDING }
-
-                assertThat(list.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!.dokumenter)
-                    .hasSize(3)
-            }
-    }
-
     private fun createEksisterendeSoknad(
         sendtInn: LocalDateTime? = null,
     ): UUID {
@@ -342,6 +322,9 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
+
+    @Autowired
+    private lateinit var okonomiService: OkonomiService
 
     @MockkBean
     private lateinit var navEnhetService: NavEnhetService

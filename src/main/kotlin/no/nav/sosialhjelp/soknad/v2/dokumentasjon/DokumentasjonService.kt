@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OpplysningType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import org.springframework.stereotype.Service
@@ -125,9 +126,7 @@ class DokumentasjonServiceImpl(
     ) {
         when (soknadType) {
             SoknadType.KORT -> {
-                opprettDokumentasjon(soknadId, AnnenDokumentasjonType.BEHOV)
-                opprettDokumentasjon(soknadId, FormueType.FORMUE_BRUKSKONTO)
-                opprettDokumentasjon(soknadId, UtgiftType.UTGIFTER_ANDRE_UTGIFTER)
+                obligatoriskeDokumentasjonsTyperForKortSoknad.forEach { opprettDokumentasjon(soknadId, it) }
             }
             SoknadType.STANDARD -> {
                 opprettDokumentasjon(soknadId, AnnenDokumentasjonType.SKATTEMELDING)
@@ -141,6 +140,23 @@ class DokumentasjonServiceImpl(
         type: OpplysningType,
     ): Dokumentasjon? =
         dokumentasjonRepository.findBySoknadIdAndType(soknadId, type)
+
+    private val obligatoriskeDokumentasjonsTyperForKortSoknad: List<OpplysningType> =
+        listOf(
+            FormueType.FORMUE_BRUKSKONTO, // kontooversikt|brukskonto
+            AnnenDokumentasjonType.BEHOV, // kort|behov
+            UtgiftType.UTGIFTER_ANDRE_UTGIFTER, // annet|annet
+            UtgiftType.UTGIFTER_BARNEHAGE, // faktura|barnhage
+            UtgiftType.UTGIFTER_SFO, // faktura|sfo
+            InntektType.UTBETALING_HUSBANKEN, // husbanken|vedtak
+            UtgiftType.UTGIFTER_HUSLEIE, // faktura|husleie
+            FormueType.FORMUE_ANNET, // kontooversikt|annet
+            UtgiftType.UTGIFTER_STROM, // faktura|strom
+            InntektType.LONNSLIPP, // lonnslipp|arbeid
+            InntektType.STUDIELAN_INNTEKT, // student|vedtak
+            InntektType.BARNEBIDRAG_MOTTAR,
+            UtgiftType.BARNEBIDRAG_BETALER,
+        )
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun addRef(

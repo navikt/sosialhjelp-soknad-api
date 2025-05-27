@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettFolkeregistrertAdresseInput
 import no.nav.sosialhjelp.soknad.v2.opprettKontakt
@@ -325,10 +326,20 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
-        assertThat(dokumentasjon).hasSize(3)
+        assertThat(dokumentasjon).hasSize(13)
         assertThat(dokumentasjon).anyMatch { it.type == AnnenDokumentasjonType.BEHOV }
         assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_BRUKSKONTO }
         assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_BARNEHAGE }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_SFO }
+        assertThat(dokumentasjon).anyMatch { it.type == InntektType.UTBETALING_HUSBANKEN }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_HUSLEIE }
+        assertThat(dokumentasjon).anyMatch { it.type == FormueType.FORMUE_ANNET }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.UTGIFTER_STROM }
+        assertThat(dokumentasjon).anyMatch { it.type == InntektType.LONNSLIPP }
+        assertThat(dokumentasjon).anyMatch { it.type == InntektType.STUDIELAN_INNTEKT }
+        assertThat(dokumentasjon).anyMatch { it.type == InntektType.BARNEBIDRAG_MOTTAR }
+        assertThat(dokumentasjon).anyMatch { it.type == UtgiftType.BARNEBIDRAG_BETALER }
         verify(exactly = 1) { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) }
     }
 
@@ -394,7 +405,17 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     null,
                 ),
             )
-        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns JsonDigisosSoker().withHendelser(listOf(JsonSoknadsStatus().withStatus(JsonSoknadsStatus.Status.MOTTATT).withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString())))
+        every {
+            digisosApiV2Client.getInnsynsfil("abc", "metadataid", any())
+        } returns
+            JsonDigisosSoker()
+                .withHendelser(
+                    listOf(
+                        JsonSoknadsStatus()
+                            .withStatus(JsonSoknadsStatus.Status.MOTTATT)
+                            .withHendelsestidspunkt(LocalDate.now().minusMonths(1).toIsoString()),
+                    ),
+                )
 
         dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id).find { it.type == AnnenDokumentasjonType.BEHOV }!!
             .run {
