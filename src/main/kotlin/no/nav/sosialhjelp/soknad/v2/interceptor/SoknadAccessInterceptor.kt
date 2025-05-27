@@ -13,8 +13,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 @Component
 class SoknadAccessInterceptor(
     private val soknadService: SoknadService,
-    private val personService: PersonService,
-    private val metadataService: SoknadMetadataService,
 ) : SoknadApiHandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
