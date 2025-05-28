@@ -67,8 +67,8 @@ class AdressebeskyttelseInterceptor(
             listOf(
                 "/dittnav/pabegynte/aktive",
                 "/minesaker/innsendte",
-                "internal/isAlive",
-                "internal/prometheus",
+                "/internal/isAlive",
+                "/internal/prometheus",
                 "/feature-toggle",
             )
     }
