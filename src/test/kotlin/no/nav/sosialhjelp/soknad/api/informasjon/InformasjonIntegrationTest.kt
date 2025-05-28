@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
@@ -55,8 +57,11 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
                 createAndSaveSoknad(opprettet = nowWithMillis().minusDays(2)),
             )
 
-        doGet(uri = SESSION_URL, responseBodyClass = SessionResponse::class.java)
-            .also { response -> assertThat(response.userBlocked).isTrue() }
+        doGetFullResponse(uri = SESSION_URL)
+            .expectStatus().isForbidden
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also { assertThat(it?.error).isEqualTo(SoknadApiErrorType.NoAccess) }
 
         assertThat(metadataRepository.findAllById(soknadIds)).isEmpty()
     }
@@ -87,9 +92,12 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         opprettSoknadMetadata(status = SoknadStatus.SENDT, innsendtDato = nowWithMillis().minusDays(7))
             .also { metadataRepository.save(it) }
 
-        doGet(uri = SESSION_URL, responseBodyClass = SessionResponse::class.java)
-            .also { response ->
-                assertThat(response.open).isEmpty()
+        doGetFullResponse(uri = SESSION_URL)
+            .expectStatus().isForbidden
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also {
+                assertThat(it?.error).isEqualTo(SoknadApiErrorType.NoAccess)
             }
     }
 

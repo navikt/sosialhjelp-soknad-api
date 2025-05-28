@@ -26,28 +26,49 @@ class AdressebeskyttelseInterceptor(
         response: HttpServletResponse,
         handler: Any,
     ): Boolean {
+        if (request.isFilteredUri()) return true
+
         // finnes det ingen auth header, får vi heller ikke sjekket adressebeskyttelse
-        authorization()?.also { if (hasAdressebeskyttelse(request.requestURI)) handleHasAdressebeskyttelse() }
+        authorization()?.also { if (hasAdressebeskyttelse(request.isSendPath())) handleHasAdressebeskyttelse() }
         return true
     }
 
     private fun authorization() = runCatching { SubjectHandlerUtils.getTokenOrNull() }.getOrNull()
 
+    private fun HttpServletRequest.isSendPath() = requestURI.matchesRegex(BASE_PATH + SEND_PATH)
+
     // henter ikke fra potensiell cache ved sending av soknad
-    private fun hasAdressebeskyttelse(uri: String): Boolean =
-        when (uri.contains("/send")) {
+    private fun hasAdressebeskyttelse(isSendPath: Boolean): Boolean {
+        val a = 4
+        return when (isSendPath) {
             true -> personService.onSendSoknadHasAdressebeskyttelse(getUserIdFromToken())
             false -> personService.hasAdressebeskyttelse(getUserIdFromToken())
         }
+    }
 
     private fun handleHasAdressebeskyttelse() {
         soknadService.findOpenSoknadIds(getUserIdFromToken())
             .takeIf { it.isNotEmpty() }
             ?.also { metadataService.deleteAll(it) }
 
-        throw AuthorizationException(
-            "Ikke tilgang til søknad",
-            type = SoknadApiErrorType.NoAccess,
-        )
+        throw AuthorizationException("Ikke tilgang til søknad", type = SoknadApiErrorType.NoAccess)
+    }
+
+    private fun HttpServletRequest.isFilteredUri() = FILTERED_URIS.any { requestURI.matchesRegex(BASE_PATH + it) }
+
+    private fun String.matchesRegex(pattern: String) = Regex("^$pattern\$").matches(this)
+
+    companion object {
+        private const val BASE_PATH = "/sosialhjelp/soknad-api"
+        private const val REGEX_UUID = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+        private const val SEND_PATH = "/soknad/$REGEX_UUID/send"
+
+        private val FILTERED_URIS =
+            listOf(
+                "/dittnav/pabegynte/aktive",
+                "/minesaker/innsendte",
+                "internal/isAlive",
+                "internal/prometheus",
+            )
     }
 }

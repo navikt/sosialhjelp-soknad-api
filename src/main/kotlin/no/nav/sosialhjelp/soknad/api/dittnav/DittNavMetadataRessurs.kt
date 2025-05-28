@@ -25,12 +25,12 @@ import java.time.format.DateTimeFormatter
     combineWithOr = true,
     claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4, CLAIM_ACR_LOA_HIGH, CLAIM_ACR_LOA_SUBSTANTIAL],
 )
-@RequestMapping("/dittnav", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping("/dittnav/pabegynte/aktive", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DittNavMetadataRessurs(
     private val metadataService: SoknadMetadataService,
     private val soknadService: SoknadService,
 ) {
-    @GetMapping("/pabegynte/aktive")
+    @GetMapping
     fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val personId = SubjectHandlerUtils.getUserIdFromToken()
 

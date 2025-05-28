@@ -148,6 +148,8 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.0")
     testImplementation("org.testcontainers:junit-jupiter:1.21.0")
 
+    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.token.validation.spring.test)
