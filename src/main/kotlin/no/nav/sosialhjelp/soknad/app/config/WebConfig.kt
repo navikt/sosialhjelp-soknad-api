@@ -1,30 +1,20 @@
 package no.nav.sosialhjelp.soknad.app.config
 
-import no.nav.sosialhjelp.soknad.tracing.TracingInterceptor
-import no.nav.sosialhjelp.soknad.v2.config.interceptor.SoknadAccessInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-@Profile("!no-interceptor & !local)")
+@Profile("!no-interceptor)")
 class WebConfig(
-    private val soknadAccessInterceptor: SoknadAccessInterceptor,
-    private val tracingInterceptor: TracingInterceptor,
+    private val soknadApiInterceptors: List<SoknadApiHandlerInterceptor>,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(soknadAccessInterceptor)
-        registry.addInterceptor(tracingInterceptor)
+        soknadApiInterceptors.forEach { registry.addInterceptor(it) }
     }
 }
 
-@Configuration
-@Profile("local")
-class WebConfigLocal(
-    private val soknadAccessInterceptor: SoknadAccessInterceptor,
-) : WebMvcConfigurer {
-    override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(soknadAccessInterceptor)
-    }
-}
+// alle klasser som arver dette vil automatisk bli lagt til i registry
+interface SoknadApiHandlerInterceptor : HandlerInterceptor

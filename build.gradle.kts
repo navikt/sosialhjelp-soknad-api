@@ -25,7 +25,7 @@ spotless {
         target("*.md", ".gitignore", "Dockerfile")
 
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
     kotlin { ktlint(libs.versions.ktlint.get()) }
@@ -147,6 +147,8 @@ dependencies {
     // testcontainers
     testImplementation("org.testcontainers:postgresql:1.21.0")
     testImplementation("org.testcontainers:junit-jupiter:1.21.0")
+
+    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)

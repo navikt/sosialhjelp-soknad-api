@@ -14,22 +14,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import java.nio.charset.StandardCharsets
-
-@Configuration
-class PdlIntegrationTestConfig {
-    /**
-     * overskriver pdlHentPersonConsumer for itester
-     */
-    @Primary
-    @Bean
-    fun hentPersonClient(): HentPersonClient {
-        return HentPersonClientMock()
-    }
-}
 
 class HentPersonClientMock : HentPersonClient {
     val mapper: ObjectMapper =

@@ -9,10 +9,12 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
 import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.UUID
 
+@Profile("!local")
 @Component
 class SlettSoknaderMottattAvFagsystemJob(
     leaderElection: LeaderElection,
