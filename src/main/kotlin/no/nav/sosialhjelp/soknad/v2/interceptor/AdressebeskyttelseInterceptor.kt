@@ -69,6 +69,7 @@ class AdressebeskyttelseInterceptor(
                 "/minesaker/innsendte",
                 "internal/isAlive",
                 "internal/prometheus",
+                "/feature-toggle",
             )
     }
 }
