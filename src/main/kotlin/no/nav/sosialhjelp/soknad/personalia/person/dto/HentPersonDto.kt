@@ -29,7 +29,7 @@ data class PersonDto(
 data class EktefelleDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
     val bostedsadresse: List<BostedsadresseDto>?,
-    val foedsel: List<FoedselDto>?,
+    val foedselsdato: List<FoedselsdatoDto>?,
     val navn: List<NavnDto>?,
 )
 
@@ -37,7 +37,7 @@ data class BarnDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
     val bostedsadresse: List<BostedsadresseDto>?,
     val folkeregisterpersonstatus: List<FolkeregisterpersonstatusDto>?,
-    val foedsel: List<FoedselDto>?,
+    val foedselsdato: List<FoedselsdatoDto>?,
     val navn: List<NavnDto>?,
 )
 
@@ -107,8 +107,14 @@ data class StatsborgerskapDto(
     val land: String,
 )
 
+@Deprecated("Opplysningen skal ikke hentes fra PDL")
 data class FoedselDto(
     val foedselsdato: LocalDate,
+)
+
+data class FoedselsdatoDto(
+    val foedselsdato: LocalDate,
+    val foedselsaar: Int,
 )
 
 data class FolkeregisterpersonstatusDto(

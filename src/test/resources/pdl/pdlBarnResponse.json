@@ -29,9 +29,10 @@
           "status": "bosatt"
         }
       ],
-      "foedsel": [
+      "foedselsdato": [
         {
-          "foedselsdato": "2018-03-01"
+          "foedselsdato": "2018-03-01",
+          "foedselsaar": 2018
         }
       ],
       "navn": [

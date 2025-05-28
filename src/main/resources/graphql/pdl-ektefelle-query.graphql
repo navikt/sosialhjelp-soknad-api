@@ -41,7 +41,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 bostedskommune
             }
         }
-        foedsel {
+        foedselsdato {
             foedselsdato
         }
         navn(historikk: $historikk) {

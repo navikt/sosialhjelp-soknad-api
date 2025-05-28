@@ -28,7 +28,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
-import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselsdatoDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.ForelderBarnRelasjonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
@@ -243,9 +243,9 @@ fun defaultResponseFromHentEktefelle(
                     ukjentBosted = null,
                 ),
             ),
-        foedsel =
+        foedselsdato =
             listOf(
-                FoedselDto(foedselsdato = LocalDate.of(1999, 8, 21)),
+                FoedselsdatoDto(foedselsdato = LocalDate.of(1999, 8, 21), 1999),
             ),
         navn =
             listOf(
@@ -296,7 +296,7 @@ fun defaultResponseFromHentBarn(
         adressebeskyttelse = null,
         bostedsadresse = listOf(BostedsadresseDto(null, vegAdresseDto, null, null)),
         folkeregisterpersonstatus = null,
-        foedsel = listOf(FoedselDto(foedselsdato = LocalDate.of(yearOfBirth, 5, 12))),
+        foedselsdato = listOf(FoedselsdatoDto(foedselsdato = LocalDate.of(yearOfBirth, 5, 12), 1970)),
         navn =
             listOf(
                 no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto(
