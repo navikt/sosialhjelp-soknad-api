@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
-import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselsdatoDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterMetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterpersonstatusDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.ForelderBarnRelasjonDto
@@ -88,7 +88,7 @@ internal class PdlDtoMapperTest {
             adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
             bostedsadresse = emptyList(),
             folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            foedsel = listOf(FoedselDto(LocalDate.now().minusYears(12))),
+            foedselsdato = listOf(FoedselsdatoDto(LocalDate.now().minusYears(12), 1970)),
             navn =
                 listOf(
                     NavnDto(
@@ -351,7 +351,7 @@ internal class PdlDtoMapperTest {
             EktefelleDto(
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -397,7 +397,7 @@ internal class PdlDtoMapperTest {
                         ),
                     ),
                 // kun matrikkelId er ulik
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -436,7 +436,7 @@ internal class PdlDtoMapperTest {
                             ukjentBosted = null,
                         ),
                     ),
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -459,7 +459,7 @@ internal class PdlDtoMapperTest {
             EktefelleDto(
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG)),
                 bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -503,7 +503,7 @@ internal class PdlDtoMapperTest {
             EktefelleDto(
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = null, // Ingen bostedsadresse
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -525,7 +525,7 @@ internal class PdlDtoMapperTest {
             EktefelleDto(
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = emptyList(),
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -563,7 +563,7 @@ internal class PdlDtoMapperTest {
                             ukjentBosted = null,
                         ),
                     ),
-                foedsel = listOf(FoedselDto(LocalDate.of(1970, 1, 1))),
+                foedselsdato = listOf(FoedselsdatoDto(LocalDate.of(1970, 1, 1), 1970)),
                 navn = listOf(defaultNavnDto),
             )
         val ektefelle = mapper.ektefelleDtoToDomain(pdlEktefelle, EKTEFELLEIDENT, pdlPerson)
@@ -586,7 +586,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -621,7 +621,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.FORTROLIG)),
                 bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -644,7 +644,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto(DOED)),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -667,7 +667,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse, null, null)),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN_MYNDIG, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -690,7 +690,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = null,
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -713,7 +713,7 @@ internal class PdlDtoMapperTest {
                 adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
                 bostedsadresse = emptyList(),
                 folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-                foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+                foedselsdato = listOf(FoedselsdatoDto(FOEDSELSDATO_BARN, 1970)),
                 navn = listOf(defaultNavnDto.copy(mellomnavn = null)),
             )
         val barn = mapper.barnDtoToDomain(pdlBarn, BARNIDENT, pdlPerson)
@@ -734,15 +734,15 @@ internal class PdlDtoMapperTest {
                 sivilstand = listOf(defaultSivilstandDto),
                 statsborgerskap = listOf(StatsborgerskapDto(LAND)),
             )
-        val pdlBarnDagenFoerBarnBlirMyndig = defaultBarn.copy(foedsel = listOf(FoedselDto(dagenFoerBarnBlirMyndig)))
+        val pdlBarnDagenFoerBarnBlirMyndig = defaultBarn.copy(foedselsdato = listOf(FoedselsdatoDto(dagenFoerBarnBlirMyndig, 1970)))
         val barnDagenFoerMyndig = mapper.barnDtoToDomain(pdlBarnDagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson)
         assertThat(barnDagenFoerMyndig).isNotNull
 
-        val pdlBarnDagenBarnBlirMyndig = defaultBarn.copy(foedsel = listOf(FoedselDto(dagenBarnBlirMyndig)))
+        val pdlBarnDagenBarnBlirMyndig = defaultBarn.copy(foedselsdato = listOf(FoedselsdatoDto(dagenBarnBlirMyndig, 1970)))
         val barnDagenBarnBlirMyndig = mapper.barnDtoToDomain(pdlBarnDagenBarnBlirMyndig, BARNIDENT, pdlPerson)
         assertThat(barnDagenBarnBlirMyndig).isNull()
 
-        val pdlBarnDagenEtterBarnBlirMyndig = defaultBarn.copy(foedsel = listOf(FoedselDto(dagenEtterBarnBlirMyndig)))
+        val pdlBarnDagenEtterBarnBlirMyndig = defaultBarn.copy(foedselsdato = listOf(FoedselsdatoDto(dagenEtterBarnBlirMyndig, 1970)))
         val barnDagenEtterMyndig = mapper.barnDtoToDomain(pdlBarnDagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson)
         assertThat(barnDagenEtterMyndig).isNull()
     }

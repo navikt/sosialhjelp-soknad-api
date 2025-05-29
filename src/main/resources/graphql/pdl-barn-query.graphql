@@ -44,8 +44,9 @@ query($ident: ID!, $historikk: Boolean!) {
         folkeregisterpersonstatus(historikk: $historikk) {
             status
         }
-        foedsel {
+        foedselsdato {
             foedselsdato
+            foedselsaar
         }
         navn(historikk: $historikk) {
             fornavn

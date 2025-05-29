@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
-import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselsdatoDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterpersonstatusDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
@@ -74,7 +74,7 @@ class PdlDtoMapper(
         if (
             barnDto == null ||
             hasAdressebeskyttelse(barnDto.adressebeskyttelse) ||
-            isMyndig(barnDto.foedsel) ||
+            isMyndig(barnDto.foedselsdato) ||
             isDoed(barnDto.folkeregisterpersonstatus)
         ) {
             return null
@@ -84,7 +84,7 @@ class PdlDtoMapper(
             findMellomnavn(barnDto.navn),
             findEtternavn(barnDto.navn),
             barnIdent,
-            findFodselsdato(barnDto.foedsel),
+            findFodselsdato(barnDto.foedselsdato),
             isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse),
         )
     }
@@ -104,7 +104,7 @@ class PdlDtoMapper(
                 findFornavn(ektefelleDto.navn),
                 findMellomnavn(ektefelleDto.navn),
                 findEtternavn(ektefelleDto.navn),
-                findFodselsdato(ektefelleDto.foedsel),
+                findFodselsdato(ektefelleDto.foedselsdato),
                 ektefelleIdent,
                 isFolkeregistrertSammen(personDto.bostedsadresse, ektefelleDto.bostedsadresse),
                 false,
@@ -132,19 +132,19 @@ class PdlDtoMapper(
         return helper.utledGjeldendeNavn(navn)?.etternavn ?: ""
     }
 
-    private fun findFodselsdato(foedsel: List<FoedselDto>?): LocalDate? {
-        return foedsel
+    private fun findFodselsdato(foedselsdato: List<FoedselsdatoDto>?): LocalDate? {
+        return foedselsdato
             ?.firstOrNull()
             ?.let { LocalDate.of(it.foedselsdato.year, it.foedselsdato.monthValue, it.foedselsdato.dayOfMonth) }
     }
 
-    private fun isMyndig(foedsel: List<FoedselDto>?): Boolean {
-        return findAlder(foedsel) >= 18
+    private fun isMyndig(foedselsdato: List<FoedselsdatoDto>?): Boolean {
+        return findAlder(foedselsdato) >= 18
     }
 
-    private fun findAlder(foedsel: List<FoedselDto>?): Int {
-        val foedselsdato = findFodselsdato(foedsel) ?: return 0
-        return Period.between(foedselsdato, LocalDate.now()).years
+    private fun findAlder(foedselsdato: List<FoedselsdatoDto>?): Int {
+        val dato = findFodselsdato(foedselsdato) ?: return 0
+        return Period.between(dato, LocalDate.now()).years
     }
 
     private fun isDoed(folkeregisterpersonstatus: List<FolkeregisterpersonstatusDto>?): Boolean {

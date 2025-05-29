@@ -24,9 +24,10 @@
           "ukjentBosted": null
         }
       ],
-      "foedsel": [
+      "foedselsdato": [
         {
-          "foedselsdato": "1972-10-11"
+          "foedselsdato": "1972-10-11",
+          "foedselsaar": 1972
         }
       ],
       "navn": [
