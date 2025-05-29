@@ -46,6 +46,7 @@ query($ident: ID!, $historikk: Boolean!) {
         }
         foedselsdato {
             foedselsdato
+            foedselsaar
         }
         navn(historikk: $historikk) {
             fornavn
