@@ -119,7 +119,7 @@ class AdressebeskyttelseInterceptorTest {
     }
 
     @Test
-    fun `Kall til send skal ikke hente fra cache`() {
+    fun `Send soknad skal ikke hente fra cache`() {
         val uuid = UUID.randomUUID()
 
         webClient.doPostFullResponse(
