@@ -12,8 +12,6 @@ on:
 
 jobs:
   deploy-to-stable:
-    strategy:
-      fail-fast: false
     name: 'Deploy to Prod and Prod-test'
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
