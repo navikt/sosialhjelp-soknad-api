@@ -50,7 +50,7 @@ class UtbetalingerFraNavService(
                     .map { it.toUtbetalingMedKomponent(utbetaling.utbetalingsdato, orgNavn) }
             }
             // TODO Ekstra logging
-            .also { logYtelser(utbetalinger, it) }
+            .also { if (utbetalinger.isNotEmpty()) logYtelser(utbetalinger, it) }
     }
 
     // TODO Ekstra logging
