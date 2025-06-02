@@ -38,25 +38,47 @@ class UtbetalingerFraNavService(
             }
     }
 
+    private fun UtbetalDataDto.toUtbetalingMedKomponent(orgNavn: String): List<UtbetalingMedKomponent>? {
+        if (feilet || utbetalinger == null) return null
+
+        return utbetalinger
+            .filter { it.utbetalingsdato != null }
+            .filter { it.utbetalingsdato?.utbetaltSiste40Dager() ?: false }
+            .flatMap { utbetaling ->
+                utbetaling.ytelseListe
+                    .filter { it.isUtbetaltBruker(utbetaling.utbetaltTil?.navn) }
+                    .map { it.toUtbetalingMedKomponent(utbetaling.utbetalingsdato, orgNavn) }
+            }
+            // TODO Ekstra logging
+            .also { logYtelser(utbetalinger, it) }
+    }
+
+    // TODO Ekstra logging
+    private fun logYtelser(
+        utbetalinger: List<no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling>,
+        utbetalingMedKomponents: List<UtbetalingMedKomponent>,
+    ) {
+        OversiktUtbetalinger(
+            utbetalinger.size,
+            utbetalinger.flatMap { it.ytelseListe }.size,
+            utbetalingMedKomponents.size,
+        )
+            .also { logger.info("Oversikt Utbetalinger fra Nav: $it") }
+    }
+
+    // TODO Ekstra logging
+    private data class OversiktUtbetalinger(
+        val antallUtbetalingerDto: Int,
+        val antallYtelserDto: Int,
+        val antallUtbetalingerMedKomponent: Int,
+    )
+
     private val orgNavn get() = orgService.hentOrgNavn(ORGNR_NAV)
 
     companion object {
         private val logger by logger()
         const val ORGNR_NAV = "889640782"
     }
-}
-
-private fun UtbetalDataDto.toUtbetalingMedKomponent(orgNavn: String): List<UtbetalingMedKomponent>? {
-    if (feilet || utbetalinger == null) return null
-
-    return utbetalinger
-        .filter { it.utbetalingsdato != null }
-        .filter { it.utbetalingsdato?.utbetaltSiste40Dager() ?: false }
-        .flatMap { utbetaling ->
-            utbetaling.ytelseListe
-                .filter { it.isUtbetaltBruker(utbetaling.utbetaltTil?.navn) }
-                .map { it.toUtbetalingMedKomponent(utbetaling.utbetalingsdato, orgNavn) }
-        }
 }
 
 private fun Ytelse.toUtbetalingMedKomponent(
