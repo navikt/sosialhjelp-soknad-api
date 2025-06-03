@@ -33,7 +33,7 @@ class ArbeidController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody input: ArbeidInput,
     ): ArbeidDto {
-        require((input.kommentarTilArbeidsforhold?.length ?: 0) < 500) {
+        require((input.kommentarTilArbeidsforhold?.length ?: 0) <= 500) {
             "Kommentar til arbeidsforhold må være mindre enn 500 tegn"
         }
         return arbeidService.updateKommentarTilArbeid(soknadId, input.kommentarTilArbeidsforhold)
