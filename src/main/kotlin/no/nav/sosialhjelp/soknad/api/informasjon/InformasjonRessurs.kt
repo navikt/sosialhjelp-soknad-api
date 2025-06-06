@@ -67,6 +67,7 @@ class InformasjonRessurs(
                     open = hentPabegynteSoknader(it),
                     numRecentlySent = getNumRecentlySent(it),
                     maxUploadSizeBytes = maxUploadSize.toBytes(),
+                    personId = eier,
                 )
             }
     }
@@ -115,6 +116,8 @@ data class SessionResponse(
     val numRecentlySent: Int,
     @Schema(description = "Max file upload size, in bytes")
     val maxUploadSizeBytes: Long,
+    @Schema(description = "Personid for innlogget bruker")
+    val personId: String,
 )
 
 private fun SoknadMetadata.toPabegyntSoknad() =
