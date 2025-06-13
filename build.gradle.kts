@@ -101,9 +101,9 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.8.2")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.9.1")
     // denne kan være runtimeOnly - men pga. UpsertRepositorys midlertidige feilhåndtering må den være implementation
-    implementation("org.postgresql:postgresql:42.7.5")
+    implementation("org.postgresql:postgresql:42.7.7")
 
     // redis
     implementation(libs.lettuce.core)
@@ -145,10 +145,10 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.21.0")
-    testImplementation("org.testcontainers:junit-jupiter:1.21.0")
+    testImplementation("org.testcontainers:postgresql:1.21.1")
+    testImplementation("org.testcontainers:junit-jupiter:1.21.1")
 
-    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.13.1")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
