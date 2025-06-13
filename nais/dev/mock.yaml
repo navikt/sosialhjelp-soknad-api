@@ -46,6 +46,7 @@ spec:
     inbound:
       rules:
         - application: sosialhjelp-innsyn-api-mock
+        - application: sosialhjelp-innsyn-mock
     outbound:
       external:
         - host: "digisos.ekstern.dev.nav.no"
