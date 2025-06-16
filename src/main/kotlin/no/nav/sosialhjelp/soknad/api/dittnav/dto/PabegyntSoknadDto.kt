@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.dittnav.dto
 
+import java.util.UUID
+
 /**
  * Response-objekt for endepunkt som skal hente informasjon om påbegynte søknader for Min Side.
  * https://navikt.github.io/brukernotifikasjon-docs/eventtyper/beskjed/felter/
@@ -13,4 +15,5 @@ class PabegyntSoknadDto(
     val sikkerhetsnivaa: Int,
     val sistOppdatert: String,
     val isAktiv: Boolean,
+    val soknadId: UUID,
 )

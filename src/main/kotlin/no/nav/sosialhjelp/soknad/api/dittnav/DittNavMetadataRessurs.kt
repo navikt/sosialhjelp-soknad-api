@@ -46,6 +46,7 @@ class DittNavMetadataRessurs(
                     sikkerhetsnivaa = SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
                     sistOppdatert = toUtc(it.tidspunkt.sistEndret, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                     isAktiv = true,
+                    soknadId = it.soknadId,
                 )
             }
     }
