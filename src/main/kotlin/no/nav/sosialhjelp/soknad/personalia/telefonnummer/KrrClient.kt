@@ -70,7 +70,7 @@ class KrrClient(
 }
 
 data class KontaktInfoRequest(
-    val personIdenter: List<String>,
+    val personidenter: List<String>,
 )
 
 data class KontaktInfoResponse(
