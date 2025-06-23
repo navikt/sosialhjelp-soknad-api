@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
@@ -10,7 +9,6 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -29,10 +27,10 @@ class KrrClient(
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
 
-    fun getDigitalKontaktinformasjon(personId: String): DigitalKontaktinformasjon? =
+    fun getDigitalKontaktinformasjon(personId: String): KontaktInfoResponse? =
         runCatching {
             logger.info("Henter Digital kontaktinformasjon fra KRR")
-            doRequest(personId)
+            doPostRequest(personId)
         }
             .getOrElse { e ->
                 when (e) {
@@ -52,15 +50,15 @@ class KrrClient(
                 }
             }
 
-    private fun doRequest(personId: String): DigitalKontaktinformasjon? =
+    private fun doPostRequest(personId: String): KontaktInfoResponse? =
         webClient
-            .get()
-            .uri("/rest/v1/person")
+            .post()
+            .uri("/rest/v1/personer")
             .header(AUTHORIZATION, BEARER + tokenxToken)
             .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-            .header(HEADER_NAV_PERSONIDENT, personId)
+            .bodyValue(KontaktInfoRequest(listOf(personId)))
             .retrieve()
-            .bodyToMono<DigitalKontaktinformasjon>()
+            .bodyToMono<KontaktInfoResponse>()
             .block()
 
     private val tokenxToken: String
@@ -70,3 +68,12 @@ class KrrClient(
         private val logger by logger()
     }
 }
+
+data class KontaktInfoRequest(
+    val personIdenter: List<String>,
+)
+
+data class KontaktInfoResponse(
+    val personer: Map<String, DigitalKontaktinformasjon>?,
+    val feil: Map<String, String>?,
+)

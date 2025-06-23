@@ -18,11 +18,23 @@ class KrrService(
     @Cacheable(KrrCacheConfig.CACHE_NAME)
     fun getMobilnummer(soknadId: UUID): String? {
         logger.info("Henter digital kontaktinformasjon")
-        return personIdService.findPersonId(soknadId)
-            .let { personId -> krrClient.getDigitalKontaktinformasjon(personId) }
+        return doGet(personIdService.findPersonId(soknadId))
             .also { info -> if (info == null) logger.warn("Krr - response er null") }
             ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("Krr - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
+    }
+
+    private fun doGet(personId: String): DigitalKontaktinformasjon? {
+        val kontaktInfoResponse = krrClient.getDigitalKontaktinformasjon(personId) ?: return null
+
+        return kontaktInfoResponse.personer
+            ?.let { infoForPersonMap -> infoForPersonMap[personId] }
+            .also { info -> if (info == null) kontaktInfoResponse.logError(personId) }
+    }
+
+    private fun KontaktInfoResponse.logError(personId: String) {
+        feil?.get(personId)
+            ?.also { message -> logger.error("Kunne ikke hente fra KRR: $message") }
     }
 
     companion object {
@@ -42,3 +54,11 @@ class KrrCacheConfig : SoknadApiCacheConfig(CACHE_NAME) {
         private val EIGHT_HOURS = Duration.ofHours(8)
     }
 }
+
+data class DigitalKontaktinformasjon(
+    val personident: String,
+    val aktiv: Boolean,
+    val kanVarsles: Boolean?,
+    val reservert: Boolean?,
+    val mobiltelefonnummer: String?,
+)
