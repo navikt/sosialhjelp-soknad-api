@@ -12,9 +12,9 @@ class TelefonnummerFetcher(
     private val krrService: KrrService,
     private val kontaktService: KontaktRegisterService,
 ) : RegisterDataFetcher {
-    private val logger by logger()
-
     override fun fetchAndSave(soknadId: UUID) {
+        logger.info("Henter mobilnummer fra KRR")
+
         krrService.getMobilnummer(soknadId)
             ?.let { norskTelefonnummer(it) }
             ?.also { kontaktService.updateTelefonRegister(soknadId, it) }
@@ -29,5 +29,9 @@ class TelefonnummerFetcher(
                 tlf.takeIf { it.startsWith("+47") && tlf.length == 11 }
             }
         }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }

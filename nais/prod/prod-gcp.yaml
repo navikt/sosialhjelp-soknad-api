@@ -119,8 +119,6 @@ spec:
       value: "api://prod-gcp.team-rocket.kodeverk-api/.default"
     - name: KRR_AUDIENCE
       value: "prod-gcp:team-rocket:digdir-krr-proxy"
-    - name: KRR_SCOPE
-      value: "api://prod-gcp.team-rocket.digdir-krr-proxy/.default"
     - name: KRR_URL
       value: "http://digdir-krr-proxy.team-rocket"
     - name: NORG_URL
