@@ -51,7 +51,6 @@ azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
-krr_scope: dummyScope
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}

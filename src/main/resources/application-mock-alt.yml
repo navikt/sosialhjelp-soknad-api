@@ -59,7 +59,6 @@ azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
-krr_scope: dummyScope
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/tokenx}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/maskinporten}
 
