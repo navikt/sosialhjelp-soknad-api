@@ -17,10 +17,8 @@ class KrrService(
 ) {
     @Cacheable(KrrCacheConfig.CACHE_NAME)
     fun getMobilnummer(soknadId: UUID): String? {
-        logger.info("Henter digital kontaktinformasjon")
         return doGet(personIdService.findPersonId(soknadId))
-            .also { info -> if (info == null) logger.warn("Krr - response er null") }
-            ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("Krr - mobiltelefonnummer er null") }
+            ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("KRR - mobiltelefonnummer er null") }
             ?.mobiltelefonnummer
     }
 
@@ -34,24 +32,28 @@ class KrrService(
 
     private fun KontaktInfoResponse.logError(personId: String) {
         feil?.get(personId)
-            ?.also { message -> logger.error("Kunne ikke hente fra KRR: $message") }
+            ?.also { message ->
+                when (message) {
+                    IKKE_FUNNET -> logger.warn("Person finnes ikke i KRR")
+                    // Selvom vi aldri bør komme hit hvis en person er skjermet, vil meldingen kunne inneholde skjermet status
+                    else -> logger.error("Kunne ikke hente fra KRR")
+                }
+            }
     }
 
     companion object {
         private val logger by logger()
+        const val IKKE_FUNNET = "person_ikke_funnet"
     }
 }
 
 @Configuration
 class KrrCacheConfig : SoknadApiCacheConfig(CACHE_NAME) {
-    override fun getConfig(): RedisCacheConfiguration =
-        RedisCacheConfiguration
-            .defaultCacheConfig()
-            .entryTtl(EIGHT_HOURS)
+    override fun getConfig(): RedisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(ONE_HOUR)
 
     companion object {
         const val CACHE_NAME = "krr-cache"
-        private val EIGHT_HOURS = Duration.ofHours(8)
+        private val ONE_HOUR = Duration.ofHours(1)
     }
 }
 
