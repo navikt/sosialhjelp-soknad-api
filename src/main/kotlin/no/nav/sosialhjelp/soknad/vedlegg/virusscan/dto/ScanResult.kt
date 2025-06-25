@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto
 import com.fasterxml.jackson.annotation.JsonAlias
 
 data class ScanResult(
-    @JsonAlias("Filename")
+    @param:JsonAlias("Filename")
     val filename: String?,
-    @JsonAlias("Result")
+    @param:JsonAlias("Result")
     val result: Result,
 )
 

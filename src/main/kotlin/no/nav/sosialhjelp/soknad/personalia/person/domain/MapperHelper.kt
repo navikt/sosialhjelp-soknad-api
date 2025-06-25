@@ -99,14 +99,26 @@ class MapperHelper {
         first: SivilstandDto,
         list: List<SivilstandDto>,
     ): Boolean {
-        return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
+        return getEndringstidspunktOrNull(first)
+            .let { firstOrNull ->
+                when (firstOrNull) {
+                    null -> list.count { getEndringstidspunktOrNull(it) == null } > 1
+                    else -> list.count { firstOrNull.isEqual(getEndringstidspunktOrNull(it)) } > 1
+                }
+            }
     }
 
     private fun flereNavnRegistrertSamtidig(
         first: NavnDto,
         list: List<NavnDto>,
     ): Boolean {
-        return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
+        return getEndringstidspunktOrNull(first)
+            .let { firstOrNull ->
+                when (firstOrNull) {
+                    null -> list.count { getEndringstidspunktOrNull(it) == null } > 1
+                    else -> list.count { firstOrNull.isEqual(getEndringstidspunktOrNull(it)) } > 1
+                }
+            }
     }
 
     private fun erKildeUdokumentert(metadata: MetadataDto): Boolean {

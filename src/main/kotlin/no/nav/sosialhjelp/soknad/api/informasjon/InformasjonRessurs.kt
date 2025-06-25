@@ -106,17 +106,17 @@ class InformasjonRessurs(
 
 @Schema(description = "Informasjon om brukerøkt")
 data class SessionResponse(
-    @Schema(description = "Bruker har adressebeskyttelse og kan ikke bruke digital søknad")
+    @param:Schema(description = "Bruker har adressebeskyttelse og kan ikke bruke digital søknad")
     val userBlocked: Boolean,
-    @Schema(description = "Antall dager før søknader slettes")
+    @param:Schema(description = "Antall dager før søknader slettes")
     val daysBeforeDeletion: Long,
-    @Schema(description = "Påbegynte men ikke innleverte søknader")
+    @param:Schema(description = "Påbegynte men ikke innleverte søknader")
     val open: List<PabegyntSoknad>,
-    @Schema(description = "Antall nylig innsendte søknader")
+    @param:Schema(description = "Antall nylig innsendte søknader")
     val numRecentlySent: Int,
-    @Schema(description = "Max file upload size, in bytes")
+    @param:Schema(description = "Max file upload size, in bytes")
     val maxUploadSizeBytes: Long,
-    @Schema(description = "Personid for innlogget bruker")
+    @param:Schema(description = "Personid for innlogget bruker")
     val personId: String,
 )
 
