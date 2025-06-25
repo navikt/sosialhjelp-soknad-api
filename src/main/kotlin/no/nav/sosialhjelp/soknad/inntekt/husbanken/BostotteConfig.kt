@@ -10,7 +10,7 @@ import java.time.Duration
 
 @Configuration
 class BostotteConfig(
-    @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
+    @param:Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,
 ) {

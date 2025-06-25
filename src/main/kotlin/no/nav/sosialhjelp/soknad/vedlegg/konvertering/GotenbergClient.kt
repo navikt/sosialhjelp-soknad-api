@@ -21,7 +21,7 @@ import java.io.File
 
 @Component
 class GotenbergClient(
-    @Value("\${fil-konvertering_url}") private val baseUrl: String,
+    @param:Value("\${fil-konvertering_url}") private val baseUrl: String,
     private val webClientBuilder: WebClient.Builder,
 ) : FileConverter {
     companion object GotenbergConsts {

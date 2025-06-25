@@ -17,9 +17,9 @@ import java.time.Duration
 
 @Configuration
 class MellomlagringConfig(
-    @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
+    @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
+    @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val texasService: TexasService,

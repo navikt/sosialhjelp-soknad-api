@@ -24,8 +24,8 @@ interface KontonummerClient {
 
 @Component
 class KontonummerClientImpl(
-    @Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
-    @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
+    @param:Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
+    @param:Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {

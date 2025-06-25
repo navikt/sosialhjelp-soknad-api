@@ -12,7 +12,7 @@ import java.net.URI
 @Profile("!(mock-alt|test|preprod|prodgcp|dev)")
 @Configuration
 class ProxiedHttpClientConfig(
-    @Value("\${HTTPS_PROXY}") private val proxyUrl: String,
+    @param:Value("\${HTTPS_PROXY}") private val proxyUrl: String,
 ) {
     @Bean
     fun proxiedHttpClient(): HttpClient = proxiedHttpClient(proxyUrl)

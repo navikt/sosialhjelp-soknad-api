@@ -37,7 +37,7 @@ class InformasjonRessurs(
     private val personService: PersonService,
     private val metadataService: SoknadMetadataService,
     private val soknadService: SoknadService,
-    @Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
+    @param:Value("\${spring.servlet.multipart.max-file-size}") private val maxUploadSize: DataSize,
 ) {
     @GetMapping("/adressesok")
     fun adresseSok(

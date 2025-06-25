@@ -17,8 +17,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class TexasClient(
-    @Value("\${token_endpoint:null}") private val tokenEndpoint: String,
-    @Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
+    @param:Value("\${token_endpoint:null}") private val tokenEndpoint: String,
+    @param:Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
     webClientBuilder: WebClient.Builder,
 ) {
     fun getToken(

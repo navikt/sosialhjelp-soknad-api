@@ -27,8 +27,8 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class AaregClient(
-    @Value("\${aareg_url}") private val aaregUrl: String,
-    @Value("\${aareg_audience}") private val aaregAudience: String,
+    @param:Value("\${aareg_url}") private val aaregUrl: String,
+    @param:Value("\${aareg_audience}") private val aaregAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {

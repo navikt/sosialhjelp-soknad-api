@@ -8,8 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class VirusScanConfig(
-    @Value("\${virusscan_enabled}") private val enabled: Boolean,
-    @Value("\${clamav_url}") private val clamAvUrl: String,
+    @param:Value("\${virusscan_enabled}") private val enabled: Boolean,
+    @param:Value("\${clamav_url}") private val clamAvUrl: String,
     webClientBuilder: WebClient.Builder,
 ) {
     @Bean
