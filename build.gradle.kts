@@ -80,7 +80,7 @@ dependencies {
 
     developmentOnly(libs.spring.boot.docker.compose)
 
-    implementation("org.skyscreamer:jsonassert:1.5.3")
+    implementation(libs.jsonassert)
 
     // Coroutines
     implementation(libs.bundles.coroutines)
@@ -101,9 +101,9 @@ dependencies {
 
     // flyway / db
     implementation(libs.flyway.core)
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.8.2")
+    runtimeOnly(libs.flyway.database.postgres)
     // denne kan være runtimeOnly - men pga. UpsertRepositorys midlertidige feilhåndtering må den være implementation
-    implementation("org.postgresql:postgresql:42.7.5")
+    implementation(libs.postgres)
 
     // redis
     implementation(libs.lettuce.core)
@@ -145,17 +145,18 @@ dependencies {
     implementation(libs.bundles.pdfbox)
 
     // testcontainers
-    testImplementation("org.testcontainers:postgresql:1.21.0")
-    testImplementation("org.testcontainers:junit-jupiter:1.21.0")
+    testImplementation(libs.testcontainers.postgres)
+    testImplementation(libs.testcontainers.junit)
 
-    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+    // sjekk om denne er nødvendig ved nye versjoner av spring (sist ref: 3.5.0)
+    testImplementation("org.junit.platform:junit-platform-launcher:1.13.2")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)
-    testImplementation("com.ninja-squad:springmockk:4.0.2")
+    testImplementation(libs.ninja.springmockk)
 }
 
 group = "no.nav.sosialhjelp"
