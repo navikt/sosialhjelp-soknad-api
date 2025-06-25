@@ -38,9 +38,9 @@ interface HentPersonClient {
 
 @Component
 class HentPersonClientImpl(
-    @Value("\${pdl_api_url}") private val baseurl: String,
-    @Value("\${pdl_api_scope}") private val pdlScope: String,
-    @Value("\${pdl_api_audience}") private val pdlAudience: String,
+    @param:Value("\${pdl_api_url}") private val baseurl: String,
+    @param:Value("\${pdl_api_scope}") private val pdlScope: String,
+    @param:Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl), HentPersonClient {

@@ -15,10 +15,10 @@ import java.time.Duration
 @Configuration
 @Profile("!no-redis")
 class ValkeyConfig(
-    @Value("\${redis_host}") private val host: String,
-    @Value("\${redis_port}") private val port: Int,
-    @Value("\${redis_password}") private val password: String,
-    @Value("\${redis_username}") private val username: String,
+    @param:Value("\${redis_host}") private val host: String,
+    @param:Value("\${redis_port}") private val port: Int,
+    @param:Value("\${redis_password}") private val password: String,
+    @param:Value("\${redis_username}") private val username: String,
 ) {
     private val log by logger()
 

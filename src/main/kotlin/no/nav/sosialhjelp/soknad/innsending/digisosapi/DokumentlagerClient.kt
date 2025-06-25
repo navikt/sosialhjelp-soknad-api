@@ -29,9 +29,9 @@ import java.time.Duration
 
 @Component
 class DokumentlagerClient(
-    @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @param:Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
+    @param:Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
+    @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,

@@ -23,8 +23,8 @@ interface UtbetalingerFraNavClient {
 
 @Component
 class NavUtbetalingerClientImpl(
-    @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
-    @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
+    @param:Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
+    @param:Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : UtbetalingerFraNavClient {

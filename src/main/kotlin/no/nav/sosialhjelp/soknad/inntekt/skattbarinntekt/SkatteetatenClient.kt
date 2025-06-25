@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class SkatteetatenClient(
-    @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
+    @param:Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient,

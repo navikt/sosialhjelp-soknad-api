@@ -25,7 +25,7 @@ private fun KodeverkDto.toMap(): Map<String, String?> =
 
 @Configuration
 class KodeverkCacheConfig(
-    @Value("\${digisos.cache.kodeverk.time-to-live}") private val kodeverkTTL: Long,
+    @param:Value("\${digisos.cache.kodeverk.time-to-live}") private val kodeverkTTL: Long,
 ) : SoknadApiCacheConfig(CACHE_NAME, Duration.ofSeconds(kodeverkTTL)) {
     companion object {
         const val CACHE_NAME: String = "kodeverk"

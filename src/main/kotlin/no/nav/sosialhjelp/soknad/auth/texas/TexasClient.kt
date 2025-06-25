@@ -17,8 +17,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class TexasClient(
-    @Value("\${token_endpoint:null}") private val tokenEndpoint: String,
-    @Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
+    @param:Value("\${token_endpoint:null}") private val tokenEndpoint: String,
+    @param:Value("\${token_exchange_endpoint:null}") private val tokenExchangeEndpoint: String,
     webClientBuilder: WebClient.Builder,
 ) {
     fun getToken(
@@ -92,38 +92,38 @@ class TexasClient(
 
 sealed interface TokenRequestBody {
     data class GetRequest(
-        @JsonProperty("identity_provider")
+        @param:JsonProperty("identity_provider")
         val identityProvider: String,
         val target: String,
     ) : TokenRequestBody
 
     data class ExchangeRequest(
-        @JsonProperty("identity_provider")
+        @param:JsonProperty("identity_provider")
         val identityProvider: String,
         val target: String,
-        @JsonProperty("user_token")
+        @param:JsonProperty("user_token")
         val userToken: String,
     ) : TokenRequestBody
 }
 
 sealed interface TokenResponse {
     data class Success(
-        @JsonProperty("access_token")
+        @param:JsonProperty("access_token")
         val token: String,
-        @JsonProperty("expires_in")
+        @param:JsonProperty("expires_in")
         val expiresInSeconds: Int,
     ) : TokenResponse
 
     data class Error(
         val error: TokenErrorResponse,
-        @JsonProperty("error_description")
+        @param:JsonProperty("error_description")
         val errorDescription: String,
     ) : TokenResponse
 }
 
 data class TokenErrorResponse(
     val error: String,
-    @JsonProperty("error_description")
+    @param:JsonProperty("error_description")
     val errorDescription: String,
 )
 

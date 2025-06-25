@@ -19,8 +19,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class AdressesokClient(
-    @Value("\${pdl_api_url}") private val baseurl: String,
-    @Value("\${pdl_api_scope}") private val pdlScope: String,
+    @param:Value("\${pdl_api_url}") private val baseurl: String,
+    @param:Value("\${pdl_api_scope}") private val pdlScope: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : PdlClient(webClientBuilder, baseurl) {

@@ -67,7 +67,6 @@ private fun OkonomiOpplysning.mapFromOkonomiElement(): List<OkonomiDetaljDto> {
         is Inntekt -> this.inntektDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
         is Utgift -> this.utgiftDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
         is Formue -> this.formueDetaljer.detaljer.map { it.toOkonomiskDetaljDto() }
-        else -> error("Ugyldig okonomi-element")
     }
 }
 

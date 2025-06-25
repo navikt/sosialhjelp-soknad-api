@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class NorgClient(
-    @Value("\${norg_url}") private val norgUrl: String,
+    @param:Value("\${norg_url}") private val norgUrl: String,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()

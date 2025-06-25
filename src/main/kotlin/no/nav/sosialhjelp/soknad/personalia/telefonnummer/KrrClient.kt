@@ -20,8 +20,8 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class KrrClient(
-    @Value("\${krr_url}") private val krrUrl: String,
-    @Value("\${krr_audience}") private val krrAudience: String,
+    @param:Value("\${krr_url}") private val krrUrl: String,
+    @param:Value("\${krr_audience}") private val krrAudience: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {

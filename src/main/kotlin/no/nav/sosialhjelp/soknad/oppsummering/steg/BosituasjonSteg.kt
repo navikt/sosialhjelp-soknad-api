@@ -83,7 +83,6 @@ class BosituasjonSteg {
                 Botype.FENGSEL -> "bosituasjon.annet.botype.fengsel"
                 Botype.KRISESENTER -> "bosituasjon.annet.botype.krisesenter"
                 Botype.ANNET -> "bosituasjon.annet"
-                else -> "bosituasjon.annet"
             }
         return key
     }

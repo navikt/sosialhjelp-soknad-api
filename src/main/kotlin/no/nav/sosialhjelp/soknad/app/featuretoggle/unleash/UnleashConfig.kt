@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Profile
 @Configuration
 @Profile("!test")
 class UnleashConfig(
-    @Value("\${unleash_env}") private val environment: String,
-    @Value("\${unleash_server_api_url}") private val baseurl: String,
-    @Value("\${unleash_server_api_token}") private val apiToken: String,
+    @param:Value("\${unleash_env}") private val environment: String,
+    @param:Value("\${unleash_server_api_url}") private val baseurl: String,
+    @param:Value("\${unleash_server_api_token}") private val apiToken: String,
 ) {
     @Bean
     @Profile("!mock-alt")

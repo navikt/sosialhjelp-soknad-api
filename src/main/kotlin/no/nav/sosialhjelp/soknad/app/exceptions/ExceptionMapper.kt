@@ -35,7 +35,7 @@ import java.time.format.DateTimeFormatter
 
 @ControllerAdvice
 class ExceptionMapper(
-    @Value("\${loginservice.url:null}") private val loginserviceUrl: URI?,
+    @param:Value("\${loginservice.url:null}") private val loginserviceUrl: URI?,
 ) : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     override fun handleHttpMessageNotReadable(

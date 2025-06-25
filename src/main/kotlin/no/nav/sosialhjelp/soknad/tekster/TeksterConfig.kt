@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled
 @EnableScheduling
 @Configuration
 class TeksterConfig(
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    @param:Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
 ) {
     @Bean
     fun navMessageSource(): NavMessageSource {

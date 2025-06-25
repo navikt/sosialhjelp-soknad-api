@@ -44,6 +44,6 @@ data class KontoinformasjonDto(
 data class KontoinformasjonInput(
     val harIkkeKonto: Boolean? = null,
     // JsonAlias er her for bakoverkompat og kan fjernes når frontend er oppdatert
-    @JsonAlias("kontonummer")
+    @param:JsonAlias("kontonummer")
     val kontonummerBruker: String? = null,
 )

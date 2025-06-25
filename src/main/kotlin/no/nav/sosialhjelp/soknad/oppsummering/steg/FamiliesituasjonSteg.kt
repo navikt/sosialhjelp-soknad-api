@@ -311,7 +311,6 @@ class FamiliesituasjonSteg {
                 Verdi.BETALER -> "familie.barn.true.barnebidrag.betaler"
                 Verdi.BEGGE -> "familie.barn.true.barnebidrag.begge"
                 Verdi.INGEN -> "familie.barn.true.barnebidrag.ingen"
-                else -> "familie.barn.true.barnebidrag.ingen"
             }
         return key
     }

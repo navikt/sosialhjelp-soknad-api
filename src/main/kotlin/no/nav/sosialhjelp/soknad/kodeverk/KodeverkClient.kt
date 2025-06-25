@@ -24,8 +24,8 @@ import java.time.LocalDate
 
 @Component
 class KodeverkClient(
-    @Value("\${kodeverk_url}") private val kodeverkUrl: String,
-    @Value("\${kodeverk_scope}") private val scope: String,
+    @param:Value("\${kodeverk_url}") private val kodeverkUrl: String,
+    @param:Value("\${kodeverk_scope}") private val scope: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
