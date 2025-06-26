@@ -19,7 +19,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
     leaderElection: LeaderElection,
-) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader") {
+) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
     @Scheduled(cron = "0 0 * * * *")
     suspend fun checkIfExistingSoknaderHasWrongStatus() =
         doInJob {

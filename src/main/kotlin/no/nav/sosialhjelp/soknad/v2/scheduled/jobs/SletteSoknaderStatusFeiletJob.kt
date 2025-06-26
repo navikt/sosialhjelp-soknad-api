@@ -15,7 +15,7 @@ import java.util.UUID
 class SletteSoknaderStatusFeiletJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
-) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET") {
+) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET", logger) {
     @Scheduled(cron = "0 0 4 * * *")
     suspend fun sletteSoknaderStatusFeilet() =
         doInJob {

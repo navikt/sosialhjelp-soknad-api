@@ -16,7 +16,7 @@ class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(leaderElection, "Slette soknader") {
+) : AbstractJob(leaderElection, "Slette soknader", logger) {
     // TODO En gang i døgnet
     @Scheduled(cron = "0 */10 * * * * ")
     suspend fun slettGamleSoknader() =

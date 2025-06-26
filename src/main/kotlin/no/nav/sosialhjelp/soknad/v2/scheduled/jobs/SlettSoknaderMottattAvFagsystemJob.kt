@@ -21,7 +21,7 @@ class SlettSoknaderMottattAvFagsystemJob(
     private val metadataService: SoknadMetadataService,
     private val soknadJobService: SoknadJobService,
     private val digisosApiService: DigisosApiService,
-) : AbstractJob(leaderElection, "Slette mottatte soknader") {
+) : AbstractJob(leaderElection, "Slette mottatte soknader", logger) {
     @Scheduled(cron = "0 */10 * * * *")
     suspend fun slettSoknaderSomErMottattAvFagsystem() =
         doInJob {

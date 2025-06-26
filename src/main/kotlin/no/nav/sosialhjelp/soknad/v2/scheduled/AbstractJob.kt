@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
 abstract class AbstractJob(
     private val leaderElection: LeaderElection,
     private val jobName: String,
+    private val logger: Logger = LoggerFactory.getLogger("no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob"),
 ) {
     protected suspend fun doInJob(function: () -> Unit) {
-        logger.info("Starter job: $jobName")
-
         runCatching {
             runWithLeaderElection(function)
         }
@@ -20,14 +20,13 @@ abstract class AbstractJob(
     }
 
     private suspend fun runWithLeaderElection(function: () -> Unit) {
-        if (leaderElection.isLeader()) runWithTimeout(function)
+        if (leaderElection.isLeader()) {
+            logger.info("Starter job: $jobName")
+            runWithTimeout(function)
+        }
     }
 
     private suspend fun runWithTimeout(function: () -> Unit) {
         withTimeoutOrNull(60.seconds) { function.invoke() } ?: logger.error("$jobName tok for lang tid")
-    }
-
-    companion object {
-        private val logger by logger()
     }
 }

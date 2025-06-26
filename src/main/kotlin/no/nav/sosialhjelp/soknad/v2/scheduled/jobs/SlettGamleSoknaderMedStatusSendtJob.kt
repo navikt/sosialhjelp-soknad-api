@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 class SlettGamleSoknaderMedStatusSendtJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
-) : AbstractJob(jobName = "Slette soknader sendt", leaderElection = leaderElection) {
+) : AbstractJob(jobName = "Slette soknader sendt", leaderElection = leaderElection, logger = logger) {
     // TODO En gang i døgnet
     @Scheduled(cron = "0 0 * * * *")
     suspend fun slettSoknader() =
