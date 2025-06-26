@@ -16,12 +16,15 @@ class SlettGammelMetadataJob(
     @Scheduled(cron = "0 30 4 * * *")
     suspend fun slettGammelMetadata() =
         doInJob {
-            metadataService
-                .findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))
-                .also { soknadIds ->
-                    metadataService.deleteAll(soknadIds)
-                    logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
-                }
+            logger.info("Starter sletting av gamle metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
+
+            val soknadIds = metadataService.findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))
+
+            logger.info("Fant ${soknadIds.size} metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
+
+            metadataService.deleteAll(soknadIds)
+
+            logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
         }
 
     companion object {

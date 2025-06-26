@@ -14,14 +14,12 @@ abstract class AbstractJob(
         runCatching {
             runWithLeaderElection(function)
         }
-            .onSuccess { logger.info("Job ($jobName) er fullført") }
             .onFailure { e -> logger.error("Feil i job ($jobName)", e) }
             .getOrThrow()
     }
 
     private suspend fun runWithLeaderElection(function: () -> Unit) {
         if (leaderElection.isLeader()) {
-            logger.info("Starter job: $jobName")
             runWithTimeout(function)
         }
     }

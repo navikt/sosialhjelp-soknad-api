@@ -20,8 +20,11 @@ class SlettGamleSoknaderJob(
     @Scheduled(cron = "0 30 3 * * * ")
     suspend fun slettGamleSoknader() =
         doInJob {
+            logger.info("Starter sletting av gamle søknader med status OPPRETTET")
             val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+            logger.info("Fant ${soknadIds.size} søknader med status OPPRETTET eldre enn $NUMBER_OF_DAYS dager")
             if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
+            logger.info("Sletter gamle søknader med status OPPRETTET ferdig")
         }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
