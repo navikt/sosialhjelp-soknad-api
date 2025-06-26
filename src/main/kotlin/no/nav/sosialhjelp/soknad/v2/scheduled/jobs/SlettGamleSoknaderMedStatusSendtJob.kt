@@ -19,7 +19,7 @@ class SlettGamleSoknaderMedStatusSendtJob(
     private val soknadJobService: SoknadJobService,
 ) : AbstractJob(jobName = "Slette soknader sendt", leaderElection = leaderElection, logger = logger) {
     // TODO En gang i døgnet
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     suspend fun slettSoknader() =
         doInJob {
             runCatching {

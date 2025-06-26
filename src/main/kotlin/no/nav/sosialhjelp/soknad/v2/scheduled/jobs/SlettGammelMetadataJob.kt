@@ -13,8 +13,7 @@ class SlettGammelMetadataJob(
     leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection, logger = logger) {
-    // TODO en gang i døgnet
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 30 4 * * *")
     suspend fun slettGammelMetadata() =
         doInJob {
             metadataService

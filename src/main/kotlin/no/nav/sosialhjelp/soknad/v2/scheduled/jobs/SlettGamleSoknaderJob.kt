@@ -17,8 +17,7 @@ class SlettGamleSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(leaderElection, "Slette soknader", logger) {
-    // TODO En gang i døgnet
-    @Scheduled(cron = "0 */10 * * * * ")
+    @Scheduled(cron = "0 30 3 * * * ")
     suspend fun slettGamleSoknader() =
         doInJob {
             val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
