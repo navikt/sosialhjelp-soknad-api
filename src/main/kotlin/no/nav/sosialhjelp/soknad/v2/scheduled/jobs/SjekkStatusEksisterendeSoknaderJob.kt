@@ -37,7 +37,7 @@ class SjekkStatusEksisterendeSoknaderJob(
         val nrOfMottatt = checkStatusMottatt(metadatas.filter { it.status == MOTTATT_FSL })
 
         if (nrOfSendt + nrOfMottatt > 0) {
-            logger.error("Det finnes eksisterende soknader med feil status")
+            throw SoknaderFeilStatusException("Det finnes eksisterende soknader med feil status")
         }
     }
 
