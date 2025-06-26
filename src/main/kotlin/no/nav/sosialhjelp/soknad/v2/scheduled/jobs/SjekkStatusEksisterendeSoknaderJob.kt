@@ -20,7 +20,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val metadataService: SoknadMetadataService,
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader") {
-    @Scheduled(cron = HVER_TIME)
+    @Scheduled(cron = "0 0 * * * *")
     suspend fun checkIfExistingSoknaderHasWrongStatus() =
         doInJob {
             soknadJobService.findAllSoknadIds()
@@ -37,13 +37,13 @@ class SjekkStatusEksisterendeSoknaderJob(
         val nrOfMottatt = checkStatusMottatt(metadatas.filter { it.status == MOTTATT_FSL })
 
         if (nrOfSendt + nrOfMottatt > 0) {
-            throw SoknaderFeilStatusException("Det finnes eksisterende soknader med feil status")
+            logger.error("Det finnes eksisterende soknader med feil status")
         }
     }
 
     private fun checkStatusSendt(metadatas: List<SoknadMetadata>): Int {
         // gir kommunen noen dager på å kvittere ut
-        val olderThan = metadatas.filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) ?: false }
+        val olderThan = metadatas.filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) == true }
 
         if (olderThan.isNotEmpty()) {
             olderThan
@@ -72,7 +72,6 @@ class SjekkStatusEksisterendeSoknaderJob(
 
     companion object {
         private val logger by logger()
-        private const val HVER_TIME: String = "0 0 * * * *"
         private const val NUMBER_OF_DAYS = 7L
         private val mapper = jacksonObjectMapper()
     }

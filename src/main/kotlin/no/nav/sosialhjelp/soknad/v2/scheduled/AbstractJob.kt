@@ -9,8 +9,13 @@ abstract class AbstractJob(
     private val jobName: String,
 ) {
     protected suspend fun doInJob(function: () -> Unit) {
-        runCatching { runWithLeaderElection(function) }
-            .onFailure { logger.error("Feil i job: $jobName", it) }
+        logger.info("Starter job: $jobName")
+
+        runCatching {
+            runWithLeaderElection(function)
+        }
+            .onSuccess { logger.info("Job ($jobName) er fullført") }
+            .onFailure { e -> logger.error("Feil i job ($jobName)", e) }
             .getOrThrow()
     }
 
@@ -19,8 +24,7 @@ abstract class AbstractJob(
     }
 
     private suspend fun runWithTimeout(function: () -> Unit) {
-        withTimeoutOrNull(60.seconds) { function.invoke() }
-            ?: logger.error("$jobName tok for lang tid")
+        withTimeoutOrNull(60.seconds) { function.invoke() } ?: logger.error("$jobName tok for lang tid")
     }
 
     companion object {

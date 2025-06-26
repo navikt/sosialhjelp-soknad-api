@@ -17,7 +17,8 @@ class SlettGamleSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(leaderElection, "Slette soknader") {
-    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
+    // TODO En gang i døgnet
+    @Scheduled(cron = "0 */10 * * * * ")
     suspend fun slettGamleSoknader() =
         doInJob {
             val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
@@ -33,7 +34,7 @@ class SlettGamleSoknaderJob(
                     deleted++
                     metadataService.deleteMetadata(soknadId)
                 }
-                .onFailure { logger.error("Kunne ikke slette soknad", it) }
+                .onFailure { logger.error("SletteSoknaderJob -> Kunne ikke slette soknad", it) }
                 .getOrNull()
         }
         logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
@@ -43,7 +44,6 @@ class SlettGamleSoknaderJob(
         private val logger by logger()
 
         private const val NUMBER_OF_DAYS = 14L
-        private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
 
         private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
     }

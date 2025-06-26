@@ -22,7 +22,7 @@ class SlettSoknaderMottattAvFagsystemJob(
     private val soknadJobService: SoknadJobService,
     private val digisosApiService: DigisosApiService,
 ) : AbstractJob(leaderElection, "Slette mottatte soknader") {
-    @Scheduled(cron = HVERT_MINUTT)
+    @Scheduled(cron = "0 */10 * * * *")
     suspend fun slettSoknaderSomErMottattAvFagsystem() =
         doInJob {
             val metadatas = getExistingMetadatasStatusSendt()
@@ -57,6 +57,5 @@ class SlettSoknaderMottattAvFagsystemJob(
 
     companion object {
         private val logger by logger()
-        private const val HVERT_MINUTT = "0 * * * * *"
     }
 }

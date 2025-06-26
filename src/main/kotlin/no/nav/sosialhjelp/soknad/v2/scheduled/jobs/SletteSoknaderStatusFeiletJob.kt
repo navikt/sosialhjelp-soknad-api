@@ -16,7 +16,7 @@ class SletteSoknaderStatusFeiletJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
 ) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET") {
-    @Scheduled(cron = KLOKKEN_TRE_OM_NATTEN)
+    @Scheduled(cron = "0 0 4 * * *")
     suspend fun sletteSoknaderStatusFeilet() =
         doInJob {
             soknadJobService.findSoknadIdsOlderThanWithStatus(getTimeStamp(), SoknadStatus.INNSENDING_FEILET)
@@ -38,6 +38,5 @@ class SletteSoknaderStatusFeiletJob(
         private val logger by logger()
         private const val NUMBER_OF_DAYS = 14L
         private const val EXTRA_DAYS = 5L
-        private const val KLOKKEN_TRE_OM_NATTEN = "0 0 3 * * *"
     }
 }

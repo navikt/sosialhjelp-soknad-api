@@ -18,7 +18,8 @@ class SlettGamleSoknaderMedStatusSendtJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
 ) : AbstractJob(jobName = "Slette soknader sendt", leaderElection = leaderElection) {
-    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
+    // TODO En gang i døgnet
+    @Scheduled(cron = "0 0 * * * *")
     suspend fun slettSoknader() =
         doInJob {
             runCatching {
@@ -32,7 +33,6 @@ class SlettGamleSoknaderMedStatusSendtJob(
 
     companion object {
         private const val NUMBER_OF_DAYS = 7L
-        private const val KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *"
         private val logger by logger()
 
         private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
