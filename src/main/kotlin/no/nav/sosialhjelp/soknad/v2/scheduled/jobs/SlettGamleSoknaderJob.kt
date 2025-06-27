@@ -16,30 +16,26 @@ class SlettGamleSoknaderJob(
     leaderElection: LeaderElection,
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
-) : AbstractJob(leaderElection, "Slette soknader", logger) {
+) : AbstractJob(leaderElection, "Slette gamle soknader", logger) {
     @Scheduled(cron = "0 30 3 * * * ")
-    suspend fun slettGamleSoknader() =
-        doInJob {
-            logger.info("Starter sletting av gamle søknader med status OPPRETTET")
-            val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
-            logger.info("Fant ${soknadIds.size} søknader med status OPPRETTET eldre enn $NUMBER_OF_DAYS dager")
-            if (soknadIds.isNotEmpty()) handleOldSoknadIds(soknadIds)
-            logger.info("Sletter gamle søknader med status OPPRETTET ferdig")
+    suspend fun slettGamleSoknader() = doInJob { findAndDeleteOldSoknader() }
+
+    private fun findAndDeleteOldSoknader() {
+        val soknadIds = soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), OPPRETTET)
+        logger.info("Fant ${soknadIds.size} søknader med status OPPRETTET eldre enn $NUMBER_OF_DAYS dager")
+
+        if (soknadIds.isNotEmpty()) {
+            handleOldSoknadIds(soknadIds)
         }
+    }
 
     private fun handleOldSoknadIds(soknadIds: List<UUID>) {
-        var deleted = 0
-
-        soknadIds.forEach { soknadId ->
-            runCatching { soknadJobService.deleteSoknadById(soknadId) }
-                .onSuccess {
-                    deleted++
-                    metadataService.deleteMetadata(soknadId)
-                }
-                .onFailure { logger.error("SletteSoknaderJob -> Kunne ikke slette soknad", it) }
-                .getOrNull()
+        soknadIds.chunked(500).forEach { batch ->
+            soknadJobService.deleteSoknaderByIds(batch)
+            metadataService.deleteAll(batch)
         }
-        logger.info("Slettet $deleted gamle søknader med status OPPRETTET")
+
+        logger.info("Slettet ${soknadIds.size} gamle søknader med status OPPRETTET")
     }
 
     companion object {
