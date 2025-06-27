@@ -20,16 +20,13 @@ class SlettGamleSoknaderMedStatusSendtJob(
 ) : AbstractJob(jobName = "Slette soknader sendt", leaderElection = leaderElection, logger = logger) {
     // TODO En gang i døgnet
     @Scheduled(cron = "0 0 4 * * *")
-    suspend fun slettSoknader() =
-        doInJob {
-            runCatching {
-                soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), SoknadStatus.SENDT)
-                    .also { ids -> soknadJobService.deleteSoknaderByIds(ids) }
-            }
-                .onSuccess { ids -> logger.info("Slettet ${ids.size} soknader med status SENDT") }
-                .onFailure { ex -> logger.error("Kunne ikke slette soknader med status SENDT", ex) }
-                .getOrThrow()
-        }
+    suspend fun slettSoknader() = doInJob { findAndDeleteOldSoknaderStatusSendt() }
+
+    private fun findAndDeleteOldSoknaderStatusSendt() {
+        soknadJobService.findSoknadIdsOlderThanWithStatus(getTimestamp(), SoknadStatus.SENDT)
+            .also { ids -> soknadJobService.deleteSoknaderByIds(ids) }
+            .also { ids -> logger.info("Slettet ${ids.size} soknader med status SENDT") }
+    }
 
     companion object {
         private const val NUMBER_OF_DAYS = 7L

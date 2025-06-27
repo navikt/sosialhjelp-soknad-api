@@ -21,13 +21,14 @@ class SjekkStatusEksisterendeSoknaderJob(
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
     @Scheduled(cron = "0 0 * * * *")
-    suspend fun checkIfExistingSoknaderHasWrongStatus() =
-        doInJob {
-            soknadJobService.findAllSoknadIds()
-                .let { ids -> metadataService.findAllMetadatasForIds(ids) }
-                .filter { metadata -> filterRelevantStatus(metadata) }
-                .also { relevantSoknader -> if (relevantSoknader.isNotEmpty()) handleGamleSoknader(relevantSoknader) }
-        }
+    suspend fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
+
+    private fun findSoknadWithWrongStatus() {
+        soknadJobService.findAllSoknadIds()
+            .let { ids -> metadataService.findAllMetadatasForIds(ids) }
+            .filter { metadata -> filterRelevantStatus(metadata) }
+            .also { relevantSoknader -> if (relevantSoknader.isNotEmpty()) handleGamleSoknader(relevantSoknader) }
+    }
 
     private fun filterRelevantStatus(metadatas: SoknadMetadata) =
         metadatas.status == SENDT || metadatas.status == MOTTATT_FSL

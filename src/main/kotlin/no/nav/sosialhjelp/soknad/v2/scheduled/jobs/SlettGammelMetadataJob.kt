@@ -7,26 +7,27 @@ import no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob
 import no.nav.sosialhjelp.soknad.v2.scheduled.LeaderElection
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class SlettGammelMetadataJob(
     leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection, logger = logger) {
-//    @Scheduled(cron = "0 30 4 * * *")
-    @Scheduled(cron = "0 */10 * * * *")
-    suspend fun slettGammelMetadata() =
-        doInJob {
-            logger.info("Starter sletting av gamle metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
+    @Scheduled(cron = "0 30 4 * * *")
+    suspend fun slettGammelMetadata() = doInJob { findAndDeleteOldMetadata() }
 
-            val soknadIds = metadataService.findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))
+    private fun findAndDeleteOldMetadata() {
+        val soknadIds = metadataService.findOlderThan(nowWithMillis().minusDays(NUMBER_OF_DAYS))
+        logger.info("Fant ${soknadIds.size} metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
 
-            logger.info("Fant ${soknadIds.size} metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
+        if (soknadIds.isNotEmpty()) handleOldMetadataIds(soknadIds)
+    }
 
-            soknadIds.chunked(500).forEach { batch -> metadataService.deleteAll(batch) }
-
-            logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
-        }
+    private fun handleOldMetadataIds(soknadIds: List<UUID>) {
+        soknadIds.chunked(500).forEach { batch -> metadataService.deleteAll(batch) }
+        logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
+    }
 
     companion object {
         private val logger by logger()

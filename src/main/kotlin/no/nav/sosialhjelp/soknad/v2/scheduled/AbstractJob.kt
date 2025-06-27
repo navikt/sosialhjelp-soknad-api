@@ -11,20 +11,17 @@ abstract class AbstractJob(
     private val logger: Logger = LoggerFactory.getLogger("no.nav.sosialhjelp.soknad.v2.scheduled.AbstractJob"),
 ) {
     protected suspend fun doInJob(function: () -> Unit) {
-        runCatching {
-            runWithLeaderElection(function)
-        }
-            .onFailure { e -> logger.error("Feil i job ($jobName)", e) }
-            .getOrThrow()
-    }
-
-    private suspend fun runWithLeaderElection(function: () -> Unit) {
         if (leaderElection.isLeader()) {
-            runWithTimeout(function)
-        }
-    }
+            logger.info("Starter jobb: $jobName")
 
-    private suspend fun runWithTimeout(function: () -> Unit) {
-        withTimeoutOrNull(60.seconds) { function.invoke() } ?: logger.error("$jobName tok for lang tid")
+            runCatching {
+                withTimeoutOrNull(60.seconds) { function.invoke() }
+                    ?: logger.error("$jobName tok for lang tid å starte")
+            }
+                .onFailure { e -> logger.error("Feil i job ($jobName)", e) }
+                .getOrThrow()
+
+            logger.info("Jobb ferdig: $jobName")
+        }
     }
 }

@@ -17,11 +17,12 @@ class SletteSoknaderStatusFeiletJob(
     private val soknadJobService: SoknadJobService,
 ) : AbstractJob(leaderElection, "Slette soknader med status INNSENDING_FEILET", logger) {
     @Scheduled(cron = "0 0 4 * * *")
-    suspend fun sletteSoknaderStatusFeilet() =
-        doInJob {
-            soknadJobService.findSoknadIdsOlderThanWithStatus(getTimeStamp(), SoknadStatus.INNSENDING_FEILET)
-                .also { if (it.isNotEmpty()) handleSoknaderInnsendingFeilet(it) }
-        }
+    suspend fun sletteSoknaderStatusFeilet() = doInJob { findAndDeleteSoknaderStatusFeilet() }
+
+    private fun findAndDeleteSoknaderStatusFeilet() {
+        soknadJobService.findSoknadIdsOlderThanWithStatus(getTimeStamp(), SoknadStatus.INNSENDING_FEILET)
+            .also { if (it.isNotEmpty()) handleSoknaderInnsendingFeilet(it) }
+    }
 
     private fun handleSoknaderInnsendingFeilet(soknadIds: List<UUID>) {
         logger.info("Sletter ${soknadIds.size} soknader hvor innsending feilet.")
