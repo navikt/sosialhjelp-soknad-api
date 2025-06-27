@@ -13,7 +13,8 @@ class SlettGammelMetadataJob(
     leaderElection: LeaderElection,
     private val metadataService: SoknadMetadataService,
 ) : AbstractJob(jobName = "Slette gamle metadata", leaderElection = leaderElection, logger = logger) {
-    @Scheduled(cron = "0 30 4 * * *")
+//    @Scheduled(cron = "0 30 4 * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     suspend fun slettGammelMetadata() =
         doInJob {
             logger.info("Starter sletting av gamle metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
@@ -22,7 +23,7 @@ class SlettGammelMetadataJob(
 
             logger.info("Fant ${soknadIds.size} metadata-innslag eldre enn $NUMBER_OF_DAYS dager")
 
-            metadataService.deleteAll(soknadIds)
+            soknadIds.chunked(500).forEach { batch -> metadataService.deleteAll(batch) }
 
             logger.info("Slettet ${soknadIds.size} gamle metadata-innslag")
         }
