@@ -119,6 +119,7 @@ dependencies {
     // Opentelemetry
     implementation(platform(libs.opentelemetry.bom))
     implementation(libs.opentelemetry.api)
+    implementation(libs.opentelemetry.instrumentation.logback)
 
     // jackson
     implementation(libs.jackson.module.kotlin)
