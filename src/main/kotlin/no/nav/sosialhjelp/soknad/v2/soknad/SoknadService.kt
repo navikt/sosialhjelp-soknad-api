@@ -2,7 +2,12 @@ package no.nav.sosialhjelp.soknad.v2.soknad
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.INNSENDING_FEILET
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.OPPRETTET
+import no.nav.sosialhjelp.soknad.v2.scheduled.jobs.SlettGamleSoknaderJob
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -71,6 +76,7 @@ interface BegrunnelseService {
 @Service
 class SoknadServiceImpl(
     private val soknadRepository: SoknadRepository,
+    private val metadataService: SoknadMetadataService,
 ) : SoknadService, BegrunnelseService, SoknadJobService, PersonIdService {
     @Transactional(readOnly = true)
     override fun findOrError(soknadId: UUID): Soknad =
@@ -99,8 +105,41 @@ class SoknadServiceImpl(
     @Transactional(readOnly = true)
     override fun getSoknadOrNull(soknadId: UUID) = soknadRepository.findByIdOrNull(soknadId)
 
-    @Transactional(readOnly = true)
-    override fun findOpenSoknadIds(fnr: String): List<UUID> = soknadRepository.findOpenSoknadIds(fnr)
+    @Transactional
+    override fun findOpenSoknadIds(personId: String): List<UUID> {
+        val openSoknadIds = soknadRepository.findOpenSoknadIds(personId)
+
+        return openSoknadIds
+            .let { openIds -> metadataService.getMetadatasForIds(openIds) }
+            .let { metadatas -> filterTooOld(metadatas) }
+            .map { validMetadata -> validMetadata.soknadId }
+            .also { validIds -> deleteTooOldOpenSoknadIds(openSoknadIds, validIds) }
+    }
+
+    private fun filterTooOld(metadatas: List<SoknadMetadata>): List<SoknadMetadata> =
+        metadatas.filter { metadata ->
+            when (metadata.status) {
+                OPPRETTET -> metadata.tidspunkt.opprettet.isNotOlderThan(OPPRETTET_LIFESPAN)
+                INNSENDING_FEILET -> metadata.tidspunkt.opprettet.isNotOlderThan(INNSENDING_FEILET_LIFESPAN)
+                else -> error("Uventet status ${metadata.status} for soknad ${metadata.soknadId}")
+            }
+        }
+
+    private fun LocalDateTime.isNotOlderThan(days: Long): Boolean = isAfter(LocalDateTime.now().minusDays(days))
+
+    private fun deleteTooOldOpenSoknadIds(
+        openIds: List<UUID>,
+        validIds: List<UUID>,
+    ) {
+        openIds
+            .let { it.filterNot { id -> validIds.contains(id) } }
+            .also { tooOldIds ->
+                if (tooOldIds.isNotEmpty()) {
+                    logger.warn("Det fantes ${tooOldIds.size} åpne søknader som var for gamle. Slettes.")
+                    metadataService.deleteAll(tooOldIds)
+                }
+            }
+    }
 
     @Transactional(readOnly = true)
     override fun findAllSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
@@ -176,5 +215,8 @@ class SoknadServiceImpl(
 
     companion object {
         private val logger by logger()
+
+        private const val OPPRETTET_LIFESPAN = SlettGamleSoknaderJob.NUMBER_OF_DAYS
+        private const val INNSENDING_FEILET_LIFESPAN = SlettGamleSoknaderJob.NUMBER_OF_DAYS
     }
 }
