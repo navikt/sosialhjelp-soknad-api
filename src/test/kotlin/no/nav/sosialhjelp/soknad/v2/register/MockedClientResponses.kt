@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteMottaker
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteRolle
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.enums.BostotteStatus
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoer
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Aktoertype
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
@@ -328,7 +327,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
             listOf(
                 Utbetaling(
                     posteringsdato = null,
-                    utbetaltTil = Aktoer(Aktoertype.PERSON, "123456123451234", navn),
+                    utbetaltTil = Aktoer("PERSON", "123456123451234", navn),
                     utbetalingNettobeloep = null,
                     utbetalingsdato = LocalDate.now().minusDays(10),
                     forfallsdato = null,
@@ -342,7 +341,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                                 ytelsestype = "Utbetaling 1 Ytelse 1",
                                 ytelsesperiode = Periode(LocalDate.now().minusMonths(2), LocalDate.now()),
                                 ytelseNettobeloep = BigDecimal(5000.0),
-                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                rettighetshaver = Aktoer("PERSON", "1234", navn),
                                 skattsum = BigDecimal(1300.0),
                                 trekksum = BigDecimal(600.0),
                                 ytelseskomponentersum = BigDecimal(2500.0),
@@ -372,7 +371,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                                 ytelsestype = "Utbetaling 1 Ytelse 2",
                                 ytelsesperiode = Periode(LocalDate.now().minusMonths(4), LocalDate.now().minusMonths(2)),
                                 ytelseNettobeloep = BigDecimal(5000.0),
-                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                rettighetshaver = Aktoer("PERSON", "1234", navn),
                                 skattsum = BigDecimal(1200.0),
                                 trekksum = BigDecimal(300.0),
                                 ytelseskomponentersum = BigDecimal(2400.0),
@@ -395,7 +394,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                 ),
                 Utbetaling(
                     posteringsdato = null,
-                    utbetaltTil = Aktoer(Aktoertype.PERSON, "31212152", navn),
+                    utbetaltTil = Aktoer("PERSON", "31212152", navn),
                     utbetalingNettobeloep = null,
                     utbetalingsdato = LocalDate.now().minusDays(10),
                     forfallsdato = null,
@@ -409,7 +408,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                                 ytelsestype = "Utbetaling 2 Ytelse 1",
                                 ytelsesperiode = Periode(LocalDate.now().minusMonths(2), LocalDate.now()),
                                 ytelseNettobeloep = BigDecimal(5000.0),
-                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                rettighetshaver = Aktoer("PERSON", "1234", navn),
                                 skattsum = BigDecimal(1300.0),
                                 trekksum = BigDecimal(600.0),
                                 ytelseskomponentersum = BigDecimal(2500.0),
@@ -432,7 +431,7 @@ fun defaultResponseFromNavUtbetalingerClient(): UtbetalDataDto {
                                 ytelsestype = "Utbetaling 2 Ytelse 2",
                                 ytelsesperiode = Periode(LocalDate.now().minusMonths(4), LocalDate.now().minusMonths(2)),
                                 ytelseNettobeloep = BigDecimal(5000.0),
-                                rettighetshaver = Aktoer(Aktoertype.PERSON, "1234", navn),
+                                rettighetshaver = Aktoer("PERSON", "1234", navn),
                                 skattsum = BigDecimal(1200.0),
                                 trekksum = BigDecimal(300.0),
                                 ytelseskomponentersum = BigDecimal(2400.0),
