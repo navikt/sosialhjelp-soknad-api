@@ -41,7 +41,7 @@ class SlettGamleSoknaderJob(
     companion object {
         private val logger by logger()
 
-        private const val NUMBER_OF_DAYS = 14L
+        const val NUMBER_OF_DAYS = 14L
 
         private fun getTimestamp() = LocalDateTime.now().minusDays(NUMBER_OF_DAYS)
     }

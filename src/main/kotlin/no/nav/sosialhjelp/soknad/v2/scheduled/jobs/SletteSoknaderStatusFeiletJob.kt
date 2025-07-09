@@ -37,7 +37,7 @@ class SletteSoknaderStatusFeiletJob(
 
     companion object {
         private val logger by logger()
-        private const val NUMBER_OF_DAYS = 14L
+        const val NUMBER_OF_DAYS = 14L
         private const val EXTRA_DAYS = 5L
     }
 }

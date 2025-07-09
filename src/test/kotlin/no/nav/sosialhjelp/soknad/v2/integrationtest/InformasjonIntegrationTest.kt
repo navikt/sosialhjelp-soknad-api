@@ -45,6 +45,24 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             }
     }
 
+    @Test
+    fun `Finnes det for gamle soknader skal disse slettes og ikke returneres`() {
+        createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
+        createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
+        createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET, personId = userId)
+        createMetadataAndSoknad(nowMinusDays(15), OPPRETTET, personId = userId)
+
+        metadataRepository.findAll().also { assertThat(it).hasSize(4) }
+
+        doGet(
+            uri = url,
+            responseBodyClass = SessionResponse::class.java,
+        )
+            .also { dto -> assertThat(dto.open).hasSize(2) }
+
+        metadataRepository.findAll().also { assertThat(it).hasSize(2) }
+    }
+
     companion object {
         private val url get() = "/informasjon/session"
     }
