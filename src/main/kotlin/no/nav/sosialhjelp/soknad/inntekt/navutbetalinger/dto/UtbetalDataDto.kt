@@ -37,7 +37,7 @@ data class Ytelse(
 )
 
 data class Aktoer(
-    val aktoertype: Aktoertype,
+    val aktoertype: String,
     val ident: String,
     val navn: String?,
 )
@@ -67,7 +67,3 @@ data class Periode(
     val fom: LocalDate,
     val tom: LocalDate,
 )
-
-enum class Aktoertype {
-    PERSON,
-}
