@@ -46,9 +46,9 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Finnes det for gamle soknader skal disse slettes og ikke returneres`() {
-        createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
-        createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
+    fun `Finnes det soknader som er for gamle skal disse slettes og ikke returneres`() {
+        val soknadId1 = createMetadataAndSoknad(nowMinusDays(10), INNSENDING_FEILET, personId = userId)
+        val soknadId2 = createMetadataAndSoknad(nowMinusDays(10), OPPRETTET, personId = userId)
         createMetadataAndSoknad(nowMinusDays(20), INNSENDING_FEILET, personId = userId)
         createMetadataAndSoknad(nowMinusDays(15), OPPRETTET, personId = userId)
 
@@ -58,9 +58,17 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
             uri = url,
             responseBodyClass = SessionResponse::class.java,
         )
-            .also { dto -> assertThat(dto.open).hasSize(2) }
+            .also { dto ->
+                assertThat(dto.open)
+                    .hasSize(2)
+                    .allMatch { it.soknadId == soknadId1 || it.soknadId == soknadId2 }
+            }
 
-        metadataRepository.findAll().also { assertThat(it).hasSize(2) }
+        metadataRepository.findAll().also {
+            assertThat(it)
+                .hasSize(2)
+                .allMatch { it.soknadId == soknadId1 || it.soknadId == soknadId2 }
+        }
     }
 
     companion object {
