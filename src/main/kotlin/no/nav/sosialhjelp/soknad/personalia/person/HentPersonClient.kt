@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
@@ -93,9 +92,6 @@ class HentPersonClientImpl(
                     .bodyToMono<String>()
                     .retryWhen(pdlRetry)
                     .block()
-                    ?.also {
-                        logger.info("Ektefelle hentet: ${jacksonObjectMapper().writeValueAsString(it)}")
-                    }
                     ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
@@ -118,9 +114,7 @@ class HentPersonClientImpl(
                     .bodyToMono<String>()
                     .retryWhen(pdlRetry)
                     .block()
-                    ?.also {
-                        logger.info("Barn hentet: ${jacksonObjectMapper().writeValueAsString(it)}")
-                    } ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
+                    ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
