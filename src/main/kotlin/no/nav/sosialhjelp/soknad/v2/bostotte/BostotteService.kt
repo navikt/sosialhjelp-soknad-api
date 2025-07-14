@@ -90,6 +90,7 @@ class BostotteServiceImpl(
         }
     }
 
+    @Transactional
     override fun saveDataFromHusbanken(
         soknadId: UUID,
         saker: List<BostotteSak>,

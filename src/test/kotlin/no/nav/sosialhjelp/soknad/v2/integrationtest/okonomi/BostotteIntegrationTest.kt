@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
-import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenException
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.VedtakDto
@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
@@ -103,7 +104,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
         postBostotte(true)
 
-        verify(exactly = 0) { husbankenClient.hentBostotte(any(), any()) }
+        verify(exactly = 0) { husbankenClient.getBostotte(any(), any()) }
     }
 
     @Test
@@ -120,7 +121,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
                 assertThat(dto.utbetalinger).hasSize(createUtbetalinger().size)
             }
 
-        verify(exactly = 1) { husbankenClient.hentBostotte(any(), any()) }
+        verify(exactly = 1) { husbankenClient.getBostotte(any(), any()) }
     }
 
     @Test
@@ -149,7 +150,8 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal finnes inntekt og dokumentasjon ved bostotte og samtykke true, men innhenting feilet`() {
-        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
+        every { husbankenClient.getBostotte(any(), any()) } returns
+            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
         postBostotte(hasBostotte = true, true)
         assertInntektOgDokumentasjon(hasSamtykke = true)
@@ -299,7 +301,8 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
 
     @Test
     fun `Skal ha forventet dokumentasjon hvis clienten kaster exception`() {
-        every { husbankenClient.hentBostotte(any(), any()) } throws HusbankenException("Feilet")
+        every { husbankenClient.getBostotte(any(), any()) } returns
+            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
         postBostotte(hasBostotte = true, true)
 
@@ -378,7 +381,7 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     }
 
     private fun setupHusbankenAnswer() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns createBostotteDto()
+        every { husbankenClient.getBostotte(any(), any()) } returns HusbankenResponse.Success(createBostotteDto())
     }
 
     private fun createBostotteDto() =

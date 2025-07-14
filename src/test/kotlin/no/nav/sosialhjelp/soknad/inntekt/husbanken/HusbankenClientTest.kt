@@ -7,8 +7,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatNoException
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -49,18 +47,18 @@ internal class HusbankenClientTest {
                 .setBody(IOUtils.toString(inputStream, StandardCharsets.UTF_8)),
         )
 
-        val bostotte = husbankenClient.hentBostotte(fra, til)
+        val bostotte = (husbankenClient.getBostotte(fra, til) as HusbankenResponse.Success).bostotte
 
         assertThat(bostotte).isNotNull
         assertThat(bostotte).isInstanceOf(BostotteDto::class.java)
 
-        assertThat(bostotte?.saker).hasSize(3)
-        assertThat(bostotte?.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
-        assertThat(bostotte?.utbetalinger).hasSize(2)
-        assertThat(bostotte?.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 7, 20))
-        assertThat(bostotte?.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
-        assertThat(bostotte?.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 8, 20))
-        assertThat(bostotte?.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
+        assertThat(bostotte.saker).hasSize(3)
+        assertThat(bostotte.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
+        assertThat(bostotte.utbetalinger).hasSize(2)
+        assertThat(bostotte.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 7, 20))
+        assertThat(bostotte.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
+        assertThat(bostotte.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 8, 20))
+        assertThat(bostotte.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
     }
 
     @Test
@@ -69,11 +67,13 @@ internal class HusbankenClientTest {
         val til = LocalDate.now()
 
         mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(503),
+            MockResponse().setResponseCode(503),
         )
 
-        assertThatThrownBy { husbankenClient.hentBostotte(fra, til) }.isInstanceOf(HusbankenException::class.java)
+        val response = husbankenClient.getBostotte(fra, til) as HusbankenResponse.Error
+
+        assertThat(response.e.statusCode.is5xxServerError).isTrue()
+        assertThat(response.e.statusText).isEqualTo("Service Unavailable")
     }
 
     @Test
@@ -85,18 +85,19 @@ internal class HusbankenClientTest {
             MockResponse()
                 .setResponseCode(400),
         )
+        val response = husbankenClient.getBostotte(fra, til) as HusbankenResponse.Error
 
-        assertThatThrownBy { husbankenClient.hentBostotte(fra, til) }.isInstanceOf(HusbankenException::class.java)
+        assertThat(response.e.statusCode.is4xxClientError).isTrue()
+        assertThat(response.e.statusText).isEqualTo("Bad Request")
     }
 
     @Test
-    internal fun `ping kaster ikke feil`() {
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("OK"),
-        )
+    internal fun `Request returnerer null`() {
+        val fra = LocalDate.now().minusDays(30)
+        val til = LocalDate.now()
 
-        assertThatNoException().isThrownBy { husbankenClient.ping() }
+        mockWebServer.enqueue(MockResponse().setResponseCode(204))
+
+        assertThat(husbankenClient.getBostotte(fra, til)).isExactlyInstanceOf(HusbankenResponse.Null::class.java)
     }
 }
