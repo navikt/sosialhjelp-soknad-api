@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -153,7 +154,9 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         every { husbankenClient.getBostotte(any(), any()) } returns
             HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
-        postBostotte(hasBostotte = true, true)
+        postBostotteFullResponse(hasBostotte = true, true)
+            .expectStatus().is5xxServerError
+
         assertInntektOgDokumentasjon(hasSamtykke = true)
         assertThat(integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)).isTrue()
     }
@@ -304,7 +307,8 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         every { husbankenClient.getBostotte(any(), any()) } returns
             HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
-        postBostotte(hasBostotte = true, true)
+        postBostotteFullResponse(hasBostotte = true, true)
+            .expectStatus().is5xxServerError
 
         dokRepository.findBySoknadIdAndType(soknad.id, InntektType.UTBETALING_HUSBANKEN)
             .also { assertThat(it).isNotNull }
@@ -312,6 +316,16 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
             .find { it.type == InntektType.UTBETALING_HUSBANKEN }
             .also { assertThat(it).isNotNull }
     }
+
+    private fun postBostotteFullResponse(
+        hasBostotte: Boolean?,
+        hasSamtykke: Boolean? = null,
+    ): ResponseSpec =
+        doPostFullResponse(
+            uri = bostottUrl(soknad.id),
+            requestBody = BostotteInput(hasBostotte, hasSamtykke),
+            soknadId = soknad.id,
+        )
 
     private fun postBostotte(
         hasBostotte: Boolean?,
