@@ -39,7 +39,6 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -82,6 +81,9 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
                 assertThat(dto.utbetalinger).isEmpty()
                 assertThat(dto.saker).isEmpty()
             }
+
+        okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
+        okonomiService.getInntekter(soknad.id).also { assertThat(it).isEmpty() }
     }
 
     @Test
@@ -95,6 +97,11 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
                 assertThat(dto.utbetalinger).isEmpty()
                 assertThat(dto.saker).isEmpty()
             }
+
+        okonomiService.getBostotteSaker(soknad.id).also { assertThat(it).isEmpty() }
+        okonomiService.getInntekter(soknad.id)
+            .find { it.type == InntektType.UTBETALING_HUSBANKEN }!!
+            .also { assertThat(it.inntektDetaljer.detaljer).isEmpty() }
     }
 
     @Test
@@ -121,6 +128,9 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
                 assertThat(dto.saker).hasSize(createSaker().size)
                 assertThat(dto.utbetalinger).hasSize(createUtbetalinger().size)
             }
+
+        integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)
+            .also { assertThat(it).isFalse() }
 
         verify(exactly = 1) { husbankenClient.getBostotte(any(), any()) }
     }
@@ -154,11 +164,17 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         every { husbankenClient.getBostotte(any(), any()) } returns
             HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
-        postBostotteFullResponse(hasBostotte = true, true)
-            .expectStatus().is5xxServerError
+        postBostotte(hasBostotte = true, true)
 
         assertInntektOgDokumentasjon(hasSamtykke = true)
         assertThat(integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)).isTrue()
+
+        doGet(
+            uri = bostottUrl(soknad.id),
+            responseBodyClass = BostotteDto::class.java,
+        ).also { dto ->
+            assertThat(dto.fetchHusbankenFeilet).isTrue()
+        }
     }
 
     @Test
@@ -307,25 +323,37 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
         every { husbankenClient.getBostotte(any(), any()) } returns
             HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
 
-        postBostotteFullResponse(hasBostotte = true, true)
-            .expectStatus().is5xxServerError
+        postBostotte(hasBostotte = true, true)
 
         dokRepository.findBySoknadIdAndType(soknad.id, InntektType.UTBETALING_HUSBANKEN)
             .also { assertThat(it).isNotNull }
         okonomiService.getInntekter(soknad.id)
             .find { it.type == InntektType.UTBETALING_HUSBANKEN }
             .also { assertThat(it).isNotNull }
+        integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)
+            .also { assertThat(it).isTrue() }
+
+        doGet(
+            uri = bostottUrl(soknad.id),
+            responseBodyClass = BostotteDto::class.java,
+        ).also { dto -> assertThat(dto.fetchHusbankenFeilet).isTrue() }
     }
 
-    private fun postBostotteFullResponse(
-        hasBostotte: Boolean?,
-        hasSamtykke: Boolean? = null,
-    ): ResponseSpec =
-        doPostFullResponse(
+    @Test
+    fun `Skal returnerer kall til husbanken feilet hvis det skjer en feil`() {
+        every { husbankenClient.getBostotte(any(), any()) } returns
+            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
+
+        postBostotte(hasBostotte = true, hasSamtykke = true)
+
+        integrasjonStatusService.hasFetchHusbankenFailed(soknad.id)
+            .also { assertThat(it).isTrue() }
+
+        doGet(
             uri = bostottUrl(soknad.id),
-            requestBody = BostotteInput(hasBostotte, hasSamtykke),
-            soknadId = soknad.id,
-        )
+            responseBodyClass = BostotteDto::class.java,
+        ).also { dto -> assertThat(dto.fetchHusbankenFeilet).isTrue() }
+    }
 
     private fun postBostotte(
         hasBostotte: Boolean?,

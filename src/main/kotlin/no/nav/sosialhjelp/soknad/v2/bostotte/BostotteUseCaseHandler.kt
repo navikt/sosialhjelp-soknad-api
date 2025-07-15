@@ -12,7 +12,12 @@ class BostotteUseCaseHandler(
     private val bostotteService: BostotteService,
     private val integrasjonStatusService: IntegrasjonStatusService,
 ) {
-    fun getBostotteInfo(soknadId: UUID): BostotteInfo = bostotteService.getBostotteInfo(soknadId)
+    fun getBostotteInfo(soknadId: UUID): Pair<BostotteInfo, Boolean?> {
+        return Pair(
+            bostotteService.getBostotteInfo(soknadId),
+            integrasjonStatusService.hasFetchHusbankenFailed(soknadId),
+        )
+    }
 
     fun updateBostotte(
         soknadId: UUID,
@@ -62,12 +67,13 @@ class BostotteUseCaseHandler(
                 bostotteService.addForventetDokumentasjon(soknadId)
                 integrasjonStatusService.setStotteHusbankenStatus(soknadId, true)
             }
-            .getOrThrow()
     }
 
-    private fun existingHasBostotte(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).bostotte?.verdi
+    private fun existingHasBostotte(soknadId: UUID): Boolean? =
+        getBostotteInfo(soknadId).let { (info, _) -> info.bostotte?.verdi }
 
-    private fun existingHasSamtykke(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).samtykke?.verdi
+    private fun existingHasSamtykke(soknadId: UUID): Boolean? =
+        getBostotteInfo(soknadId).let { (info, _) -> info.samtykke?.verdi }
 
     companion object {
         private val logger by logger()

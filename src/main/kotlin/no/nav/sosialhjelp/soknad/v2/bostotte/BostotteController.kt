@@ -44,15 +44,17 @@ class BostotteController(
     }
 }
 
-private fun BostotteInfo.toBostotteDto() =
-    BostotteDto(
-        hasBostotte = bostotte?.verdi,
-        hasSamtykke = samtykke?.verdi,
-        samtykkeTidspunkt = samtykke?.tidspunkt,
-        utbetalinger = utbetalinger.flatMap { inntekt -> inntekt.inntektDetaljer.detaljer.map { it.toUtbetalingBostotteDto() } },
-        saker = saker.map { it.toBostotteSakDto() },
-        fetchHusbankenFeilet = fetchHusbankenFeilet,
-    )
+private fun Pair<BostotteInfo, Boolean?>.toBostotteDto() =
+    let { (info, fetchHusbankenFeilet) ->
+        BostotteDto(
+            hasBostotte = info.bostotte?.verdi,
+            hasSamtykke = info.samtykke?.verdi,
+            samtykkeTidspunkt = info.samtykke?.tidspunkt,
+            utbetalinger = info.utbetalinger.flatMap { inntekt -> inntekt.inntektDetaljer.detaljer.map { it.toUtbetalingBostotteDto() } },
+            saker = info.saker.map { it.toBostotteSakDto() },
+            fetchHusbankenFeilet = fetchHusbankenFeilet,
+        )
+    }
 
 private fun OkonomiDetalj.toUtbetalingBostotteDto(): UtbetalingBostotteDto {
     return when (this) {
