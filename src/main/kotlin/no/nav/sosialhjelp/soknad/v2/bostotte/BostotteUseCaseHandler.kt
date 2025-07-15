@@ -62,6 +62,7 @@ class BostotteUseCaseHandler(
                 bostotteService.addForventetDokumentasjon(soknadId)
                 integrasjonStatusService.setStotteHusbankenStatus(soknadId, true)
             }
+            .getOrThrow()
     }
 
     private fun existingHasBostotte(soknadId: UUID): Boolean? = getBostotteInfo(soknadId).bostotte?.verdi
