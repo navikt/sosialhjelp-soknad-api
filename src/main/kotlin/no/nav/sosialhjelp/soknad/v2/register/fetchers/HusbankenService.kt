@@ -1,8 +1,11 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteStatus
 import no.nav.sosialhjelp.soknad.v2.okonomi.Inntekt
@@ -12,19 +15,33 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiDetaljer
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utbetaling
 import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.time.LocalDate
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling as UtbetalingHusbanken
 
 @Component
-class BostotteHusbankenFetcher(
+class HusbankenService(
     private val husbankenClient: HusbankenClient,
 ) {
-    fun fetch(soknadId: UUID): Pair<List<BostotteSak>, Inntekt?> {
-        return husbankenClient.hentBostotte(LocalDate.now().minusDays(60), LocalDate.now())
+    fun getBostotte(): Pair<List<BostotteSak>, Inntekt?> {
+        return doGetBostotte(LocalDate.now().minusDays(60), LocalDate.now())
             .toDomain()
             .let { Pair(saveToSaker(it), saveToInntekt(it)) }
     }
+
+    private fun doGetBostotte(
+        fra: LocalDate = LocalDate.now().minusDays(60),
+        til: LocalDate = LocalDate.now(),
+    ): BostotteDto =
+        when (val response = husbankenClient.getBostotte(fra, til)) {
+            is HusbankenResponse.Success -> response.bostotte
+            is HusbankenResponse.Error -> throw HusbankenException(
+                melding = resolveErrorMessage(response.e),
+                cause = response.e,
+            )
+            is HusbankenResponse.Null -> error("Response from Husbanken was null")
+        }
 
     private fun saveToSaker(bostotte: Bostotte): List<BostotteSak> =
         bostotte.saker
@@ -62,6 +79,13 @@ class BostotteHusbankenFetcher(
     }
 }
 
+private fun resolveErrorMessage(e: WebClientResponseException): String? =
+    when {
+        e.statusCode.is4xxClientError -> "Problemer med å koble opp mot Husbanken!"
+        e.statusCode.is5xxServerError -> "Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}"
+        else -> "Problemer med å hente bostøtte informasjon fra Husbanken!"
+    }
+
 private fun Sak.toBostotteSak() =
     BostotteSak(
         dato = dato,
@@ -76,3 +100,9 @@ private fun UtbetalingHusbanken.toUtbetalingDomain() =
         mottaker = Mottaker.valueOf(mottaker.name),
         utbetalingsdato = utbetalingsdato,
     )
+
+data class HusbankenException(
+    val melding: String? = null,
+    override val cause: Throwable? = null,
+    val soknadId: UUID? = null,
+) : SosialhjelpSoknadApiException(melding, cause, soknadId.toString())

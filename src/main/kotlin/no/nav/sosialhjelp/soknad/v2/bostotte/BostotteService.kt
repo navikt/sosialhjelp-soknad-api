@@ -51,7 +51,6 @@ class BostotteServiceImpl(
                     samtykke = samtykke,
                     saker = okonomiService.getBostotteSaker(soknadId),
                     utbetalinger = okonomiService.getInntekter(soknadId).filter { it.type == InntektType.UTBETALING_HUSBANKEN },
-                    fetchHusbankenFeilet = null,
                 )
             }
     }
@@ -90,6 +89,7 @@ class BostotteServiceImpl(
         }
     }
 
+    @Transactional
     override fun saveDataFromHusbanken(
         soknadId: UUID,
         saker: List<BostotteSak>,
@@ -137,7 +137,6 @@ data class BostotteInfo(
     val samtykke: Bekreftelse?,
     val saker: List<BostotteSak>,
     val utbetalinger: List<Inntekt>,
-    val fetchHusbankenFeilet: Boolean?,
 )
 
 data class UpdateBostotteException(

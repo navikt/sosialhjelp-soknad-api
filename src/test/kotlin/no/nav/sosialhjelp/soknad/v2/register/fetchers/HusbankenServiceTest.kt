@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenResponse
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.BostotteSak
@@ -18,9 +19,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
-class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
+class HusbankenServiceTest : AbstractOkonomiRegisterDataTest() {
     @Autowired
-    private lateinit var fetcher: BostotteHusbankenFetcher
+    private lateinit var service: HusbankenService
 
     @Autowired
     private lateinit var samtykkeService: SamtykkeService
@@ -32,7 +33,7 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     fun `Hente bostotte-saker skal lagres i db`() {
         createAnswerForHusbankenClient()
 
-        fetcher.fetch(soknad.id)
+        service.getBostotte()
             .also { (saker, inntekt) ->
                 assertThat(saker)
                     .hasSize(2)
@@ -51,10 +52,10 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
 
     @Test
     fun `Tomme lister lagrer ikke data`() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns BostotteDto(emptyList(), emptyList())
+        every { husbankenClient.getBostotte(any(), any()) } returns HusbankenResponse.Success(BostotteDto(emptyList(), emptyList()))
 
         setBostotteOgSamtykke(true)
-        fetcher.fetch(soknad.id)
+        service.getBostotte()
 
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter).isEmpty()
         assertThat(okonomiRepository.findByIdOrNull(soknad.id)!!.bostotteSaker).isEmpty()
@@ -69,6 +70,6 @@ class BostotteHusbankenFetcherTest : AbstractOkonomiRegisterDataTest() {
     private lateinit var husbankenClient: HusbankenClient
 
     private fun createAnswerForHusbankenClient() {
-        every { husbankenClient.hentBostotte(any(), any()) } returns defaultResponseForHusbankenClient()
+        every { husbankenClient.getBostotte(any(), any()) } returns defaultResponseForHusbankenClient()
     }
 }
