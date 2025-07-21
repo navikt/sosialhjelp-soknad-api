@@ -86,7 +86,6 @@ class FiksDokumentService(
             data = data,
         )
             .let { dto -> dto.mellomlagringMetadataList?.firstOrNull() }?.toMellomlagretDokument(data)
-            ?.also { logger.info("Dokument lastet opp til mellomlager: ${it.filId}") }
             ?: throw FiksException("Klarte ikke å laste opp dokument", null)
     }
 

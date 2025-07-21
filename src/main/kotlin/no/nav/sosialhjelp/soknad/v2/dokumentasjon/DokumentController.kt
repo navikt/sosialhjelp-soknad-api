@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.okonomi.StringToOpplysningTypeConverter
@@ -90,6 +91,7 @@ class DokumentController(
                     fiksFilId = mellomlagretDokument.filId.toUuid(),
                     filnavn = mellomlagretDokument.filnavn,
                 )
+                logger.info("Dokument (${mellomlagretDokument.filId}) lastet opp for type: $opplysningType")
             }
             .getOrThrow()
             .let { DokumentDto(it.filId.toUuid(), it.filnavn) }
@@ -103,6 +105,10 @@ class DokumentController(
         runCatching { dokumentlagerService.deleteDokument(soknadId, dokumentId) }
             .onSuccess { dokumentRefService.removeRef(soknadId, dokumentId) }
             .onFailure { throw IllegalStateException("Feil ved sletting av dokument $dokumentId", it) }
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

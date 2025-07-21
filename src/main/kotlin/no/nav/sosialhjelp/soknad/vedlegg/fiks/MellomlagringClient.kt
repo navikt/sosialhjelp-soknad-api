@@ -153,9 +153,6 @@ class MellomlagringClientImpl(
             .body(BodyInserters.fromMultipartData(body))
             .retrieve()
             .bodyToMono<MellomlagringDto>()
-            .doOnSuccess {
-                log.info("Mellomlagring av vedlegg ${filForOpplasting.metadata} utført.")
-            }
             .doOnError(WebClientResponseException::class.java) {
                 log.warn(
                     "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}",
