@@ -150,7 +150,7 @@ dependencies {
     testImplementation(libs.testcontainers.junit)
 
     // sjekk om denne er nødvendig ved nye versjoner av spring (sist ref: 3.5.0)
-    testImplementation("org.junit.platform:junit-platform-launcher:1.13.3")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.13.4")
 
     // Test
     testImplementation(libs.spring.boot.starter.test)
