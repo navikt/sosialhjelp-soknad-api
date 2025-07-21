@@ -5,7 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData.Soknadstype
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.FeilVedSendingTilFiksException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.JsonTilleggsinformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
@@ -37,7 +38,6 @@ class SendSoknadHandler(
 
     fun doSendAndReturnInfo(
         soknadId: UUID,
-        token: String?,
     ): SoknadSendtInfo {
         val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
 
@@ -46,48 +46,61 @@ class SendSoknadHandler(
 
         val digisosId: UUID =
             runCatching {
-                digisosApiV2Client
-                    .krypterOgLastOppFiler(
-                        soknadJson = objectMapper.writeValueAsString(json.soknad),
-                        tilleggsinformasjonJson =
-                            objectMapper.writeValueAsString(
-                                JsonTilleggsinformasjon(mottaker.enhetsnummer),
-                            ),
-                        vedleggSpec = json.toVedleggJson(),
-                        pdfDokumenter = getFilOpplastingList(json),
-                        kommunenr = json.soknad.mottaker.kommunenummer,
-                        navEksternRefId = soknadId.toString(),
-                        token = token,
-                    )
-                    .let { UUID.fromString(it) }
+                digisosApiV2Client.krypterOgLastOppFiler(
+                    soknadJson = objectMapper.writeValueAsString(json.soknad),
+                    tilleggsinformasjonJson =
+                        objectMapper.writeValueAsString(JsonTilleggsinformasjon(mottaker.enhetsnummer)),
+                    vedleggSpec = json.toVedleggJson(),
+                    pdfDokumenter = getFilOpplastingList(json),
+                    kommunenr = json.soknad.mottaker.kommunenummer,
+                    navEksternRefId = soknadId,
+                )
             }
                 .onSuccess { digisosId ->
-                    mottaker.kommunenummer
-                        ?.also {
-                            metadataService.updateSoknadSendt(
-                                soknadId = soknadId,
-                                kommunenummer = mottaker.kommunenummer,
-                                digisosId = digisosId,
-                            )
-                        }
+                    mottaker.kommunenummer?.also {
+                        metadataService.updateSoknadSendt(
+                            soknadId = soknadId,
+                            kommunenummer = mottaker.kommunenummer,
+                            digisosId = digisosId,
+                        )
+                    }
                         ?: error("NavMottaker mangler kommunenummer")
                 }
-                .onFailure {
-                    metadataService.updateSendingFeilet(soknadId)
-                    logger.error("Feil ved sending av soknad til FIKS", it)
-                    throw FeilVedSendingTilFiksException("Feil ved sending til fiks", it, soknadId.toString())
+                .onFailure { e ->
+                    when (e) {
+                        is AlleredeMottattException -> {
+                            throw SoknadAlleredeSendtException(
+                                sendtInfo =
+                                    SoknadSendtInfo(
+                                        e.digisosId,
+                                        mottaker,
+                                        soknadService.erKortSoknad(soknadId),
+                                        innsendingTidspunkt,
+                                    ),
+                                message = "Søknad med ID $soknadId er allerede sendt.",
+                            )
+                        }
+                        else -> {
+                            metadataService.updateSendingFeilet(soknadId)
+                            logger.error("Feil ved sending av soknad til FIKS", e)
+                            throw e
+                        }
+                    }
                 }
                 .getOrThrow()
 
         val duplicates =
-            json.soknad.data.okonomi.opplysninger.utbetaling.groupBy {
-                listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto)
-            }.filter { it.value.size > 1 }
+            json.soknad.data.okonomi.opplysninger.utbetaling
+                .groupBy { listOf(it.tittel, it.utbetalingsdato, it.netto, it.brutto) }
+                .filter { it.value.size > 1 }
 
         val totalDuplicatesCount = duplicates.values.sumOf { it.size }
 
         if (totalDuplicatesCount > 0) {
-            logger.info("Søknad sendt, ut av ${json.soknad.data.okonomi.opplysninger.utbetaling.size} utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)")
+            logger.info(
+                "Søknad sendt, ut av ${json.soknad.data.okonomi.opplysninger.utbetaling.size} " +
+                    "utbetaling(er) så er det $totalDuplicatesCount som er identiske utbetaling(er)",
+            )
         }
 
         logger.info("Sendt ${json.soknad.data.soknadstype.value()} søknad til FIKS med DigisosId: $digisosId")

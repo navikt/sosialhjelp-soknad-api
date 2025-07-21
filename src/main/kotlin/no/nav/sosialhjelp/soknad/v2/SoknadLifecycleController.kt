@@ -53,9 +53,8 @@ class SoknadLifecycleController(
     @PostMapping("/{soknadId}/send")
     fun sendSoknad(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): SoknadSendtDto {
-        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId, token)
+        val (digisosId, innsendingstidspunkt) = soknadLifecycleService.sendSoknad(soknadId)
 
         return SoknadSendtDto(digisosId, innsendingstidspunkt)
     }

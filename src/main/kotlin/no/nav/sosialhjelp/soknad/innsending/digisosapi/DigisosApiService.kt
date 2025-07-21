@@ -9,13 +9,12 @@ import java.util.UUID
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
 ) {
-    fun getSoknaderForUser(token: String): List<DigisosSak> = digisosApiV2Client.getSoknader(token)
+    fun getSoknaderForUser(): List<DigisosSak> = digisosApiV2Client.getSoknader()
 
     fun getInnsynsfilForSoknad(
         fiksDigisosId: String,
         dokumentId: String,
-        token: String,
-    ): JsonDigisosSoker = digisosApiV2Client.getInnsynsfil(fiksDigisosId, dokumentId, token)
+    ): JsonDigisosSoker = digisosApiV2Client.getInnsynsfil(fiksDigisosId, dokumentId)
 
     fun getDigisosIdsStatusMottatt(digisosIds: List<UUID>): List<UUID> {
         return if (digisosIds.isEmpty()) {

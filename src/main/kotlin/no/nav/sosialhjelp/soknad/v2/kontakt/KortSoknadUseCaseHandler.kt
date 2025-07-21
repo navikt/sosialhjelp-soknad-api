@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.digisos.soker.JsonDigisosSoker
 import no.nav.sbl.soknadsosialhjelp.digisos.soker.hendelse.JsonUtbetaling
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getTokenOrNull
 import no.nav.sosialhjelp.soknad.innsending.KortSoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
@@ -48,19 +47,16 @@ class KortSoknadUseCaseHandler(
         val qualifiesForKort =
             when {
                 isKortSoknadNotEnabled(kommunenummer) -> false
-                else -> getTokenOrNull()?.let { isQualifiedFromFiks(it, kommunenummer) }
+                else -> isQualifiedFromFiks(kommunenummer)
             }
 
         when (qualifiesForKort) {
             true -> kortSoknadService.isTransitioningToKort(soknadId)
             false -> kortSoknadService.isTransitioningToStandard(soknadId)
-            null -> {
-                logger.warn("Token er null, kan ikke sjekke FIKS om bruker har rett på kort søknad")
-                false
-            }
-        }.also { hasTransitioned ->
-            if (hasTransitioned) dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
         }
+            .also { hasTransitioned ->
+                if (hasTransitioned) dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+            }
     }
 
     private fun isSoknadTypeStandard(soknadId: UUID) =
@@ -89,18 +85,17 @@ class KortSoknadUseCaseHandler(
     private fun isKortSoknadNotEnabled(kommunenummer: String?) = !isEnabled(kommunenummer)
 
     fun isQualifiedFromFiks(
-        token: String,
         kommunenummer: String,
     ): Boolean {
         runCatching {
-            return digisosApiService.getSoknaderForUser(token)
+            return digisosApiService.getSoknaderForUser()
                 // Viktig med asSequence() her, sånn at den avbryter henting av innsynsfil tidlig hvis den finner et treff i any()
                 .asSequence()
                 .filter { it.kommunenummer == kommunenummer }
                 .sortedByDescending { it.sistEndret }
                 .mapNotNull { soknad ->
                     soknad.digisosSoker?.metadata?.let {
-                        digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it, token)
+                        digisosApiService.getInnsynsfilForSoknad(soknad.fiksDigisosId, it)
                     }
                 }
                 .any { innsynsfil -> innsynsfil.hasRecentOrUpcomingUtbetalinger() }
