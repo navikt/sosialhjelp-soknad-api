@@ -74,17 +74,12 @@ class KortSoknadServiceTest {
         val digisosSak = createDigisosSak()
         val digisosSoker =
             createJsonDigisosSoker(
-                listOf(
-                    createPastUtbetaling(nowWithMillis().minusDays(10), nowWithMillis().minusDays(5)),
-                ),
+                listOf(createPastUtbetaling(nowWithMillis().minusDays(10), nowWithMillis().minusDays(5))),
             )
-        every { digisosApiService.getSoknaderForUser() } returns
-            listOf(
-                digisosSak,
-            )
+        every { digisosApiService.getSoknaderForUser() } returns listOf(digisosSak)
         every { digisosApiService.getInnsynsfilForSoknad(digisosSak.fiksDigisosId, digisosSak.digisosSoker?.metadata ?: "") } returns digisosSoker
 
-        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("token")
+        val result = kortSoknadUseCaseHandler.isQualifiedFromFiks("0301")
 
         assertTrue(result)
     }
