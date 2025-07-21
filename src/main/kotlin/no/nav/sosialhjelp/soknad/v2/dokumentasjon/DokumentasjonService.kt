@@ -83,6 +83,9 @@ class DokumentasjonServiceImpl(
         soknadId: UUID,
         opplysningType: OpplysningType,
     ): Dokumentasjon {
+        // TODO Ekstra logging
+        if (opplysningType == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) logger.info("Oppretter UTGIFTER_ANDRE_UTGIFTER")
+
         return dokumentasjonRepository.findAllBySoknadId(soknadId).find { it.type == opplysningType }
             ?: dokumentasjonRepository.save(Dokumentasjon(soknadId = soknadId, type = opplysningType))
     }
@@ -92,6 +95,9 @@ class DokumentasjonServiceImpl(
         soknadId: UUID,
         opplysningType: OpplysningType,
     ) {
+        // TODO Ekstra logging
+        if (opplysningType == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) logger.info("Fjerner UTGIFTER_ANDRE_UTGIFTER")
+
         dokumentasjonRepository
             .findAllBySoknadId(soknadId)
             .find { it.type == opplysningType }
@@ -100,6 +106,9 @@ class DokumentasjonServiceImpl(
 
     @Transactional
     override fun resetForventetDokumentasjon(soknadId: UUID) {
+        // TODO Ekstra logging
+        logger.info("Resetter forventet dokumentasjon")
+
         dokumentasjonRepository.deleteAllBySoknadId(soknadId)
     }
 
@@ -116,7 +125,7 @@ class DokumentasjonServiceImpl(
     override fun updateDokumentasjon(dokumentasjon: Dokumentasjon) {
         dokumentasjonRepository.findBySoknadIdAndType(dokumentasjon.soknadId, dokumentasjon.type)
             ?.also { dokumentasjonRepository.save(dokumentasjon) }
-            ?: error("Dokumentasjon finnes ikke")
+            ?: error("Dokumentasjon finnes ikke for ${dokumentasjon.type}")
     }
 
     @Transactional
