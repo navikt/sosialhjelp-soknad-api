@@ -65,7 +65,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
         every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
-        every { digisosService.getSoknaderForUser(any()) } returns emptyList()
+        every { digisosService.getSoknaderForUser() } returns emptyList()
 
         setupPdlAnswers()
     }
@@ -87,7 +87,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Kort soknad skal opprette OkonomiElement FORMUE_BRUKSKONTO`() {
-        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns true
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any()) } returns true
 
         val soknadId = createSoknadWithMetadata()
 
@@ -114,7 +114,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Transition to Standard soknad skal fjerne FORMUE_BRUKSKONTO`() {
-        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) } returns false
+        every { kortSoknadUseCaseHandler.isQualifiedFromFiks(any()) } returns false
 
         val soknadId = createSoknadWithMetadata(createSoknadMetadata(soknadType = SoknadType.KORT))
         okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
@@ -154,7 +154,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
         doUpdateAdresse(soknadId)
 
-        verify(exactly = 0) { kortSoknadUseCaseHandler.isQualifiedFromFiks(any(), any()) }
+        verify(exactly = 0) { kortSoknadUseCaseHandler.isQualifiedFromFiks(any()) }
         verify(exactly = 0) { kortSoknadService.isTransitioningToKort(any()) }
         verify(exactly = 0) { kortSoknadService.isTransitioningToStandard(any()) }
     }
@@ -172,7 +172,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { digisosService.getSoknaderForUser(any()) }
+        verify(exactly = 1) { digisosService.getSoknaderForUser() }
     }
 
     @Test
@@ -187,14 +187,14 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         )
             .also { assertThat(it).isFalse() }
 
-        verify(exactly = 1) { digisosService.getSoknaderForUser(any()) }
+        verify(exactly = 1) { digisosService.getSoknaderForUser() }
     }
 
     @Test
     fun `Funn av gammel soknad eldre enn 120 dager hos FIKS skal ikke gi kort soknad`() {
-        every { digisosService.getSoknaderForUser(any()) } returns
+        every { digisosService.getSoknaderForUser() } returns
             listOf(createDigisosSak(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))))
-        every { digisosService.getInnsynsfilForSoknad(any(), any(), any()) } returns
+        every { digisosService.getInnsynsfilForSoknad(any(), any()) } returns
             createJsonDigisosSoker(
                 listOf(
                     createMottattHendelse(TimestampUtil.convertToOffsettDateTimeUTCString(nowWithMillis().minusDays(121))),

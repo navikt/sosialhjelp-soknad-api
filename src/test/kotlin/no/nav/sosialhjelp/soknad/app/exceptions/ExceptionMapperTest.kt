@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.v2.SoknadSendtInfo
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadUnsupportedMediaType
@@ -9,6 +11,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import java.net.URI
+import java.time.LocalDateTime
+import java.util.UUID
 
 class ExceptionMapperTest {
     private val loginserviceUrl = URI("loginserviceurl")
@@ -45,7 +49,16 @@ class ExceptionMapperTest {
     fun `skal gi 410 Gone ved SoknadAlleredeSendtException`() {
         val responseEntity =
             exceptionMapper.handleSoknadApiException(
-                SoknadAlleredeSendtException(message = "soknad allerede innsendt"),
+                SoknadAlleredeSendtException(
+                    sendtInfo =
+                        SoknadSendtInfo(
+                            digisosId = UUID.randomUUID(),
+                            navEnhet = NavEnhet("1234", "Test Enhet"),
+                            innsendingTidspunkt = LocalDateTime.now(),
+                            isKortSoknad = false,
+                        ),
+                    message = "soknad allerede innsendt",
+                ),
             )
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.GONE)
     }

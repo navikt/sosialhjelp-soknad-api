@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.navEksternRefSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.soknadJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tilleggsinformasjonSlot
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tokenSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.vedleggJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.arbeidsgiverNavn
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnFoedselsDato
@@ -106,9 +105,8 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
                 pdfDokumenter = capture(dokumenterSlot),
                 kommunenr = capture(kommunenummerSlot),
                 navEksternRefId = capture(navEksternRefSlot),
-                token = capture(tokenSlot),
             )
-        } returns UUID.randomUUID().toString()
+        } returns UUID.randomUUID()
     }
 
     protected object CapturedValues {
@@ -117,8 +115,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         val vedleggJsonSlot: CapturingSlot<String> = slot()
         val dokumenterSlot: CapturingSlot<List<FilOpplasting>> = slot()
         val kommunenummerSlot: CapturingSlot<String> = slot()
-        val navEksternRefSlot: CapturingSlot<String> = slot()
-        val tokenSlot: CapturingSlot<String> = slot()
+        val navEksternRefSlot: CapturingSlot<UUID> = slot()
     }
 
     companion object {

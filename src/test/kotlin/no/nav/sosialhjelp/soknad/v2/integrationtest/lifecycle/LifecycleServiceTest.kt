@@ -30,12 +30,12 @@ class LifecycleServiceTest {
 
     @Test
     fun `Feil ved innsending av soknad kaster SoknadLifecycleException`() {
-        every { sendSoknadHandler.doSendAndReturnInfo(any(), any()) } throws
+        every { sendSoknadHandler.doSendAndReturnInfo(any()) } throws
             FiksException("Noe klikka ved innsending til Fiks av data fra register.", null)
         every { sendSoknadHandler.getDeletionDate(any()) } returns LocalDateTime.now().plusDays(19)
 
         assertThatThrownBy {
-            lifecycleService.sendSoknad(UUID.randomUUID(), null)
+            lifecycleService.sendSoknad(UUID.randomUUID())
         }
             .isInstanceOf(InnsendingFeiletException::class.java)
             .hasCauseInstanceOf(FiksException::class.java)

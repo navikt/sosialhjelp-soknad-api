@@ -65,7 +65,7 @@ class SoknadMetadataIntegrationTest : SetupLifecycleIntegrationTest() {
     }
 
     private fun opprettSoknadMedEierOgKontaktForInnsending(): UUID {
-        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
+        every { digisosApiV2Client.getSoknader() } returns listOf()
 
         val (soknadId, _) =
             doPost(
