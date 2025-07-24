@@ -38,7 +38,7 @@ interface SoknadService {
 
     fun getSoknadOrNull(soknadId: UUID): Soknad?
 
-    fun findOpenSoknadIds(fnr: String): List<UUID>
+    fun findOpenSoknadIds(personId: String): List<UUID>
 }
 
 interface SoknadJobService {

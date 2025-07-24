@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.valkey.ValkeyUtils.valkeyObjectMapper
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
@@ -48,7 +48,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(valkeyObjectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND)))),
+                .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
@@ -76,7 +76,7 @@ class VirusScannerTest {
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(
-                    valkeyObjectMapper.writeValueAsString(
+                    jacksonObjectMapper().writeValueAsString(
                         arrayOf(
                             ScanResult("test", Result.FOUND),
                             ScanResult("test", Result.FOUND),
@@ -94,7 +94,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(valkeyObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.OK)))),
+                .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.OK)))),
         )
         assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "jpg") }
             .doesNotThrowAnyException()
@@ -106,7 +106,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(valkeyObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND)))),
+                .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.FOUND)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
@@ -118,7 +118,7 @@ class VirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(valkeyObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.ERROR)))),
+                .setBody(jacksonObjectMapper().writeValueAsString(arrayOf(ScanResult("test", Result.ERROR)))),
         )
         assertThatExceptionOfType(DokumentUploadError::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
