@@ -82,7 +82,6 @@ class SendSoknadHandler(
                         }
                         else -> {
                             metadataService.updateSendingFeilet(soknadId)
-                            logger.error("Feil ved sending av soknad til FIKS", e)
                             throw e
                         }
                     }
