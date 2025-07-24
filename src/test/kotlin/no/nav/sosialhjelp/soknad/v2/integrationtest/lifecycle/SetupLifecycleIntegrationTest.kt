@@ -42,6 +42,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 import java.util.UUID
 
@@ -70,7 +72,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     protected lateinit var mellomlagringClient: MellomlagringClient
 
-    @MockkBean
+    @SpykBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
 
     @MockkBean(relaxed = true)
@@ -126,6 +128,10 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         val ektefelleId = "31129054321"
         val ektefelleFoedselDato = LocalDate.now().minusYears(35)
     }
+
+    @Configuration
+    @ActiveProfiles("test-container")
+    class RedisTestConfig
 }
 
 fun createPersonAnswer(): Person {
