@@ -21,7 +21,7 @@ class SoknadAccessInterceptor(
     ): Boolean {
         if (request.method == "OPTIONS") return true
 
-        getSoknadId(request)?.also { checkPersonId(UUID.fromString(it), request.method) }
+        getSoknadId(request)?.also { checkPersonId(it.convertIdToUUID(), request.method) }
 
         return true
     }
@@ -37,6 +37,15 @@ class SoknadAccessInterceptor(
         }
     }
 }
+
+private fun String.convertIdToUUID(): UUID =
+    runCatching { UUID.fromString(this) }
+        .getOrElse { e ->
+            if (e is IllegalArgumentException && e.message?.contains("Invalid UUID string") == true) {
+                throw AuthorizationException("Ugyldig format på SoknadId: $this")
+            }
+            throw e
+        }
 
 private fun getSoknadId(request: HttpServletRequest): String? {
     val pathVariables = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
