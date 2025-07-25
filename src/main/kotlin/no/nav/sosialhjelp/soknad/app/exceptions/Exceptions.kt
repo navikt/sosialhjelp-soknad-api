@@ -41,12 +41,6 @@ class SoknadAlleredeSendtException(
     message: String?,
 ) : SosialhjelpSoknadApiException(message)
 
-class FeilVedSendingTilFiksException(
-    message: String?,
-    t: Throwable?,
-    id: String?,
-) : SosialhjelpSoknadApiException(message, t, id)
-
 open class SoknadLifecycleException(
     message: String?,
     t: Throwable?,
