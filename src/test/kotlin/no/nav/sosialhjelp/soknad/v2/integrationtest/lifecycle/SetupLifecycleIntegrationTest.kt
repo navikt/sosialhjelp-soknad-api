@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleInte
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.navEksternRefSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.soknadJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tilleggsinformasjonSlot
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.tokenSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.CapturedValues.vedleggJsonSlot
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.arbeidsgiverNavn
 import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.SetupLifecycleIntegrationTest.Companion.barnFoedselsDato
@@ -43,6 +42,8 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Organisasjon
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtbetalingMedKomponent
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 import java.util.UUID
 
@@ -71,7 +72,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     protected lateinit var mellomlagringClient: MellomlagringClient
 
-    @MockkBean
+    @SpykBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
 
     @MockkBean(relaxed = true)
@@ -106,9 +107,8 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
                 pdfDokumenter = capture(dokumenterSlot),
                 kommunenr = capture(kommunenummerSlot),
                 navEksternRefId = capture(navEksternRefSlot),
-                token = capture(tokenSlot),
             )
-        } returns UUID.randomUUID().toString()
+        } returns UUID.randomUUID()
     }
 
     protected object CapturedValues {
@@ -117,8 +117,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         val vedleggJsonSlot: CapturingSlot<String> = slot()
         val dokumenterSlot: CapturingSlot<List<FilOpplasting>> = slot()
         val kommunenummerSlot: CapturingSlot<String> = slot()
-        val navEksternRefSlot: CapturingSlot<String> = slot()
-        val tokenSlot: CapturingSlot<String> = slot()
+        val navEksternRefSlot: CapturingSlot<UUID> = slot()
     }
 
     companion object {
@@ -129,6 +128,10 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         val ektefelleId = "31129054321"
         val ektefelleFoedselDato = LocalDate.now().minusYears(35)
     }
+
+    @Configuration
+    @ActiveProfiles("test-container")
+    class RedisTestConfig
 }
 
 fun createPersonAnswer(): Person {

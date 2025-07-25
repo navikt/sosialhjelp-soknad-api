@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
@@ -25,7 +26,6 @@ interface SoknadLifecycleUseCaseHandler {
 
     fun sendSoknad(
         soknadId: UUID,
-        token: String?,
     ): Pair<UUID, LocalDateTime>
 }
 
@@ -58,13 +58,12 @@ class SoknadLifecycleHandlerImpl(
 
     override fun sendSoknad(
         soknadId: UUID,
-        token: String?,
     ): Pair<UUID, LocalDateTime> {
         logger.info("Starter innsending av søknad.")
 
         documentValidator.validateDocumentsExistsInMellomlager(soknadId)
 
-        return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId, token) }
+        return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
             .onSuccess {
                 prometheusMetricsService.reportSendt(it.isKortSoknad)
 
@@ -72,16 +71,20 @@ class SoknadLifecycleHandlerImpl(
                     MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
                 )
             }
-            .onFailure { ex ->
-                prometheusMetricsService.reportFeilet()
-                throw InnsendingFeiletException(
-                    deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
-                    message = "Feil ved innsending av søknad.",
-                    throwable = ex,
-                    id = soknadId,
-                )
+            .getOrElse { e ->
+                when (e) {
+                    is SoknadAlleredeSendtException -> e.sendtInfo
+                    else -> {
+                        prometheusMetricsService.reportFeilet()
+                        throw InnsendingFeiletException(
+                            deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
+                            message = "Feil ved innsending av søknad.",
+                            throwable = e,
+                            id = soknadId,
+                        )
+                    }
+                }
             }
-            .getOrThrow()
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
 

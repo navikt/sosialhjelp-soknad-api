@@ -6,6 +6,7 @@ import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.util.LinkedMultiValueMap
+import java.util.UUID
 import java.util.regex.Pattern
 
 object Utils {
@@ -16,13 +17,13 @@ object Utils {
 
     fun getDigisosIdFromResponse(
         errorResponse: String,
-        behandlingsId: String,
-    ): String? {
-        if (errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
+        soknadId: UUID,
+    ): UUID? {
+        if (errorResponse.contains(soknadId.toString()) && errorResponse.contains("finnes allerede")) {
             val p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$")
             val m = p.matcher(errorResponse)
             if (m.matches()) {
-                return m.group(1)
+                return m.group(1).let { UUID.fromString(it) }
             }
         }
         return null

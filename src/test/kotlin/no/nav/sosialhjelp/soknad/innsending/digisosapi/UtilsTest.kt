@@ -6,21 +6,26 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class UtilsTest {
     @Test
     fun getDigisosId_whenFinnesAllerede_shouldReturnIdTest() {
+        val soknadId = UUID.randomUUID()
+        val digisosId = UUID.randomUUID()
+
         val testresponse =
-            """{"timestamp":1579253567738,"status":400,"error":"Bad Request","errorId":"afb2627d-1795-4ec1-a772-989d0a42a11a","path":"/digisos/api/v1/soknader/3002/1100006QX","originalPath":null,"message":"Soknad med tilhørende navEksternRefId 1100006QX finnes allerede i Fiks-Digisos med DigisosId a7b1c576-0851-455c-ad08-4f067be43629","errorCode":null,"errorJson":null}"""
-        val digisosId = getDigisosIdFromResponse(testresponse, "1100006QX")
-        assertThat(digisosId).isEqualTo("a7b1c576-0851-455c-ad08-4f067be43629")
+            """{"timestamp":1579253567738,"status":400,"error":"Bad Request","errorId":"afb2627d-1795-4ec1-a772-989d0a42a11a","path":"/digisos/api/v1/soknader/3002/$soknadId","originalPath":null,"message":"Soknad med tilhørende navEksternRefId $soknadId finnes allerede i Fiks-Digisos med DigisosId $digisosId","errorCode":null,"errorJson":null}"""
+        val digisosIdFromResponse = getDigisosIdFromResponse(testresponse, soknadId)
+
+        assertThat(digisosIdFromResponse).isEqualTo(digisosId)
     }
 
     @Test
     fun getDigisosId_whenOtherError_shouldNotReturnIdTest() {
         val testresponse =
             """{"timestamp":1579253567738,"status":400,"error":"Bad Request","errorId":"afb2627d-1795-4ec1-a772-989d0a42a11a","path":"/digisos/api/v1/soknader/3002/1100006QX","originalPath":null,"message":"Det er skjedd en uventet feil. Her er en random id a7b1c576-0851-455c-ad08-4f067be43629","errorCode":null,"errorJson":null}"""
-        val digisosId = getDigisosIdFromResponse(testresponse, "1100006QX")
+        val digisosId = getDigisosIdFromResponse(testresponse, UUID.randomUUID())
         assertThat(digisosId).isNull()
     }
 
@@ -28,7 +33,7 @@ class UtilsTest {
     fun getDigisosId_whenErrorForAnotherBehandlingsId_shouldNotReturnIdTest() {
         val testresponse =
             """{"timestamp":1579253567738,"status":400,"error":"Bad Request","errorId":"afb2627d-1795-4ec1-a772-989d0a42a11a","path":"/digisos/api/v1/soknader/3002/1100006QX","originalPath":null,"message":"Det er skjedd en uventet feil. Her er en random id a7b1c576-0851-455c-ad08-4f067be43629","errorCode":null,"errorJson":null}"""
-        val digisosId = getDigisosIdFromResponse(testresponse, "110000001")
+        val digisosId = getDigisosIdFromResponse(testresponse, UUID.randomUUID())
         assertThat(digisosId).isNull()
     }
 

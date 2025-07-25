@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
 import no.nav.sosialhjelp.soknad.v2.familie.FamilieRepository
@@ -116,7 +117,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
             RuntimeException("Noe feilet")
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -145,7 +146,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
         val soknadId = createNewSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } throws
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } throws
             RuntimeException("Something failed")
 
         kontaktRepository.findByIdOrNull(soknadId)!!
@@ -173,6 +174,33 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
                 .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
         assertThat(deletionDate).isEqualTo(innsendingFeiletError!!.deletionDate)
+    }
+
+    @Test
+    fun `Soknad allerede sendt inn skal returnere SendtInfo`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws
+            AlleredeMottattException(UUID.randomUUID(), "Soknad allerede sendt inn")
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isOk
+            .expectBody(SoknadSendtDto::class.java)
+            .returnResult().responseBody
+            .also { dto ->
+                assertThat { dto?.digisosId }.isNotNull()
+                verify(exactly = 1) { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) }
+            }
     }
 
     private fun createNewSoknad(): UUID {

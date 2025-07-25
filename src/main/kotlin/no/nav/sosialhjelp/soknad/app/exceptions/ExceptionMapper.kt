@@ -51,10 +51,10 @@ class ExceptionMapper(
     @ExceptionHandler(SosialhjelpSoknadApiException::class)
     fun handleSoknadApiException(e: SosialhjelpSoknadApiException): ResponseEntity<SoknadApiError> =
         when (e) {
-            is SoknadAlleredeSendtException -> {
-                log.warn("Søknad har allerede blitt sendt inn", e)
-                buildError(HttpStatus.GONE, SoknadApiError(SoknadApiErrorType.SoknadAlleredeSendt))
-            }
+//            is SoknadAlleredeSendtException -> {
+//                log.warn("Søknad har allerede blitt sendt inn", e)
+//                buildError(HttpStatus.GONE, SoknadApiError(SoknadApiErrorType.SoknadAlleredeSendt))
+//            }
 
             is TjenesteUtilgjengeligException -> {
                 log.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e)

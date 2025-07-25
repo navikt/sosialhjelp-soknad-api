@@ -32,7 +32,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 //        clearAllMocks()
         soknadRepository.deleteAll()
         every { mellomlagringClient.slettAlleDokumenter(any()) } just runs
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID().toString()
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any()) } returns UUID.randomUUID()
         every { unleash.isEnabled("sosialhjelp.soknad.kort_soknad", false) } returns true
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
             MellomlagringDto(UUID.randomUUID().toString(), mellomlagringMetadataList = emptyList())
@@ -40,7 +40,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Opprett soknad skal ikke bli kort hvis bruker ikke har sendt inn soknad de siste 120 dager og ikke har nylige utbetalinger`() {
-        every { digisosApiV2Client.getSoknader(any()) } returns listOf()
+        every { digisosApiV2Client.getSoknader() } returns listOf()
 
         val (id, useKortSoknad) =
             doPost(

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import no.nav.sosialhjelp.soknad.v2.SoknadSendtInfo
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -35,7 +36,10 @@ class AuthorizationException(
     val type: SoknadApiErrorType = SoknadApiErrorType.Forbidden,
 ) : SosialhjelpSoknadApiException(message)
 
-class SoknadAlleredeSendtException(message: String?) : SosialhjelpSoknadApiException(message)
+class SoknadAlleredeSendtException(
+    val sendtInfo: SoknadSendtInfo,
+    message: String?,
+) : SosialhjelpSoknadApiException(message)
 
 class FeilVedSendingTilFiksException(
     message: String?,

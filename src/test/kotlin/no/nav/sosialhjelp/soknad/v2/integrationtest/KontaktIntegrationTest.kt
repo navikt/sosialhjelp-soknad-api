@@ -90,7 +90,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @BeforeEach
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
-        every { digisosApiV2Client.getSoknader(any()) } returns emptyList()
+        every { digisosApiV2Client.getSoknader() } returns emptyList()
     }
 
     @Test
@@ -276,7 +276,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
 
-        every { digisosApiV2Client.getSoknader(any()) } returns
+        every { digisosApiV2Client.getSoknader() } returns
             listOf(
                 DigisosSak(
                     "abc",
@@ -290,7 +290,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                     null,
                 ),
             )
-        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid", any()) } returns
+        every { digisosApiV2Client.getInnsynsfil("abc", "metadataid") } returns
             JsonDigisosSoker()
                 .withHendelser(
                     listOf(
@@ -391,7 +391,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.slettDokument(any(), any()) } just runs
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns false
 
-        every { digisosApiV2Client.getSoknader(any()) } returns
+        every { digisosApiV2Client.getSoknader() } returns
             listOf(
                 DigisosSak(
                     "abc",
@@ -406,7 +406,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 ),
             )
         every {
-            digisosApiV2Client.getInnsynsfil("abc", "metadataid", any())
+            digisosApiV2Client.getInnsynsfil("abc", "metadataid")
         } returns
             JsonDigisosSoker()
                 .withHendelser(
