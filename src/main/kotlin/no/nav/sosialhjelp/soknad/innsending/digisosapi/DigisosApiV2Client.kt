@@ -239,7 +239,7 @@ class DigisosApiV2Client(
                         kommunenummer,
                         soknadId,
                     )
-                    .header(AUTHORIZATION, userToken)
+                    .header(AUTHORIZATION, "Bearer $userToken")
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(body))
                     .retrieve()
