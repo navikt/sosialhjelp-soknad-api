@@ -89,7 +89,7 @@ class InterceptorTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Random kall til soknad som ikke eksisterer og er sendt inn tidligere skal returnere GONE`() {
+    fun `Eksternt kall til en soknad som ikke lenger har status OPPRETTET skal returnere feil`() {
         val soknadId = UUID.randomUUID()
 
         soknadMetadataRepository.save(
@@ -113,7 +113,7 @@ class InterceptorTest : AbstractIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
             .returnResult().responseBody
             .also { apiError ->
-                assertThat(apiError!!.error).isEqualTo(SoknadApiErrorType.SoknadAlleredeSendt)
+                assertThat(apiError!!.error).isEqualTo(SoknadApiErrorType.Forbidden)
             }
     }
 }
