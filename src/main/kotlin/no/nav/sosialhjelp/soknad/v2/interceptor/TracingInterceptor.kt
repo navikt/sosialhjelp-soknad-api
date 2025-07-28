@@ -26,7 +26,7 @@ class TracingInterceptor : SoknadApiHandlerInterceptor {
             if (!currentSpan.spanContext.isValid) {
                 log.warn("Invalid span context")
             }
-            currentSpan.setAttribute("behandlingsid", behandlingsId)
+            currentSpan.setAttribute("soknadId", behandlingsId)
         }
         return true
     }

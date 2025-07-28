@@ -5,5 +5,5 @@ import org.springframework.web.servlet.HandlerMapping
 
 fun HttpServletRequest.getBehandlingsId(): String? {
     val pathVariables = getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as? Map<*, *>
-    return pathVariables?.get("behandlingsId") as String?
+    return pathVariables?.get("soknadId") as String?
 }
