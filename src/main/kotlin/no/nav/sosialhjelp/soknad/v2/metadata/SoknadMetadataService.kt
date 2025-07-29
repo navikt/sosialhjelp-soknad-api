@@ -12,9 +12,6 @@ import java.util.UUID
 class SoknadMetadataService(
     private val metadataRepository: SoknadMetadataRepository,
 ) {
-    // TODO Midlertidig til relevante metadata er slettet
-    fun findSoknadIdsStatusAvbrutt(): List<UUID> = metadataRepository.findMetadataWithStatusAvbrutt()
-
     fun createSoknadMetadata(
         soknadId: UUID,
         isKort: Boolean,
@@ -27,10 +24,7 @@ class SoknadMetadataService(
             .let { metadataRepository.save(it) }
     }
 
-    fun getMetadataForSoknad(soknadId: UUID): SoknadMetadata {
-        return metadataRepository.findByIdOrNull(soknadId)
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
-    }
+    fun getMetadataForSoknad(soknadId: UUID): SoknadMetadata = findMetadataOrError(soknadId)
 
     fun getMetadatasForIds(soknadIds: List<UUID>): List<SoknadMetadata> = metadataRepository.findAllById(soknadIds)
 
@@ -43,11 +37,10 @@ class SoknadMetadataService(
         sendtInn: LocalDateTime,
     ): LocalDateTime {
         logger.info("Setter innsendingstidspunkt: $sendtInn")
-        return metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
-            ?.also { metadataRepository.save(it) }
-            ?.tidspunkt?.sendtInn
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+        return findMetadataOrError(soknadId)
+            .run { copy(tidspunkt = tidspunkt.copy(sendtInn = sendtInn)) }
+            .also { metadataRepository.save(it) }
+            .tidspunkt.sendtInn ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
     }
 
     fun updateSoknadSendt(
@@ -55,23 +48,21 @@ class SoknadMetadataService(
         kommunenummer: String,
         digisosId: UUID,
     ) {
-        metadataRepository.findByIdOrNull(soknadId)
-            ?.run {
+        findMetadataOrError(soknadId)
+            .run {
                 copy(
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
                 )
             }
-            ?.also { metadataRepository.save(it) }
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+            .also { metadataRepository.save(it) }
     }
 
     fun updateSendingFeilet(soknadId: UUID) {
-        metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
-            ?.also { metadataRepository.save(it) }
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+        findMetadataOrError(soknadId)
+            .run { copy(status = SoknadStatus.INNSENDING_FEILET, tidspunkt = tidspunkt.copy(sendtInn = null)) }
+            .also { metadataRepository.save(it) }
     }
 
     fun deleteMetadata(soknadId: UUID) {
@@ -89,29 +80,24 @@ class SoknadMetadataService(
                     ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
             }
 
-    fun getSoknadType(soknadId: UUID): SoknadType {
-        return metadataRepository.findByIdOrNull(soknadId)?.soknadType
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
-    }
+    fun getSoknadType(soknadId: UUID): SoknadType = findMetadataOrError(soknadId).soknadType
 
     fun updateSoknadType(
         soknadId: UUID,
         soknadType: SoknadType,
     ) {
-        metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(soknadType = soknadType) }
-            ?.also { metadataRepository.save(it) }
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+        findMetadataOrError(soknadId)
+            .run { copy(soknadType = soknadType) }
+            .also { metadataRepository.save(it) }
     }
 
     fun updateSoknadStatus(
         soknadId: UUID,
         soknadStatus: SoknadStatus,
     ) {
-        metadataRepository.findByIdOrNull(soknadId)
-            ?.run { copy(status = soknadStatus) }
-            ?.also { metadataRepository.save(it) }
-            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
+        findMetadataOrError(soknadId)
+            .run { copy(status = soknadStatus) }
+            .also { metadataRepository.save(it) }
     }
 
     fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
@@ -124,6 +110,11 @@ class SoknadMetadataService(
 
     fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
         return metadataRepository.findAllById(allSoknadIds)
+    }
+
+    private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {
+        return metadataRepository.findByIdOrNull(soknadId)
+            ?: throw IkkeFunnetException("Metadata for søknad: $soknadId finnes ikke")
     }
 
     companion object {
