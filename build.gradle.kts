@@ -63,6 +63,7 @@ repositories {
             password = githubPassword
         }
     }
+    maven { url = uri("https://maven.pkg.github.com/navikt/soknadsosialhjelp-filformat") }
 }
 
 configurations {
