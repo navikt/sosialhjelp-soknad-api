@@ -87,7 +87,6 @@ class SkatteetatenClient(
                 }
                 .block() ?: throw SkatteetatenException("Respons fra Skatteetaten er null?")
         } catch (e: Exception) {
-            log.error("Feil ved henting av opplysninger fra Skatteetaten")
             throw SkatteetatenException("Feil ved henting av opplysninger fra skatteetaten", e)
         }
     }
