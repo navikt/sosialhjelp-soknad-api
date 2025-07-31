@@ -56,9 +56,8 @@ repositories {
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")
-    maven("https://maven.pkg.github.com/navikt/soknadsosialhjelp-filformat")
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/sosialhjelp-common")
+        url = uri("https://maven.pkg.github.com/navikt/*")
         credentials {
             username = githubUser
             password = githubPassword
