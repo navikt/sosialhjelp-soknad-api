@@ -147,6 +147,15 @@ class UtgiftToJsonMapperTest : AbstractOkonomiMapperTest() {
         }
     }
 
+    @Test
+    fun `ANDRE_UTGIFTER uten detaljer skal ikke generere opplysning`() {
+        val utgifter = setOf(Utgift(UtgiftType.UTGIFTER_ANDRE_UTGIFTER))
+
+        UtgiftToJsonMapper(utgifter, jsonOkonomi).doMapping()
+
+        assertThat(jsonOkonomi.opplysninger.utgift).isEmpty()
+    }
+
     private fun createUtgiftForAnnet(utgiftType: UtgiftType): Set<Utgift> {
         return setOf(
             Utgift(

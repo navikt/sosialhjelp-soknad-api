@@ -78,16 +78,21 @@ class UtgiftToJsonMapper(
             .withOverstyrtAvBruker(false)
 
     private fun Utgift.toJsonOpplysningUtgifter(): List<JsonOkonomiOpplysningUtgift> {
-        return utgiftDetaljer.detaljer
-            .let { detaljer ->
-                when (detaljer.isEmpty()) {
-                    true -> listOf(toJsonOpplysningUtgift())
-                    else ->
-                        detaljer.map { detalj ->
-                            this.copy().toJsonOpplysningUtgift(detalj as Belop, detalj.beskrivelse)
-                        }
+        // Hvis bruker ikke har lagt til andre utgifter, så skal det ikke opprettes en tom opplysning.
+        return if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER && utgiftDetaljer.detaljer.isEmpty()) {
+            emptyList()
+        } else {
+            utgiftDetaljer.detaljer
+                .let { detaljer ->
+                    when (detaljer.isEmpty()) {
+                        true -> listOf(toJsonOpplysningUtgift())
+                        else ->
+                            detaljer.map { detalj ->
+                                this.copy().toJsonOpplysningUtgift(detalj as Belop, detalj.beskrivelse)
+                            }
+                    }
                 }
-            }
+        }
     }
 
     private fun Utgift.toJsonOpplysningUtgift(
