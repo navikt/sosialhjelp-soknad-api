@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
@@ -91,7 +92,7 @@ class OkonomiService(
         }
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     fun addElementToOkonomi(
         soknadId: UUID,
         opplysning: OkonomiOpplysning,
@@ -127,11 +128,11 @@ class OkonomiService(
                         addElementToOkonomi(soknadId, opplysning)
                     }
                     is Utgift -> {
-                        utgifter.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i inntekter")
+                        utgifter.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i utgifter")
                         addElementToOkonomi(soknadId, opplysning)
                     }
                     is Formue -> {
-                        formuer.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i inntekter")
+                        formuer.find { it.type == opplysning.type } ?: error("Opplysning finnes ikke i formuer")
                         addElementToOkonomi(soknadId, opplysning)
                     }
                 }
