@@ -37,7 +37,13 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 
     @Modifying
     @Transactional
-    @Query("INSERT INTO formue(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    @Query(
+        "INSERT INTO formue(okonomi, type, beskrivelse, detaljer) " +
+            "VALUES(:soknadId, :type, :beskrivelse, :detaljer) " +
+            "ON CONFLICT (okonomi, type) " +
+            "DO UPDATE SET " +
+            "beskrivelse = :beskrivelse, detaljer = :detaljer",
+    )
     fun addFormue(
         soknadId: UUID,
         type: FormueType,
@@ -55,7 +61,13 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 
     @Modifying
     @Transactional
-    @Query("INSERT INTO inntekt(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    @Query(
+        "INSERT INTO inntekt(okonomi, type, beskrivelse, detaljer) " +
+            "VALUES(:soknadId, :type, :beskrivelse, :detaljer) " +
+            "ON CONFLICT (okonomi, type) " +
+            "DO UPDATE SET " +
+            "beskrivelse = :beskrivelse, detaljer = :detaljer",
+    )
     fun addInntekt(
         soknadId: UUID,
         type: InntektType,
@@ -73,7 +85,13 @@ interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okon
 
     @Modifying
     @Transactional
-    @Query("INSERT INTO utgift(okonomi, type, beskrivelse, detaljer) VALUES(:soknadId, :type, :beskrivelse, :detaljer)")
+    @Query(
+        "INSERT INTO utgift(okonomi, type, beskrivelse, detaljer) " +
+            "VALUES(:soknadId, :type, :beskrivelse, :detaljer) " +
+            "ON CONFLICT (okonomi, type) " +
+            "DO UPDATE SET " +
+            "beskrivelse = :beskrivelse, detaljer = :detaljer",
+    )
     fun addUtgift(
         soknadId: UUID,
         type: UtgiftType,

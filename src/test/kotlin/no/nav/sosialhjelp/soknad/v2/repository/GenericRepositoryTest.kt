@@ -5,6 +5,9 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
+import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
+import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
 import no.nav.sosialhjelp.soknad.v2.opprettDokumentasjon
 import no.nav.sosialhjelp.soknad.v2.opprettEier
 import no.nav.sosialhjelp.soknad.v2.opprettIntegrasjonstatus
@@ -15,6 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.opprettSoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -120,5 +124,47 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
         soknadMetadataRepository.deleteById(soknadMetadata.soknadId)
         soknadMetadataRepository.findByIdOrNull(soknadMetadata.soknadId)
             .also { assertThat(it).isNull() }
+    }
+
+    @Test
+    fun `Insert til Inntekt selvom PK eksisterer skal fungere`() {
+        okonomiRepository.save(opprettOkonomi(soknad.id))
+
+        okonomiRepository.addInntekt(soknad.id, type = InntektType.BARNEBIDRAG_MOTTAR, null, null)
+
+        assertDoesNotThrow {
+            okonomiRepository.addInntekt(soknad.id, InntektType.BARNEBIDRAG_MOTTAR, "Beskrivelse", null)
+        }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.inntekter.find { it.type == InntektType.BARNEBIDRAG_MOTTAR }!!
+            .also { assertThat(it.beskrivelse).isEqualTo("Beskrivelse") }
+    }
+
+    @Test
+    fun `Insert til Utgift selvom PK eksisterer skal fungere`() {
+        okonomiRepository.save(opprettOkonomi(soknad.id))
+
+        okonomiRepository.addUtgift(soknad.id, type = UtgiftType.UTGIFTER_ANDRE_UTGIFTER, null, null)
+
+        assertDoesNotThrow {
+            okonomiRepository.addUtgift(soknad.id, UtgiftType.UTGIFTER_ANDRE_UTGIFTER, "Beskrivelse", null)
+        }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.utgifter.find { it.type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER }!!
+            .also { assertThat(it.beskrivelse).isEqualTo("Beskrivelse") }
+    }
+
+    @Test
+    fun `Insert til Formue selvom PK eksisterer skal fungere`() {
+        okonomiRepository.save(opprettOkonomi(soknad.id))
+
+        okonomiRepository.addFormue(soknad.id, type = FormueType.FORMUE_BRUKSKONTO, null, null)
+
+        assertDoesNotThrow {
+            okonomiRepository.addFormue(soknad.id, FormueType.FORMUE_BRUKSKONTO, "Beskrivelse", null)
+        }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.find { it.type == FormueType.FORMUE_BRUKSKONTO }!!
+            .also { assertThat(it.beskrivelse).isEqualTo("Beskrivelse") }
     }
 }
