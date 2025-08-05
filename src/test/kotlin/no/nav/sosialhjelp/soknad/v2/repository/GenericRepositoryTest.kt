@@ -195,6 +195,7 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
             .also {
                 assertThat(it.tidspunkt).isNotEqualTo(tidspunkt)
                 assertThat(it.tidspunkt.isAfter(tidspunkt)).isTrue()
+                assertThat(it.verdi).isFalse()
             }
     }
 }
