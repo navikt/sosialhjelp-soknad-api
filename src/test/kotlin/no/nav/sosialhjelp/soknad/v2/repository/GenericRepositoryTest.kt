@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
 import no.nav.sosialhjelp.soknad.v2.kontakt.Telefonnummer
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.Bosituasjon
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
+import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
@@ -166,5 +167,34 @@ class GenericRepositoryTest : AbstractGenericRepositoryTest() {
 
         okonomiRepository.findByIdOrNull(soknad.id)!!.formuer.find { it.type == FormueType.FORMUE_BRUKSKONTO }!!
             .also { assertThat(it.beskrivelse).isEqualTo("Beskrivelse") }
+    }
+
+    @Test
+    fun `Insert til Bekreftelse selvom PK eksisterer skal fungere`() {
+        val tidspunkt = LocalDateTime.now().minusSeconds(10)
+
+        okonomiRepository.save(opprettOkonomi(soknad.id))
+
+        okonomiRepository.addBekreftelse(
+            soknad.id,
+            type = BekreftelseType.BEKREFTELSE_VERDI,
+            tidspunkt = LocalDateTime.now().minusSeconds(1),
+            true,
+        )
+
+        assertDoesNotThrow {
+            okonomiRepository.addBekreftelse(
+                soknad.id,
+                type = BekreftelseType.BEKREFTELSE_VERDI,
+                tidspunkt = LocalDateTime.now(),
+                false,
+            )
+        }
+
+        okonomiRepository.findByIdOrNull(soknad.id)!!.bekreftelser.find { it.type == BekreftelseType.BEKREFTELSE_VERDI }!!
+            .also {
+                assertThat(it.tidspunkt).isNotEqualTo(tidspunkt)
+                assertThat(it.tidspunkt.isAfter(tidspunkt)).isTrue()
+            }
     }
 }
