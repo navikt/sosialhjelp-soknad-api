@@ -54,6 +54,7 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api-mock
         - application: sosialhjelp-konvertering-til-pdf
+        - application: sosialhjelp-texas-mock
   ingresses:
     - "https://digisos.ekstern.dev.nav.no/sosialhjelp/soknad-api"
   resources:
@@ -109,6 +110,6 @@ spec:
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
     - name: NAIS_TOKEN_EXCHANGE_ENDPOINT
-      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/texas/api/v1/token/exchange"
+      value: "http://sosialhjelp-texas-mock/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT
-      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/texas/api/v1/token"
+      value: "http://sosialhjelp-texas-mock/api/v1/token"
