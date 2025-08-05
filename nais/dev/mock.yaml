@@ -103,12 +103,12 @@ spec:
     - name: SKATTEETATEN_API_BASEURL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/"
     - name: TOKEN_X_WELL_KNOWN_URL
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/tokenx"
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/idporten-mock/tokenx/.well-known/openid-configuration"
     - name: ENVIRONMENT_NAME
       value: "mock"
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
     - name: NAIS_TOKEN_EXCHANGE_ENDPOINT
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/tokenx"
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/texas/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/maskinporten"
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/texas/api/v1/token"
