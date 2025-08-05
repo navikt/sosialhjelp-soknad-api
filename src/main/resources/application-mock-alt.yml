@@ -69,7 +69,7 @@ no.nav.security.jwt.issuer:
     accepted_audience: someaudience
     proxyurl:
   tokenx:
-    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
+    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8888/tokenx/.well-known/openid-configuration}
     accepted_audience: dev-gcp:teamdigisos:sosialhjelp-soknad-api-mock
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
