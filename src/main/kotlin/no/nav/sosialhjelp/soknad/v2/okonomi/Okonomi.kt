@@ -19,7 +19,13 @@ import java.util.UUID
 interface OkonomiRepository : UpsertRepository<Okonomi>, ListCrudRepository<Okonomi, UUID> {
     @Modifying
     @Transactional
-    @Query("INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) VALUES(:soknadId, :type, :tidspunkt, :verdi)")
+    @Query(
+        "INSERT INTO bekreftelse(okonomi, type, tidspunkt, verdi) " +
+            "VALUES(:soknadId, :type, :tidspunkt, :verdi) " +
+            "ON CONFLICT (okonomi, type) " +
+            "DO UPDATE SET " +
+            "tidspunkt = :tidspunkt, verdi = :verdi",
+    )
     fun addBekreftelse(
         soknadId: UUID,
         type: BekreftelseType,
