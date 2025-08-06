@@ -104,7 +104,7 @@ spec:
     - name: SKATTEETATEN_API_BASEURL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/"
     - name: TOKEN_X_WELL_KNOWN_URL
-      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/idporten-mock/tokenx/.well-known/openid-configuration"
+      value: "https://sosiauth2.ekstern.dev.nav.no/tokenx/.well-known/openid-configuration"
     - name: ENVIRONMENT_NAME
       value: "mock"
     - name: GOTENBERG_URL
