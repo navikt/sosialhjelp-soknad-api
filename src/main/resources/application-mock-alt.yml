@@ -101,3 +101,7 @@ springdoc:
       display-name: "New api"
       packages-to-scan:
         - 'no.nav.sosialhjelp.soknad.v2'
+
+logging:
+  level:
+    no.nav.security: DEBUG
