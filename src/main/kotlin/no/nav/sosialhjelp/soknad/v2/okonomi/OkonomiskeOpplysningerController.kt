@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
@@ -30,12 +31,15 @@ class OkonomiskeOpplysningerController(
             .let { OkonomiskeOpplysningerDto(it) }
     }
 
+    // TODO Fjern required false når frontend er oppdatert
     @PutMapping
     fun updateOkonomiskOpplysning(
         @PathVariable("soknadId") soknadId: UUID,
+        @RequestParam("type", required = false) type: DokumentasjonType?,
         @RequestBody input: AbstractOkonomiInput,
     ): OkonomiskeOpplysningerDto {
-        input.type.opplysningType.also { if (it !is OkonomiOpplysningType) error("$it er ikke en okonomiType") }
+        val opplysningType = type?.opplysningType ?: input.type.opplysningType
+        opplysningType.also { if (it !is OkonomiOpplysningType) error("$it er ikke en okonomiType") }
 
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
@@ -104,6 +108,7 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
     ],
 )
 sealed interface AbstractOkonomiInput {
+    // TODO Fjern når frontend er oppdatert
     val type: DokumentasjonType
 }
 
