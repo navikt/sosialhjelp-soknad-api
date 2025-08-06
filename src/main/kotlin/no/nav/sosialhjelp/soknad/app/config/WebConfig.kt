@@ -12,7 +12,6 @@ class WebConfig(
     private val soknadApiInterceptors: List<SoknadApiHandlerInterceptor>,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        println(soknadApiInterceptors.map { it.javaClass.simpleName })
         soknadApiInterceptors.forEach { registry.addInterceptor(it) }
     }
 }
