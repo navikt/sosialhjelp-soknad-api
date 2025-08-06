@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.okonomi
 
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.integrationtest.AbstractIntegrationTest
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
@@ -46,9 +47,12 @@ abstract class AbstractOkonomiIntegrationTest : AbstractIntegrationTest() {
             )
     }
 
-    protected fun doPutInputAndReturnDto(input: AbstractOkonomiInput): OkonomiskeOpplysningerDto {
+    protected fun doPutInputAndReturnDto(
+        type: DokumentasjonType,
+        input: AbstractOkonomiInput,
+    ): OkonomiskeOpplysningerDto {
         return doPut(
-            uri = OkonomiskeOpplysningerIntegrationTest.getUrl(soknad.id),
+            uri = OkonomiskeOpplysningerIntegrationTest.getUrl(soknad.id) + "?type=$type",
             requestBody = input,
             responseBodyClass = OkonomiskeOpplysningerDto::class.java,
             soknadId = soknad.id,
