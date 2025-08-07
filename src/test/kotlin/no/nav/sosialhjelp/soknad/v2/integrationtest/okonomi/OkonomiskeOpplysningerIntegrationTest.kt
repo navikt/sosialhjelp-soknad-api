@@ -110,6 +110,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
 
         doPutInputAndReturnDto(
+            type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
                     type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
@@ -147,7 +148,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             )
 
         doPutExpectError(
-            uri = getUrl(soknad.id),
+            uri = getUrl(soknad.id) + "?type=${FORMUE_BRUKSKONTO.toDokumentasjonType()}",
             requestBody = input,
             httpStatus = HttpStatus.NOT_FOUND,
             soknadId = soknad.id,
@@ -168,7 +169,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             )
 
         doPutExpectError(
-            uri = getUrl(soknad.id),
+            uri = getUrl(soknad.id) + "?type=${HUSLEIEKONTRAKT.toDokumentasjonType()}",
             requestBody = input,
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
             soknadId = soknad.id,
@@ -186,6 +187,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         val enTredjeUtgiftString = "en tredje utgift"
 
         doPutInputAndReturnDto(
+            type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
                     type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
@@ -223,6 +225,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         val endaEnboutgiftString = "enda en boutgift"
 
         doPutInputAndReturnDto(
+            type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
                     type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
@@ -261,6 +264,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         val endaEnBarneutgiftString = "enda en barnautgift"
 
         doPutInputAndReturnDto(
+            type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
                     type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
@@ -294,6 +298,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         Inntekt(type = InntektType.JOBB).also { okonomiService.addElementToOkonomi(soknad.id, it) }
 
         doPutInputAndReturnDto(
+            type = InntektType.JOBB.toDokumentasjonType(),
             input =
                 LonnsInput(
                     detalj = LonnsInntektDto(brutto = ettBelop, netto = annetBelop),
@@ -322,6 +327,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
         Utgift(type = UTGIFTER_BOLIGLAN).also { okonomiService.addElementToOkonomi(soknad.id, it) }
 
         doPutInputAndReturnDto(
+            type = UTGIFTER_BOLIGLAN.toDokumentasjonType(),
             input =
                 BoliglanInput(
                     detaljer = listOf(AvdragRenterDto(avdrag = ettBelop, renter = annetBelop)),

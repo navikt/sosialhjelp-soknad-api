@@ -35,15 +35,14 @@ class OkonomiskeOpplysningerController(
     @PutMapping
     fun updateOkonomiskOpplysning(
         @PathVariable("soknadId") soknadId: UUID,
-        @RequestParam("type", required = false) type: DokumentasjonType?,
+        @RequestParam("type") type: DokumentasjonType,
         @RequestBody input: AbstractOkonomiInput,
     ): OkonomiskeOpplysningerDto {
-        val opplysningType = type?.opplysningType ?: input.type.opplysningType
-        opplysningType.also { if (it !is OkonomiOpplysningType) error("$it er ikke en okonomiType") }
+        type.opplysningType.also { if (it !is OkonomiOpplysningType) error("$it er ikke en okonomiType") }
 
         okonomiskeOpplysningerService.updateOkonomiskeOpplysninger(
             soknadId = soknadId,
-            type = input.type.opplysningType as OkonomiOpplysningType,
+            type = type.opplysningType as OkonomiOpplysningType,
             detaljer = input.mapToOkonomiDetalj(),
         )
         return getOkonomiskeOpplysninger(soknadId)
@@ -109,24 +108,24 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
 )
 sealed interface AbstractOkonomiInput {
     // TODO Fjern når frontend er oppdatert
-    val type: DokumentasjonType
+    val type: DokumentasjonType?
 }
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    override val type: DokumentasjonType,
+    override val type: DokumentasjonType? = null,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
 
 // Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
 data class LonnsInput(
-    override val type: DokumentasjonType = DokumentasjonType.JOBB,
+    override val type: DokumentasjonType? = null,
     val detalj: LonnsInntektDto,
 ) : AbstractOkonomiInput
 
 // For boliglån hentes det inn ett eller flere renter og avdrag-par.
 data class BoliglanInput(
-    override val type: DokumentasjonType = DokumentasjonType.UTGIFTER_BOLIGLAN,
+    override val type: DokumentasjonType? = null,
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
