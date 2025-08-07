@@ -113,7 +113,6 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
-                    type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                     detaljer =
                         listOf(
                             BelopDto(belop = 2400.0),
@@ -138,7 +137,6 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere type uten dokumentasjon skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                type = FORMUE_BRUKSKONTO.toDokumentasjonType(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -159,7 +157,6 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     fun `Oppdatere ugyldig type skal gi feil`() {
         val input =
             GenericOkonomiInput(
-                type = HUSLEIEKONTRAKT.toDokumentasjonType(),
                 detaljer =
                     listOf(
                         BelopDto(belop = 2400.0),
@@ -190,11 +187,10 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
-                    type = UTGIFTER_ANDRE_UTGIFTER.toDokumentasjonType(),
                     detaljer =
                         listOf(
-                            BelopDto(beskrivelse = enAnnenUtgiftString, belop = ettBelop),
-                            BelopDto(beskrivelse = enTredjeUtgiftString, belop = annetBelop),
+                            BelopDto(beskrivelse = enAnnenUtgiftString, belop = ETT_BELOP),
+                            BelopDto(beskrivelse = enTredjeUtgiftString, belop = ANNET_BELOP),
                         ),
                 ),
         )
@@ -210,8 +206,8 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
-                    .anyMatch { (it as Belop).beskrivelse == enAnnenUtgiftString && it.belop == ettBelop }
-                    .anyMatch { (it as Belop).beskrivelse == enTredjeUtgiftString && it.belop == annetBelop }
+                    .anyMatch { (it as Belop).beskrivelse == enAnnenUtgiftString && it.belop == ETT_BELOP }
+                    .anyMatch { (it as Belop).beskrivelse == enTredjeUtgiftString && it.belop == ANNET_BELOP }
             }
     }
 
@@ -228,11 +224,10 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
-                    type = UTGIFTER_ANNET_BO.toDokumentasjonType(),
                     detaljer =
                         listOf(
-                            BelopDto(beskrivelse = enBoutgiftString, belop = ettBelop),
-                            BelopDto(beskrivelse = endaEnboutgiftString, belop = annetBelop),
+                            BelopDto(beskrivelse = enBoutgiftString, belop = ETT_BELOP),
+                            BelopDto(beskrivelse = endaEnboutgiftString, belop = ANNET_BELOP),
                         ),
                 ),
         )
@@ -249,8 +244,8 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
-                    .anyMatch { (it as Belop).beskrivelse == enBoutgiftString && it.belop == ettBelop }
-                    .anyMatch { (it as Belop).beskrivelse == endaEnboutgiftString && it.belop == annetBelop }
+                    .anyMatch { (it as Belop).beskrivelse == enBoutgiftString && it.belop == ETT_BELOP }
+                    .anyMatch { (it as Belop).beskrivelse == endaEnboutgiftString && it.belop == ANNET_BELOP }
             }
     }
 
@@ -267,11 +262,10 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
             input =
                 GenericOkonomiInput(
-                    type = UTGIFTER_ANNET_BARN.toDokumentasjonType(),
                     detaljer =
                         listOf(
-                            BelopDto(beskrivelse = enBarneugiftString, belop = ettBelop),
-                            BelopDto(beskrivelse = endaEnBarneutgiftString, belop = annetBelop),
+                            BelopDto(beskrivelse = enBarneugiftString, belop = ETT_BELOP),
+                            BelopDto(beskrivelse = endaEnBarneutgiftString, belop = ANNET_BELOP),
                         ),
                 ),
         )
@@ -288,8 +282,8 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
-                    .anyMatch { (it as Belop).beskrivelse == enBarneugiftString && it.belop == ettBelop }
-                    .anyMatch { (it as Belop).beskrivelse == endaEnBarneutgiftString && it.belop == annetBelop }
+                    .anyMatch { (it as Belop).beskrivelse == enBarneugiftString && it.belop == ETT_BELOP }
+                    .anyMatch { (it as Belop).beskrivelse == endaEnBarneutgiftString && it.belop == ANNET_BELOP }
             }
     }
 
@@ -301,7 +295,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = InntektType.JOBB.toDokumentasjonType(),
             input =
                 LonnsInput(
-                    detalj = LonnsInntektDto(brutto = ettBelop, netto = annetBelop),
+                    detalj = LonnsInntektDto(brutto = ETT_BELOP, netto = ANNET_BELOP),
                 ),
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
@@ -317,8 +311,8 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
             .first().also { inntekt ->
                 assertThat(inntekt.inntektDetaljer.detaljer)
-                    .anyMatch { (it as BruttoNetto).brutto == ettBelop }
-                    .anyMatch { (it as BruttoNetto).netto == annetBelop }
+                    .anyMatch { (it as BruttoNetto).brutto == ETT_BELOP }
+                    .anyMatch { (it as BruttoNetto).netto == ANNET_BELOP }
             }
     }
 
@@ -330,7 +324,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             type = UTGIFTER_BOLIGLAN.toDokumentasjonType(),
             input =
                 BoliglanInput(
-                    detaljer = listOf(AvdragRenterDto(avdrag = ettBelop, renter = annetBelop)),
+                    detaljer = listOf(AvdragRenterDto(avdrag = ETT_BELOP, renter = ANNET_BELOP)),
                 ),
         )
             .also { dto -> assertThat(dto.opplysninger).hasSize(1) }
@@ -346,8 +340,8 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
             }
             .first().also { utgift ->
                 assertThat(utgift.utgiftDetaljer.detaljer)
-                    .anyMatch { (it as AvdragRenter).avdrag == ettBelop }
-                    .anyMatch { (it as AvdragRenter).renter == annetBelop }
+                    .anyMatch { (it as AvdragRenter).avdrag == ETT_BELOP }
+                    .anyMatch { (it as AvdragRenter).renter == ANNET_BELOP }
             }
     }
 
@@ -364,7 +358,7 @@ class OkonomiskeOpplysningerIntegrationTest : AbstractOkonomiIntegrationTest() {
     companion object {
         fun getUrl(soknadId: UUID) = "/soknad/$soknadId/okonomiskeOpplysninger"
 
-        val ettBelop = 3333.0
-        val annetBelop = 4444.4
+        const val ETT_BELOP = 3333.0
+        const val ANNET_BELOP = 4444.4
     }
 }
