@@ -47,6 +47,7 @@ spec:
       rules:
         - application: sosialhjelp-innsyn-api-mock
         - application: sosialhjelp-innsyn-mock
+        - application: sosialhjelp-soknad-mock
     outbound:
       external:
         - host: "digisos.ekstern.dev.nav.no"
@@ -54,8 +55,7 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api-mock
         - application: sosialhjelp-konvertering-til-pdf
-  ingresses:
-    - "https://digisos.ekstern.dev.nav.no/sosialhjelp/soknad-api"
+        - application: sosialhjelp-texas-mock
   resources:
     limits:
       memory: 2Gi
@@ -95,7 +95,7 @@ spec:
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten"
     - name: OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
-      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening"
+      value: "https://sosiauth2.ekstern.dev.nav.no/default/.well-known/openid-configuration"
     - name: NORG_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/norg_endpoint_url"
     - name: SOKNAD_BOSTOTTE_URL
@@ -103,12 +103,12 @@ spec:
     - name: SKATTEETATEN_API_BASEURL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/"
     - name: TOKEN_X_WELL_KNOWN_URL
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/tokenx"
+      value: "https://sosiauth2.ekstern.dev.nav.no/tokenx/.well-known/openid-configuration"
     - name: ENVIRONMENT_NAME
       value: "mock"
     - name: GOTENBERG_URL
       value: "http://sosialhjelp-konvertering-til-pdf/"
     - name: NAIS_TOKEN_EXCHANGE_ENDPOINT
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/tokenx"
+      value: "http://sosialhjelp-texas-mock/api/v1/token/exchange"
     - name: NAIS_TOKEN_ENDPOINT
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/token/maskinporten"
+      value: "http://sosialhjelp-texas-mock/api/v1/token"
