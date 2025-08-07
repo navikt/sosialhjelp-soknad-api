@@ -106,26 +106,20 @@ private fun OkonomiDetalj.toOkonomiskDetaljDto(): OkonomiDetaljDto {
         BoliglanInput::class,
     ],
 )
-sealed interface AbstractOkonomiInput {
-    // TODO Fjern når frontend er oppdatert
-    val type: DokumentasjonType?
-}
+sealed interface AbstractOkonomiInput
 
 // For de fleste felter hvor bruker legger til okonomiske opplysninger
 data class GenericOkonomiInput(
-    override val type: DokumentasjonType? = null,
     val detaljer: List<BelopDto>,
 ) : AbstractOkonomiInput
 
 // Hvis bruker ikke har samtykket til å hente lønnsinntekt, kan vedkommende fylle ut selv.
 data class LonnsInput(
-    override val type: DokumentasjonType? = null,
     val detalj: LonnsInntektDto,
 ) : AbstractOkonomiInput
 
 // For boliglån hentes det inn ett eller flere renter og avdrag-par.
 data class BoliglanInput(
-    override val type: DokumentasjonType? = null,
     val detaljer: List<AvdragRenterDto>,
 ) : AbstractOkonomiInput
 
