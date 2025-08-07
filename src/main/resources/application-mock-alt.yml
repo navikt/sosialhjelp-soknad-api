@@ -66,8 +66,7 @@ token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhje
 no.nav.security.jwt.issuer:
   selvbetjening:
     discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
-    accepted_audience: someaudience
-    proxyurl:
+    accepted_audience: default
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8888/tokenx/.well-known/openid-configuration}
     accepted_audience: dev-gcp:teamdigisos:sosialhjelp-soknad-api-mock

@@ -47,6 +47,7 @@ spec:
       rules:
         - application: sosialhjelp-innsyn-api-mock
         - application: sosialhjelp-innsyn-mock
+        - application: sosialhjelp-soknad-mock
     outbound:
       external:
         - host: "digisos.ekstern.dev.nav.no"
@@ -55,8 +56,6 @@ spec:
         - application: sosialhjelp-mock-alt-api-mock
         - application: sosialhjelp-konvertering-til-pdf
         - application: sosialhjelp-texas-mock
-  ingresses:
-    - "https://digisos.ekstern.dev.nav.no/sosialhjelp/soknad-api"
   resources:
     limits:
       memory: 2Gi
@@ -96,7 +95,7 @@ spec:
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten"
     - name: OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
-      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening"
+      value: "https://sosiauth2.ekstern.dev.nav.no/default/.well-known/openid-configuration"
     - name: NORG_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/norg_endpoint_url"
     - name: SOKNAD_BOSTOTTE_URL
