@@ -62,10 +62,9 @@ pdl_api_scope: dummyScope
 token_exchange_endpoint: ${NAIS_TOKEN_EXCHANGE_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/tokenx}
 token_endpoint: ${NAIS_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/token/maskinporten}
 
-
 no.nav.security.jwt.issuer:
   selvbetjening:
-    discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
+    discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://localhost:8888/default/.well-known/openid-configuration}
     accepted_audience: default
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8888/tokenx/.well-known/openid-configuration}
@@ -100,3 +99,4 @@ springdoc:
       display-name: "New api"
       packages-to-scan:
         - 'no.nav.sosialhjelp.soknad.v2'
+
