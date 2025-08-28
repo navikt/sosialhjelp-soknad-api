@@ -35,8 +35,8 @@ class SoknadAccessInterceptor(
     private fun checkValidSoknadStatus(soknadId: UUID) {
         metadataService.getMetadataForSoknad(soknadId).status
             .also { status ->
-                if (status != SoknadStatus.OPPRETTET) {
-                    throw AuthorizationException(message = "Soknaden er ikke lenger åpen: $status")
+                if (OPEN_STATUS.none { it == status }) {
+                    throw AuthorizationException(message = "Soknaden er allerede sendt inn: $status")
                 }
             }
     }
@@ -51,6 +51,10 @@ class SoknadAccessInterceptor(
                     throw AuthorizationException("Bruker har ikke tilgang til søknaden")
                 }
             }
+    }
+
+    companion object {
+        private val OPEN_STATUS = listOf(SoknadStatus.OPPRETTET, SoknadStatus.INNSENDING_FEILET)
     }
 }
 
