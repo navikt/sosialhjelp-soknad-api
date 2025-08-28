@@ -29,7 +29,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
 
         val pabegyntSoknadDtos =
             doGet(
-                uri = url,
+                uri = URL,
                 responseBodyClass = SessionResponse::class.java,
             )
                 .let { dto ->
@@ -55,7 +55,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
         metadataRepository.findAll().also { assertThat(it).hasSize(4) }
 
         doGet(
-            uri = url,
+            uri = URL,
             responseBodyClass = SessionResponse::class.java,
         )
             .also { dto ->
@@ -72,7 +72,7 @@ class InformasjonIntegrationTest : AbstractIntegrationTest() {
     }
 
     companion object {
-        private val url get() = "/informasjon/session"
+        private const val URL = "/informasjon/session"
     }
 
     private fun createMetadataAndSoknad(
