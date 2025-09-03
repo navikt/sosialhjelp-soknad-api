@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.netty.http.client.HttpClient
 
 @Component
 class KommuneInfoClient(
@@ -23,7 +22,6 @@ class KommuneInfoClient(
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
 ) {
     fun getAll(): List<KommuneInfo> {
         logger.info("Henter KommuneInfo fra FIKS")
@@ -41,7 +39,7 @@ class KommuneInfoClient(
     }
 
     private val kommuneInfoWebClient: WebClient =
-        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        unproxiedWebClientBuilder(webClientBuilder)
             .baseUrl(digisosApiEndpoint)
             .build()
 

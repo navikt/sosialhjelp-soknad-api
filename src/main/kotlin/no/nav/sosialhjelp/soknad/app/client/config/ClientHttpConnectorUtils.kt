@@ -8,20 +8,12 @@ import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
-fun unproxiedHttpClient(): HttpClient = HttpClient.create()
-
-fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Builder =
-    webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
-        .filter(mdcExchangeFilter)
-
-fun proxiedWebClientBuilder(
+fun unproxiedWebClientBuilder(
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
+    httpClient: HttpClient = HttpClient.create(),
 ): WebClient.Builder =
     webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
+        .clientConnector(ReactorClientHttpConnector(httpClient))
         .codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
         .filter(mdcExchangeFilter)
 

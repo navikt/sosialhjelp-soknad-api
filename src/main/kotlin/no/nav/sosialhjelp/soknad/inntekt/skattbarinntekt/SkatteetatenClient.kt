@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
@@ -23,7 +23,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
-import reactor.netty.http.client.HttpClient
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -32,7 +31,6 @@ class SkatteetatenClient(
     @param:Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
 ) {
     private val skatteetatenMapper =
         jacksonObjectMapper()
@@ -41,7 +39,7 @@ class SkatteetatenClient(
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private val skatteetatenWebClient: WebClient =
-        proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        unproxiedWebClientBuilder(webClientBuilder)
             .baseUrl(baseurl)
             .codecs {
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))

@@ -34,7 +34,6 @@ class DokumentlagerClient(
     @param:Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
 ) {
     private var cachedPublicKey: X509Certificate? = null
 
@@ -43,7 +42,7 @@ class DokumentlagerClient(
             .baseUrl(digisosApiEndpoint)
             .clientConnector(
                 ReactorClientHttpConnector(
-                    proxiedHttpClient
+                    HttpClient.create()
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
                         .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
                 ),

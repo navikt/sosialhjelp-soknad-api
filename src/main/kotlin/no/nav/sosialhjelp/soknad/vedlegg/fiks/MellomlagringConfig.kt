@@ -24,7 +24,6 @@ class MellomlagringConfig(
     private val krypteringService: KrypteringService,
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
 ) {
     @Bean
     fun mellomlagringClient(): MellomlagringClient {
@@ -41,7 +40,7 @@ class MellomlagringConfig(
             .baseUrl(digisosApiEndpoint)
             .clientConnector(
                 ReactorClientHttpConnector(
-                    proxiedHttpClient
+                    HttpClient.create()
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
                         .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
                 ),
