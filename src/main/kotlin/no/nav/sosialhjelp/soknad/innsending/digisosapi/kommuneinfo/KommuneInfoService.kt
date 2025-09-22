@@ -26,9 +26,12 @@ class KommuneInfoService(private val kommuneInfoClient: KommuneInfoClient) {
 }
 
 @Configuration
-class KommuneInfoCacheConfig : SoknadApiCacheConfig(CACHE_NAME, EN_DAG) {
+class KommuneInfoCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_MINUTT) {
     companion object {
         const val CACHE_NAME = "kommuneinfo"
+
+        // TODO Oslo har deaktivert, så slenger inn denne for å få de opp igjen kjapt
+        private val ETT_MINUTT = Duration.ofMinutes(1)
         private val EN_DAG = Duration.ofDays(1)
     }
 }
