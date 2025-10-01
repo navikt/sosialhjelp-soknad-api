@@ -2,14 +2,19 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
+import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.MOTTATT_FSL
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus.SENDT
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadJobService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.util.UUID
 
 /**
  * Dobbeltsjekker at gamle soknader ikke forblir med status sendt.
@@ -18,9 +23,10 @@ import java.time.LocalDateTime
 class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
+    private val adresseService: AdresseService,
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     suspend fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
 
     private fun findSoknadWithWrongStatus() {
@@ -48,7 +54,19 @@ class SjekkStatusEksisterendeSoknaderJob(
 
         if (olderThan.isNotEmpty()) {
             olderThan
-                .map { Pair(it.soknadId, it.status) }
+                .map { metadata ->
+                    val navEnhet =
+                        adresseService.findMottaker(metadata.soknadId)
+                            .also { if (it == null) logger.error("Soknad ${metadata.soknadId} mangler NavEnhet") }
+
+                    SoknadInfo(
+                        id = metadata.soknadId,
+                        status = metadata.status,
+                        kommunenummer = metadata.mottakerKommunenummer ?: "Ukjent",
+                        soknadType = metadata.soknadType,
+                        navEnhet = navEnhet,
+                    )
+                }
                 .also {
                     logger.error(
                         "Etter $NUMBER_OF_DAYS dager finnes det fortsatt ${it.size} soknader med status SENDT.\n " +
@@ -81,3 +99,11 @@ class SjekkStatusEksisterendeSoknaderJob(
 data class SoknaderFeilStatusException(
     override val message: String,
 ) : IllegalStateException(message)
+
+private data class SoknadInfo(
+    val id: UUID,
+    val status: SoknadStatus,
+    val kommunenummer: String,
+    val soknadType: SoknadType,
+    val navEnhet: NavEnhet?,
+)
