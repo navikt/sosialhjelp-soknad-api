@@ -28,7 +28,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val prometheusMetricsService: PrometheusMetricsService,
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0 7 * * *")
     suspend fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
 
     private fun findSoknadWithWrongStatus() {
