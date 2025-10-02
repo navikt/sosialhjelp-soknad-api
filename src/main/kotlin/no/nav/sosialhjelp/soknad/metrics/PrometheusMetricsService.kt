@@ -8,35 +8,15 @@ import org.springframework.stereotype.Component
 class PrometheusMetricsService(
     private val meterRegistry: MeterRegistry,
 ) {
-    private val startSoknadCounter =
-        Counter.builder("start_soknad_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
+    private val startSoknadCounter = Counter.builder("start_soknad_counter")
 
-    private val avbruttSoknadCounter =
-        Counter.builder("avbrutt_soknad_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
+    private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
 
-    private val soknadMottakerCounter =
-        Counter.builder("soknad_mottaker_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
+    private val soknadMottakerCounter = Counter.builder("soknad_mottaker_counter")
 
-    private val sendtSoknadDigisosApiCounter =
-        Counter.builder("sendt_soknad_digisosapi_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
+    private val sendtSoknadDigisosApiCounter = Counter.builder("sendt_soknad_digisosapi_counter")
 
-    private val feiletSendingMedDigisosApiCounter =
-        Counter.builder("feilet_sending_digisosapi_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
-
-    private val feilVedOpprettingAvSoknad =
-        Counter.builder("feil_ved_oppretting_avsoknad_counter").also {
-            it.register(meterRegistry).increment(0.0)
-        }
+    private val feiletSendingMedDigisosApiCounter = Counter.builder("feilet_sending_digisosapi_counter")
 
     fun reportStartSoknad() {
         startSoknadCounter
@@ -60,14 +40,8 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendSoknadFeilet() {
+    fun reportFeilet() {
         feiletSendingMedDigisosApiCounter
-            .register(meterRegistry)
-            .increment()
-    }
-
-    fun reportStartSoknadFeilet() {
-        feilVedOpprettingAvSoknad
             .register(meterRegistry)
             .increment()
     }
