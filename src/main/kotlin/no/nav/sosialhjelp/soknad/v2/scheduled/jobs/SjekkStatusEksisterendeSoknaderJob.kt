@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
@@ -24,6 +25,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     private val soknadJobService: SoknadJobService,
     private val metadataService: SoknadMetadataService,
     private val adresseService: AdresseService,
+    private val prometheusMetricsService: PrometheusMetricsService,
     leaderElection: LeaderElection,
 ) : AbstractJob(leaderElection, "Sjekke status eksisterende soknader", logger) {
     @Scheduled(cron = "0 0 4 * * *")
@@ -50,31 +52,24 @@ class SjekkStatusEksisterendeSoknaderJob(
 
     private fun checkStatusSendt(metadatas: List<SoknadMetadata>): Int {
         // gir kommunen noen dager på å kvittere ut
-        val olderThan = metadatas.filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) == true }
+        return metadatas
+            .filter { it.tidspunkt.sendtInn?.isBefore(definedTimestamp()) == true }
+            .let {
+                if (it.isNotEmpty()) handleGamleStatusSendt(it)
+                prometheusMetricsService.setAntallGamleSoknaderStatusSendt(it.size)
+                it.size
+            }
+    }
 
-        if (olderThan.isNotEmpty()) {
-            olderThan
-                .map { metadata ->
-                    val navEnhet =
-                        adresseService.findMottaker(metadata.soknadId)
-                            .also { if (it == null) logger.error("Soknad ${metadata.soknadId} mangler NavEnhet") }
-
-                    SoknadInfo(
-                        id = metadata.soknadId,
-                        status = metadata.status,
-                        kommunenummer = metadata.mottakerKommunenummer ?: "Ukjent",
-                        soknadType = metadata.soknadType,
-                        navEnhet = navEnhet,
-                    )
-                }
-                .also {
-                    logger.error(
-                        "Etter $NUMBER_OF_DAYS dager finnes det fortsatt ${it.size} soknader med status SENDT.\n " +
-                            mapper.writeValueAsString(it),
-                    )
-                }
-        }
-        return olderThan.size
+    private fun handleGamleStatusSendt(olderThan: List<SoknadMetadata>) {
+        olderThan
+            .map { metadata -> metadata.toSoknadInfo(navEnhet = adresseService.findMottaker(metadata.soknadId)) }
+            .also {
+                logger.error(
+                    "Etter $NUMBER_OF_DAYS dager finnes det fortsatt ${it.size} soknader med status SENDT.\n " +
+                        mapper.writeValueAsString(it),
+                )
+            }
     }
 
     // skal ikke finnes eksisterende soknader med status mottatt
@@ -95,6 +90,15 @@ class SjekkStatusEksisterendeSoknaderJob(
         private val mapper = jacksonObjectMapper()
     }
 }
+
+private fun SoknadMetadata.toSoknadInfo(navEnhet: NavEnhet?) =
+    SoknadInfo(
+        id = this.soknadId,
+        status = this.status,
+        kommunenummer = this.mottakerKommunenummer ?: "Ukjent",
+        soknadType = this.soknadType,
+        navEnhet = navEnhet,
+    )
 
 data class SoknaderFeilStatusException(
     override val message: String,

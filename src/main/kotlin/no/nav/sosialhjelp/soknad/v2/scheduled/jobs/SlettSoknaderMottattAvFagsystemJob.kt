@@ -37,10 +37,10 @@ class SlettSoknaderMottattAvFagsystemJob(
     private fun getExistingMetadatasStatusSendt(): List<SoknadMetadata> =
         soknadJobService.findSoknadIdsWithStatus(SENDT).let { metadataService.getMetadatasForIds(it) }
 
+    // Kastes det exception her...
     // ... vil det stoppe opp oppdateringen for mange andre objekter også
     private fun SoknadMetadata.getDigisosId(): UUID? =
-        digisosId
-            .also { if (digisosId == null) logger.error("DigisosId er null for $soknadId") }
+        digisosId.also { if (digisosId == null) logger.error("DigisosId er null for $soknadId") }
 
     private fun List<SoknadMetadata>.filterSoknadIdsStatusMottat(digisosIds: List<UUID>): List<UUID> {
         return this
