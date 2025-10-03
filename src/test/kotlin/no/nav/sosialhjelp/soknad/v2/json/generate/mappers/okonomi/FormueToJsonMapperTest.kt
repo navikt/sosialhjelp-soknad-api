@@ -1,5 +1,12 @@
 package no.nav.sosialhjelp.soknad.v2.json.generate.mappers.okonomi
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.createFormuer
 import no.nav.sosialhjelp.soknad.v2.json.SoknadJsonTypeEnum
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.okonomi.FormueToJsonMapper
@@ -90,6 +97,41 @@ class FormueToJsonMapperTest : AbstractOkonomiMapperTest() {
                 .anyMatch { it.type == SoknadJsonTypeEnum.FORMUE_BRUKSKONTO.verdi }
                 .anyMatch { it.type == SoknadJsonTypeEnum.VERDI_BOLIG.verdi }
         }
+    }
+
+    @Test
+    fun whatever() {
+        runBlocking {
+            val job =
+                launch(Dispatchers.IO) {
+                    logger.info("Launching a new scope in ${Thread.currentThread().name}")
+                    delay(1000)
+                    logger.info("Launch done")
+                }
+
+            job.join()
+
+            val deffered =
+                async(Dispatchers.Default) {
+                    logger.info("Calculating in ${Thread.currentThread().name}")
+                    delay(2000)
+                    42
+                }
+
+            logger.info("Calculation is ${deffered.await()}")
+
+            withContext(Dispatchers.Unconfined) {
+                logger.info("With context in ${Thread.currentThread().name}")
+                delay(500)
+                logger.info("With context done in ${Thread.currentThread().name}")
+            }
+
+            val a = 4
+        }
+    }
+
+    companion object {
+        val logger by logger()
     }
 }
 

@@ -61,8 +61,8 @@ class SjekkStatusEksisterendeSoknaderJob(
             }
     }
 
-    private fun handleGamleStatusSendt(olderThan: List<SoknadMetadata>) {
-        olderThan
+    private fun handleGamleStatusSendt(metadatas: List<SoknadMetadata>) {
+        metadatas
             .map { metadata -> metadata.toSoknadInfo(navEnhet = adresseService.findMottaker(metadata.soknadId)) }
             .also {
                 logger.error(
