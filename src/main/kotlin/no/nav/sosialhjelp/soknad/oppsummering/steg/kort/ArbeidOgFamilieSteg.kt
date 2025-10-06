@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
@@ -20,10 +21,10 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrert
 
 class ArbeidOgFamilieSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
-        val familie = jsonInternalSoknad.soknad.data.familie
-        val sivilstatus = familie.sivilstatus
-        val barn = familie.forsorgerplikt
-        val arbeid = jsonInternalSoknad.soknad.data.arbeid
+        val familie = jsonInternalSoknad.soknad.data.familie ?: JsonFamilie()
+        val sivilstatus = familie.sivilstatus ?: JsonSivilstatus()
+        val barn = familie.forsorgerplikt ?: JsonForsorgerplikt()
+        val arbeid = jsonInternalSoknad.soknad.data.arbeid ?: JsonArbeid()
 
         return Steg(
             stegNr = 3,
