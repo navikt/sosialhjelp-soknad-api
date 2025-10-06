@@ -42,7 +42,7 @@ interface SoknadService {
 }
 
 interface SoknadJobService {
-    fun findAllSoknadIds(): List<UUID>
+    fun findAllExistingSoknadIds(): List<UUID>
 
     fun findSoknadIdsOlderThanWithStatus(
         timestamp: LocalDateTime,
@@ -142,7 +142,7 @@ class SoknadServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun findAllSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
+    override fun findAllExistingSoknadIds(): List<UUID> = soknadRepository.findAll().map { it.id }
 
     @Transactional(readOnly = true)
     override fun findSoknadIdsOlderThanWithStatus(

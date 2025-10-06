@@ -32,7 +32,7 @@ class SjekkStatusEksisterendeSoknaderJob(
     suspend fun checkIfExistingSoknaderHasWrongStatus() = doInJob { findSoknadWithWrongStatus() }
 
     private fun findSoknadWithWrongStatus() {
-        soknadJobService.findAllSoknadIds()
+        soknadJobService.findAllExistingSoknadIds()
             .let { ids -> metadataService.findAllMetadatasForIds(ids) }
             .filter { metadata -> filterRelevantStatus(metadata) }
             .also { relevantSoknader -> if (relevantSoknader.isNotEmpty()) handleGamleSoknader(relevantSoknader) }
@@ -77,7 +77,12 @@ class SjekkStatusEksisterendeSoknaderJob(
         if (metadatas.isNotEmpty()) {
             metadatas
                 .map { Pair(it.soknadId, it.status) }
-                .also { logger.error("Eksisterende soknader med feil status: \n" + mapper.writeValueAsString(it)) }
+                .also {
+                    logger.error(
+                        "Det finnes eksisterende søknader med status mottatt: " +
+                            " \n" + mapper.writeValueAsString(it),
+                    )
+                }
         }
         return metadatas.size
     }
