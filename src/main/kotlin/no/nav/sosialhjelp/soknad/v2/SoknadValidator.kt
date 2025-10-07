@@ -15,16 +15,16 @@ class SoknadValidator(
     private val kommuneInfoService: KommuneInfoService,
 ) {
     fun validateAndReturnMottaker(soknadId: UUID): NavEnhet {
-        return sjekkSoknadHarMottaker(soknadId)
-            .also { sjekkKommuneKanMottaSoknad(it) }
+        return harSoknadMottaker(soknadId)
+            .also { kanKommuneMottaSoknad(it) }
     }
 
-    private fun sjekkSoknadHarMottaker(soknadId: UUID): NavEnhet =
+    private fun harSoknadMottaker(soknadId: UUID): NavEnhet =
         adresseService.findMottaker(soknadId)
             ?.also { if (it.kommunenummer == null) error("Mottaker Mangler kommunenummer") }
             ?: error("Søknad mangler NavEnhet")
 
-    private fun sjekkKommuneKanMottaSoknad(mottaker: NavEnhet) {
+    private fun kanKommuneMottaSoknad(mottaker: NavEnhet) {
         val kommunenummer = mottaker.kommunenummer ?: error("NavEnhet ${mottaker.enhetsnavn} mangler kommunenummer")
         kommuneInfoService.hentAlleKommuneInfo()
             ?.let { kommuneInfoMap -> kommuneInfoMap[kommunenummer] }
