@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
@@ -74,6 +76,8 @@ class SoknadLifecycleHandlerImpl(
             .getOrElse { e ->
                 when (e) {
                     is SoknadAlleredeSendtException -> e.sendtInfo
+                    is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
+                    -> throw e
                     else -> {
                         prometheusMetricsService.reportFeilet()
                         throw InnsendingFeiletException(

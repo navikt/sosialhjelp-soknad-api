@@ -39,17 +39,17 @@ class SendSoknadHandler(
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {
-        val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
-
-        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
+
+        val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
+        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val digisosId: UUID =
             runCatching {
                 digisosApiV2Client.krypterOgLastOppFiler(
                     soknadJson = objectMapper.writeValueAsString(json.soknad),
                     tilleggsinformasjonJson =
-                        objectMapper.writeValueAsString(JsonTilleggsinformasjon(mottaker.enhetsnummer)),
+                        objectMapper.writeValueAsString(JsonTilleggsinformasjon(json.soknad.mottaker.enhetsnummer)),
                     vedleggSpec = json.toVedleggJson(),
                     pdfDokumenter = getFilOpplastingList(json),
                     kommunenr = json.soknad.mottaker.kommunenummer,
@@ -57,13 +57,14 @@ class SendSoknadHandler(
                 )
             }
                 .onSuccess { digisosId ->
-                    mottaker.kommunenummer?.also {
-                        metadataService.updateSoknadSendt(
-                            soknadId = soknadId,
-                            kommunenummer = mottaker.kommunenummer,
-                            digisosId = digisosId,
-                        )
-                    }
+                    mottaker.kommunenummer
+                        ?.also {
+                            metadataService.updateSoknadSendt(
+                                soknadId = soknadId,
+                                kommunenummer = mottaker.kommunenummer,
+                                digisosId = digisosId,
+                            )
+                        }
                         ?: error("NavMottaker mangler kommunenummer")
                 }
                 .onFailure { e ->
