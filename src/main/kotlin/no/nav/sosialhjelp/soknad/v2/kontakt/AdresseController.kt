@@ -93,13 +93,13 @@ fun createAdresseDto(
         navenhet = mottaker,
     )
 
-fun NavEnhet.toNavEnhetDto(enrichment: KommuneInfo?): NavEnhetDto =
+fun NavEnhet.toNavEnhetDto(kommuneInfo: RelevantKommuneInfo?): NavEnhetDto =
     NavEnhetDto(
         enhetsnavn = enhetsnavn,
         orgnummer = orgnummer,
         enhetsnummer = enhetsnummer,
         kommunenummer = kommunenummer,
         kommunenavn = kommunenavn,
-        isMottakDeaktivert = enrichment?.isDigisosKommune == false,
-        isMottakMidlertidigDeaktivert = enrichment?.isDigisosKommune == false,
+        isMottakDeaktivert = kommuneInfo?.kanMottaSoknader == false,
+        isMottakMidlertidigDeaktivert = kommuneInfo?.isMidlertidigDeaktivert == true,
     )
