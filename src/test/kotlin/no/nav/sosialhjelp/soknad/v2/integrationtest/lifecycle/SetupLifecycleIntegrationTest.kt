@@ -5,12 +5,15 @@ import com.ninjasquad.springmockk.SpykBean
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.slot
+import no.nav.sosialhjelp.api.fiks.KommuneInfo
+import no.nav.sosialhjelp.api.fiks.Kontaktpersoner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
@@ -75,6 +78,9 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @SpykBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
 
+    @SpykBean
+    protected lateinit var kommuneInfoClient: KommuneInfoClient
+
     @MockkBean(relaxed = true)
     protected lateinit var prometheusMetricsService: PrometheusMetricsService
 
@@ -99,6 +105,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
         every { organisasjonService.hentOrgNavn(any()) } returns arbeidsgiverNavn
         every { krrService.getMobilnummer(any()) } returns "44553366"
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns createNavUtbetaling()
+        every { kommuneInfoClient.getAll() } returns createKommuneInfoList()
         every {
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
@@ -246,3 +253,21 @@ fun createKomponenter(): List<Komponent> {
         Komponent(type = "Komponent 1", belop = 19000.0, satsType = "Støtte sats", satsBelop = 19000.0, satsAntall = 1.0),
     )
 }
+
+fun createKommuneInfoList(): List<KommuneInfo> =
+    listOf(
+        KommuneInfo(
+            behandlingsansvarlig = "Testkommune",
+            kommunenummer = "5555",
+            kanMottaSoknader = true,
+            harMidlertidigDeaktivertMottak = false,
+            kanOppdatereStatus = true,
+            harMidlertidigDeaktivertOppdateringer = false,
+            harNksTilgang = true,
+            kontaktpersoner =
+                Kontaktpersoner(
+                    fagansvarligEpost = listOf("e@post.no"),
+                    tekniskAnsvarligEpost = listOf("e@post.no"),
+                ),
+        ),
+    )

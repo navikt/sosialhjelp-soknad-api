@@ -461,7 +461,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         const val KOMMUNENUMMER = "3201"
         const val KOMMUNENAVN = "Bærum"
 
-        fun createKommuneInfos(): Map<String, KommuneInfo>? {
+        fun createKommuneInfos(): Map<String, KommuneInfo> {
             return mapOf(
                 KOMMUNENUMMER to
                     KommuneInfo(
