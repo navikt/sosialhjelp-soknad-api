@@ -33,7 +33,6 @@ ninja-springmockk = "4.0.2"
 jsonassert = "1.5.3"
 
 [libraries]
-spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
@@ -101,7 +100,6 @@ jsonassert = { module = "org.skyscreamer:jsonassert", version.ref = "jsonassert"
 
 [bundles]
 spring-boot = [
-    "spring-boot-docker-compose",
     "spring-boot-starter-actuator",
     "spring-boot-starter-aop",
     "spring-boot-starter-cache",

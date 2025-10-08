@@ -1,16 +1,9 @@
 spring:
-  docker:
-    compose:
-      file: "compose/docker-compose-local.yml"
-      lifecycle-management: start-only
-      enabled: true
-      # Fjern denne dersom du kun ønsker valkey/postgres, ikke mock-alt & -api
-      profiles:
-        active: "full"
-      # Dersom database skal nullstilles hver gang applikasjonen restarter:
-      #lifecycle-management: start-and-stop
-      #stop:
-      #  command=down
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/soknaddb
+    username: soknad
+    password: soknad1234
   data:
     redis:
       password: ${REDIS_PASSWORD_CACHE:pw}
