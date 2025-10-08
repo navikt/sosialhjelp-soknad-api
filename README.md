@@ -29,8 +29,10 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 ### Kjøring lokalt mot mock-alt
 
 Start `Application.kt` med profilene `mock-alt,local,no-redis,log-console`.
-Krever at Docker Engine kjører. 'Local' starter opp nødvendige "bakgrunnsapper" i Docker.
-(Uten 'local' må bakgrunnsapper startes manuelt.)
+Kjør opp nødvendige bakgrunnsapper fra repoet digisos-docker-compose.
+
+For å autentisere seg mot GAR som beskrevet under, skal det være nok å kjøre en `nais login`.
+Hvis ikke, følg instruksjonen under.
 
 Vi har endret fra Github Container Registry til Google Artifact Registry for pakker (images). For å autentisere mot
 GAR må man først ha installert `gcloud cli` og autentisere seg med `gcloud auth login`. <br>
@@ -47,8 +49,6 @@ Dersom du får `Error: Cannot perform an interactive login from a non TTY device
 ### Tekster
 
 Tekstfiler finnes her: `src/main/resources`.
-
-
 
 ### 28.01.2025 -> Ny datamodell
 Midlertidig lagring av data skjer ikke lenger ved en stor json-fil, men ved respektive tabeller i databasen. Når søknaden er

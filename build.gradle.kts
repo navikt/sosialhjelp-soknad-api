@@ -78,8 +78,6 @@ dependencies {
     // Resilience4j (Retry, CircuitBreaker, ...)
     implementation(libs.bundles.resilience4j)
 
-    developmentOnly(libs.spring.boot.docker.compose)
-
     implementation(libs.jsonassert)
 
     // Coroutines
