@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.convertToOffsettDateTimeUTCString
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.KortSoknadUseCaseHandler
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -21,10 +20,8 @@ import java.time.LocalDateTime
 
 class KortSoknadServiceTest {
     private val digisosApiService: DigisosApiService = mockk()
-    private val soknadService: SoknadService = mockk()
     private val kortSoknadService: KortSoknadService =
         KortSoknadService(
-            soknadService,
             dokumentasjonService = mockk(relaxed = true),
             soknadMetadataService = mockk(relaxed = true),
             okonomiService = mockk(relaxed = true),

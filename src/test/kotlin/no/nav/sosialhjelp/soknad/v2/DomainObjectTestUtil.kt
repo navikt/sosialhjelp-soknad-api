@@ -185,13 +185,11 @@ fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
     eierPersonId: String = AbstractIntegrationTest.userId,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
-    kort: Boolean = false,
 ): Soknad =
     Soknad(
         id = id,
         eierPersonId = eierPersonId,
         begrunnelse = begrunnelse,
-        kortSoknad = kort,
     )
 
 fun opprettArbeidsforholdList(

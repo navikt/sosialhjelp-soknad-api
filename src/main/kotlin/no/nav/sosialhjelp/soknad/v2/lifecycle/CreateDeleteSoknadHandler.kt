@@ -29,7 +29,6 @@ class CreateDeleteSoknadHandler(
                 soknadService.createSoknad(
                     eierId = personId(),
                     soknadId = it.soknadId,
-                    kortSoknad = isKort,
                 )
             }
             .also {

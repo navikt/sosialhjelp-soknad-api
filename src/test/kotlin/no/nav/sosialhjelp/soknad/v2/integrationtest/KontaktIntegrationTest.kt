@@ -37,6 +37,7 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.toIsoString
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -320,9 +321,8 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, "123", KOMMUNENAVN))
         }
 
-        val soknadPostUpdate = soknadRepository.findByIdOrNull(lagretSoknad.id)
-
-        assertThat(soknadPostUpdate?.kortSoknad).isTrue()
+        metadataRepository.findByIdOrNull(lagretSoknad.id)!!
+            .also { assertThat(it.soknadType).isEqualTo(SoknadType.KORT) }
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)
@@ -361,7 +361,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val lagretSoknad =
             opprettSoknadMetadata(kort = true)
                 .let { metadataRepository.save(it) }
-                .let { opprettSoknad(id = it.soknadId, kort = true) }
+                .let { opprettSoknad(id = it.soknadId) }
                 .let { soknadRepository.save(it) }
 
         dokumentasjonRepository.save(
@@ -443,9 +443,8 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.mottaker).isEqualTo(NavEnhet("Sandvika Nav-senter", "1212", KOMMUNENUMMER, "123", KOMMUNENAVN))
         }
 
-        val soknadPostUpdate = soknadRepository.findByIdOrNull(lagretSoknad.id)
-
-        assertThat(soknadPostUpdate?.kortSoknad).isFalse()
+        metadataRepository.findByIdOrNull(lagretSoknad.id)!!
+            .also { assertThat(it.soknadType).isEqualTo(SoknadType.STANDARD) }
 
         val dokumentasjon = dokumentasjonRepository.findAllBySoknadId(lagretSoknad.id)
         println(dokumentasjon)

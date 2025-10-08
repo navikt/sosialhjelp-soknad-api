@@ -24,17 +24,9 @@ interface SoknadService {
     fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        kortSoknad: Boolean,
     ): UUID
 
     fun deleteSoknad(soknadId: UUID)
-
-    fun erKortSoknad(soknadId: UUID): Boolean
-
-    fun updateKortSoknad(
-        soknadId: UUID,
-        kortSoknad: Boolean,
-    )
 
     fun getSoknadOrNull(soknadId: UUID): Soknad?
 
@@ -86,14 +78,12 @@ class SoknadServiceImpl(
     override fun createSoknad(
         eierId: String,
         soknadId: UUID,
-        kortSoknad: Boolean,
     ): UUID =
         Soknad(
             id = soknadId,
             eierPersonId = eierId,
-            kortSoknad = kortSoknad,
-        ).let { soknadRepository.save(it) }
-            .id
+        )
+            .let { soknadRepository.save(it).id }
 
     override fun deleteSoknad(soknadId: UUID) {
         soknadRepository
@@ -163,18 +153,6 @@ class SoknadServiceImpl(
 
     override fun deleteSoknaderByIds(ids: List<UUID>) {
         soknadRepository.deleteAllById(ids)
-    }
-
-    @Transactional(readOnly = true)
-    override fun erKortSoknad(soknadId: UUID): Boolean = findOrError(soknadId).kortSoknad
-
-    override fun updateKortSoknad(
-        soknadId: UUID,
-        kortSoknad: Boolean,
-    ) {
-        val soknad = findOrError(soknadId)
-        val updatedSoknad = soknad.copy(kortSoknad = kortSoknad)
-        soknadRepository.save(updatedSoknad)
     }
 
     @Transactional(readOnly = true)

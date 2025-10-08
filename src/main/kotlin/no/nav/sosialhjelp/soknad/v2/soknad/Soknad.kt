@@ -10,7 +10,6 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import org.springframework.data.jdbc.repository.query.Query
-import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.ListCrudRepository
@@ -47,8 +46,6 @@ data class Soknad(
     val eierPersonId: String,
     @Embedded.Empty
     val begrunnelse: Begrunnelse = Begrunnelse(),
-    @Column("is_kort_soknad")
-    val kortSoknad: Boolean,
 ) : DomainRoot {
     override fun getDbId() = id
 }
