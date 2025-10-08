@@ -7,14 +7,12 @@ import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.okonomi.AnnenDokumentasjonType
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiService
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Component
 class KortSoknadService(
-    private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
     private val okonomiService: OkonomiService,
@@ -35,8 +33,6 @@ class KortSoknadService(
         okonomiService.addElementToOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.KORT)
 
-        soknadService.updateKortSoknad(soknadId, true)
-
         return true
     }
 
@@ -51,8 +47,6 @@ class KortSoknadService(
 
         okonomiService.removeElementFromOkonomi(soknadId, FormueType.FORMUE_BRUKSKONTO)
         dokumentasjonService.opprettObligatoriskDokumentasjon(soknadId, SoknadType.STANDARD)
-
-        soknadService.updateKortSoknad(soknadId, false)
 
         return true
     }

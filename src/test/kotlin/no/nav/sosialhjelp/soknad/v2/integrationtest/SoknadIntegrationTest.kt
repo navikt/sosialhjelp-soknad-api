@@ -8,12 +8,14 @@ import io.mockk.just
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -50,9 +52,9 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
 
         assertThat(id).isNotNull()
         assertThat(useKortSoknad).isFalse()
-        val soknad = soknadRepository.findById(id)
-        assertThat(soknad).isPresent()
-        assertThat(soknad.get().kortSoknad).isFalse()
+
+        metadataRepository.findByIdOrNull(id)!!
+            .also { assertThat(it.soknadType).isEqualTo(SoknadType.STANDARD) }
     }
 
     @Test

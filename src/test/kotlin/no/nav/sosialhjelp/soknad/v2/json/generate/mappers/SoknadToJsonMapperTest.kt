@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.v2.createJsonInternalSoknadWithInitializedSuper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.json.generate.mappers.domain.SoknadToJsonMapper
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
 import no.nav.sosialhjelp.soknad.v2.opprettSoknad
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
@@ -20,9 +21,9 @@ class SoknadToJsonMapperTest {
         val jsonInternalSoknad = createJsonInternalSoknadWithInitializedSuperObjects()
         val now = nowWithMillis()
         val soknad = opprettSoknad()
-        val tidspunkt = Tidspunkt(sendtInn = now)
+        val metadata = SoknadMetadata(soknad.id, "1234561212345", tidspunkt = Tidspunkt(sendtInn = now))
 
-        SoknadToJsonMapper.doMapping(soknad, tidspunkt, jsonInternalSoknad)
+        SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
         jsonInternalSoknad.assertBegrunnelse(soknad.begrunnelse)
@@ -42,9 +43,10 @@ class SoknadToJsonMapperTest {
                         Kategori.NODHJELP_IKKE_BOSTED,
                     ),
             )
-        val tidspunkt = Tidspunkt(sendtInn = now)
 
-        SoknadToJsonMapper.doMapping(soknad, tidspunkt, jsonInternalSoknad)
+        val metadata = SoknadMetadata(soknad.id, "1234561212345", tidspunkt = Tidspunkt(sendtInn = now))
+
+        SoknadToJsonMapper.doMapping(soknad, metadata, jsonInternalSoknad)
 
         jsonInternalSoknad.assertInnsendingstidspunkt(now)
         jsonInternalSoknad.assertKategorier(soknad.begrunnelse.kategorier)
@@ -66,6 +68,7 @@ private fun JsonInternalSoknad.assertBegrunnelse(begrunnelse: Begrunnelse?) {
         ?: assertThat(soknad.data.begrunnelse).isNull()
 }
 
+// TODO Denne asserter ingen kategorier?
 private fun JsonInternalSoknad.assertKategorier(kategorier: Kategorier) {
     assertThat(soknad.data.begrunnelse).isNotNull
     assertThat(soknad.data.begrunnelse.hvaSokesOm).isNotNull()

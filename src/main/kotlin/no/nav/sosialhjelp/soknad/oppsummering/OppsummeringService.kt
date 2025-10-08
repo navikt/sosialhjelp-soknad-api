@@ -38,7 +38,6 @@ class OppsummeringService(
     private val behovSteg = BehovSteg()
 
     fun hentOppsummering(
-        fnr: String,
         soknadId: UUID,
     ): Oppsummering {
         return useActiveJsonInternalSoknad(soknadId).let {

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @RestController
 @ProtectedWithClaims(
@@ -22,5 +21,5 @@ class OppsummeringRessurs(private val oppsummeringService: OppsummeringService) 
     @GetMapping
     fun getOppsummering(
         @PathVariable("soknadId") soknadId: UUID,
-    ): Oppsummering = oppsummeringService.hentOppsummering(personId(), soknadId)
+    ): Oppsummering = oppsummeringService.hentOppsummering(soknadId)
 }
