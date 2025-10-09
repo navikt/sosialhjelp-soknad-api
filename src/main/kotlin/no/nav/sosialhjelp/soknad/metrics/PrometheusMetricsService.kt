@@ -13,9 +13,9 @@ class PrometheusMetricsService(
     private val startSoknadCounter = createCounter("start_soknad_counter")
     private val feiletSendingMedDigisosApiCounter = createCounter("feilet_sending_med_digisos_api_counter")
 
-    private val avbruttSoknadCounterBuilder = createBuilder("avbrutt_soknad_counter")
-    private val soknadMottakerCounterBuilder = createBuilder("soknad_mottaker_counter")
-    private val sendtSoknadDigisosApiCounterBuilder = createBuilder("sendt_soknad_digisos-api_counter")
+    private val avbruttSoknadCounterBuilder = Counter.builder("avbrutt_soknad_counter")
+    private val soknadMottakerCounterBuilder = Counter.builder("soknad_mottaker_counter")
+    private val sendtSoknadDigisosApiCounterBuilder = Counter.builder("sendte_soknader_digisos-api_counter")
 
     private val antallGamleSoknaderStatusSendtGauge =
         IntegerGauge(
@@ -53,10 +53,6 @@ class PrometheusMetricsService(
         Counter.builder(name)
             .register(meterRegistry)
             .also { it.increment(0.0) }
-
-    private fun createBuilder(name: String): Counter.Builder =
-        Counter.builder(name)
-            .also { it.register(meterRegistry).increment(0.0) }
 
     private fun Counter.Builder.increment(
         tagKey: String,
