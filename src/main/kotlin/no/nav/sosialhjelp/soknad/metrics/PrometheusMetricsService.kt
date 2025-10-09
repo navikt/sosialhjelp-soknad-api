@@ -1,61 +1,94 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.stereotype.Component
+import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class PrometheusMetricsService(
     private val meterRegistry: MeterRegistry,
 ) {
-    private val startSoknadCounter = Counter.builder("start_soknad_counter")
+    private val startSoknadCounter = createCounter("start_soknad_counter")
+    private val feiletSendingMedDigisosApiCounter = createCounter("feilet_sending_med_digisos_api_counter")
 
-    private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
+    private val avbruttSoknadCounterBuilder = createBuilder("avbrutt_soknad_counter")
+    private val soknadMottakerCounterBuilder = createBuilder("soknad_mottaker_counter")
+    private val sendtSoknadDigisosApiCounterBuilder = createBuilder("sendt_soknad_digisosapi_counter")
 
-    private val soknadMottakerCounter = Counter.builder("soknad_mottaker_counter")
-
-    private val sendtSoknadDigisosApiCounter = Counter.builder("sendt_soknad_digisosapi_counter")
-
-    private val feiletSendingMedDigisosApiCounter = Counter.builder("feilet_sending_digisosapi_counter")
+    private val antallGamleSoknaderStatusSendtGauge =
+        IntegerGauge(
+            meterRegistry,
+            "antall_gamle_soknader_status_sendt",
+            "Hvis det finnes søknader med status sendt eldre en x antall dager betyr det at de enda ikke er mottatt",
+        )
 
     fun reportStartSoknad() {
-        startSoknadCounter
-            .register(meterRegistry)
-            .increment()
-    }
-
-    fun reportSoknadMottaker(navEnhet: String) {
-        soknadMottakerCounter
-            .tag(TAG_MOTTAKER, navEnhet)
-            .register(meterRegistry)
-            .increment()
-    }
-
-    fun reportSendt(
-        kort: Boolean,
-    ) {
-        sendtSoknadDigisosApiCounter
-            .tag("kortSoknad", kort.toString())
-            .register(meterRegistry)
-            .increment()
+        startSoknadCounter.increment()
     }
 
     fun reportFeilet() {
-        feiletSendingMedDigisosApiCounter
-            .register(meterRegistry)
-            .increment()
+        feiletSendingMedDigisosApiCounter.increment()
+    }
+
+    fun reportSoknadMottaker(navEnhet: String) {
+        soknadMottakerCounterBuilder.increment(TAG_MOTTAKER, navEnhet)
+    }
+
+    fun reportSendt(kort: Boolean) {
+        sendtSoknadDigisosApiCounterBuilder.increment(TAG_KORT, kort.toString())
     }
 
     fun reportAvbruttSoknad(referer: String?) {
         val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
-        avbruttSoknadCounter
-            .tag(TAG_STEG, steg)
-            .register(meterRegistry)
-            .increment()
+        avbruttSoknadCounterBuilder.increment(TAG_STEG, steg)
     }
 
+    fun setAntallGamleSoknaderStatusSendt(antall: Int) {
+        antallGamleSoknaderStatusSendtGauge.set(antall)
+    }
+
+    private fun createCounter(name: String): Counter =
+        Counter.builder(name)
+            .register(meterRegistry)
+            .also { it.increment(0.0) }
+
+    private fun createBuilder(name: String): Counter.Builder =
+        Counter.builder(name)
+            .also { it.register(meterRegistry).increment(0.0) }
+
+    private fun Counter.Builder.increment(
+        tagKey: String,
+        tagValue: String,
+    ) =
+        this
+            .tag(tagKey, tagValue)
+            .register(meterRegistry)
+            .increment()
+
     companion object {
-        const val TAG_MOTTAKER = "mottaker"
-        const val TAG_STEG = "steg"
+        private const val TAG_MOTTAKER = "mottaker"
+        private const val TAG_STEG = "steg"
+        private const val TAG_KORT = "kortSoknad"
+    }
+}
+
+private class IntegerGauge(
+    meterRegistry: MeterRegistry,
+    name: String,
+    description: String?,
+) {
+    private val numberOfSoknader: AtomicInteger = AtomicInteger(0)
+
+    init {
+        Gauge
+            .builder(name, numberOfSoknader) { it.get().toDouble() }
+            .description(description)
+            .register(meterRegistry)
+    }
+
+    fun set(value: Int) {
+        numberOfSoknader.set(value)
     }
 }
