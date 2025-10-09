@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.NavUtbetalinger
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SaldoBrukskonto
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SkattbarInntekt
 
-class SituasjonsendringSteg {
+object SituasjonsendringSteg {
     private val bostotteHusbanken = BostotteHusbanken()
     private val skatt = SkattbarInntekt()
     private val navUtbetalinger = NavUtbetalinger()

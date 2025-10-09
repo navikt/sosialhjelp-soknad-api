@@ -27,7 +27,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 
-class UtgifterOgGjeldSteg {
+object UtgifterOgGjeldSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
         val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 import java.lang.Boolean.TRUE
 
 internal class FamiliesituasjonStegTest {
-    private val steg = FamiliesituasjonSteg()
+    private val steg = FamiliesituasjonSteg
 
     @Test
     fun ikkeUtfyltSivilstatus() {
@@ -78,7 +78,7 @@ internal class FamiliesituasjonStegTest {
         assertThat(sivilstatusSporsmal.felt).hasSize(1)
         assertThat(sivilstatusSporsmal.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
 
-        val labelSvarMap = sivilstatusSporsmal.felt!![0].labelSvarMap
+        val labelSvarMap = sivilstatusSporsmal.felt[0].labelSvarMap
         assertThat(labelSvarMap).hasSize(4)
         assertThat(labelSvarMap!!["familie.sivilstatus.gift.ektefelle.navn.label"]!!.value).isEqualTo("Gul Knapp")
         assertThat(labelSvarMap["familie.sivilstatus.gift.ektefelle.fnr.label"]!!.value).isNull()
@@ -136,7 +136,7 @@ internal class FamiliesituasjonStegTest {
         assertThat(sivilstatusSporsmal.felt).hasSize(1)
         assertThat(sivilstatusSporsmal.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
 
-        val labelSvarMap = sivilstatusSporsmal.felt!![0].labelSvarMap
+        val labelSvarMap = sivilstatusSporsmal.felt[0].labelSvarMap
         assertThat(labelSvarMap).hasSize(3)
         assertThat(labelSvarMap!!["system.familie.sivilstatus.gift.ektefelle.navn"]!!.value).isEqualTo("Gul Knapp")
         assertThat(labelSvarMap["system.familie.sivilstatus.gift.ektefelle.fodselsdato"]!!.value).isEqualTo("1999-12-31")
@@ -200,7 +200,7 @@ internal class FamiliesituasjonStegTest {
         assertThat(systemBarnSporsmal.erUtfylt).isTrue
         assertThat(systemBarnSporsmal.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
 
-        val labelSvarMap = systemBarnSporsmal.felt!![0].labelSvarMap
+        val labelSvarMap = systemBarnSporsmal.felt[0].labelSvarMap
         assertThat(labelSvarMap).hasSize(3)
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")

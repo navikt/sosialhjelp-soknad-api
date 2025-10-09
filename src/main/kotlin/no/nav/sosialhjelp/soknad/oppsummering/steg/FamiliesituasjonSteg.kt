@@ -18,7 +18,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 
-class FamiliesituasjonSteg {
+object FamiliesituasjonSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val familie = jsonInternalSoknad.soknad.data.familie
         val sivilstatus: JsonSivilstatus? = familie.sivilstatus

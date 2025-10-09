@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import org.slf4j.LoggerFactory
 
-class PersonopplysningerSteg {
+object PersonopplysningerSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val personalia = jsonInternalSoknad.soknad.data.personalia
         val telefonnummer: JsonTelefonnummer? = personalia.telefonnummer
@@ -189,7 +189,5 @@ class PersonopplysningerSteg {
         )
     }
 
-    companion object {
-        private val log = LoggerFactory.getLogger(PersonopplysningerSteg::class.java)
-    }
+    private val log = LoggerFactory.getLogger(PersonopplysningerSteg::class.java)
 }
