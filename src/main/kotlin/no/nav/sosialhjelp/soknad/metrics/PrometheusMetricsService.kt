@@ -15,7 +15,7 @@ class PrometheusMetricsService(
 
     private val avbruttSoknadCounterBuilder = createBuilder("avbrutt_soknad_counter")
     private val soknadMottakerCounterBuilder = createBuilder("soknad_mottaker_counter")
-    private val sendtSoknadDigisosApiCounterBuilder = createBuilder("sendt_soknad_digisosapi_counter")
+    private val sendtSoknadDigisosApiCounterBuilder = createBuilder("sendt_soknad_digisos-api_counter")
 
     private val antallGamleSoknaderStatusSendtGauge =
         IntegerGauge(
