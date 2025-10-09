@@ -49,17 +49,17 @@ class AdresseUseCaseHandler(
     private fun getKommuneInfo(
         soknadId: UUID,
         navEnhet: NavEnhet,
-    ): KommuneInfo {
-        return navEnhet.kommunenummer?.let {
-            KommuneInfo(
-                isDigisosKommune = kanMottaSoknader(it),
-                kommunenavn = getKommunenavn(soknadId, navEnhet.kommunenavn, it),
-            )
-        } ?: error("NavEnhet ${navEnhet.enhetsnavn} mangler kommunenummer")
-    }
+    ): RelevantKommuneInfo {
+        return navEnhet.kommunenummer
+            ?.let {
+                val kommuneInfo = kommuneInfoService.hentAlleKommuneInfo()?.get(it)
 
-    private fun kanMottaSoknader(kommunenummer: String): Boolean {
-        return kommuneInfoService.hentAlleKommuneInfo()?.get(kommunenummer)?.kanMottaSoknader ?: return false
+                RelevantKommuneInfo(
+                    kanMottaSoknader = kommuneInfo?.kanMottaSoknader ?: false,
+                    isMidlertidigDeaktivert = kommuneInfo?.harMidlertidigDeaktivertMottak ?: true,
+                    kommunenavn = getKommunenavn(soknadId, navEnhet.kommunenavn, it),
+                )
+            } ?: error("NavEnhet ${navEnhet.enhetsnavn} mangler kommunenummer")
     }
 
     private fun getKommunenavn(
@@ -73,7 +73,8 @@ class AdresseUseCaseHandler(
     }
 }
 
-data class KommuneInfo(
+data class RelevantKommuneInfo(
     val kommunenavn: String?,
-    val isDigisosKommune: Boolean,
+    val kanMottaSoknader: Boolean,
+    val isMidlertidigDeaktivert: Boolean,
 )
