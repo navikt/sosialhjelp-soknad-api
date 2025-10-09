@@ -9,10 +9,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
-class BehovSteg {
+object BehovSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-//        val harUtfyltHvaSokesOm = begrunnelse.hvaSokesOm != null && begrunnelse.hvaSokesOm.isNotEmpty() && !BegrunnelseUtils.isEmptyJson(begrunnelse.hvaSokesOm)
 
         val harUtfyltHvaSokesOm = !begrunnelse.hvaSokesOm.isNullOrEmpty()
 
@@ -32,7 +31,6 @@ class BehovSteg {
                                     tittel = "begrunnelse.kategorier.label",
                                     erUtfylt = harUtfyltHvaSokesOm,
                                     felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(begrunnelse.hvaSokesOm) else null,
-//                                    felt = if (harUtfyltHvaSokesOm) hvaSokerOmFelt(BegrunnelseUtils.jsonToHvaSokesOm(begrunnelse.hvaSokesOm) ?: begrunnelse.hvaSokesOm) else null,
                                 ),
                                 Sporsmal("situasjon.kort.hvaErEndret.label", situasjonsendring?.hvaHarEndretSeg?.toFelt(), harFyltUtHvaErEndret),
                             ),

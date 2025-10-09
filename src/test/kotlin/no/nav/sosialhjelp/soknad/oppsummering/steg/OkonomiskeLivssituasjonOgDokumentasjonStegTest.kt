@@ -23,7 +23,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class OkonomiskeLivssituasjonOgDokumentasjonStegTest {
-    private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
+    private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg
 
     @Test
     fun ingenting() {
@@ -175,9 +175,9 @@ internal class OkonomiskeLivssituasjonOgDokumentasjonStegTest {
         assertThat(vedlegg3.erUtfylt).isTrue
         assertThat(vedlegg3.felt).hasSize(1)
         assertThat(vedlegg3.felt!![0].type).isEqualTo(Type.VEDLEGG)
-        assertThat(vedlegg3.felt!![0].vedlegg).hasSize(1)
-        assertThat(vedlegg3.felt!![0].vedlegg!![0].filnavn).isEqualTo(filnavn)
-        assertThat(vedlegg3.felt!![0].vedlegg!![0].uuid).isEqualTo("uuid-goes-here")
+        assertThat(vedlegg3.felt[0].vedlegg).hasSize(1)
+        assertThat(vedlegg3.felt[0].vedlegg!![0].filnavn).isEqualTo(filnavn)
+        assertThat(vedlegg3.felt[0].vedlegg!![0].uuid).isEqualTo("uuid-goes-here")
     }
 
     private fun createInntekt(

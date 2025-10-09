@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.booleanVerdiFelt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
-class ArbeidOgUtdanningSteg {
+object ArbeidOgUtdanningSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val arbeid = jsonInternalSoknad.soknad.data.arbeid
         val utdanning: JsonUtdanning = jsonInternalSoknad.soknad.data.utdanning

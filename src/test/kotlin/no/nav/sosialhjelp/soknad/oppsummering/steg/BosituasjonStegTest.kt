@@ -12,7 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class BosituasjonStegTest {
-    private val steg = BosituasjonSteg()
+    private val steg = BosituasjonSteg
 
     @Test
     fun ikkeUtfyltBotype_ikkeUtfyltAntallPersoner() {

@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.NavUtbetalinger
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.Studielan
 
-class InntektOgFormueSteg {
+object InntektOgFormueSteg {
     private val skattbarInntektAvsnitt = SkattbarInntekt()
     private val navUtbetalinger = NavUtbetalinger()
     private val bostotteHusbanken = BostotteHusbanken()
