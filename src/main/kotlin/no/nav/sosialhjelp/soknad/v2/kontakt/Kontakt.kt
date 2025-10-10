@@ -52,7 +52,8 @@ data class Adresser(
             else -> throw IllegalStateException("AdresseValg ikke satt eller ukjent adressetype: $adressevalg")
         }
 
-    private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing = throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
+    private fun valgtAdresseNullError(valgtAdresse: AdresseValg?): Nothing =
+        throw IllegalStateException("Adressevalg er $valgtAdresse, men adresse-objektet er null")
 }
 
 enum class AdresseValg {
