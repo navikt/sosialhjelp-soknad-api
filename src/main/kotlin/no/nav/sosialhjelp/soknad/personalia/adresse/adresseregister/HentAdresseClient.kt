@@ -47,7 +47,7 @@ class HentAdresseClient(
             log.warn("PDL - feil oppdaget i response: ${e.message}", e)
             throw e
         } catch (e: Exception) {
-            log.error("Kall til PDL feilet (hentAdresse)")
+            log.error("Kall til PDL feilet (hentAdresse)", e)
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }

@@ -40,7 +40,7 @@ class GeografiskTilknytningClient(
                 when (e) {
                     is PdlApiException -> throw e
                     else -> {
-                        logger.error("Kall til PDL feilet (hentGeografiskTilknytning)")
+                        logger.error("Kall til PDL feilet (hentGeografiskTilknytning)", e)
                         throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
                     }
                 }

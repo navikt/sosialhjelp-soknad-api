@@ -99,7 +99,7 @@ class HentPersonClientImpl(
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
-            logger.error("Kall til PDL feilet (hentEktefelle)")
+            logger.error("Kall til PDL feilet (hentEktefelle)", e)
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
@@ -121,7 +121,7 @@ class HentPersonClientImpl(
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
-            logger.error("Kall til PDL feilet (hentBarn)")
+            logger.error("Kall til PDL feilet (hentBarn)", e)
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
 
