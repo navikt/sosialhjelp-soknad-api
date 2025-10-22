@@ -67,16 +67,17 @@ private fun createConnectionProvider(
     maxIdleTimeMinutes: Duration = Duration.ofMinutes(50),
     maxLifeTimeMinutes: Duration = Duration.ofMinutes(55),
     evictInBackgroundMinutes: Duration = Duration.ofMinutes(5),
-    maxConnections: Int = 300,
-    pendingAcquireMaxCount: Int = 600,
+    maxConnections: Int = 500,
+    pendingAcquireMaxCount: Int = 1000,
 ): ConnectionProvider {
     return ConnectionProvider.builder(name)
         .run {
-            maxIdleTime(maxIdleTimeMinutes)
-            maxLifeTime(maxLifeTimeMinutes)
-            evictInBackground(evictInBackgroundMinutes)
             maxConnections(maxConnections)
-            pendingAcquireMaxCount(pendingAcquireMaxCount)
+            pendingAcquireTimeout(Duration.ofSeconds(30))
+//            maxIdleTime(maxIdleTimeMinutes)
+//            maxLifeTime(maxLifeTimeMinutes)
+//            evictInBackground(evictInBackgroundMinutes)
+//            pendingAcquireMaxCount(pendingAcquireMaxCount)
             build()
         }
 }
