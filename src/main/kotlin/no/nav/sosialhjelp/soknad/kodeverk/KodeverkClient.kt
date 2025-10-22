@@ -7,7 +7,8 @@ import io.github.resilience4j.retry.annotation.Retry
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -69,7 +70,7 @@ class KodeverkClient(
             .getOrThrow()
 
     private val webClient =
-        unproxiedWebClientBuilder(webClientBuilder)
+        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
             .codecs {
                 it.defaultCodecs().jackson2JsonDecoder(
                     Jackson2JsonDecoder(

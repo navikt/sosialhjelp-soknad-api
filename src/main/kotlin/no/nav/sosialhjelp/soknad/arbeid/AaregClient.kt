@@ -8,7 +8,8 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
@@ -44,7 +45,7 @@ class AaregClient(
         texasService.exchangeToken(IdentityProvider.TOKENX, target = aaregAudience)
 
     private val webClient =
-        unproxiedWebClientBuilder(webClientBuilder)
+        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
             .baseUrl(aaregUrl)
             .codecs {
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(arbeidsforholdMapper))

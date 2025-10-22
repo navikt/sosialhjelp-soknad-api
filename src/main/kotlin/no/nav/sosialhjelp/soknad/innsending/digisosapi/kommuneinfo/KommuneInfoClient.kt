@@ -5,7 +5,8 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createExternalServiceHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
@@ -39,7 +40,7 @@ class KommuneInfoClient(
     }
 
     private val kommuneInfoWebClient: WebClient =
-        unproxiedWebClientBuilder(webClientBuilder)
+        configureWebClientBuilder(webClientBuilder, createExternalServiceHttpClient())
             .baseUrl(digisosApiEndpoint)
             .build()
 

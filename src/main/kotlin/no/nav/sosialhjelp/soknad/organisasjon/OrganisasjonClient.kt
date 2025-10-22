@@ -3,7 +3,8 @@ package no.nav.sosialhjelp.soknad.organisasjon
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
@@ -20,7 +21,9 @@ class OrganisasjonClient(
     @param:Value("\${ereg_url}") private val eregUrl: String,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
+    private val webClient =
+        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+            .build()
 
     fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
         return try {

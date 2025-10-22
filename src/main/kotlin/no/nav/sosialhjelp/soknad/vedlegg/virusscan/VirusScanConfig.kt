@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,5 +18,10 @@ class VirusScanConfig(
         return VirusScanner(virusScannerWebClient, enabled)
     }
 
-    private val virusScannerWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(clamAvUrl).build()
+    private val virusScannerWebClient: WebClient =
+        configureWebClientBuilder(
+            webClientBuilder,
+            createNavServiceHttpClient(),
+        )
+            .baseUrl(clamAvUrl).build()
 }

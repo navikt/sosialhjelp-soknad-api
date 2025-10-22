@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Value
@@ -70,7 +71,7 @@ class GotenbergClient(
     }
 
     private fun buildWebClient(): WebClient {
-        return unproxiedWebClientBuilder(webClientBuilder)
+        return configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
             .baseUrl(baseUrl)
             .defaultHeaders {
                 it.contentType = MediaType.MULTIPART_FORM_DATA

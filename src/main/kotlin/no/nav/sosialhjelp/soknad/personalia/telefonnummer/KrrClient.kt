@@ -3,7 +3,8 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -25,7 +26,9 @@ class KrrClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(krrUrl).build()
+    private val webClient =
+        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+            .baseUrl(krrUrl).build()
 
     fun getDigitalKontaktinformasjon(personId: String): KontaktInfoResponse? =
         runCatching {

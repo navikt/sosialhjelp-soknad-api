@@ -3,7 +3,8 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -29,7 +30,9 @@ class KontonummerClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
+    private val webClient =
+        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+            .build()
 
     override fun getKontonummer(ident: String): KontoDto? {
         return try {
