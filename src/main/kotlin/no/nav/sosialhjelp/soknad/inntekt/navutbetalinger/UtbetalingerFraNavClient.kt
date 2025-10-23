@@ -3,7 +3,8 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider.TOKENX
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
@@ -28,7 +29,9 @@ class NavUtbetalingerClientImpl(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) : UtbetalingerFraNavClient {
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
+    private val webClient =
+        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
+            .build()
 
     override fun getUtbetalingerSiste40Dager(personId: String): UtbetalDataDto? {
         logger.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
