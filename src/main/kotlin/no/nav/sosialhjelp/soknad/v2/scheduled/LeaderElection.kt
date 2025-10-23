@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.scheduled
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import java.net.InetAddress.getLocalHost
@@ -17,7 +17,7 @@ class LeaderElectionImpl(
 ) : LeaderElection {
     private val electorPath: String? = System.getenv(ELECTOR_PATH)
     private val webClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
             .baseUrl("http://$electorPath").build()
 
     private var hostname: String = getLocalHost().hostName

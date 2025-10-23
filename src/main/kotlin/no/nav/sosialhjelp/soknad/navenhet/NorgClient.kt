@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
@@ -23,7 +23,7 @@ class NorgClient(
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
             .build()
 
     fun hentNavEnhetForGeografiskTilknytning(gt: GeografiskTilknytning): NavEnhetDto? {

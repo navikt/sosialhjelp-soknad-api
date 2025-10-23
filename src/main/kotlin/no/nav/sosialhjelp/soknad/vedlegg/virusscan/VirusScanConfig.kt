@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -21,7 +21,7 @@ class VirusScanConfig(
     private val virusScannerWebClient: WebClient =
         configureWebClientBuilder(
             webClientBuilder,
-            createNavServiceHttpClient(),
+            createDefaultHttpClient(),
         )
             .baseUrl(clamAvUrl).build()
 }

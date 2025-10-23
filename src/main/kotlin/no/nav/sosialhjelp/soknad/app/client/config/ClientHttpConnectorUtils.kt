@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.client.config
 
-import io.netty.handler.timeout.IdleStateHandler
+import io.netty.channel.ChannelOption
 import org.slf4j.MDC
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ClientRequest
@@ -11,23 +11,17 @@ import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
 import java.time.Duration
 
-fun createNavServiceHttpClient(): HttpClient =
-    HttpClient.create(navServiceConnectionProvider)
-//        .option(ChannelOption.SO_KEEPALIVE, true)
-//        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-//        .option(EpollChannelOption.TCP_KEEPIDLE, 3000)
-//        .option(EpollChannelOption.TCP_KEEPINTVL, 60)
-//        .option(EpollChannelOption.TCP_KEEPCNT, 8)
-//        .responseTimeout(Duration.ofSeconds(30))
-        .doOnConnected { conn ->
-            conn.addHandlerFirst(IdleStateHandler(3000, 3000, 3000))
-        }
+// konfigurarer HttpClient for bruk mot tjenester i fss-miljøet
+fun createNavFssServiceHttpClient(): HttpClient =
+    HttpClient.create(fssServiceConnectionProvider)
+        .option(ChannelOption.SO_KEEPALIVE, true)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+        .responseTimeout(Duration.ofSeconds(10))
 
-fun createExternalServiceHttpClient(): HttpClient =
-    HttpClient.create(externalServiceConnectionProvider)
-        .doOnConnected { conn ->
-            conn.addHandlerFirst(IdleStateHandler(3000, 3000, 3000))
-        }
+fun createDefaultHttpClient(): HttpClient =
+    HttpClient.create(defaultConnectionProvider)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 6000)
+        .responseTimeout(Duration.ofSeconds(10))
 
 fun configureWebClientBuilder(
     webClientBuilder: WebClient.Builder,
@@ -50,34 +44,24 @@ val mdcExchangeFilter =
             }
     }
 
-private val navServiceConnectionProvider =
-    createConnectionProvider(
-        name = "nav-service-connection-provider",
-    )
-
-private val externalServiceConnectionProvider =
-    createConnectionProvider(
-        name = "external-service-connection-provider",
-        maxIdleTimeMinutes = Duration.ofMinutes(60),
-        maxLifeTimeMinutes = Duration.ofMinutes(60),
-    )
-
-private fun createConnectionProvider(
-    name: String,
-    maxIdleTimeMinutes: Duration = Duration.ofMinutes(50),
-    maxLifeTimeMinutes: Duration = Duration.ofMinutes(55),
-    evictInBackgroundMinutes: Duration = Duration.ofMinutes(5),
-    maxConnections: Int = 500,
-    pendingAcquireMaxCount: Int = 1000,
-): ConnectionProvider {
-    return ConnectionProvider.builder(name)
+private val defaultConnectionProvider: ConnectionProvider =
+    ConnectionProvider.builder("fss-service-connection-pool")
         .run {
-            maxConnections(maxConnections)
-            pendingAcquireTimeout(Duration.ofSeconds(30))
-//            maxIdleTime(maxIdleTimeMinutes)
-//            maxLifeTime(maxLifeTimeMinutes)
-//            evictInBackground(evictInBackgroundMinutes)
-//            pendingAcquireMaxCount(pendingAcquireMaxCount)
+            maxIdleTime(Duration.ofMinutes(120))
+            maxLifeTime(Duration.ofMinutes(240))
+            evictInBackground(Duration.ofMinutes(10))
+            pendingAcquireTimeout(Duration.ofSeconds(20))
             build()
         }
-}
+
+// egen Connection pool for fss-tjenester da firewall sletter idle connections etter 60 minutter
+// har potensielt skapt Connection timed out
+private val fssServiceConnectionProvider: ConnectionProvider =
+    ConnectionProvider.builder("fss-service-connection-pool")
+        .run {
+            maxIdleTime(Duration.ofMinutes(55))
+            maxLifeTime(Duration.ofMinutes(59))
+            evictInBackground(Duration.ofMinutes(5))
+            pendingAcquireTimeout(Duration.ofSeconds(10))
+            build()
+        }

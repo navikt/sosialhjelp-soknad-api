@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createExternalServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,7 +19,7 @@ class BostotteConfig(
     private val husbankenWebClient: WebClient =
         configureWebClientBuilder(
             webClientBuilder = webClientBuilder,
-            httpClient = createExternalServiceHttpClient().responseTimeout(Duration.ofSeconds(10L)),
+            httpClient = createDefaultHttpClient().responseTimeout(Duration.ofSeconds(10L)),
         )
             .baseUrl(bostotteBaseUrl)
             .build()

@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createNavServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -31,7 +31,7 @@ class KontonummerClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
     private val webClient =
-        configureWebClientBuilder(webClientBuilder, createNavServiceHttpClient())
+        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
             .build()
 
     override fun getKontonummer(ident: String): KontoDto? {

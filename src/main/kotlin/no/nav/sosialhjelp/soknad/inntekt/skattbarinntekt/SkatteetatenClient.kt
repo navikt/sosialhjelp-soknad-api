@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.client.config.createExternalServiceHttpClient
+import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
@@ -40,7 +40,7 @@ class SkatteetatenClient(
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private val skatteetatenWebClient: WebClient =
-        configureWebClientBuilder(webClientBuilder, createExternalServiceHttpClient())
+        configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
             .baseUrl(baseurl)
             .codecs {
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
