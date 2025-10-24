@@ -12,6 +12,7 @@ class PrometheusMetricsService(
 ) {
     private val startSoknadCounter = createCounter("start_soknad_counter")
     private val feiletSendingMedDigisosApiCounter = createCounter("feilet_sending_med_digisos_api_counter")
+    private val feilVedOpprettingAvSoknad = createCounter("feil_ved_oppretting_av_soknad_counter")
 
     private val avbruttSoknadCounterBuilder = Counter.builder("avbrutt_soknad_counter")
     private val soknadMottakerCounterBuilder = Counter.builder("soknad_mottaker_counter")
@@ -28,8 +29,12 @@ class PrometheusMetricsService(
         startSoknadCounter.increment()
     }
 
-    fun reportFeilet() {
+    fun reportSendSoknadFeilet() {
         feiletSendingMedDigisosApiCounter.increment()
+    }
+
+    fun reportStartSoknadFeilet() {
+        feilVedOpprettingAvSoknad.increment()
     }
 
     fun reportSoknadMottaker(navEnhet: String) {
@@ -38,18 +43,6 @@ class PrometheusMetricsService(
 
     fun reportSendt(kort: Boolean) {
         sendtSoknadDigisosApiCounterBuilder.increment(TAG_KORT, kort.toString())
-    }
-
-    fun reportSendSoknadFeilet() {
-        feiletSendingMedDigisosApiCounter
-            .register(meterRegistry)
-            .increment()
-    }
-
-    fun reportStartSoknadFeilet() {
-        feilVedOpprettingAvSoknad
-            .register(meterRegistry)
-            .increment()
     }
 
     fun reportAvbruttSoknad(referer: String?) {
