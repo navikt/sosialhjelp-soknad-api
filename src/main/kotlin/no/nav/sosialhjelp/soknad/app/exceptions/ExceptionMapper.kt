@@ -122,7 +122,7 @@ class ExceptionMapper(
             }
 
             is OkonomiElementFinnesIkkeException -> {
-                log.error("Feil ved oppdatering av okonomi-element: ${e.message}")
+                log.error("Feil ved oppdatering av okonomi-element: ${e.message}", e)
                 buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
             }
 

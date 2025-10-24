@@ -25,7 +25,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class UtgifterOgGjeldStegTest {
-    private val steg = UtgifterOgGjeldSteg()
+    private val steg = UtgifterOgGjeldSteg
 
     @Test
     fun boutgifterIkkeUtfylt() {

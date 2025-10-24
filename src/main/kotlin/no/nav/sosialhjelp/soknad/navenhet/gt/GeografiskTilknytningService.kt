@@ -16,6 +16,7 @@ class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient,
     private val personIdService: PersonIdService,
 ) {
+    // TODO Hvis personen har byttet folkeregistrert adresse - vil cache'n kunne føre til at man får feil GT ?
     @Cacheable(GTCacheConfig.CACHE_NAME, unless = "#result == null")
     fun hentGeografiskTilknytning(soknadId: UUID): String? =
         personIdService.findPersonId(soknadId)

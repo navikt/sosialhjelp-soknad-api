@@ -9,8 +9,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.json.generate.DomainToJsonMapper
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.v2.metadata.Tidspunkt
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.v2.soknad.Begrunnelse
 import no.nav.sosialhjelp.soknad.v2.soknad.Kategori
 import no.nav.sosialhjelp.soknad.v2.soknad.Kategorier
@@ -32,19 +33,17 @@ class SoknadToJsonMapper(
         soknadId: UUID,
         jsonInternalSoknad: JsonInternalSoknad,
     ) {
-        val tidspunkt =
-            soknadMetadataRepository.findByIdOrNull(soknadId)?.tidspunkt
-                ?: error("Metadata for soknad (id=$soknadId) finnes ikke")
+        val metadata = soknadMetadataRepository.findByIdOrNull(soknadId) ?: error("Metadata $soknadId finnes ikke")
 
         soknadRepository.findByIdOrNull(soknadId)
-            ?.let { soknad -> doMapping(soknad, tidspunkt, jsonInternalSoknad) }
+            ?.let { soknad -> doMapping(soknad, metadata, jsonInternalSoknad) }
             ?: throw IkkeFunnetException("Soknad finnes ikke")
     }
 
     internal companion object Mapper {
         fun doMapping(
             domainSoknad: Soknad,
-            tidspunkt: Tidspunkt,
+            metadata: SoknadMetadata,
             json: JsonInternalSoknad,
         ) {
             with(json) {
@@ -52,11 +51,11 @@ class SoknadToJsonMapper(
 
                 soknad.data.personalia.personIdentifikator = domainSoknad.toJsonPersonIdentifikator()
                 soknad.innsendingstidspunkt =
-                    tidspunkt.sendtInn?.let {
+                    metadata.tidspunkt.sendtInn?.let {
                         TimestampUtil.convertToOffsettDateTimeUTCString(it)
                     }
                 soknad.data.begrunnelse = domainSoknad.begrunnelse.toJsonBegrunnelse()
-                soknad.data.soknadstype = domainSoknad.toJsonSoknadType()
+                soknad.data.soknadstype = metadata.soknadType.toJsonSoknadType()
             }
         }
 
@@ -78,8 +77,8 @@ class SoknadToJsonMapper(
     }
 }
 
-private fun Soknad.toJsonSoknadType(): JsonData.Soknadstype =
-    when (this.kortSoknad) {
+private fun SoknadType.toJsonSoknadType(): JsonData.Soknadstype =
+    when (this == SoknadType.KORT) {
         true -> JsonData.Soknadstype.KORT
         false -> JsonData.Soknadstype.STANDARD
     }

@@ -18,7 +18,7 @@ import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadStatus
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
@@ -31,7 +31,6 @@ class SendSoknadHandler(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val jsonGenerator: JsonInternalSoknadGenerator,
     private val soknadValidator: SoknadValidator,
-    private val soknadService: SoknadService,
     private val metadataService: SoknadMetadataService,
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
@@ -39,17 +38,17 @@ class SendSoknadHandler(
     fun doSendAndReturnInfo(
         soknadId: UUID,
     ): SoknadSendtInfo {
-        val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
-
-        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
         val mottaker = soknadValidator.validateAndReturnMottaker(soknadId)
+
+        val innsendingTidspunkt = metadataService.setInnsendingstidspunkt(soknadId, nowWithMillis())
+        val json = jsonGenerator.createJsonInternalSoknad(soknadId)
 
         val digisosId: UUID =
             runCatching {
                 digisosApiV2Client.krypterOgLastOppFiler(
                     soknadJson = objectMapper.writeValueAsString(json.soknad),
                     tilleggsinformasjonJson =
-                        objectMapper.writeValueAsString(JsonTilleggsinformasjon(mottaker.enhetsnummer)),
+                        objectMapper.writeValueAsString(JsonTilleggsinformasjon(json.soknad.mottaker.enhetsnummer)),
                     vedleggSpec = json.toVedleggJson(),
                     pdfDokumenter = getFilOpplastingList(json),
                     kommunenr = json.soknad.mottaker.kommunenummer,
@@ -57,13 +56,14 @@ class SendSoknadHandler(
                 )
             }
                 .onSuccess { digisosId ->
-                    mottaker.kommunenummer?.also {
-                        metadataService.updateSoknadSendt(
-                            soknadId = soknadId,
-                            kommunenummer = mottaker.kommunenummer,
-                            digisosId = digisosId,
-                        )
-                    }
+                    mottaker.kommunenummer
+                        ?.also {
+                            metadataService.updateSoknadSendt(
+                                soknadId = soknadId,
+                                kommunenummer = mottaker.kommunenummer,
+                                digisosId = digisosId,
+                            )
+                        }
                         ?: error("NavMottaker mangler kommunenummer")
                 }
                 .onFailure { e ->
@@ -74,7 +74,7 @@ class SendSoknadHandler(
                                     SoknadSendtInfo(
                                         e.digisosId,
                                         mottaker,
-                                        soknadService.erKortSoknad(soknadId),
+                                        metadataService.isKortSoknad(soknadId),
                                         innsendingTidspunkt,
                                     ),
                                 message = "Søknad med ID $soknadId er allerede sendt.",
@@ -109,7 +109,7 @@ class SendSoknadHandler(
         return SoknadSendtInfo(
             digisosId = digisosId,
             navEnhet = mottaker,
-            isKortSoknad = soknadService.erKortSoknad(soknadId),
+            isKortSoknad = metadataService.isKortSoknad(soknadId),
             innsendingTidspunkt = innsendingTidspunkt,
         )
     }
@@ -183,6 +183,8 @@ class SendSoknadHandler(
         private val logger by logger()
     }
 }
+
+private fun SoknadMetadataService.isKortSoknad(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
 
 data class SoknadSendtInfo(
     val digisosId: UUID,

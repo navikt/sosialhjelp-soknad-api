@@ -203,6 +203,56 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             }
     }
 
+    @Test
+    fun `Kommune har deaktivert mottak av soknader skal gi 503`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
+
+        every { kommuneInfoClient.getAll() } returns
+            listOf(
+                createKommuneInfoList()[0].copy(kanMottaSoknader = false, harMidlertidigDeaktivertMottak = true),
+            )
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isEqualTo(503)
+    }
+
+    @Test
+    fun `Kommune har midlertidig deaktivert soknader skal gi 503`() {
+        val soknadId = createNewSoknad()
+
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknadId.toString(), emptyList())
+
+        every { kommuneInfoClient.getAll() } returns
+            listOf(
+                createKommuneInfoList()[0].copy(harMidlertidigDeaktivertMottak = true),
+            )
+
+        kontaktRepository.findByIdOrNull(soknadId)!!
+            .run {
+                copy(
+                    adresser = adresser.copy(adressevalg = AdresseValg.FOLKEREGISTRERT),
+                    mottaker = createNavEnhet(),
+                )
+            }
+            .also { kontaktRepository.save(it) }
+
+        doPostFullResponse(uri = sendUri(soknadId))
+            .expectStatus().isEqualTo(503)
+    }
+
     private fun createNewSoknad(): UUID {
         return doPost(
             uri = createUri,

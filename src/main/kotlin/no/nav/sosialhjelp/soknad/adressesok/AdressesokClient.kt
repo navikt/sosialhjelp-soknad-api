@@ -41,7 +41,7 @@ class AdressesokClient(
             log.warn("PDL - feil oppdaget i response: ${e.message}", e)
             throw e
         } catch (e: Exception) {
-            log.error("Kall til PDL feilet (adresseSok)")
+            log.error("Kall til PDL feilet (adresseSok)", e)
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }

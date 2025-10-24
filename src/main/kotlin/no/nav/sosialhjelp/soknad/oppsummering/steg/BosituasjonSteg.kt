@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
-class BosituasjonSteg {
+object BosituasjonSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val bosituasjon = jsonInternalSoknad.soknad.data.bosituasjon
         return Steg(

@@ -9,7 +9,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.app.Constants.BEHANDLINGSNUMMER_SOKNAD
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_BEHANDLINGSNUMMER
-import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
@@ -29,7 +30,7 @@ abstract class PdlClient(
             .registerModule(JavaTimeModule())
 
     private val pdlWebClient: WebClient =
-        unproxiedWebClientBuilder(webClientBuilder)
+        configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
             .codecs {
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
             }

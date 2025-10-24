@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.familie
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.familie.service.Forsorger
 import no.nav.sosialhjelp.soknad.v2.familie.service.ForsorgerService
@@ -29,6 +30,9 @@ class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
     ): ForsorgerDto {
         require(forsorgerInput.ansvar.isNotEmpty()) { "Ansvar kan ikke være en tom liste" }
 
+        // TODO Ekstra logging
+        logger.info("Oppdaterer forsørgerplikt @ Controller med Barnebidrag: ${forsorgerInput.barnebidrag}")
+
         return forsorgerService
             .updateForsorger(
                 soknadId = soknadId,
@@ -36,6 +40,10 @@ class ForsorgerpliktController(private val forsorgerService: ForsorgerService) {
                 updated = forsorgerInput.ansvar.associate { (it.uuid ?: UUID.randomUUID()) to it.toBarn() },
             )
             .toForsorgerDto()
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

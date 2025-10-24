@@ -47,7 +47,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Vedlegg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.integerVerdiSporsmalMedTittel
 
-class OkonomiskeOpplysningerOgVedleggSteg {
+object OkonomiskeOpplysningerOgVedleggSteg {
     fun get(
         jsonInternalSoknad: JsonInternalSoknad,
         vedleggInfo: List<OppsummeringVedleggInfo>,
@@ -366,41 +366,39 @@ class OkonomiskeOpplysningerOgVedleggSteg {
         return "json.okonomi." + TitleKeyMapper.soknadTypeToTitleKey[type]
     }
 
-    companion object {
-        private val formueTyper =
-            listOf(
-                FORMUE_VERDIPAPIRER,
-                FORMUE_BRUKSKONTO,
-                FORMUE_BSU,
-                FORMUE_LIVSFORSIKRING,
-                FORMUE_SPAREKONTO,
-                FORMUE_ANNET,
-            )
-        private val systemdataUtbetalingTyper =
-            listOf(
-                UTBETALING_NAVYTELSE,
-                UTBETALING_SKATTEETATEN,
-                UTBETALING_HUSBANKEN,
-            )
-        private val barneutgifter =
-            listOf(
-                UTGIFTER_BARNEHAGE,
-                UTGIFTER_SFO,
-                UTGIFTER_BARN_FRITIDSAKTIVITETER,
-                UTGIFTER_BARN_TANNREGULERING,
-                UTGIFTER_ANNET_BARN,
-            )
-        private val boutgifter =
-            listOf(
-                UTGIFTER_HUSLEIE,
-                UTGIFTER_STROM,
-                UTGIFTER_KOMMUNAL_AVGIFT,
-                UTGIFTER_OPPVARMING,
-                UTGIFTER_BOLIGLAN_AVDRAG,
-                UTGIFTER_BOLIGLAN_RENTER,
-                UTGIFTER_ANNET_BO,
-            )
-    }
+    private val formueTyper =
+        listOf(
+            FORMUE_VERDIPAPIRER,
+            FORMUE_BRUKSKONTO,
+            FORMUE_BSU,
+            FORMUE_LIVSFORSIKRING,
+            FORMUE_SPAREKONTO,
+            FORMUE_ANNET,
+        )
+    private val systemdataUtbetalingTyper =
+        listOf(
+            UTBETALING_NAVYTELSE,
+            UTBETALING_SKATTEETATEN,
+            UTBETALING_HUSBANKEN,
+        )
+    private val barneutgifter =
+        listOf(
+            UTGIFTER_BARNEHAGE,
+            UTGIFTER_SFO,
+            UTGIFTER_BARN_FRITIDSAKTIVITETER,
+            UTGIFTER_BARN_TANNREGULERING,
+            UTGIFTER_ANNET_BARN,
+        )
+    private val boutgifter =
+        listOf(
+            UTGIFTER_HUSLEIE,
+            UTGIFTER_STROM,
+            UTGIFTER_KOMMUNAL_AVGIFT,
+            UTGIFTER_OPPVARMING,
+            UTGIFTER_BOLIGLAN_AVDRAG,
+            UTGIFTER_BOLIGLAN_RENTER,
+            UTGIFTER_ANNET_BO,
+        )
 
     data class OppsummeringVedleggInfo(
         val filnavn: String,

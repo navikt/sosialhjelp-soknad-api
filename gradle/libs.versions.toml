@@ -6,7 +6,7 @@ filformat = "1.2025.07.30-13.34-d9f62af5ba3c"
 sosialhjelp_common = "1.20250120.1009-d88048d"
 fiks_kryptering = "2.0.8"
 springdoc = "2.8.13"
-flyway = "11.13.2"
+flyway = "11.14.0"
 postgres = "42.7.8"
 lettuce = "6.8.1.RELEASE"
 token_validation = "5.0.25"
@@ -14,7 +14,7 @@ java_jwt = "4.5.0"
 prometheus = "0.16.0"
 micrometer = "1.15.4"
 jackson = "2.20.0"
-logback = "1.5.18"
+logback = "1.5.19"
 logstash = "8.1"
 pdfbox = "3.0.5"
 jakarta_servlet = "6.1.0"
@@ -22,7 +22,7 @@ unleash_client = "11.1.0"
 tika = "3.2.3"
 commons_text = "1.14.0"
 ktlint = "1.2.1"
-mockk = "1.14.5"
+mockk = "1.14.6"
 versions = "0.53.0"
 resilience4j = "2.3.0"
 spotless = "8.0.0"
@@ -33,7 +33,6 @@ ninja-springmockk = "4.0.2"
 jsonassert = "1.5.3"
 
 [libraries]
-spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
@@ -101,7 +100,6 @@ jsonassert = { module = "org.skyscreamer:jsonassert", version.ref = "jsonassert"
 
 [bundles]
 spring-boot = [
-    "spring-boot-docker-compose",
     "spring-boot-starter-actuator",
     "spring-boot-starter-aop",
     "spring-boot-starter-cache",

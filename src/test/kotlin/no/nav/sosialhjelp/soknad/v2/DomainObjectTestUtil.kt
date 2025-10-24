@@ -185,13 +185,11 @@ fun opprettSoknad(
     id: UUID = UUID.randomUUID(),
     eierPersonId: String = AbstractIntegrationTest.userId,
     begrunnelse: Begrunnelse = opprettBegrunnelse(),
-    kort: Boolean = false,
 ): Soknad =
     Soknad(
         id = id,
         eierPersonId = eierPersonId,
         begrunnelse = begrunnelse,
-        kortSoknad = kort,
     )
 
 fun opprettArbeidsforholdList(
@@ -214,7 +212,7 @@ fun opprettArbeidsforhold(
 fun opprettNavEnhet(
     enhetNr: String = "321321321",
     navn: String = "NAV-kontoret",
-    kommunenummer: String = "4314",
+    kommunenummer: String = "5555",
     orgnummer: String = "3414513515",
     kommunenavn: String = "Nav-kommunen",
 ): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)

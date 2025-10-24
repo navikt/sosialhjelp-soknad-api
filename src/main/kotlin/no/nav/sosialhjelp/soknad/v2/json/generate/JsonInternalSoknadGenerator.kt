@@ -7,7 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.v2.soknad.SoknadService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
+import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -33,10 +34,9 @@ interface DomainToJsonMapper {
 @Component
 class JsonInternalSoknadGenerator(
     private val mappers: List<DomainToJsonMapper>,
-    private val soknadService: SoknadService,
+    private val metadataService: SoknadMetadataService,
 ) {
     fun createJsonInternalSoknad(soknadId: UUID): JsonInternalSoknad {
-        val soknad = soknadService.findOrError(soknadId)
         return JsonInternalSoknad()
             .withSoknad(JsonSoknad())
             .withVedlegg(JsonVedleggSpesifikasjon())
@@ -44,13 +44,14 @@ class JsonInternalSoknadGenerator(
             .withMidlertidigAdresse(JsonAdresse())
             .apply {
                 mappers.forEach {
-                    if (soknad.kortSoknad) {
+                    if (metadataService.isKort(soknadId)) {
                         it.mapToKortJson(soknadId, this)
                     } else {
                         it.mapToJson(soknadId, this)
                     }
                 }
-            }.also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
+            }
+            .also { JsonSosialhjelpValidator.ensureValidInternalSoknad(toJson(it)) }
     }
 
     private companion object {
@@ -59,6 +60,8 @@ class JsonInternalSoknadGenerator(
         private fun toJson(jsonInternalSoknad: JsonInternalSoknad) = objectMapper.writeValueAsString(jsonInternalSoknad)
     }
 }
+
+private fun SoknadMetadataService.isKort(soknadId: UUID) = getSoknadType(soknadId) == SoknadType.KORT
 
 object TimestampUtil {
     private const val ZONE_STRING = "Europe/Oslo"

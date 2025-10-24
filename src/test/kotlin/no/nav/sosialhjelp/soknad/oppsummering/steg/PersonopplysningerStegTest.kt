@@ -21,7 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class PersonopplysningerStegTest {
-    private val steg = PersonopplysningerSteg()
+    private val steg = PersonopplysningerSteg
 
     private val navnUtenMellomnavn = JsonSokernavn().withFornavn("fornavn").withEtternavn("etternavn")
     private val navnMedMellomnavn = JsonSokernavn().withFornavn("fornavn").withMellomnavn("mellomnavn").withEtternavn("etternavn")
@@ -48,8 +48,8 @@ internal class PersonopplysningerStegTest {
         val personaliaSporsmal = res.avsnitt[0].sporsmal[0]
         assertThat(personaliaSporsmal.felt).hasSize(3)
         validateFeltMedSvar(personaliaSporsmal.felt!![0], Type.SYSTEMDATA, SvarType.TEKST, "fornavn etternavn")
-        validateFeltMedSvar(personaliaSporsmal.felt!![1], Type.SYSTEMDATA, SvarType.TEKST, "11111111111")
-        validateFeltMedSvar(personaliaSporsmal.felt!![2], Type.SYSTEMDATA, SvarType.TEKST, "NOR")
+        validateFeltMedSvar(personaliaSporsmal.felt[1], Type.SYSTEMDATA, SvarType.TEKST, "11111111111")
+        validateFeltMedSvar(personaliaSporsmal.felt[2], Type.SYSTEMDATA, SvarType.TEKST, "NOR")
     }
 
     @Test
@@ -64,8 +64,8 @@ internal class PersonopplysningerStegTest {
         val personaliaSporsmal = personaliaAvsnitt.sporsmal[0]
         assertThat(personaliaSporsmal.felt).hasSize(3)
         validateFeltMedSvar(personaliaSporsmal.felt!![0], Type.SYSTEMDATA, SvarType.TEKST, "fornavn mellomnavn etternavn")
-        validateFeltMedSvar(personaliaSporsmal.felt!![1], Type.SYSTEMDATA, SvarType.TEKST, "11111111111")
-        validateFeltMedSvar(personaliaSporsmal.felt!![2], Type.SYSTEMDATA, SvarType.TEKST, null)
+        validateFeltMedSvar(personaliaSporsmal.felt[1], Type.SYSTEMDATA, SvarType.TEKST, "11111111111")
+        validateFeltMedSvar(personaliaSporsmal.felt[2], Type.SYSTEMDATA, SvarType.TEKST, null)
     }
 
     @Test

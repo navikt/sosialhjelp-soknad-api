@@ -60,12 +60,13 @@ class DigisosApiV2Client(
             .clientConnector(
                 ReactorClientHttpConnector(
                     HttpClient.create()
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ONE_MINUTE.toMillis().toInt())
                         .doOnConnected {
                             it
-                                .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                                .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                        }.responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong())),
+                                .addHandlerLast(ReadTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
+                                .addHandlerLast(WriteTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
+                        }
+                        .responseTimeout(Duration.ofMillis(ONE_MINUTE.toMillis())),
                 ),
             ).codecs {
                 it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
@@ -299,7 +300,7 @@ class DigisosApiV2Client(
 
     companion object {
         private val log by logger()
-        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
+        private val ONE_MINUTE = Duration.ofMinutes(1)
     }
 }
 

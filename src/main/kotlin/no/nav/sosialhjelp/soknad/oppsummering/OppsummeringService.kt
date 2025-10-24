@@ -25,20 +25,7 @@ class OppsummeringService(
     private val dokumentlagerService: DokumentlagerService,
     private val jsonGenerator: JsonInternalSoknadGenerator,
 ) {
-    private val personopplysningerSteg = PersonopplysningerSteg()
-    private val begrunnelseSteg = BegrunnelseSteg()
-    private val arbeidOgUtdanningSteg = ArbeidOgUtdanningSteg()
-    private val familiesituasjonSteg = FamiliesituasjonSteg()
-    private val bosituasjonSteg = BosituasjonSteg()
-    private val inntektOgFormueSteg = InntektOgFormueSteg()
-    private val utgifterOgGjeldSteg = UtgifterOgGjeldSteg()
-    private val okonomiskeOpplysningerOgVedleggSteg = OkonomiskeOpplysningerOgVedleggSteg()
-    private val situasjonsendringSteg = SituasjonsendringSteg()
-    private val arbeidOgFamilieSteg = ArbeidOgFamilieSteg()
-    private val behovSteg = BehovSteg()
-
     fun hentOppsummering(
-        fnr: String,
         soknadId: UUID,
     ): Oppsummering {
         return useActiveJsonInternalSoknad(soknadId).let {
@@ -61,10 +48,10 @@ class OppsummeringService(
     private fun kortSoknadOppsummering(json: JsonInternalSoknad): Oppsummering {
         return Oppsummering(
             listOf(
-                personopplysningerSteg.get(json),
-                behovSteg.get(json),
-                arbeidOgFamilieSteg.get(json),
-                situasjonsendringSteg.get(json),
+                PersonopplysningerSteg.get(json),
+                BehovSteg.get(json),
+                ArbeidOgFamilieSteg.get(json),
+                SituasjonsendringSteg.get(json),
             ),
         )
     }
@@ -75,14 +62,14 @@ class OppsummeringService(
     ): Oppsummering {
         return Oppsummering(
             listOf(
-                personopplysningerSteg.get(json),
-                begrunnelseSteg.get(json),
-                arbeidOgUtdanningSteg.get(json),
-                familiesituasjonSteg.get(json),
-                bosituasjonSteg.get(json),
-                inntektOgFormueSteg.get(json),
-                utgifterOgGjeldSteg.get(json),
-                okonomiskeOpplysningerOgVedleggSteg.get(json, vedleggInfo),
+                PersonopplysningerSteg.get(json),
+                BegrunnelseSteg.get(json),
+                ArbeidOgUtdanningSteg.get(json),
+                FamiliesituasjonSteg.get(json),
+                BosituasjonSteg.get(json),
+                InntektOgFormueSteg.get(json),
+                UtgifterOgGjeldSteg.get(json),
+                OkonomiskeOpplysningerOgVedleggSteg.get(json, vedleggInfo),
             ),
         )
     }

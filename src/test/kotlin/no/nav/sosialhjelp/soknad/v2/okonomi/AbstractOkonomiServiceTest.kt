@@ -30,6 +30,6 @@ abstract class AbstractOkonomiServiceTest {
     @BeforeEach
     fun setup() {
         val soknadId = soknadMetadataRepository.save(opprettSoknadMetadata()).soknadId
-        soknad = soknadRepository.save(Soknad(id = soknadId, eierPersonId = "1234561212345", kortSoknad = false))
+        soknad = soknadRepository.save(Soknad(id = soknadId, eierPersonId = "1234561212345"))
     }
 }

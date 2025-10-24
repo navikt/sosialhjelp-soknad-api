@@ -39,6 +39,7 @@ import no.nav.sosialhjelp.soknad.v2.okonomi.Vedtaksstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -162,7 +163,10 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Test
     fun `Skal finnes inntekt og dokumentasjon ved bostotte og samtykke true, men innhenting feilet`() {
         every { husbankenClient.getBostotte(any(), any()) } returns
-            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
+            HusbankenResponse.Error(
+                WebClientResponseException
+                    .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
+            )
 
         postBostotte(hasBostotte = true, true)
 
@@ -321,7 +325,10 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Test
     fun `Skal ha forventet dokumentasjon hvis clienten kaster exception`() {
         every { husbankenClient.getBostotte(any(), any()) } returns
-            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
+            HusbankenResponse.Error(
+                WebClientResponseException
+                    .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
+            )
 
         postBostotte(hasBostotte = true, true)
 
@@ -342,7 +349,10 @@ class BostotteIntegrationTest : AbstractOkonomiIntegrationTest() {
     @Test
     fun `Skal returnerer kall til husbanken feilet hvis det skjer en feil`() {
         every { husbankenClient.getBostotte(any(), any()) } returns
-            HusbankenResponse.Error(WebClientResponseException.create(500, "Feil", null, null, null))
+            HusbankenResponse.Error(
+                WebClientResponseException
+                    .create(500, "Feil", HttpHeaders(), ByteArray(0), null),
+            )
 
         postBostotte(hasBostotte = true, hasSamtykke = true)
 

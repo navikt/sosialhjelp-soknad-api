@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
-class BegrunnelseSteg {
+object BegrunnelseSteg {
     fun get(
         jsonInternalSoknad: JsonInternalSoknad,
     ): Steg {

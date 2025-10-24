@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class ArbeidOgUtdanningStegTest {
-    private val steg = ArbeidOgUtdanningSteg()
+    private val steg = ArbeidOgUtdanningSteg
 
     private val arbeidsforholdMedSlutt =
         JsonArbeidsforhold()
@@ -62,12 +62,12 @@ internal class ArbeidOgUtdanningStegTest {
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.arbeidsgivernavn.label")
         assertThat(felt.labelSvarMap!!["arbeidsforhold.arbeidsgivernavn.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.arbeidsgivernavn)
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.fom.label")
-        assertThat(felt.labelSvarMap!!["arbeidsforhold.fom.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.fom)
+        assertThat(felt.labelSvarMap["arbeidsforhold.fom.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.fom)
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.tom.label")
-        assertThat(felt.labelSvarMap!!["arbeidsforhold.tom.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.tom)
+        assertThat(felt.labelSvarMap["arbeidsforhold.tom.label"]!!.value).isEqualTo(arbeidsforholdMedSlutt.tom)
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.stillingsprosent.label")
         assertThat(
-            felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value,
+            felt.labelSvarMap["arbeidsforhold.stillingsprosent.label"]?.value,
         ).isEqualTo(arbeidsforholdMedSlutt.stillingsprosent.toString())
     }
 
@@ -89,11 +89,11 @@ internal class ArbeidOgUtdanningStegTest {
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.arbeidsgivernavn.label")
         assertThat(felt.labelSvarMap!!["arbeidsforhold.arbeidsgivernavn.label"]!!.value).isEqualTo(arbeidsforholdUtenSlutt.arbeidsgivernavn)
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.fom.label")
-        assertThat(felt.labelSvarMap!!["arbeidsforhold.fom.label"]!!.value).isEqualTo(arbeidsforholdUtenSlutt.fom)
+        assertThat(felt.labelSvarMap["arbeidsforhold.fom.label"]!!.value).isEqualTo(arbeidsforholdUtenSlutt.fom)
         assertThat(felt.labelSvarMap).doesNotContainKey("arbeidsforhold.tom.label")
         assertThat(felt.labelSvarMap).containsKey("arbeidsforhold.stillingsprosent.label")
         assertThat(
-            felt.labelSvarMap!!["arbeidsforhold.stillingsprosent.label"]!!.value,
+            felt.labelSvarMap["arbeidsforhold.stillingsprosent.label"]!!.value,
         ).isEqualTo(arbeidsforholdUtenSlutt.stillingsprosent.toString())
     }
 
