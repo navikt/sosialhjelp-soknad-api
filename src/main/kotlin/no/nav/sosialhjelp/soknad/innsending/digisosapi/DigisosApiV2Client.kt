@@ -10,8 +10,9 @@ import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.MdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
+import no.nav.sosialhjelp.soknad.app.client.config.fiksServiceConnectionProvider
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
@@ -59,7 +60,7 @@ class DigisosApiV2Client(
         webClientBuilder
             .clientConnector(
                 ReactorClientHttpConnector(
-                    HttpClient.create()
+                    HttpClient.create(fiksServiceConnectionProvider)
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ONE_MINUTE.toMillis().toInt())
                         .doOnConnected {
                             it
@@ -74,7 +75,7 @@ class DigisosApiV2Client(
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
             }.defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-            .filter(mdcExchangeFilter)
+            .filter(MdcExchangeFilter)
             .build()
 
     fun krypterOgLastOppFiler(
