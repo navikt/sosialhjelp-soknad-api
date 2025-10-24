@@ -27,17 +27,17 @@ fun configureWebClientBuilder(
 fun createNavFssServiceHttpClient(): HttpClient =
     HttpClient.create(fssServiceConnectionProvider)
         .option(ChannelOption.SO_KEEPALIVE, true)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(5).toMillisPart())
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(5).toMillis().toInt())
         .responseTimeout(Duration.ofSeconds(10))
 
 fun createDefaultHttpClient(): HttpClient =
     HttpClient.create(defaultConnectionProvider)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillisPart())
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillis().toInt())
         .responseTimeout(Duration.ofSeconds(10))
 
 fun createFiksHttpClient(): HttpClient =
     HttpClient.create(fiksServiceConnectionProvider)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillisPart())
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillis().toInt())
         .responseTimeout(Duration.ofSeconds(10))
 
 private val defaultConnectionProvider: ConnectionProvider =

@@ -38,7 +38,7 @@ class MellomlagringConfig(
     // egen httpClient for opplasting av filer
     private val mellomlagerHttpClient: HttpClient =
         HttpClient.create(fiksServiceConnectionProvider)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT.toMillisPart())
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT.toMillis().toInt())
             .responseTimeout(RESPONSE_TIMEOUT)
 
     private val webClient =
