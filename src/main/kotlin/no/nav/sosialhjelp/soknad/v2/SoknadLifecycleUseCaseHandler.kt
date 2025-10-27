@@ -51,7 +51,7 @@ class SoknadLifecycleHandlerImpl(
                 logger.info("Ny søknad opprettet")
             }
             .onFailure {
-                prometheusMetricsService.reportFeilet()
+                prometheusMetricsService.reportStartSoknadFeilet()
                 throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
             }
             .also { MdcOperations.clearMDC() }
@@ -79,7 +79,7 @@ class SoknadLifecycleHandlerImpl(
                     is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
                     -> throw e
                     else -> {
-                        prometheusMetricsService.reportFeilet()
+                        prometheusMetricsService.reportSendSoknadFeilet()
                         throw InnsendingFeiletException(
                             deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
                             message = "Feil ved innsending av søknad.",
