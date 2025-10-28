@@ -27,7 +27,7 @@ import java.util.UUID
 @ProtectionSelvbetjeningHigh
 @RequestMapping("/dokument", produces = [MediaType.APPLICATION_JSON_VALUE])
 class DokumentController(
-    private val dokumentlagerService: DokumentlagerService,
+    private val mellomlagerService: MellomlagerService,
     private val dokumentRefService: DokumentRefService,
 ) {
     @GetMapping("/{soknadId}/{dokumentId}")
@@ -50,11 +50,11 @@ class DokumentController(
     ): ResponseEntity<ByteArray> {
         return when (dokumentRefService.getRef(soknadId, dokumentId)) {
             null -> {
-                dokumentlagerService.deleteDokument(soknadId, dokumentId)
+                mellomlagerService.deleteDokument(soknadId, dokumentId)
                 throw IkkeFunnetException("Fant ikke dokumentreferanse $dokumentId")
             }
             else -> {
-                runCatching { dokumentlagerService.getDokument(soknadId, dokumentId) }
+                runCatching { mellomlagerService.getDokument(soknadId, dokumentId) }
                     .onFailure { dokumentRefService.removeRef(soknadId, dokumentId) }
                     .getOrThrow()
                     .let { mellomlagretDokument ->
@@ -81,7 +81,7 @@ class DokumentController(
         val opplysningType = StringToOpplysningTypeConverter.convert(opplysningTypeString)
 
         return runCatching {
-            dokument.originalFilename?.let { dokumentlagerService.uploadDokument(soknadId, dokument.bytes, it) }
+            dokument.originalFilename?.let { mellomlagerService.uploadDokument(soknadId, dokument.bytes, it) }
                 ?: throw IllegalArgumentException("Opplastet dokument mangler filnavn.")
         }
             .onSuccess { mellomlagretDokument ->
@@ -102,7 +102,7 @@ class DokumentController(
         @PathVariable("soknadId") soknadId: UUID,
         @PathVariable("dokumentId") dokumentId: UUID,
     ) {
-        runCatching { dokumentlagerService.deleteDokument(soknadId, dokumentId) }
+        runCatching { mellomlagerService.deleteDokument(soknadId, dokumentId) }
             .onSuccess { dokumentRefService.removeRef(soknadId, dokumentId) }
             .onFailure { throw IllegalStateException("Feil ved sletting av dokument $dokumentId", it) }
     }

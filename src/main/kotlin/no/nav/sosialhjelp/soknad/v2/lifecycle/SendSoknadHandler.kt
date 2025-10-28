@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.v2
+package no.nav.sosialhjelp.soknad.v2.lifecycle
 
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.v2.SoknadValidator
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import no.nav.sosialhjelp.soknad.v2.json.generate.TimestampUtil.nowWithMillis
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet

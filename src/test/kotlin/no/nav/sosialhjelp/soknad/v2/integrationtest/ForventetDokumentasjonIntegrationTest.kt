@@ -10,8 +10,8 @@ import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LASTET_OPP
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus.LEVERT_TIDLIGERE
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonType
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.ForventetDokumentasjonDto
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
 import no.nav.sosialhjelp.soknad.v2.okonomi.FormueType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
@@ -28,12 +28,12 @@ class ForventetDokumentasjonIntegrationTest : AbstractIntegrationTest() {
     private lateinit var dokumentasjonService: DokumentasjonService
 
     @MockkBean
-    private lateinit var dokumentlagerService: DokumentlagerService
+    private lateinit var mellomlagerService: MellomlagerService
 
     @BeforeEach
     fun setUp() {
         opprettSoknad(soknadId).also { soknadRepository.save(it) }
-        every { dokumentlagerService.deleteDokument(soknadId, any()) } just runs
+        every { mellomlagerService.deleteDokument(soknadId, any()) } just runs
     }
 
     @Test

@@ -13,7 +13,7 @@ import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 @Component
-class CreateDeleteSoknadHandler(
+class CreateSoknadHandler(
     private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
     private val soknadMetadataService: SoknadMetadataService,
@@ -31,22 +31,12 @@ class CreateDeleteSoknadHandler(
                     soknadId = it.soknadId,
                 )
             }
-            .also {
-                createObligatoriskDokumentasjon(soknadId, isKort)
-            }
-    }
-
-    @Transactional
-    fun cancelSoknad(soknadId: UUID) {
-        soknadService.deleteSoknad(soknadId)
-        soknadMetadataService.deleteMetadata(soknadId)
+            .also { createObligatoriskDokumentasjon(soknadId, isKort) }
     }
 
     @Transactional(propagation = Propagation.NEVER)
     fun runRegisterDataFetchers(soknadId: UUID) {
-        runCatching {
-            registerDataService.runAllRegisterDataFetchers(soknadId = soknadId)
-        }
+        runCatching { registerDataService.runAllRegisterDataFetchers(soknadId = soknadId) }
             .onFailure {
                 logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
                 soknadService.deleteSoknad(soknadId)

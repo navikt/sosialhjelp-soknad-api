@@ -10,8 +10,9 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
-import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -34,18 +35,18 @@ interface SoknadLifecycleUseCaseHandler {
 @Service
 class SoknadLifecycleHandlerImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
+    private val createSoknadHandler: CreateSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
+    private val cancelSoknadHandler: CancelSoknadHandler,
     private val documentValidator: DocumentValidator,
-    private val dokumentlagerService: DokumentlagerService,
 ) : SoknadLifecycleUseCaseHandler {
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det i MDC manuelt siden det ikke finnes i request enda
         val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
 
-        return runCatching { createDeleteSoknadHandler.createSoknad(soknadId, isKort) }
+        return runCatching { createSoknadHandler.createSoknad(soknadId, isKort) }
             .onSuccess {
-                createDeleteSoknadHandler.runRegisterDataFetchers(soknadId)
+                createSoknadHandler.runRegisterDataFetchers(soknadId)
 
                 prometheusMetricsService.reportStartSoknad()
                 logger.info("Ny søknad opprettet")
@@ -96,9 +97,9 @@ class SoknadLifecycleHandlerImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        runCatching { createDeleteSoknadHandler.cancelSoknad(soknadId) }
+        runCatching { cancelSoknadHandler.cancelSoknad(soknadId) }
             .onSuccess {
-                dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+                cancelSoknadHandler.cleanUploadedDocuments(soknadId)
                 prometheusMetricsService.reportAvbruttSoknad(referer)
                 logger.info("Søknad avbrutt. Sletter data.")
             }

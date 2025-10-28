@@ -9,7 +9,7 @@ import java.util.UUID
 @Component
 class DokumentasjonStatusUseCaseHandler(
     private val dokumentasjonService: DokumentasjonService,
-    private val dokumentlagerService: DokumentlagerService,
+    private val mellomlagerService: MellomlagerService,
 ) {
     fun findForventetDokumentasjon(soknadId: UUID): List<Dokumentasjon> =
         dokumentasjonService.findDokumentasjonForSoknad(soknadId)
@@ -36,7 +36,7 @@ class DokumentasjonStatusUseCaseHandler(
 
         dokumentasjon.dokumenter
             .map { it.dokumentId }
-            .forEach { dokumentlagerService.deleteDokument(dokumentasjon.soknadId, it) }
+            .forEach { mellomlagerService.deleteDokument(dokumentasjon.soknadId, it) }
     }
 }
 

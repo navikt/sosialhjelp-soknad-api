@@ -29,7 +29,7 @@ class KortSoknadServiceTest {
     private val kortSoknadUseCaseHandler: KortSoknadUseCaseHandler =
         KortSoknadUseCaseHandler(
             kortSoknadService = kortSoknadService,
-            dokumentlagerService = mockk(relaxed = true),
+            mellomlagerService = mockk(relaxed = true),
             digisosApiService = digisosApiService,
             metadataService = mockk(relaxed = true),
             unleash = mockk(relaxed = true),

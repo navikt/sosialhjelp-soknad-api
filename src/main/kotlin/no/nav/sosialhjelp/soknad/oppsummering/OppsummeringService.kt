@@ -15,14 +15,14 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.ArbeidOgFamilieSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.BehovSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.kort.SituasjonsendringSteg
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.MellomlagerService
 import no.nav.sosialhjelp.soknad.v2.json.generate.JsonInternalSoknadGenerator
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
 class OppsummeringService(
-    private val dokumentlagerService: DokumentlagerService,
+    private val mellomlagerService: MellomlagerService,
     private val jsonGenerator: JsonInternalSoknadGenerator,
 ) {
     fun hentOppsummering(
@@ -41,7 +41,7 @@ class OppsummeringService(
     }
 
     private fun getVedleggInfo(soknadId: UUID) =
-        dokumentlagerService.getAllDokumenterMetadata(soknadId).map {
+        mellomlagerService.getAllDokumenterMetadata(soknadId).map {
             OppsummeringVedleggInfo(it.filnavn, it.filId)
         }
 

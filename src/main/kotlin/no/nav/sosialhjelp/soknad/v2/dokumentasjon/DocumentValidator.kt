@@ -7,10 +7,10 @@ import java.util.UUID
 @Component
 class DocumentValidator(
     private val dokumentasjonRepository: DokumentasjonRepository,
-    private val dokumentlagerService: DokumentlagerService,
+    private val mellomlagerService: MellomlagerService,
 ) {
     fun validateDocumentsExistsInMellomlager(soknadId: UUID) {
-        val filIdsMellomlager = dokumentlagerService.getAllDokumenterMetadata(soknadId).map { it.filId }
+        val filIdsMellomlager = mellomlagerService.getAllDokumenterMetadata(soknadId).map { it.filId }
 
         runCatching {
             dokumentasjonRepository.findAllBySoknadId(soknadId)
