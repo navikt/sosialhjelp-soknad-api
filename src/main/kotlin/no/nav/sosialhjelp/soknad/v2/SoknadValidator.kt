@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.AdresseService
 import org.springframework.stereotype.Component
@@ -13,10 +14,13 @@ import java.util.UUID
 class SoknadValidator(
     private val adresseService: AdresseService,
     private val kommuneInfoService: KommuneInfoService,
+    private val documentValidator: DocumentValidator,
 ) {
-    fun validateAndReturnMottaker(soknadId: UUID): NavEnhet {
-        return harSoknadMottaker(soknadId)
-            .also { kanKommuneMottaSoknad(it) }
+    fun validateSoknad(soknadId: UUID) {
+        val mottaker = harSoknadMottaker(soknadId)
+        kanKommuneMottaSoknad(mottaker)
+
+        documentValidator.validateDocumentsExistsInMellomlager(soknadId)
     }
 
     private fun harSoknadMottaker(soknadId: UUID): NavEnhet =

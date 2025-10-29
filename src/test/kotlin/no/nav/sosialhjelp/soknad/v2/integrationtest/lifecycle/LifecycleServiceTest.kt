@@ -61,7 +61,6 @@ class LifecycleServiceTest {
             prometheusMetricsService = mockk(relaxed = true),
             createSoknadHandler = createSoknadHandler,
             sendSoknadHandler = sendSoknadHandler,
-            documentValidator = mockk(relaxed = true),
             cancelSoknadHandler = cancelSoknadHandler,
         )
 }

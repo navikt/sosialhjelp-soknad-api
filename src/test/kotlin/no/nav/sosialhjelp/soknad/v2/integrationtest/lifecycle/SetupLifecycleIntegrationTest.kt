@@ -110,7 +110,7 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = capture(soknadJsonSlot),
                 tilleggsinformasjonJson = capture(tilleggsinformasjonSlot),
-                vedleggSpec = capture(vedleggJsonSlot),
+                vedleggJson = capture(vedleggJsonSlot),
                 pdfDokumenter = capture(dokumenterSlot),
                 kommunenr = capture(kommunenummerSlot),
                 navEksternRefId = capture(navEksternRefSlot),

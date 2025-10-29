@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -178,7 +179,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Soknad allerede sendt inn skal returnere SendtInfo`() {
-        val soknadId = createNewSoknad()
+        val soknadId = createInnsendtSoknad()
 
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto(soknadId.toString(), emptyList())
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), soknadId) } throws
@@ -258,6 +259,23 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             uri = createUri,
             responseBodyClass = StartSoknadResponseDto::class.java,
         )
+            .soknadId
+    }
+
+    private fun createInnsendtSoknad(): UUID {
+        return doPost(
+            uri = createUri,
+            responseBodyClass = StartSoknadResponseDto::class.java,
+        )
+            .let { metadataRepository.findByIdOrNull(it.soknadId)!! }
+            .let { metadata ->
+                metadata.copy(
+                    mottakerKommunenummer = "1234",
+                    tidspunkt = metadata.tidspunkt.copy(sendtInn = LocalDateTime.now()),
+                    digisosId = UUID.randomUUID(),
+                )
+            }
+            .let { metadataRepository.save(it) }
             .soknadId
     }
 

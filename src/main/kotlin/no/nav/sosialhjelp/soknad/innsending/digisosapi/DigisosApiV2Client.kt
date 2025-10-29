@@ -81,7 +81,7 @@ class DigisosApiV2Client(
     fun krypterOgLastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
-        vedleggSpec: String,
+        vedleggJson: String,
         pdfDokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: UUID,
@@ -93,7 +93,7 @@ class DigisosApiV2Client(
                 lastOppFiler(
                     soknadJson,
                     tilleggsinformasjonJson,
-                    vedleggSpec,
+                    vedleggJson,
                     pdfDokumenter.map { dokument: FilOpplasting ->
                         FilForOpplasting(
                             filnavn = dokument.metadata.filnavn,

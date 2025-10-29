@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -38,7 +38,6 @@ class SoknadLifecycleHandlerImpl(
     private val createSoknadHandler: CreateSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
     private val cancelSoknadHandler: CancelSoknadHandler,
-    private val documentValidator: DocumentValidator,
 ) : SoknadLifecycleUseCaseHandler {
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det i MDC manuelt siden det ikke finnes i request enda
@@ -64,32 +63,15 @@ class SoknadLifecycleHandlerImpl(
     ): Pair<UUID, LocalDateTime> {
         logger.info("Starter innsending av søknad.")
 
-        documentValidator.validateDocumentsExistsInMellomlager(soknadId)
-
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
             .onSuccess {
                 prometheusMetricsService.reportSendt(it.isKortSoknad)
 
                 prometheusMetricsService.reportSoknadMottaker(
-                    MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
+                    MetricsUtils.navKontorTilMetricNavn(it.navEnhetNavn),
                 )
             }
-            .getOrElse { e ->
-                when (e) {
-                    is SoknadAlleredeSendtException -> e.sendtInfo
-                    is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
-                    -> throw e
-                    else -> {
-                        prometheusMetricsService.reportSendSoknadFeilet()
-                        throw InnsendingFeiletException(
-                            deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
-                            message = "Feil ved innsending av søknad.",
-                            throwable = e,
-                            id = soknadId,
-                        )
-                    }
-                }
-            }
+            .getOrElse { e -> handleError(soknadId, e) }
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
 
@@ -106,6 +88,26 @@ class SoknadLifecycleHandlerImpl(
             .onFailure {
                 throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId)
             }
+    }
+
+    private fun handleError(
+        soknadId: UUID,
+        e: Throwable,
+    ): SoknadSendtInfo {
+        return when (e) {
+            is SoknadAlleredeSendtException -> e.sendtInfo
+            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
+            -> throw e
+            else -> {
+                prometheusMetricsService.reportSendSoknadFeilet()
+                throw InnsendingFeiletException(
+                    deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
+                    message = "Feil ved innsending av søknad.",
+                    throwable = e,
+                    id = soknadId,
+                )
+            }
+        }
     }
 
     companion object {
