@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
-import no.nav.sosialhjelp.soknad.v2.SoknadSendtInfo
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import java.time.LocalDateTime
 import java.util.UUID
 

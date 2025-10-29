@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
-interface DokumentlagerService {
+interface MellomlagerService {
     fun getAllDokumenterMetadata(soknadId: UUID): List<MellomlagretDokument>
 
     fun getDokumentMetadata(
@@ -46,7 +46,7 @@ interface DokumentlagerService {
 class FiksDokumentService(
     private val mellomlagringClient: MellomlagringClient,
     private val virusScanner: VirusScanner,
-) : DokumentlagerService {
+) : MellomlagerService {
     override fun getAllDokumenterMetadata(soknadId: UUID): List<MellomlagretDokument> =
         mellomlagringClient.hentDokumenterMetadata(soknadId.toString())?.toMellomlagretDokumentList() ?: emptyList()
 

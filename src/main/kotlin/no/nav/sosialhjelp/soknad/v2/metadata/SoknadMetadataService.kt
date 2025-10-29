@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.v2.metadata
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -47,6 +48,7 @@ class SoknadMetadataService(
         soknadId: UUID,
         kommunenummer: String,
         digisosId: UUID,
+        innsendingsTidspunkt: LocalDateTime,
     ) {
         findMetadataOrError(soknadId)
             .run {
@@ -54,6 +56,7 @@ class SoknadMetadataService(
                     status = SoknadStatus.SENDT,
                     mottakerKommunenummer = kommunenummer,
                     digisosId = digisosId,
+                    tidspunkt = tidspunkt.copy(sendtInn = innsendingsTidspunkt),
                 )
             }
             .also { metadataRepository.save(it) }
@@ -110,6 +113,18 @@ class SoknadMetadataService(
 
     fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
         return metadataRepository.findAllById(allSoknadIds)
+    }
+
+    fun getSoknadSendtInfo(soknadId: UUID): SoknadSendtInfo {
+        return findMetadataOrError(soknadId)
+            .let {
+                SoknadSendtInfo(
+                    digisosId = it.digisosId ?: error("DigisosId finnes ikke"),
+                    isKortSoknad = it.soknadType == SoknadType.KORT,
+                    navEnhetNavn = it.mottakerKommunenummer ?: error("Mottaker kommunenummer finnes ikke"),
+                    innsendingTidspunkt = it.tidspunkt.sendtInn ?: error("Innsendingstidspunkt finnes ikke"),
+                )
+            }
     }
 
     private fun findMetadataOrError(soknadId: UUID): SoknadMetadata {

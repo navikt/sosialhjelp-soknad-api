@@ -9,9 +9,10 @@ import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLifecycleException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DocumentValidator
-import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentlagerService
-import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateDeleteSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
+import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -34,18 +35,17 @@ interface SoknadLifecycleUseCaseHandler {
 @Service
 class SoknadLifecycleHandlerImpl(
     private val prometheusMetricsService: PrometheusMetricsService,
-    private val createDeleteSoknadHandler: CreateDeleteSoknadHandler,
+    private val createSoknadHandler: CreateSoknadHandler,
     private val sendSoknadHandler: SendSoknadHandler,
-    private val documentValidator: DocumentValidator,
-    private val dokumentlagerService: DokumentlagerService,
+    private val cancelSoknadHandler: CancelSoknadHandler,
 ) : SoknadLifecycleUseCaseHandler {
     override fun startSoknad(isKort: Boolean): UUID {
         // legger det i MDC manuelt siden det ikke finnes i request enda
         val soknadId = UUID.randomUUID().also { MdcOperations.putToMDC(MdcOperations.MDC_SOKNAD_ID, it.toString()) }
 
-        return runCatching { createDeleteSoknadHandler.createSoknad(soknadId, isKort) }
+        return runCatching { createSoknadHandler.createSoknad(soknadId, isKort) }
             .onSuccess {
-                createDeleteSoknadHandler.runRegisterDataFetchers(soknadId)
+                createSoknadHandler.runRegisterDataFetchers(soknadId)
 
                 prometheusMetricsService.reportStartSoknad()
                 logger.info("Ny søknad opprettet")
@@ -63,32 +63,15 @@ class SoknadLifecycleHandlerImpl(
     ): Pair<UUID, LocalDateTime> {
         logger.info("Starter innsending av søknad.")
 
-        documentValidator.validateDocumentsExistsInMellomlager(soknadId)
-
         return runCatching { sendSoknadHandler.doSendAndReturnInfo(soknadId) }
             .onSuccess {
                 prometheusMetricsService.reportSendt(it.isKortSoknad)
 
                 prometheusMetricsService.reportSoknadMottaker(
-                    MetricsUtils.navKontorTilMetricNavn(it.navEnhet.enhetsnavn),
+                    MetricsUtils.navKontorTilMetricNavn(it.navEnhetNavn),
                 )
             }
-            .getOrElse { e ->
-                when (e) {
-                    is SoknadAlleredeSendtException -> e.sendtInfo
-                    is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
-                    -> throw e
-                    else -> {
-                        prometheusMetricsService.reportSendSoknadFeilet()
-                        throw InnsendingFeiletException(
-                            deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
-                            message = "Feil ved innsending av søknad.",
-                            throwable = e,
-                            id = soknadId,
-                        )
-                    }
-                }
-            }
+            .getOrElse { e -> handleError(soknadId, e) }
             .let { Pair(it.digisosId, it.innsendingTidspunkt) }
     }
 
@@ -96,15 +79,35 @@ class SoknadLifecycleHandlerImpl(
         soknadId: UUID,
         referer: String?,
     ) {
-        runCatching { createDeleteSoknadHandler.cancelSoknad(soknadId) }
+        runCatching { cancelSoknadHandler.cancelSoknad(soknadId) }
             .onSuccess {
-                dokumentlagerService.deleteAllDokumenterForSoknad(soknadId)
+                cancelSoknadHandler.cleanUploadedDocuments(soknadId)
                 prometheusMetricsService.reportAvbruttSoknad(referer)
                 logger.info("Søknad avbrutt. Sletter data.")
             }
             .onFailure {
                 throw SoknadLifecycleException("Feil ved avbrutt søknad.", it, soknadId)
             }
+    }
+
+    private fun handleError(
+        soknadId: UUID,
+        e: Throwable,
+    ): SoknadSendtInfo {
+        return when (e) {
+            is SoknadAlleredeSendtException -> e.sendtInfo
+            is SendingTilKommuneUtilgjengeligException, is SendingTilKommuneErMidlertidigUtilgjengeligException,
+            -> throw e
+            else -> {
+                prometheusMetricsService.reportSendSoknadFeilet()
+                throw InnsendingFeiletException(
+                    deletionDate = sendSoknadHandler.getDeletionDate(soknadId),
+                    message = "Feil ved innsending av søknad.",
+                    throwable = e,
+                    id = soknadId,
+                )
+            }
+        }
     }
 
     companion object {
