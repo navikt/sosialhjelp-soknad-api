@@ -9,6 +9,7 @@ import java.util.UUID
 
 @Component
 class AdresseUseCaseHandler(
+    private val folkeregistrertAdresseResolver: FolkeregistrertAdresseResolver,
     private val adresseService: AdresseService,
     private val navEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
@@ -34,15 +35,22 @@ class AdresseUseCaseHandler(
         val oldAdresser = adresseService.findAdresser(soknadId)
         val oldMottaker = adresseService.findMottaker(soknadId)
 
+        val currentFolkeregistrertAdresse =
+            folkeregistrertAdresseResolver.getCurrentFolkeregistrertAdresse(
+                soknadId,
+                adresseValg,
+                oldAdresser.folkeregistrert,
+            )
+
         val mottaker =
             when (adresseValg) {
-                AdresseValg.FOLKEREGISTRERT -> oldAdresser.folkeregistrert
+                AdresseValg.FOLKEREGISTRERT -> currentFolkeregistrertAdresse
                 AdresseValg.MIDLERTIDIG -> oldAdresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-                ?.let { valgtAdresse -> navEnhetService.getNavEnhet(soknadId, valgtAdresse, adresseValg) }
+                ?.let { navEnhetService.getNavEnhet(soknadId, it, adresseValg) }
 
-        runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
+        runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker, currentFolkeregistrertAdresse) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, oldAdresser, oldMottaker, mottaker) }
     }
 

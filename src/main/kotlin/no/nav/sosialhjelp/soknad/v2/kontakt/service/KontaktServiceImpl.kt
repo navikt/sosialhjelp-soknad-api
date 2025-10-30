@@ -22,6 +22,7 @@ interface AdresseService {
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
         mottaker: NavEnhet?,
+        currentFolkeregistrertAdresse: Adresse?,
     )
 
     fun updateKommunenavnMottaker(
@@ -70,11 +71,17 @@ class KontaktServiceImpl(
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
         mottaker: NavEnhet?,
+        currentFolkeregistrertAdresse: Adresse?,
     ) {
         findOrCreate(soknadId)
             .run {
                 copy(
-                    adresser = adresser.copy(adressevalg = adresseValg, fraBruker = brukerAdresse),
+                    adresser =
+                        adresser.copy(
+                            adressevalg = adresseValg,
+                            fraBruker = brukerAdresse,
+                            folkeregistrert = currentFolkeregistrertAdresse,
+                        ),
                     mottaker = mottaker,
                 )
             }

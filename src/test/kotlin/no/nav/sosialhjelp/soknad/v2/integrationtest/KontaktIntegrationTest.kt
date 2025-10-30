@@ -24,14 +24,19 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
+import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.createVegadresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
+import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
@@ -55,6 +60,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
@@ -76,7 +82,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var digisosApiV2Client: DigisosApiV2Client
 
-    @MockkBean
+    @MockkBean(relaxed = true)
     private lateinit var unleash: Unleash
 
     @MockkBean(relaxed = true)
@@ -88,10 +94,14 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var kommuneInfoService: KommuneInfoService
 
+    @MockkBean
+    private lateinit var personService: PersonService
+
     @BeforeEach
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { digisosApiV2Client.getSoknader() } returns emptyList()
+        every { personService.hasAdressebeskyttelse(userId) } returns false
     }
 
     @Test
@@ -148,6 +158,126 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             assertThat(it.adresser.adressevalg).isEqualTo(adresserInput.adresseValg)
             assertThat(it.adresser.fraBruker).isEqualTo(adresserInput.brukerAdresse)
         }
+    }
+
+    @Test
+    fun `Ny gyldig folkeregistrert adresse skal lagres ved oppdatering`() {
+        val navEnhet1 = NavEnhet("Nav-kontor 1", "1111", "1111", "12345678", "Nummer en")
+        val navEnhet2 = NavEnhet("Nav-kontor 2", "2222", "2222", "87654321", "Nummer to")
+
+        val lagretSoknad =
+            opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(5))
+                .let { metadataRepository.save(it) }
+                .let { opprettSoknad(id = it.soknadId) }
+                .let { soknadRepository.save(it) }
+
+        createVegadresse(navEnhet1.kommunenummer!!)
+            .also {
+                kontaktRepository.save(
+                    Kontakt(
+                        soknadId = soknadId,
+                        adresser =
+                            Adresser(
+                                folkeregistrert =
+                                    VegAdresse(
+                                        kommunenummer = navEnhet1.kommunenummer,
+                                        adresselinjer = listOf(it.adressenavn!!),
+                                        postnummer = it.postnummer!!,
+                                        poststed = it.poststed!!,
+                                        gatenavn = it.adressenavn,
+                                        husnummer = it.husnummer.toString(),
+                                    ),
+                            ),
+                    ),
+                )
+            }
+
+        every { adressesokClient.getAdressesokResult(any()) } returns null
+        every { personService.hentPerson(userId, any()) } returns
+            Person(
+                fornavn = "Fornavn",
+                mellomnavn = null,
+                etternavn = "Etternavn",
+                fnr = userId,
+                sivilstatus = "GIFT",
+                statsborgerskap = listOf("NOR"),
+                ektefelle = null,
+                bostedsadresse =
+                    Bostedsadresse(
+                        null,
+                        createVegadresse(navEnhet1.kommunenummer!!),
+                        null,
+                    ),
+                oppholdsadresse = null,
+            )
+
+        every { norgService.getEnhetForGt(navEnhet1.kommunenummer!!) } returns navEnhet1
+        every { norgService.getEnhetForGt(navEnhet2.kommunenummer!!) } returns navEnhet2
+
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns navEnhet1.kommunenummer
+
+        // ved opprettelse av søknad skal kommunenummer fra navEnhet1 returneres
+        AdresserInput(
+            adresseValg = AdresseValg.FOLKEREGISTRERT,
+            brukerAdresse = null,
+        )
+            .let {
+                doPut(
+                    uri = "/soknad/${lagretSoknad.id}/adresser",
+                    requestBody = it,
+                    responseBodyClass = AdresserDto::class.java,
+                    lagretSoknad.id,
+                )
+            }
+            .also { dto ->
+                with(dto.folkeregistrertAdresse as VegAdresse) {
+                    assertThat(kommunenummer).isEqualTo(navEnhet1.kommunenummer)
+                    assertThat(gatenavn).contains("Adresseveien")
+                }
+                assertThat(dto.navenhet?.kommunenummer).isEqualTo(navEnhet1.kommunenummer)
+                assertThat(dto.navenhet?.enhetsnummer).isEqualTo(navEnhet1.enhetsnummer)
+            }
+
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns navEnhet2.kommunenummer
+
+        every { personService.hentPerson(userId, any()) } returns
+            Person(
+                fornavn = "Fornavn",
+                mellomnavn = null,
+                etternavn = "Etternavn",
+                fnr = userId,
+                sivilstatus = "GIFT",
+                statsborgerskap = listOf("NOR"),
+                ektefelle = null,
+                bostedsadresse =
+                    Bostedsadresse(
+                        null,
+                        createVegadresse(navEnhet2.kommunenummer!!),
+                        null,
+                    ),
+                oppholdsadresse = null,
+            )
+
+        AdresserInput(
+            adresseValg = AdresseValg.FOLKEREGISTRERT,
+            brukerAdresse = null,
+        )
+            .let {
+                doPut(
+                    uri = "/soknad/${lagretSoknad.id}/adresser",
+                    requestBody = it,
+                    responseBodyClass = AdresserDto::class.java,
+                    lagretSoknad.id,
+                )
+            }
+            .also { dto ->
+                with(dto.folkeregistrertAdresse as VegAdresse) {
+                    assertThat(kommunenummer).isEqualTo(navEnhet2.kommunenummer)
+                    assertThat(gatenavn).contains("Adresseveien")
+                }
+                assertThat(dto.navenhet?.kommunenummer).isEqualTo(navEnhet2.kommunenummer)
+                assertThat(dto.navenhet?.enhetsnummer).isEqualTo(navEnhet2.enhetsnummer)
+            }
     }
 
     @Test
