@@ -101,6 +101,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     fun setup() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { digisosApiV2Client.getSoknader() } returns emptyList()
+        every { personService.hasAdressebeskyttelse(userId) } returns false
     }
 
     @Test
@@ -192,7 +193,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
             }
 
         every { adressesokClient.getAdressesokResult(any()) } returns null
-        every { personService.hasAdressebeskyttelse(userId) } returns false
         every { personService.hentPerson(userId, any()) } returns
             Person(
                 fornavn = "Fornavn",
