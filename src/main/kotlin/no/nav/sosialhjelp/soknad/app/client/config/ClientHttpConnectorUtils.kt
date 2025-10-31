@@ -45,7 +45,7 @@ private val defaultConnectionProvider: ConnectionProvider =
         .run {
             maxConnections(300)
             maxIdleTime(Duration.ofMinutes(120))
-            maxLifeTime(Duration.ofMinutes(240))
+//            maxLifeTime(Duration.ofMinutes(240))
             evictInBackground(Duration.ofMinutes(10))
             pendingAcquireTimeout(Duration.ofSeconds(20))
             build()
@@ -58,7 +58,7 @@ private val fssServiceConnectionProvider: ConnectionProvider =
         .run {
             maxConnections(500)
             maxIdleTime(Duration.ofMinutes(55))
-            maxLifeTime(Duration.ofMinutes(59))
+//            maxLifeTime(Duration.ofMinutes(59))
             evictInBackground(Duration.ofMinutes(5))
             pendingAcquireTimeout(Duration.ofSeconds(10))
             build()
@@ -70,7 +70,7 @@ val fiksServiceConnectionProvider: ConnectionProvider =
         .run {
             maxConnections(300)
             maxIdleTime(Duration.ofMinutes(50))
-            maxLifeTime(Duration.ofMinutes(55))
+//            maxLifeTime(Duration.ofMinutes(55))
             evictInBackground(Duration.ofMinutes(5))
             pendingAcquireTimeout(Duration.ofSeconds(20))
             metrics(true)
