@@ -25,29 +25,19 @@ fun configureWebClientBuilder(
 
 // konfigurarer HttpClient for bruk mot tjenester i fss-miljøet
 fun createNavFssServiceHttpClient(): HttpClient =
-    HttpClient.create(fssServiceConnectionProvider)
-        .option(ChannelOption.SO_KEEPALIVE, true)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(5).toMillis().toInt())
-        .responseTimeout(Duration.ofSeconds(10))
+    HttpClient.create(fssServiceConnectionProvider).option(ChannelOption.SO_KEEPALIVE, true)
 
-fun createDefaultHttpClient(): HttpClient =
-    HttpClient.create(defaultConnectionProvider)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillis().toInt())
-        .responseTimeout(Duration.ofSeconds(10))
+fun createDefaultHttpClient(): HttpClient = HttpClient.create(defaultConnectionProvider)
 
-fun createFiksHttpClient(): HttpClient =
-    HttpClient.create(fiksServiceConnectionProvider)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Duration.ofSeconds(10).toMillis().toInt())
-        .responseTimeout(Duration.ofSeconds(10))
+fun createFiksHttpClient(): HttpClient = HttpClient.create(fiksServiceConnectionProvider)
 
 private val defaultConnectionProvider: ConnectionProvider =
-    ConnectionProvider.builder("fss-service-connection-pool")
+    ConnectionProvider.builder("default-connection-pool")
         .run {
             maxConnections(300)
-            maxIdleTime(Duration.ofMinutes(120))
-//            maxLifeTime(Duration.ofMinutes(240))
-            evictInBackground(Duration.ofMinutes(10))
-            pendingAcquireTimeout(Duration.ofSeconds(20))
+            maxIdleTime(Duration.ofMinutes(30))
+            evictInBackground(Duration.ofMinutes(5))
+            metrics(true)
             build()
         }
 
@@ -57,10 +47,10 @@ private val fssServiceConnectionProvider: ConnectionProvider =
     ConnectionProvider.builder("fss-service-connection-pool")
         .run {
             maxConnections(500)
-            maxIdleTime(Duration.ofMinutes(55))
-//            maxLifeTime(Duration.ofMinutes(59))
+            maxIdleTime(Duration.ofMinutes(30))
             evictInBackground(Duration.ofMinutes(5))
             pendingAcquireTimeout(Duration.ofSeconds(10))
+            metrics(true)
             build()
         }
 
@@ -69,10 +59,8 @@ val fiksServiceConnectionProvider: ConnectionProvider =
     ConnectionProvider.builder("fiks-service-connection-pool")
         .run {
             maxConnections(300)
-            maxIdleTime(Duration.ofMinutes(50))
-//            maxLifeTime(Duration.ofMinutes(55))
+            maxIdleTime(Duration.ofMinutes(30))
             evictInBackground(Duration.ofMinutes(5))
-            pendingAcquireTimeout(Duration.ofSeconds(20))
             metrics(true)
             build()
         }
