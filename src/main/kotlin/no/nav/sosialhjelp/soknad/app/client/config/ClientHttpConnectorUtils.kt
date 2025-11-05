@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.app.client.config
 
-import io.netty.channel.ChannelOption
 import org.slf4j.MDC
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ClientRequest
@@ -25,7 +24,8 @@ fun configureWebClientBuilder(
 
 // konfigurarer HttpClient for bruk mot tjenester i fss-miljøet
 fun createNavFssServiceHttpClient(): HttpClient =
-    HttpClient.create(fssServiceConnectionProvider).option(ChannelOption.SO_KEEPALIVE, true)
+    HttpClient.create(fssServiceConnectionProvider)
+//        .option(ChannelOption.SO_KEEPALIVE, true)
 
 fun createDefaultHttpClient(): HttpClient = HttpClient.create(defaultConnectionProvider)
 
@@ -47,7 +47,7 @@ private val fssServiceConnectionProvider: ConnectionProvider =
     ConnectionProvider.builder("fss-service-connection-pool")
         .run {
             maxConnections(500)
-            maxIdleTime(Duration.ofMinutes(30))
+            maxIdleTime(Duration.ofMinutes(45))
             evictInBackground(Duration.ofMinutes(5))
             pendingAcquireTimeout(Duration.ofSeconds(10))
             metrics(true)
