@@ -56,24 +56,26 @@ class DigisosApiV2Client(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
+    private val fiksHttpClient =
+        HttpClient.create(fiksServiceConnectionProvider)
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, THIRTY_SECONDS.toMillis().toInt())
+            .doOnConnected {
+                it
+                    .addHandlerLast(ReadTimeoutHandler(THIRTY_SECONDS.toSeconds().toInt()))
+                    .addHandlerLast(WriteTimeoutHandler(THIRTY_SECONDS.toSeconds().toInt()))
+            }
+            .responseTimeout(TWO_MINUTES)
+
     private val fiksWebClient =
         webClientBuilder
             .clientConnector(
-                ReactorClientHttpConnector(
-                    HttpClient.create(fiksServiceConnectionProvider)
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ONE_MINUTE.toMillis().toInt())
-                        .doOnConnected {
-                            it
-                                .addHandlerLast(ReadTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
-                                .addHandlerLast(WriteTimeoutHandler(ONE_MINUTE.toSeconds().toInt()))
-                        }
-                        .responseTimeout(Duration.ofMillis(ONE_MINUTE.toMillis())),
-                ),
+                ReactorClientHttpConnector(fiksHttpClient),
             ).codecs {
                 it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
-            }.defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            }
+            .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .filter(MdcExchangeFilter)
             .build()
@@ -301,7 +303,8 @@ class DigisosApiV2Client(
 
     companion object {
         private val log by logger()
-        private val ONE_MINUTE = Duration.ofMinutes(1)
+        private val THIRTY_SECONDS = Duration.ofSeconds(30)
+        private val TWO_MINUTES = Duration.ofMinutes(2)
     }
 }
 
