@@ -10,7 +10,7 @@ spring:
     username: user
     password: password
     hikari:
-      maximum-pool-size: 4
+      maximum-pool-size: 10
   data:
     redis:
       password: pw
