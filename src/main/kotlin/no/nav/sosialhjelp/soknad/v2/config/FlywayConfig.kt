@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Profile
 class FlywayConfig {
     @Profile("!(prodgcp|preprod)")
     @Bean
-    fun dev(flyway: Flyway): FlywayMigrationStrategy {
+    fun dev(): FlywayMigrationStrategy {
         if (MiljoUtils.isProduction()) {
             throw IllegalStateException("Flyway skal ikke kjøres i produksjon")
         }
 
-        return FlywayMigrationStrategy {
+        return FlywayMigrationStrategy { flyway ->
             flyway.clean()
             flyway.migrate()
         }
