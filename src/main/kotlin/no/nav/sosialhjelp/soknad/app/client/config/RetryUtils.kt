@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.client.config
 
+import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.util.retry.Retry
 import reactor.util.retry.RetryBackoffSpec
@@ -12,5 +13,12 @@ object RetryUtils {
     val DEFAULT_RETRY_SERVER_ERRORS: RetryBackoffSpec =
         Retry
             .backoff(DEFAULT_MAX_ATTEMPTS, Duration.ofMillis(DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS))
-            .filter { it is WebClientResponseException && !it.statusCode.is4xxClientError }
+            .filter { it.shouldRetry() }
+
+    private fun Throwable.shouldRetry(): Boolean =
+        when (this) {
+            is WebClientResponseException -> !this.statusCode.is4xxClientError
+            is WebClientRequestException -> true
+            else -> false
+        }
 }

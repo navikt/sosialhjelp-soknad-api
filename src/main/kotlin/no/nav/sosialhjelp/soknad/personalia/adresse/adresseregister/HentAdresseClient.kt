@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister
 
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentAdresseDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -32,7 +33,7 @@ class HentAdresseClient(
                     .bodyValue(PdlRequest(PdlApiQuery.HENT_ADRESSE, variables(matrikkelId)))
                     .retrieve()
                     .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                     .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdresse - response null?")
             val pdlResponse = parse<HentAdresseDto>(response)
             pdlResponse.checkForPdlApiErrors()

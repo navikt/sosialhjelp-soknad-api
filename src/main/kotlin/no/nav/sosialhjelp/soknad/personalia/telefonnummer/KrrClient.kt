@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.configureWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.client.config.createDefaultHttpClient
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
@@ -62,6 +63,7 @@ class KrrClient(
             .bodyValue(KontaktInfoRequest(listOf(personId)))
             .retrieve()
             .bodyToMono<KontaktInfoResponse>()
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
 
     private val tokenxToken: String

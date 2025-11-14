@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentGeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -53,7 +54,7 @@ class GeografiskTilknytningClient(
             .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(personId)))
             .retrieve()
             .bodyToMono<String>()
-            .retryWhen(pdlRetry)
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
 
     private fun tokenXtoken() = texasService.exchangeToken(IdentityProvider.TOKENX, target = pdlAudience)

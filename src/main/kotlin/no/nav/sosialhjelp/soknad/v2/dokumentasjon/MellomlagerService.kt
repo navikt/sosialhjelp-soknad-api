@@ -86,7 +86,7 @@ class FiksDokumentService(
             data = data,
         )
             .let { dto -> dto.mellomlagringMetadataList?.firstOrNull() }?.toMellomlagretDokument(data)
-            ?: throw FiksException("Klarte ikke å laste opp dokument", null)
+            ?: throw FiksException("Klarte ikke å laste opp dokument: Dto er null", null)
     }
 
     override fun deleteDokument(

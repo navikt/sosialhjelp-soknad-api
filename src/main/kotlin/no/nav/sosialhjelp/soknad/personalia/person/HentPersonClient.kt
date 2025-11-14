@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.person
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_BARN
@@ -78,7 +79,7 @@ class HentPersonClientImpl(
             .bodyValue(pdlRequest)
             .retrieve()
             .bodyToMono<String>()
-            .retryWhen(pdlRetry)
+            .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
             .block()
 
     @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
@@ -90,7 +91,7 @@ class HentPersonClientImpl(
                     .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
                     .retrieve()
                     .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                     .block()
                     ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
@@ -112,7 +113,7 @@ class HentPersonClientImpl(
                     .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
                     .retrieve()
                     .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                     .block()
                     ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)

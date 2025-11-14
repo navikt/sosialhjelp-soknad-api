@@ -14,10 +14,6 @@ import no.nav.sosialhjelp.soknad.app.client.config.createNavFssServiceHttpClient
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import reactor.util.retry.Retry
-import reactor.util.retry.RetryBackoffSpec
-import java.time.Duration
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
@@ -37,24 +33,16 @@ abstract class PdlClient(
             .defaultHeader(HEADER_BEHANDLINGSNUMMER, BEHANDLINGSNUMMER_SOKNAD)
             .build()
 
-    protected val pdlRetry: RetryBackoffSpec =
-        Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
-
     protected val baseRequest: WebClient.RequestBodySpec
         get() =
             pdlWebClient.post()
                 .uri(baseurl)
                 .accept(MediaType.APPLICATION_JSON)
 
-    protected inline fun <reified T> parse(response: String): T {
-        return try {
-            pdlMapper.readValue(response)
-        } catch (e: MismatchedInputException) {
-            e.clearLocation()
-            throw e
-        } catch (e: JsonProcessingException) {
-            e.clearLocation()
-            throw e
-        }
-    }
+    protected inline fun <reified T> parse(response: String): T =
+        runCatching { pdlMapper.readValue<T>(response) }
+            .getOrElse {
+                if (it is MismatchedInputException || it is JsonProcessingException) it.clearLocation()
+                throw it
+            }
 }

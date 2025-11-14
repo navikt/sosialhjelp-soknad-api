@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.adressesok
 
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -32,7 +33,7 @@ class AdressesokClient(
                     .bodyValue(PdlRequest(ADRESSE_SOK, variables))
                     .retrieve()
                     .bodyToMono<String>()
-                    .retryWhen(pdlRetry)
+                    .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                     .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
             val pdlResponse = parse<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()

@@ -129,7 +129,6 @@ class MellomlagringClientImpl(
             )
                 .also { waitForFutures(krypteringFutureList) }
         }
-            .onFailure { log.error("Feil ved opplasting av dokument", it) }
             .getOrElse { throw FiksException("Feil ved opplasting av dokument", it) }
             .also {
                 krypteringFutureList
