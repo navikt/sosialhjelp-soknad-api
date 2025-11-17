@@ -47,7 +47,7 @@ class SendSoknadHandler(
 
         json.checkDuplicateUtbetalinger()
 
-        logger.info("Sendt ${metadataService.isKortSoknad(soknadId)} søknad til FIKS med DigisosId: $digisosId")
+        logger.info("Sendt (kort=${metadataService.isKortSoknad(soknadId)}) søknad til FIKS med DigisosId: $digisosId")
 
         VedleggskravStatistikkUtil.genererVedleggskravStatistikk(json)
 
