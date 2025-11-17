@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import org.springframework.stereotype.Service
@@ -84,8 +83,4 @@ class OkonomiskeOpplysningerServiceImpl(
                 message = "Okonomi-element finnes ikke: $type",
                 soknadId = soknadId,
             )
-
-    companion object {
-        private val logger by logger()
-    }
 }
