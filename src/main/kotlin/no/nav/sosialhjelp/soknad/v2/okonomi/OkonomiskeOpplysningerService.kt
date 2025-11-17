@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonService
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -33,7 +34,7 @@ class OkonomiskeOpplysningerServiceImpl(
         type: OkonomiOpplysningType,
         detaljer: List<OkonomiDetalj>,
     ) {
-        type.checkDokumentasjon(soknadId)
+        type.validate(soknadId)
 
         if (type == UtgiftType.UTGIFTER_ANDRE_UTGIFTER) {
             okonomiService.addElementToOkonomi(soknadId, type)
@@ -42,10 +43,9 @@ class OkonomiskeOpplysningerServiceImpl(
         addDetaljerToElement(soknadId, type, detaljer).also { okonomiService.updateElement(soknadId, it) }
     }
 
-    private fun OkonomiOpplysningType.checkDokumentasjon(soknadId: UUID) {
+    private fun OkonomiOpplysningType.validate(soknadId: UUID) {
         if (dokumentasjonService.findDokumentasjonByType(soknadId, this) == null) {
-            logger.error("Ingen dokumentasjon funnet for ${this.name}. Oppretter dokumentasjon")
-            dokumentasjonService.opprettDokumentasjon(soknadId, this)
+            throw IkkeFunnetException("Finnes ikke dokumentasjon for ${this.name}")
         }
     }
 
