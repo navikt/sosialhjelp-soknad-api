@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.okonomi.Utgift
 import no.nav.sosialhjelp.soknad.v2.okonomi.UtgiftType
@@ -46,12 +47,22 @@ class BoutgiftController(
         @PathVariable("soknadId") soknadId: UUID,
         @RequestBody(required = true) input: BoutgifterInput,
     ): BoutgifterDto {
+        // TODO Ekstra logging i forbindelse med feilen "Feil ved oppdatering av okonomi-element"
+        logger.info(
+            "Oppdatering av boutgifter: " +
+                "${if (input is HarBoutgifterInput) input.copy(beskrivelseAnnenBoutgift = "") else input}",
+        )
+
         when (input) {
             is HarBoutgifterInput -> boutgiftService.updateBoutgifter(soknadId, input.toUtgiftTypeSet())
             is HarIkkeBoutgifterInput -> boutgiftService.removeBoutgifter(soknadId)
             else -> error("Ukjent BoutgiftInput")
         }
         return getBoutgifter(soknadId)
+    }
+
+    companion object {
+        private val logger by logger()
     }
 }
 

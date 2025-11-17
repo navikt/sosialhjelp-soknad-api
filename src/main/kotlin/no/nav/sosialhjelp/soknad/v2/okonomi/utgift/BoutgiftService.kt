@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.okonomi.utgift
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.v2.okonomi.Bekreftelse
 import no.nav.sosialhjelp.soknad.v2.okonomi.BekreftelseType
 import no.nav.sosialhjelp.soknad.v2.okonomi.InntektType
@@ -43,6 +44,9 @@ class BoutgiftServiceImpl(
     }
 
     override fun removeBoutgifter(soknadId: UUID) {
+        // TODO Ekstra logging "Feil ved oppdatering av okonomielement"
+        logger.info("Removing Boutgifter (Service)")
+
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = false)
         boutgiftTypes.forEach { okonomiService.removeElementFromOkonomi(soknadId, it) }
     }
@@ -51,6 +55,10 @@ class BoutgiftServiceImpl(
         soknadId: UUID,
         existingBoutgifter: Set<UtgiftType>,
     ) {
+        // TODO Mangler håndtering av beskrivelse av Boutgifter her?
+        // TODO Ekstra logging "Feil ved oppdatering av okonomielement"
+        logger.info("Input til oppdatering av Boutgifter: $existingBoutgifter")
+
         okonomiService.updateBekreftelse(soknadId, BekreftelseType.BEKREFTELSE_BOUTGIFTER, verdi = true)
 
         boutgiftTypes.forEach {
@@ -96,6 +104,8 @@ class BoutgiftServiceImpl(
             ?.let { !it.verdi } ?: true
 
     companion object {
+        private val logger by logger()
+
         private val boutgiftsRelevanteBekreftelser: List<BekreftelseType> =
             listOf(
                 BekreftelseType.BEKREFTELSE_BOUTGIFTER,
