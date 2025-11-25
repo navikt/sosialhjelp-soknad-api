@@ -78,6 +78,12 @@
           }
         }
       ],
+      "foedselsdato": [
+        {
+          "foedselsdato": "2000-10-20",
+          "foedselsaar": "2000"
+        }
+      ],
       "sivilstand": [
         {
           "type": "GIFT",
