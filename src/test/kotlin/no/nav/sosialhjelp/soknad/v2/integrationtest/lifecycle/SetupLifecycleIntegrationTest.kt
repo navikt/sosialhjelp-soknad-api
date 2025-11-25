@@ -147,6 +147,7 @@ fun createPersonAnswer(): Person {
         null,
         "Fornavnesen",
         AbstractIntegrationTest.userId,
+        LocalDate.now().minusYears(30),
         "GIFT",
         listOf("NOR"),
         createEktefelleAnswer(),

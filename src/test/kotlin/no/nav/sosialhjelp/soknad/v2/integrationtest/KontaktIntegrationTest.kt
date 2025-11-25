@@ -205,13 +205,14 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 bostedsadresse =
                     Bostedsadresse(
                         null,
-                        createVegadresse(navEnhet1.kommunenummer!!),
+                        createVegadresse(navEnhet1.kommunenummer),
                         null,
                     ),
                 oppholdsadresse = null,
+                fodselsdato = null,
             )
 
-        every { norgService.getEnhetForGt(navEnhet1.kommunenummer!!) } returns navEnhet1
+        every { norgService.getEnhetForGt(navEnhet1.kommunenummer) } returns navEnhet1
         every { norgService.getEnhetForGt(navEnhet2.kommunenummer!!) } returns navEnhet2
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns navEnhet1.kommunenummer
@@ -256,6 +257,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                         null,
                     ),
                 oppholdsadresse = null,
+                fodselsdato = null,
             )
 
         AdresserInput(

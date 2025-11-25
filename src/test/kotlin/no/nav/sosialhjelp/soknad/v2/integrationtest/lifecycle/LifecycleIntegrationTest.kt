@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiError
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.AlleredeMottattException
 import no.nav.sosialhjelp.soknad.v2.SoknadSendtDto
 import no.nav.sosialhjelp.soknad.v2.StartSoknadResponseDto
@@ -252,6 +253,18 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
         doPostFullResponse(uri = sendUri(soknadId))
             .expectStatus().isEqualTo(503)
+    }
+
+    @Test
+    fun `Hvis soker er under 18 skal det returneres error`() {
+        every { personService.hentPerson(any()) } returns
+            createPersonAnswer().copy(fodselsdato = LocalDate.now().minusYears(17))
+
+        doPostFullResponse(uri = createUri)
+            .expectStatus().isForbidden
+            .expectBody(SoknadApiError::class.java)
+            .returnResult().responseBody
+            .also { response -> assertThat(response!!.error).isEqualTo(SoknadApiErrorType.SokerUnder18) }
     }
 
     private fun createNewSoknad(): UUID {
