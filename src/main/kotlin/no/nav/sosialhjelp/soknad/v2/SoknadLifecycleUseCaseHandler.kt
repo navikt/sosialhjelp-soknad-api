@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.SokerUnder18Exception
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -51,8 +52,12 @@ class SoknadLifecycleHandlerImpl(
                 logger.info("Ny søknad opprettet")
             }
             .onFailure {
-                prometheusMetricsService.reportStartSoknadFeilet()
-                throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+                if (it is SokerUnder18Exception) {
+                    throw it
+                } else {
+                    prometheusMetricsService.reportStartSoknadFeilet()
+                    throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+                }
             }
             .also { MdcOperations.clearMDC() }
             .getOrThrow()

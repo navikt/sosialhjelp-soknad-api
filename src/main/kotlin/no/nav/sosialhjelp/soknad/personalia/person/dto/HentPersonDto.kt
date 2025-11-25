@@ -22,6 +22,7 @@ data class PersonDto(
     val oppholdsadresse: List<OppholdsadresseDto>?,
     val forelderBarnRelasjon: List<ForelderBarnRelasjonDto>?,
     val navn: List<NavnDto>?,
+    val foedselsdato: List<FoedselsdatoDto>?,
     val sivilstand: List<SivilstandDto>?,
     val statsborgerskap: List<StatsborgerskapDto>?,
 ) : PdlDto

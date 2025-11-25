@@ -6,14 +6,14 @@ import no.nav.sosialhjelp.soknad.v2.eier.Eier
 import no.nav.sosialhjelp.soknad.v2.eier.Kontonummer
 import no.nav.sosialhjelp.soknad.v2.eier.service.EierRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataHandler
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class EierDataFetcher(
+class EierDataHandler(
     private val eierService: EierRegisterService,
-) : PersonRegisterDataFetcher {
+) : PersonRegisterDataHandler {
     override fun fetchAndSave(
         soknadId: UUID,
         person: Person,

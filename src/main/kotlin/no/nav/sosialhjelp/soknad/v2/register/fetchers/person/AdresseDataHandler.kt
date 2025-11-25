@@ -12,15 +12,15 @@ import no.nav.sosialhjelp.soknad.v2.kontakt.Adresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.service.KontaktRegisterService
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataHandler
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class AdresseFetcher(
+class AdresseDataHandler(
     private val kontaktService: KontaktRegisterService,
     private val hentAdresseService: HentAdresseService,
-) : PersonRegisterDataFetcher {
+) : PersonRegisterDataHandler {
     private val logger by logger()
 
     override fun fetchAndSave(

@@ -57,6 +57,7 @@ class PdlDtoMapper(
                 findMellomnavn(personDto.navn),
                 findEtternavn(personDto.navn),
                 ident,
+                findFodselsdato(personDto.foedselsdato),
                 findSivilstatus(personDto.sivilstand),
                 findStatsborgerskap(personDto.statsborgerskap),
                 null,

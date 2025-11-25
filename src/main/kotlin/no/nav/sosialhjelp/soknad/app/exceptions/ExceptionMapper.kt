@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.SokerUnder18Exception
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
@@ -58,7 +59,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig, e),
                 )
             }
-
             is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
                 log.error(e.message, e)
                 buildError(
@@ -66,32 +66,26 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.InnsendingMidlertidigUtilgjengelig),
                 )
             }
-
             is SendingTilKommuneErIkkeAktivertException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingIkkeAktivert))
             }
-
             is SendingTilKommuneUtilgjengeligException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig))
             }
-
             is SoknadenHarNedetidException -> {
                 log.warn(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PlanlagtNedetid))
             }
-
             is PdfGenereringException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdfGenereringFeilet))
             }
-
             is PdlApiException -> {
                 log.error("Kall til PDL feilet", e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdlKallFeilet))
             }
-
             is DokumentUploadDuplicateFilename -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
                 buildError(
@@ -99,7 +93,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename),
                 )
             }
-
             is DokumentUploadUnsupportedMediaType -> {
                 log.warn("UgyldigOpplastingTypeException", e)
                 buildError(
@@ -107,7 +100,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadUnsupportedMediaType, e),
                 )
             }
-
             is DokumentUploadFileEncrypted -> {
                 log.warn("DokumentUploadFileEncrypted", e)
                 buildError(
@@ -115,22 +107,22 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadFileEncrypted, e),
                 )
             }
-
             is FileConversionException -> {
                 log.warn("Filkonverteringsfeil: ${e.message}", e)
                 buildError(e.httpStatus, SoknadApiError(SoknadApiErrorType.DokumentKonverteringFeilet, e))
             }
-
             is OkonomiElementFinnesIkkeException -> {
                 log.error("Feil ved oppdatering av okonomi-element: ${e.message}", e)
                 buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
             }
-
             is UpdateBostotteException -> {
                 log.error("Feil ved oppdatering av Bostotte", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
-
+            is SokerUnder18Exception -> {
+                log.error("Kan ikke starte søknad: ${e.message}", e)
+                buildError(HttpStatus.FORBIDDEN, SoknadApiError(SoknadApiErrorType.SokerUnder18, e))
+            }
             else -> {
                 log.error("REST-kall feilet", e)
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))
