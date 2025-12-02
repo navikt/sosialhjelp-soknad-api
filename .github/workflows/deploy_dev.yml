@@ -19,7 +19,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v11
+    uses: navikt/sosialhjelp-ci/.github/workflows/deploy_app.yml@v12
     with:
       cluster-name: dev-gcp
       resource-name: ${{ inputs.config-file-name }}
