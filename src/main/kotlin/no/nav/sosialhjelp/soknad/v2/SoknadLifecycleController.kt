@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import jakarta.servlet.http.HttpServletResponse
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadType
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.SokerUnder18Exception
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -32,30 +31,21 @@ class SoknadLifecycleController(
     @PostMapping("/create")
     fun createSoknad(
         @RequestParam(value = "soknadstype", required = false) soknadstype: String?,
-        response: HttpServletResponse,
     ): StartSoknadResponseDto {
-//
-//        throw AuthorizationException(
-//            "Opprettelse av kort søknad er ikke lenger støttet",
-//            SoknadApiErrorType.NoAccess,
-//        )
+        val isKort =
+            if (MiljoUtils.isNonProduction()) {
+                when (soknadstype) {
+                    "kort" -> true
+                    "standard" -> false
+                    else -> false
+                }
+            } else {
+                false
+            }
 
-        throw SokerUnder18Exception()
-
-//        val isKort =
-//            if (MiljoUtils.isNonProduction()) {
-//                when (soknadstype) {
-//                    "kort" -> true
-//                    "standard" -> false
-//                    else -> false
-//                }
-//            } else {
-//                false
-//            }
-//
-//        return soknadLifecycleService
-//            .startSoknad(isKort)
-//            .let { soknadId -> StartSoknadResponseDto(soknadId, false) }
+        return soknadLifecycleService
+            .startSoknad(isKort)
+            .let { soknadId -> StartSoknadResponseDto(soknadId, false) }
     }
 
     @PostMapping("/{soknadId}/send")

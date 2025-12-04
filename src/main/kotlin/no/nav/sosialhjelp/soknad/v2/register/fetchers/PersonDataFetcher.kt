@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadApiErrorType
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.register.RegisterDataFetcher
@@ -54,7 +55,12 @@ class PersonDataFetcher(
 
 private fun Person.verifyOver18() {
     requireNotNull(fodselsdato) { "Fant ikke fødselsdato" }
-    if (fodselsdato.isAfter(LocalDate.now().minusYears(18))) throw SokerUnder18Exception()
+    if (fodselsdato.isUnder18()) {
+        throw AuthorizationException(
+            "Søker er under 18",
+            SoknadApiErrorType.SokerUnder18,
+        )
+    }
 }
 
-class SokerUnder18Exception() : SosialhjelpSoknadApiException("Søker er under 18 år")
+private fun LocalDate.isUnder18(): Boolean = isAfter(LocalDate.now())

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -13,7 +14,6 @@ import no.nav.sosialhjelp.soknad.v2.lifecycle.CancelSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.CreateSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SendSoknadHandler
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.SokerUnder18Exception
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -52,7 +52,7 @@ class SoknadLifecycleHandlerImpl(
                 logger.info("Ny søknad opprettet")
             }
             .onFailure {
-                if (it is SokerUnder18Exception) {
+                if (it is AuthorizationException) {
                     throw it
                 } else {
                     prometheusMetricsService.reportStartSoknadFeilet()

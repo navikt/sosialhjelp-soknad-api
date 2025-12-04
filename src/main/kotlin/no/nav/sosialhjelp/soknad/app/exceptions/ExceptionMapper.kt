@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.v2.bostotte.UpdateBostotteException
 import no.nav.sosialhjelp.soknad.v2.okonomi.OkonomiElementFinnesIkkeException
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.SokerUnder18Exception
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadDuplicateFilename
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadError
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.DokumentUploadFileEncrypted
@@ -118,10 +117,6 @@ class ExceptionMapper(
             is UpdateBostotteException -> {
                 log.error("Feil ved oppdatering av Bostotte", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
-            }
-            is SokerUnder18Exception -> {
-                log.error("Kan ikke starte søknad: ${e.message}", e)
-                buildError(HttpStatus.FORBIDDEN, SoknadApiError(SoknadApiErrorType.SokerUnder18, e))
             }
             else -> {
                 log.error("REST-kall feilet", e)
