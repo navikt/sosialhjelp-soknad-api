@@ -23,7 +23,7 @@ class AdresseDataHandler(
 ) : PersonRegisterDataHandler {
     private val logger by logger()
 
-    override fun fetchAndSave(
+    override fun saveData(
         soknadId: UUID,
         person: Person,
     ) {

@@ -14,7 +14,7 @@ import java.util.UUID
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as personId
 
 interface PersonRegisterDataHandler {
-    fun fetchAndSave(
+    fun saveData(
         soknadId: UUID,
         person: Person,
     )
@@ -34,12 +34,13 @@ class PersonDataFetcher(
     override fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter person i PDL")
 
-        personService.hentPerson(personId())
+        val hentPerson = personService.hentPerson(personId())
+        hentPerson
             ?.also { it.verifyOver18() }
             ?.let { person ->
                 personRegisterDataHandlers
                     .forEach { personDataHandler ->
-                        runCatching { personDataHandler.fetchAndSave(soknadId, person) }
+                        runCatching { personDataHandler.saveData(soknadId, person) }
                             .onFailure {
                                 logger.warn("Feil i PersonData-fetcher: $personDataHandler", it)
                                 if (!personDataHandler.continueOnError()) throw it
@@ -63,4 +64,4 @@ private fun Person.verifyOver18() {
     }
 }
 
-private fun LocalDate.isUnder18(): Boolean = isAfter(LocalDate.now())
+private fun LocalDate.isUnder18(): Boolean = isAfter(LocalDate.now().minusYears(18))
