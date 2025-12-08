@@ -37,7 +37,7 @@ class AdressebeskyttelseInterceptor(
 
     private fun HttpServletRequest.isSendPath() = requestURI.matchesRegex(BASE_PATH + SEND_PATH)
 
-    // henter ikke fra potensiell cache ved sending av soknad for å sjekke at person ikke har adressebeskyttelse
+    // henter ikke fra cache ved sending for å sjekke at person ikke har fått adressebeskyttelse underveis i søknaden
     private fun hasAdressebeskyttelse(isSendPath: Boolean): Boolean {
         return when (isSendPath) {
             true -> personService.onSendSoknadHasAdressebeskyttelse(getUserIdFromToken())
