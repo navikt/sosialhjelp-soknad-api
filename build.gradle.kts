@@ -40,8 +40,8 @@ flyway {
     encoding = "ISO-8859-1"
 }
 
-val githubUser: String by project
-val githubPassword: String by project
+val githubUser: String? by project
+val githubPassword: String? by project
 
 repositories {
     mavenLocal()
