@@ -294,7 +294,14 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns KOMMUNENUMMER
-        val navEnhet = NavEnhet("Nav Sandvika", "123", KOMMUNENUMMER, kommunenavn = KOMMUNENAVN)
+        val navEnhet =
+            NavEnhet(
+                enhetsnavn = "Nav Sandvika",
+                enhetsnummer = "123",
+                kommunenummer = KOMMUNENUMMER,
+                kommunenavn = KOMMUNENAVN,
+                orgnummer = null,
+            )
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
 
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
@@ -316,7 +323,15 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         )
 
         kontaktRepository.findByIdOrNull(lagretSoknad.id)!!.let {
-            assertThat(it.mottaker).isEqualTo(NavEnhet(enhetsnavn = "Nav Sandvika", enhetsnummer = "123", KOMMUNENUMMER, kommunenavn = KOMMUNENAVN))
+            assertThat(it.mottaker).isEqualTo(
+                NavEnhet(
+                    enhetsnavn = "Nav Sandvika",
+                    enhetsnummer = "123",
+                    kommunenummer = KOMMUNENUMMER,
+                    kommunenavn = KOMMUNENAVN,
+                    orgnummer = null,
+                ),
+            )
         }
     }
 

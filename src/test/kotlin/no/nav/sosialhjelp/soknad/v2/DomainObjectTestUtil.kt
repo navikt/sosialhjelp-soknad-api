@@ -213,7 +213,7 @@ fun opprettNavEnhet(
     enhetNr: String = "321321321",
     navn: String = "NAV-kontoret",
     kommunenummer: String = "5555",
-    orgnummer: String = "3414513515",
+    orgnummer: String? = null,
     kommunenavn: String = "Nav-kommunen",
 ): NavEnhet = NavEnhet(navn, enhetNr, kommunenummer, orgnummer, kommunenavn)
 

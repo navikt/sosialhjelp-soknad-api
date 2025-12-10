@@ -69,7 +69,7 @@ class NavEnhetService(
 
         val kommunenavn = kommunenummer?.let { getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, kommunenummer, kommunenavn)
+        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, kommunenummer, kommunenavn = kommunenavn)
     }
 
     private fun finnNavEnhetFraAdresse(

@@ -45,5 +45,6 @@ fun NavEnhetDto.toNavEnhet(): NavEnhet {
         enhetsnummer = enhetNr,
         enhetsnavn = navn,
         kommunenavn = null,
+        orgnummer = null,
     )
 }
