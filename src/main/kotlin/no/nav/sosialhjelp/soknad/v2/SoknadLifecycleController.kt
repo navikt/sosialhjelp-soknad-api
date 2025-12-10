@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.v2
 
-import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.annotation.ProtectionSelvbetjeningHigh
 import no.nav.sosialhjelp.soknad.v2.metadata.SoknadMetadataService
@@ -32,7 +31,6 @@ class SoknadLifecycleController(
     @PostMapping("/create")
     fun createSoknad(
         @RequestParam(value = "soknadstype", required = false) soknadstype: String?,
-        response: HttpServletResponse,
     ): StartSoknadResponseDto {
         val isKort =
             if (MiljoUtils.isNonProduction()) {

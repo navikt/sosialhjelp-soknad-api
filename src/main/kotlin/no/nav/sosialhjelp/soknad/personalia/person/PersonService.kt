@@ -46,7 +46,6 @@ class PersonService(
             .let { dto -> mapper.personAdressebeskyttelseDtoToGradering(dto) }
             .isGradert()
 
-    @Deprecated("Skal ikke hente informasjon om barn uten samtykke")
     fun hentBarnForPerson(ident: String): List<Barn>? {
         val personDto = hentPersonClient.hentPerson(ident)
         if (personDto?.forelderBarnRelasjon == null) {
@@ -70,7 +69,6 @@ class PersonService(
             .filterNotNull()
     }
 
-    @Deprecated("Skal ikke hente informasjon om ektefelle uten samtykke")
     private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
         if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
             val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)

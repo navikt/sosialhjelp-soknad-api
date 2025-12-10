@@ -43,6 +43,7 @@ internal class PersonServiceTest {
             ektefelle = null,
             bostedsadresse = null,
             oppholdsadresse = null,
+            fodselsdato = null,
         )
     private val ektefelle =
         Ektefelle(

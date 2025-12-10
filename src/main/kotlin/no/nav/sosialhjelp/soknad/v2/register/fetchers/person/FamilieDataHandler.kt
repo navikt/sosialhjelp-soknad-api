@@ -9,19 +9,19 @@ import no.nav.sosialhjelp.soknad.v2.familie.Ektefelle
 import no.nav.sosialhjelp.soknad.v2.familie.Sivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.service.FamilieRegisterService
 import no.nav.sosialhjelp.soknad.v2.navn.Navn
-import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataFetcher
+import no.nav.sosialhjelp.soknad.v2.register.fetchers.PersonRegisterDataHandler
 import org.springframework.stereotype.Component
 import java.util.UUID
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle as V2Ektefelle
 
 @Component
-class FamilieFetcher(
+class FamilieDataHandler(
     private val familieService: FamilieRegisterService,
     private val personService: PersonService,
-) : PersonRegisterDataFetcher {
+) : PersonRegisterDataHandler {
     private val logger by logger()
 
-    override fun fetchAndSave(
+    override fun saveData(
         soknadId: UUID,
         person: Person,
     ) {

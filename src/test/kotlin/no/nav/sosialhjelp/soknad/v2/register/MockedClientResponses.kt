@@ -186,6 +186,7 @@ fun defaultResponseFromHentPerson(
                 StatsborgerskapDto("NOR"),
                 StatsborgerskapDto("DNK"),
             ),
+        foedselsdato = listOf(FoedselsdatoDto(foedselsdato = LocalDate.of(1990, 1, 1), 1990)),
     )
 }
 

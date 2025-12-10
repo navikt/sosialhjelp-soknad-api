@@ -58,7 +58,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig, e),
                 )
             }
-
             is SendingTilKommuneErMidlertidigUtilgjengeligException -> {
                 log.error(e.message, e)
                 buildError(
@@ -66,32 +65,26 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.InnsendingMidlertidigUtilgjengelig),
                 )
             }
-
             is SendingTilKommuneErIkkeAktivertException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingIkkeAktivert))
             }
-
             is SendingTilKommuneUtilgjengeligException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.InnsendingUtilgjengelig))
             }
-
             is SoknadenHarNedetidException -> {
                 log.warn(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PlanlagtNedetid))
             }
-
             is PdfGenereringException -> {
                 log.error(e.message, e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdfGenereringFeilet))
             }
-
             is PdlApiException -> {
                 log.error("Kall til PDL feilet", e)
                 buildError(HttpStatus.SERVICE_UNAVAILABLE, SoknadApiError(SoknadApiErrorType.PdlKallFeilet))
             }
-
             is DokumentUploadDuplicateFilename -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
                 buildError(
@@ -99,7 +92,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadDuplicateFilename),
                 )
             }
-
             is DokumentUploadUnsupportedMediaType -> {
                 log.warn("UgyldigOpplastingTypeException", e)
                 buildError(
@@ -107,7 +99,6 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadUnsupportedMediaType, e),
                 )
             }
-
             is DokumentUploadFileEncrypted -> {
                 log.warn("DokumentUploadFileEncrypted", e)
                 buildError(
@@ -115,22 +106,18 @@ class ExceptionMapper(
                     SoknadApiError(SoknadApiErrorType.DokumentUploadFileEncrypted, e),
                 )
             }
-
             is FileConversionException -> {
                 log.warn("Filkonverteringsfeil: ${e.message}", e)
                 buildError(e.httpStatus, SoknadApiError(SoknadApiErrorType.DokumentKonverteringFeilet, e))
             }
-
             is OkonomiElementFinnesIkkeException -> {
                 log.error("Feil ved oppdatering av okonomi-element: ${e.message}", e)
                 buildError(HttpStatus.NOT_FOUND, SoknadApiError(SoknadApiErrorType.NotFound, e))
             }
-
             is UpdateBostotteException -> {
                 log.error("Feil ved oppdatering av Bostotte", e)
                 buildError(HttpStatus.BAD_REQUEST, SoknadApiError(SoknadApiErrorType.UgyldigInput, e))
             }
-
             else -> {
                 log.error("REST-kall feilet", e)
                 buildError(HttpStatus.INTERNAL_SERVER_ERROR, SoknadApiError(SoknadApiErrorType.GeneralError, e))

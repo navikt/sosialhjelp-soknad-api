@@ -75,6 +75,10 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...folkeregistermetadata
             }
         }
+        foedselsdato {
+            foedselsdato
+            foedselsaar
+        }
         sivilstand(historikk: $historikk) {
             type
             relatertVedSivilstand

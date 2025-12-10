@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -51,8 +52,12 @@ class SoknadLifecycleHandlerImpl(
                 logger.info("Ny søknad opprettet")
             }
             .onFailure {
-                prometheusMetricsService.reportStartSoknadFeilet()
-                throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+                if (it is AuthorizationException) {
+                    throw it
+                } else {
+                    prometheusMetricsService.reportStartSoknadFeilet()
+                    throw SoknadLifecycleException("Feil ved opprettelse av søknad.", it, soknadId)
+                }
             }
             .also { MdcOperations.clearMDC() }
             .getOrThrow()

@@ -59,4 +59,7 @@ enum class SoknadApiErrorType {
 
     // PDL-kall feilet
     PdlKallFeilet,
+
+    // Søker er under 18 år
+    SokerUnder18,
 }
