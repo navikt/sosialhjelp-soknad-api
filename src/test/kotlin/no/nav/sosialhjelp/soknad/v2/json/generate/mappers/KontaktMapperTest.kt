@@ -108,7 +108,6 @@ private fun JsonUstrukturertAdresse.assertAdresse(ustrukturertAdresse: Ustruktur
 
 private fun JsonInternalSoknad.assertNavEnhet(navEnhet: NavEnhet?) {
     assertThat(mottaker.navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
-    assertThat(mottaker.organisasjonsnummer).isEqualTo(navEnhet?.orgnummer)
 
     assertThat(soknad.mottaker.navEnhetsnavn).isEqualTo("${navEnhet?.enhetsnavn}, ${navEnhet?.kommunenavn}")
     assertThat(soknad.mottaker.enhetsnummer).isEqualTo(navEnhet?.enhetsnummer)

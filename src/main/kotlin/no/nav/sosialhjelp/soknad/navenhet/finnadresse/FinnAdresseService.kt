@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.navenhet.finnadresse
 
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
@@ -19,64 +15,24 @@ class FinnAdresseService(
     private val hentAdresseService: HentAdresseService,
 ) {
     fun finnAdresseFraSoknad(
-        personalia: JsonPersonalia,
-        valg: JsonAdresseValg?,
-    ): AdresseForslag? {
-        val adresse = getValgtAdresse(personalia, valg)
-        return adresseForslagFraPDL(adresse)
-    }
-
-    fun finnAdresseFraSoknad(
         adresse: Adresse,
     ): AdresseForslag? = adresseForslagFraPDL(adresse)
 
-    private fun adresseForslagFraPDL(adresse: JsonAdresse?): AdresseForslag? =
-        if (JsonAdresse.Type.MATRIKKELADRESSE == adresse?.type) {
-            hentAdresseService
-                .hentKartverketMatrikkelAdresseForInnloggetBruker()
-                ?.let {
-                    AdresseForslag(
-                        kommunenummer = it.kommunenummer,
-                        geografiskTilknytning = it.bydelsnummer ?: it.kommunenummer,
-                        type = AdresseForslagType.MATRIKKELADRESSE,
-                    )
-                }
-        } else if (JsonAdresse.Type.GATEADRESSE == adresse?.type) {
-            adressesokService.getAdresseForslag(adresse as JsonGateAdresse)
-        } else {
-            null
-        }
-
-    private fun getValgtAdresse(
-        personalia: JsonPersonalia,
-        valg: JsonAdresseValg?,
-    ): JsonAdresse? =
-        when (valg) {
-            JsonAdresseValg.FOLKEREGISTRERT -> personalia.folkeregistrertAdresse
-            JsonAdresseValg.MIDLERTIDIG, JsonAdresseValg.SOKNAD -> personalia.oppholdsadresse
+    private fun adresseForslagFraPDL(adresse: Adresse?): AdresseForslag? =
+        when (adresse) {
+            is MatrikkelAdresse -> hentMatrikkeladresse()
+            is VegAdresse -> adressesokService.getAdresseForslag(adresse)
             else -> null
         }
 
-    private fun adresseForslagFraPDL(adresse: Adresse?): AdresseForslag? =
-        when (adresse) {
-            is MatrikkelAdresse -> {
-                hentAdresseService
-                    .hentKartverketMatrikkelAdresseForInnloggetBruker()
-                    ?.let {
-                        AdresseForslag(
-                            kommunenummer = it.kommunenummer,
-                            geografiskTilknytning = it.bydelsnummer ?: it.kommunenummer,
-                            type = AdresseForslagType.MATRIKKELADRESSE,
-                        )
-                    }
+    private fun hentMatrikkeladresse() =
+        hentAdresseService
+            .hentKartverketMatrikkelAdresseForInnloggetBruker()
+            ?.let {
+                AdresseForslag(
+                    kommunenummer = it.kommunenummer,
+                    geografiskTilknytning = it.bydelsnummer ?: it.kommunenummer,
+                    type = AdresseForslagType.MATRIKKELADRESSE,
+                )
             }
-
-            is VegAdresse -> {
-                adressesokService.getAdresseForslag(adresse)
-            }
-
-            else -> {
-                null
-            }
-        }
 }

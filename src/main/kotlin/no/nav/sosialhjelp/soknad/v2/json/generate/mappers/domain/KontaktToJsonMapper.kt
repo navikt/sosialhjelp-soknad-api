@@ -138,9 +138,10 @@ class KontaktToJsonMapper(
                 .withType(JsonAdresse.Type.USTRUKTURERT)
                 .withAdresse(adresse)
 
+        // JsonSoknadsmottaer på dette nivået sendes ikke med til fiks
         private fun NavEnhet.toJsonSoknadsmottakerInternal(): JsonSoknadsmottaker? =
             JsonSoknadsmottaker()
-                .withOrganisasjonsnummer(orgnummer)
+                .withOrganisasjonsnummer("")
                 .withNavEnhetsnavn("$enhetsnavn, $kommunenavn")
 
         private fun NavEnhet.toJsonSoknadsmottaker(): no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker? =
