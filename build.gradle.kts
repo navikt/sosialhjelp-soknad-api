@@ -32,17 +32,9 @@ spotless {
     kotlinGradle { ktlint(libs.versions.ktlint.get()) }
 }
 
-val installPreCommitHook =
-    tasks.register("installPreCommitHook", Copy::class) {
-        group = "Setup"
-        description = "Copy pre-commit git hook into repository"
-        from(File(rootProject.rootDir, "scripts/pre-commit"))
-        into(File(rootProject.rootDir, ".git/hooks"))
-        fileMode = 0b111101101
-        dirMode = 0b1010001010
-    }
+val installHook = tasks.getByName<com.diffplug.gradle.spotless.SpotlessInstallPrePushHookTask>("spotlessInstallGitPrePushHook")
 
-tasks.assemble.get().dependsOn(installPreCommitHook)
+tasks.assemble.get().dependsOn(installHook)
 
 flyway {
     encoding = "ISO-8859-1"
