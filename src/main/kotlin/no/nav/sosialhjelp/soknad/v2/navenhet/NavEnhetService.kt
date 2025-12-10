@@ -4,7 +4,6 @@ import io.getunleash.Unleash
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
@@ -70,7 +69,7 @@ class NavEnhetService(
 
         val kommunenavn = kommunenummer?.let { getBehandlingskommune(it) }
 
-        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, kommunenummer, navEnhet?.orgnummer, kommunenavn)
+        return NavEnhet(navEnhet?.enhetsnavn, navEnhet?.enhetsnummer, kommunenummer, kommunenavn)
     }
 
     private fun finnNavEnhetFraAdresse(
@@ -91,11 +90,13 @@ class NavEnhetService(
     }
 
     private fun getBehandlingskommune(kommunenummer: String): String? {
-        return kommuneInfoService.hentAlleKommuneInfo()?.get(kommunenummer)?.behandlingsansvarlig
+        return getKommuneInfo(kommunenummer)?.behandlingsansvarlig
             ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
-            ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.get(kommunenummer)
             ?: kodeverkService.getKommunenavn(kommunenummer)
     }
+
+    private fun getKommuneInfo(kommunenummer: String) =
+        kommuneInfoService.hentAlleKommuneInfo()?.get(kommunenummer)
 
     private fun AdresseForslag.getGeografiskTilknytning() =
         when (BYDEL_MARKA_OSLO == geografiskTilknytning) {

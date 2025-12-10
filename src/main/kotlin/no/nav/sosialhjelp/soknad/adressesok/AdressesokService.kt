@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
@@ -17,7 +16,6 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.v2.kontakt.VegAdresse
-import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 @Component
@@ -25,12 +23,6 @@ class AdressesokService(
     private val adressesokClient: AdressesokClient,
     private val kodeverkService: KodeverkService,
 ) {
-    fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
-        val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
-        val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
-        return vegadresse.toAdresseForslag()
-    }
-
     fun getAdresseForslag(adresse: VegAdresse): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
@@ -55,38 +47,11 @@ class AdressesokService(
         return adressesokResult?.hits?.map { it.vegadresse } ?: emptyList()
     }
 
-    private fun toVariables(adresse: JsonGateAdresse): Map<String, Any> {
-        val variables = HashMap<String, Any>()
-        variables[PAGING] = Paging(1, 30, emptyList())
-        variables[CRITERIA] = toCriteriaList(adresse)
-        return variables
-    }
-
     private fun toVariables(adresse: VegAdresse): Map<String, Any> {
         val variables = HashMap<String, Any>()
         variables[PAGING] = Paging(1, 30, emptyList())
         variables[CRITERIA] = toCriteriaList(adresse)
         return variables
-    }
-
-    private fun toCriteriaList(adresse: JsonGateAdresse): List<Criteria> {
-        val criteriaList = mutableListOf<Criteria>()
-        if (StringUtils.isNotEmpty(adresse.gatenavn)) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_ADRESSENAVN, SearchRule.CONTAINS, adresse.gatenavn))
-        }
-        if (StringUtils.isNotEmpty(adresse.husnummer)) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_HUSNUMMER, SearchRule.EQUALS, adresse.husnummer))
-        }
-        if (StringUtils.isNotEmpty(adresse.husbokstav)) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_HUSBOKSTAV, SearchRule.EQUALS, adresse.husbokstav))
-        }
-        if (StringUtils.isNotEmpty(adresse.postnummer)) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTNUMMER, SearchRule.EQUALS, adresse.postnummer))
-        }
-        if (StringUtils.isNotEmpty(adresse.poststed)) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTSTED, SearchRule.CONTAINS, adresse.poststed))
-        }
-        return criteriaList
     }
 
     private fun toCriteriaList(adresse: VegAdresse): List<Criteria> {

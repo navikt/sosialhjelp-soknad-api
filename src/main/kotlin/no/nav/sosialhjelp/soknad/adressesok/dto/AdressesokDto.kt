@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.adressesok.dto
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 
 data class AdressesokDataDto(
     val sokAdresse: AdressesokResultDto?,
@@ -38,16 +37,13 @@ data class VegadresseDto(
             husnummer = husnummer.toString(),
             husbokstav = husbokstav,
             kommunenummer = kommunenummer,
-            kommunenavn = kommunenavnFormattert,
+            kommunenavn = formatterKommunenavn(kommunenavn),
             postnummer = postnummer,
             poststed = poststed,
             geografiskTilknytning = bydelsnummerOrKommunenummer,
             type = AdresseForslagType.GATEADRESSE,
         )
     }
-
-    private val kommunenavnFormattert: String?
-        get() = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, formatterKommunenavn(kommunenavn))
 
     private val bydelsnummerOrKommunenummer: String?
         get() = bydelsnummer ?: kommunenummer

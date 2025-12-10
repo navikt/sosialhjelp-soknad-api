@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.config.SoknadApiCacheConfig
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Configuration
@@ -16,7 +15,7 @@ class NorgService(private val norgClient: NorgClient) {
         return runCatching { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
             .onSuccess { dto -> if (dto != null) logger.info("Hentet NavEnhet fra Norg: $dto") }
             .getOrThrow()
-            ?.toNavEnhet(gt)
+            ?.toNavEnhet()
     }
 
     companion object {
@@ -41,31 +40,10 @@ class NorgCacheConfig : SoknadApiCacheConfig(CACHE_NAME, ETT_DOGN) {
     }
 }
 
-fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
+fun NavEnhetDto.toNavEnhet(): NavEnhet {
     return NavEnhet(
         enhetsnummer = enhetNr,
         enhetsnavn = navn,
         kommunenavn = null,
-        orgnummer = getSosialOrgNr(enhetNr, gt),
     )
-}
-
-private fun getSosialOrgNr(
-    enhetNr: String?,
-    gt: String,
-): String? {
-    return when {
-        enhetNr == "0513" && gt == "3434" -> {
-            /*
-                Jira sak 1200
-
-                Lom og Skjåk har samme enhetsnummer. Derfor vil alle søknader bli sendt til Skjåk når vi henter organisajonsnummer basert på enhetNr.
-                Dette er en midlertidig fix for å få denne casen til å fungere.
-             */
-            "974592274"
-        }
-        enhetNr == "0511" && gt == "3432" -> "964949204"
-        enhetNr == "1620" && gt == "5014" -> "913071751"
-        else -> getOrganisasjonsnummer(enhetNr)
-    }
 }
