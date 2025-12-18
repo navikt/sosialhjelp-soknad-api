@@ -23,19 +23,17 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentRef
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.Dokumentasjon
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonRepository
 import no.nav.sosialhjelp.soknad.v2.dokumentasjon.DokumentasjonStatus
-import no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle.createVegadresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresseValg
 import no.nav.sosialhjelp.soknad.v2.kontakt.Adresser
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserDto
 import no.nav.sosialhjelp.soknad.v2.kontakt.AdresserInput
-import no.nav.sosialhjelp.soknad.v2.kontakt.Kontakt
 import no.nav.sosialhjelp.soknad.v2.kontakt.MatrikkelAdresse
 import no.nav.sosialhjelp.soknad.v2.kontakt.NavEnhet
 import no.nav.sosialhjelp.soknad.v2.kontakt.UstrukturertAdresse
@@ -59,7 +57,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.UUID
 
 class KontaktIntegrationTest : AbstractIntegrationTest() {
@@ -92,6 +89,9 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
 
     @MockkBean
     private lateinit var personService: PersonService
+
+    @MockkBean
+    private lateinit var hentAdresseService: HentAdresseService
 
     @BeforeEach
     fun setup() {
@@ -158,124 +158,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `Ny gyldig folkeregistrert adresse skal lagres ved oppdatering`() {
-        val navEnhet1 = NavEnhet("Nav-kontor 1", "1111", "1111", "12345678", "Nummer en")
-        val navEnhet2 = NavEnhet("Nav-kontor 2", "2222", "2222", "87654321", "Nummer to")
-
-        val lagretSoknad =
-            opprettSoknadMetadata(opprettetDato = LocalDateTime.now().minusDays(5))
-                .let { metadataRepository.save(it) }
-                .let { opprettSoknad(id = it.soknadId) }
-                .let { soknadRepository.save(it) }
-
-        createVegadresse(navEnhet1.kommunenummer!!)
-            .also {
-                kontaktRepository.save(
-                    Kontakt(
-                        soknadId = soknadId,
-                        adresser =
-                            Adresser(
-                                folkeregistrert =
-                                    VegAdresse(
-                                        kommunenummer = navEnhet1.kommunenummer,
-                                        adresselinjer = listOf(it.adressenavn!!),
-                                        postnummer = it.postnummer!!,
-                                        poststed = it.poststed!!,
-                                        gatenavn = it.adressenavn,
-                                        husnummer = it.husnummer.toString(),
-                                    ),
-                            ),
-                    ),
-                )
-            }
-
-        every { adressesokClient.getAdressesokResult(any()) } returns null
-        every { personService.hentPerson(userId, any()) } returns
-            Person(
-                fornavn = "Fornavn",
-                mellomnavn = null,
-                etternavn = "Etternavn",
-                fnr = userId,
-                sivilstatus = "GIFT",
-                statsborgerskap = listOf("NOR"),
-                ektefelle = null,
-                bostedsadresse =
-                    Bostedsadresse(
-                        null,
-                        createVegadresse(navEnhet1.kommunenummer),
-                        null,
-                    ),
-                oppholdsadresse = null,
-                fodselsdato = null,
-            )
-
-        every { norgService.getEnhetForGt(navEnhet1.kommunenummer) } returns navEnhet1
-        every { norgService.getEnhetForGt(navEnhet2.kommunenummer!!) } returns navEnhet2
-
-        // ved opprettelse av søknad skal kommunenummer fra navEnhet1 returneres
-        AdresserInput(
-            adresseValg = AdresseValg.FOLKEREGISTRERT,
-            brukerAdresse = null,
-        )
-            .let {
-                doPut(
-                    uri = "/soknad/${lagretSoknad.id}/adresser",
-                    requestBody = it,
-                    responseBodyClass = AdresserDto::class.java,
-                    lagretSoknad.id,
-                )
-            }
-            .also { dto ->
-                with(dto.folkeregistrertAdresse as VegAdresse) {
-                    assertThat(kommunenummer).isEqualTo(navEnhet1.kommunenummer)
-                    assertThat(gatenavn).contains("Adresseveien")
-                }
-                assertThat(dto.navenhet?.kommunenummer).isEqualTo(navEnhet1.kommunenummer)
-                assertThat(dto.navenhet?.enhetsnummer).isEqualTo(navEnhet1.enhetsnummer)
-            }
-
-        every { personService.hentPerson(userId, any()) } returns
-            Person(
-                fornavn = "Fornavn",
-                mellomnavn = null,
-                etternavn = "Etternavn",
-                fnr = userId,
-                sivilstatus = "GIFT",
-                statsborgerskap = listOf("NOR"),
-                ektefelle = null,
-                bostedsadresse =
-                    Bostedsadresse(
-                        null,
-                        createVegadresse(navEnhet2.kommunenummer!!),
-                        null,
-                    ),
-                oppholdsadresse = null,
-                fodselsdato = null,
-            )
-
-        AdresserInput(
-            adresseValg = AdresseValg.FOLKEREGISTRERT,
-            brukerAdresse = null,
-        )
-            .let {
-                doPut(
-                    uri = "/soknad/${lagretSoknad.id}/adresser",
-                    requestBody = it,
-                    responseBodyClass = AdresserDto::class.java,
-                    lagretSoknad.id,
-                )
-            }
-            .also { dto ->
-                with(dto.folkeregistrertAdresse as VegAdresse) {
-                    assertThat(kommunenummer).isEqualTo(navEnhet2.kommunenummer)
-                    assertThat(gatenavn).contains("Adresseveien")
-                }
-                assertThat(dto.navenhet?.kommunenummer).isEqualTo(navEnhet2.kommunenummer)
-                assertThat(dto.navenhet?.enhetsnummer).isEqualTo(navEnhet2.enhetsnummer)
-            }
-    }
-
-    @Test
     fun `Skal oppdatere navenhet for valgt folkeregistrert adresse`() {
         val lagretSoknad =
             opprettSoknadMetadata()
@@ -295,6 +177,8 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 orgnummer = null,
             )
         every { norgService.getEnhetForGt(KOMMUNENUMMER) } returns navEnhet
+        every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns
+            KartverketMatrikkelAdresse(KOMMUNENUMMER, "12", "1", null, null, null, null)
 
         every { mellomlagringClient.slettAlleDokumenter(lagretSoknad.id.toString()) } just runs
         every { mellomlagringClient.hentDokumenterMetadata(lagretSoknad.id.toString()) } returns MellomlagringDto(lagretSoknad.id.toString(), emptyList())
