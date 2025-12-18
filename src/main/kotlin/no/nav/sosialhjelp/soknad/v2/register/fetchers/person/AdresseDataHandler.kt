@@ -49,13 +49,14 @@ fun Oppholdsadresse.toV2Adresse(): Adresse? {
 private fun Vegadresse.toV2VegAdresse(): VegAdresse {
     return VegAdresse(
         landkode = "NOR",
-        kommunenummer = this.kommunenummer,
-        bolignummer = this.bruksenhetsnummer,
-        postnummer = this.postnummer,
-        poststed = this.poststed,
-        gatenavn = this.adressenavn,
-        husnummer = this.husnummer.toString(),
-        husbokstav = this.husbokstav,
+        kommunenummer = kommunenummer,
+        bolignummer = bruksenhetsnummer,
+        postnummer = postnummer,
+        poststed = poststed,
+        gatenavn = adressenavn,
+        husnummer = husnummer.toString(),
+        husbokstav = husbokstav,
+        bydelsnummer = bydelsnummer,
     )
 }
 
@@ -73,5 +74,6 @@ private fun KartverketMatrikkelAdresse.toV2MatrikkelAdresse(): MatrikkelAdresse 
         festenummer = festenummer,
         seksjonsnummer = seksjonsnummer,
         undernummer = undernummer,
+        bydelsnummer = bydelsnummer,
     )
 }

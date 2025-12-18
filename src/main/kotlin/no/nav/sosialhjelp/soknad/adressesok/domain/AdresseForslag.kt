@@ -10,7 +10,7 @@ data class AdresseForslag(
     val poststed: String?,
     val geografiskTilknytning: String?,
     val gatekode: String? = null,
-    val bydel: String? = null,
+    val bydelsnummer: String? = null,
     val type: AdresseForslagType,
 ) {
     constructor(

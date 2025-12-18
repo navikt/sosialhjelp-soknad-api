@@ -39,8 +39,8 @@ data class VegAdresse(
     val gatenavn: String? = null,
     val husnummer: String? = null,
     val husbokstav: String? = null,
-) : Adresse,
-    AdresseInput
+    val bydelsnummer: String? = null,
+) : Adresse, AdresseInput
 
 data class MatrikkelAdresse(
     val kommunenummer: String,
@@ -49,8 +49,8 @@ data class MatrikkelAdresse(
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
     val undernummer: String? = null,
-) : Adresse,
-    AdresseInput
+    val bydelsnummer: String? = null,
+) : Adresse, AdresseInput
 
 data class PostboksAdresse(
     val postboks: String,

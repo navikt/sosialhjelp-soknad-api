@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
 import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter
@@ -158,4 +160,19 @@ class AdressesokService(
 
         private val log by logger()
     }
+}
+
+private fun VegadresseDto.toAdresseForslag(): AdresseForslag {
+    return AdresseForslag(
+        adresse = adressenavn,
+        husnummer = husnummer.toString(),
+        husbokstav = husbokstav,
+        kommunenummer = kommunenummer,
+        kommunenavn = formatterKommunenavn(kommunenavn),
+        postnummer = postnummer,
+        poststed = poststed,
+        geografiskTilknytning = bydelsnummer ?: kommunenummer,
+        type = AdresseForslagType.GATEADRESSE,
+        bydelsnummer = bydelsnummer,
+    )
 }

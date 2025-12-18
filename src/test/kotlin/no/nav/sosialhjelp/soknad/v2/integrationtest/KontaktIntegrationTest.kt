@@ -23,7 +23,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Client
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.navenhet.NorgService
-import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
@@ -68,9 +67,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
     private lateinit var dokumentasjonRepository: DokumentasjonRepository
 
     @MockkBean
-    private lateinit var geografiskTilknytningService: GeografiskTilknytningService
-
-    @MockkBean
     private lateinit var norgService: NorgService
 
     @MockkBean
@@ -102,6 +98,7 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { digisosApiV2Client.getSoknader() } returns emptyList()
         every { personService.hasAdressebeskyttelse(userId) } returns false
+        every { kodeverkService.getKommunenavn(KOMMUNENUMMER) } returns KOMMUNENAVN
     }
 
     @Test
@@ -215,8 +212,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         every { norgService.getEnhetForGt(navEnhet1.kommunenummer) } returns navEnhet1
         every { norgService.getEnhetForGt(navEnhet2.kommunenummer!!) } returns navEnhet2
 
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns navEnhet1.kommunenummer
-
         // ved opprettelse av søknad skal kommunenummer fra navEnhet1 returneres
         AdresserInput(
             adresseValg = AdresseValg.FOLKEREGISTRERT,
@@ -238,8 +233,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
                 assertThat(dto.navenhet?.kommunenummer).isEqualTo(navEnhet1.kommunenummer)
                 assertThat(dto.navenhet?.enhetsnummer).isEqualTo(navEnhet1.enhetsnummer)
             }
-
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns navEnhet2.kommunenummer
 
         every { personService.hentPerson(userId, any()) } returns
             Person(
@@ -293,7 +286,6 @@ class KontaktIntegrationTest : AbstractIntegrationTest() {
         val adresser = Adresser(folkeregistrert = MatrikkelAdresse(KOMMUNENUMMER, "12", "1", null, null, null))
         kontaktRepository.save(opprettKontakt(lagretSoknad.id, adresser = adresser))
 
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns KOMMUNENUMMER
         val navEnhet =
             NavEnhet(
                 enhetsnavn = "Nav Sandvika",
