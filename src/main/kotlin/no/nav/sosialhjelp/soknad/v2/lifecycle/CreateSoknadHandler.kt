@@ -16,7 +16,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 class CreateSoknadHandler(
     private val soknadService: SoknadService,
     private val dokumentasjonService: DokumentasjonService,
-    private val soknadMetadataService: SoknadMetadataService,
+    private val metadataService: SoknadMetadataService,
     private val registerDataService: RegisterDataService,
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -24,7 +24,7 @@ class CreateSoknadHandler(
         soknadId: UUID,
         isKort: Boolean,
     ): UUID {
-        return soknadMetadataService.createSoknadMetadata(soknadId, isKort)
+        return metadataService.createSoknadMetadata(soknadId, isKort)
             .let {
                 soknadService.createSoknad(
                     eierId = personId(),
@@ -39,7 +39,7 @@ class CreateSoknadHandler(
         runCatching { registerDataService.runAllRegisterDataFetchers(soknadId = soknadId) }
             .onFailure {
                 logger.error("Uopprettelig feil ved henting av registerdata for søknad $soknadId", it)
-                soknadService.deleteSoknad(soknadId)
+                metadataService.deleteMetadata(soknadId)
                 throw it
             }
     }

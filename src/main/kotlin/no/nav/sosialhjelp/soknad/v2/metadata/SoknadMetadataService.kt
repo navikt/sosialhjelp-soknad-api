@@ -6,10 +6,12 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.v2.lifecycle.SoknadSendtInfo
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Component
+@Transactional
 class SoknadMetadataService(
     private val metadataRepository: SoknadMetadataRepository,
 ) {
@@ -25,10 +27,13 @@ class SoknadMetadataService(
             .let { metadataRepository.save(it) }
     }
 
+    @Transactional(readOnly = true)
     fun getMetadataForSoknad(soknadId: UUID): SoknadMetadata = findMetadataOrError(soknadId)
 
+    @Transactional(readOnly = true)
     fun getMetadatasForIds(soknadIds: List<UUID>): List<SoknadMetadata> = metadataRepository.findAllById(soknadIds)
 
+    @Transactional(readOnly = true)
     fun getAllMetadataForPerson(personId: String): List<SoknadMetadata> {
         return metadataRepository.findByPersonId(personId)
     }
@@ -72,6 +77,7 @@ class SoknadMetadataService(
         metadataRepository.deleteById(soknadId)
     }
 
+    @Transactional(readOnly = true)
     fun getNumberOfSoknaderSentAfter(
         personId: String,
         minusDays: LocalDateTime,
@@ -83,8 +89,10 @@ class SoknadMetadataService(
                     ?: error("SoknadMetadata skal ha tidspunkt for sendt inn")
             }
 
+    @Transactional(readOnly = true)
     fun getSoknadType(soknadId: UUID): SoknadType = findMetadataOrError(soknadId).soknadType
 
+    @Transactional(readOnly = true)
     fun updateSoknadType(
         soknadId: UUID,
         soknadType: SoknadType,
@@ -103,6 +111,7 @@ class SoknadMetadataService(
             .also { metadataRepository.save(it) }
     }
 
+    @Transactional(readOnly = true)
     fun findOlderThan(timestamp: LocalDateTime): List<UUID> {
         return metadataRepository.findSoknadIdsOlderThan(timestamp)
     }
@@ -111,10 +120,12 @@ class SoknadMetadataService(
         metadataRepository.deleteAllById(soknadIds)
     }
 
+    @Transactional(readOnly = true)
     fun findAllMetadatasForIds(allSoknadIds: List<UUID>): List<SoknadMetadata> {
         return metadataRepository.findAllById(allSoknadIds)
     }
 
+    @Transactional(readOnly = true)
     fun getSoknadSendtInfo(soknadId: UUID): SoknadSendtInfo {
         return findMetadataOrError(soknadId)
             .let {
