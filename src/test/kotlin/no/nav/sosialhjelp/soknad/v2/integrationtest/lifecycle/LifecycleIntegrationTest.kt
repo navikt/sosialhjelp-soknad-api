@@ -104,6 +104,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
 
     @Test
     fun `Exception i fetcher med ContinueOnError = false skal stoppe innhenting og ingenting skal lagres`() {
+        metadataRepository.deleteAll()
         every { personService.hentPerson(any()) } throws IllegalArgumentException("Feil ved henting av person")
 
         doPostFullResponse(uri = createUri)
@@ -111,6 +112,7 @@ class LifecycleIntegrationTest : SetupLifecycleIntegrationTest() {
             .expectBody(SoknadApiError::class.java)
 
         soknadRepository.findAll().let { assertThat(it).isEmpty() }
+        metadataRepository.findAll().let { assertThat(it).isEmpty() }
     }
 
     @Test
