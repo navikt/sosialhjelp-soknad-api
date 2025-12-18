@@ -21,7 +21,7 @@ interface AdresseService {
         soknadId: UUID,
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
-        mottaker: NavEnhet,
+        mottaker: NavEnhet?,
     )
 
     fun updateKommunenavnMottaker(
@@ -69,7 +69,7 @@ class KontaktServiceImpl(
         soknadId: UUID,
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
-        mottaker: NavEnhet,
+        mottaker: NavEnhet?,
     ) {
         findOrCreate(soknadId)
             .run {

@@ -41,7 +41,6 @@ class AdresseUseCaseHandler(
                 AdresseValg.SOKNAD -> brukerAdresse
             }
                 ?.let { navEnhetService.getNavEnhet(it) }
-                ?: return
 
         runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
             .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, currentAdresser, currentMottaker, mottaker) }
