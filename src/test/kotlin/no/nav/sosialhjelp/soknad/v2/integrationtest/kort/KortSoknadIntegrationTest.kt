@@ -64,7 +64,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
         every { mellomlagringClient.hentDokumenterMetadata(any()) } returns MellomlagringDto("", emptyList())
         every { kommuneInfoService.hentAlleKommuneInfo() } returns createKommuneInfos()
         every { unleash.isEnabled(any(), any<UnleashContext>(), any<Boolean>()) } returns true
-        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns createNavEnhet()
+        every { navEnhetService.getNavEnhet(any()) } returns createNavEnhet()
         every { digisosService.getSoknaderForUser() } returns emptyList()
 
         setupPdlAnswers()
@@ -212,7 +212,7 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Opprette ny soknad med annet kommunenummer paa mottaker skal ikke gi kort soknad`() {
-        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns
+        every { navEnhetService.getNavEnhet(any()) } returns
             createNavEnhet("Annen NAV", "4444", "Annen kommune")
 
         createEksisterendeSoknad(nowWithMillis().minusDays(10))
@@ -233,8 +233,8 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Endre adresse eksisterende soknad med type Standard skal ikke transformeres til kort`() {
-        every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.FOLKEREGISTRERT) } returns createNavEnhet()
-        every { navEnhetService.getNavEnhet(any(), any(), AdresseValg.SOKNAD) } returns
+        every { navEnhetService.getNavEnhet(any()) } returns createNavEnhet()
+        every { navEnhetService.getNavEnhet(any()) } returns
             createNavEnhet("Annen NAV", "4444", "Annen kommune")
 
         createEksisterendeSoknad(nowWithMillis().minusDays(10))

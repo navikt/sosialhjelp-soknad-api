@@ -9,7 +9,6 @@ import java.util.UUID
 
 @Component
 class AdresseUseCaseHandler(
-    private val folkeregistrertAdresseResolver: FolkeregistrertAdresseResolver,
     private val adresseService: AdresseService,
     private val navEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
@@ -32,26 +31,19 @@ class AdresseUseCaseHandler(
         adresseValg: AdresseValg,
         brukerAdresse: Adresse?,
     ) {
-        val oldAdresser = adresseService.findAdresser(soknadId)
-        val oldMottaker = adresseService.findMottaker(soknadId)
-
-        val currentFolkeregistrertAdresse =
-            folkeregistrertAdresseResolver.getCurrentFolkeregistrertAdresse(
-                soknadId,
-                adresseValg,
-                oldAdresser.folkeregistrert,
-            )
+        val currentAdresser = adresseService.findAdresser(soknadId)
+        val currentMottaker = adresseService.findMottaker(soknadId)
 
         val mottaker =
             when (adresseValg) {
-                AdresseValg.FOLKEREGISTRERT -> currentFolkeregistrertAdresse
-                AdresseValg.MIDLERTIDIG -> oldAdresser.midlertidig
+                AdresseValg.FOLKEREGISTRERT -> currentAdresser.folkeregistrert
+                AdresseValg.MIDLERTIDIG -> currentAdresser.midlertidig
                 AdresseValg.SOKNAD -> brukerAdresse
             }
-                ?.let { navEnhetService.getNavEnhet(soknadId, it, adresseValg) }
+                ?.let { navEnhetService.getNavEnhet(it) }
 
-        runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker, currentFolkeregistrertAdresse) }
-            .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, oldAdresser, oldMottaker, mottaker) }
+        runCatching { adresseService.updateAdresse(soknadId, adresseValg, brukerAdresse, mottaker) }
+            .onSuccess { kortSoknadUseCaseHandler.resolveKortSoknad(soknadId, currentAdresser, currentMottaker, mottaker) }
     }
 
     private fun getKommuneInfo(

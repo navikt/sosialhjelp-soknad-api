@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.adressesok.dto
 
-import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-
 data class AdressesokDataDto(
     val sokAdresse: AdressesokResultDto?,
 )
@@ -30,21 +26,4 @@ data class VegadresseDto(
     val postnummer: String?,
     val poststed: String?,
     val bydelsnummer: String?,
-) {
-    fun toAdresseForslag(): AdresseForslag {
-        return AdresseForslag(
-            adresse = adressenavn,
-            husnummer = husnummer.toString(),
-            husbokstav = husbokstav,
-            kommunenummer = kommunenummer,
-            kommunenavn = formatterKommunenavn(kommunenavn),
-            postnummer = postnummer,
-            poststed = poststed,
-            geografiskTilknytning = bydelsnummerOrKommunenummer,
-            type = AdresseForslagType.GATEADRESSE,
-        )
-    }
-
-    private val bydelsnummerOrKommunenummer: String?
-        get() = bydelsnummer ?: kommunenummer
-}
+)
