@@ -48,7 +48,9 @@ class FiksDokumentService(
     private val virusScanner: VirusScanner,
 ) : MellomlagerService {
     override fun getAllDokumenterMetadata(soknadId: UUID): List<MellomlagretDokument> =
-        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())?.toMellomlagretDokumentList() ?: emptyList()
+        mellomlagringClient.hentDokumenterMetadata(soknadId.toString())
+            ?.toMellomlagretDokumentList()
+            ?: emptyList()
 
     override fun getDokumentMetadata(
         soknadId: UUID,
@@ -59,17 +61,21 @@ class FiksDokumentService(
     override fun getDokument(
         soknadId: UUID,
         dokumentId: UUID,
-    ): MellomlagretDokument =
-        kotlin.runCatching {
-            getDokumentMetadata(soknadId, dokumentId).let { mellomlagretDokument ->
-                mellomlagretDokument?.copy(
-                    data = mellomlagringClient.hentDokument(soknadId.toString(), dokumentId.toString()),
-                )
-            }
-                ?: error("Fant ikke fil $dokumentId hos mellomlager")
-        }.getOrElse {
-            throw IkkeFunnetException("Klarte ikke å hente dokument $dokumentId for søknad $soknadId", it as Exception)
+    ): MellomlagretDokument {
+        val metadata =
+            getDokumentMetadata(soknadId, dokumentId)
+                ?: throw IkkeFunnetException("Fant ikke metadata for dokument $dokumentId")
+
+        return metadata.run {
+            copy(
+                data =
+                    mellomlagringClient.hentDokument(
+                        soknadId.toString(),
+                        dokumentId.toString(),
+                    ),
+            )
         }
+    }
 
     override fun uploadDokument(
         soknadId: UUID,
