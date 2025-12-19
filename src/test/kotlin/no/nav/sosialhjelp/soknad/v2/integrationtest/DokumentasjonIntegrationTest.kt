@@ -113,6 +113,8 @@ class DokumentasjonIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Dokument som ikke finnes i Mellomlagring skal slettes lokalt`() {
         every { mellomlagringClient.slettDokument(any(), any()) } throws IkkeFunnetException("Dokument ikke funnet hos Fiks")
+        every { mellomlagringClient.hentDokumenterMetadata(any()) } returns
+            MellomlagringDto(soknad.id.toString(), emptyList())
 
         val dokumentId = saveDokumentasjonAndReturnDokumentId()
         assertThat(dokumentasjonRepository.findDokumentBySoknadId(soknad.id, dokumentId)).isNotNull()

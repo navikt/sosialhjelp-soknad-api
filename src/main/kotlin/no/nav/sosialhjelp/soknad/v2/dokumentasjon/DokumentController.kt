@@ -55,7 +55,7 @@ class DokumentController(
             }
             else -> {
                 runCatching { mellomlagerService.getDokument(soknadId, dokumentId) }
-                    .onFailure { dokumentRefService.removeRef(soknadId, dokumentId) }
+                    .onFailure { if (it is IkkeFunnetException) dokumentRefService.removeRef(soknadId, dokumentId) }
                     .getOrThrow()
                     .let { mellomlagretDokument ->
                         require(mellomlagretDokument.data != null) { "Fant ikke data for dokument $dokumentId" }
