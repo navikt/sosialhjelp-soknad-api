@@ -39,7 +39,7 @@ class KontonummerClientImpl(
             webClient.get()
                 .uri("$kontoregisterUrl/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + tokenX)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)

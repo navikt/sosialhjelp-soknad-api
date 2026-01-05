@@ -29,7 +29,7 @@ class OrganisasjonClient(
         return try {
             webClient.get()
                 .uri("$eregUrl/v1/organisasjon/{orgnr}/noekkelinfo", orgnr)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
                 .bodyToMono<OrganisasjonNoekkelinfoDto>()
