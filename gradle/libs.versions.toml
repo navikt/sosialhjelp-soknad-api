@@ -44,6 +44,8 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
 
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-data-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-data-jdbc-test", version.ref = "spring-boot" }
+spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test", version.ref = "spring-boot" }
 
 resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
@@ -111,6 +113,12 @@ spring-boot = [
     "spring-boot-starter-web",
     "spring-boot-starter-webflux",
     "spring-boot-starter-flyway",
+]
+
+spring-boot-test = [
+    "spring-boot-starter-test",
+    "spring-boot-starter-data-jdbc-test",
+    "spring-boot-starter-webflux-test",
 ]
 
 resilience4j = [

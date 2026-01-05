@@ -140,7 +140,8 @@ dependencies {
     testImplementation(libs.testcontainers.junit)
 
     // Test
-    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.bundles.spring.boot.test)
+
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)

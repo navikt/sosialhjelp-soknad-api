@@ -18,8 +18,8 @@ import no.nav.sosialhjelp.soknad.v2.soknad.PersonIdService
 import no.nav.sosialhjelp.soknad.v2.soknad.SoknadRepository
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
@@ -95,7 +95,7 @@ abstract class AbstractIntegrationTest {
         every { hentPersonClient.hentBarn(any()) } returns HentPersonClientMock().hentBarn("ident")
     }
 
-    protected fun <T> doGet(
+    protected fun <T : Any> doGet(
         uri: String,
         responseBodyClass: Class<T>,
     ): T {
@@ -119,7 +119,7 @@ abstract class AbstractIntegrationTest {
             .exchange()
     }
 
-    protected fun <T> doPost(
+    protected fun <T : Any> doPost(
         uri: String,
         responseBodyClass: Class<T>,
         soknadId: UUID? = null,
@@ -146,7 +146,7 @@ abstract class AbstractIntegrationTest {
             .exchange()
     }
 
-    protected fun <T> doPut(
+    protected fun <T : Any> doPut(
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
@@ -164,7 +164,7 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun <T> doPost(
+    protected fun <T : Any> doPost(
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,
@@ -183,7 +183,7 @@ abstract class AbstractIntegrationTest {
             .responseBody!!
     }
 
-    protected fun <T> doPostWithBody(
+    protected fun <T : Any> doPostWithBody(
         uri: String,
         requestBody: Any,
         responseBodyClass: Class<T>,

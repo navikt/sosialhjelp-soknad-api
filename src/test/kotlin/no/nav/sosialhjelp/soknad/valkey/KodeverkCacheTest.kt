@@ -37,7 +37,7 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfig.CACHE_NAME) {
         verify(exactly = 1) { kodeverkClient.hentKodeverk(KOMMUNER.value) }
 
         cache.get(KOMMUNER.value, Map::class.java)
-            .also { assertThat(it[OSLO]).isEqualTo("Oslo") }
+            .also { assertThat(it?.get(OSLO)).isEqualTo("Oslo") }
     }
 
     @Test
