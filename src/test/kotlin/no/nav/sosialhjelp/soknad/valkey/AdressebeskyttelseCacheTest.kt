@@ -69,11 +69,10 @@ class AdressebeskyttelseCacheTest : AbstractCacheTest() {
 
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        personService.hasAdressebeskyttelse(USER_ID)
-        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
+        cache.put(USER_ID, false)
 
         personService.hasAdressebeskyttelse(USER_ID).also { assertThat(it).isFalse() }
-        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
+        verify(exactly = 0) { hentPersonClient.hentAdressebeskyttelse(any()) }
     }
 
     @Test

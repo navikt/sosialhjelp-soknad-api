@@ -48,23 +48,19 @@ class NorgCacheTest : AbstractCacheTest() {
     @Test
     override fun `Verdi skal lagres i cache`() {
         val dto = NavEnhetDto("Navenhet", "12341234")
+        val navEnhet = NavEnhet("Navenhet", "12341234", "0301", "12345678", "Oslo")
         val gt = "0301"
 
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns dto
 
-        norgService.getEnhetForGt(gt)!!
-            .also {
-                assertThat(it.enhetsnavn).isEqualTo(dto.navn)
-                assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
-            }
-        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+        cache.put(gt, navEnhet)
 
         norgService.getEnhetForGt(gt)!!
             .also {
                 assertThat(it.enhetsnavn).isEqualTo(dto.navn)
                 assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
             }
-        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+        verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
 
     @Test

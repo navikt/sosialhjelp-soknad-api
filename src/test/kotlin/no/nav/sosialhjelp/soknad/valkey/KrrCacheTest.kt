@@ -79,13 +79,10 @@ class KrrCacheTest : AbstractCacheTest() {
 
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        every { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns createDigitalKontaktinfo()
+        cache.put(soknadId, MOBILNUMMER)
 
         krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
-        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
-
-        krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
-        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
+        verify(exactly = 0) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
     }
 
     @Test
