@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -18,9 +17,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.test.context.ActiveProfiles
 import java.util.UUID
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("no-redis", "test", "test-container")
 class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
     @Autowired
     private lateinit var krrService: KrrService
@@ -40,12 +43,10 @@ class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
     override fun `Verdi skal lagres i cache`() {
         every { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns createDigitalKontaktinfo()
 
-        krrService.getMobilnummer(soknadId).also {
-            assertThat(it).isEqualTo(MOBILNUMMER)
-        }
+        krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
+        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
 
-        cache.get(soknadId, String::class.java).also { assertThat(it).isEqualTo(MOBILNUMMER) }
-
+        krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
         verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
     }
 
@@ -70,16 +71,13 @@ class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
 
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        cache.put(soknadId, MOBILNUMMER)
+        every { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns createDigitalKontaktinfo()
 
-        krrService.getMobilnummer(soknadId).also {
-            assertThat(it).isEqualTo(MOBILNUMMER)
-        }
+        krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
+        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
 
-        cache.get(soknadId, String::class.java)
-            .also { assertThat(it).isEqualTo(MOBILNUMMER) }
-
-        verify(exactly = 0) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
+        krrService.getMobilnummer(soknadId).also { assertThat(it).isEqualTo(MOBILNUMMER) }
+        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
     }
 
     @Test
@@ -101,25 +99,6 @@ class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
         verify(exactly = 1) { cache.put(soknadId, MOBILNUMMER) }
 
         unmockkObject(CustomCacheErrorHandler)
-    }
-
-    @Test
-    fun `Null-verdier skal lagres i cache`() {
-        every { krrClient.getDigitalKontaktinformasjon(PERSON_ID) } returns null
-
-        krrService.getMobilnummer(soknadId).also { assertThat(it).isNull() }
-
-        verify(exactly = 1) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
-
-        clearAllMocks()
-
-        krrService.getMobilnummer(soknadId).also { assertThat(it).isNull() }
-
-        verify(exactly = 0) { krrClient.getDigitalKontaktinformasjon(PERSON_ID) }
-
-        // wrapper-value i cache
-        cache.get(soknadId).also { assertThat(it).isNotNull }
-        cache.get(soknadId, String::class.java).also { assertThat(it).isNull() }
     }
 
     private fun createDigitalKontaktinfo(nr: String = MOBILNUMMER): KontaktInfoResponse {

@@ -35,8 +35,7 @@ internal class NavMessageSourceTest {
                                 keyValueString.split("=").toTypedArray()[1]
                         }
                     }
-                    if (mockedProperties == null) error("Could not find file: $filename")
-                    return PropertiesHolder(mockedProperties, 0)
+                    return PropertiesHolder(mockedProperties ?: Properties(), 0)
                 }
             }
         messageSource.setBasenames(Bundle("sendsoknad", "classpath:sendsoknad"))

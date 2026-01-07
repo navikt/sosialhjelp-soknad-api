@@ -18,8 +18,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.test.context.ActiveProfiles
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("no-redis", "test", "test-container")
 class NorgCacheTest : AbstractCacheTest(NorgCacheConfig.CACHE_NAME) {
     @MockkBean
     private lateinit var norgClient: NorgClient
@@ -39,13 +43,13 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfig.CACHE_NAME) {
                 assertThat(it.enhetsnavn).isEqualTo(dto.navn)
                 assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
             }
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
 
-        cache.get(gt, NavEnhet::class.java)!!
+        norgService.getEnhetForGt(gt)!!
             .also {
                 assertThat(it.enhetsnavn).isEqualTo(dto.navn)
                 assertThat(it.enhetsnummer).isEqualTo(dto.enhetNr)
             }
-
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
 
@@ -99,13 +103,14 @@ class NorgCacheTest : AbstractCacheTest(NorgCacheConfig.CACHE_NAME) {
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
         val gt = "0301"
 
-        val cachetNavEnhet =
-            NavEnhet("Sandvika Nav-senter", "123456", "0301", "12345678", "Sandvika")
-                .also { cache.put(gt, it) }
+        val navEnhetDto = NavEnhetDto(navn = "Sandvika Nav-senter", enhetNr = "123456")
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) } returns navEnhetDto
 
-        norgService.getEnhetForGt(gt).also { assertThat(it).isEqualTo(cachetNavEnhet) }
+        norgService.getEnhetForGt(gt).also { assertThat(it!!.enhetsnavn).isEqualTo(navEnhetDto.navn) }
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
 
-        verify(exactly = 0) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
+        norgService.getEnhetForGt(gt).also { assertThat(it!!.enhetsnummer).isEqualTo(navEnhetDto.enhetNr) }
+        verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GeografiskTilknytning(gt)) }
     }
 
     @Test

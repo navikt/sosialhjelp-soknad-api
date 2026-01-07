@@ -167,7 +167,7 @@ class FormueIntegrationTest : AbstractIntegrationTest() {
                     doPut(
                         uri = getFormueUrl(soknad.id),
                         requestBody = input,
-                        responseBodyClass = input.javaClass,
+                        responseBodyClass = FormueDto::class.java,
                         soknadId = soknad.id,
                     )
                 }

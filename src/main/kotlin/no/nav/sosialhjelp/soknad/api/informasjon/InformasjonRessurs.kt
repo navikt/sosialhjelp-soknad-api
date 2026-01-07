@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
@@ -130,5 +131,6 @@ private fun SoknadMetadata.toPabegyntSoknad() =
 data class PabegyntSoknad(
     val sistOppdatert: LocalDateTime,
     val soknadId: UUID,
+    @get:JsonProperty("isKort")
     val isKort: Boolean,
 )

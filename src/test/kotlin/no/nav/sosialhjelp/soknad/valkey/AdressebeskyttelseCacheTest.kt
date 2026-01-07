@@ -17,8 +17,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.test.context.ActiveProfiles
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("no-redis", "test", "test-container")
 class AdressebeskyttelseCacheTest : AbstractCacheTest(AdressebeskyttelseCacheConfig.CACHE_NAME) {
     @Autowired
     private lateinit var personService: PersonService
@@ -57,12 +61,11 @@ class AdressebeskyttelseCacheTest : AbstractCacheTest(AdressebeskyttelseCacheCon
 
     @Test
     override fun `Skal ikke hente fra client hvis verdi finnes i cache`() {
-        cache.put(USER_ID, false)
-
         personService.hasAdressebeskyttelse(USER_ID)
-            .also { assertThat(it).isFalse() }
+        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
 
-        verify(exactly = 0) { hentPersonClient.hentAdressebeskyttelse(any()) }
+        personService.hasAdressebeskyttelse(USER_ID).also { assertThat(it).isFalse() }
+        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
     }
 
     @Test
@@ -94,13 +97,17 @@ class AdressebeskyttelseCacheTest : AbstractCacheTest(AdressebeskyttelseCacheCon
     @Test
     fun `OnSendSoknad skal evicte value fra cache`() {
         personService.hasAdressebeskyttelse(USER_ID)
-        assertThat(cache.getBoolean(USER_ID)).isFalse()
+        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
+
+        assertThat(personService.hasAdressebeskyttelse(USER_ID)).isFalse()
+        verify(exactly = 1) { hentPersonClient.hentAdressebeskyttelse(any()) }
 
         personService.onSendSoknadHasAdressebeskyttelse(USER_ID)
             .also { assertThat(it).isFalse() }
-        assertThat(cache.get(USER_ID)).isNull()
-
         verify(exactly = 2) { hentPersonClient.hentAdressebeskyttelse(any()) }
+
+        personService.hasAdressebeskyttelse(USER_ID)
+        verify(exactly = 3) { hentPersonClient.hentAdressebeskyttelse(any()) }
     }
 
     companion object {
