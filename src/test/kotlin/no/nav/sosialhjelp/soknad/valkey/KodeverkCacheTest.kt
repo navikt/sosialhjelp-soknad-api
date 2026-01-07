@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -16,16 +17,23 @@ import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkStore
 import no.nav.sosialhjelp.soknad.kodeverk.Kodeverksnavn.KOMMUNER
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
-class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfig.CACHE_NAME) {
+class KodeverkCacheTest : AbstractCacheTest() {
+    @SpykBean
+    private lateinit var cacheManager: CacheManager
+
+    private val cache get() = cacheManager.getCache(KodeverkCacheConfig.CACHE_NAME)!!
+
     @MockkBean
     private lateinit var kodeverkClient: KodeverkClient
 
@@ -34,6 +42,12 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfig.CACHE_NAME) {
 
     @Autowired
     private lateinit var kodeverkService: KodeverkService
+
+    @BeforeEach
+    override fun setup() {
+        super.setup()
+        cache.clear()
+    }
 
     @Test
     override fun `Verdi skal lagres i cache`() {

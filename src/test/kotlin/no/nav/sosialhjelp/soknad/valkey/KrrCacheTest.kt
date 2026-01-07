@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -19,12 +20,18 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
-class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
+class KrrCacheTest : AbstractCacheTest() {
+    @SpykBean
+    private lateinit var cacheManager: CacheManager
+
+    private val cache get() = cacheManager.getCache(KrrCacheConfig.CACHE_NAME)!!
+
     @Autowired
     private lateinit var krrService: KrrService
 
@@ -36,6 +43,7 @@ class KrrCacheTest : AbstractCacheTest(KrrCacheConfig.CACHE_NAME) {
 
     @BeforeEach
     fun personIdMock() {
+        cache.clear()
         every { personIdService.findPersonId(soknadId) } returns PERSON_ID
     }
 

@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.valkey
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.spyk
@@ -19,11 +20,17 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.Cache
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("no-redis", "test", "test-container")
-class AdressebeskyttelseCacheTest : AbstractCacheTest(AdressebeskyttelseCacheConfig.CACHE_NAME) {
+class AdressebeskyttelseCacheTest : AbstractCacheTest() {
+    @SpykBean
+    protected lateinit var cacheManager: CacheManager
+
+    private val cache get() = cacheManager.getCache(AdressebeskyttelseCacheConfig.CACHE_NAME)!!
+
     @Autowired
     private lateinit var personService: PersonService
 
@@ -32,6 +39,7 @@ class AdressebeskyttelseCacheTest : AbstractCacheTest(AdressebeskyttelseCacheCon
 
     @BeforeEach
     fun setupAdressebeskyttelse() {
+        cache.clear()
         every { hentPersonClient.hentAdressebeskyttelse(any()) } returns setAdressebeskyttelse(Gradering.UGRADERT)
     }
 

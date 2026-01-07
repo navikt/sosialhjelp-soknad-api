@@ -1,22 +1,14 @@
 package no.nav.sosialhjelp.soknad.valkey
 
-import com.ninjasquad.springmockk.SpykBean
 import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.springframework.cache.CacheManager
 import org.testcontainers.containers.GenericContainer
 
-abstract class AbstractCacheTest(private val cacheName: String) {
-    @SpykBean
-    protected lateinit var cacheManager: CacheManager
-
-    protected val cache get() = cacheManager.getCache(cacheName) ?: error("Cache not found: $cacheName")
-
+abstract class AbstractCacheTest() {
     @BeforeEach
-    fun setup() {
-        cache.clear()
+    open fun setup() {
         clearAllMocks()
     }
 
