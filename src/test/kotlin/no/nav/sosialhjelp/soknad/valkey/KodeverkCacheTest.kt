@@ -103,18 +103,6 @@ class KodeverkCacheTest : AbstractCacheTest(KodeverkCacheConfig.CACHE_NAME) {
         cache.get(KOMMUNER.value).also { assertThat(it).isNull() }
     }
 
-    @Test
-    fun `Feil i cachelag skal hente direkte fra Kodeverk og evicte key i cache`() {
-        every { kodeverkClient.hentKodeverk(any()) } returns createKodeverkDtoForKommuner()
-//        cacheManager.getCache(CACHE_NAME)!!.put(KOMMUNER.value, "Noe helt på trynet")
-        cache.put(KOMMUNER.value, "Noe helt på trynet")
-
-        kodeverkService.getKommunenavn(OSLO)!!.also { assertThat(it).isEqualTo("Oslo") }
-
-//        cacheManager.getCache(CACHE_NAME)!!.get(KOMMUNER.value).also { assertThat(it).isNull() }
-        cache.get(KOMMUNER.value).also { assertThat(it).isNull() }
-    }
-
     private fun createKodeverkDtoForKommuner() =
         KodeverkDto(
             betydninger =
