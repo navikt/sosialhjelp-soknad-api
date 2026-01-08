@@ -100,7 +100,7 @@ loginservice.url: ${LOGINSERVICE_URL}
 
 no.nav.security.jwt.issuer:
   selvbetjening:
-    discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
+    discoveryurl: https://test.idporten.no/.well-known/openid-configuration
     validation:
       optional-claims: aud,nbf
     proxyurl: ""
