@@ -114,7 +114,7 @@ dependencies {
     // jackson
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.module.datatype)
-    implementation(libs.jackson3.module.kotlin)
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.0")
 
     // Logging
     implementation(libs.logback.classic)
