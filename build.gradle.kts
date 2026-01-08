@@ -112,8 +112,8 @@ dependencies {
     implementation(libs.opentelemetry.instrumentation.logback)
 
     // jackson
-//    implementation(libs.jackson.module.kotlin)
-//    implementation(libs.jackson.module.datatype)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.jackson.module.datatype)
 
     // Logging
     implementation(libs.logback.classic)
