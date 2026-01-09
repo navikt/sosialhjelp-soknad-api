@@ -14,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.v2.familie.Barn
 import no.nav.sosialhjelp.soknad.v2.familie.Barnebidrag
@@ -143,7 +144,13 @@ private fun Barn.toJson() =
                     .withVerdi(it)
             },
         )
-        .withSamvarsgrad(null)
+        .withSamvarsgrad(
+            samvarsgrad?.let {
+                JsonSamvarsgrad()
+                    .withKilde(JsonKildeBruker.BRUKER)
+                    .withVerdi(it)
+            },
+        )
 
 // mellomnavn er required i json-modellen
 fun Navn.toJson(): JsonNavn = JsonNavn().withFornavn(fornavn ?: "").withMellomnavn(mellomnavn ?: "").withEtternavn(etternavn ?: "")
