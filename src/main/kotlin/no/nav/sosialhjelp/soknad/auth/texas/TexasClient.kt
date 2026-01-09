@@ -59,7 +59,7 @@ class TexasClient(
                     .body(BodyInserters.fromValue(params))
                     .retrieve()
                     .bodyToMono<TokenResponse.Success>()
-                    .block()
+                    .block() ?: error("Empty response from Texas")
             } catch (e: WebClientResponseException) {
                 val error = e.responseBodyAsString
                 logger.error("Failed to fetch token from Texas: $error")

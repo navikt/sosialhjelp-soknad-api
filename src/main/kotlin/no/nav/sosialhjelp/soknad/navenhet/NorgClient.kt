@@ -35,7 +35,7 @@ class NorgClient(
         return runCatching {
             webClient.get()
                 .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", gt)
-                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID) ?: "")
                 .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                 .retrieve()
                 .bodyToMono<NavEnhetDto>()

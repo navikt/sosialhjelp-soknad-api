@@ -183,7 +183,7 @@ class ExceptionMapper(
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding?> {
+    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding> {
         log.error("Bruker er ikke autentisert (enda). Sender 401 med loginurl.", e)
         return loginserviceUrl?.let { buildError(HttpStatus.UNAUTHORIZED, UnauthorizedMelding(it)) } ?: buildError(HttpStatus.UNAUTHORIZED)
     }
@@ -222,7 +222,7 @@ class ExceptionMapper(
     }
 }
 
-private fun <T> buildError(
+private fun <T : Any> buildError(
     status: HttpStatusCode,
     body: T? = null,
 ): ResponseEntity<T> =

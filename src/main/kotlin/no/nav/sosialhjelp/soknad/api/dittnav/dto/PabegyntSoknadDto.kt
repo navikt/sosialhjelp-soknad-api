@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.dittnav.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.UUID
 
 /**
@@ -14,6 +15,7 @@ class PabegyntSoknadDto(
     val link: String,
     val sikkerhetsnivaa: Int,
     val sistOppdatert: String,
+    @get:JsonProperty("isAktiv")
     val isAktiv: Boolean,
     val soknadId: UUID,
 )

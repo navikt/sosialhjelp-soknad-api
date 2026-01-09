@@ -65,7 +65,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
 
         doPost(producer = BodyInserters.fromValue(createMultipartBody()))
             .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
-            .expectHeader().contentType("${MediaType.APPLICATION_JSON};charset=UTF-8")
+            .expectHeader().contentType("${MediaType.APPLICATION_JSON}")
             .expectBody().jsonPath("id").isEqualTo("filkonvertering_error")
     }
 
@@ -76,7 +76,7 @@ class FileConverterIntegrationTest : AbstractIntegrationTest() {
             BodyInserters.fromValue("{id: 44}"),
         )
             .expectStatus().isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-            .expectHeader().contentType("application/problem+json;charset=UTF-8")
+            .expectHeader().contentType("application/problem+json")
             .expectBody()
             .jsonPath("detail").isEqualTo("Content-Type 'application/json' is not supported.")
     }

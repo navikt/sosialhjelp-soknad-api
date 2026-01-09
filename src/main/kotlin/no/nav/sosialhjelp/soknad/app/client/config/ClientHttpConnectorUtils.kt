@@ -84,8 +84,7 @@ object MdcExchangeFilter : ExchangeFilterFunction {
     override fun filter(
         request: ClientRequest,
         next: ExchangeFunction,
-    ): Mono<ClientResponse?> =
-        next.exchange(request).doOnNext { setContextMap() }
+    ): Mono<ClientResponse> = next.exchange(request).doOnNext { setContextMap() }
 
     private fun setContextMap() = MDC.getCopyOfContextMap()?.also { MDC.setContextMap(it) }
 }

@@ -70,7 +70,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
             basenames[bundle.type] = bundle.propertiesFile
             basenameStrings.add(bundle.propertiesFile)
         }
-        setBasenames(*basenameStrings.toTypedArray())
+        setBasenames(*basenameStrings.filterNotNull().toTypedArray())
     }
 
     fun getBasenames(): Map<String, String> {

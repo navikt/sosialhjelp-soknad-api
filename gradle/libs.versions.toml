@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.2.21"
-spring-boot = "3.5.7"
+spring-boot = "4.0.1"
 coroutines = "1.10.2"
 filformat = "1.2025.07.30-13.34-d9f62af5ba3c"
 sosialhjelp_common = "1.20250120.1009-d88048d"
@@ -34,14 +34,22 @@ jsonassert = "1.5.3"
 
 [libraries]
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
-spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "spring-boot" }
+spring-boot-starter-aspectj = { module = "org.springframework.boot:spring-boot-starter-aspectj", version.ref = "spring-boot" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache", version.ref = "spring-boot" }
 spring-boot-starter-data-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "spring-boot" }
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
-spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
+spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
+spring-boot-starter-webclient = { module = "org.springframework.boot:spring-boot-starter-webclient", version.ref = "spring-boot" }
+spring-boot-starter-kotlinx = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json", version.ref = "spring-boot" }
+
+
+spring-boot-starter-cache-test = { module = "org.springframework.boot:spring-boot-starter-cache-test", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-data-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-data-jdbc-test", version.ref = "spring-boot" }
+spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test", version.ref = "spring-boot" }
+spring-boot-starter-data-redis-test = { module = "org.springframework.boot:spring-boot-starter-data-redis-test", version.ref = "spring-boot" }
 
 resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
@@ -73,6 +81,7 @@ simpleclient = { module = "io.prometheus:simpleclient", version.ref = "prometheu
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometer" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-module-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta_servlet" }
@@ -101,13 +110,22 @@ jsonassert = { module = "org.skyscreamer:jsonassert", version.ref = "jsonassert"
 [bundles]
 spring-boot = [
     "spring-boot-starter-actuator",
-    "spring-boot-starter-aop",
+    "spring-boot-starter-aspectj",
     "spring-boot-starter-cache",
     "spring-boot-starter-data-jdbc",
     "spring-boot-starter-data-redis",
     "spring-boot-starter-validation",
     "spring-boot-starter-web",
-    "spring-boot-starter-webflux",
+    "spring-boot-starter-flyway",
+    "spring-boot-starter-webclient",
+]
+
+spring-boot-test = [
+    "spring-boot-starter-test",
+    "spring-boot-starter-data-jdbc-test",
+    "spring-boot-starter-webflux-test",
+    "spring-boot-starter-cache-test",
+    "spring-boot-starter-data-redis-test",
 ]
 
 resilience4j = [

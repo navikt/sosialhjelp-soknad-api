@@ -15,7 +15,7 @@ class KrrService(
     private val krrClient: KrrClient,
     private val personIdService: PersonIdService,
 ) {
-    @Cacheable(KrrCacheConfig.CACHE_NAME)
+    @Cacheable(KrrCacheConfig.CACHE_NAME, unless = "#result == null")
     fun getMobilnummer(soknadId: UUID): String? {
         return doGet(personIdService.findPersonId(soknadId))
             ?.also { info -> if (info.mobiltelefonnummer == null) logger.warn("KRR - mobiltelefonnummer er null") }

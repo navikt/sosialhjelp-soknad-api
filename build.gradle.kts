@@ -111,9 +111,11 @@ dependencies {
     implementation(libs.opentelemetry.api)
     implementation(libs.opentelemetry.instrumentation.logback)
 
-    // jackson
+    // jackson 2.x implementation
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.module.datatype)
+    // Kotlin specific module for Jackson 3.x
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.0")
 
     // Logging
     implementation(libs.logback.classic)
@@ -140,7 +142,8 @@ dependencies {
     testImplementation(libs.testcontainers.junit)
 
     // Test
-    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.bundles.spring.boot.test)
+
     testImplementation(libs.token.validation.spring.test)
     testImplementation(libs.mockk)
     testImplementation(libs.mockk.jvm)

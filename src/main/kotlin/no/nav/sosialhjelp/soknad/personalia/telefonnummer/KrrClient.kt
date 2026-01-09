@@ -59,7 +59,7 @@ class KrrClient(
             .post()
             .uri("/rest/v1/personer")
             .header(AUTHORIZATION, BEARER + tokenxToken)
-            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
             .bodyValue(KontaktInfoRequest(listOf(personId)))
             .retrieve()
             .bodyToMono<KontaktInfoResponse>()

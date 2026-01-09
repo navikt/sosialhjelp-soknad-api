@@ -59,7 +59,7 @@ class AaregClient(
             return webClient.get()
                 .uri("/v1/arbeidstaker/arbeidsforhold$queryParamsPart", false, A_ORDNINGEN, sokeperiode.fom, sokeperiode.tom)
                 .header(AUTHORIZATION, BEARER + tokenxToken)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID) ?: "")
                 .header(HEADER_NAV_PERSONIDENT, fodselsnummer)
                 .retrieve()
                 .bodyToMono<List<ArbeidsforholdDto>>()

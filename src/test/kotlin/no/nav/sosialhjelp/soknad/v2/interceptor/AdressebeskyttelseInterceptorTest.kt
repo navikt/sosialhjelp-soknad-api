@@ -30,13 +30,15 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.util.UUID
 
+@Import(TestCacheConfig::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT36000S")
 @ActiveProfiles("no-redis", "test", "test-container")
@@ -101,6 +103,7 @@ class AdressebeskyttelseInterceptorTest {
     @Test
     fun `Kall til et annet endepunkt med adressebeskyttelse skal returnere FORBIDDEN`() {
         clearAllMocks()
+//        every { personService.hasAdressebeskyttelse(any())} returns true
         every { hentPersonClient.hentAdressebeskyttelse(any()) } returns createAdressebeskyttelseDto(STRENGT_FORTROLIG)
 
         webClient.doPostFullResponse(

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class KodeverkService(private val kodeverkStore: KodeverkStore) {
-    fun getKommunenavn(kommunenummer: String): String? = hentKodeverk(KOMMUNER)[kommunenummer]
+    fun getKommunenavn(kommunenummer: String): String? =
+        hentKodeverk(KOMMUNER)[kommunenummer]
 
     fun gjettKommunenummer(kommunenavn: String): String? =
         hentKodeverk(KOMMUNER).entries.find { it.value == kommunenavn }?.key
