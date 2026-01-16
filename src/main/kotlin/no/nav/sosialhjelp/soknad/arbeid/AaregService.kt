@@ -15,6 +15,8 @@ class AaregService(
     private val aaregClientV2: AaregClientV2,
 ) {
     fun hentArbeidsforhold(): List<Arbeidsforhold>? {
+        hentFraAaregV2HvisIkkeProd()
+
         return aaregClient.finnArbeidsforholdForArbeidstaker()
             ?.map { it.toDomain(organisasjonService) }
             .also { logger.info("Hentet ${it?.size ?: 0} arbeidsforhold fra aareg") }
