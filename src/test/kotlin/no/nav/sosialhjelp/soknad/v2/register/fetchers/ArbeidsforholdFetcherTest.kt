@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import no.nav.sosialhjelp.soknad.arbeid.AaregClient
+import no.nav.sosialhjelp.soknad.arbeid.AaregClientImpl
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.OrganisasjonDto
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
@@ -140,7 +140,7 @@ class ArbeidsforholdFetcherTest : AbstractRegisterDataTest() {
     }
 
     @MockkBean
-    protected lateinit var aaregClient: AaregClient
+    protected lateinit var aaregClient: AaregClientImpl
 
     @MockkBean
     protected lateinit var organisasjonClient: OrganisasjonClient

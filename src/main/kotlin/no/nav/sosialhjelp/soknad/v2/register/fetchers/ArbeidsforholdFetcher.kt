@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.arbeid.AaregService
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.v2.livssituasjon.LivssituasjonRegisterService
@@ -20,7 +19,7 @@ class ArbeidsforholdFetcher(
     override fun fetchAndSave(soknadId: UUID) {
         logger.info("Henter arbeidsforhold fra Aa-registeret")
 
-        arbeidsforholdService.hentArbeidsforhold(getUserIdFromToken())?.let { arbeidsforholdList ->
+        arbeidsforholdService.hentArbeidsforhold()?.let { arbeidsforholdList ->
             livssituasjonService.updateArbeidsforhold(
                 soknadId = soknadId,
                 arbeidsforhold = arbeidsforholdList.map { it.toV2Arbeidsforhold() },
