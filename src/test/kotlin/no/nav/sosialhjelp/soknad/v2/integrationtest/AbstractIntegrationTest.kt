@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.app.exceptions.InnsendingFeiletError
@@ -50,7 +50,7 @@ abstract class AbstractIntegrationTest {
     @Autowired
     protected lateinit var mockOAuth2Server: MockOAuth2Server
 
-    @SpykBean
+    @MockkSpyBean
     protected lateinit var personIdService: PersonIdService
 
     @MockkBean

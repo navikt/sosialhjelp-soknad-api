@@ -30,7 +30,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
             BosituasjonDto::class.java,
         ).also {
             assertThat(it.botype).isEqualTo(livssituasjon.bosituasjon!!.botype)
-            assertThat(it.antallPersoner).isEqualTo(livssituasjon.bosituasjon!!.antallHusstand)
+            assertThat(it.antallPersoner).isEqualTo(livssituasjon.bosituasjon.antallHusstand)
         }
     }
 
@@ -53,7 +53,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.bosituasjon!!.botype).isEqualTo(bosituasjonInput.botype)
-            assertThat(it.bosituasjon!!.antallHusstand).isEqualTo(bosituasjonInput.antallPersoner)
+            assertThat(it.bosituasjon.antallHusstand).isEqualTo(bosituasjonInput.antallPersoner)
         }
             ?: fail("Fant ikke brukerdata")
     }
@@ -71,7 +71,7 @@ class BosituasjonIntegrationTest : AbstractIntegrationTest() {
 
         livssituasjonRepository.findByIdOrNull(soknad.id)?.let {
             assertThat(it.bosituasjon!!.botype).isNull()
-            assertThat(it.bosituasjon!!.antallHusstand).isEqualTo(3)
+            assertThat(it.bosituasjon.antallHusstand).isEqualTo(3)
         }
             ?: fail("Kunne ikke finne brukerdata")
     }

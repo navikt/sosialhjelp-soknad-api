@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.kort
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.mockk.clearAllMocks
@@ -343,10 +343,10 @@ class KortSoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var unleash: Unleash
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var kortSoknadUseCaseHandler: KortSoknadUseCaseHandler
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var kortSoknadService: KortSoknadService
 
     companion object {

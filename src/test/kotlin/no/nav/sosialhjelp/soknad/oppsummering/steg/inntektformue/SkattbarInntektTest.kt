@@ -82,10 +82,10 @@ internal class SkattbarInntektTest {
         assertThat(inntekt.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(inntekt.labelSvarMap).hasSize(5)
         assertThat(inntekt.labelSvarMap!!["utbetalinger.utbetaling.arbeidsgivernavn.label"]!!.value).isEqualTo("arbeidsgiver")
-        assertThat(inntekt.labelSvarMap!!["utbetalinger.utbetaling.periodeFom.label"]!!.value).isEqualTo("2020-01-01")
-        assertThat(inntekt.labelSvarMap!!["utbetalinger.utbetaling.periodeTom.label"]!!.value).isEqualTo("2020-02-01")
-        assertThat(inntekt.labelSvarMap!!["utbetalinger.utbetaling.brutto.label"]!!.value).isEqualTo("1234.0")
-        assertThat(inntekt.labelSvarMap!!["utbetalinger.utbetaling.skattetrekk.label"]!!.value).isEqualTo("123.0")
+        assertThat(inntekt.labelSvarMap["utbetalinger.utbetaling.periodeFom.label"]!!.value).isEqualTo("2020-01-01")
+        assertThat(inntekt.labelSvarMap["utbetalinger.utbetaling.periodeTom.label"]!!.value).isEqualTo("2020-02-01")
+        assertThat(inntekt.labelSvarMap["utbetalinger.utbetaling.brutto.label"]!!.value).isEqualTo("1234.0")
+        assertThat(inntekt.labelSvarMap["utbetalinger.utbetaling.skattetrekk.label"]!!.value).isEqualTo("123.0")
     }
 
     private fun createOkonomi(harSamtykke: Boolean): JsonOkonomi {

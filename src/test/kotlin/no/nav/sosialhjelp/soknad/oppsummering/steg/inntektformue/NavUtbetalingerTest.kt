@@ -58,7 +58,7 @@ internal class NavUtbetalingerTest {
         assertThat(sporsmalUtbetaling1.felt).hasSize(1)
         assertThat(sporsmalUtbetaling1.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
 
-        val labelSvarMap1 = sporsmalUtbetaling1.felt!![0].labelSvarMap
+        val labelSvarMap1 = sporsmalUtbetaling1.felt[0].labelSvarMap
         assertThat(labelSvarMap1).hasSize(4)
         assertThat(labelSvarMap1!!["utbetalinger.utbetaling.type.label"]!!.value).isEqualTo("Dagpenger")
         assertThat(labelSvarMap1["utbetalinger.utbetaling.netto.label"]!!.value).isEqualTo("1234.0")
@@ -71,7 +71,7 @@ internal class NavUtbetalingerTest {
         assertThat(sporsmalUtbetaling2.felt).hasSize(1)
         assertThat(sporsmalUtbetaling2.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
 
-        val labelSvarMap2 = sporsmalUtbetaling2.felt!![0].labelSvarMap
+        val labelSvarMap2 = sporsmalUtbetaling2.felt[0].labelSvarMap
         assertThat(labelSvarMap2).hasSize(4)
         assertThat(labelSvarMap2!!["utbetalinger.utbetaling.type.label"]!!.value).isEqualTo("Uføre")
         assertThat(labelSvarMap2["utbetalinger.utbetaling.netto.label"]!!.value).isEqualTo("42.0")

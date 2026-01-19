@@ -114,8 +114,8 @@ dependencies {
     // jackson 2.x implementation
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.module.datatype)
-    // Kotlin specific module for Jackson 3.x
-    implementation("tools.jackson.module:jackson-module-kotlin:3.0.0")
+    // Midlertidig eksplisittKotlin specific module for Jackson 3.x
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.3")
 
     // Logging
     implementation(libs.logback.classic)
