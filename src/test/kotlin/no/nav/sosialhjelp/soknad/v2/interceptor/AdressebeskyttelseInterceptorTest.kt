@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.v2.interceptor
 
 import com.nimbusds.jwt.SignedJWT
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkObject
@@ -55,13 +55,13 @@ class AdressebeskyttelseInterceptorTest {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var personService: PersonService
 
     @MockkBean
     private lateinit var hentPersonClient: HentPersonClient
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var adressebeskyttelseInterceptor: AdressebeskyttelseInterceptor
 
     @Autowired

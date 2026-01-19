@@ -49,7 +49,7 @@ internal class BankTest {
         assertThat(bankSporsmal.erUtfylt).isTrue
         assertThat(bankSporsmal.felt).hasSize(2)
         validateFeltMedSvar(bankSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bankinnskudd.true.type.brukskonto")
-        validateFeltMedSvar(bankSporsmal.felt!![1], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bankinnskudd.true.type.annet")
+        validateFeltMedSvar(bankSporsmal.felt[1], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bankinnskudd.true.type.annet")
 
         val beskrivelseAnnetSporsmal = avsnitt.sporsmal[1]
         assertThat(beskrivelseAnnetSporsmal.erUtfylt).isTrue

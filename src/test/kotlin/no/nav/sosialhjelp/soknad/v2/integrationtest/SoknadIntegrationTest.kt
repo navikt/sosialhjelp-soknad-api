@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.getunleash.Unleash
 import io.mockk.every
 import io.mockk.just
@@ -23,7 +23,7 @@ class SoknadIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     private lateinit var mellomlagringClient: MellomlagringClient
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var unleash: Unleash
 
     @MockkBean

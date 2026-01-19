@@ -93,7 +93,7 @@ internal class AndreInntekterTest {
             "json.okonomi.opplysninger.inntekt.inntekter.utbytte",
         )
         validateFeltMedSvar(
-            hvaHarDuMottattSporsmal.felt!![1],
+            hvaHarDuMottattSporsmal.felt[1],
             Type.CHECKBOX,
             SvarType.LOCALE_TEKST,
             "json.okonomi.opplysninger.inntekt.inntekter.salg",

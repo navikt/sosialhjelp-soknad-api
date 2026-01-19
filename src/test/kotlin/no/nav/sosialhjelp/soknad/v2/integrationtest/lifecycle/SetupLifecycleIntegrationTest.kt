@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.integrationtest.lifecycle
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.slot
@@ -51,7 +51,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
-    @SpykBean
+    @MockkSpyBean
     protected lateinit var personService: PersonService
 
     @MockkBean
@@ -75,10 +75,10 @@ abstract class SetupLifecycleIntegrationTest : AbstractIntegrationTest() {
     @MockkBean
     protected lateinit var mellomlagringClient: MellomlagringClient
 
-    @SpykBean
+    @MockkSpyBean
     protected lateinit var digisosApiV2Client: DigisosApiV2Client
 
-    @SpykBean
+    @MockkSpyBean
     protected lateinit var kommuneInfoClient: KommuneInfoClient
 
     @MockkBean(relaxed = true)

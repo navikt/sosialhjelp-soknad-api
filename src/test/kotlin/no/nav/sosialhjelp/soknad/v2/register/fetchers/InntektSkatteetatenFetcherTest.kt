@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register.fetchers
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
@@ -30,10 +30,10 @@ class InntektSkatteetatenFetcherTest : AbstractOkonomiRegisterDataTest() {
         assertThatThrownBy { inntektSkatteetatenFetcher.fetchInntekt() }.isInstanceOf(SkatteetatenException::class.java)
     }
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var skattbarInntektService: SkattbarInntektService
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var organisasjonService: OrganisasjonService
 
     @MockkBean

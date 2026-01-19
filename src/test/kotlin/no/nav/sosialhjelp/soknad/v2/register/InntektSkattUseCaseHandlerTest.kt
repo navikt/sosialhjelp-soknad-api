@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.v2.register
 
 import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.mockk.every
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenClient
@@ -83,10 +83,10 @@ class InntektSkattUseCaseHandlerTest : AbstractOkonomiRegisterDataTest() {
         every { organisasjonService.hentOrgNavn(any()) } returns "Navn på arbeidsgiver"
     }
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var skattbarInntektService: SkattbarInntektService
 
-    @SpykBean
+    @MockkSpyBean
     private lateinit var organisasjonService: OrganisasjonService
 
     @MockkBean

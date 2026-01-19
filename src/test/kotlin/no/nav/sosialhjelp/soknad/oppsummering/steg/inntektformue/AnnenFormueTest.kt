@@ -94,7 +94,7 @@ internal class AnnenFormueTest {
         assertThat(hvaEierDuSporsmal.erUtfylt).isTrue
         assertThat(hvaEierDuSporsmal.felt).hasSize(2)
         validateFeltMedSvar(hvaEierDuSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true.type.bolig")
-        validateFeltMedSvar(hvaEierDuSporsmal.felt!![1], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true.type.annet")
+        validateFeltMedSvar(hvaEierDuSporsmal.felt[1], Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true.type.annet")
 
         val annetBeskrivelseSporsmal = avsnitt.sporsmal[2]
         assertThat(annetBeskrivelseSporsmal.erUtfylt).isTrue

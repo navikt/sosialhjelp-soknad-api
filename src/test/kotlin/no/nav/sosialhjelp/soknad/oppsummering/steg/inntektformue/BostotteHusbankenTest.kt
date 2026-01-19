@@ -126,15 +126,15 @@ internal class BostotteHusbankenTest {
         assertThat(utbetaling1.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(utbetaling1.labelSvarMap).hasSize(3)
         assertThat(utbetaling1.labelSvarMap!!["inntekt.bostotte.utbetaling.mottaker"]!!.value).isEqualTo("Husstand")
-        assertThat(utbetaling1.labelSvarMap!!["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-01-01")
-        assertThat(utbetaling1.labelSvarMap!!["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("42.0")
+        assertThat(utbetaling1.labelSvarMap["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-01-01")
+        assertThat(utbetaling1.labelSvarMap["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("42.0")
 
-        val utbetaling2 = utbetalingerSporsmal.felt!![1]
+        val utbetaling2 = utbetalingerSporsmal.felt[1]
         assertThat(utbetaling2.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(utbetaling2.labelSvarMap).hasSize(3)
         assertThat(utbetaling2.labelSvarMap!!["inntekt.bostotte.utbetaling.mottaker"]!!.value).isEqualTo("Husstand")
-        assertThat(utbetaling2.labelSvarMap!!["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-02-02")
-        assertThat(utbetaling2.labelSvarMap!!["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("1000.0")
+        assertThat(utbetaling2.labelSvarMap["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-02-02")
+        assertThat(utbetaling2.labelSvarMap["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("1000.0")
 
         val sakerSporsmal = avsnitt.sporsmal[3]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
@@ -144,7 +144,7 @@ internal class BostotteHusbankenTest {
         assertThat(sak1.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(sak1.labelSvarMap).hasSize(2)
         assertThat(sak1.labelSvarMap!!["inntekt.bostotte.sak.dato"]!!.value).isEqualTo("2020-01-01")
-        assertThat(sak1.labelSvarMap!!["inntekt.bostotte.sak.status"]!!.value).isEqualTo("INNVILGET: Ekstra info")
+        assertThat(sak1.labelSvarMap["inntekt.bostotte.sak.status"]!!.value).isEqualTo("INNVILGET: Ekstra info")
     }
 
     @Test
@@ -181,8 +181,8 @@ internal class BostotteHusbankenTest {
         assertThat(utbetaling.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(utbetaling.labelSvarMap).hasSize(3)
         assertThat(utbetaling.labelSvarMap!!["inntekt.bostotte.utbetaling.mottaker"]!!.value).isEqualTo("Husstand")
-        assertThat(utbetaling.labelSvarMap!!["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-01-01")
-        assertThat(utbetaling.labelSvarMap!!["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("42.0")
+        assertThat(utbetaling.labelSvarMap["inntekt.bostotte.utbetaling.utbetalingsdato"]!!.value).isEqualTo("2020-01-01")
+        assertThat(utbetaling.labelSvarMap["inntekt.bostotte.utbetaling.belop"]!!.value).isEqualTo("42.0")
 
         val sakerSporsmal = avsnitt.sporsmal[3]
         assertThat(sakerSporsmal.tittel).isEqualTo("inntekt.bostotte.sak")
@@ -277,7 +277,7 @@ internal class BostotteHusbankenTest {
         assertThat(sak.type).isEqualTo(Type.SYSTEMDATA_MAP)
         assertThat(sak.labelSvarMap).hasSize(2)
         assertThat(sak.labelSvarMap!!["inntekt.bostotte.sak.dato"]!!.value).isEqualTo("2020-01-01")
-        assertThat(sak.labelSvarMap!!["inntekt.bostotte.sak.status"]!!.value).isEqualTo("INNVILGET: Ekstra info")
+        assertThat(sak.labelSvarMap["inntekt.bostotte.sak.status"]!!.value).isEqualTo("INNVILGET: Ekstra info")
     }
 
     @Test
