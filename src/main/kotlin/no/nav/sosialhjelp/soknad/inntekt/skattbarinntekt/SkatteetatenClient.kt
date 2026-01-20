@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
@@ -18,12 +14,14 @@ import no.nav.sosialhjelp.soknad.v2.register.fetchers.SkatteetatenException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -33,17 +31,16 @@ class SkatteetatenClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val skatteetatenMapper =
-        jacksonObjectMapper()
-            .registerKotlinModule()
-            .registerModule(JavaTimeModule())
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val skatteetatenMapper: JsonMapper =
+        jacksonMapperBuilder()
+            .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .build()
 
     private val skatteetatenWebClient: WebClient =
         configureWebClientBuilder(webClientBuilder, createDefaultHttpClient())
             .baseUrl(baseurl)
             .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
+                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(skatteetatenMapper))
             }
             .build()
 

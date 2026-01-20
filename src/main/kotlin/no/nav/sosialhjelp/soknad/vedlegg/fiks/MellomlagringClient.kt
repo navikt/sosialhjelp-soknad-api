@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -12,7 +11,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
@@ -28,6 +27,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.module.kotlin.readValue
 import java.io.ByteArrayInputStream
 import java.util.Collections
 import java.util.concurrent.Future
@@ -76,7 +76,7 @@ class MellomlagringClientImpl(
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (e: WebClientResponseException) {
             if (e is BadRequest || e is NotFound) {
-                val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(e.responseBodyAsString)
+                val errorMessage = sosialhjelpJsonMapper.readValue<ErrorMessage>(e.responseBodyAsString)
                 val message = errorMessage.message
                 if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
                     return null
@@ -238,7 +238,7 @@ class MellomlagringClientImpl(
 
         private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
             return try {
-                digisosObjectMapper.writeValueAsString(objectFilForOpplasting.metadata)
+                sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
             } catch (e: JsonProcessingException) {
                 throw IllegalStateException(e)
             }

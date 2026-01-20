@@ -96,8 +96,8 @@ class SkattbarInntekt {
             )
         } else {
             utbetalinger
-                ?.filter { UTBETALING_SKATTEETATEN == it.type }
-                ?.forEach {
+                .filter { UTBETALING_SKATTEETATEN == it.type }
+                .forEach {
                     val map = LinkedHashMap<String, Svar>()
                     if (it.organisasjon == null) {
                         map["utbetalinger.utbetaling.arbeidsgivernavn.label"] =

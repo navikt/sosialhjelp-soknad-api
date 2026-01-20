@@ -76,7 +76,7 @@ class AnnenFormue {
                                 listOf(
                                     Felt(
                                         type = Type.TEKST,
-                                        svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) },
+                                        svar = beskrivelseAvAnnet.let { createSvar(it.verdi, SvarType.TEKST) },
                                     ),
                                 )
                             } else {

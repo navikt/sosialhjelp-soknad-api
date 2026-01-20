@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -37,10 +35,7 @@ class DokumentlagerClient(
     private val fiksWebClient =
         configureWebClientBuilder(webClientBuilder, createFiksHttpClient())
             .baseUrl(digisosApiEndpoint)
-            .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
-            }
+            .configureCodecs()
             .build()
 
     fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {

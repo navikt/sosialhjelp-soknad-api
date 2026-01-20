@@ -1,19 +1,19 @@
 package no.nav.sosialhjelp.soknad.auth.texas
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.configureCodecs
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.SerializationFeature
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 @Component
 class TexasClient(
@@ -67,7 +67,7 @@ class TexasClient(
                     error =
                         TokenErrorResponse(
                             "Unknown error: ${e.statusCode}",
-                            e.statusText ?: "Unknown error",
+                            e.statusText,
                         ),
                     errorDescription = e.responseBodyAsString,
                 )
@@ -78,11 +78,7 @@ class TexasClient(
     private val texasWebClient: WebClient =
         webClientBuilder
             .defaultHeaders { it.contentType = MediaType.APPLICATION_JSON }
-            .codecs {
-                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
-            }
+            .configureCodecs(objectMapper)
             .build()
 
     companion object {
@@ -127,7 +123,8 @@ data class TokenErrorResponse(
     val errorDescription: String,
 )
 
-private val objectMapper =
-    jacksonObjectMapper()
+private val objectMapper: JsonMapper =
+    jacksonMapperBuilder()
         .configure(SerializationFeature.INDENT_OUTPUT, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build()

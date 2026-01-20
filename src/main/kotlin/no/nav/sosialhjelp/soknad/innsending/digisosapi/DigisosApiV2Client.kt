@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.sosialhjelpJsonMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
@@ -31,8 +31,6 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
@@ -70,11 +68,8 @@ class DigisosApiV2Client(
         webClientBuilder
             .clientConnector(
                 ReactorClientHttpConnector(fiksHttpClient),
-            ).codecs {
-                it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
-            }
+            )
+            .configureCodecs()
             .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .filter(MdcExchangeFilter)
@@ -160,7 +155,7 @@ class DigisosApiV2Client(
                 .block()
                 ?: throw FiksException("Fiks - noe uventet feilet ved henting av innsynsfil. Response er null?", null)
         } catch (e: WebClientResponseException) {
-            val errorResponse = digisosObjectMapper.readValue(e.responseBodyAsString, ErrorMessage::class.java)
+            val errorResponse = sosialhjelpJsonMapper.readValue(e.responseBodyAsString, ErrorMessage::class.java)
             throw IllegalStateException("Henting av innsynsfil hos Fiks feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
         } catch (e: IOException) {
             throw IllegalStateException("Henting av innsynsfil hos Fiks feilet", e)
@@ -276,7 +271,7 @@ class DigisosApiV2Client(
 
     private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String =
         try {
-            digisosObjectMapper.writeValueAsString(objectFilForOpplasting.metadata)
+            sosialhjelpJsonMapper.writeValueAsString(objectFilForOpplasting.metadata)
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }

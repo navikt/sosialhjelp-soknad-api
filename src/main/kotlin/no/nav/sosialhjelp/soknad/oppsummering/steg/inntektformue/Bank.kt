@@ -56,7 +56,7 @@ class Bank {
                             listOf(
                                 Felt(
                                     type = Type.TEKST,
-                                    svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) },
+                                    svar = beskrivelseAvAnnet.let { createSvar(it.sparing, SvarType.TEKST) },
                                 ),
                             )
                         } else {
