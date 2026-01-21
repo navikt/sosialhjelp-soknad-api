@@ -31,7 +31,7 @@ class SamtykkeServiceImpl(
 
     override fun hasSamtykkeSkatteetaten(soknadId: UUID): Boolean {
         return okonomiService.getBekreftelser(soknadId)
-            ?.find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }?.verdi
+            .find { it.type == BekreftelseType.UTBETALING_SKATTEETATEN_SAMTYKKE }?.verdi
             ?: false
     }
 

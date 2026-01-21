@@ -111,11 +111,8 @@ dependencies {
     implementation(libs.opentelemetry.api)
     implementation(libs.opentelemetry.instrumentation.logback)
 
-    // jackson 2.x implementation
+    // jackson
     implementation(libs.jackson.module.kotlin)
-    implementation(libs.jackson.module.datatype)
-    // Midlertidig eksplisittKotlin specific module for Jackson 3.x
-    implementation("tools.jackson.module:jackson-module-kotlin:3.0.3")
 
     // Logging
     implementation(libs.logback.classic)

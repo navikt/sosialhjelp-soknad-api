@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
@@ -18,11 +14,13 @@ import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import no.nav.sosialhjelp.soknad.navenhet.TjenesteUtilgjengeligException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -33,11 +31,11 @@ class AaregClient(
     private val texasService: TexasService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val arbeidsforholdMapper: ObjectMapper =
-        jacksonObjectMapper()
-            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .registerModule(JavaTimeModule())
+    private val arbeidsforholdMapper: JsonMapper =
+        jacksonMapperBuilder()
+            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .configure(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .build()
 
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
@@ -48,7 +46,7 @@ class AaregClient(
         configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
             .baseUrl(aaregUrl)
             .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(arbeidsforholdMapper))
+                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(arbeidsforholdMapper))
             }
             .build()
 

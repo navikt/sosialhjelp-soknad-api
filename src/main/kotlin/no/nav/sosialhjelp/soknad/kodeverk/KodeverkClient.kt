@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.resilience4j.retry.annotation.Retry
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
@@ -15,11 +12,12 @@ import no.nav.sosialhjelp.soknad.auth.texas.IdentityProvider
 import no.nav.sosialhjelp.soknad.auth.texas.TexasService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
-import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.JacksonJsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -69,16 +67,15 @@ class KodeverkClient(
             }
             .getOrThrow()
 
+    private val jsonMapper =
+        jacksonMapperBuilder()
+            .enable(tools.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .build()
+
     private val webClient =
         configureWebClientBuilder(webClientBuilder, createNavFssServiceHttpClient())
             .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(
-                    Jackson2JsonDecoder(
-                        jacksonObjectMapper()
-                            .registerModule(JavaTimeModule())
-                            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY),
-                    ),
-                )
+                it.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(jsonMapper))
             }
             .baseUrl(kodeverkUrl)
             .build()
